@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<system xmlns="http://www.eiffel.com/developers/xml/configuration-1-3-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eiffel.com/developers/xml/configuration-1-3-0 http://www.eiffel.com/developers/xml/configuration-1-3-0.xsd" name="json" uuid="4E21C3BD-7951-4C6E-A673-431E762D7414" library_target="json">
+	<target name="json">
+		<root all_classes="true"/>
+		<option namespace="EJSON.Library">
+		</option>
+		<library name="base" location="$ISE_LIBRARY\library\base\base.ecf"/>
+		<cluster name="json" location=".\" recursive="true">
+			<file_rule>
+				<exclude>/EIFGENs$</exclude>
+				<exclude>/.svn$</exclude>
+				<exclude>/CVS$</exclude>
+			</file_rule>
+			<file_rule>
+				<exclude>^/scanner$</exclude>
+			</file_rule>
+			<cluster name="scanner" location=".\scanner\"/>
+		</cluster>
+	</target>
+	<target name="json_dotnet" extends="json">
+		<setting name="msil_generation" value="true"/>
+	</target>
+</system>
