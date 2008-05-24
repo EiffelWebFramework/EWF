@@ -38,6 +38,8 @@ feature -- Change Element
 
 	put(key:JSON_STRING; value:JSON_VALUE) is
 			--
+			require
+				not_null: key /= Void
 			local
 				l_json_null:JSON_NULL
 				l_value:JSON_VALUE
@@ -47,8 +49,29 @@ feature -- Change Element
 					create l_json_null
 					l_value:=l_json_null
 				end
-				object.extend(key, l_value)
+				object.extend(l_value,key)
 			end
+
+feature -- Access
+	has_key(key:JSON_STRING):BOOLEAN is
+		-- has the JSON_OBJECT contains a specific key 'key'.
+		do
+			Result := object.has (key)
+		end
+
+	item(key:JSON_STRING):JSON_VALUE is
+		-- the json_value associated with a key.
+		do
+			Result:= object.item (key)
+		end
+
+	get_keys:ARRAY[JSON_STRING] is
+			--
+		do
+			Result:=object.current_keys
+		end
+
+
 
 
 feature -- Report
@@ -95,6 +118,6 @@ feature -- Report
 		end
 
 
-feature -- Implementation
-	object:HASH_TABLE[JSON_STRING,JSON_VALUE]
+feature {NONE} -- Implementation
+	object:HASH_TABLE[JSON_VALUE,JSON_STRING]
 end

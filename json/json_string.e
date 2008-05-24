@@ -14,8 +14,8 @@ class
 	JSON_STRING
 	inherit
 		JSON_VALUE
-			rename
-				is_equal as is_equal_json
+			redefine
+				is_equal
 			end
 
 	create
@@ -30,6 +30,13 @@ feature -- Initialization
 
 
 feature -- Access
+feature -- Comparison
+	is_equal (other: like Current): BOOLEAN is
+			-- Is JSON_STRING  made of same character sequence as `other'
+			-- (possibly with a different capacity)?
+		do
+			Result:= Current.to_json.is_equal (other.to_json)
+		end
 
 feature -- Change Element
 	append(value:STRING)is
@@ -57,7 +64,4 @@ feature -- Status report
 
 feature {NONE} -- Implementation
 	buffer:STRING
-invariant
-	invariant_clause: True -- Your invariant here
-
 end
