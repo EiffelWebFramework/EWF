@@ -19,7 +19,11 @@ feature {NONE} -- Initialization
 			create l_test_case
 			l_abstract_test_case := l_test_case
 			l_abstract_test_case.set_up
+			l_test_case.test_current_keys
+			l_test_case.test_has_item
 			l_test_case.test_has_key
+			l_test_case.test_has_not_key
+			l_test_case.test_json_value
 			l_abstract_test_case.tear_down
 		end
 
