@@ -66,12 +66,10 @@ feature -- Access
 		end
 
 	get_keys:ARRAY[JSON_STRING] is
-			--
+			-- array containing actually used keys
 		do
 			Result:=object.current_keys
 		end
-
-
 
 
 feature -- Report

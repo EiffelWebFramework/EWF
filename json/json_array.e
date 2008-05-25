@@ -28,6 +28,25 @@ feature -- Initialization
 			end
 
 feature -- Access
+	i_th alias "[]", infix "@" (i: INTEGER):JSON_VALUE is
+			-- Item at `i'-th position
+		do
+			Result := values.i_th (i)
+		end
+
+feature -- Mesurement
+	count:INTEGER is
+			--
+		do
+			Result:=values.count
+		end
+
+feature -- Status report
+	valid_index (i: INTEGER): BOOLEAN is
+			-- Is `i' a valid index?
+		do
+			Result := (1 <= i) and (i <= count)
+		end
 
 feature -- Change Element
 	add(value:JSON_VALUE) is
@@ -41,7 +60,7 @@ feature -- Change Element
 				has_new_value:old values.count + 1 = values.count
 			end
 
-
+feature -- Report
 	to_json:STRING is
 			--Printable json representation
 			-- [] or [elements]
@@ -65,7 +84,7 @@ feature -- Change Element
 				Result.append("]")
 			end
 
-			hash_code:INTEGER is
+	hash_code:INTEGER is
 				--
 				do
 				   from
@@ -78,7 +97,7 @@ feature -- Change Element
 				   	values.forth
 				   end
 				   Result := Result \\ values.count
-				
+
 				end
 feature {NONE} --Implementation
 	values:ARRAYED_LIST[JSON_VALUE]

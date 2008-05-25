@@ -22,6 +22,6 @@ feature --Access
 				Result:= null_value.hash_code
 			end
 
-feature -- Implementation		
+feature {NONE}-- Implementation		
 	null_value:STRING is "null"
 end

@@ -30,6 +30,7 @@ feature -- Initialization
 
 
 feature -- Access
+
 feature -- Comparison
 	is_equal (other: like Current): BOOLEAN is
 			-- Is JSON_STRING  made of same character sequence as `other'

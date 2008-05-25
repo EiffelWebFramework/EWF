@@ -52,6 +52,7 @@ feature -- Access
 			Result:=value.is_equal(other.to_json)
 		end
 
+
 feature -- Implementation
 	value:STRING
 	internal_hash_code:INTEGER

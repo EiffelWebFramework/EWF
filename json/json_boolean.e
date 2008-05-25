@@ -36,4 +36,5 @@ feature -- Access
 
  	value:BOOLEAN
 
+
 end
