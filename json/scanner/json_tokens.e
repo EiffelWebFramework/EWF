@@ -30,4 +30,18 @@ feature -- Access
 				Result:=<<J_OBJECT_CLOSE,J_ARRAY_CLOSE,J_STRING >>
 			end
 
+	special_characters:ARRAY[CHARACTER] is
+			-- Control Characters
+			-- 	%F  	Form feed
+			-- 	%H  	backslasH
+			--  %N  	Newline
+			--  %R  	carriage Return
+			--  %T  	horizontal Tab
+			--  %B  	Backspace
+		    --  /       Solidus
+		    --  "       Quotation
+		    do
+		    		Result:=<<'%F','%H','%N','%R','%T','%B','/','"'>>
+		    end
+
 end

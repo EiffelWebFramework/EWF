@@ -73,7 +73,7 @@ feature -- Access
 			-- Remove withe spaces
 			do
 				from
-				until not actual.is_space and has_next
+				until not actual.is_space or not has_next
 				loop
 					next
 				end

@@ -13,47 +13,59 @@ class
 create
 	make_parser
 feature -- Access
+    is_parsed:BOOLEAN
+
+    current_errors:STRING
 
 	make_parser(a_json:STRING) is
 			--
 			do
 				make(a_json)
+				is_parsed:=true
 			end
+
+    parse_json:JSON_VALUE is
+    		--
+    	do
+    		Result:=parse
+    		if extra_elements then
+    			is_parsed:=false
+    		end
+    	end
 
 	parse:JSON_VALUE is
 			--
 			local
 				c:CHARACTER
 			do
-				skip_withe_spaces
-				c:=actual
-				if c.is_equal (j_object_open) then
-					Result:=parse_object
-				elseif c.is_equal (j_string) then
-					Result:=parse_string
-				elseif c.is_equal (j_array_open) then
-					Result:=parse_array
-				elseif c.is_digit or c.is_equal (j_minus) or
-					   c.is_equal (j_plus) or c.is_equal (j_dot)	 then
-					Result:=parse_number
-				elseif is_null  then
-					--
-					Result:=create {JSON_NULL}
-					next;next;next;
-				elseif is_true then
-					Result:=create {JSON_BOOLEAN}.make_boolean (true)
-					next;next;next;
-				elseif is_false then
-					Result:=create {JSON_BOOLEAN}.make_boolean (false)
-					next;next;next;next;
-				else
-
-					Result:=void
+				if is_parsed then
+					skip_withe_spaces
+					c:=actual
+					if c.is_equal (j_object_open) then
+						Result:=parse_object
+					elseif c.is_equal (j_string) then
+						Result:=parse_string
+					elseif c.is_equal (j_array_open) then
+						Result:=parse_array
+					elseif c.is_digit or c.is_equal (j_minus) or
+					 	c.is_equal (j_plus) or c.is_equal (j_dot)	 then
+						Result:=parse_number
+					elseif is_null  then
+						--
+						Result:=create {JSON_NULL}
+						next;next;next;
+					elseif is_true then
+						Result:=create {JSON_BOOLEAN}.make_boolean (true)
+						next;next;next;
+					elseif is_false then
+						Result:=create {JSON_BOOLEAN}.make_boolean (false)
+						next;next;next;next;
+					else
+						is_parsed:=false
+						Result:=void
+					end
 				end
-			rescue
-				handle_syntax_exception
-				retry
-			end
+		  end
 
 	parse_object:JSON_OBJECT is
 			-- object
@@ -85,21 +97,28 @@ feature -- Access
 						  	next
 						  	skip_withe_spaces
 						else
-						  excpetions.raise("%N Input string is a not well formed JSON, expected: %":%", found:" +actual.out +"%N")
+						  is_parsed:=false
+						  --excpetions.raise("%N Input string is a not well formed JSON, expected: %":%", found:" +actual.out +"%N")
 						  has_more:=false
 						end
 
 						l_value:=parse
-						Result.put (l_json_string, l_value)
-						next
-						skip_withe_spaces
-						if actual.is_equal (j_object_close) then
-							has_more:=false
-						elseif not actual.is_equal (',') then
-							has_more:=false
-							excpetions.raise("JSON Object sintactically malformed expected :%"'%" ")
-						end
-                  	end
+						if is_parsed then
+							Result.put (l_value,l_json_string)
+							next
+							skip_withe_spaces
+							if actual.is_equal (j_object_close) then
+								has_more:=false
+							elseif not actual.is_equal (',') then
+								has_more:=false
+								is_parsed:=false
+								--excpetions.raise("JSON Object sintactically malformed expected :%"'%" ")
+							end
+					    else
+					    	has_more:=false
+					    	-- explain the error	
+					    end
+					end
 				end
 			end
 
@@ -121,7 +140,21 @@ feature -- Access
 							has_more:=false
 						elseif close_tokens.has (actual) then
 						    has_more:=false
-						    excpetions.raise("Input String is not well formed JSON, expected %"")
+						    is_parsed:=false
+						    --excpetions.raise("Input String is not well formed JSON, expected %"")
+						elseif actual.is_equal ('%N') then
+							next
+							if not special_characters.has (actual) then
+								has_more:=false
+								is_parsed:=false
+								-- explain exception
+							else
+								l_json_string.append (actual.out)
+							end
+						elseif special_characters.has (actual) then
+								has_more:=false
+								is_parsed:=false
+								-- explain exception	
 						else
 							l_json_string.append (actual.out)
 						end
@@ -156,15 +189,20 @@ feature -- Access
 						next
 						skip_withe_spaces
 						l_value := parse
-						Result.add (l_value)
-						next
-						skip_withe_spaces
-
-						if  not actual.is_equal (j_array_close) and not actual.is_equal (',')then
+						if is_parsed then
+							Result.add (l_value)
+							next
+							skip_withe_spaces
+							if  not actual.is_equal (j_array_close) and not actual.is_equal (',')then
+								flag:=false
+								is_parsed:=false
+								--excpetions.raise("%NInput string is not well formed JSON, expected:  ',' or ']', and found: " +actual.out+"%N")
+							elseif actual.is_equal (j_array_close)	then
+							    flag:= false
+							end
+						else
 							flag:=false
-							excpetions.raise("%NInput string is not well formed JSON, expected:  ',' or ']', and found: " +actual.out+"%N")
-						elseif actual.is_equal (j_array_close)	then
-						    flag:= false
+							--explain the error	
 						end
 					end
 				end
@@ -200,7 +238,8 @@ feature -- Access
 				elseif sb.is_integer then
 					create Result.make_integer (sb.to_integer)
 				else
-				   excpetions.raise ("Input string is an not well formed JSON")
+				    is_parsed:=false
+				  -- excpetions.raise ("Input string is an not well formed JSON")
 				  -- print ("Input string is an not well formed JSON")
 				end
 			end
@@ -245,14 +284,29 @@ feature -- Access
 					end
 				end
 feature {NONE}
-    handle_syntax_exception is
-    		--
-    		do
-    			next
-    		end
 
-	excpetions:EXCEPTIONS once
-		create Result
-	end
+		extra_elements:BOOLEAN is
+				--has more elements?
+				local
+					l_string:STRING
+				do
+
+                    if has_next then
+                    	next
+                    end
+					from
+					until not actual.is_space or  not actual.is_equal ('%R') or
+						  not actual.is_equal ('%U') or  not actual.is_equal ('%T')
+						  or not actual.is_equal ('%N') or not has_next
+					loop
+						next
+					end
+
+                    if has_next then
+                    	Result:=True
+                    end
+
+				end
+
 
 end
