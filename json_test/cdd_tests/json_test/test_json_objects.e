@@ -30,7 +30,7 @@ feature -- Basic operations
 			create file_reader
 			json_file:=file_reader.read_json_from ("/home/jvelilla/work/eiffel_work/json_test/json_menu_example.txt")
 			create parse_json.make_parser (json_file)
-			json_value := parse_json.parse
+			json_value := parse_json.parse_json
 			json_object ?= json_value
 		end
 feature -- Tests
@@ -47,7 +47,7 @@ feature -- Tests
 
 	test_current_keys is
 		do
-            assert_integers_equal ("Has 1 key", 1, json_object.get_keys.count)
+            assert_integers_equal ("Has 1 key", 1, json_object.current_keys.count)
 		end
 
     test_has_item is
