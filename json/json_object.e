@@ -36,10 +36,11 @@ feature -- Initialization
 feature -- Change Element
 
 
-	put(key:JSON_STRING; value:JSON_VALUE) is
-			--
+	put(value:JSON_VALUE ; key:JSON_STRING) is
+			-- Assuming there is no item of key `key',
+			-- insert `value' with `key'.
 			require
-				not_null: key /= Void
+				not_present: not has_key (key)
 			local
 				l_json_null:JSON_NULL
 				l_value:JSON_VALUE
@@ -52,11 +53,18 @@ feature -- Change Element
 				object.extend(l_value,key)
 			end
 
+
 feature -- Access
 	has_key(key:JSON_STRING):BOOLEAN is
 		-- has the JSON_OBJECT contains a specific key 'key'.
 		do
 			Result := object.has (key)
+		end
+
+	has_item(value:JSON_VALUE):BOOLEAN is
+		-- has the JSON_OBJECT contain a specfic item 'value'
+		do
+			Result := object.has_item (value)
 		end
 
 	item(key:JSON_STRING):JSON_VALUE is
@@ -65,7 +73,7 @@ feature -- Access
 			Result:= object.item (key)
 		end
 
-	get_keys:ARRAY[JSON_STRING] is
+	current_keys:ARRAY[JSON_STRING] is
 			-- array containing actually used keys
 		do
 			Result:=object.current_keys
