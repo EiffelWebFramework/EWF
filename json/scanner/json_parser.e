@@ -47,8 +47,7 @@ feature -- Access
 						Result:=parse_string
 					elseif c.is_equal (j_array_open) then
 						Result:=parse_array
-					elseif c.is_digit or c.is_equal (j_minus) or
-					 	c.is_equal (j_plus) or c.is_equal (j_dot)	 then
+					elseif c.is_digit or c.is_equal (j_minus)  then
 						Result:=parse_number
 					elseif is_null  then
 						--
@@ -213,20 +212,41 @@ feature -- Access
 			local
 				sb:STRING
 				flag:BOOLEAN
+			    zero_flag:BOOLEAN
+			    minus_flag:BOOLEAN
+			    dot_flag:BOOLEAN
 			do
 				create sb.make_empty
-				if not actual.is_equal (j_plus) then
-					sb.append (actual.out)
-				end
+				sb.append (actual.out)
+
+			    if actual.is_equal ('0') then
+			    	zero_flag:=true
+			    elseif actual.is_equal (j_minus) then
+			    	minus_flag:=True
+			    end
 
 				from
 					flag:=true
 				until not flag
 				loop
 					next
-					if not has_next or close_tokens.has (actual) or actual.is_equal (',')
+					if zero_flag then
+					     inspect
+					     	actual
+					     when '1'..'9' then
+						       sb.append (actual.out)
+					     when '.' then
+					  		   zero_flag:=false
+					  		   dot_flag:=true
+					  		   sb.append (actual.out)
+                  	     else
+					     	   flag:=false
+					     	   is_parsed:=false
+					     end
+
+					elseif not has_next or close_tokens.has (actual) or actual.is_equal (',')
 					  or actual.is_equal ('%N')  or actual.is_equal ('%R') then
-					     flag:=false
+					    flag:=false
 						previous
 					else
 						sb.append (actual.out)
