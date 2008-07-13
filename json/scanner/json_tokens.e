@@ -44,4 +44,10 @@ feature -- Access
 		    		Result:=<<'%F','%H','%N','%R','%T','%B','/','"'>>
 		    end
 
+   special_controls:ARRAY[CHARACTER] is
+           --Control Characters
+           -- \b\f\n\r\t
+           do
+           		Result:=<<'b','f','n','r','t'>>
+           end
 end
