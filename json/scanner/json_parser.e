@@ -22,6 +22,7 @@ feature -- Access
 			do
 				make(a_json)
 				is_parsed:=true
+				create current_errors.make_empty
 			end
 
     parse_json:JSON_VALUE is
@@ -61,6 +62,7 @@ feature -- Access
 						next;next;next;next;
 					else
 						is_parsed:=false
+						current_errors.append("JSON is not well formed in parse")
 						Result:=void
 					end
 				end
@@ -97,7 +99,7 @@ feature -- Access
 						  	skip_withe_spaces
 						else
 						  is_parsed:=false
-						  --excpetions.raise("%N Input string is a not well formed JSON, expected: %":%", found:" +actual.out +"%N")
+						  current_errors.append("%N Input string is a not well formed JSON, expected: : found:" + actual.out +"%N")
 						  has_more:=false
 						end
 
@@ -111,7 +113,7 @@ feature -- Access
 							elseif not actual.is_equal (',') then
 								has_more:=false
 								is_parsed:=false
-								--excpetions.raise("JSON Object sintactically malformed expected :%"'%" ")
+				  			    current_errors.append("JSON Object sintactically malformed expected , found:[" + actual.out + "] %N")
 							end
 					    else
 					    	has_more:=false
@@ -126,6 +128,7 @@ feature -- Access
 			local
 				has_more:BOOLEAN
 				l_json_string:STRING
+				l_unicode:STRING
 			do
 				create l_json_string.make_empty
 				if actual.is_equal (j_string) then
@@ -137,25 +140,37 @@ feature -- Access
 						next
 						if actual.is_equal (j_string) then
 							has_more:=false
-						elseif close_tokens.has (actual) then
-						    has_more:=false
-						    is_parsed:=false
-						    --excpetions.raise("Input String is not well formed JSON, expected %"")
-						elseif actual.is_equal ('%N') then
+						elseif actual.is_equal ('%H') then
 							next
-							if not special_characters.has (actual) then
+							if actual.is_equal ('u') then
+								create l_unicode.make_from_string ("\u")
+								l_unicode.append (read_unicode)
+								if is_a_valid_unicode(l_unicode) then
+									l_json_string.append (l_unicode)
+								else
+									has_more:=false
+									is_parsed:=false
+									current_errors.append("Input String is not well formed JSON, expected a Unicode value, found [" + actual.out + " ] %N")
+								end
+							elseif (not special_characters.has (actual) and  not special_controls.has (actual)) or actual.is_equal ('%N') then
 								has_more:=false
 								is_parsed:=false
-								-- explain exception
+								current_errors.append("Input String is not well formed JSON, found [" + actual.out + " ] %N")
+
+							else
+								l_json_string.append ("\")
+								l_json_string.append (actual.out)
+
+							end
+
+						else
+							if special_characters.has (actual) and not actual.is_equal ('/') then
+								has_more:=false
+								is_parsed:=false
+								current_errors.append("Input String is not well formed JSON, found [" + actual.out + " ] %N")
 							else
 								l_json_string.append (actual.out)
 							end
-						elseif special_characters.has (actual) then
-								has_more:=false
-								is_parsed:=false
-								-- explain exception	
-						else
-							l_json_string.append (actual.out)
 						end
 					end
 					create Result.make_json (l_json_string)
@@ -195,13 +210,13 @@ feature -- Access
 							if  not actual.is_equal (j_array_close) and not actual.is_equal (',')then
 								flag:=false
 								is_parsed:=false
-								--excpetions.raise("%NInput string is not well formed JSON, expected:  ',' or ']', and found: " +actual.out+"%N")
+								current_errors.append("Array is not well formed JSON,  found [" + actual.out + " ] %N")
 							elseif actual.is_equal (j_array_close)	then
 							    flag:= false
 							end
 						else
 							flag:=false
-							--explain the error	
+								current_errors.append("Array is not well formed JSON,  found [" + actual.out + " ] %N")
 						end
 					end
 				end
@@ -212,39 +227,17 @@ feature -- Access
 			local
 				sb:STRING
 				flag:BOOLEAN
-			    zero_flag:BOOLEAN
-			    minus_flag:BOOLEAN
-			    dot_flag:BOOLEAN
+			    is_integer:BOOLEAN
 			do
 				create sb.make_empty
 				sb.append (actual.out)
 
-			    if actual.is_equal ('0') then
-			    	zero_flag:=true
-			    elseif actual.is_equal (j_minus) then
-			    	minus_flag:=True
-			    end
-
-				from
+			 	from
 					flag:=true
 				until not flag
 				loop
 					next
-					if zero_flag then
-					     inspect
-					     	actual
-					     when '1'..'9' then
-						       sb.append (actual.out)
-					     when '.' then
-					  		   zero_flag:=false
-					  		   dot_flag:=true
-					  		   sb.append (actual.out)
-                  	     else
-					     	   flag:=false
-					     	   is_parsed:=false
-					     end
-
-					elseif not has_next or close_tokens.has (actual) or actual.is_equal (',')
+					if not has_next or close_tokens.has (actual) or actual.is_equal (',')
 					  or actual.is_equal ('%N')  or actual.is_equal ('%R') then
 					    flag:=false
 						previous
@@ -253,16 +246,19 @@ feature -- Access
 					end
 				end
 
-				if sb.is_double then
-					create Result.make_real (sb.to_double)
-				elseif sb.is_integer then
-					create Result.make_integer (sb.to_integer)
-				else
+			    if is_a_valid_number(sb) then
+					if sb.is_integer then
+						create Result.make_integer (sb.to_integer)
+						is_integer:=true;
+					elseif sb.is_double and not is_integer then
+						create Result.make_real (sb.to_double)
+					end
+		    	else
 				    is_parsed:=false
-				  -- excpetions.raise ("Input string is an not well formed JSON")
-				  -- print ("Input string is an not well formed JSON")
+				    current_errors.append("Expected a number, found: [ " + sb  + " ]")
 				end
 			end
+
 
 
 		is_null:BOOLEAN is
@@ -303,7 +299,71 @@ feature -- Access
 						Result := true
 					end
 				end
+
+		read_unicode:STRING is
+				--
+			local
+			i:INTEGER
+			do
+				create Result.make_empty
+				from
+					i:=1
+				until i > 4 or not has_next
+
+				loop
+				    next
+				    Result.append(actual.out)
+				    i:= i + 1
+				end
+			end
+
 feature {NONE}
+
+         is_a_valid_number(a_number:STRING):BOOLEAN is
+    		-- is 'a_number' a valid number based on this regular expression
+    		-- "-?(?:0|[1-9]\d+)(?:\.\d+)?(?:[eE][+-]?\d+)?\b"?
+    		local
+    		case_mapping: RX_CASE_MAPPING
+			word_set: RX_CHARACTER_SET
+			regexp: RX_PCRE_REGULAR_EXPRESSION
+    		number_regex:STRING
+    		l_number:STRING
+    		do
+		      create regexp.make
+		      create word_set.make_empty
+		      word_set.add_string ("0123456789.eE+-")
+		      regexp.set_word_set (word_set)
+		      number_regex:="-?(?:0|[1-9]\d*)(?:\.\d+)?(?:[eE][+-]?\d+)?\b"
+		      regexp.compile(number_regex)
+              if regexp.matches (a_number) then
+              	   a_number.right_adjust
+	               if  a_number.is_equal(regexp.captured_substring (0)) then
+    	                   Result := true
+                   end
+              end
+            end
+
+	  is_a_valid_unicode(a_unicode:STRING):BOOLEAN is
+    		-- is 'a_unicode' a valid unicode based on this regular expression
+    		-- "\\u[0-9a-fA-F]{4}"
+    		local
+    		case_mapping: RX_CASE_MAPPING
+			word_set: RX_CHARACTER_SET
+			regexp: RX_PCRE_REGULAR_EXPRESSION
+    		unicode_regex:STRING
+    		do
+		      create regexp.make
+		      unicode_regex:="\\u[0-9a-fA-F]{4}"
+		      regexp.compile(unicode_regex)
+              if regexp.matches (a_unicode) then
+                   Result := true
+                   check
+                   	   is_valid: a_unicode.is_equal(regexp.captured_substring (0))
+                   end
+              end
+            end
+
+
 
 		extra_elements:BOOLEAN is
 				--has more elements?
