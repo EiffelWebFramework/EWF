@@ -5,36 +5,40 @@ indexing
 	revision: "$Revision$"
 
 class
+
 	JSON_BOOLEAN
-		inherit
-		JSON_VALUE
+
+inherit
+	JSON_VALUE
 
 create
+
 	make_boolean
+
 feature -- Initialization
 
-	make_boolean(a_value:BOOLEAN) is
+	make_boolean (an_item: BOOLEAN) is
 			--
-			do
-				value:=a_value
-			end
+		do
+			item := an_item
+		end
 
 feature -- Access
 
-	to_json:STRING is
+	item: BOOLEAN
+
+	to_json: STRING is
 			--
-			do
-				Result:=value.out
-			end
+		do
+			Result := item.out
+		end
 
-	hash_code:INTEGER is
+	hash_code: INTEGER is
 			--
-			do
-				Result:=value.hash_code
-			end
+		do
+			Result := item.hash_code
+		end
 
-
- 	value:BOOLEAN
 
 
 end

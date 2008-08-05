@@ -51,9 +51,7 @@ feature -- Status report
 feature -- Change Element
 	add(value:JSON_VALUE) is
 			require
-			   not_null:value /= void
-			local
-			 l_json_value:JSON_VALUE
+				not_null:value /= void
 			do
 				values.extend(value)
 			ensure
@@ -87,16 +85,16 @@ feature -- Report
 	hash_code:INTEGER is
 				--
 				do
-				   from
-				   	values.start
-				   	Result:=values.item.hash_code
-				   until
-				   	values.off
-				   loop
-				   	Result:= ((Result \\ 8388593) |<< 8) + values.item.hash_code
-				   	values.forth
-				   end
-				   Result := Result \\ values.count
+					from
+						values.start
+						Result:=values.item.hash_code
+					until
+						values.off
+					loop
+						Result:= ((Result \\ 8388593) |<< 8) + values.item.hash_code
+						values.forth
+					end
+					Result := Result \\ values.count
 
 				end
 feature {NONE} --Implementation
