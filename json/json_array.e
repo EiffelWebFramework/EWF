@@ -28,8 +28,10 @@ feature -- Initialization
 			end
 
 feature -- Access
-	i_th alias "[]", infix "@" (i: INTEGER):JSON_VALUE is
+	i_th alias "[]" (i: INTEGER):JSON_VALUE is
 			-- Item at `i'-th position
+		require
+			is_valid_index:valid_index (i)
 		do
 			Result := values.i_th (i)
 		end
@@ -55,7 +57,8 @@ feature -- Change Element
 			do
 				values.extend(value)
 			ensure
-				has_new_value:old values.count + 1 = values.count
+				has_new_value:old values.count + 1 = values.count and
+				                  values.has (value)
 			end
 
 feature -- Report
@@ -100,5 +103,7 @@ feature -- Report
 feature {NONE} --Implementation
 	values:ARRAYED_LIST[JSON_VALUE]
 
+invariant
+ 	value_not_void: values /= Void
 
 end
