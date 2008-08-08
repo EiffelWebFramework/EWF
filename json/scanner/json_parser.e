@@ -341,13 +341,14 @@ feature {NONE} -- Implementation
 		do
 			create regexp.make
 			create word_set.make_empty
+			a_number.right_adjust
+			a_number.left_adjust
 			word_set.add_string ("0123456789.eE+-")
 			regexp.set_word_set (word_set)
-			number_regex := "-?(?: 0|[1-9]\d*)(?: \.\d+)?(?: [eE][+-]?\d+)?\b"
+			number_regex := "-?(?:0|[1-9]\d*)(?:\.\d+)?(?:[eE][+-]?\d+)?\b"
 			regexp.compile (number_regex)
 			if regexp.matches (a_number) then
-				a_number.right_adjust
-				if  a_number.is_equal (regexp.captured_substring (0)) then
+				if a_number.is_equal (regexp.captured_substring (0)) then
 					Result := true
 				end
 			end
