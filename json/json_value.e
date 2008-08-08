@@ -19,10 +19,13 @@ indexing
 
 deferred class
 	JSON_VALUE
-	inherit
-		HASHABLE
+
+inherit
+
+	HASHABLE
 
 feature -- Access
+
 	to_json:STRING is
 			-- Generate the JSON String for this value object
 			-- return a correct JSON-STRING
@@ -32,7 +35,7 @@ feature -- Access
 feature -- Status Report
 
    	is_json_array:BOOLEAN is
-		-- Does `Current' represent a JSON_ARRAY?
+			-- Does `Current' represent a JSON_ARRAY?
 		do
 			if generating_type.is_equal ("JSON_ARRAY") then
     			Result := true
@@ -40,7 +43,7 @@ feature -- Status Report
 		end
 
 	is_json_string:BOOLEAN is
-		-- Does `Current' represent a JSON_STRING?
+			-- Does `Current' represent a JSON_STRING?
 		do
 		   if generating_type.is_equal ("JSON_STRING") then
     			Result := true
@@ -49,7 +52,7 @@ feature -- Status Report
 		end
 
 	is_json_object:BOOLEAN is
-		-- Does `Current' represent a JSON_OBJECT?
+			-- Does `Current' represent a JSON_OBJECT?
 		do
 
 		  if generating_type.is_equal ("JSON_OBJECT") then
@@ -59,7 +62,7 @@ feature -- Status Report
 		end
 
 	is_json_number:BOOLEAN is
-		-- Does 'Current' represent a JSON_NUMBER?
+			-- Does 'Current' represent a JSON_NUMBER?
 		do
 		  if generating_type.is_equal ("JSON_NUMBER") then
     			Result := true
@@ -67,7 +70,7 @@ feature -- Status Report
 		end
 
 	is_json_boolean:BOOLEAN is
-		-- Does 'Current' represent a JSON_BOOLEAN?
+			-- Does 'Current' represent a JSON_BOOLEAN?
 		do
 			if generating_type.is_equal ("JSON_BOOLEAN") then
     			Result := true
