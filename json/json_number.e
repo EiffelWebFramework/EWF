@@ -12,8 +12,8 @@ class
 inherit
 
 	JSON_VALUE
-		rename
-			is_equal as is_equal_json_value
+		redefine
+			is_equal
 		end
 create
 
