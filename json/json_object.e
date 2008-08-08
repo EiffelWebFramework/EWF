@@ -51,7 +51,7 @@ feature -- Change Element
 			l_value: JSON_VALUE
 		do
 			l_value:=value
-			if value = void then
+			if value = Void then
 				create l_json_null
 				l_value:=l_json_null
 			end
@@ -132,5 +132,8 @@ feature -- Report
 feature {NONE} -- Implementation
 
 	object: HASH_TABLE[JSON_VALUE,JSON_STRING]
+
+invariant
+	object_not_null: object /= Void
 
 end
