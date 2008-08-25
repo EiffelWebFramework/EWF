@@ -7,8 +7,8 @@ indexing
 		]"
 
 	author: "Javier Velilla"
-	date: "$Date$"
-	revision: "$Revision$"
+	date: "2008/08/24"
+	revision: "Revision 0.1"
 	license:"MIT (see http://www.opensource.org/licenses/mit-license.php)"
 
 
@@ -43,6 +43,15 @@ feature -- Access
 	item: STRING
 			-- Contents
 
+feature -- Visitor pattern
+
+	accept (a_visitor: JSON_VISITOR) is
+			-- Accept `a_visitor'.
+			-- (Call `visit_json_string' procedure on `a_visitor'.)
+		do
+			a_visitor.visit_json_string (Current)
+		end
+
 
 feature -- Comparison
 
@@ -50,13 +59,13 @@ feature -- Comparison
 			-- Is JSON_STRING  made of same character sequence as `other'
 			-- (possibly with a different capacity)?
 		do
-			Result := Current.to_json.is_equal (other.to_json)
+			Result := item.is_equal (other.item)
 		end
 
 feature -- Change Element
 
 	append (an_item: STRING)is
-			--
+			-- Add an_item
 		do
 			item.append_string (an_item)
 		end
@@ -64,17 +73,8 @@ feature -- Change Element
 
 feature -- Status report
 
-	to_json: STRING is
-			--
-		do
-			create	Result.make_empty
-			Result.append ("%"")
-			Result.append (item)
-			Result.append ("%"")
-		end
-
 	hash_code: INTEGER is
-			--
+			-- Hash code value
 		do
 			Result := item.hash_code
 		end

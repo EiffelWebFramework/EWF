@@ -13,8 +13,8 @@ An object is an unordered set of name/value pairs
 
 ]"
 			author: "Javier Velilla"
-			date: "$Date$"
-			revision: "$Revision$"
+			date: "2008/08/24"
+			revision: "Revision 0.1"
 			license:"MIT (see http://www.opensource.org/licenses/mit-license.php)"
 
 
@@ -33,7 +33,7 @@ create
 feature -- Initialization
 
 	make is
-			--
+			-- Initialize
 		do
 			create object.make (10)
 		end
@@ -85,31 +85,24 @@ feature -- Access
 			Result:=object.current_keys
 		end
 
+feature -- Visitor pattern
+
+	accept (a_visitor: JSON_VISITOR) is
+			-- Accept `a_visitor'.
+			-- (Call `visit_json_object' procedure on `a_visitor'.)
+		do
+			a_visitor.visit_json_object (Current)
+		end
+
+
+feature -- Conversion
+	map_representation: HASH_TABLE[JSON_VALUE,JSON_STRING] is
+			--A representation that maps keys to values
+		do
+			Result:=object
+		end
 
 feature -- Report
-
-	to_json: STRING is
-			--  Printable json representation
-			-- {} or {member}
-			-- see documentation
-		do
-			create Result.make_empty
-			Result.append ("{")
-			from
-				object.start
-			until
-				object.off
-			loop
-				Result.append (object.item_for_iteration.to_json)
-				Result.append (":")
-				Result.append (object.key_for_iteration.to_json)
-				object.forth
-				if not object.after then
-					Result.append (",")
-				end
-			end
-			Result.append ("}")
-		end
 
 	hash_code: INTEGER is
 			-- Hash code value

@@ -9,8 +9,8 @@ indexing
 			]"
 
 	author: "Javier Velilla"
-	date: "$Date$"
-	revision: "$Revision$"
+	date: "2008/08/24"
+	revision: "Revision 0.1"
 
 class
 	JSON_ARRAY
@@ -36,9 +36,18 @@ feature -- Access
 			Result := values.i_th (i)
 		end
 
+feature -- Visitor pattern
+
+	accept (a_visitor: JSON_VISITOR) is
+			-- Accept `a_visitor'.
+			-- (Call `visit_json_array' procedure on `a_visitor'.)
+		do
+			a_visitor.visit_json_array (Current)
+		end
+
 feature -- Mesurement
 	count:INTEGER is
-			--
+			-- Number of items.
 		do
 			Result:=values.count
 		end
@@ -62,28 +71,6 @@ feature -- Change Element
 			end
 
 feature -- Report
-	to_json:STRING is
-			--Printable json representation
-			-- [] or [elements]
-			local
-				value:JSON_VALUE
-			do
-				create Result.make_empty
-				Result.append("[")
-				from
-					values.start
-				until
-					values.off
-				loop
-					value:=values.item
-					Result.append(value.to_json)
-					values.forth
-					if not values.after then
-						Result.append(",")
-					end
-				end
-				Result.append("]")
-			end
 
 	hash_code:INTEGER is
 				--
@@ -100,6 +87,14 @@ feature -- Report
 					Result := Result \\ values.count
 
 				end
+feature -- Conversion
+
+	array_representation:ARRAYED_LIST[JSON_VALUE] is
+			-- Representation as a sequences of values
+		do
+			Result:=values
+		end
+
 feature {NONE} --Implementation
 	values:ARRAYED_LIST[JSON_VALUE]
 

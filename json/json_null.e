@@ -1,8 +1,8 @@
 indexing
 	description: "JSON Null Values"
 	author: "Javier Velilla"
-	date: "$Date$"
-	revision: "$Revision$"
+	date: "2008/08/24"
+	revision: "Revision 0.1"
 
 class
 	JSON_NULL
@@ -10,17 +10,20 @@ class
 		JSON_VALUE
 
 feature --Access
-	to_json:STRING is
-			--
-			do
-			 Result:=null_value
-			end
 
 	hash_code:INTEGER is
-			--
-			do
-				Result:= null_value.hash_code
-			end
+			-- Hash code value
+		do
+			Result:= null_value.hash_code
+		end
+feature -- Visitor pattern
+
+	accept (a_visitor: JSON_VISITOR) is
+			-- Accept `a_visitor'.
+			-- (Call `visit_element_a' procedure on `a_visitor'.)
+		do
+			a_visitor.visit_json_null (Current)
+		end
 
 feature {NONE}-- Implementation		
 	null_value:STRING is "null"

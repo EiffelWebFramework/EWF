@@ -2,8 +2,8 @@ indexing
 
 	description: "JSON Numbers, octal and hexadecimal formats are not used."
 	author: "Javier Velilla"
-	date: "$Date$"
-	revision: "$Revision$"
+	date: "2008/08/24"
+	revision: "Revision 0.1"
 	license:"MIT (see http://www.opensource.org/licenses/mit-license.php)"
 
 class
@@ -15,6 +15,8 @@ inherit
 		redefine
 			is_equal
 		end
+
+
 create
 
 	make_integer,
@@ -23,30 +25,39 @@ create
 feature -- initialization
 
 	make_integer (argument: INTEGER) is
+			-- Initialize  an instance of JSON_NUMBER as INTEGER
 		do
 			item:= argument.out
-			internal_hash_code:=argument.hash_code
-			numeric_type:= "INTEGER"
+			numeric_type:= INTEGER_TYPE
 		end
 
 	make_real (argument: REAL) is
+			-- Initialize an instance of JSON_NUMBER as REAL
 		do
 			item:= argument.out
-			internal_hash_code:=argument.hash_code
-			numeric_type:= "REAL"
+			numeric_type:= REAL_TYPE
 		end
 
 
 feature -- Access
 
 	item: STRING
+		-- Content
 
 	hash_code: INTEGER is
-			--
+			--Hash code value
 		do
-			Result:=internal_hash_code
+			Result:=item.hash_code
 		end
 
+feature -- Visitor pattern
+
+	accept (a_visitor: JSON_VISITOR) is
+			-- Accept `a_visitor'.
+			-- (Call `visit_json_number' procedure on `a_visitor'.)
+		do
+			a_visitor.visit_json_number (Current)
+		end
 
 feature -- Status
 
@@ -54,23 +65,17 @@ feature -- Status
 			-- Is `other' attached to an object of the same type
 			-- as current object and identical to it?
 		do
-			Result:=item.is_equal (other.to_json)
+			Result:=item.is_equal (other.item)
 		end
 
-feature -- Conversion
-
-	to_json: STRING is
-			--
-		do
-			Result := item
-		end
 
 
 feature -- Implementation
 
-	internal_hash_code: INTEGER
+	INTEGER_TYPE: INTEGER is 1
+	REAL_TYPE:INTEGER is 2
+	numeric_type: INTEGER
 
-	numeric_type: STRING  -- REAL or INTEGER
 
 
 invariant
