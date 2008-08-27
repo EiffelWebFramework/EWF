@@ -74,7 +74,7 @@ feature -- Commands
 			-- Remove withe spaces
 		do
 			from
-			until not actual.is_space or not has_next
+			until actual /= ' ' or not has_next
 			loop
 				next
 			end

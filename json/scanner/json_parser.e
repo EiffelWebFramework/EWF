@@ -381,7 +381,7 @@ feature {NONE} -- Implementation
 			end
 			from
 			until
-				not actual.is_space or  not actual.is_equal ('%R') or
+				not actual.is_equal (' ') or not actual.is_equal ('%R') or
 				not actual.is_equal ('%U') or  not actual.is_equal ('%T')
 				or not actual.is_equal ('%N') or not has_next
 			loop
