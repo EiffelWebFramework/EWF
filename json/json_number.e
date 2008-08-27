@@ -24,18 +24,18 @@ create
 
 feature -- initialization
 
-	make_integer (argument: INTEGER) is
+	make_integer (an_argument: INTEGER) is
 			-- Initialize  an instance of JSON_NUMBER as INTEGER
 		do
-			item:= argument.out
-			numeric_type:= INTEGER_TYPE
+			item := an_argument.out
+			numeric_type := INTEGER_TYPE
 		end
 
-	make_real (argument: REAL) is
+	make_real (an_argument: REAL) is
 			-- Initialize an instance of JSON_NUMBER as REAL
 		do
-			item:= argument.out
-			numeric_type:= REAL_TYPE
+			item := an_argument.out
+			numeric_type := REAL_TYPE
 		end
 
 
@@ -65,7 +65,7 @@ feature -- Status
 			-- Is `other' attached to an object of the same type
 			-- as current object and identical to it?
 		do
-			Result:=item.is_equal (other.item)
+			Result := item.is_equal (other.item)
 		end
 
 
@@ -73,7 +73,7 @@ feature -- Status
 feature -- Implementation
 
 	INTEGER_TYPE: INTEGER is 1
-	REAL_TYPE:INTEGER is 2
+	REAL_TYPE: INTEGER is 2
 	numeric_type: INTEGER
 
 
