@@ -31,11 +31,11 @@ feature -- initialization
 			numeric_type := INTEGER_TYPE
 		end
 
-	make_real (an_argument: REAL) is
-			-- Initialize an instance of JSON_NUMBER as REAL
+	make_real (an_argument: DOUBLE) is
+			-- Initialize an instance of JSON_NUMBER as DOUBLE
 		do
 			item := an_argument.out
-			numeric_type := REAL_TYPE
+			numeric_type := DOUBLE_TYPE
 		end
 
 
@@ -73,9 +73,9 @@ feature -- Status
 feature -- Implementation
 
 	INTEGER_TYPE: INTEGER is 1
-	REAL_TYPE: INTEGER is 2
-	numeric_type: INTEGER
+	DOUBLE_TYPE: INTEGER is 2
 
+	numeric_type: INTEGER
 
 
 invariant
