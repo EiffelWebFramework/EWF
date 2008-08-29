@@ -79,9 +79,9 @@ feature -- Visitor Pattern
 			until
 				l_pairs.off
 			loop
-				l_pairs.item_for_iteration.accept (Current)
-				to_json.append (":")
 				l_pairs.key_for_iteration.accept (Current)
+				to_json.append (":")
+				l_pairs.item_for_iteration.accept (Current)
 				l_pairs.forth
 				if not l_pairs.after then
 					to_json.append (",")
