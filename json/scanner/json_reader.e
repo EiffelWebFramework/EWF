@@ -1,9 +1,9 @@
 indexing
 
 	description: "Objects that ..."
-	author: ""
-	date: "$Date$"
-	revision: "$Revision$"
+	author: "jvelilla"
+	date: "2008/08/24"
+	revision: "0.1"
 
 class
 
@@ -74,7 +74,7 @@ feature -- Commands
 			-- Remove withe spaces
 		do
 			from
-			until actual /= ' ' or not has_next
+			until (actual /= ' ' and actual /= '%N' and actual /= '%R') or not has_next
 			loop
 				next
 			end

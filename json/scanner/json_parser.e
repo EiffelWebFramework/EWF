@@ -1,9 +1,9 @@
 indexing
 
 	description: "Parse serialized JSON data"
-	author: ""
-	date: "$Date$"
-	revision: "$Revision$"
+	author: "jvelilla"
+	date: "2008/08/24"
+	revision: "Revision 0.1"
 
 class
 

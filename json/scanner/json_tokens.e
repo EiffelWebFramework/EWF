@@ -1,8 +1,8 @@
 indexing
-	description: "Objects that ..."
-	author: ""
-	date: "$Date$"
-	revision: "$Revision$"
+	description: ""
+	author: "jvelilla"
+	date: "2008/08/24"
+	revision: "0.1"
 
 class
 	JSON_TOKENS
