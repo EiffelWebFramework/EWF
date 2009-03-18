@@ -430,7 +430,7 @@ feature {NONE} -- Constants
 
 	false_id: STRING is "false"
 
-	true_id: STRING is "false"
+	true_id: STRING is "true"
 
 	null_id: STRING is "null"
 
