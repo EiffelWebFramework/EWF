@@ -1,56 +1,36 @@
 indexing
-
 	description: "Objects that ..."
 	author: "jvelilla"
 	date: "2008/08/24"
 	revision: "0.1"
 
 class
-
 	JSON_READER
 
 create
-
 	make
 
-feature -- Initialization
+feature {NONE} -- Initialization
 
 	make (a_json: STRING) is
-			--
+			-- Initialize Reader
 		do
 			representation := a_json
 			index := 1
 		end
 
-
 feature -- Commands
 
 	read: CHARACTER is
-			--
+			-- Read character
 		do
 			if not representation.is_empty then
 				Result := representation.item (index)
 			end
 		end
 
-	has_next: BOOLEAN is
-			--
-		do
-			if index <= representation.count then
-				Result := True
-			end
-		end
-
-	has_previous: BOOLEAN is
-			--
-		do
-			if index >=1  then
-				Result := True
-			end
-		end
-
 	next is
-			--
+			-- Move to next index
 		require
 			has_more_elements: has_next
 		do
@@ -60,7 +40,7 @@ feature -- Commands
 		end
 
 	previous is
-			--
+			-- Move to previous index
 		require
 			not_is_first: has_previous
 		do
@@ -69,29 +49,45 @@ feature -- Commands
 			incremented: old index - 1 = index
 		end
 
-
-	skip_withe_spaces is
-			-- Remove withe spaces
+	skip_white_spaces is
+			-- Remove white spaces
+		local
+			c: like actual
 		do
 			from
-			until (actual /= ' ' and actual /= '%N' and actual /= '%R') or not has_next
+				c := actual
+			until
+				(c /= ' ' and c /= '%N' and c /= '%R') or not has_next
 			loop
 				next
+				c := actual
 			end
 		end
 
 	json_substring (start_index, end_index: INTEGER_32): STRING is
-			--
+			-- JSON representation between `start_index' and `end_index'
 		do
 			Result := representation.substring (start_index, end_index)
 		end
 
+feature -- Status report
+
+	has_next: BOOLEAN is
+			-- Has a next character?
+		do
+			Result := index <= representation.count
+		end
+
+	has_previous: BOOLEAN is
+			-- Has a previous character?
+		do
+			Result := index >= 1
+		end
 
 feature -- Access
 
 	representation: STRING
 			-- Serialized representation of the original JSON string
-
 
 feature {NONE} -- Implementation
 
@@ -108,9 +104,7 @@ feature {NONE} -- Implementation
 	index: INTEGER
 			-- Actual index
 
-
 invariant
-
 	representation_not_void: representation /= Void
 
 end

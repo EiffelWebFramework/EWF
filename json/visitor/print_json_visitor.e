@@ -13,39 +13,41 @@ inherit
 create make
 
 feature -- Initialization
+
 	make is
 			-- Create a new instance
 		do
-				create to_json.make_empty
+			create to_json.make_empty
 		end
 
 feature -- Access
 
-	to_json:STRING
+	to_json: STRING
 		-- JSON representation
+
 feature -- Visitor Pattern
 
 	visit_json_array (a_json_array: JSON_ARRAY) is
 			-- Visit `a_json_array'.
 		local
-				value:JSON_VALUE
-				l_json_array:ARRAYED_LIST[JSON_VALUE]
+			value: JSON_VALUE
+			l_json_array: ARRAYED_LIST [JSON_VALUE]
 		do
-				l_json_array:=a_json_array.array_representation
-				to_json.append("[")
-				from
-					l_json_array.start
-				until
-					l_json_array.off
-				loop
-					value:=l_json_array.item
-					value.accept (Current)
-					l_json_array.forth
-					if not l_json_array.after then
-						to_json.append(",")
-					end
+			l_json_array:=a_json_array.array_representation
+			to_json.append ("[")
+			from
+				l_json_array.start
+			until
+				l_json_array.off
+			loop
+				value := l_json_array.item
+				value.accept (Current)
+				l_json_array.forth
+				if not l_json_array.after then
+					to_json.append(",")
 				end
-				to_json.append("]")
+			end
+			to_json.append ("]")
 		end
 
 	visit_json_boolean (a_json_boolean: JSON_BOOLEAN) is
@@ -60,7 +62,6 @@ feature -- Visitor Pattern
 			to_json.append ("null")
 		end
 
-
 	visit_json_number (a_json_number: JSON_NUMBER) is
 			-- Visit `a_json_number'.
 		do
@@ -72,7 +73,7 @@ feature -- Visitor Pattern
 		local
 			l_pairs: HASH_TABLE[JSON_VALUE,JSON_STRING]
 		do
-			l_pairs:=a_json_object.map_representation
+			l_pairs := a_json_object.map_representation
 			to_json.append ("{")
 			from
 				l_pairs.start

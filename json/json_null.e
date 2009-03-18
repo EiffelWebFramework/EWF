@@ -6,16 +6,18 @@ indexing
 
 class
 	JSON_NULL
-	inherit
-		JSON_VALUE
+
+inherit
+	JSON_VALUE
 
 feature --Access
 
-	hash_code:INTEGER is
+	hash_code: INTEGER is
 			-- Hash code value
 		do
-			Result:= null_value.hash_code
+			Result := null_value.hash_code
 		end
+
 feature -- Visitor pattern
 
 	accept (a_visitor: JSON_VISITOR) is
@@ -25,6 +27,16 @@ feature -- Visitor pattern
 			a_visitor.visit_json_null (Current)
 		end
 
+feature -- Status report
+
+	debug_output: STRING
+			-- String that should be displayed in debugger to represent `Current'.
+		do
+			Result := null_value
+		end
+
 feature {NONE}-- Implementation		
-	null_value:STRING is "null"
+
+	null_value: STRING is "null"
+
 end

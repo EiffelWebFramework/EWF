@@ -14,24 +14,29 @@ indexing
 
 class
 	JSON_ARRAY
-	inherit
+
+inherit
 	JSON_VALUE
+
+	DEBUG_OUTPUT
 
 create
 	make_array
 
-feature -- Initialization
+feature {NONE} -- Initialization
+
 	make_array is
-			--
-			do
-				create values.make (10)
-			end
+			-- Initialize JSON Array
+		do
+			create values.make (10)
+		end
 
 feature -- Access
-	i_th alias "[]" (i: INTEGER):JSON_VALUE is
+
+	i_th alias "[]" (i: INTEGER): JSON_VALUE is
 			-- Item at `i'-th position
 		require
-			is_valid_index:valid_index (i)
+			is_valid_index: valid_index (i)
 		do
 			Result := values.i_th (i)
 		end
@@ -46,13 +51,15 @@ feature -- Visitor pattern
 		end
 
 feature -- Mesurement
-	count:INTEGER is
+
+	count: INTEGER is
 			-- Number of items.
 		do
-			Result:=values.count
+			Result := values.count
 		end
 
 feature -- Status report
+
 	valid_index (i: INTEGER): BOOLEAN is
 			-- Is `i' a valid index?
 		do
@@ -60,43 +67,54 @@ feature -- Status report
 		end
 
 feature -- Change Element
-	add(value:JSON_VALUE) is
-			require
-				not_null:value /= void
-			do
-				values.extend(value)
-			ensure
-				has_new_value:old values.count + 1 = values.count and
-				                  values.has (value)
-			end
+
+	add (value: JSON_VALUE) is
+		require
+			value_not_null: value /= void
+		do
+			values.extend(value)
+		ensure
+			has_new_value: old values.count + 1 = values.count and
+			                  values.has (value)
+		end
 
 feature -- Report
 
-	hash_code:INTEGER is
-				--
-				do
-					from
-						values.start
-						Result:=values.item.hash_code
-					until
-						values.off
-					loop
-						Result:= ((Result \\ 8388593) |<< 8) + values.item.hash_code
-						values.forth
-					end
-					Result := Result \\ values.count
-
-				end
-feature -- Conversion
-
-	array_representation:ARRAYED_LIST[JSON_VALUE] is
-			-- Representation as a sequences of values
+	hash_code: INTEGER is
+			-- Hash code value
 		do
-			Result:=values
+			from
+				values.start
+				Result := values.item.hash_code
+			until
+				values.off
+			loop
+				Result:= ((Result \\ 8388593) |<< 8) + values.item.hash_code
+				values.forth
+			end
+			Result := Result \\ values.count
 		end
 
-feature {NONE} --Implementation
-	values:ARRAYED_LIST[JSON_VALUE]
+feature -- Conversion
+
+	array_representation: ARRAYED_LIST [JSON_VALUE] is
+			-- Representation as a sequences of values
+		do
+			Result := values
+		end
+
+feature -- Status report
+
+	debug_output: STRING
+			-- String that should be displayed in debugger to represent `Current'.
+		do
+			Result := count.out
+		end
+
+feature {NONE} -- Implementation
+
+	values: ARRAYED_LIST [JSON_VALUE]
+			-- Value container
 
 invariant
  	value_not_void: values /= Void

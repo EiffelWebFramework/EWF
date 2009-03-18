@@ -6,14 +6,13 @@ indexing
 	revision: "Revision 0.1"
 
 class
-
 	JSON_PARSER
+
 inherit
 	JSON_READER
 	JSON_TOKENS
 
 create
-
 	make_parser
 
 feature {NONE} -- Initialize
@@ -25,170 +24,204 @@ feature {NONE} -- Initialize
 		do
 			make (a_json)
 			is_parsed := True
-			create current_errors.make_empty
+			create errors.make
 		end
 
-
-feature -- Access
+feature -- Status report
 
 	is_parsed: BOOLEAN
+			-- Is parsed?
+
+	errors: LINKED_LIST [STRING]
+			-- Current errors
 
 	current_errors: STRING
-
-
-feature -- Commands
-
-	parse_json: JSON_VALUE is
-			--
+			-- Current errors as string
 		do
-			Result := parse
-			if extra_elements then
-				is_parsed := false
+			create Result.make_empty
+			from
+				errors.start
+			until
+				errors.after
+			loop
+				Result.append_string (errors.item + "%N")
+				errors.forth
 			end
 		end
 
-	parse: JSON_VALUE is
-			--
+feature -- Element change
+
+	report_error (e: STRING) is
+			-- Report error `e'
+		require
+			e_not_void: e /= Void
+		do
+			errors.force (e)
+		end
+
+feature -- Commands
+
+	parse_json: ?JSON_VALUE is
+			-- Parse JSON data `representation'
+		do
+			Result := parse
+			if extra_elements then
+				is_parsed := False
+			end
+		end
+
+	parse: ?JSON_VALUE is
+			-- Parse JSON data `representation'
 		local
 			c: CHARACTER
 		do
 			if is_parsed then
-				skip_withe_spaces
+				skip_white_spaces
 				c := actual
-				if c.is_equal (j_object_open) then
+				inspect c
+				when j_OBJECT_OPEN then
 					Result := parse_object
-				elseif c.is_equal (j_string) then
+				when j_STRING then
 					Result := parse_string
-				elseif c.is_equal (j_array_open) then
+				when j_ARRAY_OPEN then
 					Result := parse_array
-				elseif c.is_digit or c.is_equal (j_minus)  then
-					Result := parse_number
-				elseif is_null  then
-					--
-					Result := create {JSON_NULL}
-						next;next;next
-				elseif is_true then
-					Result := create {JSON_BOOLEAN}.make_boolean (true)
-					next;next;next
-				elseif is_false then
-					Result := create {JSON_BOOLEAN}.make_boolean (false)
-					next;next;next;next
 				else
-					is_parsed := false
-					current_errors.append ("JSON is not well formed in parse")
-					Result := void
+					if c.is_digit or c = j_MINUS  then
+						Result := parse_number
+					elseif is_null then
+						Result := create {JSON_NULL}
+						next
+						next
+						next
+					elseif is_true then
+						Result := create {JSON_BOOLEAN}.make_boolean (True)
+						next
+						next
+						next
+					elseif is_false then
+						Result := create {JSON_BOOLEAN}.make_boolean (False)
+						next
+						next
+						next
+						next
+					else
+						is_parsed := False
+						report_error ("JSON is not well formed in parse")
+						Result := Void
+					end
 				end
 			end
+		ensure
+			is_parsed_implies_result_not_void: is_parsed implies Result /= Void
 		end
 
 	parse_object: JSON_OBJECT is
 			-- object
 			-- {}
 			-- {"key" : "value" [,]}
-
 		local
 			has_more: BOOLEAN
-			l_json_string: JSON_STRING
-			l_value: JSON_VALUE
+			l_json_string: ?JSON_STRING
+			l_value: ?JSON_VALUE
 		do
 			create Result.make
 			-- check if is an empty object {}
 			next
-			skip_withe_spaces
-			if actual.is_equal (j_object_close) then
+			skip_white_spaces
+			if actual = j_OBJECT_CLOSE then
 				--is an empty object
 			else
 				-- a complex object {"key" : "value"}
 				previous
-				from has_more := true until not has_more
-				loop
+				from has_more := True until not has_more loop
 					next
-					skip_withe_spaces
+					skip_white_spaces
 					l_json_string := parse_string
 					next
-					skip_withe_spaces
-					if actual.is_equal (':') then
+					skip_white_spaces
+					if actual = ':' then
 						next
-						skip_withe_spaces
+						skip_white_spaces
 					else
-						is_parsed := false
-						current_errors.append ("%N Input string is a not well formed JSON, expected: : found: " + actual.out +"%N")
-						has_more := false
+						is_parsed := False
+						report_error ("%N Input string is a not well formed JSON, expected: : found: " + actual.out)
+						has_more := False
 					end
 
 					l_value := parse
-					if is_parsed then
-						Result.put (l_value,l_json_string)
+					if is_parsed and then (l_value /= Void and l_json_string /= Void) then
+						Result.put (l_value, l_json_string)
 						next
-						skip_withe_spaces
-						if actual.is_equal (j_object_close) then
-							has_more := false
-						elseif not actual.is_equal (',') then
-							has_more := false
-							is_parsed := false
-							current_errors.append ("JSON Object sintactically malformed expected , found: [" + actual.out + "] %N")
+						skip_white_spaces
+						if actual = j_OBJECT_CLOSE then
+							has_more := False
+						elseif actual /= ',' then
+							has_more := False
+							is_parsed := False
+							report_error ("JSON Object syntactically malformed expected , found: [" + actual.out + "]")
 						end
 					else
-						has_more := false
+						has_more := False
 						-- explain the error
 					end
 				end
 			end
 		end
 
-	parse_string: JSON_STRING is
-			--
+	parse_string: ?JSON_STRING is
+			-- Parsed string
 		local
 			has_more: BOOLEAN
 			l_json_string: STRING
 			l_unicode: STRING
+			c: like actual
 		do
 			create l_json_string.make_empty
-			if actual.is_equal (j_string) then
+			if actual = j_STRING then
 				from
-					has_more := true
-				until not has_more
-
+					has_more := True
+				until
+					not has_more
 				loop
 					next
-					if actual.is_equal (j_string) then
-						has_more := false
-					elseif actual.is_equal ('%H') then
+					c := actual
+					if c = j_STRING then
+						has_more := False
+					elseif c = '%H' then
 						next
-						if actual.is_equal ('u') then
+						c := actual
+						if c = 'u' then
 							create l_unicode.make_from_string ("\u")
 							l_unicode.append (read_unicode)
+							c := actual
 							if is_a_valid_unicode (l_unicode) then
 								l_json_string.append (l_unicode)
 							else
-								has_more := false
-								is_parsed := false
-								current_errors.append ("Input String is not well formed JSON, expected a Unicode value, found [" + actual.out + " ] %N")
+								has_more := False
+								is_parsed := False
+								report_error ("Input String is not well formed JSON, expected a Unicode value, found [" + c.out + " ]")
 							end
-						elseif (not special_characters.has (actual) and  not special_controls.has (actual)) or actual.is_equal ('%N') then
-							has_more := false
-							is_parsed := false
-							current_errors.append ("Input String is not well formed JSON, found [" + actual.out + " ] %N")
-
+						elseif (not is_special_character (c) and not is_special_control (c)) or c = '%N' then
+							has_more := False
+							is_parsed := False
+							report_error ("Input String is not well formed JSON, found [" + c.out + " ]")
 						else
 							l_json_string.append ("\")
-							l_json_string.append (actual.out)
-
+							l_json_string.append (c.out)
 						end
-
 					else
-						if special_characters.has (actual) and not actual.is_equal ('/') then
-							has_more := false
-							is_parsed := false
-							current_errors.append ("Input String is not well formed JSON, found [" + actual.out + " ] %N")
+						if is_special_character (c) and c /= '/' then
+							has_more := False
+							is_parsed := False
+							report_error ("Input String is not well formed JSON, found [" + c.out + " ]")
 						else
-							l_json_string.append (actual.out)
+							l_json_string.append_character (c)
 						end
 					end
 				end
 				create Result.make_json (l_json_string)
 			else
-				Result := void
+				Result := Void
 			end
 		end
 
@@ -198,136 +231,141 @@ feature -- Commands
 			-- [elements [,]]
 		local
 			flag: BOOLEAN
-			l_value: JSON_VALUE
+			l_value: ?JSON_VALUE
+			c: like actual
 		do
 			create Result.make_array
 			--check if is an empty array []
 			next
-			skip_withe_spaces
-			if actual.is_equal (j_array_close) then
+			skip_white_spaces
+			if actual = j_array_close then
 				--is an empty array
 			else
 				previous
 				from
-					flag := true
+					flag := True
 				until
 					not flag
 				loop
 					next
-					skip_withe_spaces
+					skip_white_spaces
 					l_value := parse
-					if is_parsed then
+					if is_parsed and then l_value /= Void then
 						Result.add (l_value)
 						next
-						skip_withe_spaces
-						if  not actual.is_equal (j_array_close) and not actual.is_equal (',')then
-							flag := false
-							is_parsed := false
-							current_errors.append ("Array is not well formed JSON,  found [" + actual.out + " ] %N")
-						elseif actual.is_equal (j_array_close)	then
-							flag := false
+						skip_white_spaces
+						c := actual
+						if c = j_ARRAY_CLOSE then
+							flag := False
+ 						elseif c /= ',' then
+							flag := False
+							is_parsed := False
+							report_error ("Array is not well formed JSON,  found [" + c.out + " ]")
 						end
 					else
-						flag := false
-						current_errors.append ("Array is not well formed JSON,  found [" + actual.out + " ] %N")
+						flag := False
+						report_error ("Array is not well formed JSON,  found [" + actual.out + " ]")
 					end
 				end
 			end
 		end
 
-	parse_number: JSON_NUMBER is
-			--
+	parse_number: ?JSON_NUMBER is
+			-- Parsed number
 		local
 			sb: STRING
 			flag: BOOLEAN
 			is_integer: BOOLEAN
+			c: like actual
 		do
 			create sb.make_empty
-			sb.append (actual.out)
+			sb.append_character (actual)
 
 			from
-				flag := true
-			until not flag
+				flag := True
+			until
+				not flag
 			loop
 				next
-				if not has_next or close_tokens.has (actual) or actual.is_equal (',')
-					or actual.is_equal ('%N')  or actual.is_equal ('%R') then
-					flag := false
+				c := actual
+				if not has_next or is_close_token (c)
+					or c = ',' or c = '%N' or c = '%R'
+				then
+					flag := False
 					previous
 				else
-					sb.append (actual.out)
+					sb.append_character (c)
 				end
 			end
 
 			if is_a_valid_number (sb) then
 				if sb.is_integer then
 					create Result.make_integer (sb.to_integer)
-					is_integer := true
+					is_integer := True
 				elseif sb.is_double and not is_integer then
 					create Result.make_real (sb.to_double)
 				end
 			else
-				is_parsed := false
-				current_errors.append ("Expected a number, found: [ " + sb  + " ]")
+				is_parsed := False
+				report_error ("Expected a number, found: [ " + sb  + " ]")
 			end
 		end
 
 	is_null: BOOLEAN is
-			--
+			-- Word at index represents null?
 		local
 			l_null: STRING
 			l_string: STRING
 		do
-			l_null := "null"
+			l_null := null_id
 			l_string := json_substring (index,index + l_null.count - 1)
 			if l_string.is_equal (l_null) then
-				Result := true
+				Result := True
 			end
 		end
 
 	is_false: BOOLEAN is
-			--
+			-- Word at index represents false?
 		local
 			l_false: STRING
 			l_string: STRING
 		do
-			l_false := "false"
-			l_string := json_substring (index,index + l_false.count - 1)
+			l_false := false_id
+			l_string := json_substring (index, index + l_false.count - 1)
 			if l_string.is_equal (l_false) then
-				Result := true
+				Result := True
 			end
 		end
 
 	is_true: BOOLEAN is
-			--
+			-- Word at index represents true?
 		local
 			l_true: STRING
 			l_string: STRING
 		do
-			l_true := "true"
+			l_true := true_id
 			l_string := json_substring (index,index + l_true.count - 1)
 			if l_string.is_equal (l_true) then
-				Result := true
+				Result := True
 			end
 		end
 
 	read_unicode: STRING is
-			--
+			-- Read unicode and return value
 		local
 			i: INTEGER
 		do
 			create Result.make_empty
 			from
 				i := 1
-			until i > 4 or not has_next
-
+			until
+				i > 4 or not has_next
 			loop
 				next
-				Result.append (actual.out)
+				Result.append_character (actual)
 				i := i + 1
 			end
 		end
-
 
 feature {NONE} -- Implementation
 
@@ -348,9 +386,7 @@ feature {NONE} -- Implementation
 			number_regex := "-?(?:0|[1-9]\d*)(?:\.\d+)?(?:[eE][+-]?\d+)?\b"
 			regexp.compile (number_regex)
 			if regexp.matches (a_number) then
-				if a_number.is_equal (regexp.captured_substring (0)) then
-					Result := true
-				end
+				Result := a_number.is_equal (regexp.captured_substring (0))
 			end
 		end
 
@@ -365,34 +401,38 @@ feature {NONE} -- Implementation
 			unicode_regex := "\\u[0-9a-fA-F]{4}"
 			regexp.compile (unicode_regex)
 			if regexp.matches (a_unicode) then
-				Result := true
-					check
-						is_valid: a_unicode.is_equal (regexp.captured_substring (0))
-					end
+				Result := True
+				check
+					is_valid: a_unicode.is_equal (regexp.captured_substring (0))
+				end
 			end
 		end
 
 	extra_elements: BOOLEAN is
-			--has more elements?
+			-- has more elements?
+		local
+			c: like actual
 		do
-
 			if has_next then
 				next
 			end
 			from
+				c := actual
 			until
-				not actual.is_equal (' ') or not actual.is_equal ('%R') or
-				not actual.is_equal ('%U') or  not actual.is_equal ('%T')
-				or not actual.is_equal ('%N') or not has_next
+				c /= ' ' or c /= '%R' or c /= '%U' or c /= '%T' or c /= '%N' or not has_next
 			loop
 				next
 			end
-
-			if has_next then
-				Result := True
-			end
-
+			Result := has_next
 		end
+
+feature {NONE} -- Constants
+
+	false_id: STRING is "false"
+
+	true_id: STRING is "false"
+
+	null_id: STRING is "null"
 
 
 end

@@ -8,8 +8,6 @@ indexing
 						* null
 						* an object
 						* an array
-
-
 		]"
 	author: "Javier Velilla"
 	date: "2008/05/19"
@@ -21,8 +19,9 @@ deferred class
 	JSON_VALUE
 
 inherit
-
 	HASHABLE
+
+	DEBUG_OUTPUT
 
 feature -- Visitor pattern
 
@@ -33,4 +32,5 @@ feature -- Visitor pattern
 			a_visitor_not_void: a_visitor /= Void
 		deferred
 		end
+
 end

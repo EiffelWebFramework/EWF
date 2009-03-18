@@ -13,21 +13,18 @@ indexing
 
 
 class
-
 	JSON_STRING
 
 inherit
-
 	JSON_VALUE
 		redefine
 			is_equal
 		end
 
 create
-
 	make_json
 
-feature -- Initialization
+feature {NONE} -- Initialization
 
 	make_json (an_item: STRING) is
 			-- Initialize.
@@ -36,7 +33,6 @@ feature -- Initialization
 		do
 			item := an_item
 		end
-
 
 feature -- Access
 
@@ -52,7 +48,6 @@ feature -- Visitor pattern
 			a_visitor.visit_json_string (Current)
 		end
 
-
 feature -- Comparison
 
 	is_equal (other: like Current): BOOLEAN is
@@ -64,12 +59,13 @@ feature -- Comparison
 
 feature -- Change Element
 
-	append (an_item: STRING)is
+	append (a_string: STRING)is
 			-- Add an_item
+		require
+			a_string_not_void: a_string /= Void
 		do
-			item.append_string (an_item)
+			item.append_string (a_string)
 		end
-
 
 feature -- Status report
 
@@ -79,8 +75,15 @@ feature -- Status report
 			Result := item.hash_code
 		end
 
-invariant
+feature -- Status report
 
+	debug_output: STRING
+			-- String that should be displayed in debugger to represent `Current'.
+		do
+			Result := item
+		end
+
+invariant
 	value_not_void: item /= Void
 
 end

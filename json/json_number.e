@@ -10,19 +10,16 @@ class
 	JSON_NUMBER
 
 inherit
-
 	JSON_VALUE
 		redefine
 			is_equal
 		end
 
-
 create
-
 	make_integer,
 	make_real
 
-feature -- initialization
+feature {NONE} -- initialization
 
 	make_integer (an_argument: INTEGER) is
 			-- Initialize  an instance of JSON_NUMBER as INTEGER
@@ -38,16 +35,15 @@ feature -- initialization
 			numeric_type := DOUBLE_TYPE
 		end
 
-
 feature -- Access
 
 	item: STRING
-		-- Content
+			-- Content
 
 	hash_code: INTEGER is
 			--Hash code value
 		do
-			Result:=item.hash_code
+			Result := item.hash_code
 		end
 
 feature -- Visitor pattern
@@ -68,7 +64,13 @@ feature -- Status
 			Result := item.is_equal (other.item)
 		end
 
+feature -- Status report
 
+	debug_output: STRING
+			-- String that should be displayed in debugger to represent `Current'.
+		do
+			Result := item
+		end
 
 feature -- Implementation
 
@@ -77,9 +79,7 @@ feature -- Implementation
 
 	numeric_type: INTEGER
 
-
 invariant
-
 	item_not_void: item /= Void
 
 end

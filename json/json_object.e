@@ -1,36 +1,31 @@
 indexing
 
 	description: "[
-An JSON_OBJECT represent an object in JSON.
-An object is an unordered set of name/value pairs
+			An JSON_OBJECT represent an object in JSON.
+			An object is an unordered set of name/value pairs
 
-			Examples:
+						Examples:
 
-			object
-			{}
-			{"key","value"}
+						object
+						{}
+						{"key","value"}
 
-
-]"
-			author: "Javier Velilla"
-			date: "2008/08/24"
-			revision: "Revision 0.1"
-			license:"MIT (see http://www.opensource.org/licenses/mit-license.php)"
-
+			]"
+	author: "Javier Velilla"
+	date: "2008/08/24"
+	revision: "Revision 0.1"
+	license:"MIT (see http://www.opensource.org/licenses/mit-license.php)"
 
 class
-
 	JSON_OBJECT
 
 inherit
-
 	JSON_VALUE
 
 create
-
 	make
 
-feature -- Initialization
+feature {NONE} -- Initialization
 
 	make is
 			-- Initialize
@@ -40,49 +35,45 @@ feature -- Initialization
 
 feature -- Change Element
 
-
-	put (value: JSON_VALUE ; key: JSON_STRING) is
+	put (value: ?JSON_VALUE; key: JSON_STRING) is
 			-- Assuming there is no item of key `key',
 			-- insert `value' with `key'.
 		require
-			not_present: not has_key (key)
+			key_not_present: not has_key (key)
 		local
-			l_json_null: JSON_NULL
-			l_value: JSON_VALUE
+			l_value: ?JSON_VALUE
 		do
-			l_value:=value
-			if value = Void then
-				create l_json_null
-				l_value:=l_json_null
+			l_value := value
+			if l_value = Void then
+				create {JSON_NULL} l_value
 			end
-			object.extend (l_value,key)
+			object.extend (l_value, key)
 		end
-
 
 feature -- Access
 
-	has_key (key: JSON_STRING):BOOLEAN is
+	has_key (key: JSON_STRING): BOOLEAN is
 			-- has the JSON_OBJECT contains a specific key 'key'.
 		do
 			Result := object.has (key)
 		end
 
-	has_item (value: JSON_VALUE):BOOLEAN is
+	has_item (value: JSON_VALUE): BOOLEAN is
 			-- has the JSON_OBJECT contain a specfic item 'value'
 		do
 			Result := object.has_item (value)
 		end
 
-	item (key: JSON_STRING):JSON_VALUE is
+	item (key: JSON_STRING): ?JSON_VALUE is
 			-- the json_value associated with a key.
 		do
-			Result:= object.item (key)
+			Result := object.item (key)
 		end
 
 	current_keys: ARRAY [JSON_STRING] is
 			-- array containing actually used keys
 		do
-			Result:=object.current_keys
+			Result := object.current_keys
 		end
 
 feature -- Visitor pattern
@@ -94,19 +85,18 @@ feature -- Visitor pattern
 			a_visitor.visit_json_object (Current)
 		end
 
-
 feature -- Conversion
-	map_representation: HASH_TABLE[JSON_VALUE,JSON_STRING] is
+
+	map_representation: HASH_TABLE [JSON_VALUE, JSON_STRING] is
 			--A representation that maps keys to values
 		do
-			Result:=object
+			Result := object
 		end
 
 feature -- Report
 
 	hash_code: INTEGER is
 			-- Hash code value
-		local
 		do
 			from
 				object.start
@@ -121,10 +111,18 @@ feature -- Report
 			Result := Result.hash_code
 		end
 
+feature -- Status report
+
+	debug_output: STRING
+			-- String that should be displayed in debugger to represent `Current'.
+		do
+			Result := object.count.out
+		end
 
 feature {NONE} -- Implementation
 
-	object: HASH_TABLE[JSON_VALUE,JSON_STRING]
+	object: HASH_TABLE [JSON_VALUE, JSON_STRING]
+			-- Value container
 
 invariant
 	object_not_null: object /= Void

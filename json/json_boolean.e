@@ -5,17 +5,15 @@ indexing
 	revision: "Revision 0.1"
 
 class
-
 	JSON_BOOLEAN
 
 inherit
 	JSON_VALUE
 
 create
-
 	make_boolean
 
-feature -- Initialization
+feature {NONE} -- Initialization
 
 	make_boolean (an_item: BOOLEAN) is
 			--Initialize.
@@ -28,9 +26,8 @@ feature -- Access
 	item: BOOLEAN
 		-- Content
 
-
 	hash_code: INTEGER is
-			--Hash code value
+			-- Hash code value
 		do
 			Result := item.hash_code
 		end
@@ -44,6 +41,12 @@ feature -- Visitor pattern
 			a_visitor.visit_json_boolean (Current)
 		end
 
+feature -- Status report
 
+	debug_output: STRING
+			-- String that should be displayed in debugger to represent `Current'.
+		do
+			Result := item.out
+		end
 
 end
