@@ -372,38 +372,30 @@ feature {NONE} -- Implementation
 	is_a_valid_number (a_number: STRING): BOOLEAN is
 			-- is 'a_number' a valid number based on this regular expression
 			-- "-?(?: 0|[1-9]\d+)(?: \.\d+)?(?: [eE][+-]?\d+)?\b"?
-		local
-			word_set: RX_CHARACTER_SET
-			regexp: RX_PCRE_REGULAR_EXPRESSION
-			number_regex: STRING
 		do
-			create regexp.make
-			create word_set.make_empty
-			a_number.right_adjust
-			a_number.left_adjust
-			word_set.add_string ("0123456789.eE+-")
-			regexp.set_word_set (word_set)
-			number_regex := "-?(?:0|[1-9]\d*)(?:\.\d+)?(?:[eE][+-]?\d+)?\b"
-			regexp.compile (number_regex)
-			if regexp.matches (a_number) then
-				Result := a_number.is_equal (regexp.captured_substring (0))
-			end
+			Result := a_number.is_real_sequence
 		end
 
 	is_a_valid_unicode (a_unicode: STRING): BOOLEAN is
 			-- is 'a_unicode' a valid unicode based on this regular expression
 			-- "\\u[0-9a-fA-F]{4}"
 		local
-			regexp: RX_PCRE_REGULAR_EXPRESSION
-			unicode_regex: STRING
+			i: INTEGER
 		do
-			create regexp.make
-			unicode_regex := "\\u[0-9a-fA-F]{4}"
-			regexp.compile (unicode_regex)
-			if regexp.matches (a_unicode) then
-				Result := True
-				check
-					is_valid: a_unicode.is_equal (regexp.captured_substring (0))
+			if a_unicode.count = 6 and then a_unicode [1] = '\' and then a_unicode [2] = 'u' then
+				from
+					Result := True
+					i := 3
+				until
+					i > 6
+				loop
+					inspect a_unicode [i]
+					when '0'..'9', 'a'..'f', 'A'..'F'  then
+					else
+						Result := False
+						i := 6
+					end
+					i := i + 1
 				end
 			end
 		end
