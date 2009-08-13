@@ -382,14 +382,18 @@ feature {NONE} -- Implementation
 		local
 			i: INTEGER
 		do
-			if a_unicode.count = 6 and then a_unicode [1] = '\' and then a_unicode [2] = 'u' then
+			if 
+				a_unicode.count = 6 and then 
+				a_unicode.item (1) = '\' and then 
+				a_unicode.item (2) = 'u' 
+			then
 				from
 					Result := True
 					i := 3
 				until
 					i > 6
 				loop
-					inspect a_unicode [i]
+					inspect a_unicode.item (i)
 					when '0'..'9', 'a'..'f', 'A'..'F'  then
 					else
 						Result := False
