@@ -62,12 +62,18 @@ feature -- Element change
 feature -- Commands
 
 	parse_json: ?JSON_VALUE is
-			-- Parse JSON data `representation'
+		    -- Parse JSON data `representation'
+		    -- start ::= object | array
 		do
-			Result := parse
-			if extra_elements then
-				is_parsed := False
-			end
+		    	if is_valid_start_symbol then
+		   	    Result := parse
+		        if extra_elements then
+		            is_parsed := False
+		        end
+		    else
+		        is_parsed := False
+		        report_error ("Syntax error unexpected token, expecting `{' or `['")
+		    end
 		end
 
 	parse: ?JSON_VALUE is
@@ -382,10 +388,10 @@ feature {NONE} -- Implementation
 		local
 			i: INTEGER
 		do
-			if 
-				a_unicode.count = 6 and then 
-				a_unicode.item (1) = '\' and then 
-				a_unicode.item (2) = 'u' 
+			if
+				a_unicode.count = 6 and then
+				a_unicode.item (1) = '\' and then
+				a_unicode.item (2) = 'u'
 			then
 				from
 					Result := True
@@ -420,6 +426,12 @@ feature {NONE} -- Implementation
 				next
 			end
 			Result := has_next
+		end
+
+	is_valid_start_symbol : BOOLEAN
+		-- expecting `{' or `[' as start symbol
+		do
+			Result := representation.starts_with ("{") or representation.starts_with ("[")
 		end
 
 feature {NONE} -- Constants
