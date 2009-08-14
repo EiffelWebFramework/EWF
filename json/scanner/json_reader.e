@@ -12,14 +12,22 @@ create
 
 feature {NONE} -- Initialization
 
-	make (a_json: STRING) is
-			-- Initialize Reader
-		do
-			representation := a_json
-			index := 1
-		end
+    make (a_json: STRING) is
+            -- Initialize Reader
+        do
+            set_representation (a_json)
+        end
 
 feature -- Commands
+
+	 set_representation (a_json: STRING) is
+            -- Set `representation'.
+        do
+        	a_json.left_adjust
+        	a_json.right_adjust
+		representation := a_json
+            index := 1
+        end
 
 	read: CHARACTER is
 			-- Read character
