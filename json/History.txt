@@ -1,0 +1,6 @@
+﻿History file for EJSON
+======================
+
+team: ""
+date: "$Date$"
+revision: "$Revision$"
