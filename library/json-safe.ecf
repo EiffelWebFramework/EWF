@@ -17,11 +17,13 @@
 				<exclude>/CVS$</exclude>
 			</file_rule>
 			<file_rule>
-				<exclude>^/scanner$</exclude>
-				<exclude>^/visitor$</exclude>
+				<exclude>^/kernel$</exclude>
+				<exclude>^/gobo$</exclude>
+				<exclude>^/extras$</exclude>
 			</file_rule>
-			<cluster name="scanner" location=".\scanner\"/>
-			<cluster name="visitor" location=".\visitor\"/>
+			<cluster name="kernel" location=".\kernel\" recursive="true"/>
+			<cluster name="gobo" location=".\gobo\" recursive="true"/>
+			<cluster name="extras" location=".\extras\" recursive="true"/>
 		</cluster>
 	</target>
 </system>
