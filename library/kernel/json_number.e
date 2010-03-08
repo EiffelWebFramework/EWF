@@ -1,85 +1,99 @@
 indexing
 
-	description: "JSON Numbers, octal and hexadecimal formats are not used."
-	author: "Javier Velilla"
-	date: "2008/08/24"
-	revision: "Revision 0.1"
-	license:"MIT (see http://www.opensource.org/licenses/mit-license.php)"
+    description: "JSON Numbers, octal and hexadecimal formats are not used."
+    author: "Javier Velilla"
+    date: "2008/08/24"
+    revision: "Revision 0.1"
+    license:"MIT (see http://www.opensource.org/licenses/mit-license.php)"
 
 class
-	JSON_NUMBER
+    JSON_NUMBER
 
 inherit
-	JSON_VALUE
-		redefine
-			is_equal
-		end
+    JSON_VALUE
+        redefine
+            is_equal
+        end
 
 create
-	make_integer,
-	make_real
+    make_integer,
+    make_natural,
+    make_real
 
 feature {NONE} -- initialization
 
-	make_integer (an_argument: INTEGER) is
-			-- Initialize  an instance of JSON_NUMBER as INTEGER
-		do
-			item := an_argument.out
-			numeric_type := INTEGER_TYPE
-		end
+    make_integer (an_argument: INTEGER_64) is
+            -- Initialize an instance of JSON_NUMBER from the integer value of `an_argument'.
+        do
+            item := an_argument.out
+            numeric_type := INTEGER_TYPE
+        end
 
-	make_real (an_argument: DOUBLE) is
-			-- Initialize an instance of JSON_NUMBER as DOUBLE
-		do
-			item := an_argument.out
-			numeric_type := DOUBLE_TYPE
-		end
+    make_natural (an_argument: NATURAL_64) is
+            -- Initialize an instance of JSON_NUMBER from the unsigned integer value of `an_argument'.
+        do
+            item := an_argument.out
+            numeric_type := NATURAL_TYPE
+        end
+
+    make_real (an_argument: DOUBLE) is
+            -- Initialize an instance of JSON_NUMBER from the floating point value of `an_argument'.
+        do
+            item := an_argument.out
+            numeric_type := DOUBLE_TYPE
+        end
 
 feature -- Access
 
-	item: STRING
-			-- Content
+    item: STRING
+            -- Content
 
-	hash_code: INTEGER is
-			--Hash code value
-		do
-			Result := item.hash_code
-		end
+    hash_code: INTEGER is
+            --Hash code value
+        do
+            Result := item.hash_code
+        end
 
+    representation: STRING is
+        do
+            Result := item
+        end
+        
 feature -- Visitor pattern
 
-	accept (a_visitor: JSON_VISITOR) is
-			-- Accept `a_visitor'.
-			-- (Call `visit_json_number' procedure on `a_visitor'.)
-		do
-			a_visitor.visit_json_number (Current)
-		end
+    accept (a_visitor: JSON_VISITOR) is
+            -- Accept `a_visitor'.
+            -- (Call `visit_json_number' procedure on `a_visitor'.)
+        do
+            a_visitor.visit_json_number (Current)
+        end
 
 feature -- Status
 
-	is_equal (other: like Current): BOOLEAN is
-			-- Is `other' attached to an object of the same type
-			-- as current object and identical to it?
-		do
-			Result := item.is_equal (other.item)
-		end
+    is_equal (other: like Current): BOOLEAN is
+            -- Is `other' attached to an object of the same type
+            -- as current object and identical to it?
+        do
+            Result := item.is_equal (other.item)
+        end
 
 feature -- Status report
 
-	debug_output: STRING
-			-- String that should be displayed in debugger to represent `Current'.
-		do
-			Result := item
-		end
+    debug_output: STRING
+            -- String that should be displayed in debugger to represent `Current'.
+        do
+            Result := item
+        end
 
 feature -- Implementation
 
-	INTEGER_TYPE: INTEGER is 1
-	DOUBLE_TYPE: INTEGER is 2
+    INTEGER_TYPE: INTEGER is 1
+    DOUBLE_TYPE: INTEGER is 2
+    NATURAL_TYPE: INTEGER is 3
 
-	numeric_type: INTEGER
+    numeric_type: INTEGER
 
 invariant
-	item_not_void: item /= Void
+    item_not_void: item /= Void
 
 end
