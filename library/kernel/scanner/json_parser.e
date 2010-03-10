@@ -376,12 +376,25 @@ feature -- Commands
 feature {NONE} -- Implementation
 
 	is_a_valid_number (a_number: STRING): BOOLEAN is
-			-- is 'a_number' a valid number based on this regular expression
-			-- "-?(?: 0|[1-9]\d+)(?: \.\d+)?(?: [eE][+-]?\d+)?\b"?
-		do
-			Result := a_number.is_real_sequence
-		end
-
+            -- is 'a_number' a valid number based on this regular expression
+            -- "-?(?: 0|[1-9]\d+)(?: \.\d+)?(?: [eE][+-]?\d+)?\b"?
+        local
+            word_set: RX_CHARACTER_SET
+            regexp: RX_PCRE_REGULAR_EXPRESSION
+            number_regex: STRING
+        do
+            create regexp.make
+            create word_set.make_empty
+            a_number.right_adjust
+            a_number.left_adjust
+            word_set.add_string ("0123456789.eE+-")
+            regexp.set_word_set (word_set)
+            number_regex := "-?(?:0|[1-9]\d*)(?:\.\d+)?(?:[eE][+-]?\d+)?\b"
+            regexp.compile (number_regex)
+            if regexp.matches (a_number) then
+                Result := a_number.is_equal (regexp.captured_substring (0))
+            end
+        end
 	is_a_valid_unicode (a_unicode: STRING): BOOLEAN is
 			-- is 'a_unicode' a valid unicode based on this regular expression
 			-- "\\u[0-9a-fA-F]{4}"
