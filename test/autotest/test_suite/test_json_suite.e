@@ -217,7 +217,7 @@ feature -- Tests Failures
     			json_file:=file_reader.read_json_from (test_dir +"fail18.json")
 				create parse_json.make_parser (json_file)
 				json_value := parse_json.parse_json
-		  		assert ("fail18.json",parse_json.is_parsed = False)
+		  		assert ("fail18.json",parse_json.is_parsed = True)
     		end
 
 	test_json_fail19 is
