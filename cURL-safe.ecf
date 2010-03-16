@@ -10,7 +10,7 @@
 			<exclude>/EIFGEN.{0,1}$</exclude>
 			<exclude>/temp$</exclude>
 		</file_rule>
-		<option warning="true" namespace="EiffelSoftware.Library">
+		<option warning="true" full_class_checking="true" cat_call_detection="false" is_attached_by_default="true" void_safety="all" namespace="EiffelSoftware.Library">
 		</option>
 		<setting name="dotnet_naming_convention" value="true"/>
 		<external_include location="$(ISE_LIBRARY)\library\cURL\spec\include">
@@ -55,8 +55,8 @@
 				<dotnet value="true"/>
 			</condition>
 		</external_object>
-		<library name="api_wrapper" location="$ISE_LIBRARY\library\api_wrapper\api_wrapper.ecf"/>
-		<library name="base" location="$ISE_LIBRARY\library\base\base.ecf"/>
+		<library name="api_wrapper" location="$ISE_LIBRARY\library\api_wrapper\api_wrapper-safe.ecf"/>
+		<library name="base" location="$ISE_LIBRARY\library\base\base-safe.ecf"/>
 		<cluster name="curl" location=".\" recursive="true">
 			<file_rule>
 				<exclude>/spec$</exclude>
