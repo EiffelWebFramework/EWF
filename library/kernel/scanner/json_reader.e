@@ -65,7 +65,7 @@ feature -- Commands
 			from
 				c := actual
 			until
-				(c /= ' ' and c /= '%N' and c /= '%R') or not has_next
+				(c /= ' ' and c /= '%N' and c /= '%R' and c /= '%U' and c /= '%T' ) or not has_next
 			loop
 				next
 				c := actual
