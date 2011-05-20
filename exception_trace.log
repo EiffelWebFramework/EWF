@@ -1,0 +1,47 @@
+
+nino: system execution failed.
+Following is the set of recorded exceptions:
+
+******************************** Thread exception *****************************
+In thread           Child thread           0x88 (thread id)
+*******************************************************************************
+-------------------------------------------------------------------------------
+Class / Object      Routine                Nature of exception           Effect
+-------------------------------------------------------------------------------
+TCP_STREAM_SOCKET   send @1                socket_exists:               
+<00000000024B1A48>  (From SOCKET)          Precondition violated.        Fail
+-------------------------------------------------------------------------------
+GET_REQUEST_HANDLER send_message @4                                     
+<00000000024B4428>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+GET_REQUEST_HANDLER execute @2                                          
+<00000000024B4428>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+GET_REQUEST_HANDLER thr_main @4                                         
+<00000000024B4428>  (From THREAD)          Routine failure.              Rescue
+-------------------------------------------------------------------------------
+APPLICATION         root's creation                                     
+<00000000024B05A8>                         Routine failure.              Exit
+-------------------------------------------------------------------------------
+
+nino: system execution failed.
+Following is the set of recorded exceptions:
+
+******************************** Thread exception *****************************
+In thread           Child thread           0x88 (thread id)
+*******************************************************************************
+-------------------------------------------------------------------------------
+Class / Object      Routine                Nature of exception           Effect
+-------------------------------------------------------------------------------
+TCP_STREAM_SOCKET   put_string @1          extendible:                  
+<0000000002621A48>  (From SOCKET)          Precondition violated.        Fail
+-------------------------------------------------------------------------------
+GET_REQUEST_HANDLER execute @2                                          
+<0000000002624408>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+GET_REQUEST_HANDLER thr_main @4                                         
+<0000000002624408>  (From THREAD)          Routine failure.              Rescue
+-------------------------------------------------------------------------------
+APPLICATION         root's creation                                     
+<00000000026205A8>                         Routine failure.              Exit
+-------------------------------------------------------------------------------
