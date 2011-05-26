@@ -20,7 +20,7 @@ inherit
 feature
 
 
-	process is
+	process
 			-- process the request and create an answer
 		local
 			fname: STRING
@@ -57,7 +57,7 @@ feature
 			end
 		end
 
-	process_default is
+	process_default
 			--
 			local
 				html : STRING
@@ -76,7 +76,7 @@ feature
 			end
 
 
-	process_text_file (f: FILE) is
+	process_text_file (f: FILE)
 			-- send a text file reply
 		require
 			valid_f: f /= Void
@@ -94,7 +94,7 @@ feature
 			f.close
 		end
 
-	process_raw_file (f: FILE) is
+	process_raw_file (f: FILE)
 			-- send a raw file reply
 		require
 			valid_f: f /= Void

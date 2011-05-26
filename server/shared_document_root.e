@@ -6,11 +6,10 @@ note
 
 class
 	SHARED_DOCUMENT_ROOT
-feature
 
-	document_root_cell: CELL [STRING]
-		once ("PROCESS")
-			create Result.put (Void)
-		end
+obsolete "Use HTTP_SERVER_SHARED_CONFIGURATION"
+
+inherit
+	HTTP_SERVER_SHARED_CONFIGURATION
 
 end

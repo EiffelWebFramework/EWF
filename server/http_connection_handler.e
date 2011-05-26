@@ -8,9 +8,10 @@ class
 	HTTP_CONNECTION_HANDLER
 
 inherit
-
 	THREAD
+
 	HTTP_CONSTANTS
+
 create
 	make
 
@@ -43,15 +44,17 @@ feature -- Inherited Features
 			-- Creates a socket and connects to the http server.
 		local
 			l_http_socket: detachable TCP_STREAM_SOCKET
+			l_http_port: INTEGER
 		do
 			is_stop_requested := False
-			create l_http_socket.make_server_by_port ({HTTP_CONSTANTS}.Http_server_port)
+			l_http_port := main_server_configuration.http_server_port
+			create l_http_socket.make_server_by_port (l_http_port)
 			if not l_http_socket.is_bound then
-				print ("Socket could not be bound on port " + {HTTP_CONSTANTS}.Http_server_port.out )
+				print ("Socket could not be bound on port " + l_http_port.out )
 			else
 				from
-					l_http_socket.listen ({HTTP_CONSTANTS}.Max_tcp_clients)
-					print ("%NHTTP Connection Server ready on port " + {HTTP_CONSTANTS}.Http_server_port.out +"%N")
+					l_http_socket.listen (main_server_configuration.max_tcp_clients)
+					print ("%NHTTP Connection Server ready on port " + l_http_port.out +"%N")
 				until
 					is_stop_requested
 				loop
@@ -85,19 +88,73 @@ feature -- Inherited Features
 			retry
 		end
 
+feature -- Request processing
+
+	process_request (a_uri: STRING; a_method: STRING; a_headers_map: HASH_TABLE [STRING, STRING]; a_headers_text: STRING; a_input: HTTP_INPUT_STREAM; a_output: HTTP_OUTPUT_STREAM)
+			-- Process request ...
+		require
+			a_uri_attached: a_uri /= Void
+			a_method_attached: a_method /= Void
+			a_headers_text_attached: a_headers_text /= Void
+			a_input_attached: a_input /= Void
+			a_output_attached: a_output /= Void
+		do
+			if a_method.is_equal (Get) then
+				execute_get_request (a_uri, a_headers_map, a_headers_text, a_input, a_output)
+			elseif a_method.is_equal (Post) then
+				execute_post_request (a_uri, a_headers_map, a_headers_text, a_input, a_output)
+			elseif a_method.is_equal (Put) then
+			elseif a_method.is_equal (Options) then
+			elseif a_method.is_equal (Head) then
+			elseif a_method.is_equal (Delete) then
+			elseif a_method.is_equal (Trace) then
+			elseif a_method.is_equal (Connect) then
+			else
+				debug
+					print ("Method [" + a_method + "] not supported")
+				end
+			end
+		end
+
+	execute_get_request (a_uri: STRING; a_headers_map: HASH_TABLE [STRING, STRING]; a_headers_text: STRING; a_input: HTTP_INPUT_STREAM; a_output: HTTP_OUTPUT_STREAM)
+		local
+			l_http_request : HTTP_REQUEST_HANDLER
+		do
+			create {GET_REQUEST_HANDLER} l_http_request.make (a_input, a_output)
+			l_http_request.set_uri (a_uri)
+			l_http_request.process
+--			client_socket.put_string (l_http_request.answer.reply_header + l_http_request.answer.reply_text)
+		end
+
+	execute_post_request (a_uri: STRING; a_headers_map: HASH_TABLE [STRING, STRING]; a_headers_text: STRING; a_input: HTTP_INPUT_STREAM; a_output: HTTP_OUTPUT_STREAM)
+		local
+			l_http_request : HTTP_REQUEST_HANDLER
+		do
+			check not_yet_implemented: False end
+			create {POST_REQUEST_HANDLER} l_http_request.make (a_input, a_output)
+			l_http_request.set_uri (a_uri)
+			l_http_request.process
+--			client_socket.put_string (l_http_request.answer.reply_header + l_http_request.answer.reply_text)
+		end
+
 feature -- Access
 
 	is_stop_requested: BOOLEAN
 			-- Set true to stop accept loop
 
-
 feature {NONE} -- Access
 
 	request_header_map : HASH_TABLE [STRING,STRING]
-			-- Containts key value of the header
+			-- Contains key:value of the header
 
 	main_server: HTTP_SERVER
 			-- The main server object
+
+	main_server_configuration: HTTP_SERVER_CONFIGURATION
+			-- The main server's configuration
+		do
+			Result := main_server.configuration
+		end
 
 	current_request_message: STRING
 			-- Stores the current request message received from http server
@@ -105,14 +162,16 @@ feature {NONE} -- Access
 	Max_fragments: INTEGER = 1000
 			-- Defines the maximum number of fragments that can be received
 
-	method :  STRING
-		-- http verb
+	method: STRING
+			-- http verb
 
-	uri   :	 STRING
-		--  http endpoint		
+	uri: STRING
+			--  http endpoint		
 
-	version : STRING
-		--  http_version
+	version: detachable STRING
+			--  http_version
+			--| unused for now
+
 feature -- Status setting
 
 	shutdown
@@ -122,8 +181,6 @@ feature -- Status setting
 		end
 
 feature {NONE} -- Implementation
-
-
 
 	read_string_from_socket (a_socket: TCP_STREAM_SOCKET; a_n: NATURAL): STRING
 			-- Reads characters from the socket and concatenates them to a string
@@ -162,10 +219,7 @@ feature {NONE} -- Implementation
 			Result_attached: Result /= Void
 		end
 
-
-
 feature -- New implementation
-
 
 	parse_http_request_line (line: STRING)
 		require
@@ -184,37 +238,24 @@ feature -- New implementation
 		end
 
 feature -- New Implementation
+
 	receive_message_and_send_replay (client_socket: TCP_STREAM_SOCKET)
 		require
 			socket_attached: client_socket /= Void
 --			socket_valid: client_socket.is_open_read and then client_socket.is_open_write
 			a_http_socket:client_socket /= Void and then not client_socket.is_closed
 		local
-			message: detachable STRING
-			l_http_request : HTTP_REQUEST_HANDLER
+			l_headers_text: detachable STRING
+			l_input: HTTP_INPUT_STREAM
+			l_output: HTTP_OUTPUT_STREAM
 		do
 			parse_request_line (client_socket)
-            message := receive_message_internal (client_socket)
-			if method.is_equal (Get) then
-				create {GET_REQUEST_HANDLER} l_http_request
-				l_http_request.set_uri (uri)
-				l_http_request.process
---				client_socket.send_message (l_http_request.answer.reply_header  + l_http_request.answer.reply_text)
-				client_socket.put_string (l_http_request.answer.reply_header  + l_http_request.answer.reply_text)
-			elseif method.is_equal (Post) then
-			elseif method.is_equal (Put) then
-			elseif method.is_equal (Options) then
-			elseif method.is_equal (Head) then
-			elseif method.is_equal (Delete) then
-			elseif method.is_equal (Trace) then
-			elseif method.is_equal (Connect) then
-			else
-				debug
-					print ("Method not supported")
-				end
-			end
-		end
+            l_headers_text := receive_message_internal (client_socket)
 
+			create l_input.make (client_socket)
+			create l_output.make (client_socket)
+			process_request (uri, method, request_header_map, l_headers_text, l_input, l_output)
+		end
 
 	parse_request_line (socket: NETWORK_STREAM_SOCKET)
         require
@@ -240,10 +281,11 @@ feature -- New Implementation
             loop
                 line := socket.last_string
                 print ("%N" +line+ "%N")
-                pos := line.index_of(':',1)
+                pos := line.index_of (':',1)
                	request_header_map.put (line.substring (pos + 1, line.count), line.substring (1,pos-1))
-                Result.append(socket.last_string)
-                if not socket.last_string.is_equal("%R") and socket.socket_ok  then
+                Result.append (line)
+                Result.append_character ('%N')
+                if not line.is_equal("%R") and socket.socket_ok then
                 	socket.read_line_thread_aware
         		else
         			end_of_stream := True

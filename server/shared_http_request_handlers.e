@@ -2,7 +2,7 @@ class SHARED_HTTP_REQUEST_HANDLERS
 
 feature
 
-	http_request_handlers: HASH_TABLE [HTTP_REQUEST_HANDLER, STRING] is
+	http_request_handlers: HASH_TABLE [HTTP_REQUEST_HANDLER, STRING]
 		local
 			a_handler: HTTP_REQUEST_HANDLER
 		once
