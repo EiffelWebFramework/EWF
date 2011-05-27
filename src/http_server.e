@@ -25,7 +25,7 @@ feature -- Initialization
 			a_http_handler_valid: a_http_handler /= Void
 		do
 			print("%N%N%N")
-			print ("Starting Web Application Server:%N")
+			print ("Starting Web Application Server (port="+ configuration.http_server_port.out +"):%N")
 			stop_requested := False
 			set_server_configuration (configuration)
 			if configuration.force_single_threaded then

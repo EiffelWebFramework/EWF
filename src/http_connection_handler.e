@@ -22,10 +22,16 @@ feature {NONE} -- Initialization
 			-- `a_name': The name of this module
 		do
 			Precursor (a_main_server, a_name)
+			reset
+		end
+
+	reset
+		do
 			create method.make_empty
 			create uri.make_empty
 			create request_header.make_empty
 			create request_header_map.make (10)
+			remote_info := Void
 		end
 
 feature -- Execution
@@ -39,13 +45,14 @@ feature -- Execution
 			create l_input.make (client_socket)
 			create l_output.make (client_socket)
 
+			reset
+
 			create l_remote_info
 			if attached client_socket.address as l_addr then
 				l_remote_info.addr := l_addr.host_address.host_address
 				l_remote_info.hostname := l_addr.host_address.host_name
 				l_remote_info.port := l_addr.port
 			end
-			remote_info := l_remote_info
 
             analyze_request_message (l_input)
 			process_request (Current, l_input, l_output)
@@ -112,6 +119,7 @@ feature -- Parsing
         	end_of_stream : BOOLEAN
         	pos : INTEGER
         	line : STRING
+			val: STRING
         	txt: STRING
         do
             create txt.make (64)
@@ -130,7 +138,11 @@ feature -- Parsing
                 line := a_input.last_string
                 print ("%N" +line+ "%N")
                 pos := line.index_of (':',1)
-               	request_header_map.put (line.substring (pos + 1, line.count), line.substring (1,pos-1))
+               	val := line.substring (pos + 1, line.count)
+				if val[val.count] = '%R' then
+					val.remove_tail (1)
+				end
+               	request_header_map.put (val, line.substring (1,pos-1))
                 txt.append (line)
                 txt.append_character ('%N')
                 if line.is_empty or else line[1] = '%R' then
