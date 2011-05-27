@@ -8,7 +8,7 @@ class
 	HTTP_SERVER
 
 inherit
-	SHARED_DOCUMENT_ROOT
+	HTTP_SERVER_SHARED_CONFIGURATION
 
 create
 	make
@@ -20,7 +20,7 @@ feature -- Initialization
 			configuration := cfg
 		end
 
-	setup (a_http_handler : HTTP_CONNECTION_HANDLER)
+	setup (a_http_handler : HTTP_HANDLER)
 		require
 			a_http_handler_valid: a_http_handler /= Void
 		do
@@ -29,7 +29,7 @@ feature -- Initialization
 			stop_requested := False
 			set_server_configuration (configuration)
 			a_http_handler.launch
-			run
+			a_http_handler.join
 		end
 
 	shutdown_server

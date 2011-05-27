@@ -20,7 +20,26 @@ feature {NONE} -- Initialization
 
 	source: TCP_STREAM_SOCKET
 
+feature -- Status Report
+
+	is_readable: BOOLEAN
+			-- Is readable?
+		do
+			Result := source.is_open_read
+		end
+
 feature -- Basic operation
+
+	read_line
+		require
+            is_readable: is_readable
+		do
+			last_string.wipe_out
+			if source.socket_ok then
+				source.read_line_thread_aware
+				last_string.append_string (source.last_string)
+			end
+		end
 
 	read_stream (nb_char: INTEGER)
 			-- Read a string of at most `nb_char' bound characters
@@ -28,6 +47,7 @@ feature -- Basic operation
 			-- Make result available in `last_string'.	
 		require
 			nb_char_positive: nb_char > 0
+            is_readable: is_readable
 		do
 			last_string.wipe_out
 			if source.socket_ok then

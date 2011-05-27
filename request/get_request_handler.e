@@ -4,7 +4,7 @@
 inherit
 	HTTP_REQUEST_HANDLER
 
-	SHARED_DOCUMENT_ROOT
+	HTTP_SERVER_SHARED_CONFIGURATION
 		undefine
 			default_create
 		end

@@ -4,16 +4,14 @@ note
 	date: "$Date$"
 	revision: "$Revision$"
 
-class
+deferred class
 	HTTP_CONNECTION_HANDLER
 
 inherit
-	THREAD
-
-	HTTP_CONSTANTS
-
-create
-	make
+	HTTP_HANDLER
+		redefine
+			make
+		end
 
 feature {NONE} -- Initialization
 
@@ -22,70 +20,26 @@ feature {NONE} -- Initialization
 			--
 			-- `a_main_server': The main server object
 			-- `a_name': The name of this module
-		require
-			a_main_server_attached: a_main_server /= Void
-			a_name_attached: a_name /= Void
 		do
-			main_server := a_main_server
-			create current_request_message.make_empty
+			Precursor (a_main_server, a_name)
 			create method.make_empty
 			create uri.make_empty
+			create request_header.make_empty
 			create request_header_map.make (10)
-			is_stop_requested := False
-		ensure
-			main_server_set: a_main_server ~ main_server
-			current_request_message_attached: current_request_message /= Void
 		end
 
-feature -- Inherited Features
+feature -- Execution
 
-	execute
-			-- <Precursor>
-			-- Creates a socket and connects to the http server.
+	receive_message_and_send_reply (client_socket: TCP_STREAM_SOCKET)
 		local
-			l_http_socket: detachable TCP_STREAM_SOCKET
-			l_http_port: INTEGER
+			l_input: HTTP_INPUT_STREAM
+			l_output: HTTP_OUTPUT_STREAM
 		do
-			is_stop_requested := False
-			l_http_port := main_server_configuration.http_server_port
-			create l_http_socket.make_server_by_port (l_http_port)
-			if not l_http_socket.is_bound then
-				print ("Socket could not be bound on port " + l_http_port.out )
-			else
-				from
-					l_http_socket.listen (main_server_configuration.max_tcp_clients)
-					print ("%NHTTP Connection Server ready on port " + l_http_port.out +"%N")
-				until
-					is_stop_requested
-				loop
-					l_http_socket.accept
-					if not is_stop_requested then
-						if attached l_http_socket.accepted as l_thread_http_socket then
-							receive_message_and_send_replay (l_thread_http_socket)
-							l_thread_http_socket.cleanup
-							check
-								socket_closed: l_thread_http_socket.is_closed
-							end
-						end
-					end
-				end
-				l_http_socket.cleanup
-				check
-					socket_is_closed: l_http_socket.is_closed
-				end
-			end
-			print ("HTTP Connection Server ends.")
-		rescue
-			print ("HTTP Connection Server shutdown due to exception. Please relaunch manually.")
+			create l_input.make (client_socket)
+			create l_output.make (client_socket)
 
-			if attached l_http_socket as ll_http_socket then
-				ll_http_socket.cleanup
-				check
-					socket_is_closed: ll_http_socket.is_closed
-				end
-			end
-			is_stop_requested := True
-			retry
+            analyze_request_message (l_input)
+			process_request (uri, method, request_header_map, request_header, l_input, l_output)
 		end
 
 feature -- Request processing
@@ -98,69 +52,16 @@ feature -- Request processing
 			a_headers_text_attached: a_headers_text /= Void
 			a_input_attached: a_input /= Void
 			a_output_attached: a_output /= Void
-		do
-			if a_method.is_equal (Get) then
-				execute_get_request (a_uri, a_headers_map, a_headers_text, a_input, a_output)
-			elseif a_method.is_equal (Post) then
-				execute_post_request (a_uri, a_headers_map, a_headers_text, a_input, a_output)
-			elseif a_method.is_equal (Put) then
-			elseif a_method.is_equal (Options) then
-			elseif a_method.is_equal (Head) then
-			elseif a_method.is_equal (Delete) then
-			elseif a_method.is_equal (Trace) then
-			elseif a_method.is_equal (Connect) then
-			else
-				debug
-					print ("Method [" + a_method + "] not supported")
-				end
-			end
+		deferred
 		end
-
-	execute_get_request (a_uri: STRING; a_headers_map: HASH_TABLE [STRING, STRING]; a_headers_text: STRING; a_input: HTTP_INPUT_STREAM; a_output: HTTP_OUTPUT_STREAM)
-		local
-			l_http_request : HTTP_REQUEST_HANDLER
-		do
-			create {GET_REQUEST_HANDLER} l_http_request.make (a_input, a_output)
-			l_http_request.set_uri (a_uri)
-			l_http_request.process
---			client_socket.put_string (l_http_request.answer.reply_header + l_http_request.answer.reply_text)
-		end
-
-	execute_post_request (a_uri: STRING; a_headers_map: HASH_TABLE [STRING, STRING]; a_headers_text: STRING; a_input: HTTP_INPUT_STREAM; a_output: HTTP_OUTPUT_STREAM)
-		local
-			l_http_request : HTTP_REQUEST_HANDLER
-		do
-			check not_yet_implemented: False end
-			create {POST_REQUEST_HANDLER} l_http_request.make (a_input, a_output)
-			l_http_request.set_uri (a_uri)
-			l_http_request.process
---			client_socket.put_string (l_http_request.answer.reply_header + l_http_request.answer.reply_text)
-		end
-
-feature -- Access
-
-	is_stop_requested: BOOLEAN
-			-- Set true to stop accept loop
 
 feature {NONE} -- Access
 
+	request_header: STRING
+			-- Header' source
+
 	request_header_map : HASH_TABLE [STRING,STRING]
 			-- Contains key:value of the header
-
-	main_server: HTTP_SERVER
-			-- The main server object
-
-	main_server_configuration: HTTP_SERVER_CONFIGURATION
-			-- The main server's configuration
-		do
-			Result := main_server.configuration
-		end
-
-	current_request_message: STRING
-			-- Stores the current request message received from http server
-
-	Max_fragments: INTEGER = 1000
-			-- Defines the maximum number of fragments that can be received
 
 	method: STRING
 			-- http verb
@@ -172,54 +73,7 @@ feature {NONE} -- Access
 			--  http_version
 			--| unused for now
 
-feature -- Status setting
-
-	shutdown
-			-- Stops the thread
-		do
-			is_stop_requested := True
-		end
-
-feature {NONE} -- Implementation
-
-	read_string_from_socket (a_socket: TCP_STREAM_SOCKET; a_n: NATURAL): STRING
-			-- Reads characters from the socket and concatenates them to a string
-			--
-			-- `a_socket': The socket to read from
-			-- `a_n': The number of characters to read
-			-- `Result': The created string
-		require
-			socket_is_open: not a_socket.is_closed
-		local
-			l_read_size: INTEGER
-			l_buf: detachable STRING
-		do
-			create Result.make (a_n.as_integer_32)
-			from
-				l_read_size := 0
-				Result := ""
-				l_buf := ""
-			until
-				l_buf.is_equal ("%R")
-			loop
-				a_socket.read_line_thread_aware
-				l_buf := a_socket.last_string
-				if l_buf /= Void then
-					Result.append (l_buf)
-				end
-				if l_buf.is_equal ("%R") then
-					a_socket.set_nodelay
-					a_socket.put_string ("HTTP/1.1 100 Continue%/13/%/10/%/13/%/10/")
-					a_socket.close_socket
-				end
-
-				l_read_size := Result.count
-			end
-		ensure
-			Result_attached: Result /= Void
-		end
-
-feature -- New implementation
+feature -- Parsing
 
 	parse_http_request_line (line: STRING)
 		require
@@ -237,63 +91,44 @@ feature -- New implementation
 			not_void_method: method /= Void
 		end
 
-feature -- New Implementation
 
-	receive_message_and_send_replay (client_socket: TCP_STREAM_SOCKET)
-		require
-			socket_attached: client_socket /= Void
---			socket_valid: client_socket.is_open_read and then client_socket.is_open_write
-			a_http_socket:client_socket /= Void and then not client_socket.is_closed
-		local
-			l_headers_text: detachable STRING
-			l_input: HTTP_INPUT_STREAM
-			l_output: HTTP_OUTPUT_STREAM
-		do
-			parse_request_line (client_socket)
-            l_headers_text := receive_message_internal (client_socket)
-
-			create l_input.make (client_socket)
-			create l_output.make (client_socket)
-			process_request (uri, method, request_header_map, l_headers_text, l_input, l_output)
-		end
-
-	parse_request_line (socket: NETWORK_STREAM_SOCKET)
+	analyze_request_message (a_input: HTTP_INPUT_STREAM)
         require
-            socket: socket /= Void and then not socket.is_closed
-        do
-        	socket.read_line
-			parse_request_line_internal (socket.last_string)
-		end
-
-	receive_message_internal (socket: TCP_STREAM_SOCKET) : STRING
-        require
-            socket: socket /= Void and then not socket.is_closed
+            input_redable: a_input /= Void and then not a_input.is_readable
         local
         	end_of_stream : BOOLEAN
         	pos : INTEGER
         	line : STRING
+        	txt: STRING
         do
+            create txt.make (64)
+			a_input.read_line
+			line := a_input.last_string
+			analyze_request_line (line)
+			txt.append (line)
+			txt.append_character ('%N')
+
+			request_header := txt
             from
-                socket.read_line_thread_aware
-                Result := ""
+                a_input.read_line
             until
                 end_of_stream
             loop
-                line := socket.last_string
+                line := a_input.last_string
                 print ("%N" +line+ "%N")
                 pos := line.index_of (':',1)
                	request_header_map.put (line.substring (pos + 1, line.count), line.substring (1,pos-1))
-                Result.append (line)
-                Result.append_character ('%N')
-                if not line.is_equal("%R") and socket.socket_ok then
-                	socket.read_line_thread_aware
-        		else
+                txt.append (line)
+                txt.append_character ('%N')
+                if line.is_empty or else line[1] = '%R' then
         			end_of_stream := True
-        		end
+        		else
+        			a_input.read_line
+                end
         	end
 		end
 
-	parse_request_line_internal (line: STRING)
+	analyze_request_line (line: STRING)
 		require
 			line /= Void
 		local
@@ -310,7 +145,6 @@ feature -- New Implementation
 		end
 
 invariant
-	main_server_attached: main_server /= Void
-	current_request_message_attached: current_request_message /= Void
+	request_header_attached: request_header /= Void
 
 end
