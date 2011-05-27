@@ -94,7 +94,7 @@ feature -- Parsing
 
 	analyze_request_message (a_input: HTTP_INPUT_STREAM)
         require
-            input_redable: a_input /= Void and then not a_input.is_readable
+            input_readable: a_input /= Void and then a_input.is_readable
         local
         	end_of_stream : BOOLEAN
         	pos : INTEGER
