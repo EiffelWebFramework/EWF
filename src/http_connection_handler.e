@@ -45,7 +45,6 @@ feature -- Execution
 			create l_input.make (client_socket)
 			create l_output.make (client_socket)
 
-			reset
 
 			create l_remote_info
 			if attached client_socket.address as l_addr then
@@ -56,6 +55,7 @@ feature -- Execution
 
             analyze_request_message (l_input)
 			process_request (Current, l_input, l_output)
+			reset
 		end
 
 feature -- Request processing
