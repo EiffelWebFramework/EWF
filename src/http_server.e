@@ -28,8 +28,12 @@ feature -- Initialization
 			print ("Starting Web Application Server:%N")
 			stop_requested := False
 			set_server_configuration (configuration)
-			a_http_handler.launch
-			a_http_handler.join
+			if configuration.force_single_threaded then
+				a_http_handler.execute
+			else
+				a_http_handler.launch
+				a_http_handler.join
+			end
 		end
 
 	shutdown_server

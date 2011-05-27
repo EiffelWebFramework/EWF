@@ -13,11 +13,12 @@ feature {NONE} -- Initialization
 
 	make
 		do
-			http_server_port := 9_000
+			http_server_port := 80
 			max_tcp_clients := 100
 			socket_accept_timeout := 1_000
 			socket_connect_timeout := 5_000
 			document_root := "htdocs"
+			force_single_threaded := False
 		end
 
 feature -- Access
@@ -29,6 +30,7 @@ feature -- Access
 	max_tcp_clients: INTEGER assign set_max_tcp_clients
 	socket_accept_timeout: INTEGER assign set_socket_accept_timeout
 	socket_connect_timeout: INTEGER assign set_socket_connect_timeout
+	force_single_threaded: BOOLEAN assign set_force_single_threaded
 
 feature -- Element change
 
@@ -56,5 +58,11 @@ feature -- Element change
 		do
 			socket_connect_timeout := v
 		end
+
+	set_force_single_threaded (v: like force_single_threaded)
+		do
+			force_single_threaded := v
+		end
+
 
 end

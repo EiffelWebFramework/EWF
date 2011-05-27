@@ -15,13 +15,17 @@ create
 
 feature -- Request processing
 
-	process_request (a_uri: STRING; a_method: STRING; a_headers_map: HASH_TABLE [STRING, STRING]; a_headers_text: STRING; a_input: HTTP_INPUT_STREAM; a_output: HTTP_OUTPUT_STREAM)
+	process_request (a_handler: HTTP_CONNECTION_HANDLER; a_input: HTTP_INPUT_STREAM; a_output: HTTP_OUTPUT_STREAM)
 			-- Process request ...
+		local
+			a_method: STRING
 		do
+			a_method := a_handler.method
+			
 			if a_method.is_equal (Get) then
-				execute_get_request (a_uri, a_headers_map, a_headers_text, a_input, a_output)
+				execute_get_request (a_handler.uri, a_handler.request_header_map, a_handler.request_header, a_input, a_output)
 			elseif a_method.is_equal (Post) then
-				execute_post_request (a_uri, a_headers_map, a_headers_text, a_input, a_output)
+				execute_post_request (a_handler.uri, a_handler.request_header_map, a_handler.request_header, a_input, a_output)
 			elseif a_method.is_equal (Put) then
 			elseif a_method.is_equal (Options) then
 			elseif a_method.is_equal (Head) then

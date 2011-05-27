@@ -34,28 +34,39 @@ feature -- Execution
 		local
 			l_input: HTTP_INPUT_STREAM
 			l_output: HTTP_OUTPUT_STREAM
+			l_remote_info: detachable like remote_info
 		do
 			create l_input.make (client_socket)
 			create l_output.make (client_socket)
 
+			create l_remote_info
+			if attached client_socket.address as l_addr then
+				l_remote_info.addr := l_addr.host_address.host_address
+				l_remote_info.hostname := l_addr.host_address.host_name
+				l_remote_info.port := l_addr.port
+			end
+			remote_info := l_remote_info
+
             analyze_request_message (l_input)
-			process_request (uri, method, request_header_map, request_header, l_input, l_output)
+			process_request (Current, l_input, l_output)
 		end
 
 feature -- Request processing
 
-	process_request (a_uri: STRING; a_method: STRING; a_headers_map: HASH_TABLE [STRING, STRING]; a_headers_text: STRING; a_input: HTTP_INPUT_STREAM; a_output: HTTP_OUTPUT_STREAM)
+	process_request (a_handler: HTTP_CONNECTION_HANDLER; a_input: HTTP_INPUT_STREAM; a_output: HTTP_OUTPUT_STREAM)
 			-- Process request ...
 		require
-			a_uri_attached: a_uri /= Void
-			a_method_attached: a_method /= Void
-			a_headers_text_attached: a_headers_text /= Void
+			a_handler_attached: a_handler /= Void
+			a_uri_attached: a_handler.uri /= Void
+			a_method_attached: a_handler.method /= Void
+			a_header_map_attached: a_handler.request_header_map /= Void
+			a_header_text_attached: a_handler.request_header /= Void
 			a_input_attached: a_input /= Void
 			a_output_attached: a_output /= Void
 		deferred
 		end
 
-feature {NONE} -- Access
+feature -- Access
 
 	request_header: STRING
 			-- Header' source
@@ -72,6 +83,8 @@ feature {NONE} -- Access
 	version: detachable STRING
 			--  http_version
 			--| unused for now
+
+	remote_info: detachable TUPLE [addr: STRING; hostname: STRING; port: INTEGER]
 
 feature -- Parsing
 
