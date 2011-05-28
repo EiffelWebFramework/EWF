@@ -1,26 +1,26 @@
 Eiffel Nino HTTPD
 =================
-The code is based on Xebra and Emu Web Server
+The code is based on Xebra and Emu Web Server.
 
-TBD: TO BE DONE
 
-Developed with Eiffel 6.6
-=========================
-Test with Eiffel6.7 (TBD)
+Goal
+========
+HTTPD server for development.
+
 
 
 Features
 =======
-TBD
+
+
 
 Testing
 =======
-TBD
-
+The server work fine in Windows and Linux.
 
 Run the server and point your browser to one of the following URIs
 
-1) http://localhost:9000 
+1) http://localhost:9000/post/index.html 
 2) http://localhost:9000/demo1/template.html
 3) http://localhost:9000/demo2/demo.html
 4) http://localhost:9000/example/html/index.html
@@ -31,7 +31,8 @@ Run the server and point your browser to one of the following URIs
 
 Known Issues
 ============
-TBD
+
+
 
 
 
