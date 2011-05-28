@@ -70,7 +70,7 @@ feature -- Implementation
 				done
 			loop
 				if socket.socket_ok then
-					done := receive_message_and_send_replay (socket)
+					done := receive_message_and_send_reply (socket)
 					request_header_map.wipe_out
 				else
 					done := True
@@ -80,7 +80,7 @@ feature -- Implementation
 			io.put_new_line
 		end
 
-	receive_message_and_send_replay (client_socket: NETWORK_STREAM_SOCKET): BOOLEAN
+	receive_message_and_send_reply (client_socket: NETWORK_STREAM_SOCKET): BOOLEAN
 		require
 			socket_attached: client_socket /= Void
 			socket_valid: client_socket.is_open_read and then client_socket.is_open_write

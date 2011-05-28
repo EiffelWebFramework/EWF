@@ -2,12 +2,38 @@
 class HTTP_RESPONSE
 
 inherit
-
 	HTTP_CONSTANTS
+		redefine
+			default_create
+		end
 
 create
+	default_create
 
-	make
+feature -- creation
+
+	default_create
+		do
+			Precursor
+			set_defaults
+		end
+
+	set_defaults
+			-- Set default values for the reply	
+		do
+			status_code := ok
+			create content_length_data.make_empty
+			reason_phrase := ok_message
+			content_type_data := text_html
+			set_reply_text (Void)
+		end
+
+feature -- Recycle
+
+	reset
+		do
+			set_defaults
+		end
 
 feature -- response header fields
 
@@ -17,11 +43,19 @@ feature -- response header fields
 	content_length_data : STRING
 			-- length		
 
-	set_content_length (new_content_length: STRING)
+	reason_phrase: STRING
+			-- message, if any
+
+	content_type_data: STRING
+			-- type of content in this reply (eg. text/html)
+
+feature -- Element change
+
+	set_content_length (new_content_length: INTEGER)
 		require
-			not_void: new_content_length /= Void
+			positive_or_zero: new_content_length >= 0
 		do
-			content_length_data := new_content_length
+			content_length_data := new_content_length.out
 		end
 
 	set_status_code (new_status_code: STRING)
@@ -31,18 +65,12 @@ feature -- response header fields
 			status_code := new_status_code
 		end
 
-	reason_phrase: STRING
-			-- message, if any
-
 	set_reason_phrase (new_reason_phrase: STRING)
 		require
 			not_void: new_reason_phrase /= Void
 		do
 			reason_phrase := new_reason_phrase
 		end
-
-	content_type_data: STRING
-			-- type of content in this reply (eg. text/html)
 
 	set_content_type (new_content_type: STRING)
 		require
@@ -51,18 +79,7 @@ feature -- response header fields
 			content_type_data := new_content_type
 		end
 
-feature -- creation
-
-	make
-		do
-			-- set default values for the reply
-			status_code := ok
-			reason_phrase := ok_message
-			content_type_data := text_html
-		end
-
-feature -- access these to send a reply
-
+feature -- Access: send reply
 
 	reply_header: STRING
 			-- header
@@ -73,7 +90,7 @@ feature -- access these to send a reply
 			Result.extend (' ')
 			Result.append (reason_phrase)
 			Result.append (crlf)
-			Result.append (Server_datails)
+			Result.append ({HTTP_SERVER_CONFIGURATION}.Server_details)
 			Result.append (crlf)
 			Result.append (Content_type + ": ")
 			Result.append (content_type_data)
@@ -89,7 +106,7 @@ feature -- access these to send a reply
 	reply_header_continue: STRING
 			-- header
 		do
-			Result :=http_version_1_1.twin
+			Result := http_version_1_1.twin
 			Result.extend (' ')
 			Result.append (status_code)
 			Result.extend (' ')
@@ -100,14 +117,19 @@ feature -- access these to send a reply
 			-- then keep the connection alive
 		end
 
-
 	reply_text: STRING
 			-- reply text
 
-	set_reply_text (new_text: STRING)
+feature -- Change element: send reply
+
+	set_reply_text (new_text: detachable STRING)
 			-- text could be Void
 		do
-			reply_text := new_text
+			if new_text = Void then
+				create reply_text.make_empty
+			else
+				reply_text := new_text
+			end
 		end
 
 	append_reply_text (more_text: STRING)

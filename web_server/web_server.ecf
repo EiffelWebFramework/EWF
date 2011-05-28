@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<system xmlns="http://www.eiffel.com/developers/xml/configuration-1-8-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eiffel.com/developers/xml/configuration-1-8-0 http://www.eiffel.com/developers/xml/configuration-1-8-0.xsd" name="nino" uuid="32C1D67D-33DE-4F1E-864B-D45388F2E3E6" library_target="nino">
-	<target name="nino">
+<system xmlns="http://www.eiffel.com/developers/xml/configuration-1-8-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eiffel.com/developers/xml/configuration-1-8-0 http://www.eiffel.com/developers/xml/configuration-1-8-0.xsd" name="web_server" uuid="B1D3254D-A58E-4259-9796-8A2843A511A9">
+	<target name="web_server">
 		<root class="APPLICATION" feature="make"/>
 		<file_rule>
 			<exclude>/EIFGENs$</exclude>
@@ -15,12 +15,7 @@
 		<library name="base" location="$ISE_LIBRARY\library\base\base-safe.ecf"/>
 		<library name="net" location="$ISE_LIBRARY\library\net\net-safe.ecf"/>
 		<library name="thread" location="$ISE_LIBRARY\library\thread\thread-safe.ecf"/>
-		<cluster name="nino" location=".\src" recursive="true">
-			<file_rule>
-				<exclude>head_request_handler.e</exclude>
-				<exclude>shared_http_request_handlers.e</exclude>
-				<exclude>http_protocol_handler.e</exclude>
-			</file_rule>
-		</cluster>
+		<library name="nino" location="../nino.ecf"/>
+		<cluster name="src" location=".\" recursive="true"/>
 	</target>
 </system>

@@ -81,13 +81,6 @@ feature -- content types
 
 	text_html: STRING = "text/html"
 
-feature -- Network
-	Server_datails : STRING = "Server : NANO Eiffel Server"
-	Http_server_port: INTEGER = 9000
-	Max_tcp_clients: INTEGER = 100
-	Socket_accept_timeout: INTEGER = 1000
-	Socket_connect_timeout: INTEGER = 5000
-
 feature -- General Header Fields
 
 	-- There are a few header fields which have general applicability for both request and response messages,

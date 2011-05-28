@@ -2,40 +2,63 @@
 	GET_REQUEST_HANDLER
 
 inherit
-	SHARED_DOCUMENT_ROOT
-
-	SHARED_URI_CONTENTS_TYPES
-
 	HTTP_REQUEST_HANDLER
 
+	HTTP_SERVER_SHARED_CONFIGURATION
+		undefine
+			default_create
+		end
+
+	SHARED_URI_CONTENTS_TYPES
+		undefine
+			default_create
+		end
+
 	HTTP_CONSTANTS
+		undefine
+			default_create
+		end
 
 create
-	default_create
+	make
 
-feature
+feature {NONE} -- Initialization
+
+	make (a_input: like input; a_output: like output)
+		do
+			default_create
+			input := a_input
+			output := a_output
+		end
+
+feature -- Access
+
+	input: HTTP_INPUT_STREAM
+
+	output: HTTP_OUTPUT_STREAM
+
+feature -- Execution
 
 	process
 			-- process the request and create an answer
 		local
 			fname: STRING_8
 			f: RAW_FILE
-			ctype, extension: STRING_8
+			ctype, extension: detachable STRING_8
 		do
-			create answer.make
-			if request_uri.is_equal ("/") then
+			answer.reset
+			if script_name.is_equal ("/") then
 				process_default
 				answer.set_content_type ("text/html")
 			else
-				fname := Document_root_cell.item.twin
-				fname.append (request_uri)
+				create fname.make_from_string (Document_root)
+				fname.append (script_name)
 				debug
-					print ("URI name: " + fname)
+					print ("URI filename: " + fname)
 				end
-				create f.make (fname)
-				create answer.make
+				create f.make (real_filename (fname))
 				if f.exists then
-					extension := Ct_table.extension (request_uri)
+					extension := Ct_table.extension (script_name)
 					ctype := Ct_table.content_types.item (extension)
 					if f.is_directory then
 						process_directory (f)
@@ -58,11 +81,18 @@ feature
 					answer.set_reply_text ("Not found on this server")
 				end
 			end
-			answer.set_content_length (answer.reply_text.count.out)
+			if attached answer.reply_text as t then
+				answer.set_content_length (t.count)
+			else
+				answer.set_content_length (0)
+			end
+
+				--| Output the result
+			output.put_string (answer.reply_header + answer.reply_text)
 		end
 
 	process_default
-			-- Return a defaul response
+			-- Return a default response
 		local
 			html: STRING_8
 		do
@@ -118,14 +148,14 @@ feature
 			html2: STRING_8
 			htmldir: STRING_8
 			path: STRING_8
-			index: INTEGER_32
 		do
 			answer.set_reply_text ("")
 			html1 := " <html> <head> <title> NINO HTTPD </title> " + "    </head>   " + "       <body>    " + " <h1> Welcome to NINO HTTPD! </h1> " + " <p>  Default page  "
 			html2 := " </p> " + " </body> " + " </html> "
-			path := f.name.twin
-			index := path.last_index_of ('/', path.count)
-			path.remove_substring (1, index)
+			path := script_name
+			if path[path.count] = '/' then
+				path.remove_tail (1)
+			end
 			create l_dir.make_open_read (f.name)
 			files := l_dir.linear_representation
 			from
@@ -134,7 +164,7 @@ feature
 			until
 				files.after
 			loop
-				htmldir := htmldir + "<li><a href=%"./" + path + "/" + files.item_for_iteration + "%">" + files.item_for_iteration + "</a> </li>%N"
+				htmldir := htmldir + "<li><a href=%"" + path + "/" + files.item_for_iteration + "%">" + files.item_for_iteration + "</a> </li>%N"
 				files.forth
 			end
 			htmldir := htmldir + "</ul>"
