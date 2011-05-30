@@ -18,6 +18,7 @@ feature -- Initialization
 	make (cfg: like configuration)
 		do
 			configuration := cfg
+			set_server_configuration (configuration)
 		end
 
 	setup (a_http_handler : HTTP_HANDLER)
@@ -27,7 +28,6 @@ feature -- Initialization
 			print("%N%N%N")
 			print ("Starting Web Application Server (port="+ configuration.http_server_port.out +"):%N")
 			stop_requested := False
-			set_server_configuration (configuration)
 			if configuration.force_single_threaded then
 				a_http_handler.execute
 			else
