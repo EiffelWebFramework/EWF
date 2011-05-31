@@ -1,4 +1,4 @@
-﻿note
+note
 	description : "nino application root class"
 	date        : "$Date$"
 	revision    : "$Revision$"
@@ -35,3 +35,4 @@ feature -- Access
 	default_document_root: STRING = "webroot"
 
 end
+

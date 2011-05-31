@@ -51,6 +51,7 @@ feature -- Execution
 				l_remote_info.addr := l_addr.host_address.host_address
 				l_remote_info.hostname := l_addr.host_address.host_name
 				l_remote_info.port := l_addr.port
+				remote_info := l_remote_info
 			end
 
             analyze_request_message (l_input)
@@ -117,9 +118,9 @@ feature -- Parsing
             input_readable: a_input /= Void and then a_input.is_readable
         local
         	end_of_stream : BOOLEAN
-        	pos : INTEGER
+        	pos,n : INTEGER
         	line : STRING
-			val: STRING
+		k, val: STRING
         	txt: STRING
         do
             create txt.make (64)
@@ -136,13 +137,20 @@ feature -- Parsing
                 end_of_stream
             loop
                 line := a_input.last_string
+		n := line.count
                 print ("%N" +line+ "%N")
                 pos := line.index_of (':',1)
-               	val := line.substring (pos + 1, line.count)
-				if val[val.count] = '%R' then
-					val.remove_tail (1)
+				if pos > 0 then
+					k := line.substring(1, pos-1)
+					if line[pos+1].is_space then
+						pos := pos + 1
+					end
+					if line[n] = '%R' then
+						n := n - 1
+					end
+					val := line.substring (pos + 1, n)
+					request_header_map.put (val, k)
 				end
-               	request_header_map.put (val, line.substring (1,pos-1))
                 txt.append (line)
                 txt.append_character ('%N')
                 if line.is_empty or else line[1] = '%R' then
