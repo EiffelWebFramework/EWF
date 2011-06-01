@@ -49,17 +49,4 @@ feature	-- Access
 	stop_requested: BOOLEAN
 			-- Stops the server
 
-feature {NONE} -- implementation
-
-	run
-		-- Start the server
-		local
-			e: EXECUTION_ENVIRONMENT
-		do
-			create e
-			from until stop_requested loop
-				e.sleep (1_000_000)
-			end
-		end
-
 end
