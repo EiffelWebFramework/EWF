@@ -47,7 +47,7 @@ feature -- Execution
 
 
 			create l_remote_info
-			if attached client_socket.address as l_addr then
+			if attached client_socket.peer_address as l_addr then
 				l_remote_info.addr := l_addr.host_address.host_address
 				l_remote_info.hostname := l_addr.host_address.host_name
 				l_remote_info.port := l_addr.port

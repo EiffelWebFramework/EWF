@@ -60,6 +60,7 @@ feature -- Inherited Features
 							end
 						end
 					end
+					is_stop_requested := main_server.stop_requested
 				end
 				l_http_socket.cleanup
 				check
