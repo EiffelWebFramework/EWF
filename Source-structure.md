@@ -11,10 +11,11 @@
 - library/ewsgi/ewsgi.ecf
 
 Any library/component (in development mode) should follow the following structure (when not needed, there is no need to create the associated folder(s) ):
+
 - **README**
 - **COPYRIGHT**
 - **LICENSE**
-- **.ecf** and **-safe.ecf**
+- **.ecf** and **-safe.ecf** : configuration file
 - **library/** : the place to put the source code of the related library/component
 - **doc/** : notes, documentations, ...
 - **test/** : standard place to put your tests, if you are using Eiffel Software auto-tests, I would suggest to add a new target into the associated .ecf  (instead of building a new .ecf under test/ )
