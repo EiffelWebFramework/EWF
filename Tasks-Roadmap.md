@@ -9,7 +9,7 @@
 * WAMIE/apache based support for Eiffel WSGI  (**daro**)
     - SCOOP ...
 * Some persistance solution (**daro**)
-* XML, JSON support  (**jvelilla**)
+* XML, [[JSON|Task-JSON]] support  (**jvelilla**)
 
 ## Maybe for October 1st ##
 * Reference Client/REST-service consumer (**jfiat**)
