@@ -12,9 +12,9 @@
 * XML, JSON support  (**jvelilla**)
 
 ## Maybe for October 1st ##
-* Reference Client/REST-service consumer
-    - Mashup support, facebook, twitter, google+, ...  (**jfiat**)
-* Authentication support
+* Reference Client/REST-service consumer (**jfiat**)
+* Mashup support, facebook, twitter, google+, ...  (**jfiat**)
+* Authentication support (**jfiat** ?)
     - OpenID, Google Connect, Facebook Connect, OAuth, ...
     - http authorization
 
@@ -30,7 +30,9 @@
 
 
 ## Contributors ##
-  - jfiat = Jocelyn Fiat
-  - paco = Paul Cohen
-  - daro = Daniel Rodriguez
-  - jvelilla = Hector Javier Velilla
+  - **jfiat** = Jocelyn Fiat
+  - **paco** = Paul Cohen
+  - **daro** = Daniel Rodriguez
+  - **jvelilla** = Hector Javier Velilla
+
+note: In bold, you see the responsible for each task, but contribution from other is possible as well.
