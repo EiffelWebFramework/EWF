@@ -1,8 +1,11 @@
 note
-	description : "Objects that ..."
-	author      : "$Author$"
-	date        : "$Date$"
-	revision    : "$Revision$"
+	description : "[
+			Objects that represents the input stream
+		]"
+	legal: "See notice at end of class."
+	status: "See notice at end of class."
+	date: "$Date$"
+	revision: "$Revision$"
 
 deferred class
 	GW_INPUT_STREAM
@@ -23,7 +26,7 @@ feature -- Basic operation
 		end
 
 note
-	copyright: "Copyright (c) 1984-2011, Eiffel Software and others"
+	copyright: "2011-2011, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

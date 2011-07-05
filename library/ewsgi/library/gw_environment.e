@@ -1,8 +1,37 @@
 note
-	description : "Objects that ..."
-	author      : "$Author$"
-	date        : "$Date$"
-	revision    : "$Revision$"
+	description: "[
+	
+		Interface for a request environment
+		It includes CGI interface and a few extra values that are usually valuable
+
+
+		--   A `Script URI' can be defined; this describes the resource identified
+		--   by the environment variables. Often, this URI will be the same as the
+		--   URI requested by the client (the `Client URI'); however, it need not
+		--   be. Instead, it could be a URI invented by the server, and so it can
+		--   only be used in the context of the server and its CGI interface.
+		--
+		--   The script URI has the syntax of generic-RL as defined in section 2.1
+		--   of RFC 1808 [7], with the exception that object parameters and
+		--   fragment identifiers are not permitted:
+		--
+		--      <scheme>://<host>:<port>/<path>?<query>
+		--
+		--   The various components of the script URI are defined by some of the
+		--   environment variables (see below);
+		--
+		--      script-uri = protocol "://" SERVER_NAME ":" SERVER_PORT enc-script
+		--                   enc-path-info "?" QUERY_STRING
+		--
+		--   where `protocol' is found from SERVER_PROTOCOL, `enc-script' is a
+		--   URL-encoded version of SCRIPT_NAME and `enc-path-info' is a
+		--   URL-encoded version of PATH_INFO.	
+
+	]"
+	legal: "See notice at end of class."
+	status: "See notice at end of class."
+	date: "$Date$"
+	revision: "$Revision$"
 
 deferred
 class
@@ -58,30 +87,6 @@ feature -- Access: table
 		do
 			create Result.make (table)
 		end
-
-feature -- Script URI
-
---   A `Script URI' can be defined; this describes the resource identified
---   by the environment variables. Often, this URI will be the same as the
---   URI requested by the client (the `Client URI'); however, it need not
---   be. Instead, it could be a URI invented by the server, and so it can
---   only be used in the context of the server and its CGI interface.
---
---   The script URI has the syntax of generic-RL as defined in section 2.1
---   of RFC 1808 [7], with the exception that object parameters and
---   fragment identifiers are not permitted:
---
---      <scheme>://<host>:<port>/<path>?<query>
---
---   The various components of the script URI are defined by some of the
---   environment variables (see below);
---
---      script-uri = protocol "://" SERVER_NAME ":" SERVER_PORT enc-script
---                   enc-path-info "?" QUERY_STRING
---
---   where `protocol' is found from SERVER_PROTOCOL, `enc-script' is a
---   URL-encoded version of SCRIPT_NAME and `enc-path-info' is a
---   URL-encoded version of PATH_INFO.
 
 feature -- Common Gateway Interface - 1.1       8 January 1996
 
@@ -397,7 +402,7 @@ feature -- Extra
 		end
 
 ;note
-	copyright: "Copyright (c) 1984-2011, Eiffel Software and others"
+	copyright: "2011-2011, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software
