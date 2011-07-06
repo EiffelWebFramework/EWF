@@ -1,5 +1,10 @@
-https://github.com/Eiffel-World/Eiffel-Web-Framework
+Official project site for Eiffel Web Framework:
+ - https://github.com/Eiffel-World/Eiffel-Web-Framework
 
+For more information please have a look at the related wiki:
+ - https://github.com/Eiffel-World/Eiffel-Web-Framework/wiki
 
-library/ewsgi: Eiffel Web Server Gateway Interface
+Overview:
+
+ - library/ewsgi: Eiffel Web Server Gateway Interface
 
