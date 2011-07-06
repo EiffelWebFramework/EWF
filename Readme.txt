@@ -1,7 +1,7 @@
 ﻿Readme file for eJSON
 =====================
 
-team: "Javier Velilla,Berend DeBoer, Jocelyn Fiat, Paul Cohen"
+team: "Javier Velilla,Jocelyn Fiat, Paul Cohen"
 date: "$Date$"
 revision: "$Revision$"
 
@@ -70,7 +70,7 @@ installation.
 
 Directory   Description
 ---------   -----------
-doc         Contains the eclop.pdf documentation file.
+doc         Contains the eJSON.pdf documentation file.
 examples    Contains the two example programs.
 ejson       Contains the actual eJSON library classes.
 test        Contains a test program for eJSON.
@@ -92,6 +92,6 @@ history.txt.
 
 Version Date            Description
 ------- ----            -----------
-0.3.0   2010-??-??      JSON Factory Converters ??
+0.3.0   2011-07-06      JSON Factory Converters
 0.2.0   2010-02-07      Adapted to EiffelStudio 6.4 or later, supports void-safety
 0.1.0   2010-02-07      First release, Adapted to SmartEiffel 1.2r7 and EiffelStudio 6.2 or previous
