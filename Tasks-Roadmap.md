@@ -28,11 +28,7 @@
      - Persistence chooser
 * Dynamic update of running system   (**daro**)
 
-
 ## Contributors ##
-  - **jfiat** = Jocelyn Fiat
-  - **paco** = Paul Cohen
-  - **daro** = Daniel Rodriguez
-  - **jvelilla** = Hector Javier Velilla
+  - See [[the collaboration page|Community-collaboration]] 
 
 note: In bold, you see the responsible for each task, but contribution from other is possible as well.
