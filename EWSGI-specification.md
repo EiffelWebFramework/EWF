@@ -1,5 +1,5 @@
-# The Eiffel Web Server Gateway Interface #
-## Preface ## 
+# The Eiffel Web Server Gateway Interface
+## Preface 
 
 This document specifies a proposed standard interface between web servers and Eiffel web applications or frameworks, to promote web application portability across a variety of web servers.
 
