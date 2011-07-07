@@ -1,4 +1,4 @@
-indexing
+note
     description: "JSON Truth values"
     author: "Javier Velilla"
     date: "2008/08/24"
@@ -15,7 +15,7 @@ create
 
 feature {NONE} -- Initialization
 
-    make_boolean (an_item: BOOLEAN) is
+    make_boolean (an_item: BOOLEAN)
             --Initialize.
         do
             item := an_item
@@ -26,13 +26,13 @@ feature -- Access
     item: BOOLEAN
         -- Content
 
-    hash_code: INTEGER is
+    hash_code: INTEGER
             -- Hash code value
         do
             Result := item.hash_code
         end
 
-    representation: STRING is
+    representation: STRING
         do
             if item then
                 Result := "true"
@@ -43,7 +43,7 @@ feature -- Access
         
 feature -- Visitor pattern
 
-    accept (a_visitor: JSON_VISITOR) is
+    accept (a_visitor: JSON_VISITOR)
             -- Accept `a_visitor'.
             -- (Call `visit_json_boolean' procedure on `a_visitor'.)
         do

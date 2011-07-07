@@ -1,4 +1,4 @@
-indexing
+note
     description: "[
                    Shared factory class for creating JSON objects. Maps JSON
                    objects to Gobo DS_HASH_TABLEs and JSON arrays to Gobo
@@ -15,7 +15,7 @@ class SHARED_GOBO_EJSON
 
 feature
 
-    json: EJSON is
+    json: EJSON
             -- A shared EJSON instance with default converters for 
 	    -- DS_LINKED_LIST [ANY] and DS_HASH_TABLE [ANY, HASHABLE]
         local

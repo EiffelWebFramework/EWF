@@ -27,7 +27,7 @@ feature {NONE} -- Events
 
 feature -- Tests Pass
 
-	test_json_pass1 is
+	test_json_pass1
     		--
     		do
     			json_file:=file_reader.read_json_from (test_dir + "pass1.json")
@@ -36,7 +36,7 @@ feature -- Tests Pass
 		  		assert ("pass1.json",parse_json.is_parsed = True)
     		end
 
-	test_json_pass2 is
+	test_json_pass2
     		--
     		do
     			json_file:=file_reader.read_json_from (test_dir +"pass2.json")
@@ -45,7 +45,7 @@ feature -- Tests Pass
 		  		assert ("pass2.json",parse_json.is_parsed = True)
     		end
 
-    test_json_pass3 is
+    test_json_pass3
     		--
     		do
     			json_file:=file_reader.read_json_from (test_dir +"pass3.json")
@@ -55,7 +55,7 @@ feature -- Tests Pass
     		end
 
 feature -- Tests Failures
-    test_json_fail1 is
+    test_json_fail1
     		--
     		do
     			json_file:=file_reader.read_json_from (test_dir +"fail1.json")
@@ -64,7 +64,7 @@ feature -- Tests Failures
 		  		assert ("fail1.json",parse_json.is_parsed = False)
     		end
 
-    test_json_fail2 is
+    test_json_fail2
     		--
     		do
     			json_file:=file_reader.read_json_from (test_dir +"fail2.json")
@@ -73,7 +73,7 @@ feature -- Tests Failures
 		  		assert ("fail2.json",parse_json.is_parsed = False)
     		end
 
-	test_json_fail3 is
+	test_json_fail3
     		--
     		do
     			json_file:=file_reader.read_json_from (test_dir +"fail3.json")
@@ -82,7 +82,7 @@ feature -- Tests Failures
 		  		assert ("fail3.json",parse_json.is_parsed = False)
     		end
 
-	test_json_fail4 is
+	test_json_fail4
     		--
     		do
     			json_file:=file_reader.read_json_from (test_dir +"fail4.json")
@@ -91,7 +91,7 @@ feature -- Tests Failures
 		  		assert ("fail4.json",parse_json.is_parsed = False)
     		end
 
-    test_json_fail5 is
+    test_json_fail5
     		--
     		do
     			json_file:=file_reader.read_json_from (test_dir +"fail5.json")
@@ -101,7 +101,7 @@ feature -- Tests Failures
     		end
 
 
-	test_json_fail6 is
+	test_json_fail6
     		--
     		do
     			json_file:=file_reader.read_json_from (test_dir +"fail6.json")
@@ -110,7 +110,7 @@ feature -- Tests Failures
 		  		assert ("fail6.json",parse_json.is_parsed = False )
     		end
 
- 	test_json_fail7 is
+ 	test_json_fail7
     		--
     		do
     			json_file:=file_reader.read_json_from (test_dir +"fail7.json")
@@ -119,7 +119,7 @@ feature -- Tests Failures
 		  		assert ("fail7.json",parse_json.is_parsed = False)
     		end
 
-  	test_json_fail8 is
+  	test_json_fail8
     		--
     		do
     			json_file:=file_reader.read_json_from (test_dir +"fail8.json")
@@ -129,7 +129,7 @@ feature -- Tests Failures
     		end
 
 
-	test_json_fail9 is
+	test_json_fail9
     		--
     		do
     			json_file:=file_reader.read_json_from (test_dir +"fail9.json")
@@ -139,7 +139,7 @@ feature -- Tests Failures
     		end
 
 
-	test_json_fail10 is
+	test_json_fail10
     		--
     		do
     			json_file:=file_reader.read_json_from (test_dir +"fail10.json")
@@ -148,7 +148,7 @@ feature -- Tests Failures
 		  		assert ("fail10.json",parse_json.is_parsed = False)
     		end
 
-   	test_json_fail11 is
+   	test_json_fail11
     		--
     		do
     			json_file:=file_reader.read_json_from (test_dir +"fail11.json")
@@ -157,7 +157,7 @@ feature -- Tests Failures
 		  		assert ("fail11.json",parse_json.is_parsed = False)
     		end
 
-	test_json_fail12 is
+	test_json_fail12
     		--
     		do
     			json_file:=file_reader.read_json_from (test_dir +"fail12.json")
@@ -166,7 +166,7 @@ feature -- Tests Failures
 		  		assert ("fail12.json",parse_json.is_parsed = False)
     		end
 
-    test_json_fail13 is
+    test_json_fail13
     		--
     		do
     			json_file:=file_reader.read_json_from (test_dir +"fail13.json")
@@ -175,7 +175,7 @@ feature -- Tests Failures
 		  		assert ("fail13.json",parse_json.is_parsed = False)
     		end
 
-  	test_json_fail14 is
+  	test_json_fail14
     		--
     		do
     			json_file:=file_reader.read_json_from (test_dir +"fail14.json")
@@ -184,7 +184,7 @@ feature -- Tests Failures
 		  		assert ("fail14.json",parse_json.is_parsed = False)
     		end
 
-	test_json_fail15 is
+	test_json_fail15
     		--
     		do
     			json_file:=file_reader.read_json_from (test_dir +"fail15.json")
@@ -193,7 +193,7 @@ feature -- Tests Failures
 		  		assert ("fail15.json",parse_json.is_parsed = False)
     		end
 
-	test_json_fail16 is
+	test_json_fail16
     		--
     		do
     			json_file:=file_reader.read_json_from (test_dir +"fail16.json")
@@ -202,7 +202,7 @@ feature -- Tests Failures
 		  		assert ("fail16.json",parse_json.is_parsed = False)
     		end
 
-	test_json_fail17 is
+	test_json_fail17
     		--
     		do
     			json_file:=file_reader.read_json_from (test_dir +"fail17.json")
@@ -211,7 +211,7 @@ feature -- Tests Failures
 		  		assert ("fail17.json",parse_json.is_parsed = False)
     		end
 
-	test_json_fail18 is
+	test_json_fail18
     		--
     		do
     			json_file:=file_reader.read_json_from (test_dir +"fail18.json")
@@ -220,7 +220,7 @@ feature -- Tests Failures
 		  		assert ("fail18.json",parse_json.is_parsed = True)
     		end
 
-	test_json_fail19 is
+	test_json_fail19
     		--
     		do
     			json_file:=file_reader.read_json_from (test_dir +"fail19.json")
@@ -229,7 +229,7 @@ feature -- Tests Failures
 		  		assert ("fail19.json",parse_json.is_parsed = False)
     		end
 
-	test_json_fail20 is
+	test_json_fail20
     		--
     		do
     			json_file:=file_reader.read_json_from (test_dir +"fail20.json")
@@ -238,7 +238,7 @@ feature -- Tests Failures
 		  		assert ("fail20.json",parse_json.is_parsed = False)
     		end
 
-    test_json_fail21 is
+    test_json_fail21
     		--
     		do
 				json_file:=file_reader.read_json_from (test_dir +"fail21.json")
@@ -248,7 +248,7 @@ feature -- Tests Failures
     		end
 
 
- 	test_json_fail22 is
+ 	test_json_fail22
     		--
     		do
 				json_file:=file_reader.read_json_from (test_dir +"fail22.json")
@@ -257,7 +257,7 @@ feature -- Tests Failures
 		  		assert ("fail22.json",parse_json.is_parsed = False)
     		end
 
-    test_json_fail23 is
+    test_json_fail23
     		--
     		do
 				json_file:=file_reader.read_json_from (test_dir +"fail23.json")
@@ -266,7 +266,7 @@ feature -- Tests Failures
 		  		assert ("fail23.json",parse_json.is_parsed = False)
     		end
 
- 	test_json_fail24 is
+ 	test_json_fail24
     		--
     		do
     			json_file:=file_reader.read_json_from (test_dir +"fail24.json")
@@ -275,7 +275,7 @@ feature -- Tests Failures
 		  		assert ("fail24.json",parse_json.is_parsed = False)
     		end
 
-	test_json_fail25 is
+	test_json_fail25
     		--
     		do
 				json_file:=file_reader.read_json_from (test_dir +"fail25.json")
@@ -285,7 +285,7 @@ feature -- Tests Failures
     		end
 
 
-   	test_json_fail26 is
+   	test_json_fail26
     		--
     		do
     			json_file:=file_reader.read_json_from (test_dir +"fail26.json")
@@ -295,7 +295,7 @@ feature -- Tests Failures
     		end
 
 
-   	test_json_fail27 is
+   	test_json_fail27
     		--
     		do
 				json_file:=file_reader.read_json_from (test_dir +"fail27.json")
@@ -305,7 +305,7 @@ feature -- Tests Failures
     		end
 
 
-   	test_json_fail28 is
+   	test_json_fail28
     		--
     		do
 				json_file:=file_reader.read_json_from (test_dir +"fail28.json")
@@ -315,7 +315,7 @@ feature -- Tests Failures
     		end
 
 
-   	test_json_fail29 is
+   	test_json_fail29
     		--
     		do
     			json_file:=file_reader.read_json_from (test_dir +"fail29.json")
@@ -325,7 +325,7 @@ feature -- Tests Failures
     		end
 
 
-   	test_json_fail30 is
+   	test_json_fail30
     		--
     		do
 				json_file:=file_reader.read_json_from (test_dir +"fail30.json")
@@ -334,7 +334,7 @@ feature -- Tests Failures
 		  		assert ("fail30.json",parse_json.is_parsed = False)
     		end
 
-	test_json_fail31 is
+	test_json_fail31
     		--
     		do
 				json_file:=file_reader.read_json_from (test_dir +"fail31.json")
@@ -343,7 +343,7 @@ feature -- Tests Failures
 		  		assert ("fail31.json",parse_json.is_parsed = False)
     		end
 
-    test_json_fail32 is
+    test_json_fail32
     		--
     		do
     			json_file:=file_reader.read_json_from (test_dir +"fail32.json")
@@ -352,7 +352,7 @@ feature -- Tests Failures
 		  		assert ("fail32.json",parse_json.is_parsed = False)
     		end
 
-    test_json_fail33 is
+    test_json_fail33
     		--
     		do
 				json_file:=file_reader.read_json_from (test_dir +"fail33.json")
@@ -360,15 +360,36 @@ feature -- Tests Failures
 				json_value := parse_json.parse_json
 		  		assert ("fail33.json",parse_json.is_parsed = False)
     		end
+
 feature -- JSON_FROM_FILE
 
-	json_file:STRING
-	parse_json:JSON_PARSER
-	json_object:JSON_OBJECT
-	file_reader:JSON_FILE_READER
+	json_file : STRING
+	parse_json : JSON_PARSER
+	json_object : JSON_OBJECT
+	file_reader : JSON_FILE_READER
 	json_value : JSON_VALUE
-	test_dir : STRING is "/home/jvelilla/work/project/Eiffel/ejson_dev/trunk/test/autotest/test_suite/"
-
+	test_dir : STRING
+		local
+			i: INTEGER
+		do
+			Result := (create {EXECUTION_ENVIRONMENT}).current_working_directory
+			Result.append_character ((create {OPERATING_ENVIRONMENT}).directory_separator)
+				-- The should looks like
+				-- ..json\test\autotest\test_suite\EIFGENs\test_suite\Testing\execution\TEST_JSON_SUITE.test_json_fail1\..\..\..\..\..\fail1.json
+			from
+				i := 5
+			until
+				i = 0
+			loop
+				Result.append_character ('.')
+				Result.append_character ('.')
+				Result.append_character ((create {OPERATING_ENVIRONMENT}).directory_separator)
+				i := i - 1
+			end
+--			Result := "/home/jvelilla/work/project/Eiffel/ejson_dev/trunk/test/autotest/test_suite/"	
+		end
+	invariant
+		file_reader /= Void
 end
 
 

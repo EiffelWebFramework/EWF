@@ -1,4 +1,4 @@
-indexing
+note
 	description: "Objects that ..."
 	author: "jvelilla"
 	date: "2008/08/24"
@@ -12,7 +12,7 @@ create
 
 feature {NONE} -- Initialization
 
-    make (a_json: STRING) is
+    make (a_json: STRING)
             -- Initialize Reader
         do
             set_representation (a_json)
@@ -20,7 +20,7 @@ feature {NONE} -- Initialization
 
 feature -- Commands
 
-	 set_representation (a_json: STRING) is
+	 set_representation (a_json: STRING)
             -- Set `representation'.
         do
         	a_json.left_adjust
@@ -29,7 +29,7 @@ feature -- Commands
             index := 1
         end
 
-	read: CHARACTER is
+	read: CHARACTER
 			-- Read character
 		do
 			if not representation.is_empty then
@@ -37,7 +37,7 @@ feature -- Commands
 			end
 		end
 
-	next is
+	next
 			-- Move to next index
 		require
 			has_more_elements: has_next
@@ -47,7 +47,7 @@ feature -- Commands
 			incremented: old index + 1 = index
 		end
 
-	previous is
+	previous
 			-- Move to previous index
 		require
 			not_is_first: has_previous
@@ -57,7 +57,7 @@ feature -- Commands
 			incremented: old index - 1 = index
 		end
 
-	skip_white_spaces is
+	skip_white_spaces
 			-- Remove white spaces
 		local
 			c: like actual
@@ -72,7 +72,7 @@ feature -- Commands
 			end
 		end
 
-	json_substring (start_index, end_index: INTEGER_32): STRING is
+	json_substring (start_index, end_index: INTEGER_32): STRING
 			-- JSON representation between `start_index' and `end_index'
 		do
 			Result := representation.substring (start_index, end_index)
@@ -80,13 +80,13 @@ feature -- Commands
 
 feature -- Status report
 
-	has_next: BOOLEAN is
+	has_next: BOOLEAN
 			-- Has a next character?
 		do
 			Result := index <= representation.count
 		end
 
-	has_previous: BOOLEAN is
+	has_previous: BOOLEAN
 			-- Has a previous character?
 		do
 			Result := index >= 1
@@ -99,7 +99,7 @@ feature -- Access
 
 feature {NONE} -- Implementation
 
-	actual: CHARACTER is
+	actual: CHARACTER
 			-- Current character or '%U' if none
 		do
 			if index > representation.count then

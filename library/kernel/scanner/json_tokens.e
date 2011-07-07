@@ -1,4 +1,4 @@
-indexing
+note
 	description: ""
 	author: "jvelilla"
 	date: "2008/08/24"
@@ -9,19 +9,19 @@ class
 
 feature -- Access
 
-	j_OBJECT_OPEN: CHARACTER is '{'
-	j_ARRAY_OPEN: CHARACTER is '['
-	j_OBJECT_CLOSE: CHARACTER is '}'
-	j_ARRAY_CLOSE: CHARACTER is ']'
+	j_OBJECT_OPEN: CHARACTER = '{'
+	j_ARRAY_OPEN: CHARACTER = '['
+	j_OBJECT_CLOSE: CHARACTER = '}'
+	j_ARRAY_CLOSE: CHARACTER = ']'
 
-	j_STRING: CHARACTER is '"'
-	j_PLUS: CHARACTER is '+'
-	j_MINUS: CHARACTER is '-'
-	j_DOT: CHARACTER is '.'
+	j_STRING: CHARACTER = '"'
+	j_PLUS: CHARACTER = '+'
+	j_MINUS: CHARACTER = '-'
+	j_DOT: CHARACTER = '.'
 
 feature -- Status report
 
-	is_open_token (c: CHARACTER): BOOLEAN is
+	is_open_token (c: CHARACTER): BOOLEAN
 			-- Characters which open a type	
 		do
 			inspect c
@@ -32,7 +32,7 @@ feature -- Status report
 			end
 		end
 
-	is_close_token (c: CHARACTER): BOOLEAN is
+	is_close_token (c: CHARACTER): BOOLEAN
 			-- Characters which close a type	
 		do
 			inspect c
@@ -43,7 +43,7 @@ feature -- Status report
 			end
 		end
 
-	is_special_character (c: CHARACTER): BOOLEAN is
+	is_special_character (c: CHARACTER): BOOLEAN
 			-- Control Characters
 			-- 	%F  	Form feed
 			-- 	%H  	backslasH
@@ -62,7 +62,7 @@ feature -- Status report
 			end
 		end
 
-   is_special_control (c: CHARACTER): BOOLEAN is
+   is_special_control (c: CHARACTER): BOOLEAN
            --Control Characters
            -- \b\f\n\r\t
 		do

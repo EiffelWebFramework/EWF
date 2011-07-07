@@ -1,4 +1,4 @@
-indexing
+note
 	description: "PRINT_JSON_VISITOR Generates the JSON-String for a JSON_VALUE"
 	author: "jvelilla"
 	date: "2008/08/24"
@@ -14,7 +14,7 @@ create make
 
 feature -- Initialization
 
-	make is
+	make
 			-- Create a new instance
 		do
 			create to_json.make_empty
@@ -27,7 +27,7 @@ feature -- Access
 
 feature -- Visitor Pattern
 
-	visit_json_array (a_json_array: JSON_ARRAY) is
+	visit_json_array (a_json_array: JSON_ARRAY)
 			-- Visit `a_json_array'.
 		local
 			value: JSON_VALUE
@@ -50,25 +50,25 @@ feature -- Visitor Pattern
 			to_json.append ("]")
 		end
 
-	visit_json_boolean (a_json_boolean: JSON_BOOLEAN) is
+	visit_json_boolean (a_json_boolean: JSON_BOOLEAN)
 			-- Visit `a_json_boolean'.
 		do
 			to_json.append (a_json_boolean.item.out)
 		end
 
-	visit_json_null (a_json_null: JSON_NULL) is
+	visit_json_null (a_json_null: JSON_NULL)
 			-- Visit `a_json_null'.
 		do
 			to_json.append ("null")
 		end
 
-	visit_json_number (a_json_number: JSON_NUMBER) is
+	visit_json_number (a_json_number: JSON_NUMBER)
 			-- Visit `a_json_number'.
 		do
 			to_json.append (a_json_number.item)
 		end
 
-	visit_json_object (a_json_object: JSON_OBJECT) is
+	visit_json_object (a_json_object: JSON_OBJECT)
 			-- Visit `a_json_object'.
 		local
 			l_pairs: HASH_TABLE[JSON_VALUE,JSON_STRING]
@@ -91,7 +91,7 @@ feature -- Visitor Pattern
 			to_json.append ("}")
 		end
 
-    visit_json_string (a_json_string: JSON_STRING) is
+    visit_json_string (a_json_string: JSON_STRING)
 			-- Visit `a_json_string'.
 		do
 			to_json.append ("%"")

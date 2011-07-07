@@ -1,4 +1,4 @@
-indexing
+note
     description: "A JSON converter for LINKED_LIST [ANY]"
     author: "Paul Cohen"
     date: "$Date$"
@@ -9,26 +9,24 @@ class JSON_LINKED_LIST_CONVERTER
 
 inherit
     JSON_CONVERTER
-    
+
 create
     make
-    
+
 feature {NONE} -- Initialization
-    
-    make is
+
+    make
         do
             create object.make
         end
-        
+
 feature -- Access
 
-    value: JSON_ARRAY
-            
-    object: LINKED_LIST [ANY]
-            
+    object: LINKED_LIST [detachable ANY]
+
 feature -- Conversion
 
-    from_json (j: like value): like object is
+    from_json (j: like to_json): detachable like object
         local
             i: INTEGER
         do
@@ -42,20 +40,24 @@ feature -- Conversion
                 i := i + 1
             end
         end
-        
-    to_json (o: like object): like value is
+
+    to_json (o: like object): JSON_ARRAY
         local
-            c: LINKED_LIST_CURSOR [ANY]
+            c: ITERATION_CURSOR [detachable ANY]
         do
             create Result.make_array
             from
-                o.start
+            	c := o.new_cursor
             until
-                o.after
+                c.after
             loop
-                Result.add (json.value (o.item))
-                o.forth
+            	if attached json.value (c.item) as v then
+            		Result.add (v)
+            	else
+            		check attached_value: False end
+            	end
+				c.forth
             end
         end
-        
+
 end -- class JSON_LINKED_LIST_CONVERTER

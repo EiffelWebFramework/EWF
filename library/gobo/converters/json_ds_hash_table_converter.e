@@ -1,4 +1,4 @@
-indexing 
+note
     description: "A JSON converter for DS_HASH_TABLE [ANY, HASHABLE]"
     author: "Paul Cohen"
     date: "$Date: $"
@@ -9,26 +9,26 @@ class JSON_DS_HASH_TABLE_CONVERTER
 
 inherit
     JSON_CONVERTER
-    
+
 create
     make
-    
+
 feature {NONE} -- Initialization
-    
-    make is
+
+    make
         do
             create object.make (0)
         end
-        
+
 feature -- Access
 
     value: JSON_OBJECT
-            
+
     object: DS_HASH_TABLE [ANY, HASHABLE]
-            
+
 feature -- Conversion
 
-    from_json (j: like value): like object is
+    from_json (j: like value): detachable like object
         local
             keys: ARRAY [JSON_STRING]
             i: INTEGER
@@ -49,8 +49,8 @@ feature -- Conversion
                 i := i + 1
             end
         end
-        
-    to_json (o: like object): like value is
+
+    to_json (o: like object): like value
         local
             c: DS_HASH_TABLE_CURSOR [ANY, HASHABLE]
             js: JSON_STRING
@@ -70,12 +70,12 @@ feature -- Conversion
                     Result.put (jv, js)
                 else
                     failed := True
-                end 
+                end
                 c.forth
             end
             if failed then
                 Result := Void
             end
         end
-  
+
 end -- class JSON_DS_HASH_TABLE_CONVERTER

@@ -1,4 +1,4 @@
-indexing
+note
 
     description: "JSON Numbers, octal and hexadecimal formats are not used."
     author: "Javier Velilla"
@@ -22,21 +22,21 @@ create
 
 feature {NONE} -- initialization
 
-    make_integer (an_argument: INTEGER_64) is
+    make_integer (an_argument: INTEGER_64)
             -- Initialize an instance of JSON_NUMBER from the integer value of `an_argument'.
         do
             item := an_argument.out
             numeric_type := INTEGER_TYPE
         end
 
-    make_natural (an_argument: NATURAL_64) is
+    make_natural (an_argument: NATURAL_64)
             -- Initialize an instance of JSON_NUMBER from the unsigned integer value of `an_argument'.
         do
             item := an_argument.out
             numeric_type := NATURAL_TYPE
         end
 
-    make_real (an_argument: DOUBLE) is
+    make_real (an_argument: DOUBLE)
             -- Initialize an instance of JSON_NUMBER from the floating point value of `an_argument'.
         do
             item := an_argument.out
@@ -48,20 +48,20 @@ feature -- Access
     item: STRING
             -- Content
 
-    hash_code: INTEGER is
+    hash_code: INTEGER
             --Hash code value
         do
             Result := item.hash_code
         end
 
-    representation: STRING is
+    representation: STRING
         do
             Result := item
         end
         
 feature -- Visitor pattern
 
-    accept (a_visitor: JSON_VISITOR) is
+    accept (a_visitor: JSON_VISITOR)
             -- Accept `a_visitor'.
             -- (Call `visit_json_number' procedure on `a_visitor'.)
         do
@@ -70,7 +70,7 @@ feature -- Visitor pattern
 
 feature -- Status
 
-    is_equal (other: like Current): BOOLEAN is
+    is_equal (other: like Current): BOOLEAN
             -- Is `other' attached to an object of the same type
             -- as current object and identical to it?
         do
@@ -87,9 +87,9 @@ feature -- Status report
 
 feature -- Implementation
 
-    INTEGER_TYPE: INTEGER is 1
-    DOUBLE_TYPE: INTEGER is 2
-    NATURAL_TYPE: INTEGER is 3
+    INTEGER_TYPE: INTEGER = 1
+    DOUBLE_TYPE: INTEGER = 2
+    NATURAL_TYPE: INTEGER = 3
 
     numeric_type: INTEGER
 

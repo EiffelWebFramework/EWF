@@ -1,4 +1,4 @@
-indexing
+note
     description: "A JSON converter for DS_LINKED_LIST [ANY]"
     author: "Paul Cohen"
     date: "$Date: $"
@@ -9,26 +9,26 @@ class JSON_DS_LINKED_LIST_CONVERTER
 
 inherit
     JSON_CONVERTER
-    
+
 create
     make
-    
+
 feature {NONE} -- Initialization
-    
-    make is
+
+    make
         do
             create object.make
         end
-        
+
 feature -- Access
 
     value: JSON_ARRAY
-            
+
     object: DS_LINKED_LIST [ANY]
-            
+
 feature -- Conversion
 
-    from_json (j: like value): like object is
+    from_json (j: like value): detachable like object
         local
             i: INTEGER
         do
@@ -42,8 +42,8 @@ feature -- Conversion
                 i := i + 1
             end
         end
-        
-    to_json (o: like object): like value is
+
+    to_json (o: like object): like value
         local
             c: DS_LIST_CURSOR [ANY]
         do
@@ -58,5 +58,5 @@ feature -- Conversion
                 c.forth
             end
         end
-        
-end -- class JSON_DS_LINKED_LIST_CONVERTER  
+
+end -- class JSON_DS_LINKED_LIST_CONVERTER

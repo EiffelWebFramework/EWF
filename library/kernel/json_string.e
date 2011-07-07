@@ -1,6 +1,6 @@
-indexing
+note
 
-    description:"[
+    description: "[
         A JSON_STRING represent a string in JSON.
         A string is a collection of zero or more Unicodes characters, wrapped in double
         quotes, using blackslash espaces.
@@ -26,7 +26,7 @@ create
 
 feature {NONE} -- Initialization
 
-    make_json (an_item: STRING) is
+    make_json (an_item: STRING)
             -- Initialize.
         require
             item_not_void: an_item /= Void
@@ -39,7 +39,7 @@ feature -- Access
     item: STRING
             -- Contents
 
-    representation: STRING is
+    representation: STRING
         do
             Result := "%""
             Result.append (item)
@@ -48,7 +48,7 @@ feature -- Access
         
 feature -- Visitor pattern
 
-    accept (a_visitor: JSON_VISITOR) is
+    accept (a_visitor: JSON_VISITOR)
             -- Accept `a_visitor'.
             -- (Call `visit_json_string' procedure on `a_visitor'.)
         do
@@ -57,7 +57,7 @@ feature -- Visitor pattern
 
 feature -- Comparison
 
-    is_equal (other: like Current): BOOLEAN is
+    is_equal (other: like Current): BOOLEAN
             -- Is JSON_STRING  made of same character sequence as `other'
             -- (possibly with a different capacity)?
         do
@@ -66,7 +66,7 @@ feature -- Comparison
 
 feature -- Change Element
 
-    append (a_string: STRING)is
+    append (a_string: STRING)
             -- Add an_item
         require
             a_string_not_void: a_string /= Void
@@ -76,7 +76,7 @@ feature -- Change Element
 
 feature -- Status report
 
-    hash_code: INTEGER is
+    hash_code: INTEGER
             -- Hash code value
         do
             Result := item.hash_code
@@ -92,7 +92,7 @@ feature -- Status report
 
 feature {NONE} -- Implementation
 
-    escaped_json_string (s: STRING): STRING is
+    escaped_json_string (s: STRING): STRING
             -- JSON string with '"' and '\' characters escaped
         require
             s_not_void: s /= Void

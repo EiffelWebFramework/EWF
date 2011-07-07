@@ -1,4 +1,4 @@
-indexing
+note
     description: "JSON Null Values"
     author: "Javier Velilla"
     date: "2008/08/24"
@@ -12,20 +12,20 @@ inherit
 
 feature --Access
 
-    hash_code: INTEGER is
+    hash_code: INTEGER
             -- Hash code value
         do
             Result := null_value.hash_code
         end
 
-    representation: STRING is
+    representation: STRING
         do
             Result := "null"
         end
         
 feature -- Visitor pattern
 
-    accept (a_visitor: JSON_VISITOR) is
+    accept (a_visitor: JSON_VISITOR)
             -- Accept `a_visitor'.
             -- (Call `visit_element_a' procedure on `a_visitor'.)
         do
@@ -42,6 +42,6 @@ feature -- Status report
 
 feature {NONE}-- Implementation        
 
-    null_value: STRING is "null"
+    null_value: STRING = "null"
 
 end

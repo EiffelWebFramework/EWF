@@ -1,4 +1,4 @@
-indexing
+note
 	description: "Objects that ..."
 	author: ""
 	date: "$Date$"
@@ -9,11 +9,11 @@ class
 
 feature -- Access
 
-	read_json_from (a_path: STRING): ?STRING is
+	read_json_from (a_path: STRING): detachable STRING
 		local
 			l_file: PLAIN_TEXT_FILE
 			template_content: STRING
-			l_last_string: ?STRING
+			l_last_string: detachable STRING
 		do
 			create l_file.make (a_path)
 				-- We perform several checks until we make a real attempt to open the file.

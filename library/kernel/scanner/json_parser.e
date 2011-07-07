@@ -1,4 +1,4 @@
-indexing
+note
 
 	description: "Parse serialized JSON data"
 	author: "jvelilla"
@@ -17,7 +17,7 @@ create
 
 feature {NONE} -- Initialize
 
-	make_parser (a_json: STRING) is
+	make_parser (a_json: STRING)
 			-- Initialize.
 		require
 			json_not_empty: a_json /= Void and then not a_json.is_empty
@@ -51,7 +51,7 @@ feature -- Status report
 
 feature -- Element change
 
-	report_error (e: STRING) is
+	report_error (e: STRING)
 			-- Report error `e'
 		require
 			e_not_void: e /= Void
@@ -61,7 +61,7 @@ feature -- Element change
 
 feature -- Commands
 
-	parse_json: ?JSON_VALUE is
+	parse_json: detachable JSON_VALUE
 		    -- Parse JSON data `representation'
 		    -- start ::= object | array
 		do
@@ -76,7 +76,7 @@ feature -- Commands
 		    end
 		end
 
-	parse: ?JSON_VALUE is
+	parse: detachable JSON_VALUE
 			-- Parse JSON data `representation'
 		local
 			c: CHARACTER
@@ -121,14 +121,14 @@ feature -- Commands
 			is_parsed_implies_result_not_void: is_parsed implies Result /= Void
 		end
 
-	parse_object: JSON_OBJECT is
+	parse_object: JSON_OBJECT
 			-- object
 			-- {}
 			-- {"key" : "value" [,]}
 		local
 			has_more: BOOLEAN
-			l_json_string: ?JSON_STRING
-			l_value: ?JSON_VALUE
+			l_json_string: detachable JSON_STRING
+			l_value: detachable JSON_VALUE
 		do
 			create Result.make
 			-- check if is an empty object {}
@@ -174,7 +174,7 @@ feature -- Commands
 			end
 		end
 
-	parse_string: ?JSON_STRING is
+	parse_string: detachable JSON_STRING
 			-- Parsed string
 		local
 			has_more: BOOLEAN
@@ -200,7 +200,7 @@ feature -- Commands
 							create l_unicode.make_from_string ("\u")
 							l_unicode.append (read_unicode)
 							c := actual
-							if is_a_valid_unicode (l_unicode) then
+							if is_valid_unicode (l_unicode) then
 								l_json_string.append (l_unicode)
 							else
 								has_more := False
@@ -231,13 +231,13 @@ feature -- Commands
 			end
 		end
 
-	parse_array: JSON_ARRAY is
+	parse_array: JSON_ARRAY
 			-- array
 			-- []
 			-- [elements [,]]
 		local
 			flag: BOOLEAN
-			l_value: ?JSON_VALUE
+			l_value: detachable JSON_VALUE
 			c: like actual
 		do
 			create Result.make_array
@@ -276,7 +276,7 @@ feature -- Commands
 			end
 		end
 
-	parse_number: ?JSON_NUMBER is
+	parse_number: detachable JSON_NUMBER
 			-- Parsed number
 		local
 			sb: STRING
@@ -304,7 +304,7 @@ feature -- Commands
 				end
 			end
 
-			if is_a_valid_number (sb) then
+			if is_valid_number (sb) then
 				if sb.is_integer then
 					create Result.make_integer (sb.to_integer)
 					is_integer := True
@@ -317,7 +317,7 @@ feature -- Commands
 			end
 		end
 
-	is_null: BOOLEAN is
+	is_null: BOOLEAN
 			-- Word at index represents null?
 		local
 			l_null: STRING
@@ -330,7 +330,7 @@ feature -- Commands
 			end
 		end
 
-	is_false: BOOLEAN is
+	is_false: BOOLEAN
 			-- Word at index represents false?
 		local
 			l_false: STRING
@@ -343,7 +343,7 @@ feature -- Commands
 			end
 		end
 
-	is_true: BOOLEAN is
+	is_true: BOOLEAN
 			-- Word at index represents true?
 		local
 			l_true: STRING
@@ -356,7 +356,7 @@ feature -- Commands
 			end
 		end
 
-	read_unicode: STRING is
+	read_unicode: STRING
 			-- Read unicode and return value
 		local
 			i: INTEGER
@@ -375,27 +375,83 @@ feature -- Commands
 
 feature {NONE} -- Implementation
 
-	is_a_valid_number (a_number: STRING): BOOLEAN is
+	is_valid_number (a_number: STRING): BOOLEAN
             -- is 'a_number' a valid number based on this regular expression
             -- "-?(?: 0|[1-9]\d+)(?: \.\d+)?(?: [eE][+-]?\d+)?\b"?
-        local
-            word_set: RX_CHARACTER_SET
-            regexp: RX_PCRE_REGULAR_EXPRESSION
-            number_regex: STRING
-        do
-            create regexp.make
-            create word_set.make_empty
-            a_number.right_adjust
-            a_number.left_adjust
-            word_set.add_string ("0123456789.eE+-")
-            regexp.set_word_set (word_set)
-            number_regex := "-?(?:0|[1-9]\d*)(?:\.\d+)?(?:[eE][+-]?\d+)?\b"
-            regexp.compile (number_regex)
-            if regexp.matches (a_number) then
-                Result := a_number.is_equal (regexp.captured_substring (0))
-            end
-        end
-	is_a_valid_unicode (a_unicode: STRING): BOOLEAN is
+		local
+			s: detachable STRING
+			c: CHARACTER
+			i,n: INTEGER
+		do
+			create s.make_empty
+			n := a_number.count
+			if n = 0 then
+				Result := False
+			else
+				Result := True
+				i := 1
+				--| "-?"
+				c := a_number[i]
+				if c = '-' then
+					s.extend (c); i := i + 1; c := a_number[i]
+				end
+				--| "0|[1-9]\d*
+				if c.is_digit then
+					if c = '0' then
+						--| "0"
+						s.extend (c); i := i + 1; c := a_number[i]
+					else
+						--| "[1-9]"
+						s.extend (c); i := i + 1; c := a_number[i]
+						--| "\d*"
+						from until i > n or not c.is_digit loop
+							s.extend (c); i := i + 1; c := a_number[i]
+						end
+					end
+				end
+			end
+			if Result then
+					--| "(\.\d+)?"			
+				if c = '.' then
+					--| "\.\d+"  =  "\.\d\d*"
+					s.extend (c); i := i + 1; c := a_number[i]
+					if c.is_digit then
+						from until i > n or not c.is_digit loop
+							s.extend (c); i := i + 1; c := a_number[i]
+						end
+					else
+						Result := False --| expecting digit
+					end
+				end
+			end
+			if Result then --| "(?:[eE][+-]?\d+)?\b"
+				if c = 'e' or c = 'E' then
+					--| "[eE][+-]?\d+"
+					s.extend (c); i := i + 1; c := a_number[i]
+					if c = '+' or c = '-' then
+ 							s.extend (c); i := i + 1; c := a_number[i]
+					end
+					if c.is_digit then
+						from until i > n or not c.is_digit loop
+							s.extend (c); i := i + 1; c := a_number[i]
+						end
+					else
+						Result := False --| expecting digit							
+					end
+				end
+			end
+			if Result then --| "\b"
+				from until i > n or not c.is_space loop
+					s.extend (c); i := i + 1; c := a_number[i]
+				end
+				Result := i > n
+				if Result then
+					Result := s.same_string (a_number)
+				end
+			end
+		end
+
+	is_valid_unicode (a_unicode: STRING): BOOLEAN
 			-- is 'a_unicode' a valid unicode based on this regular expression
 			-- "\\u[0-9a-fA-F]{4}"
 		local
@@ -423,7 +479,7 @@ feature {NONE} -- Implementation
 			end
 		end
 
-	extra_elements: BOOLEAN is
+	extra_elements: BOOLEAN
 			-- has more elements?
 		local
 			c: like actual
@@ -449,11 +505,11 @@ feature {NONE} -- Implementation
 
 feature {NONE} -- Constants
 
-	false_id: STRING is "false"
+	false_id: STRING = "false"
 
-	true_id: STRING is "true"
+	true_id: STRING = "true"
 
-	null_id: STRING is "null"
+	null_id: STRING = "null"
 
 
 end

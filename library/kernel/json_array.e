@@ -1,4 +1,4 @@
-indexing
+note
     description: "[
             JSON_ARRAY represent an array in JSON.
             An array in JSON is an ordered set of names.
@@ -25,7 +25,7 @@ create
 
 feature {NONE} -- Initialization
 
-    make_array is
+    make_array
             -- Initialize JSON Array
         do
             create values.make (10)
@@ -33,7 +33,7 @@ feature {NONE} -- Initialization
 
 feature -- Access
 
-    i_th alias "[]" (i: INTEGER): JSON_VALUE is
+    i_th alias "[]" (i: INTEGER): JSON_VALUE
             -- Item at `i'-th position
         require
             is_valid_index: valid_index (i)
@@ -41,7 +41,7 @@ feature -- Access
             Result := values.i_th (i)
         end
 
-    representation: STRING is
+    representation: STRING
         local
             i: INTEGER
         do
@@ -59,10 +59,10 @@ feature -- Access
             end
             Result.append_character (']')
         end
-        
+
 feature -- Visitor pattern
 
-    accept (a_visitor: JSON_VISITOR) is
+    accept (a_visitor: JSON_VISITOR)
             -- Accept `a_visitor'.
             -- (Call `visit_json_array' procedure on `a_visitor'.)
         do
@@ -71,7 +71,7 @@ feature -- Visitor pattern
 
 feature -- Mesurement
 
-    count: INTEGER is
+    count: INTEGER
             -- Number of items.
         do
             Result := values.count
@@ -79,7 +79,7 @@ feature -- Mesurement
 
 feature -- Status report
 
-    valid_index (i: INTEGER): BOOLEAN is
+    valid_index (i: INTEGER): BOOLEAN
             -- Is `i' a valid index?
         do
             Result := (1 <= i) and (i <= count)
@@ -87,11 +87,11 @@ feature -- Status report
 
 feature -- Change Element
 
-    add (value: JSON_VALUE) is
+    add (value: JSON_VALUE)
         require
             value_not_null: value /= void
         do
-            values.extend(value)
+            values.extend (value)
         ensure
             has_new_value: old values.count + 1 = values.count and
                               values.has (value)
@@ -99,7 +99,7 @@ feature -- Change Element
 
 feature -- Report
 
-    hash_code: INTEGER is
+    hash_code: INTEGER
             -- Hash code value
         do
             from
@@ -116,7 +116,7 @@ feature -- Report
 
 feature -- Conversion
 
-    array_representation: ARRAYED_LIST [JSON_VALUE] is
+    array_representation: ARRAYED_LIST [JSON_VALUE]
             -- Representation as a sequences of values
         do
             Result := values

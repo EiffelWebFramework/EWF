@@ -1,4 +1,4 @@
-indexing
+note
     description:"[
             JSON_VALUE represent a value in JSON. 
                     A value can be
@@ -25,14 +25,14 @@ inherit
     
 feature -- Access
 
-    representation: STRING is
+    representation: STRING
             -- UTF-8 encoded Unicode string representation of Current
         deferred
         end
 
 feature -- Visitor pattern
 
-    accept (a_visitor: JSON_VISITOR) is
+    accept (a_visitor: JSON_VISITOR)
             -- Accept `a_visitor'.
             -- (Call `visit_*' procedure on `a_visitor'.)
         require

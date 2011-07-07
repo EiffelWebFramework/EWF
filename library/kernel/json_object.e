@@ -1,4 +1,4 @@
-indexing
+note
 
     description: "[
             An JSON_OBJECT represent an object in JSON.
@@ -27,7 +27,7 @@ create
 
 feature {NONE} -- Initialization
 
-    make is
+    make
             -- Initialize
         do
             create object.make (10)
@@ -35,13 +35,13 @@ feature {NONE} -- Initialization
 
 feature -- Change Element
 
-    put (value: ?JSON_VALUE; key: JSON_STRING) is
+    put (value: detachable JSON_VALUE; key: JSON_STRING)
             -- Assuming there is no item of key `key',
             -- insert `value' with `key'.
         require
             key_not_present: not has_key (key)
         local
-            l_value: ?JSON_VALUE
+            l_value: detachable JSON_VALUE
         do
             l_value := value
             if l_value = Void then
@@ -52,31 +52,31 @@ feature -- Change Element
 
 feature -- Access
 
-    has_key (key: JSON_STRING): BOOLEAN is
+    has_key (key: JSON_STRING): BOOLEAN
             -- has the JSON_OBJECT contains a specific key 'key'.
         do
             Result := object.has (key)
         end
 
-    has_item (value: JSON_VALUE): BOOLEAN is
+    has_item (value: JSON_VALUE): BOOLEAN
             -- has the JSON_OBJECT contain a specfic item 'value'
         do
             Result := object.has_item (value)
         end
 
-    item (key: JSON_STRING): ?JSON_VALUE is
+    item (key: JSON_STRING): detachable JSON_VALUE
             -- the json_value associated with a key.
         do
             Result := object.item (key)
         end
 
-    current_keys: ARRAY [JSON_STRING] is
+    current_keys: ARRAY [JSON_STRING]
             -- array containing actually used keys
         do
             Result := object.current_keys
         end
 
-    representation: STRING is
+    representation: STRING
         local
             t: HASH_TABLE [JSON_VALUE, JSON_STRING]
         do
@@ -100,7 +100,7 @@ feature -- Access
 
 feature -- Visitor pattern
 
-    accept (a_visitor: JSON_VISITOR) is
+    accept (a_visitor: JSON_VISITOR)
             -- Accept `a_visitor'.
             -- (Call `visit_json_object' procedure on `a_visitor'.)
         do
@@ -109,7 +109,7 @@ feature -- Visitor pattern
 
 feature -- Conversion
 
-    map_representation: HASH_TABLE [JSON_VALUE, JSON_STRING] is
+    map_representation: HASH_TABLE [JSON_VALUE, JSON_STRING]
             --A representation that maps keys to values
         do
             Result := object
@@ -117,7 +117,7 @@ feature -- Conversion
 
 feature -- Report
 
-    hash_code: INTEGER is
+    hash_code: INTEGER
             -- Hash code value
         do
             from
