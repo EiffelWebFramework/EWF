@@ -4,9 +4,10 @@ This project is a community project
 - Google group: http://groups.google.com/group/eiffel-web-framework
 
 ## Materials ##
-- wiki: github wiki at https://github.com/Eiffel-World/Eiffel-Web-Framework/wiki/Community-collaboration
+- wiki: github wiki at https://github.com/Eiffel-World/Eiffel-Web-Framework/wiki
 - Shared documents:  on google docs at http://goo.gl/M8WLP
 - source code: git repository at https://github.com/Eiffel-World/Eiffel-Web-Framework
+- temporary wiki for EWSGI spec at http://eiffel.seibostudios.se/wiki/EWSGI
 
 ## Main contributors ##
 - **jfiat**: Jocelyn Fiat (Eiffel Software | http://eiffel.com/)
