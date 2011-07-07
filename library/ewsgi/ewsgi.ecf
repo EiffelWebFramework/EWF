@@ -11,7 +11,7 @@
 		</option>
 		<library name="base" location="$ISE_LIBRARY\library\base\base-safe.ecf"/>
 		<library name="time" location="$ISE_LIBRARY\library\time\time-safe.ecf"/>
-		<cluster name="interface" location="library\" recursive="true">
+		<cluster name="interface" location="src\" recursive="true">
 			<file_rule>
 				<exclude>GW_REQUEST_CONTEXT_IMP</exclude>
 			</file_rule>
