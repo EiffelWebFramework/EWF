@@ -4,11 +4,11 @@
 This document specifies a proposed standard interface between web servers and Eiffel web applications or frameworks, to promote web application portability across a variety of web servers.
 
 Note: This document is based on  [PEP 333](http://www.python.org/dev/peps/pep-0333/) -- Python Web Server Gateway Interface v1.0 but adapted to needs and properties of Eiffel.
-Rationale and Goals
 
+## Rationale and Goals
 The most important goal of EWSGI is to enable an amazingly simple and wonderful programmer experience to the Eiffel developer who wants to write Eiffel server applications for the web!
 
-Other programming laguages like Java boast a wide variety of web application frameworks. Java's "servlet" API makes it possible for applications written with any Java web application framework to run in any web server that supports the servlet API. Python also boasts many frameworks like Zope, Quixote, Webware, SkunkWeb, PSO, and Twisted Web -- to name just a few. This wide variety of choices was a problem for new Python users, because there was no standard protocol or convention for how webservers were to interact with Python applications and frameworks and this meant that the frameworks only worked with some webservers and not with others. To resolve this the  PEP 333 -- Python Web Server Gateway Interface v1.0 was written and subsequently implemented in many webserver environments and in Python frameworks.
+Other programming laguages like Java boast a wide variety of web application frameworks. Java's "servlet" API makes it possible for applications written with any Java web application framework to run in any web server that supports the servlet API. Python also boasts many frameworks like Zope, Quixote, Webware, SkunkWeb, PSO, and Twisted Web -- to name just a few. This wide variety of choices was a problem for new Python users, because there was no standard protocol or convention for how webservers were to interact with Python applications and frameworks and this meant that the frameworks only worked with some webservers and not with others. To resolve this the  [PEP 333](http://www.python.org/dev/peps/pep-0333/) -- Python Web Server Gateway Interface v1.0 was written and subsequently implemented in many webserver environments and in Python frameworks.
 
 The availability and widespread use of such an API in web servers for Eiffel -- whether those servers are written in Eiffel (e.g. Niño), embed Eiffel in Apache (e.g. mod_eiffel), or invoke Eiffel via a gateway protocol (e.g. CGI, FastCGI, etc.) -- would separate choice of framework from choice of web server, freeing users to choose a pairing that suits them, while freeing server developers as well as developers of higher level web application framworks and tools, like AJC (Alex's Eiffel2JavaScript), to focus on their preferred area of specialization.
 
@@ -21,25 +21,29 @@ However, since no existing servers or frameworks support EWSGI, there is little 
 Thus, simplicity of implementation on both the server and framework sides of the interface is absolutely critical to the utility of the EWSGI interface, and is therefore the principal criterion for any design decisions.
 
 Note, however, that simplicity of implementation for a framework author is not the same thing as ease of use for a web application author. EWSGI presents an absolutely "no frills" interface to the framework author, because bells and whistles like response objects and cookie handling would just get in the way of existing frameworks' handling of these issues. Again, the goal of EWSGI is to facilitate easy interconnection of existing servers and applications or frameworks, not to create a new web framework.
-Proof-of-concept and reference implementation ¶
+
+## Proof-of-concept and reference implementation
 
 We propose a proof-of-concept or reference implementation be done for Apache on Linux and Windows using  EiffelWebReloaded and WAMIE.
-Specification overview ¶
-The Server/Gateway Side ¶
+
+## Specification overview
+
+## The Server/Gateway Side
 
 This is the web server side. The server sends the request information in an environment object or structure to the Application/Framework side and expects information on what to return in the form of a response object.
-The Application/Framework Side ¶
+
+## The Application/Framework Side
 
 This is the Eiffel application side. Basically one should be able to write:
 
-class APPLICATION
-Inherit
-	EW_APPLICATION
-creation
-	make  - - THIS IS PART OF THE EWSGI SPECIFICATION!
-features
-	execute (env: ENVIRON): RESPONSE is - - THIS IS PART OF THE EWSGI SPECIFICATION!
-	do
+      class APPLICATION
+      inherit
+	  EW_APPLICATION
+      creation
+	  make  - - THIS IS PART OF THE EWSGI SPECIFICATION!
+      features
+	  execute (env: ENVIRON): RESPONSE is - - THIS IS PART OF THE EWSGI SPECIFICATION!
+	  do
 		create Result
 		if env.path_info = ”/hello” then
 			Result.set_status (Http_ok)
@@ -48,27 +52,27 @@ features
 		else
 			Result.set_status (Http_not_found)
 		end
-	end
-end
+	  end
+      end
 
 Or to register handlers for specific URL paths (or regexp based URL path expressions):
 
-class APPLICATION
-Inherit
-	EW_APPLICATION
-creation
-	make
-redefine
-	make
-features
+    class APPLICATION
+    inherit
+	 EW_APPLICATION
+    creation
+	 make
+    redefine
+	 make
+    features
 	
-	make is
+	 make is
 		do
 			register_handler (”/hello”, ~hello_world_handler)
 			-- The default execute feature will dispatch calls to the appropriate handler!
 		end
 
-	hello_world_handler (env: ENVIRON): RESPONSE is
+	 hello_world_handler (env: ENVIRON): RESPONSE is
 		do
 			create Result
 			if env.path_info = ”/hello” then
@@ -79,8 +83,8 @@ features
 				Result.set_status (Http_not_found)
 			end
 		end
-	end
-end
+	 end
+    end
 
 Specification Details ¶
 
