@@ -65,7 +65,7 @@ feature -- Commands
 		    -- Parse JSON data `representation'
 		    -- start ::= object | array
 		do
-		    	if is_valid_start_symbol then
+		   	if is_valid_start_symbol then
 		   	    Result := parse
 		        if extra_elements then
 		            is_parsed := False
