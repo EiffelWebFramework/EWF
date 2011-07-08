@@ -13,8 +13,14 @@ deferred class
 feature -- Basic operation
 
 	put_string (s: STRING_8)
+			-- Write `s' into the output stream
 		require
 			s_not_empty: s /= Void and then not s.is_empty
+		deferred
+		end
+
+	flush
+			-- Flush the output stream	
 		deferred
 		end
 

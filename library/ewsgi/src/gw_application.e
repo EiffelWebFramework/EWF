@@ -10,8 +10,19 @@ deferred class
 
 feature -- Execution
 
+	process (env: GW_ENVIRONMENT; a_input: GW_INPUT_STREAM; a_output: GW_OUTPUT_STREAM)
+		do
+			execute (new_request_context (env, a_input, a_output))
+		end
+
 	execute (ctx: GW_REQUEST_CONTEXT)
 			-- Execute the request
+		deferred
+		end
+
+feature -- Factory
+
+	new_request_context (env: GW_ENVIRONMENT; a_input: GW_INPUT_STREAM; a_output: GW_OUTPUT_STREAM): GW_REQUEST_CONTEXT
 		deferred
 		end
 

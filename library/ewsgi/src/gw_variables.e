@@ -6,7 +6,7 @@ note
 	status: "See notice at end of class."
 	date: "$Date$"
 	revision: "$Revision$"
-	
+
 deferred class
 	GW_VARIABLES [G -> STRING_GENERAL]
 
@@ -29,14 +29,18 @@ feature -- Access
 		deferred
 		end
 
-	variable_or_default (a_name: STRING; a_default: G): G
+	variable_or_default (a_name: STRING; a_default: G; use_default_when_empty: BOOLEAN): G
 			-- Value for variable `a_name'
 			-- If not found, return `a_default'
 		require
 			a_name_not_empty: a_name /= Void and then not a_name.is_empty
 		do
 			if attached variable (a_name) as s then
-				Result := s
+				if use_default_when_empty and then s.is_empty then
+					Result := a_default
+				else
+					Result := s
+				end
 			else
 				Result := a_default
 			end

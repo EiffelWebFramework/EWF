@@ -14,6 +14,8 @@ feature -- Access
 
 	last_string: STRING_8
 			-- Last read string from stream
+		deferred
+		end
 
 feature -- Basic operation
 
