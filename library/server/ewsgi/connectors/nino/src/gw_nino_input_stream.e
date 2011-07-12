@@ -22,7 +22,7 @@ feature {NONE} -- Initialization
 			set_nino_input (a_nino_input)
 		end
 
-feature {GW_NINO_APPLICATION} -- Nino
+feature {GW_NINO_CONNECTOR, GW_APPLICATION} -- Nino
 
 	set_nino_input (i: like nino_input)
 		do
@@ -48,7 +48,7 @@ feature -- Access
 			-- Last string read	
 
 ;note
-	copyright: "Copyright (c) 1984-2011, Eiffel Software and others"
+	copyright: "2011-2011, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

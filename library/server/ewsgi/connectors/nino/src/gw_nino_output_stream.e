@@ -21,7 +21,7 @@ feature {NONE} -- Initialization
 			set_nino_output (a_nino_output)
 		end
 
-feature {GW_NINO_APPLICATION} -- Nino
+feature {GW_NINO_CONNECTOR, GW_APPLICATION} -- Nino
 
 	set_nino_output (o: like nino_output)
 		do
@@ -41,11 +41,6 @@ feature -- Basic operation
 			nino_output.put_string (s)
 		end
 
-	flush
-			-- Flush the output stream	
-		do
-		end
-
 note
 	copyright: "2011-2011, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
@@ -56,5 +51,4 @@ note
 			Website http://www.eiffel.com
 			Customer support http://support.eiffel.com
 		]"
-
 end

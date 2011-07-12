@@ -45,7 +45,6 @@ feature {NONE} -- Initialization
 			-- Specific initialization
 		local
 			p: INTEGER
-			dt: DATE_TIME
 			env: like environment
 		do
 			env := environment

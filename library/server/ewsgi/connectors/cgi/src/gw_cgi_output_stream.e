@@ -10,6 +10,9 @@ class
 
 inherit
 	GW_OUTPUT_STREAM
+		undefine
+			flush
+		end
 
 	CONSOLE
 		rename
