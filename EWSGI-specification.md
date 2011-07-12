@@ -56,24 +56,24 @@ This is the web server side. The server sends the request information in an envi
 
 This is the Eiffel application side. Basically one should be able to write:
 
-      class APPLICATION
-      inherit
-	  EW_APPLICATION
-      creation
-	  make  - - THIS IS PART OF THE EWSGI SPECIFICATION!
-      features
-	  execute (env: ENVIRON): RESPONSE is - - THIS IS PART OF THE EWSGI SPECIFICATION!
-	  do
-		create Result
-		if env.path_info = ”/hello” then
-			Result.set_status (Http_ok)
-			Result.set_header (”Content-Type”, ”text/html; charset=utf-8”)
-			Result.put_contents (”<html><body>Hello World</body></html>”)
-		else
-			Result.set_status (Http_not_found)
-		end
-	  end
-      end
+    class APPLICATION
+        inherit
+            EW_APPLICATION
+        creation
+            make  - - THIS IS PART OF THE EWSGI SPECIFICATION!
+        features
+            execute (env: ENVIRON): RESPONSE is - - THIS IS PART OF THE EWSGI SPECIFICATION!
+            do
+                create Result
+                if env.path_info = ”/hello” then
+                    Result.set_status (Http_ok)
+                    Result.set_header (”Content-Type”, ”text/html; charset=utf-8”)
+                    Result.put_contents (”<html><body>Hello World</body></html>”)
+                else
+                    Result.set_status (Http_not_found)
+                end
+            end
+      end`
 
 Or to register handlers for specific URL paths (or regexp based URL path expressions):
 
