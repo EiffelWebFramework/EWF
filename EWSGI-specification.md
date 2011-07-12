@@ -73,37 +73,34 @@ This is the Eiffel application side. Basically one should be able to write:
                     Result.set_status (Http_not_found)
                 end
             end
-      end`
+      end
 
 Or to register handlers for specific URL paths (or regexp based URL path expressions):
 
     class APPLICATION
-    inherit
-	 EW_APPLICATION
-    creation
-	 make
-    redefine
-	 make
-    features
-	
-	 make is
-		do
-			register_handler (”/hello”, ~hello_world_handler)
-			-- The default execute feature will dispatch calls to the appropriate handler!
-		end
-
-	 hello_world_handler (env: ENVIRON): RESPONSE is
-		do
-			create Result
-			if env.path_info = ”/hello” then
-				Result.set_status (Http_ok)
-				Result.set_header (”Content-Type”, ”text/html; charset=utf-8”)
-				Result.put_contents (”<html><body>Hello World</body></html>”)
-			else
-				Result.set_status (Http_notund)
-			end
-		end
-	 end
+        inherit
+            EW_APPLICATION
+        creation
+            make
+        redefine
+            make
+        feature
+           make is
+               do
+                   register_handler (”/hello”, ~hello_world_handler)
+                   -- The default execute feature will dispatch calls to the appropriate handler!
+               end
+           hello_world_handler (env: ENVIRON): RESPONSE is
+               do
+                   create Result
+                   if env.path_info = ”/hello” then
+                       Result.set_status (Http_ok)
+                       Result.set_header (”Content-Type”, ”text/html; charset=utf-8”)
+                       Result.put_contents (”<html><body>Hello World</body></html>”)
+                   else
+                       Result.set_status (Http_notund)
+                   end
+              end
     end
 
 ## Specification Details
