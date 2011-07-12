@@ -26,9 +26,27 @@ Note, however, that simplicity of implementation for a framework author is not t
 
 ## Proof-of-concept and reference implementation
 
-We propose a proof-of-concept or reference implementation be done for Apache on Linux and Windows using  EiffelWebReloaded and WAMIE.
+We propose a proof-of-concept or reference implementation be done with:
 
-## Specification overview
+* CGI
+* FCGI
+* Nino. A simple Web server written in Eiffel by Javier Velilla.
+* mod_ewsgi. Apache module on Linux and Windows using Wamie.
+
+The reference implementation should enable a user to write an EWSGI "Hello World" application:
+
+1. Using just 1 Eiffel class of ~10 lines of code.
+1. And easily switch deployment method (CGI, FCGI, Nino or mod_ewsgi).
+
+A reference implementation is being worked on by Jocelyn Fiat (Eiffel Software), Javier Velilla (independent), Daniel Rodríguez (Seibo) and Paul Cohen (Seibo). The reference implementation consists of
+
+1. EWSGI core library:  [Eiffel-WebFramework](https://github.com/Eiffel-World/Eiffel-Web-Framework).
+1. eJSON library:  [eJSON](http://ejson.origo.ethz.ch/).
+1. Nino Eiffel Web server:  [Nino](http://code.google.com/p/webeiffel/source/browse/#svn%2Ftrunk%2Feiffelwebnino).
+1. mod_ewsgi module. Based on [Wamie](http://eiffel.seibostudios.se/wiki/Wamie).
+1. SOS. Simple Object Storage - a simple Eiffel persistance mechanism.
+
+# Specification overview
 
 ## The Server/Gateway Side
 
@@ -82,13 +100,13 @@ Or to register handlers for specific URL paths (or regexp based URL path express
 				Result.set_header (”Content-Type”, ”text/html; charset=utf-8”)
 				Result.put_contents (”<html><body>Hello World</body></html>”)
 			else
-				Result.set_status (Http_not_found)
+				Result.set_status (Http_notund)
 			end
 		end
-	 end
+	 e ¶nd
     end
 
-Specification Details ¶
+## Specification Details
 
 Required information in the ENVIRONMENT class.
 
