@@ -1,8 +1,8 @@
 [submodule "doc/wiki"]
 	path = doc/wiki
 	url = https://github.com/Eiffel-World/Eiffel-Web-Framework.wiki.git
-[submodule "ext\\server\\nino"]
-	path = ext\\server\\nino
+[submodule "ext/server/nino"]
+	path = ext/server/nino
 	url = http://github.com/Eiffel-World/EiffelWebNino.git
 [submodule "ext/text/json"]
 	path = ext/text/json
