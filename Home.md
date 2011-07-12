@@ -10,3 +10,4 @@ The official documentation/wiki is located at https://github.com/Eiffel-World/Ei
    - [[list of tasks, and a potential roadmap| Tasks-Roadmap]]
    - [[General source structure of this project| Source-structure]]
    - [[Overview of the server side architecture| Spec-Server-Architecture]]
+   - This project is also a collection of [[Libraries]] related to the Web
