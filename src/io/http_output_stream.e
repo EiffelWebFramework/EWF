@@ -26,6 +26,5 @@ feature -- Basic operation
 		do
 			target.put_string (s)
 		end
-
-
+		
 end
