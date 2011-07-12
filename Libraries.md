@@ -10,5 +10,5 @@
 * [[Library-JSON]]: JSON format parser and converter
 
 ## libraries that could be included, or or used ##
-* eMIME
+* eMIME: MIME parser, and encoder ...
 *
