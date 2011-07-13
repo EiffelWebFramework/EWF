@@ -30,6 +30,8 @@ feature {NONE} -- Execution
 
 	execute (ctx: GW_REQUEST_CONTEXT)
 			-- Execute the request
+			-- See `ctx.input' and `ctx.output' for i/o streams
+			--     `ctx.environment' for the Gateway environment
 		deferred
 		end
 
