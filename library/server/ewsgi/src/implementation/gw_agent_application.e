@@ -23,13 +23,13 @@ feature {NONE} -- Implementation
 
 feature {NONE} -- Implementation
 
-	callback: PROCEDURE [ANY, TUPLE [like new_request_context]]
+	callback: PROCEDURE [ANY, TUPLE [req: like new_request_context; res: like new_response]]
 			-- Procedure called on `execute'
 
-	execute (ctx: like new_request_context)
+	execute (req: like new_request_context; res: like new_response)
 			-- Execute the request
 		do
-			callback.call ([ctx])
+			callback.call ([req, res])
 		end
 
 invariant

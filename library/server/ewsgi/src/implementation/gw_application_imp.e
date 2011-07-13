@@ -30,10 +30,15 @@ feature -- Execution
 
 feature -- Factory
 
-	new_request_context (env: GW_ENVIRONMENT; a_input: GW_INPUT_STREAM; a_output: GW_OUTPUT_STREAM): GW_REQUEST_CONTEXT
+	new_request_context (env: GW_ENVIRONMENT; a_input: GW_INPUT_STREAM): GW_REQUEST_CONTEXT
 		do
-			create {GW_REQUEST_CONTEXT_IMP} Result.make (env, a_input, a_output)
+			create {GW_REQUEST_CONTEXT_IMP} Result.make (env, a_input)
 			Result.execution_variables.set_variable (request_count.out, "REQUEST_COUNT")
+		end
+
+	new_response (a_output: GW_OUTPUT_STREAM): GW_RESPONSE
+		do
+			create {GW_RESPONSE_IMP} Result.make (a_output)
 		end
 
 ;note

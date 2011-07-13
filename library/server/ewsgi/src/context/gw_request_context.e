@@ -22,11 +22,6 @@ feature -- Access: Input/Output
 		deferred
 		end
 
-	output: GW_OUTPUT_STREAM
-			-- Server output channel
-		deferred
-		end
-
 feature -- Access: global variable
 
 	variables: HASH_TABLE [STRING_32, STRING_32]

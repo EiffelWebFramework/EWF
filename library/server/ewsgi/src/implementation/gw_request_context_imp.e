@@ -23,13 +23,12 @@ create
 
 feature {NONE} -- Initialization
 
-	make (env: GW_ENVIRONMENT; a_input: like input; a_output: like output)
+	make (env: GW_ENVIRONMENT; a_input: like input)
 		require
 			env_attached: env /= Void
 		do
 			create error_handler.make
 			input := a_input
-			output := a_output
 			environment := env
 			content_length := env.content_length_value
 			create execution_variables.make (10)
@@ -70,10 +69,7 @@ feature {NONE} -- Initialization
 			extract_variables
 		end
 
-feature -- Access: Input/Output
-
-	output: GW_OUTPUT_STREAM
-			-- Server output channel
+feature -- Access: Input
 
 	input: GW_INPUT_STREAM
 			-- Server input channel
