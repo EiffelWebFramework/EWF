@@ -581,7 +581,7 @@ feature -- Extra
 		deferred
 		end
 
-feature {GW_REQUEST_CONTEXT} -- Element change
+feature {GW_REQUEST} -- Element change
 
 	set_orig_path_info (s: STRING)
 			-- Set ORIG_PATH_INFO to `s'

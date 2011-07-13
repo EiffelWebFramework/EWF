@@ -102,7 +102,7 @@ feature -- Access
 			Result := table.has_key (a_name)
 		end
 
-feature {GW_REQUEST_CONTEXT, GW_APPLICATION, GW_CONNECTOR} -- Element change
+feature {GW_REQUEST, GW_APPLICATION, GW_CONNECTOR} -- Element change
 
 	set_variable (a_name: STRING; a_value: STRING)
 		do
@@ -251,7 +251,7 @@ feature -- Extra
 	orig_path_info: detachable STRING
 			-- Original version of `path_info' before processed by Current environment
 
-feature {GW_REQUEST_CONTEXT} -- Update
+feature {GW_REQUEST} -- Update
 
 	set_orig_path_info (s: STRING)
 		do

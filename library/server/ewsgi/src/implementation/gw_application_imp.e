@@ -30,9 +30,9 @@ feature -- Execution
 
 feature -- Factory
 
-	new_request_context (env: GW_ENVIRONMENT; a_input: GW_INPUT_STREAM): GW_REQUEST_CONTEXT
+	new_request_context (env: GW_ENVIRONMENT; a_input: GW_INPUT_STREAM): GW_REQUEST
 		do
-			create {GW_REQUEST_CONTEXT_IMP} Result.make (env, a_input)
+			create {GW_REQUEST_IMP} Result.make (env, a_input)
 			Result.execution_variables.set_variable (request_count.out, "REQUEST_COUNT")
 		end
 

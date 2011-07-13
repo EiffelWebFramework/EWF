@@ -30,7 +30,7 @@ feature -- Process request
 
 feature {NONE} -- Execution
 
-	execute (req: GW_REQUEST_CONTEXT; res: GW_RESPONSE)
+	execute (req: GW_REQUEST; res: GW_RESPONSE)
 			-- Execute the request
 			-- See `req.input' and `res.output' for i/o streams
 			--     `req.environment' for the Gateway environment
@@ -44,12 +44,12 @@ feature {NONE} -- Execution
 		do
 		end
 
-	post_execute (req: detachable GW_REQUEST_CONTEXT; res: detachable GW_RESPONSE)
+	post_execute (req: detachable GW_REQUEST; res: detachable GW_RESPONSE)
 			-- Operation processed after `execute', or after `rescue_execute'
 		do
 		end
 
-	rescue_execute (req: detachable GW_REQUEST_CONTEXT; res: detachable GW_RESPONSE; a_exception: detachable EXCEPTION)
+	rescue_execute (req: detachable GW_REQUEST; res: detachable GW_RESPONSE; a_exception: detachable EXCEPTION)
 			-- Operation processed on rescue of `execute'
 		do
 			post_execute (req, res)
@@ -57,7 +57,7 @@ feature {NONE} -- Execution
 
 feature -- Factory
 
-	new_request_context (env: GW_ENVIRONMENT; a_input: GW_INPUT_STREAM): GW_REQUEST_CONTEXT
+	new_request_context (env: GW_ENVIRONMENT; a_input: GW_INPUT_STREAM): GW_REQUEST
 			-- New Request context based on `env' and `a_input'
 			--| note: you can redefine this function to create your own
 			--| descendant of GW_REQUEST_CONTEXT , or even to reuse/recycle existing

@@ -13,7 +13,7 @@ note
 	revision: "$Revision$"
 
 deferred class
-	GW_REQUEST_CONTEXT
+	GW_REQUEST
 
 feature -- Access: Input/Output
 

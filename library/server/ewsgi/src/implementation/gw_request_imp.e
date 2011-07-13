@@ -13,10 +13,10 @@ note
 	revision: "$Revision$"
 
 class
-	GW_REQUEST_CONTEXT_IMP
+	GW_REQUEST_IMP
 
 inherit
-	GW_REQUEST_CONTEXT
+	GW_REQUEST
 
 create
 	make

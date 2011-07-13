@@ -46,7 +46,7 @@ feature -- Access
 			end
 		end
 
-feature {GW_REQUEST_CONTEXT, GW_APPLICATION, GW_CONNECTOR} -- Element change
+feature {GW_REQUEST, GW_APPLICATION, GW_CONNECTOR} -- Element change
 
 	set_variable (a_name: STRING; a_value: G)
 		require

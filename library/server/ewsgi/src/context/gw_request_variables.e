@@ -51,7 +51,7 @@ feature -- Status report
 			Result := table.has (a_name)
 		end
 
-feature {GW_REQUEST_CONTEXT, GW_APPLICATION, GW_CONNECTOR} -- Element change
+feature {GW_REQUEST, GW_APPLICATION, GW_CONNECTOR} -- Element change
 
 	set_variable (a_name: STRING; a_value: STRING_32)
 		do
@@ -112,7 +112,7 @@ feature -- Access: table
 			create Result.make (table)
 		end
 
-feature {GW_REQUEST_CONTEXT} -- Element change
+feature {GW_REQUEST} -- Element change
 
 	add_variable (v: STRING_32; k: STRING_32)
 			-- Added `k,v' to variables table
@@ -125,7 +125,7 @@ feature {GW_REQUEST_CONTEXT} -- Element change
 			table.force (v, k)
 		end
 
-feature {GW_REQUEST_CONTEXT} -- Element change		
+feature {GW_REQUEST} -- Element change		
 
 	table: HASH_TABLE [STRING_32, STRING_32]
 			-- Variables table
