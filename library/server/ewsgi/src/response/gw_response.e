@@ -7,12 +7,20 @@ note
 deferred class
 	GW_RESPONSE
 
-feature -- Access: Input/Output
+feature -- Access: Output
 
 	output: GW_OUTPUT_STREAM
 			-- Server output channel
 		deferred
 		end
+
+	send_header
+			-- Send `header' to `output'.
+		do
+			header.send_to (output)
+		end
+
+feature -- Header
 
 	header: GW_HEADER
 			-- Header for the response
