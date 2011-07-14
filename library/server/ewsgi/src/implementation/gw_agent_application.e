@@ -23,10 +23,10 @@ feature {NONE} -- Implementation
 
 feature {NONE} -- Implementation
 
-	callback: PROCEDURE [ANY, TUPLE [req: like new_request_context; res: like new_response]]
+	callback: PROCEDURE [ANY, TUPLE [req: like new_request; res: like new_response]]
 			-- Procedure called on `execute'
 
-	execute (req: like new_request_context; res: like new_response)
+	execute (req: like new_request; res: like new_response)
 			-- Execute the request
 		do
 			callback.call ([req, res])

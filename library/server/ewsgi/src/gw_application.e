@@ -14,12 +14,12 @@ feature -- Process request
 			-- Process request with environment `env', and i/o streams `a_input' and `a_output'
 		local
 			rescued: BOOLEAN
-			req: detachable like new_request_context
+			req: detachable like new_request
 			res: detachable like new_response
 		do
 			if not rescued then
 				pre_execute (env)
-				req := new_request_context (env, a_input)
+				req := new_request (env, a_input)
 				res := new_response (a_output)
 				execute (req, res)
 				post_execute (req, res)
@@ -57,7 +57,7 @@ feature {NONE} -- Execution
 
 feature -- Factory
 
-	new_request_context (env: GW_ENVIRONMENT; a_input: GW_INPUT_STREAM): GW_REQUEST
+	new_request (env: GW_ENVIRONMENT; a_input: GW_INPUT_STREAM): GW_REQUEST
 			-- New Request context based on `env' and `a_input'
 			--| note: you can redefine this function to create your own
 			--| descendant of GW_REQUEST_CONTEXT , or even to reuse/recycle existing
