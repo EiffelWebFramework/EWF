@@ -15,12 +15,7 @@
 		<library name="base" location="$ISE_LIBRARY\library\base\base-safe.ecf"/>
 		<library name="net" location="$ISE_LIBRARY\library\net\net-safe.ecf"/>
 		<library name="thread" location="$ISE_LIBRARY\library\thread\thread-safe.ecf"/>
-		<cluster name="nino" location=".\src\" recursive="true">
-			<file_rule>
-				<exclude>head_request_handler.e</exclude>
-				<exclude>shared_http_request_handlers.e</exclude>
-				<exclude>http_protocol_handler.e</exclude>
-			</file_rule>
+		<cluster name="nino" location=".\library\" recursive="true">
 		</cluster>
 	</target>
 </system>

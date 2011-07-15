@@ -15,7 +15,7 @@
 		<library name="base" location="$ISE_LIBRARY\library\base\base-safe.ecf"/>
 		<library name="net" location="$ISE_LIBRARY\library\net\net-safe.ecf"/>
 		<library name="thread" location="$ISE_LIBRARY\library\thread\thread-safe.ecf"/>
-		<library name="nino" location="../nino.ecf"/>
+		<library name="nino" location="../../nino-safe.ecf"/>
 		<cluster name="src" location=".\" recursive="true"/>
 	</target>
 </system>

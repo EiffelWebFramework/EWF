@@ -1,5 +1,7 @@
 Eiffel Nino HTTPD
 =================
+Eiffel Nino is and HTTPD server. It's a work in progress, so maybe it will be refactored.
+The goal of is to provide a simple web server for development (like Java, Python and Ruby provide)
 The code is based on Xebra and Emu Web Server.
 
 
