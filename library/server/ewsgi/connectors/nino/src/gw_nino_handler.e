@@ -18,6 +18,7 @@ feature {NONE} -- Initialization
 	make_with_callback (a_main_server: like main_server; a_name: STRING; a_callback: like callback)
 			-- Initialize `Current'.
 		do
+			base := a_callback.base
 			make (a_main_server, a_name)
 			callback := a_callback
 		end
