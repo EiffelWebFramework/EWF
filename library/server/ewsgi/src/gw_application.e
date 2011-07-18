@@ -32,8 +32,9 @@ feature {NONE} -- Execution
 
 	execute (req: GW_REQUEST; res: GW_RESPONSE)
 			-- Execute the request
-			-- See `req.input' and `res.output' for i/o streams
-			--     `req.environment' for the Gateway environment
+			-- See `req.input' for input stream
+			--     `req.environment' for the Gateway environment	
+			-- and `res.output' for output stream
 		deferred
 		end
 
@@ -52,6 +53,13 @@ feature {NONE} -- Execution
 	rescue_execute (req: detachable GW_REQUEST; res: detachable GW_RESPONSE; a_exception: detachable EXCEPTION)
 			-- Operation processed on rescue of `execute'
 		do
+			if
+				req /= Void and res /= Void
+				and a_exception /= Void and then attached a_exception.exception_trace as l_trace
+			then
+				res.write_header ({HTTP_STATUS_CODE}.internal_server_error, Void)
+				res.write_string ("<pre>" + l_trace + "</pre>")
+			end
 			post_execute (req, res)
 		end
 
