@@ -15,12 +15,13 @@ feature {NONE} -- Initialization
 	make
 		do
 			print ("Example: start a Nino web server on port " + port_number.out + ", %Nand reply Hello World for any request such as http://localhost:8123/%N")
-			(create {GW_NINO_APPLICATION}.make (agent (req: GW_REQUEST; res: GW_RESPONSE)
-				do
-					res.output.put_header (200, <<["Content-Type", "text/plain"]>>)
-					res.output.put_string ("Hello World!%N")
-				end
-			)).listen (port_number)
+			(create {GW_NINO_APPLICATION}.make_custom (agent execute, "")).listen (port_number)
+		end
+
+	execute (req: GW_REQUEST; res: GW_RESPONSE)
+		do
+			res.output.put_header (200, <<["Content-Type", "text/plain"]>>)
+			res.output.put_string ("Hello World!%N")
 		end
 
 	port_number: INTEGER = 8123
