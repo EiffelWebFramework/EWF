@@ -1,5 +1,9 @@
 note
-	description: "Summary description for {URL_ENCODER}."
+	description: "[
+			Summary description for {URL_ENCODER}.
+			
+			See: http://www.faqs.org/rfcs/rfc3986.html
+		]"
 	legal: "See notice at end of class."
 	status: "See notice at end of class."
 	date: "$Date$"
@@ -54,6 +58,47 @@ feature -- Encoder
 					end
 				else
 					Result.append (url_encoded_char (uc))
+				end
+				i := i + 1
+			end
+		end
+
+	partial_encoded_string (s: STRING_32; a_ignore: ARRAY [CHARACTER]): STRING_8
+			-- URL-encoded value of `s'.
+		local
+			i, n: INTEGER
+			uc: CHARACTER_32
+			c: CHARACTER_8
+		do
+			has_error := False
+			create Result.make (s.count + s.count // 10)
+			n := s.count
+			from i := 1 until i > n loop
+				uc := s.item (i)
+				if uc.is_character_8 then
+					c := uc.to_character_8
+					inspect c
+					when
+						'A' .. 'Z',
+						'a' .. 'z', '0' .. '9',
+						'.', '-', '~', '_'
+					then
+						Result.extend (c)
+					when ' ' then
+						Result.extend ('+')
+					else
+						if a_ignore.has (c) then
+							Result.extend (c)
+						else
+							Result.append (url_encoded_char (uc))
+						end
+					end
+				else
+					if a_ignore.has (c) then
+						Result.extend (c)
+					else
+						Result.append (url_encoded_char (uc))
+					end
 				end
 				i := i + 1
 			end
@@ -309,7 +354,7 @@ feature {NONE} -- Hexadecimal and strings
 		end
 
 note
-	copyright: "Copyright (c) 1984-2011, Eiffel Software and others"
+	copyright: "2011-2011, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software
