@@ -15,101 +15,14 @@ note
 deferred class
 	GW_REQUEST
 
-feature -- Access: Input/Output
+feature -- Access: Input
 
 	input: GW_INPUT_STREAM
 			-- Server input channel
 		deferred
 		end
 
-feature -- Access: global variable
-
-	variables: HASH_TABLE [STRING_32, STRING_32]
-			-- Table containing all the various variables
-			-- Warning: this is computed each time, if you change the content of other containers
-			-- this won't update this Result's content, unless you query it again
-		local
-			vars: HASH_TABLE [STRING_GENERAL, STRING_GENERAL]
-		do
-			create Result.make (100)
-
-			vars := execution_variables
-			from
-				vars.start
-			until
-				vars.after
-			loop
-				Result.put (vars.item_for_iteration, vars.key_for_iteration)
-				vars.forth
-			end
-
-			vars := environment.table
-			from
-				vars.start
-			until
-				vars.after
-			loop
-				Result.put (vars.item_for_iteration, vars.key_for_iteration)
-				vars.forth
-			end
-
-			vars := parameters.table
-			from
-				vars.start
-			until
-				vars.after
-			loop
-				Result.put (vars.item_for_iteration, vars.key_for_iteration)
-				vars.forth
-			end
-
-			vars := form_fields.table
-			from
-				vars.start
-			until
-				vars.after
-			loop
-				Result.put (vars.item_for_iteration, vars.key_for_iteration)
-				vars.forth
-			end
-
-			vars := cookies_variables
-			from
-				vars.start
-			until
-				vars.after
-			loop
-				Result.put (vars.item_for_iteration, vars.key_for_iteration)
-				vars.forth
-			end
-		end
-
-	variable (n8: STRING_8): detachable STRING_32
-			-- Variable named `n' from any of the variables container
-			-- and following a specific order
-			-- execution, environment, get, post, cookies
-		local
-			s: detachable STRING_GENERAL
-		do
-			s := execution_variable (n8)
-			if s = Void then
-				s := environment_variable (n8)
-				if s = Void then
-					s := parameter (n8)
-					if s = Void then
-						s := form_field (n8)
-						if s = Void then
-							s := cookies_variable (n8)
-						end
-					end
-				end
-			end
-			if s /= Void then
-				Result := s.as_string_32
-			end
-		end
-
-feature -- Access: environment extra values
+feature -- Access: extra values
 
 	request_time: detachable DATE_TIME
 			-- Request time (UTC)
@@ -201,6 +114,93 @@ feature -- Cookies
 		deferred
 		end
 
+feature -- Access: global variable
+
+	variables: HASH_TABLE [STRING_32, STRING_32]
+			-- Table containing all the various variables
+			-- Warning: this is computed each time, if you change the content of other containers
+			-- this won't update this Result's content, unless you query it again
+		local
+			vars: HASH_TABLE [STRING_GENERAL, STRING_GENERAL]
+		do
+			create Result.make (100)
+
+			vars := execution_variables
+			from
+				vars.start
+			until
+				vars.after
+			loop
+				Result.put (vars.item_for_iteration, vars.key_for_iteration)
+				vars.forth
+			end
+
+			vars := environment.table
+			from
+				vars.start
+			until
+				vars.after
+			loop
+				Result.put (vars.item_for_iteration, vars.key_for_iteration)
+				vars.forth
+			end
+
+			vars := parameters.table
+			from
+				vars.start
+			until
+				vars.after
+			loop
+				Result.put (vars.item_for_iteration, vars.key_for_iteration)
+				vars.forth
+			end
+
+			vars := form_fields.table
+			from
+				vars.start
+			until
+				vars.after
+			loop
+				Result.put (vars.item_for_iteration, vars.key_for_iteration)
+				vars.forth
+			end
+
+			vars := cookies_variables
+			from
+				vars.start
+			until
+				vars.after
+			loop
+				Result.put (vars.item_for_iteration, vars.key_for_iteration)
+				vars.forth
+			end
+		end
+
+	variable (n8: STRING_8): detachable STRING_32
+			-- Variable named `n' from any of the variables container
+			-- and following a specific order
+			-- execution, environment, get, post, cookies
+		local
+			s: detachable STRING_GENERAL
+		do
+			s := execution_variable (n8)
+			if s = Void then
+				s := environment_variable (n8)
+				if s = Void then
+					s := parameter (n8)
+					if s = Void then
+						s := form_field (n8)
+						if s = Void then
+							s := cookies_variable (n8)
+						end
+					end
+				end
+			end
+			if s /= Void then
+				Result := s.as_string_32
+			end
+		end
+
 feature -- Uploaded File Handling
 
 	move_uploaded_file (a_filename: STRING; a_destination: STRING): BOOLEAN
@@ -225,6 +225,70 @@ feature {NONE} -- Temporary File handling
 			a_filename_valid: a_filename /= Void and then not a_filename.is_empty
 		deferred
 		end
+
+feature -- URL Utility
+
+	absolute_script_url (a_path: STRING): STRING
+			-- Absolute Url for the script if any, extended by `a_path'
+		do
+			Result := script_url (a_path)
+			if attached environment.http_host as h then
+				Result.prepend (h)
+			else
+				--| Issue ??
+			end
+		end
+
+	script_url (a_path: STRING): STRING
+			-- Url relative to script name if any, extended by `a_path'
+		require
+			a_path_attached: a_path /= Void
+		local
+			l_base_url: like internal_url_base
+			i,m,n: INTEGER
+			l_rq_uri: like environment.request_uri
+			env: like environment
+		do
+			l_base_url := internal_url_base
+			if l_base_url = Void then
+				env := environment
+				if attached env.script_name as l_script_name then
+					l_rq_uri := env.request_uri
+					if l_rq_uri.starts_with (l_script_name) then
+						l_base_url := l_script_name
+					else
+						--| Handle Rewrite url engine, to have clean path
+						from
+							i := 1
+							m := l_rq_uri.count
+							n := l_script_name.count
+						until
+							i > m or i > n or l_rq_uri[i] /= l_script_name[i]
+						loop
+							i := i + 1
+						end
+						if i > 1 then
+							if l_rq_uri[i-1] = '/' then
+								i := i -1
+							end
+							l_base_url := l_rq_uri.substring (1, i - 1)
+						end
+					end
+				end
+				if l_base_url = Void then
+					create l_base_url.make_empty
+				end
+				internal_url_base := l_base_url
+			end
+			Result := l_base_url + a_path
+		end
+
+feature {NONE} -- Implementation: URL Utility
+
+	internal_url_base: detachable STRING
+			-- URL base of potential script
+
+invariant
 
 note
 	copyright: "2011-2011, Eiffel Software and others"

@@ -261,65 +261,7 @@ feature -- Cookies
 			Result := l_cookies
 		end
 
-feature -- Query
-
---	script_absolute_url (a_path: STRING): STRING
---			-- Absolute Url for the script if any, extended by `a_path'
---		do
---			Result := script_url (a_path)
---			if attached http_host as h then
---				Result.prepend (h)
---			else
---				--| Issue ??
---			end
---		end
-
---	script_url (a_path: STRING): STRING
---			-- Url relative to script name if any, extended by `a_path'
---		require
---			a_path_attached: a_path /= Void
---		local
---			l_base_url: like script_url_base
---			i,m,n: INTEGER
---			l_rq_uri: like request_uri
---		do
---			l_base_url := script_url_base
---			if l_base_url = Void then
---				if attached environment.script_name as l_script_name then
---					l_rq_uri := request_uri
---					if l_rq_uri.starts_with (l_script_name) then
---						l_base_url := l_script_name
---					else
---						--| Handle Rewrite url engine, to have clean path
---						from
---							i := 1
---							m := l_rq_uri.count
---							n := l_script_name.count
---						until
---							i > m or i > n or l_rq_uri[i] /= l_script_name[i]
---						loop
---							i := i + 1
---						end
---						if i > 1 then
---							if l_rq_uri[i-1] = '/' then
---								i := i -1
---							end
---							l_base_url := l_rq_uri.substring (1, i - 1)
---						end
---					end
---				end
---				if l_base_url = Void then
---					create l_base_url.make_empty
---				end
---				script_url_base := l_base_url
---			end
---			Result := l_base_url + a_path
---		end
-
---	script_url_base: detachable STRING
---			-- URL base of potential script
-
-feature -- Access environment information
+feature -- Access extra information
 
 	request_time: detachable DATE_TIME
 			-- Request time (UTC)

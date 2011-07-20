@@ -20,8 +20,8 @@ feature {NONE} -- Initialization
 
 	execute (req: GW_REQUEST; res: GW_RESPONSE)
 		do
-			res.output.put_header (200, <<["Content-Type", "text/plain"]>>)
-			res.output.put_string ("Hello World!%N")
+			res.write_header (200, <<["Content-Type", "text/plain"]>>)
+			res.write_string ("Hello World!%N")
 		end
 
 	port_number: INTEGER = 8123

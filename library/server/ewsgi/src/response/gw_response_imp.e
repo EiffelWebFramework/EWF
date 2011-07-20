@@ -18,16 +18,12 @@ feature {NONE} -- Initialization
 	make (a_output: like output)
 		do
 			output := a_output
-			create header.make
 		end
 
-feature -- Access: Input/Output
+feature {NONE} -- Implementation: Access
 
 	output: GW_OUTPUT_STREAM
 			-- Server output channel
-
-	header: GW_HEADER
-			-- Header for the response	
 
 ;note
 	copyright: "2011-2011, Eiffel Software and others"

@@ -68,40 +68,39 @@ feature -- Import urlencoded
 	import_urlencoded (a_content: STRING; decoding: BOOLEAN)
 			-- Import `a_content'
 		local
---			n, p, i, j: INTEGER
---			s: STRING
---			l_name,l_value: STRING_32
+			n, p, i, j: INTEGER
+			s: STRING
+			l_name,l_value: STRING_32
 		do
--- FIXME
---			n := a_content.count
---			if n > 0 then
---				from
---					p := 1
---				until
---					p = 0
---				loop
---					i := a_content.index_of ('&', p)
---					if i = 0 then
---						s := a_content.substring (p, n)
---						p := 0
---					else
---						s := a_content.substring (p, i - 1)
---						p := i + 1
---					end
---					if not s.is_empty then
---						j := s.index_of ('=', 1)
---						if j > 0 then
---							l_name := s.substring (1, j - 1)
---							l_value := s.substring (j + 1, s.count)
---							if decoding then
---								l_name := url_encoder.decoded_string (l_name)
---								l_value := url_encoder.decoded_string (l_value)
---							end
---							add_variable (l_value, l_name)
---						end
---					end
---				end
---			end
+			n := a_content.count
+			if n > 0 then
+				from
+					p := 1
+				until
+					p = 0
+				loop
+					i := a_content.index_of ('&', p)
+					if i = 0 then
+						s := a_content.substring (p, n)
+						p := 0
+					else
+						s := a_content.substring (p, i - 1)
+						p := i + 1
+					end
+					if not s.is_empty then
+						j := s.index_of ('=', 1)
+						if j > 0 then
+							l_name := s.substring (1, j - 1)
+							l_value := s.substring (j + 1, s.count)
+							if decoding then
+								l_name := url_encoder.decoded_string (l_name)
+								l_value := url_encoder.decoded_string (l_value)
+							end
+							add_variable (l_value, l_name)
+						end
+					end
+				end
+			end
 		end
 
 feature -- Access: table
@@ -132,10 +131,10 @@ feature {GW_REQUEST} -- Element change
 
 feature {NONE} -- Implementation
 
---	url_encoder: URL_ENCODER
---		once
---			create Result
---		end
+	url_encoder: URL_ENCODER
+		once
+			create Result
+		end
 
 note
 	copyright: "2011-2011, Eiffel Software and others"

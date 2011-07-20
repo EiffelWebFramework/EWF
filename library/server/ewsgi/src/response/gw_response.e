@@ -7,17 +7,19 @@ note
 deferred class
 	GW_RESPONSE
 
-feature -- Access: Output
+feature {NONE} -- Implementation: Output
 
 	output: GW_OUTPUT_STREAM
 			-- Server output channel
 		deferred
 		end
 
-	send_header
+feature -- Output header
+
+	write_header_object (h: GW_HEADER)
 			-- Send `header' to `output'.
 		do
-			header.send_to (output)
+			h.send_to (output)
 		end
 
 feature -- Output operation
@@ -39,7 +41,7 @@ feature -- Output operation
 			h: GW_HEADER
 			i,n: INTEGER
 		do
-			h := header
+			create h.make
 			h.put_status (a_status)
 			if a_headers /= Void then
 				from
@@ -52,7 +54,7 @@ feature -- Output operation
 					i := i + 1
 				end
 			end
-			send_header
+			write_header_object (h)
 		end
 
 	write_header_line (s: STRING)
@@ -60,13 +62,6 @@ feature -- Output operation
 		do
 			write_string (s)
 			write_string ("%R%N")
-		end
-
-feature -- Header
-
-	header: GW_HEADER
-			-- Header for the response
-		deferred
 		end
 
 note
