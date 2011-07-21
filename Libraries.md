@@ -4,6 +4,7 @@
 * [[Library-encoder]]: simple encoder for base64, url-encode, xml entities
 * [[Library-error]]: simple framework to handle error in EWSGI and related
 * [[Library-http]]: utility classes to handle HTTP protocol, status, ...
+* [[Library-uri-template]]: URI Template parser and expander (follow draft spec 0.5)
 
 ## libraries needed but not (yet) in the current framework ##
 * [[Library-EiffelWebNino]]: Eiffel Web Server written in Eiffel
