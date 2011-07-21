@@ -1,18 +1,1 @@
-Official project site for Eiffel Web Framework:
- - https://github.com/Eiffel-World/Eiffel-Web-Framework
-
-For more information please have a look at the related wiki:
- - https://github.com/Eiffel-World/Eiffel-Web-Framework/wiki
-
-## How to get the source code? ##
-
-   git clone https://github.com/Eiffel-World/Eiffel-Web-Framework.git
-   cd Eiffel-Web-Framework
-   git submodule update --init
-   git submodule foreach git pull origin master
-   git submodule foreach git checkout master
-
-## Overview ##
-
- - library/ewsgi: Eiffel Web Server Gateway Interface
-
+README.md
