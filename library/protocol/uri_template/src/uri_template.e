@@ -190,7 +190,6 @@ feature -- Match
 							--| FIXME jfiat [2011/07/22] : check this ...
 							--| There should be at least one literal between two expression
 							--|  {var}{foobar}  is ambigous for matching ...
-							b := False
 						if q > p then
 							t := tpl.substring (p, q - 1)
 							s := a_uri.substring (p + l_offset, q + l_offset - 1)
