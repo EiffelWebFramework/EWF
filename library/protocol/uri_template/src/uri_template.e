@@ -3,7 +3,7 @@ note
 			Summary description for {URI_TEMPLATE}.
 			
 			See http://tools.ietf.org/html/draft-gregorio-uritemplate-05
-			
+
 			]"
 	legal: "See notice at end of class."
 	status: "See notice at end of class."
@@ -116,7 +116,7 @@ feature -- Builder
 
 feature -- Analyze
 
-	match (a_uri: STRING): detachable TUPLE [path_variables: HASH_TABLE [STRING, STRING]; query_variables: HASH_TABLE [STRING, STRING]]
+	match (a_uri: STRING): detachable URI_TEMPLATE_MATCH_RESULT
 		local
 			b: BOOLEAN
 			tpl: like template
@@ -174,7 +174,7 @@ feature -- Analyze
 					l_x_parts.forth
 				end
 				if b then
-					Result := [l_path_vars, l_query_vars]
+					create Result.make (l_path_vars, l_query_vars)
 				end
 			end
 		end

@@ -21,7 +21,6 @@ feature -- Test routines
 		do
 			uri_template_parse ("api/foo/{foo_id}/{?id,extra}", <<"foo_id">>, <<"id", "extra">>)
 			uri_template_parse ("weather/{state}/{city}?forecast={day}", <<"state", "city">>, <<"day">>)
-
 		end
 
 	test_uri_template_matcher
@@ -300,8 +299,8 @@ feature -- Test routines
 			uri_template_string (ht, "x{/empty_keys*}", "x")
 			uri_template_string (ht, "x{/empty_keys*|none}", "x/none")
 
---			uri_template_string (ht, "x{;name|none}", "x;name=Fred,Wilma,Pebbles")
---			uri_template_string (ht, "x{;favs|none}", "x;favs=color,red,volume,high")
+			uri_template_string (ht, "x{;name|none}", "x;name=Fred,Wilma,Pebbles")
+			uri_template_string (ht, "x{;favs|none}", "x;favs=color,red,volume,high")
 			uri_template_string (ht, "x{;favs*|none}", "x;color=red;volume=high")
 			uri_template_string (ht, "x{;empty}", "x;empty")
 			uri_template_string (ht, "x{;empty|none}", "x;empty")
@@ -316,10 +315,10 @@ feature -- Test routines
 			uri_template_string (ht, "x{?empty}", "x?empty=")
 			uri_template_string (ht, "x{?empty|foo=none}", "x?empty=")
 			uri_template_string (ht, "x{?undef}", "x")
---			uri_template_string (ht, "x{?undef|foo=none}", "x?foo=none")
+			uri_template_string (ht, "x{?undef|foo=none}", "x?foo=none")
 			uri_template_string (ht, "x{?empty_keys}", "x")
---			uri_template_string (ht, "x{?empty_keys|none}", "x?none")
---			uri_template_string (ht, "x{?empty_keys|y=z}", "x?y=z")
+			uri_template_string (ht, "x{?empty_keys|none}", "x?none")
+			uri_template_string (ht, "x{?empty_keys|y=z}", "x?y=z")
 			uri_template_string (ht, "x{?empty_keys*|y=z}", "x?y=z")
 
 
@@ -363,13 +362,12 @@ feature -- Test routines
 			uri_template_string (ht, "x{?empty_keys+}", "x")
 			uri_template_string (ht, "x{?empty_keys+|none}", "x?empty_keys.none")
 
---			uri_template_string (ht, "x{;name|none}", "x;name=Fred,Wilma,Pebbles")
---			uri_template_string (ht, "x{;favs|none}", "x;favs=color,red,volume,high")
-			uri_template_string (ht, "x{;favs|none}", "x;color,red,volume,high") -- DIFF
+			uri_template_string (ht, "x{;name|none}", "x;name=Fred,Wilma,Pebbles")
+			uri_template_string (ht, "x{;favs|none}", "x;favs=color,red,volume,high")
 			uri_template_string (ht, "x{;favs*|none}", "x;color=red;volume=high")
 			uri_template_string (ht, "x{;favs+|none}", "x;favs.color=red;favs.volume=high")
 			uri_template_string (ht, "x{;undef}", "x")
---			uri_template_string (ht, "x{;undef|none}", "x;undef=none")
+			uri_template_string (ht, "x{;undef|none}", "x;undef=none")
 			uri_template_string (ht, "x{;undef|none}", "x;none")
 			uri_template_string (ht, "x{;empty}", "x;empty")
 			uri_template_string (ht, "x{;empty|none}", "x;empty")
@@ -447,7 +445,6 @@ feature -- Test routines
 			uri_template_string (ht, "{;x,y}", ";x=1024;y=768")
 			uri_template_string (ht, "{;x,y,empty}", ";x=1024;y=768;empty")
 			uri_template_string (ht, "{;x,y,undef}", ";x=1024;y=768")
---			uri_template_string (ht, "{;list}", ";val1,val2,val3") -- DIFF
 			uri_template_string (ht, "{;list}", ";list=val1,val2,val3") -- DIFF
 			uri_template_string (ht, "{;list*}", ";val1;val2;val3")
 			uri_template_string (ht, "{;list+}", ";list=val1;list=val2;list=val3")
@@ -570,8 +567,10 @@ feature -- Test routines
 		local
 			b: BOOLEAN
 			i: INTEGER
+			l_match: detachable URI_TEMPLATE_MATCH_RESULT
 		do
-			if attached a_uri_template.match (a_uri) as l_match then
+			l_match := a_uri_template.match (a_uri)
+			if l_match /= Void then
 				if attached l_match.path_variables as path_ht then
 					b := path_ht.count = path_res.count
 					from
