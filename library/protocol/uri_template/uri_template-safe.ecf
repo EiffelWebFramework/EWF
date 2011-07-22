@@ -40,8 +40,6 @@
 		<option warning="true" full_class_checking="true" is_attached_by_default="true" void_safety="all">
 			<assertions precondition="true"/>
 		</option>
-		<setting name="console_application" value="false"/>
-		<variable name="uri_template" value="draft_05"/>
 		<library name="testing" location="$ISE_LIBRARY\library\testing\testing-safe.ecf"/>
 		<tests name="tests" location=".\tests\"/>
 	</target>

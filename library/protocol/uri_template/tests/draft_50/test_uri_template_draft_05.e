@@ -29,6 +29,12 @@ feature -- Test routines
 		local
 			tpl: URI_TEMPLATE
 		do
+			create tpl.make ("{version}/{id}")
+			uri_template_match (tpl, "v2/123", <<["version", "v2"], ["id" , "123"]>>, <<>>)
+
+			create tpl.make ("api/{foo}{bar}/id/{id}")
+			uri_template_mismatch (tpl, "api/foobar/id/123")
+			
 			create tpl.make ("api/foo/{foo_id}/{?id,extra}")
 			uri_template_match (tpl, "api/foo/bar/", <<["foo_id", "bar"]>>, <<>>)
 			uri_template_match (tpl, "api/foo/bar/?id=123", <<["foo_id", "bar"]>>, <<["id", "123"]>>)

@@ -178,7 +178,7 @@ feature -- Match
 				else
 					from
 						l_expressions.start
-						p := 1
+						p := 0
 						l_offset := 0
 					until
 						l_expressions.after or not b
@@ -187,10 +187,14 @@ feature -- Match
 						vn := exp.expression
 						q := exp.position
 							--| Check text between vars
-							--| FIXME jfiat [2011/07/22] : check this ...
+						if p = q then
 							--| There should be at least one literal between two expression
 							--|  {var}{foobar}  is ambigous for matching ...
-						if q > p then
+							b := False
+						elseif q > p then
+							if p = 0 then
+								p := 1
+							end
 							t := tpl.substring (p, q - 1)
 							s := a_uri.substring (p + l_offset, q + l_offset - 1)
 							b := s.same_string (t)
