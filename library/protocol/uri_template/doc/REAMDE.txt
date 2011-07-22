@@ -1,0 +1,4 @@
+Most recent spec/draft/in-progress http://code.google.com/p/uri-templates/source/browse/trunk/spec/draft-gregorio-uritemplate.xml
+
+svn cat http://uri-templates.googlecode.com/svn/trunk/spec/draft-gregorio-uritemplate.xml > uritemplate-draft-gregorio-trunk.xml
+
