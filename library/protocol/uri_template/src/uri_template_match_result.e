@@ -8,7 +8,8 @@ class
 	URI_TEMPLATE_MATCH_RESULT
 
 create
-	make
+	make,
+	make_empty
 
 feature {NONE} -- Initialization
 
@@ -18,10 +19,27 @@ feature {NONE} -- Initialization
 			query_variables := q
 		end
 
+	make_empty
+		do
+			make (create {like path_variables}.make (0), create {like query_variables}.make (0))
+		end
+
 feature -- Access
 
+	variable (n: STRING): detachable STRING
+			-- Value related to variable name `n'
+		do
+			Result := query_variables.item (n)
+			if Result = Void then
+				Result := path_variables.item (n)
+			end
+		end
+
 	path_variables: HASH_TABLE [STRING, STRING]
+			-- Variables being part of the path segments
+
 	query_variables: HASH_TABLE [STRING, STRING]
+			-- Variables being part of the query segments (i.e: after the ? )
 
 ;note
 	copyright: "2011-2011, Eiffel Software and others"

@@ -13,6 +13,11 @@ note
 class
 	URI_TEMPLATE
 
+inherit
+	HASHABLE
+
+	DEBUG_OUTPUT
+
 create
 	make
 
@@ -23,16 +28,46 @@ feature {NONE} -- Initialization
 			template := s
 		end
 
-	make_with_handler (s: STRING; a_handler: detachable URI_TEMPLATE_HANDLER)
-		do
-			make (s)
-			analyze (a_handler)
-		end
-
 feature -- Access
 
 	template: STRING
 			-- URI string representation
+
+feature -- Status report
+
+	debug_output: STRING
+			-- String that should be displayed in debugger to represent `Current'.
+		do
+			create Result.make_from_string (template)
+		end
+
+feature -- Access
+
+	hash_code: INTEGER
+			-- Hash code value
+		do
+			Result := template.hash_code
+		end
+
+feature -- Structures
+
+	variable_names: LIST [STRING]
+		do
+			analyze (Void)
+			if attached expansion_parts as l_x_parts then
+				create {ARRAYED_LIST [STRING]} Result.make (l_x_parts.count)
+				from
+					l_x_parts.start
+				until
+					l_x_parts.after
+				loop
+					Result.append (l_x_parts.item.variable_names)
+					l_x_parts.forth
+				end
+			else
+				create {ARRAYED_LIST [STRING]} Result.make (0)
+			end
+		end
 
 	path_variable_names: LIST [STRING]
 		do
@@ -77,6 +112,7 @@ feature -- Access
 feature -- Builder
 
 	string (a_ht: HASH_TABLE [detachable ANY, STRING]): STRING
+			-- Expanded template using variable from `a_ht'
 		local
 			tpl: like template
 			exp: URI_TEMPLATE_EXPRESSION
@@ -109,12 +145,7 @@ feature -- Builder
 			end
 		end
 
-	url_encoder: URL_ENCODER
-		once
-			create Result
-		end
-
-feature -- Analyze
+feature -- Match
 
 	match (a_uri: STRING): detachable URI_TEMPLATE_MATCH_RESULT
 		local
@@ -126,6 +157,7 @@ feature -- Analyze
 			vn, s,t: STRING
 			vv: STRING
 			l_vars, l_path_vars, l_query_vars: HASH_TABLE [STRING, STRING]
+			l_uri_count: INTEGER
 		do
 				--| Extract expansion parts  "\\{([^\\}]*)\\}"
 			analyze (Void)
@@ -133,51 +165,66 @@ feature -- Analyze
 				create l_path_vars.make (l_x_parts.count)
 				create l_query_vars.make (l_x_parts.count)
 				l_vars := l_path_vars
-				tpl := template
 				b := True
-				from
-					l_x_parts.start
-					p := 1
-					l_offset := 0
-				until
-					l_x_parts.after or not b
-				loop
-					exp := l_x_parts.item
-					vn := exp.expression
-					q := exp.position
-						--| Check text between vars
-					if q > p then
-						t := tpl.substring (p, q - 1)
-						s := a_uri.substring (p + l_offset, q + l_offset - 1)
-						b := s.same_string (t)
-						p := q + vn.count + 2
-					end
-						--| Check related variable
-					if not vn.is_empty then
-						if exp.is_query then
-							l_vars := l_query_vars
-						else
-							l_vars := l_path_vars
+				l_uri_count := a_uri.count
+				tpl := template
+				if l_x_parts.is_empty then
+					b := a_uri.substring (1, tpl.count).same_string (tpl)
+				else
+					from
+						l_x_parts.start
+						p := 1
+						l_offset := 0
+					until
+						l_x_parts.after or not b
+					loop
+						exp := l_x_parts.item
+						vn := exp.expression
+						q := exp.position
+							--| Check text between vars
+						if q > p then
+							t := tpl.substring (p, q - 1)
+							s := a_uri.substring (p + l_offset, q + l_offset - 1)
+							b := s.same_string (t)
+							p := q + vn.count + 2
 						end
-
-						inspect vn[1]
-						when '?' then
-							import_form_style_parameters_into (a_uri.substring (q + l_offset + 1, a_uri.count), l_vars)
-						when ';' then
-							import_path_style_parameters_into (a_uri.substring (q + l_offset, a_uri.count), l_vars)
-						else
-							vv := next_path_variable_value (a_uri, q + l_offset)
-							l_vars.force (vv, vn)
-							l_offset := l_offset + vv.count - (vn.count + 2)
+							--| Check related variable
+						if b and then not vn.is_empty then
+							if exp.is_query then
+								l_vars := l_query_vars
+							else
+								l_vars := l_path_vars
+							end
+							if q + l_offset <= l_uri_count then
+								inspect vn[1]
+								when '?' then
+									import_form_style_parameters_into (a_uri.substring (q + l_offset + 1, l_uri_count), l_vars)
+								when ';' then
+									import_path_style_parameters_into (a_uri.substring (q + l_offset, l_uri_count), l_vars)
+								else
+									vv := next_path_variable_value (a_uri, q + l_offset)
+									l_vars.force (vv, vn)
+									l_offset := l_offset + vv.count - (vn.count + 2)
+								end
+							else
+								b := exp.is_query --| query are optional
+							end
 						end
+						l_x_parts.forth
 					end
-					l_x_parts.forth
 				end
 				if b then
 					create Result.make (l_path_vars, l_query_vars)
 				end
 			end
 		end
+
+feature {NONE} -- Internal Access
+
+	expansion_parts: detachable LIST [URI_TEMPLATE_EXPRESSION]
+			-- Expansion parts
+
+feature {NONE} -- Implementation
 
 	analyze (a_handler: detachable URI_TEMPLATE_HANDLER)
 		local
@@ -232,11 +279,6 @@ feature -- Analyze
 				expansion_parts := l_x_parts
 			end
 		end
-
-feature {NONE} -- Implementation
-
-	expansion_parts: detachable LIST [URI_TEMPLATE_EXPRESSION]
-			-- Expansion parts
 
 	import_path_style_parameters_into (a_content: STRING; res: HASH_TABLE [STRING, STRING])
 		require
@@ -313,9 +355,9 @@ feature {NONE} -- Implementation
 			Result := a_uri.substring (a_index, p)
 		end
 
-	comma_separated_variable_names (s: STRING): LIST [STRING]
-		do
-			Result := s.split (',')
+	url_encoder: URL_ENCODER
+		once
+			create Result
 		end
 
 note

@@ -30,8 +30,15 @@ feature -- Test routines
 			tpl: URI_TEMPLATE
 		do
 			create tpl.make ("api/foo/{foo_id}/{?id,extra}")
+			uri_template_match (tpl, "api/foo/bar/", <<["foo_id", "bar"]>>, <<>>)
 			uri_template_match (tpl, "api/foo/bar/?id=123", <<["foo_id", "bar"]>>, <<["id", "123"]>>)
 			uri_template_match (tpl, "api/foo/bar/?id=123&extra=test", <<["foo_id", "bar"]>>, <<["id", "123"], ["extra", "test"]>>)
+			uri_template_match (tpl, "api/foo/bar/?id=123&extra=test&one=more", <<["foo_id", "bar"]>>, <<["id", "123"], ["extra", "test"]>>)
+			uri_template_mismatch (tpl, "")
+			uri_template_mismatch (tpl, "/")
+			uri_template_mismatch (tpl, "foo/bar/?id=123")
+			uri_template_mismatch (tpl, "/api/foo/bar/")
+			uri_template_mismatch (tpl, "api/foo/bar")
 
 			create tpl.make ("weather/{state}/{city}?forecast={day}")
 			uri_template_match (tpl, "weather/California/Goleta?forecast=today", <<["state", "California"], ["city", "Goleta"]>>, <<["day", "today"]>>)
@@ -563,6 +570,14 @@ feature -- Test routines
 			assert ("query variables matched", matched)
 		end
 
+	uri_template_mismatch (a_uri_template: URI_TEMPLATE; a_uri: STRING)
+		local
+			l_match: detachable URI_TEMPLATE_MATCH_RESULT
+		do
+			l_match := a_uri_template.match (a_uri)
+			assert ("uri %"" + a_uri + "%" does not match template %"" + a_uri_template.template + "%"", l_match = Void)
+		end
+
 	uri_template_match (a_uri_template: URI_TEMPLATE; a_uri: STRING; path_res: ARRAY [TUPLE [name: STRING; value: STRING]]; query_res: ARRAY [TUPLE [name: STRING; value: STRING]])
 		local
 			b: BOOLEAN
@@ -584,7 +599,7 @@ feature -- Test routines
 					assert ("uri matched path variables", b)
 				end
 				if attached l_match.query_variables as query_ht then
-					b := query_ht.count = query_res.count
+					b := query_ht.count >= query_res.count
 					from
 						i := query_res.lower
 					until
