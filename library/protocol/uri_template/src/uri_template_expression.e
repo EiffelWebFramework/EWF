@@ -8,7 +8,12 @@ class
 	URI_TEMPLATE_EXPRESSION
 
 inherit
+	ANY
+
 	DEBUG_OUTPUT
+
+	URI_TEMPLATE_CONSTANTS
+		export {NONE} all end
 
 create
 	make
@@ -42,22 +47,27 @@ feature -- Processing
 					op_prefix := '%U'
 					op_delimiter := ','
 					inspect exp[1]
-					when '+' then
+					when Reserved_operator then
+						--| '+'
 						reserved := True
 						operator := '+'
-					when '.' then
+					when Label_operator then
+						--| '.'
 						operator := '.'
 						op_prefix := '.'
 						op_delimiter := '.'
-					when '/' then
+					when Path_segment_operator then
+						--| '/'
 						operator := '/'
 						op_prefix := '/'
 						op_delimiter := '/'
-					when ';' then
+					when Path_style_parameters_operator then
+						--| ';'
 						operator := ';'
 						op_prefix := ';'
 						op_delimiter := ';'
-					when '?' then
+					when Form_style_query_operator then
+						--| '?'
 						operator := '?'
 						op_prefix := '?'
 						op_delimiter := '&'
@@ -81,7 +91,7 @@ feature -- Processing
 					loop
 						s := lst.item
 						vmodifier := Void
-						p := s.index_of ('|', 1)
+						p := s.index_of (Default_delimiter, 1)
 						if p > 0 then
 							vn := s.substring (1, p - 1)
 							s := s.substring (p + 1, s.count)
@@ -97,7 +107,7 @@ feature -- Processing
 							i > n
 						loop
 							inspect vn[i]
-							when '*', '+', ':', '^' then
+							when Explode_plus, Explode_star, Modifier_substring, Modifier_remainder then
 								vmodifier := vn.substring (i, n)
 								vn := vn.substring (1, i - 1)
 								i := n + 1 --| exit
@@ -105,7 +115,7 @@ feature -- Processing
 								i := i + 1
 							end
 						end
-						vars.force (create {URI_TEMPLATE_EXPRESSION_VARIABLE}.make (operator, vn, s, vmodifier))
+						vars.force (create {URI_TEMPLATE_EXPRESSION_VARIABLE}.make (Current, vn, s, vmodifier))
 						lst.forth
 					end
 					variables := vars
@@ -117,32 +127,39 @@ feature -- Processing
 feature -- Access
 
 	position: INTEGER
+			-- Character position on Current in the template
+
+	end_position: INTEGER
+		do
+			Result := position + expression.count + 2 --|  '{' + `expression' + '}'
+		end
 
 	expression: STRING
+			-- Operator? + VariableName + modifier
 
 	is_query: BOOLEAN
+			-- Is in the query part (i.e: after '?' ?)
 
 feature -- Status
 
 	operator: CHARACTER
-
-	has_operator: BOOLEAN
-		do
-			Result := operator /= '%U'
-		end
+			-- First character of `expression' if among
 
 	reserved: BOOLEAN
-
-	has_op_prefix: BOOLEAN
-		do
-			Result := op_prefix /= '%U'
-		end
+			-- Is reserved
+			-- i.e: do not url-encode the reserved character
 
 	op_prefix: CHARACTER
+			-- When expanding list of table, first character to use
+			--| ex: '?'  for  {?var}
 
 	op_delimiter: CHARACTER
+			-- When expanding list of table, delimiter character to use
+			--| ex: ','  for  {?var}
 
 	variables: detachable LIST [URI_TEMPLATE_EXPRESSION_VARIABLE]
+			-- List of variables declared in `expression'
+			--| ex: "foo", "bar"  for {?foo,bar}
 
 	variable_names: LIST [STRING]
 		do
@@ -168,45 +185,15 @@ feature -- Status report
 
 feature -- Report
 
-	append_to_string (a_ht: HASH_TABLE [detachable ANY, STRING]; a_buffer: STRING)
+	append_expanded_to_string (a_ht: HASH_TABLE [detachable ANY, STRING]; a_buffer: STRING)
 		do
 			analyze
 			if attached variables as vars then
 				append_custom_variables_to_string (a_ht, vars, op_prefix, op_delimiter, True, a_buffer)
---				inspect operator
---				when '?' then
---					append_custom_variables_to_string (a_ht, vars, '?', '&', True, a_buffer)
---				when ';' then
---					append_custom_variables_to_string (a_ht, vars, ';', ';', False, a_buffer)
---				when '.' then
---					append_custom_variables_to_string (a_ht, vars, '.', ',', True, a_buffer)
---				when '/' then
---					append_custom_variables_to_string (a_ht, vars, '/', '/', True, a_buffer)
---				else
---					append_custom_variables_to_string (a_ht, vars, '%U', ',', False, a_buffer)
---				end
 			end
 		end
 
 feature {NONE} -- Implementation
-
-	url_encoded_string (s: READABLE_STRING_GENERAL; a_encoded: BOOLEAN): STRING
-		do
-			if a_encoded then
-				Result := url_encoder.encoded_string (s.as_string_32)
-			else
-				Result := url_encoder.partial_encoded_string (s.as_string_32, <<
-									':', ',',
-									'+', '.', '/', ';', '?',
-									'|', '!', '@'
-									>>)
-			end
-		end
-
-	url_encoder: URL_ENCODER
-		once
-			create Result
-		end
 
 	append_custom_variables_to_string (a_ht: HASH_TABLE [detachable ANY, STRING]; vars: like variables; prefix_char, delimiter_char: CHARACTER; a_include_name: BOOLEAN; a_buffer: STRING)
 			-- If `first_char' is '%U' do not print any first character
@@ -228,8 +215,8 @@ feature {NONE} -- Implementation
 					vdata := a_ht.item (vi.name)
 					vstr := Void
 					if vdata /= Void then
-						vstr := vi.string (vdata)
-						if vstr = Void and vi.has_explode_modifier then
+						vstr := vi.expanded_string (vdata)
+						if vstr = Void and vi.has_explode then
 							--| Missing or list empty
 							vstr := vi.default_value
 							l_use_default := True
@@ -250,9 +237,9 @@ feature {NONE} -- Implementation
 						else
 							a_buffer.append_character (delimiter_char)
 						end
-						if l_use_default and (operator = '?') and not vi.has_explode_modifier_star then
+						if l_use_default and (operator = Form_style_query_operator) and not vi.has_explode_star then
 							a_buffer.append (vi.name)
-							if vi.has_explode_modifier_plus then
+							if vi.has_explode_plus then
 								a_buffer.append_character ('.')
 							else
 								a_buffer.append_character ('=')

@@ -7,133 +7,172 @@ note
 class
 	URI_TEMPLATE_EXPRESSION_VARIABLE
 
+inherit
+	ANY
+
+	URI_TEMPLATE_CONSTANTS
+		export {NONE} all end
+
 create
 	make
 
 feature {NONE} -- Initialization
 
-	make (op: like operator; n: like name; d: like default_value; m: like modifier)
+	make (exp: like expression; n: like name; d: like default_value; em: detachable STRING)
+			-- Create based on expression `exp', variable name `n', default value `d' if any
+			-- and explode or modifier string `em'
 		do
-			operator := op
+			expression := exp
+			operator := exp.operator
 			name := n
 			default_value := d
-			modifier := m
-
+			if em /= Void and then em.count > 0 then
+				inspect em[1]
+				when Explode_star, Explode_plus then
+					explode := em[1]
+				when Modifier_substring, Modifier_remainder then
+					modifier := em
+				else
+				end
+			end
 
 			op_prefix := '%U'
 			op_separator := ','
 
-			inspect op
-			when '+' then
+			inspect operator
+			when Reserved_operator then --| '+'
 				reserved := True
-			when '?' then
+			when Form_style_query_operator then --| '?'
 				op_prefix := '?'
 				op_separator := '&'
-			when ';' then
+			when Path_style_parameters_operator then --| ';'
 				op_prefix := ';'
 				op_separator := ';'
-			when '/' then
+			when Path_segment_operator then --| '/'
 				op_prefix := '/'
 				op_separator := '/'
-			when '.' then
+			when Label_operator then --| '.'
 				op_prefix := '.'
 				op_separator := '.'
 			else
-
 			end
 		end
 
 feature -- Access
 
+	expression: URI_TEMPLATE_EXPRESSION
+			-- Parent expression
+
 	operator: CHARACTER
+			-- First character of related `expression'
 
 	name: STRING
+			-- variable name
 
 	default_value: detachable STRING
+			-- default value if any
 
 	reserved: BOOLEAN
+			-- Is reserved?
+			-- i.e: do not url-encode the reserved character			
 
 	op_prefix: CHARACTER
+			-- When expanding list of table, first character to use
+			--| ex: '?'  for  {?var}	
 
 	op_separator: CHARACTER
+			-- When expanding list of table, delimiter character to use
+			--| ex: ','  for  {?var}	
+
+	explode: CHARACTER
+			-- Explode character , '*' or '+'
 
 	modifier: detachable STRING
+			-- Modifier expression, starting by ':' or '^'
+			--| ":3" , "-3", "^4", ...
 
-	has_modifier: BOOLEAN
-		do
-			Result := modifier /= Void
-		end
-
-	modified (s: READABLE_STRING_GENERAL): READABLE_STRING_GENERAL
+	modified_string (s: READABLE_STRING_GENERAL): READABLE_STRING_GENERAL
 		local
 			t: STRING
 			i,n: INTEGER
 		do
 			Result := s
-			if attached modifier as m and then m.count > 1 and then m[1] = ':' then
+			if attached modifier as m and then m.count > 1 then
 				n := s.count
 				t := m.substring (2, m.count)
 				if t.is_integer then
 					i := t.to_integer
-					if i > 0 then
-						if i < n then
-							Result := s.substring (1, i)
+					inspect m[1]
+					when Modifier_substring then
+						if i > 0 then
+							if i < n then
+								Result := s.substring (1, i)
+							end
+						elseif i < 0 then
+							Result := s.substring (n - i, n)
 						end
-					elseif i < 0 then
-						Result := s.substring (n - i, n)
+					when Modifier_remainder then
+						if i > 0 then
+							if i < n then
+								Result := s.substring (i + 1, n)
+							end
+						elseif i < 0 then
+							Result := s.substring (1, n + i) --| n + i = n - (-i)
+						end
+					else
+						check Known_modified: False end
+						-- Unchanged
 					end
 				end
 			end
 		end
 
-	has_explode_modifier: BOOLEAN
+	has_explode: BOOLEAN
 		do
-			Result := attached modifier as m and then m.count = 1 and then (
-						m[1] = '+' or m[1] = '*'
-						)
+			Result := explode = Explode_plus or explode = Explode_star
 		end
 
-	has_explode_modifier_plus: BOOLEAN
+	has_explode_plus: BOOLEAN
 		do
-			Result := attached modifier as m and then m.count = 1 and then
-						m[1] = '+'
+			Result := explode = Explode_plus
 		end
 
-	has_explode_modifier_star: BOOLEAN
+	has_explode_star: BOOLEAN
 		do
-			Result := attached modifier as m and then m.count = 1 and then
-						m[1] = '*'
+			Result := explode = Explode_star
 		end
 
 feature -- Report
 
-	string (d: detachable ANY): detachable STRING
+	expanded_string (d: detachable ANY): detachable STRING
 		local
 			l_delimiter: CHARACTER
 			v_enc: detachable STRING
 			k_enc: STRING
 			l_obj: detachable ANY
 			i,n: INTEGER
-			modifier_is_plus: BOOLEAN
-			modifier_is_star: BOOLEAN
-			modifier_has_explode: BOOLEAN
+			explode_is_plus: BOOLEAN
+			explode_is_star: BOOLEAN
+			l_has_explode: BOOLEAN
 			dft: detachable ANY
 			has_list_op: BOOLEAN
+			op: like operator
 		do
-			modifier_has_explode := has_explode_modifier
-			if modifier_has_explode then
-				modifier_is_plus := has_explode_modifier_plus
-				modifier_is_star := has_explode_modifier_star
+			l_has_explode := has_explode
+			if l_has_explode then
+				explode_is_plus := has_explode_plus
+				explode_is_star := has_explode_star
 			end
-			has_list_op := operator /= '%U' and operator /= '+'
+			op := operator
+			has_list_op := op /= '%U' and op /= Reserved_operator
 			dft := default_value
 			create Result.make (20)
 			if attached {READABLE_STRING_GENERAL} d as l_string then
-				v_enc := url_encoded_string (modified (l_string), not reserved)
-				if operator = '?' then
+				v_enc := url_encoded_string (modified_string (l_string), not reserved)
+				if op = Form_style_query_operator then
 	                Result.append (name)
 	                Result.append_character ('=')
-				elseif operator = ';' then
+				elseif op = Path_style_parameters_operator then
 	                Result.append (name)
 	                if not v_enc.is_empty then
 		                Result.append_character ('=')
@@ -143,29 +182,29 @@ feature -- Report
 			elseif attached {ARRAY [detachable ANY]} d as l_array then
 				if l_array.is_empty then
 					if dft /= Void then
-						inspect operator
-						when '?',';' then
-							if not modifier_has_explode then
+						inspect op
+						when Form_style_query_operator, Path_style_parameters_operator then
+							if not l_has_explode then
 								Result.append (name)
 								Result.append_character ('=')
 								Result.append (dft.out)
 							else
-								if modifier_is_plus then
+								if explode_is_plus then
 									Result.append (name)
 									Result.append_character ('.')
 								end
 								Result.append (dft.out)
 							end
-						when '/' then
-							if modifier_is_plus then
+						when Path_segment_operator then
+							if explode_is_plus then
 								Result.append (name)
 								Result.append_character ('.')
 							end
 							Result.append (dft.out)
-						when '.' then
+						when Label_operator then
 						else
-							if modifier_has_explode then
-								if modifier_is_plus then
+							if l_has_explode then
+								if explode_is_plus then
 									Result.append (name)
 									Result.append_character ('.')
 								end
@@ -176,17 +215,14 @@ feature -- Report
 						-- nothing ...
 					end
 				else
-					if modifier_has_explode then
+					if l_has_explode then
 						l_delimiter := op_separator
 					else
 						l_delimiter := ','
-						inspect operator
-						when '?' then
+						inspect op
+						when Form_style_query_operator then
 							Result.append (name)
 							Result.append_character ('=')
-						when ';' then
-						when '/' then
---							Result.append_character ('/')
 						else
 						end
 					end
@@ -203,10 +239,10 @@ feature -- Report
 						else
 							v_enc := ""
 						end
-						if modifier_is_plus then
+						if explode_is_plus then
 							if
-								(operator = '?' and modifier_is_plus) or
-								(operator = ';' and modifier_has_explode)
+								(op = Form_style_query_operator and explode_is_plus) or
+								(op = Path_style_parameters_operator and l_has_explode)
 							then
 								Result.append (name)
 								Result.append_character ('=')
@@ -214,7 +250,7 @@ feature -- Report
 								Result.append (name)
 								Result.append_character ('.')
 							end
-						elseif modifier_is_star and operator = '?' then
+						elseif explode_is_star and op = Form_style_query_operator then
 							Result.append (name)
 							Result.append_character ('=')
 						end
@@ -230,47 +266,31 @@ feature -- Report
 					Result := Void
 				end
 			elseif attached {HASH_TABLE [detachable ANY, STRING]} d as l_table then
---				if operator = '?' and not modifier_has_explode and l_table.is_empty and dft = Void then
---				elseif operator = '?' and not modifier_has_explode then
---					Result.append (name)
---					Result.append_character ('=')
---					if l_table.is_empty and dft /= Void then
---						Result.append (dft.out)
---					end
---				elseif l_table.is_empty and dft /= Void then
---					if modifier_has_explode then
---						if modifier_is_plus then
---							Result.append (name)
---							Result.append_character ('.')
---						end
---						Result.append (dft.out)
---					end
---				end
 				if l_table.is_empty then
 					if dft /= Void then
-						inspect operator
-						when '?',';' then
-							if not modifier_has_explode then
+						inspect op
+						when Form_style_query_operator, Path_style_parameters_operator then
+							if not l_has_explode then
 								Result.append (name)
 								Result.append_character ('=')
 								Result.append (dft.out)
 							else
-								if modifier_is_plus then
+								if explode_is_plus then
 									Result.append (name)
 									Result.append_character ('.')
 								end
 								Result.append (dft.out)
 							end
-						when '/' then
-							if modifier_is_plus then
+						when Path_segment_operator then
+							if explode_is_plus then
 								Result.append (name)
 								Result.append_character ('.')
 							end
 							Result.append (dft.out)
-						when '.' then
+						when Label_operator then
 						else
-							if modifier_has_explode then
-								if modifier_is_plus then
+							if l_has_explode then
+								if explode_is_plus then
 									Result.append (name)
 									Result.append_character ('.')
 								end
@@ -281,16 +301,14 @@ feature -- Report
 						-- nothing ...
 					end
 				else
-					if modifier_has_explode then
+					if l_has_explode then
 						l_delimiter := op_separator
 					else
 						l_delimiter := ','
-						inspect operator
-						when '?' then
+						inspect op
+						when Form_style_query_operator then
 							Result.append (name)
 							Result.append_character ('=')
-						when ';' then
-						when '/' then
 						else
 						end
 					end
@@ -308,20 +326,12 @@ feature -- Report
 							v_enc := ""
 						end
 
-						if modifier_is_plus then
+						if explode_is_plus then
 							Result.append (name)
 							Result.append_character ('.')
 						end
 						if
-							modifier_has_explode and
-							(
-								operator = '%U' or
-								operator = '+' or
-								operator = '?' or
-								operator = '.' or
-								operator = ';' or
-								operator = '/'
-							)
+							l_has_explode
 						then
 							Result.append (k_enc)
 							Result.append_character ('=')
@@ -348,12 +358,12 @@ feature -- Report
 				else
 					v_enc := default_value
 				end
-				if operator = '?' then
+				if op = Form_style_query_operator then
 	                Result.append (name)
 	                if v_enc /= Void then
 		                Result.append_character ('=')
 	                end
-	            elseif operator = ';' then
+	            elseif op = Path_style_parameters_operator then
 	                Result.append (name)
 	                if v_enc /= Void and then not v_enc.is_empty then
 		                Result.append_character ('=')
@@ -374,7 +384,11 @@ feature {NONE} -- Implementation
 			else
 				Result := url_encoder.partial_encoded_string (s.as_string_32, <<
 									':', ',',
-									'+', '.', '/', ';', '?',
+									Reserved_operator,
+									Label_operator,
+									Path_segment_operator,
+									Path_style_parameters_operator,
+									Form_style_query_operator,
 									'|', '!', '@'
 									>>)
 			end

@@ -7,12 +7,45 @@
 			<exclude>/EIFGENs$</exclude>
 			<exclude>/.svn$</exclude>
 		</file_rule>
+		<option warning="true" full_class_checking="true" is_attached_by_default="true" void_safety="all">
+			<assertions precondition="true"/>
+		</option>
 		<option warning="true" full_class_checking="true">
 			<assertions precondition="true"/>
 		</option>
 		<library name="base" location="$ISE_LIBRARY\library\base\base.ecf"/>
+		<library name="encoder" location="..\..\text\encoder\encoder.ecf"/>
 		<library name="time" location="$ISE_LIBRARY\library\time\time.ecf"/>
-		<cluster name="src" location="src\" recursive="true"/>
+		<cluster name="src" location="src\" recursive="true">
+			<file_rule>
+				<exclude>/draft_05$</exclude>
+			</file_rule>
+			<file_rule>
+				<exclude>/uri_template_constants.e</exclude>
+				<condition>
+					<custom name="uri_template" value="draft_05"/>
+				</condition>
+			</file_rule>
+		</cluster>
+		<cluster name="draft_05" location=".\src\draft_05\">
+			<condition>
+				<custom name="uri_template" value="draft_05"/>
+			</condition>
+		</cluster>
+	</target>
+	<target name="tests" extends="uri_template">
+		<root class="ANY" feature="default_create"/>
+		<file_rule>
+			<exclude>/.git$</exclude>
+			<exclude>/EIFGENs$</exclude>
+			<exclude>/.svn$</exclude>
+		</file_rule>
+		<option warning="true" full_class_checking="true">
+			<assertions precondition="true"/>
+		</option>
+		<setting name="console_application" value="false"/>
+		<variable name="uri_template" value="draft_05"/>
+		<library name="testing" location="$ISE_LIBRARY\library\testing\testing.ecf"/>
+		<tests name="tests" location=".\tests\"/>
 	</target>
 </system>
-

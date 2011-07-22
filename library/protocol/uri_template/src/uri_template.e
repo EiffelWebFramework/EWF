@@ -2,7 +2,9 @@ note
 	description: "[
 			Summary description for {URI_TEMPLATE}.
 			
-			See http://tools.ietf.org/html/draft-gregorio-uritemplate-05
+			See http://tools.ietf.org/html/draft-gregorio-uritemplate-04
+			
+			note for draft 05, check {URI_TEMPLATE_CONSTANTS}.Default_delimiter
 
 			]"
 	legal: "See notice at end of class."
@@ -52,17 +54,18 @@ feature -- Access
 feature -- Structures
 
 	variable_names: LIST [STRING]
+			-- All variable names
 		do
-			analyze (Void)
-			if attached expansion_parts as l_x_parts then
-				create {ARRAYED_LIST [STRING]} Result.make (l_x_parts.count)
+			analyze
+			if attached expressions as l_expressions then
+				create {ARRAYED_LIST [STRING]} Result.make (l_expressions.count)
 				from
-					l_x_parts.start
+					l_expressions.start
 				until
-					l_x_parts.after
+					l_expressions.after
 				loop
-					Result.append (l_x_parts.item.variable_names)
-					l_x_parts.forth
+					Result.append (l_expressions.item.variable_names)
+					l_expressions.forth
 				end
 			else
 				create {ARRAYED_LIST [STRING]} Result.make (0)
@@ -70,19 +73,20 @@ feature -- Structures
 		end
 
 	path_variable_names: LIST [STRING]
+			-- All variable names part of the path
 		do
-			analyze (Void)
-			if attached expansion_parts as l_x_parts then
-				create {ARRAYED_LIST [STRING]} Result.make (l_x_parts.count)
+			analyze
+			if attached expressions as l_expressions then
+				create {ARRAYED_LIST [STRING]} Result.make (l_expressions.count)
 				from
-					l_x_parts.start
+					l_expressions.start
 				until
-					l_x_parts.after
+					l_expressions.after
 				loop
-					if not l_x_parts.item.is_query then
-						Result.append (l_x_parts.item.variable_names)
+					if not l_expressions.item.is_query then
+						Result.append (l_expressions.item.variable_names)
 					end
-					l_x_parts.forth
+					l_expressions.forth
 				end
 			else
 				create {ARRAYED_LIST [STRING]} Result.make (0)
@@ -90,19 +94,20 @@ feature -- Structures
 		end
 
 	query_variable_names: LIST [STRING]
+			-- All variable names part of the query (i.e after '?')	
 		do
-			analyze (Void)
-			if attached expansion_parts as l_x_parts then
-				create {ARRAYED_LIST [STRING]} Result.make (l_x_parts.count)
+			analyze
+			if attached expressions as l_expressions then
+				create {ARRAYED_LIST [STRING]} Result.make (l_expressions.count)
 				from
-					l_x_parts.start
+					l_expressions.start
 				until
-					l_x_parts.after
+					l_expressions.after
 				loop
-					if l_x_parts.item.is_query then
-						Result.append (l_x_parts.item.variable_names)
+					if l_expressions.item.is_query then
+						Result.append (l_expressions.item.variable_names)
 					end
-					l_x_parts.forth
+					l_expressions.forth
 				end
 			else
 				create {ARRAYED_LIST [STRING]} Result.make (0)
@@ -111,33 +116,33 @@ feature -- Structures
 
 feature -- Builder
 
-	string (a_ht: HASH_TABLE [detachable ANY, STRING]): STRING
+	expanded_string (a_ht: HASH_TABLE [detachable ANY, STRING]): STRING
 			-- Expanded template using variable from `a_ht'
 		local
 			tpl: like template
 			exp: URI_TEMPLATE_EXPRESSION
 			p,q: INTEGER
 		do
-			analyze (Void)
+			analyze
 			tpl := template
-			if attached expansion_parts as l_x_parts then
+			if attached expressions as l_expressions then
 				create Result.make (tpl.count)
 				from
-					l_x_parts.start
+					l_expressions.start
 					p := 1
 				until
-					l_x_parts.after
+					l_expressions.after
 				loop
-					q := l_x_parts.item.position
+					q := l_expressions.item.position
 						--| Added inter variable text
 					Result.append (tpl.substring (p, q - 1))
 						--| Expand variables ...
-					exp := l_x_parts.item
-					exp.append_to_string (a_ht, Result)
+					exp := l_expressions.item
+					exp.append_expanded_to_string (a_ht, Result)
 
-					p := q + l_x_parts.item.expression.count + 2
+					p := q + l_expressions.item.expression.count + 2
 
-					l_x_parts.forth
+					l_expressions.forth
 				end
 				Result.append (tpl.substring (p, tpl.count))
 			else
@@ -160,33 +165,37 @@ feature -- Match
 			l_uri_count: INTEGER
 		do
 				--| Extract expansion parts  "\\{([^\\}]*)\\}"
-			analyze (Void)
-			if attached expansion_parts as l_x_parts then
-				create l_path_vars.make (l_x_parts.count)
-				create l_query_vars.make (l_x_parts.count)
+			analyze
+			if attached expressions as l_expressions then
+				create l_path_vars.make (l_expressions.count)
+				create l_query_vars.make (l_expressions.count)
 				l_vars := l_path_vars
 				b := True
 				l_uri_count := a_uri.count
 				tpl := template
-				if l_x_parts.is_empty then
+				if l_expressions.is_empty then
 					b := a_uri.substring (1, tpl.count).same_string (tpl)
 				else
 					from
-						l_x_parts.start
+						l_expressions.start
 						p := 1
 						l_offset := 0
 					until
-						l_x_parts.after or not b
+						l_expressions.after or not b
 					loop
-						exp := l_x_parts.item
+						exp := l_expressions.item
 						vn := exp.expression
 						q := exp.position
 							--| Check text between vars
+							--| FIXME jfiat [2011/07/22] : check this ...
+							--| There should be at least one literal between two expression
+							--|  {var}{foobar}  is ambigous for matching ...
+							b := False
 						if q > p then
 							t := tpl.substring (p, q - 1)
 							s := a_uri.substring (p + l_offset, q + l_offset - 1)
 							b := s.same_string (t)
-							p := q + vn.count + 2
+							p := exp.end_position
 						end
 							--| Check related variable
 						if b and then not vn.is_empty then
@@ -210,7 +219,7 @@ feature -- Match
 								b := exp.is_query --| query are optional
 							end
 						end
-						l_x_parts.forth
+						l_expressions.forth
 					end
 				end
 				if b then
@@ -221,14 +230,14 @@ feature -- Match
 
 feature {NONE} -- Internal Access
 
-	expansion_parts: detachable LIST [URI_TEMPLATE_EXPRESSION]
+	expressions: detachable LIST [URI_TEMPLATE_EXPRESSION]
 			-- Expansion parts
 
 feature {NONE} -- Implementation
 
-	analyze (a_handler: detachable URI_TEMPLATE_HANDLER)
+	analyze
 		local
-			l_x_parts: like expansion_parts
+			l_expressions: like expressions
 			c: CHARACTER
 			i,p,n: INTEGER
 			tpl: like template
@@ -237,12 +246,12 @@ feature {NONE} -- Implementation
 			x: STRING
 			exp: URI_TEMPLATE_EXPRESSION
 		do
-			l_x_parts := expansion_parts
-			if l_x_parts = Void then
+			l_expressions := expressions
+			if l_expressions = Void then
 				tpl := template
 
 					--| Extract expansion parts  "\\{([^\\}]*)\\}"
-				create {ARRAYED_LIST [like expansion_parts.item]} l_x_parts.make (tpl.occurrences ('{'))
+				create {ARRAYED_LIST [like expressions.item]} l_expressions.make (tpl.occurrences ('{'))
 				from
 					i := 1
 					n := tpl.count
@@ -254,7 +263,7 @@ feature {NONE} -- Implementation
 					if in_x then
 						if c = '}' then
 							create exp.make (p, x.twin, in_query)
-							l_x_parts.force (exp)
+							l_expressions.force (exp)
 							x.wipe_out
 							in_x := False
 						else
@@ -276,7 +285,7 @@ feature {NONE} -- Implementation
 					end
 					i := i + 1
 				end
-				expansion_parts := l_x_parts
+				expressions := l_expressions
 			end
 		end
 
@@ -353,11 +362,6 @@ feature {NONE} -- Implementation
 				i := i + 1
 			end
 			Result := a_uri.substring (a_index, p)
-		end
-
-	url_encoder: URL_ENCODER
-		once
-			create Result
 		end
 
 note

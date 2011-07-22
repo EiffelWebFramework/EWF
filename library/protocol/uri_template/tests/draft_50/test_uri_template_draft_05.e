@@ -8,7 +8,7 @@ note
 	testing: "type/manual"
 
 class
-	TEST_URI_TEMPLATE
+	TEST_URI_TEMPLATE_DRAFT_05
 
 inherit
 	EQA_TEST_SET
@@ -17,7 +17,7 @@ feature -- Test routines
 
 	test_uri_template_parser
 		note
-			testing:  "uri-template"
+			testing:  "uri-template-05"
 		do
 			uri_template_parse ("api/foo/{foo_id}/{?id,extra}", <<"foo_id">>, <<"id", "extra">>)
 			uri_template_parse ("weather/{state}/{city}?forecast={day}", <<"state", "city">>, <<"day">>)
@@ -25,7 +25,7 @@ feature -- Test routines
 
 	test_uri_template_matcher
 		note
-			testing:  "uri-template"
+			testing:  "uri-template-05"
 		local
 			tpl: URI_TEMPLATE
 		do
@@ -48,7 +48,7 @@ feature -- Test routines
 
 	test_uri_template_string_builder
 		note
-			testing:  "uri-template"
+			testing:  "uri-template-05"
 		local
 			ht: HASH_TABLE [detachable ANY, STRING]
 			empty_keys: HASH_TABLE [STRING, STRING]
@@ -114,9 +114,9 @@ feature -- Test routines
 			uri_template_string (ht, "O{undef}X", "OX")
 
 			--| String expansion with defaults
-			uri_template_string (ht, "{var=default}", "value")
-			uri_template_string (ht, "O{empty=default}X", "OX")
-			uri_template_string (ht, "O{undef=default}X", "OdefaultX")
+			uri_template_string (ht, "{var|default}", "value")
+			uri_template_string (ht, "O{empty|default}X", "OX")
+			uri_template_string (ht, "O{undef|default}X", "OdefaultX")
 
 			--| Reserved expansion with defaults
 			uri_template_string (ht, "{+var}", "value")
@@ -124,8 +124,8 @@ feature -- Test routines
 			uri_template_string (ht, "{+path}/here", "/foo/bar/here")
 			uri_template_string (ht, "here?ref={+path}", "here?ref=/foo/bar")
 			uri_template_string (ht, "up{+path}{x}/here", "up/foo/bar1024/here")
-			uri_template_string (ht, "up{+empty=/1}/here", "up/here")
-			uri_template_string (ht, "up{+undef=/1}/here", "up/1/here")
+			uri_template_string (ht, "up{+empty|/1}/here", "up/here")
+			uri_template_string (ht, "up{+undef|/1}/here", "up/1/here")
 
 			--| String expansion with multiple variables
 			uri_template_string (ht, "{x,y}", "1024,768")
@@ -133,7 +133,7 @@ feature -- Test routines
 			uri_template_string (ht, "?{x,empty}", "?1024,")
 			uri_template_string (ht, "?{x,undef}", "?1024")
 			uri_template_string (ht, "?{undef,y}", "?768")
-			uri_template_string (ht, "?{x,undef=0}", "?1024,0")
+			uri_template_string (ht, "?{x,undef|0}", "?1024,0")
 
 			--| Reserved expansion with multiple variables
 			uri_template_string (ht, "{+x,hello,y}", "1024,Hello+World!,768")
@@ -212,7 +212,7 @@ feature -- Test routines
 
 	test_uri_template_string_builder_extra
 		note
-			testing:  "uri-template"
+			testing:  "uri-template-05"
 		local
 			ht: HASH_TABLE [detachable ANY, STRING]
 			empty_keys: HASH_TABLE [STRING, STRING]
@@ -281,153 +281,153 @@ feature -- Test routines
 									 "weather/California/Goleta?forecast=today")
 
 
-			uri_template_string (ht, "{var=default}", "value")
-			uri_template_string (ht, "{undef=default}", "default")
-			uri_template_string (ht, "{undef:3=default}", "default")
+			uri_template_string (ht, "{var|default}", "value")
+			uri_template_string (ht, "{undef|default}", "default")
+			uri_template_string (ht, "{undef:3|default}", "default")
 
 			uri_template_string (ht, "x{empty}y", "xy")
-			uri_template_string (ht, "x{empty=_}y", "xy")
+			uri_template_string (ht, "x{empty|_}y", "xy")
 			uri_template_string (ht, "x{undef}y", "xy")
-			uri_template_string (ht, "x{undef=_}y", "x_y")
+			uri_template_string (ht, "x{undef|_}y", "x_y")
 
-			uri_template_string (ht, "x{.name=none}", "x.Fred,Wilma,Pebbles")
-			uri_template_string (ht, "x{.name*=none}", "x.Fred.Wilma.Pebbles")
+			uri_template_string (ht, "x{.name|none}", "x.Fred,Wilma,Pebbles")
+			uri_template_string (ht, "x{.name*|none}", "x.Fred.Wilma.Pebbles")
 			uri_template_string (ht, "x{.empty}", "x.")
-			uri_template_string (ht, "x{.empty=none}", "x.")
+			uri_template_string (ht, "x{.empty|none}", "x.")
 			uri_template_string (ht, "x{.undef}", "x")
-			uri_template_string (ht, "x{.undef=none}", "x.none")
+			uri_template_string (ht, "x{.undef|none}", "x.none")
 
-			uri_template_string (ht, "x{/name=none}", "x/Fred,Wilma,Pebbles")
-			uri_template_string (ht, "x{/name*=none}", "x/Fred/Wilma/Pebbles")
+			uri_template_string (ht, "x{/name|none}", "x/Fred,Wilma,Pebbles")
+			uri_template_string (ht, "x{/name*|none}", "x/Fred/Wilma/Pebbles")
 			uri_template_string (ht, "x{/undef}", "x")
-			uri_template_string (ht, "x{/undef=none}", "x/none")
+			uri_template_string (ht, "x{/undef|none}", "x/none")
 			uri_template_string (ht, "x{/empty}", "x/")
-			uri_template_string (ht, "x{/empty=none}", "x/")
+			uri_template_string (ht, "x{/empty|none}", "x/")
 			uri_template_string (ht, "x{/empty_keys}", "x")
-			uri_template_string (ht, "x{/empty_keys=none}", "x/none")
+			uri_template_string (ht, "x{/empty_keys|none}", "x/none")
 			uri_template_string (ht, "x{/empty_keys*}", "x")
-			uri_template_string (ht, "x{/empty_keys*=none}", "x/none")
+			uri_template_string (ht, "x{/empty_keys*|none}", "x/none")
 
-			uri_template_string (ht, "x{;name=none}", "x;name=Fred,Wilma,Pebbles")
-			uri_template_string (ht, "x{;favs=none}", "x;favs=color,red,volume,high")
-			uri_template_string (ht, "x{;favs*=none}", "x;color=red;volume=high")
+			uri_template_string (ht, "x{;name|none}", "x;name=Fred,Wilma,Pebbles")
+			uri_template_string (ht, "x{;favs|none}", "x;favs=color,red,volume,high")
+			uri_template_string (ht, "x{;favs*|none}", "x;color=red;volume=high")
 			uri_template_string (ht, "x{;empty}", "x;empty")
-			uri_template_string (ht, "x{;empty=none}", "x;empty")
+			uri_template_string (ht, "x{;empty|none}", "x;empty")
 
 			uri_template_string (ht, "x{;undef}", "x")
-			uri_template_string (ht, "x{;undef=none}", "x;none")
-			uri_template_string (ht, "x{;undef=foo=y}", "x;foo=y")
+			uri_template_string (ht, "x{;undef|none}", "x;none")
+			uri_template_string (ht, "x{;undef|foo=y}", "x;foo=y")
 
-			uri_template_string (ht, "x{?var=none}", "x?var=value")
-			uri_template_string (ht, "x{?favs=none}", "x?favs=color,red,volume,high")
-			uri_template_string (ht, "x{?favs*=none}", "x?color=red&volume=high")
+			uri_template_string (ht, "x{?var|none}", "x?var=value")
+			uri_template_string (ht, "x{?favs|none}", "x?favs=color,red,volume,high")
+			uri_template_string (ht, "x{?favs*|none}", "x?color=red&volume=high")
 			uri_template_string (ht, "x{?empty}", "x?empty=")
-			uri_template_string (ht, "x{?empty=foo=none}", "x?empty=")
+			uri_template_string (ht, "x{?empty|foo=none}", "x?empty=")
 			uri_template_string (ht, "x{?undef}", "x")
-			uri_template_string (ht, "x{?undef=foo=none}", "x?foo=none")
+			uri_template_string (ht, "x{?undef|foo=none}", "x?foo=none")
 			uri_template_string (ht, "x{?empty_keys}", "x")
-			uri_template_string (ht, "x{?empty_keys=none}", "x?none")
-			uri_template_string (ht, "x{?empty_keys=y=z}", "x?y=z")
-			uri_template_string (ht, "x{?empty_keys*=y=z}", "x?y=z")
+			uri_template_string (ht, "x{?empty_keys|none}", "x?none")
+			uri_template_string (ht, "x{?empty_keys|y=z}", "x?y=z")
+			uri_template_string (ht, "x{?empty_keys*|y=z}", "x?y=z")
 
 
 			------
 
 			uri_template_string (ht, "x{empty_list}y", "xy")
-			uri_template_string (ht, "x{empty_list=_}y", "xy")
+			uri_template_string (ht, "x{empty_list|_}y", "xy")
 			uri_template_string (ht, "x{empty_list*}y", "xy")
-			uri_template_string (ht, "x{empty_list*=_}y", "x_y")
+			uri_template_string (ht, "x{empty_list*|_}y", "x_y")
 			uri_template_string (ht, "x{empty_list+}y", "xy")
-			uri_template_string (ht, "x{empty_list+=_}y", "xempty_list._y")
+			uri_template_string (ht, "x{empty_list+|_}y", "xempty_list._y")
 
 			uri_template_string (ht, "x{empty_keys}y", "xy")
-			uri_template_string (ht, "x{empty_keys=_}y", "xy")
+			uri_template_string (ht, "x{empty_keys|_}y", "xy")
 			uri_template_string (ht, "x{empty_keys*}y", "xy")
-			uri_template_string (ht, "x{empty_keys*=_}y", "x_y")
+			uri_template_string (ht, "x{empty_keys*|_}y", "x_y")
 			uri_template_string (ht, "x{empty_keys+}y", "xy")
-			uri_template_string (ht, "x{empty_keys+=_}y", "xempty_keys._y")
+			uri_template_string (ht, "x{empty_keys+|_}y", "xempty_keys._y")
 
-			uri_template_string (ht, "x{?name=none}", "x?name=Fred,Wilma,Pebbles")
-			uri_template_string (ht, "x{?favs=none}", "x?favs=color,red,volume,high")
-			uri_template_string (ht, "x{?favs*=none}", "x?color=red&volume=high")
-			uri_template_string (ht, "x{?favs+=none}", "x?favs.color=red&favs.volume=high")
+			uri_template_string (ht, "x{?name|none}", "x?name=Fred,Wilma,Pebbles")
+			uri_template_string (ht, "x{?favs|none}", "x?favs=color,red,volume,high")
+			uri_template_string (ht, "x{?favs*|none}", "x?color=red&volume=high")
+			uri_template_string (ht, "x{?favs+|none}", "x?favs.color=red&favs.volume=high")
 
 			uri_template_string (ht, "x{?undef}", "x")
-			uri_template_string (ht, "x{?undef=none}", "x?undef=none")
+			uri_template_string (ht, "x{?undef|none}", "x?undef=none")
 			uri_template_string (ht, "x{?empty}", "x?empty=")
-			uri_template_string (ht, "x{?empty=none}", "x?empty=")
+			uri_template_string (ht, "x{?empty|none}", "x?empty=")
 
 			uri_template_string (ht, "x{?empty_list}", "x")
-			uri_template_string (ht, "x{?empty_list=none}", "x?empty_list=none")
+			uri_template_string (ht, "x{?empty_list|none}", "x?empty_list=none")
 			uri_template_string (ht, "x{?empty_list*}", "x")
-			uri_template_string (ht, "x{?empty_list*=none}", "x?none")
+			uri_template_string (ht, "x{?empty_list*|none}", "x?none")
 			uri_template_string (ht, "x{?empty_list+}", "x")
-			uri_template_string (ht, "x{?empty_list+=none}", "x?empty_list.none")
+			uri_template_string (ht, "x{?empty_list+|none}", "x?empty_list.none")
 
 			uri_template_string (ht, "x{?empty_keys}", "x")
-			uri_template_string (ht, "x{?empty_keys=none}", "x?empty_keys=none")
+			uri_template_string (ht, "x{?empty_keys|none}", "x?empty_keys=none")
 			uri_template_string (ht, "x{?empty_keys*}", "x")
-			uri_template_string (ht, "x{?empty_keys*=none}", "x?none")
+			uri_template_string (ht, "x{?empty_keys*|none}", "x?none")
 			uri_template_string (ht, "x{?empty_keys+}", "x")
-			uri_template_string (ht, "x{?empty_keys+=none}", "x?empty_keys.none")
+			uri_template_string (ht, "x{?empty_keys+|none}", "x?empty_keys.none")
 
-			uri_template_string (ht, "x{;name=none}", "x;name=Fred,Wilma,Pebbles")
-			uri_template_string (ht, "x{;favs=none}", "x;favs=color,red,volume,high")
-			uri_template_string (ht, "x{;favs*=none}", "x;color=red;volume=high")
-			uri_template_string (ht, "x{;favs+=none}", "x;favs.color=red;favs.volume=high")
+			uri_template_string (ht, "x{;name|none}", "x;name=Fred,Wilma,Pebbles")
+			uri_template_string (ht, "x{;favs|none}", "x;favs=color,red,volume,high")
+			uri_template_string (ht, "x{;favs*|none}", "x;color=red;volume=high")
+			uri_template_string (ht, "x{;favs+|none}", "x;favs.color=red;favs.volume=high")
 			uri_template_string (ht, "x{;undef}", "x")
-			uri_template_string (ht, "x{;undef=none}", "x;undef=none")
-			uri_template_string (ht, "x{;undef=none}", "x;none")
+			uri_template_string (ht, "x{;undef|none}", "x;undef=none")
+			uri_template_string (ht, "x{;undef|none}", "x;none")
 			uri_template_string (ht, "x{;empty}", "x;empty")
-			uri_template_string (ht, "x{;empty=none}", "x;empty")
+			uri_template_string (ht, "x{;empty|none}", "x;empty")
 
 			uri_template_string (ht, "x{;empty_list}", "x")
-			uri_template_string (ht, "x{;empty_list=none}", "x;empty_list=none")
+			uri_template_string (ht, "x{;empty_list|none}", "x;empty_list=none")
 			uri_template_string (ht, "x{;empty_list*}", "x")
-			uri_template_string (ht, "x{;empty_list*=none}", "x;none")
+			uri_template_string (ht, "x{;empty_list*|none}", "x;none")
 			uri_template_string (ht, "x{;empty_list+}", "x")
-			uri_template_string (ht, "x{;empty_list+=none}", "x;empty_list.none")
+			uri_template_string (ht, "x{;empty_list+|none}", "x;empty_list.none")
 
 			uri_template_string (ht, "x{;empty_keys}", "x")
-			uri_template_string (ht, "x{;empty_keys=none}", "x;empty_keys=none")
+			uri_template_string (ht, "x{;empty_keys|none}", "x;empty_keys=none")
 			uri_template_string (ht, "x{;empty_keys*}", "x")
-			uri_template_string (ht, "x{;empty_keys*=none}", "x;none")
+			uri_template_string (ht, "x{;empty_keys*|none}", "x;none")
 			uri_template_string (ht, "x{;empty_keys+}", "x")
-			uri_template_string (ht, "x{;empty_keys+=none}", "x;empty_keys.none")
+			uri_template_string (ht, "x{;empty_keys+|none}", "x;empty_keys.none")
 
-			uri_template_string (ht, "x{/name=none}", "x/Fred,Wilma,Pebbles")
-			uri_template_string (ht, "x{/name*=none}", "x/Fred/Wilma/Pebbles")
-			uri_template_string (ht, "x{/name+=none}", "x/name.Fred/name.Wilma/name.Pebbles")
-			uri_template_string (ht, "x{/favs=none}", "x/color,red,volume,high")
-			uri_template_string (ht, "x{/favs*=none}", "x/color/red/volume/high")
-			uri_template_string (ht, "x{/favs+=none}", "x/favs.color/red/favs.volume/high")
+			uri_template_string (ht, "x{/name|none}", "x/Fred,Wilma,Pebbles")
+			uri_template_string (ht, "x{/name*|none}", "x/Fred/Wilma/Pebbles")
+			uri_template_string (ht, "x{/name+|none}", "x/name.Fred/name.Wilma/name.Pebbles")
+			uri_template_string (ht, "x{/favs|none}", "x/color,red,volume,high")
+			uri_template_string (ht, "x{/favs*|none}", "x/color/red/volume/high")
+			uri_template_string (ht, "x{/favs+|none}", "x/favs.color/red/favs.volume/high")
 
 			uri_template_string (ht, "x{/undef}", "x")
-			uri_template_string (ht, "x{/undef=none}", "x/none")
+			uri_template_string (ht, "x{/undef|none}", "x/none")
 			uri_template_string (ht, "x{/empty}", "x/")
-			uri_template_string (ht, "x{/empty=none}", "x/")
+			uri_template_string (ht, "x{/empty|none}", "x/")
 
 			uri_template_string (ht, "x{/empty_list}", "x")
-			uri_template_string (ht, "x{/empty_list=none}", "x/none")
+			uri_template_string (ht, "x{/empty_list|none}", "x/none")
 			uri_template_string (ht, "x{/empty_list*}", "x")
-			uri_template_string (ht, "x{/empty_list*=none}", "x/none")
+			uri_template_string (ht, "x{/empty_list*|none}", "x/none")
 			uri_template_string (ht, "x{/empty_list+}", "x")
-			uri_template_string (ht, "x{/empty_list+=none}", "x/empty_list.none")
+			uri_template_string (ht, "x{/empty_list+|none}", "x/empty_list.none")
 
 			uri_template_string (ht, "x{/empty_keys}", "x")
-			uri_template_string (ht, "x{/empty_keys=none}", "x/none")
+			uri_template_string (ht, "x{/empty_keys|none}", "x/none")
 			uri_template_string (ht, "x{/empty_keys*}", "x")
-			uri_template_string (ht, "x{/empty_keys*=none}", "x/none")
+			uri_template_string (ht, "x{/empty_keys*|none}", "x/none")
 			uri_template_string (ht, "x{/empty_keys+}", "x")
-			uri_template_string (ht, "x{/empty_keys+=none}", "x/empty_keys.none")
+			uri_template_string (ht, "x{/empty_keys+|none}", "x/empty_keys.none")
 
 				--| Simple expansion with comma-separated values
 			uri_template_string (ht, "{var}", "value")
 			uri_template_string (ht, "{hello}", "Hello+World%%21")
 			uri_template_string (ht, "{path}/here", "%%2Ffoo%%2Fbar/here")
 			uri_template_string (ht, "{x,y}", "1024,768")
-			uri_template_string (ht, "{var=default}", "value")
-			uri_template_string (ht, "{undef=default}", "default")
+			uri_template_string (ht, "{var|default}", "value")
+			uri_template_string (ht, "{undef|default}", "default")
 			uri_template_string (ht, "{list}", "val1,val2,val3")
 			uri_template_string (ht, "{list*}", "val1,val2,val3")
 			uri_template_string (ht, "{list+}", "list.val1,list.val2,list.val3")
@@ -500,7 +500,7 @@ feature -- Test routines
 			uri_template_string (ht, "{foo}", "fred")
 			uri_template_string (ht, "{foo,foo}", "fred,fred")
 			uri_template_string (ht, "{bar,foo}", "fred")
-			uri_template_string (ht, "{bar=wilma}", "wilma")
+			uri_template_string (ht, "{bar|wilma}", "wilma")
 
 				--| Reserved  Expansion
 			uri_template_string (ht, "{foo2}", "That%%27s+right%%21")
@@ -598,7 +598,7 @@ feature -- Test routines
 						b := attached path_ht.item (path_res[i].name) as s and then s.same_string (path_res[i].value)
 						i := i + 1
 					end
-					assert ("uri %"" + a_uri + "%" matched path variables", b)
+					assert ("uri matched path variables", b)
 				end
 				if attached l_match.query_variables as query_ht then
 					b := query_ht.count >= query_res.count
@@ -610,10 +610,10 @@ feature -- Test routines
 						b := attached query_ht.item (query_res[i].name) as s and then s.same_string (query_res[i].value)
 						i := i + 1
 					end
-					assert ("uri %"" + a_uri + "%" matched query variables", b)
+					assert ("uri matched query variables", b)
 				end
 			else
-				assert ("uri %"" + a_uri + "%" matched", False)
+				assert ("uri matched", False)
 			end
 		end
 
