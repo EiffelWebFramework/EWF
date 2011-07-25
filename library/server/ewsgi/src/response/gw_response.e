@@ -7,32 +7,30 @@ note
 deferred class
 	GW_RESPONSE
 
-feature {NONE} -- Implementation: Output
+feature {GW_APPLICATION} -- Commit
 
-	output: GW_OUTPUT_STREAM
-			-- Server output channel
-		deferred
-		end
-
-feature -- Output header
-
-	write_header_object (h: GW_HEADER)
-			-- Send `header' to `output'.
+	commit (a_output_stream: GW_OUTPUT_STREAM)
+			-- Commit the current response
 		do
-			h.send_to (output)
+			--| To be redefined as needed, to flush, or what you need...
+			a_output_stream.flush
 		end
 
 feature -- Output operation
 
 	write_string (s: STRING)
-		do
-			output.put_string (s)
+			-- Send the content of `s'
+		deferred
 		end
 
 	write_file_content (fn: STRING)
 			-- Send the content of file `fn'
-		do
-			output.put_file_content (fn)
+		deferred
+		end
+
+	write_header_object (h: GW_HEADER)
+			-- Send `header' to `output'.
+		deferred
 		end
 
 	write_header (a_status: INTEGER; a_headers: detachable ARRAY [TUPLE [key: STRING; value: STRING]])

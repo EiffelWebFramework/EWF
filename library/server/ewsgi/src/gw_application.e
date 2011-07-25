@@ -26,6 +26,9 @@ feature -- Process request
 			else
 				rescue_execute (req, res, (create {EXCEPTION_MANAGER}).last_exception)
 			end
+			if res /= Void then
+				res.commit (a_output)
+			end
 		end
 
 feature {NONE} -- Execution

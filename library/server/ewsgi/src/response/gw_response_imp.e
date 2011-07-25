@@ -20,6 +20,26 @@ feature {NONE} -- Initialization
 			output := a_output
 		end
 
+feature -- Output operation
+
+	write_string (s: STRING)
+			-- Send the content of `s'
+		do
+			output.put_string (s)
+		end
+
+	write_file_content (fn: STRING)
+			-- Send the content of file `fn'
+		do
+			output.put_file_content (fn)
+		end
+
+	write_header_object (h: GW_HEADER)
+			-- Send `header' to `output'.
+		do
+			h.send_to (output)
+		end
+
 feature {NONE} -- Implementation: Access
 
 	output: GW_OUTPUT_STREAM

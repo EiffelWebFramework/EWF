@@ -85,7 +85,7 @@ feature -- Form fields and related
 		deferred
 		end
 
-	uploaded_files: HASH_TABLE [TUPLE [name: STRING; type: STRING; tmp_name: STRING; tmp_basename: STRING; error: INTEGER; size: INTEGER], STRING]
+	uploaded_files: HASH_TABLE [GW_UPLOADED_FILE_DATA, STRING]
 			-- Table of uploaded files information
 			--| name: original path from the user
 			--| type: content type
@@ -203,15 +203,6 @@ feature -- Access: global variable
 
 feature -- Uploaded File Handling
 
-	move_uploaded_file (a_filename: STRING; a_destination: STRING): BOOLEAN
-			-- Move uploaded file `a_filename' to `a_destination'
-			--| if this is not an uploaded file, do not move it.
-		require
-			a_filename_valid: a_filename /= Void and then not a_filename.is_empty
-			a_destination_valid: a_destination /= Void and then not a_destination.is_empty
-		deferred
-		end
-
 	is_uploaded_file (a_filename: STRING): BOOLEAN
 			-- Is `a_filename' a file uploaded via HTTP POST
 		deferred
@@ -219,10 +210,10 @@ feature -- Uploaded File Handling
 
 feature {NONE} -- Temporary File handling		
 
-	delete_uploaded_file (a_filename: STRING)
-			-- Delete file `a_filename'
+	delete_uploaded_file (f: GW_UPLOADED_FILE_DATA)
+			-- Delete file `f'
 		require
-			a_filename_valid: a_filename /= Void and then not a_filename.is_empty
+			f_valid: f /= Void
 		deferred
 		end
 
@@ -230,65 +221,15 @@ feature -- URL Utility
 
 	absolute_script_url (a_path: STRING): STRING
 			-- Absolute Url for the script if any, extended by `a_path'
-		do
-			Result := script_url (a_path)
-			if attached environment.http_host as h then
-				Result.prepend (h)
-			else
-				--| Issue ??
-			end
+		deferred
 		end
 
 	script_url (a_path: STRING): STRING
 			-- Url relative to script name if any, extended by `a_path'
 		require
 			a_path_attached: a_path /= Void
-		local
-			l_base_url: like internal_url_base
-			i,m,n: INTEGER
-			l_rq_uri: like environment.request_uri
-			env: like environment
-		do
-			l_base_url := internal_url_base
-			if l_base_url = Void then
-				env := environment
-				if attached env.script_name as l_script_name then
-					l_rq_uri := env.request_uri
-					if l_rq_uri.starts_with (l_script_name) then
-						l_base_url := l_script_name
-					else
-						--| Handle Rewrite url engine, to have clean path
-						from
-							i := 1
-							m := l_rq_uri.count
-							n := l_script_name.count
-						until
-							i > m or i > n or l_rq_uri[i] /= l_script_name[i]
-						loop
-							i := i + 1
-						end
-						if i > 1 then
-							if l_rq_uri[i-1] = '/' then
-								i := i -1
-							end
-							l_base_url := l_rq_uri.substring (1, i - 1)
-						end
-					end
-				end
-				if l_base_url = Void then
-					create l_base_url.make_empty
-				end
-				internal_url_base := l_base_url
-			end
-			Result := l_base_url + a_path
+		deferred
 		end
-
-feature {NONE} -- Implementation: URL Utility
-
-	internal_url_base: detachable STRING
-			-- URL base of potential script
-
-invariant
 
 note
 	copyright: "2011-2011, Eiffel Software and others"

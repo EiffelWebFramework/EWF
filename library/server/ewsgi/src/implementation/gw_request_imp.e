@@ -178,7 +178,7 @@ feature -- Form fields and related
 			Result := vars
 		end
 
-	uploaded_files: HASH_TABLE [TUPLE [name: STRING; type: STRING; tmp_name: STRING; tmp_basename: STRING; error: INTEGER; size: INTEGER], STRING]
+	uploaded_files: HASH_TABLE [GW_UPLOADED_FILE_DATA, STRING]
 			-- Table of uploaded files information
 			--| name: original path from the user
 			--| type: content type
@@ -274,6 +274,66 @@ feature -- Access extra information
 			end
 		end
 
+feature -- URL Utility
+
+	absolute_script_url (a_path: STRING): STRING
+			-- Absolute Url for the script if any, extended by `a_path'
+		do
+			Result := script_url (a_path)
+			if attached environment.http_host as h then
+				Result.prepend (h)
+			else
+				--| Issue ??
+			end
+		end
+
+	script_url (a_path: STRING): STRING
+			-- Url relative to script name if any, extended by `a_path'
+		local
+			l_base_url: like internal_url_base
+			i,m,n: INTEGER
+			l_rq_uri: like environment.request_uri
+			env: like environment
+		do
+			l_base_url := internal_url_base
+			if l_base_url = Void then
+				env := environment
+				if attached env.script_name as l_script_name then
+					l_rq_uri := env.request_uri
+					if l_rq_uri.starts_with (l_script_name) then
+						l_base_url := l_script_name
+					else
+						--| Handle Rewrite url engine, to have clean path
+						from
+							i := 1
+							m := l_rq_uri.count
+							n := l_script_name.count
+						until
+							i > m or i > n or l_rq_uri[i] /= l_script_name[i]
+						loop
+							i := i + 1
+						end
+						if i > 1 then
+							if l_rq_uri[i-1] = '/' then
+								i := i -1
+							end
+							l_base_url := l_rq_uri.substring (1, i - 1)
+						end
+					end
+				end
+				if l_base_url = Void then
+					create l_base_url.make_empty
+				end
+				internal_url_base := l_base_url
+			end
+			Result := l_base_url + a_path
+		end
+
+feature {NONE} -- Implementation: URL Utility
+
+	internal_url_base: detachable STRING
+			-- URL base of potential script
+
 feature -- Element change
 
 	set_raw_post_data_recorded (b: BOOLEAN)
@@ -313,21 +373,6 @@ feature -- Element change
 
 feature -- Uploaded File Handling
 
-	move_uploaded_file (a_filename: STRING; a_destination: STRING): BOOLEAN
-			-- Move uploaded file `a_filename' to `a_destination'
-			--| if this is not an uploaded file, do not move it.
-		local
-			f: RAW_FILE
-		do
-			if is_uploaded_file (a_filename) then
-				create f.make (a_filename)
-				if f.exists then
-					f.change_name (a_destination)
-					Result := True
-				end
-			end
-		end
-
 	is_uploaded_file (a_filename: STRING): BOOLEAN
 			-- Is `a_filename' a file uploaded via HTTP Form
 		local
@@ -340,7 +385,7 @@ feature -- Uploaded File Handling
 				until
 					l_files.after or Result
 				loop
-					if l_files.item_for_iteration.tmp_name.same_string (a_filename) then
+					if attached l_files.item_for_iteration.tmp_name as l_tmp_name and then l_tmp_name.same_string (a_filename) then
 						Result := True
 					end
 					l_files.forth
@@ -350,24 +395,28 @@ feature -- Uploaded File Handling
 
 feature {NONE} -- Temporary File handling		
 
-	delete_uploaded_file (a_filename: STRING)
+	delete_uploaded_file (uf: GW_UPLOADED_FILE_DATA)
 			-- Delete file `a_filename'
 		local
 			f: RAW_FILE
 		do
-			if is_uploaded_file (a_filename) then
-				create f.make (a_filename)
-				if f.exists and then f.is_writable then
-					f.delete
+			if uploaded_files.has_item (uf) then
+				if attached uf.tmp_name as fn then
+					create f.make (fn)
+					if f.exists and then f.is_writable then
+						f.delete
+					else
+						error_handler.add_custom_error (0, "Can not delete uploaded file", "Can not delete file %""+ fn +"%"")
+					end
 				else
-					error_handler.add_custom_error (0, "Can not delete file", "Can not delete file %""+ a_filename +"%"")
+					error_handler.add_custom_error (0, "Can not delete uploaded file", "Can not delete uploaded file %""+ uf.name +"%" Tmp File not found")
 				end
 			else
-				error_handler.add_custom_error (0, "Not uploaded file", "This file %""+ a_filename +"%" is not an uploaded file.")
+				error_handler.add_custom_error (0, "Not an uploaded file", "This file %""+ uf.name +"%" is not an uploaded file.")
 			end
 		end
 
-	save_uploaded_file (a_content: STRING; a_filename: STRING): detachable TUPLE [name: STRING; basename: STRING]
+	save_uploaded_file (a_content: STRING; a_up_fn_info: GW_UPLOADED_FILE_DATA)
 			-- Save uploaded file content to `a_filename'
 		local
 			bn: STRING
@@ -383,7 +432,7 @@ feature {NONE} -- Temporary File handling
 				dn := (create {EXECUTION_ENVIRONMENT}).current_working_directory
 				create d.make (dn)
 				if d.exists and then d.is_writable then
-					l_safe_name := safe_filename (a_filename)
+					l_safe_name := safe_filename (a_up_fn_info.name)
 					from
 						create fn.make_from_string (dn)
 						bn := "tmp-" + l_safe_name
@@ -402,18 +451,19 @@ feature {NONE} -- Temporary File handling
 					end
 
 					if not f.exists or else f.is_writable then
+						a_up_fn_info.set_tmp_name (f.name)
+						a_up_fn_info.set_tmp_basename (bn)
 						f.open_write
 						f.put_string (a_content)
 						f.close
-						Result := [f.name, bn]
 					else
-						Result := Void
+						a_up_fn_info.set_error (-1)
 					end
 				else
 					error_handler.add_custom_error (0, "Directory not writable", "Can not create file in directory %""+ dn +"%"")
 				end
 			else
-				Result := Void
+				a_up_fn_info.set_error (-1)
 			end
 		rescue
 			rescued := True
@@ -533,6 +583,7 @@ feature {NONE} -- Implementation: Form analyzer
 			l_header: detachable STRING
 			l_content: detachable STRING
 			l_line: detachable STRING
+			l_up_file_info: GW_UPLOADED_FILE_DATA
 		do
 			from
 				p := 1
@@ -625,11 +676,9 @@ feature {NONE} -- Implementation: Form analyzer
 						if l_content_type = Void then
 							l_content_type := default_content_type
 						end
-						if attached save_uploaded_file (l_content, l_filename) as l_saved_fn_info then
-							uploaded_files.force ([l_filename, l_content_type, l_saved_fn_info.name, l_saved_fn_info.basename, 0, l_content.count], l_name)
-						else
-							uploaded_files.force ([l_filename, l_content_type, "", "", -1, l_content.count], l_name)
-						end
+						create l_up_file_info.make (l_filename, l_content_type, l_content.count)
+						save_uploaded_file (l_content, l_up_file_info)
+						uploaded_files.force (l_up_file_info, l_name)
 					else
 						vars_post.add_variable (l_content, l_name)
 					end
