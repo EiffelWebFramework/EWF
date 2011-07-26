@@ -22,7 +22,7 @@ feature {NONE} -- Initialization
 
 feature -- Output operation
 
-	write_string (s: STRING)
+	write (s: STRING)
 			-- Send the content of `s'
 		do
 			output.put_string (s)

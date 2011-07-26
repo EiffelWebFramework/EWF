@@ -38,7 +38,7 @@ feature -- Status setting
 
 feature -- Output operation
 
-	write_string (s: STRING)
+	write (s: STRING)
 			-- Send the content of `s'
 		do
 			body.append (s)
@@ -57,7 +57,7 @@ feature -- Output operation
 					f.exhausted
 				loop
 					f.read_stream (1024)
-					write_string (f.last_string)
+					write (f.last_string)
 				end
 				f.close
 			end
@@ -74,7 +74,7 @@ feature {GW_APPLICATION} -- Commit
 	commit (a_output: GW_OUTPUT_STREAM)
 		do
 			header.send_to (a_output)
-			write_string (body)
+			write (body)
 			Precursor (a_output)
 		end
 

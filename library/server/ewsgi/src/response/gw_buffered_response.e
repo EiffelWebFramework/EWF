@@ -43,7 +43,7 @@ feature -- Status setting
 
 feature -- Output operation
 
-	write_string (s: STRING)
+	write (s: STRING)
 			-- Send the content of `s'
 		local
 			buf: like buffer
@@ -84,7 +84,7 @@ feature -- Output operation
 					f.exhausted
 				loop
 					f.read_stream (buffer_capacity)
-					write_string (f.last_string)
+					write (f.last_string)
 				end
 				f.close
 			end

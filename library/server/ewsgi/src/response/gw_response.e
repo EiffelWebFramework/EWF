@@ -18,15 +18,23 @@ feature {GW_APPLICATION} -- Commit
 
 feature -- Output operation
 
-	write_string (s: STRING)
+	write (s: STRING)
 			-- Send the content of `s'
 		deferred
+		end
+
+	write_string (s: STRING)
+			-- Send the content of `s'
+		do
+			write (s)
 		end
 
 	write_file_content (fn: STRING)
 			-- Send the content of file `fn'
 		deferred
 		end
+
+feature -- Header output operation
 
 	write_header_object (h: GW_HEADER)
 			-- Send `header' to `output'.
@@ -58,8 +66,8 @@ feature -- Output operation
 	write_header_line (s: STRING)
 			-- Send `s' to http client as header line
 		do
-			write_string (s)
-			write_string ("%R%N")
+			write (s)
+			write ("%R%N")
 		end
 
 note
