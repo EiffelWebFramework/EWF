@@ -1,15 +1,15 @@
 note
-	description: "Summary description for {HTTPD_EXECUTION_VARIABLES}."
+	description: "Summary description for {EWSGI_EXECUTION_VARIABLES}."
 	legal: "See notice at end of class."
 	status: "See notice at end of class."
 	date: "$Date$"
 	revision: "$Revision$"
 
 class
-	GW_EXECUTION_VARIABLES
+	EWSGI_EXECUTION_VARIABLES
 
 inherit
-	GW_VARIABLES [STRING_32]
+	EWSGI_VARIABLES [STRING_32]
 		undefine
 			copy, is_equal
 		end
@@ -31,7 +31,7 @@ feature -- Status report
 			Result := has (a_name)
 		end
 
-feature {GW_REQUEST, GW_APPLICATION, GW_CONNECTOR} -- Element change
+feature {EWSGI_REQUEST, EWSGI_APPLICATION, EWSGI_CONNECTOR} -- Element change
 
 	set_variable (a_name: STRING; a_value: STRING_32)
 		do

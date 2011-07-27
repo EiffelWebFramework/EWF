@@ -8,7 +8,7 @@ note
 	revision: "$Revision$"
 
 deferred class
-	GW_INPUT_STREAM
+	EWSGI_INPUT_STREAM
 
 feature -- Access
 

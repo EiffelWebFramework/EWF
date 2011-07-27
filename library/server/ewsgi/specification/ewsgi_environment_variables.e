@@ -1,15 +1,15 @@
 note
-	description: "Summary description for {GW_ENVIRONMENT_VARIABLES}."
+	description: "Summary description for {EWSGI_ENVIRONMENT_VARIABLES}."
 	legal: "See notice at end of class."
 	status: "See notice at end of class."
 	date: "$Date$"
 	revision: "$Revision$"
 
 class
-	GW_ENVIRONMENT_VARIABLES
+	EWSGI_ENVIRONMENT_VARIABLES
 
 inherit
-	GW_ENVIRONMENT
+	EWSGI_ENVIRONMENT
 		redefine
 			update_path_info
 		end
@@ -37,13 +37,13 @@ feature {NONE} -- Initialization
 			end
 
 				--| QUERY_STRING
-			query_string := variable_or_default ({GW_ENVIRONMENT_NAMES}.query_string, empty_string, False)
+			query_string := variable_or_default ({EWSGI_ENVIRONMENT_NAMES}.query_string, empty_string, False)
 
 				--| REQUEST_METHOD
-			request_method := variable_or_default ({GW_ENVIRONMENT_NAMES}.request_method, empty_string, False)
+			request_method := variable_or_default ({EWSGI_ENVIRONMENT_NAMES}.request_method, empty_string, False)
 
 				--| CONTENT_TYPE
-			s := variable ({GW_ENVIRONMENT_NAMES}.content_type)
+			s := variable ({EWSGI_ENVIRONMENT_NAMES}.content_type)
 			if s /= Void and then not s.is_empty then
 				content_type := s
 			else
@@ -51,7 +51,7 @@ feature {NONE} -- Initialization
 			end
 
 				--| CONTENT_LENGTH
-			s := variable ({GW_ENVIRONMENT_NAMES}.content_length)
+			s := variable ({EWSGI_ENVIRONMENT_NAMES}.content_length)
 			content_length := s
 			if s /= Void and then s.is_integer then
 				content_length_value := s.to_integer
@@ -60,13 +60,13 @@ feature {NONE} -- Initialization
 			end
 
 				--| PATH_INFO
-			path_info := variable_or_default ({GW_ENVIRONMENT_NAMES}.path_info, empty_string, False)
+			path_info := variable_or_default ({EWSGI_ENVIRONMENT_NAMES}.path_info, empty_string, False)
 
 				--| SERVER_NAME
-			server_name := variable_or_default ({GW_ENVIRONMENT_NAMES}.server_name, empty_string, False)
+			server_name := variable_or_default ({EWSGI_ENVIRONMENT_NAMES}.server_name, empty_string, False)
 
 				--| SERVER_PORT
-			s := variable ({GW_ENVIRONMENT_NAMES}.server_port)
+			s := variable ({EWSGI_ENVIRONMENT_NAMES}.server_port)
 			if s /= Void and then s.is_integer then
 				server_port := s.to_integer
 			else
@@ -74,16 +74,16 @@ feature {NONE} -- Initialization
 			end
 
 				--| SCRIPT_NAME
-			script_name := variable_or_default ({GW_ENVIRONMENT_NAMES}.script_name, empty_string, False)
+			script_name := variable_or_default ({EWSGI_ENVIRONMENT_NAMES}.script_name, empty_string, False)
 
 				--| REMOTE_ADDR
-			remote_addr := variable_or_default ({GW_ENVIRONMENT_NAMES}.remote_addr, empty_string, False)
+			remote_addr := variable_or_default ({EWSGI_ENVIRONMENT_NAMES}.remote_addr, empty_string, False)
 
 				--| REMOTE_HOST
-			remote_host := variable_or_default ({GW_ENVIRONMENT_NAMES}.remote_host, empty_string, False)
+			remote_host := variable_or_default ({EWSGI_ENVIRONMENT_NAMES}.remote_host, empty_string, False)
 
 				--| REQUEST_URI
-			request_uri := variable_or_default ({GW_ENVIRONMENT_NAMES}.request_uri, empty_string, False)
+			request_uri := variable_or_default ({EWSGI_ENVIRONMENT_NAMES}.request_uri, empty_string, False)
 		end
 
 feature -- Access
@@ -102,7 +102,7 @@ feature -- Access
 			Result := table.has_key (a_name)
 		end
 
-feature {GW_REQUEST, GW_APPLICATION, GW_CONNECTOR} -- Element change
+feature {EWSGI_REQUEST, EWSGI_APPLICATION, EWSGI_CONNECTOR} -- Element change
 
 	set_variable (a_name: STRING; a_value: STRING)
 		do
@@ -126,7 +126,7 @@ feature -- Common Gateway Interface - 1.1       8 January 1996
 
 	gateway_interface: STRING
 		do
-			Result := variable_or_default ({GW_ENVIRONMENT_NAMES}.gateway_interface, "", False)
+			Result := variable_or_default ({EWSGI_ENVIRONMENT_NAMES}.gateway_interface, "", False)
 		end
 
 	path_info: STRING
@@ -139,7 +139,7 @@ feature -- Common Gateway Interface - 1.1       8 January 1996
 
 	path_translated: detachable STRING
 		do
-			Result := variable ({GW_ENVIRONMENT_NAMES}.path_translated)
+			Result := variable ({EWSGI_ENVIRONMENT_NAMES}.path_translated)
 		end
 
 	query_string: STRING
@@ -150,12 +150,12 @@ feature -- Common Gateway Interface - 1.1       8 January 1996
 
 	remote_ident: detachable STRING
 		do
-			Result := variable ({GW_ENVIRONMENT_NAMES}.remote_ident)
+			Result := variable ({EWSGI_ENVIRONMENT_NAMES}.remote_ident)
 		end
 
 	remote_user: detachable STRING
 		do
-			Result := variable ({GW_ENVIRONMENT_NAMES}.remote_user)
+			Result := variable ({EWSGI_ENVIRONMENT_NAMES}.remote_user)
 		end
 
 	request_method: STRING
@@ -168,12 +168,12 @@ feature -- Common Gateway Interface - 1.1       8 January 1996
 
 	server_protocol: STRING
 		do
-			Result := variable_or_default ({GW_ENVIRONMENT_NAMES}.server_protocol, "HTTP/1.0", True)
+			Result := variable_or_default ({EWSGI_ENVIRONMENT_NAMES}.server_protocol, "HTTP/1.0", True)
 		end
 
 	server_software: STRING
 		do
-			Result := variable_or_default ({GW_ENVIRONMENT_NAMES}.server_software, "Unknown Server", True)
+			Result := variable_or_default ({EWSGI_ENVIRONMENT_NAMES}.server_software, "Unknown Server", True)
 		end
 
 feature -- HTTP_*
@@ -181,41 +181,41 @@ feature -- HTTP_*
 	http_accept: detachable STRING
 			-- Contents of the Accept: header from the current request, if there is one.
 		do
-			Result := table.item ({GW_ENVIRONMENT_NAMES}.http_accept)
+			Result := table.item ({EWSGI_ENVIRONMENT_NAMES}.http_accept)
 		end
 
 	http_accept_charset: detachable STRING
 			-- Contents of the Accept-Charset: header from the current request, if there is one.
 			-- Example: 'iso-8859-1,*,utf-8'.
 		do
-			Result := table.item ({GW_ENVIRONMENT_NAMES}.http_accept_charset)
+			Result := table.item ({EWSGI_ENVIRONMENT_NAMES}.http_accept_charset)
 		end
 
 	http_accept_encoding: detachable STRING
 			-- Contents of the Accept-Encoding: header from the current request, if there is one.
 			-- Example: 'gzip'.
 		do
-			Result := table.item ({GW_ENVIRONMENT_NAMES}.http_accept_encoding)
+			Result := table.item ({EWSGI_ENVIRONMENT_NAMES}.http_accept_encoding)
 		end
 
 	http_accept_language: detachable STRING
 			-- Contents of the Accept-Language: header from the current request, if there is one.
 			-- Example: 'en'.
 		do
-			Result := table.item ({GW_ENVIRONMENT_NAMES}.http_accept_language)
+			Result := table.item ({EWSGI_ENVIRONMENT_NAMES}.http_accept_language)
 		end
 
 	http_connection: detachable STRING
 			-- Contents of the Connection: header from the current request, if there is one.
 			-- Example: 'Keep-Alive'.
 		do
-			Result := table.item ({GW_ENVIRONMENT_NAMES}.http_connection)
+			Result := table.item ({EWSGI_ENVIRONMENT_NAMES}.http_connection)
 		end
 
 	http_host: detachable STRING
 			-- Contents of the Host: header from the current request, if there is one.
 		do
-			Result := table.item ({GW_ENVIRONMENT_NAMES}.http_host)
+			Result := table.item ({EWSGI_ENVIRONMENT_NAMES}.http_host)
 		end
 
 	http_referer: detachable STRING
@@ -224,7 +224,7 @@ feature -- HTTP_*
 			-- Not all user agents will set this, and some provide the ability to modify HTTP_REFERER as a feature.
 			-- In short, it cannot really be trusted.
 		do
-			Result := table.item ({GW_ENVIRONMENT_NAMES}.http_referer)
+			Result := table.item ({EWSGI_ENVIRONMENT_NAMES}.http_referer)
 		end
 
 	http_user_agent: detachable STRING
@@ -234,13 +234,13 @@ feature -- HTTP_*
 			-- Among other things, you can use this value to tailor your page's
 			-- output to the capabilities of the user agent.
 		do
-			Result := table.item ({GW_ENVIRONMENT_NAMES}.http_user_agent)
+			Result := table.item ({EWSGI_ENVIRONMENT_NAMES}.http_user_agent)
 		end
 
 	http_authorization: detachable STRING
 			-- Contents of the Authorization: header from the current request, if there is one.
 		do
-			Result := table.item ({GW_ENVIRONMENT_NAMES}.http_authorization)
+			Result := table.item ({EWSGI_ENVIRONMENT_NAMES}.http_authorization)
 		end
 
 feature -- Extra
@@ -251,24 +251,24 @@ feature -- Extra
 	orig_path_info: detachable STRING
 			-- Original version of `path_info' before processed by Current environment
 
-feature {GW_REQUEST} -- Update
+feature {EWSGI_REQUEST} -- Update
 
 	set_orig_path_info (s: STRING)
 		do
 			orig_path_info := s
-			set_variable ({GW_ENVIRONMENT_NAMES}.orig_path_info, s)
+			set_variable ({EWSGI_ENVIRONMENT_NAMES}.orig_path_info, s)
 		end
 
 	unset_orig_path_info
 		do
 			orig_path_info := Void
-			unset_variable ({GW_ENVIRONMENT_NAMES}.orig_path_info)
+			unset_variable ({EWSGI_ENVIRONMENT_NAMES}.orig_path_info)
 		end
 
 	update_path_info (a_path_info: like path_info)
 		do
 			path_info := a_path_info
-			set_variable ({GW_ENVIRONMENT_NAMES}.path_info, a_path_info)
+			set_variable ({EWSGI_ENVIRONMENT_NAMES}.path_info, a_path_info)
 		end
 
 feature {NONE} -- Implementation

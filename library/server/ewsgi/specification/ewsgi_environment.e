@@ -91,10 +91,10 @@ note
 
 deferred
 class
-	GW_ENVIRONMENT
+	EWSGI_ENVIRONMENT
 
 inherit
-	GW_VARIABLES [STRING_8]
+	EWSGI_VARIABLES [STRING_8]
 
 	ITERABLE [STRING_8]
 
@@ -581,7 +581,7 @@ feature -- Extra
 		deferred
 		end
 
-feature {GW_REQUEST} -- Element change
+feature {EWSGI_REQUEST} -- Element change
 
 	set_orig_path_info (s: STRING)
 			-- Set ORIG_PATH_INFO to `s'
@@ -589,21 +589,21 @@ feature {GW_REQUEST} -- Element change
 			s_attached: s /= Void
 		deferred
 		ensure
-			same_orig_path_info: orig_path_info ~ variable ({GW_ENVIRONMENT_NAMES}.orig_path_info)
+			same_orig_path_info: orig_path_info ~ variable ({EWSGI_ENVIRONMENT_NAMES}.orig_path_info)
 		end
 
 	unset_orig_path_info
 			-- Unset ORIG_PATH_INFO
 		deferred
 		ensure
-			unset: not has_variable ({GW_ENVIRONMENT_NAMES}.orig_path_info)
+			unset: not has_variable ({EWSGI_ENVIRONMENT_NAMES}.orig_path_info)
 		end
 
 	update_path_info (a_path_info: like path_info)
 			-- Updated PATH_INFO
 		deferred
 		ensure
-			same_path_info: path_info ~ variable ({GW_ENVIRONMENT_NAMES}.path_info)
+			same_path_info: path_info ~ variable ({EWSGI_ENVIRONMENT_NAMES}.path_info)
 		end
 
 invariant
@@ -614,7 +614,7 @@ invariant
 	query_string_attached: query_string /= Void
 	remote_addr_attached: remote_addr /= Void
 
-	path_info_identical: path_info ~ variable ({GW_ENVIRONMENT_NAMES}.path_info)
+	path_info_identical: path_info ~ variable ({EWSGI_ENVIRONMENT_NAMES}.path_info)
 
 ;note
 	copyright: "2011-2011, Eiffel Software and others"

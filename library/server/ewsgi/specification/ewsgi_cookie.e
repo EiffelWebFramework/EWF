@@ -8,7 +8,7 @@ note
 	revision: "$Revision$"
 
 class
-	GW_COOKIE
+	EWSGI_COOKIE
 
 create
 	make

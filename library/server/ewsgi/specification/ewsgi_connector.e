@@ -1,11 +1,11 @@
 note
-	description: "Summary description for {GW_CONNECTOR}."
+	description: "Summary description for {EWSGI_CONNECTOR}."
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
 deferred class
-	GW_CONNECTOR
+	EWSGI_CONNECTOR
 
 feature {NONE} -- Initialization
 
@@ -22,7 +22,7 @@ feature {NONE} -- Initialization
 
 feature {NONE} -- Access
 
-	application: GW_APPLICATION
+	application: EWSGI_APPLICATION
 			-- Gateway Application
 
 feature -- Server

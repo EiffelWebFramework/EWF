@@ -5,7 +5,7 @@ note
 	revision: "$Revision$"
 
 class
-	GW_UPLOADED_FILE_DATA
+	EWSGI_UPLOADED_FILE_DATA
 
 create
 	make

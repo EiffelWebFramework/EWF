@@ -1,16 +1,16 @@
 note
-	description: "Summary description for {GW_APPLICATION}."
+	description: "Summary description for {EWSGI_APPLICATION}."
 	legal: "See notice at end of class."
 	status: "See notice at end of class."
 	date: "$Date$"
 	revision: "$Revision$"
 
 deferred class
-	GW_APPLICATION
+	EWSGI_APPLICATION
 
 feature -- Process request
 
-	process (env: GW_ENVIRONMENT; a_input: GW_INPUT_STREAM; a_output: GW_OUTPUT_STREAM)
+	process (env: EWSGI_ENVIRONMENT; a_input: EWSGI_INPUT_STREAM; a_output: EWSGI_OUTPUT_STREAM)
 			-- Process request with environment `env', and i/o streams `a_input' and `a_output'
 		local
 			rescued: BOOLEAN
@@ -33,7 +33,7 @@ feature -- Process request
 
 feature {NONE} -- Execution
 
-	execute (req: GW_REQUEST; res: GW_RESPONSE)
+	execute (req: EWSGI_REQUEST; res: EWSGI_RESPONSE)
 			-- Execute the request
 			-- See `req.input' for input stream
 			--     `req.environment' for the Gateway environment	
@@ -41,19 +41,19 @@ feature {NONE} -- Execution
 		deferred
 		end
 
-	pre_execute (env: GW_ENVIRONMENT)
+	pre_execute (env: EWSGI_ENVIRONMENT)
 			-- Operation processed before `execute'
 		require
 			env_attached: env /= Void
 		do
 		end
 
-	post_execute (req: detachable GW_REQUEST; res: detachable GW_RESPONSE)
+	post_execute (req: detachable EWSGI_REQUEST; res: detachable EWSGI_RESPONSE)
 			-- Operation processed after `execute', or after `rescue_execute'
 		do
 		end
 
-	rescue_execute (req: detachable GW_REQUEST; res: detachable GW_RESPONSE; a_exception: detachable EXCEPTION)
+	rescue_execute (req: detachable EWSGI_REQUEST; res: detachable EWSGI_RESPONSE; a_exception: detachable EXCEPTION)
 			-- Operation processed on rescue of `execute'
 		do
 			post_execute (req, res)
@@ -61,7 +61,7 @@ feature {NONE} -- Execution
 
 feature -- Factory
 
-	new_request (env: GW_ENVIRONMENT; a_input: GW_INPUT_STREAM): GW_REQUEST
+	new_request (env: EWSGI_ENVIRONMENT; a_input: EWSGI_INPUT_STREAM): EWSGI_REQUEST
 			-- New Request context based on `env' and `a_input'
 			--| note: you can redefine this function to create your own
 			--| descendant of GW_REQUEST_CONTEXT , or even to reuse/recycle existing
@@ -69,7 +69,7 @@ feature -- Factory
 		deferred
 		end
 
-	new_response (req: GW_REQUEST; a_output: GW_OUTPUT_STREAM): GW_RESPONSE
+	new_response (req: EWSGI_REQUEST; a_output: EWSGI_OUTPUT_STREAM): EWSGI_RESPONSE
 			-- New Response based on `req' and `a_output'
 			--| note: you can redefine this function to create your own
 			--| descendant of GW_RESPONSE , or even to reuse/recycle existing

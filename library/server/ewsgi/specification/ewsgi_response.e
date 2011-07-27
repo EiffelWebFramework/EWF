@@ -1,15 +1,15 @@
 note
-	description: "Summary description for {GW_RESPONSE}."
+	description: "Summary description for {EWSGI_RESPONSE}."
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
 deferred class
-	GW_RESPONSE
+	EWSGI_RESPONSE
 
-feature {GW_APPLICATION} -- Commit
+feature {EWSGI_APPLICATION} -- Commit
 
-	commit (a_output_stream: GW_OUTPUT_STREAM)
+	commit (a_output_stream: EWSGI_OUTPUT_STREAM)
 			-- Commit the current response
 		deferred
 		ensure

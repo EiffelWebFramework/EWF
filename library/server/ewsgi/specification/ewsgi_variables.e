@@ -8,7 +8,7 @@ note
 	revision: "$Revision$"
 
 deferred class
-	GW_VARIABLES [G -> STRING_GENERAL]
+	EWSGI_VARIABLES [G -> STRING_GENERAL]
 
 feature -- Status report
 
@@ -46,7 +46,7 @@ feature -- Access
 			end
 		end
 
-feature {GW_REQUEST, GW_APPLICATION, GW_CONNECTOR} -- Element change
+feature {EWSGI_REQUEST, EWSGI_APPLICATION, EWSGI_CONNECTOR} -- Element change
 
 	set_variable (a_name: STRING; a_value: G)
 		require

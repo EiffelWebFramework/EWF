@@ -13,11 +13,11 @@ note
 	revision: "$Revision$"
 
 deferred class
-	GW_REQUEST
+	EWSGI_REQUEST
 
 feature -- Access: Input
 
-	input: GW_INPUT_STREAM
+	input: EWSGI_INPUT_STREAM
 			-- Server input channel
 		deferred
 		end
@@ -31,7 +31,7 @@ feature -- Access: extra values
 
 feature -- Access: environment variables		
 
-	environment: GW_ENVIRONMENT
+	environment: EWSGI_ENVIRONMENT
 			-- Environment variables
 		deferred
 		end
@@ -45,7 +45,7 @@ feature -- Access: environment variables
 
 feature -- Access: execution variables		
 
-	execution_variables: GW_EXECUTION_VARIABLES
+	execution_variables: EWSGI_EXECUTION_VARIABLES
 			-- Execution variables set by the application
 		deferred
 		end
@@ -59,7 +59,7 @@ feature -- Access: execution variables
 
 feature -- URL Parameters
 
-	parameters: GW_REQUEST_VARIABLES
+	parameters: EWSGI_REQUEST_VARIABLES
 			-- Variables extracted from QUERY_STRING
 		deferred
 		end
@@ -73,7 +73,7 @@ feature -- URL Parameters
 
 feature -- Form fields and related
 
-	form_fields: GW_REQUEST_VARIABLES
+	form_fields: EWSGI_REQUEST_VARIABLES
 			-- Variables sent by POST request
 		deferred
 		end
@@ -85,7 +85,7 @@ feature -- Form fields and related
 		deferred
 		end
 
-	uploaded_files: HASH_TABLE [GW_UPLOADED_FILE_DATA, STRING]
+	uploaded_files: HASH_TABLE [EWSGI_UPLOADED_FILE_DATA, STRING]
 			-- Table of uploaded files information
 			--| name: original path from the user
 			--| type: content type
@@ -110,7 +110,7 @@ feature -- Cookies
 		deferred
 		end
 
-	cookies: HASH_TABLE [GW_COOKIE, STRING]
+	cookies: HASH_TABLE [EWSGI_COOKIE, STRING]
 			-- Cookies Information
 		deferred
 		end

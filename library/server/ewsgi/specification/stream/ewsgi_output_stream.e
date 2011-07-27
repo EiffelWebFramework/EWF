@@ -8,7 +8,7 @@ note
 	revision: "$Revision$"
 
 deferred class
-	GW_OUTPUT_STREAM
+	EWSGI_OUTPUT_STREAM
 
 inherit
 	ANY
