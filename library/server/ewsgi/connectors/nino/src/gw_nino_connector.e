@@ -8,7 +8,7 @@ class
 	GW_NINO_CONNECTOR
 
 inherit
-	GW_CONNECTOR
+	EWSGI_CONNECTOR
 		redefine
 			initialize
 		end
@@ -62,7 +62,7 @@ feature -- Server
 		local
 			l_http_handler : HTTP_HANDLER
 		do
-			create {GW_NINO_HANDLER} l_http_handler.make_with_callback (server, "GW_NINO_HANDLER", Current)
+			create {GW_NINO_HANDLER} l_http_handler.make_with_callback (server, "NINO_HANDLER", Current)
 			debug ("nino")
 				if attached base as l_base then
 					print ("Base=" + l_base + "%N")
@@ -73,7 +73,7 @@ feature -- Server
 
 	process_request (env: HASH_TABLE [STRING, STRING]; a_headers_text: STRING; a_input: HTTP_INPUT_STREAM; a_output: HTTP_OUTPUT_STREAM)
 		local
-			gw_env: GW_ENVIRONMENT_VARIABLES
+			gw_env: EWSGI_ENVIRONMENT_VARIABLES
 		do
 			create gw_env.make_with_variables (env)
 			gw_env.set_variable ("RAW_HEADER_DATA", a_headers_text)

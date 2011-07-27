@@ -9,7 +9,7 @@ class
 	GW_LIBFCGI_CONNECTOR
 
 inherit
-	GW_CONNECTOR
+	EWSGI_CONNECTOR
 		redefine
 			initialize
 		end
@@ -46,7 +46,7 @@ feature -- Execution
 
 	process_fcgi_request (vars: HASH_TABLE [STRING, STRING]; a_input: like input; a_output: like output)
 		local
-			gw_env: GW_ENVIRONMENT_VARIABLES
+			gw_env: EWSGI_ENVIRONMENT_VARIABLES
 		do
 			create gw_env.make_with_variables (vars)
 			application.process (gw_env, a_input, a_output)
@@ -54,10 +54,10 @@ feature -- Execution
 
 feature -- Input/Output
 
-	input: GW_INPUT_STREAM
+	input: EWSGI_INPUT_STREAM
 			-- Input from client (from httpd server via FCGI)
 
-	output: GW_OUTPUT_STREAM
+	output: EWSGI_OUTPUT_STREAM
 			-- Output to client (via httpd server/fcgi)
 
 feature {NONE} -- Implementation

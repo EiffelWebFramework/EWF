@@ -10,14 +10,6 @@ note
 deferred class
 	EWSGI_OUTPUT_STREAM
 
-inherit
-	ANY
-
-	HTTP_STATUS_CODE_MESSAGES
-		export
-			{NONE} all
-		end
-
 feature -- Core operation
 
 	put_string (s: STRING_8)
@@ -38,18 +30,7 @@ feature -- Status writing
 			-- Put status code line for `a_code'
 			--| Note this is a default implementation, and could be redefined
 			--| for instance in relation to NPH CGI script
-		local
-			s: STRING
-		do
-			create s.make (16)
-			s.append ({HTTP_CONSTANTS}.http_version_1_1)
-			s.append_character (' ')
-			s.append_integer (a_code)
-			if attached http_status_code_message (a_code) as l_status_message then
-				s.append_character (' ')
-				s.append_string (l_status_message)
-			end
-			put_header_line (s)
+		deferred
 		end
 
 feature -- Basic operation

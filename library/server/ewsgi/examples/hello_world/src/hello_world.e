@@ -18,7 +18,7 @@ feature {NONE} -- Initialization
 			(create {GW_NINO_APPLICATION}.make_custom (agent execute, "")).listen (port_number)
 		end
 
-	execute (req: GW_REQUEST; res: GW_RESPONSE)
+	execute (req: EWSGI_REQUEST; res: EWSGI_RESPONSE)
 		do
 			res.write_header (200, <<["Content-Type", "text/plain"]>>)
 			res.write_string ("Hello World!%N")

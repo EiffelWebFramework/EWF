@@ -9,7 +9,7 @@ class
 	GW_NINO_INPUT_STREAM
 
 inherit
-	GW_INPUT_STREAM
+	EWSGI_INPUT_STREAM
 
 create
 	make
@@ -22,7 +22,7 @@ feature {NONE} -- Initialization
 			set_nino_input (a_nino_input)
 		end
 
-feature {GW_NINO_CONNECTOR, GW_APPLICATION} -- Nino
+feature {GW_NINO_CONNECTOR, EWSGI_APPLICATION} -- Nino
 
 	set_nino_input (i: like nino_input)
 		do

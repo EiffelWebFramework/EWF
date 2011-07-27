@@ -1,12 +1,12 @@
 note
-	description: "Summary description for {GW_ENVIRONMENT_VARIABLES}."
+	description: "Summary description for {EWSGI_ENVIRONMENT_VARIABLES}."
 	legal: "See notice at end of class."
 	status: "See notice at end of class."
 	date: "$Date$"
 	revision: "$Revision$"
 
 class
-	GW_ENVIRONMENT_VARIABLES
+	EWSGI_ENVIRONMENT_VARIABLES
 
 inherit
 	EWSGI_ENVIRONMENT

@@ -9,7 +9,12 @@ class
 	GW_LIBFCGI_OUTPUT_STREAM
 
 inherit
-	GW_OUTPUT_STREAM
+	EWSGI_OUTPUT_STREAM
+
+	HTTP_STATUS_CODE_MESSAGES
+		export
+			{NONE} all
+		end
 
 create
 	make
@@ -21,6 +26,26 @@ feature {NONE} -- Initialization
 			valid_fcgi: a_fcgi /= Void
 		do
 			fcgi := a_fcgi
+		end
+
+feature -- Status writing
+
+	put_status_line (a_code: INTEGER)
+			-- Put status code line for `a_code'
+			--| Note this is a default implementation, and could be redefined
+			--| for instance in relation to NPH CGI script
+		local
+			s: STRING
+		do
+			create s.make (16)
+			s.append ({HTTP_CONSTANTS}.http_version_1_1)
+			s.append_character (' ')
+			s.append_integer (a_code)
+			if attached http_status_code_message (a_code) as l_status_message then
+				s.append_character (' ')
+				s.append_string (l_status_message)
+			end
+			put_header_line (s)
 		end
 
 feature -- Basic operation

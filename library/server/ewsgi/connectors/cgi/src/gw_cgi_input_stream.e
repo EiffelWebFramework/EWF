@@ -9,7 +9,7 @@ class
 	GW_CGI_INPUT_STREAM
 
 inherit
-	GW_INPUT_STREAM
+	EWSGI_INPUT_STREAM
 
 	CONSOLE
 		rename

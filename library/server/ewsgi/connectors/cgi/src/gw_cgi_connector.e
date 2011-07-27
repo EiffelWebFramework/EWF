@@ -8,7 +8,7 @@ class
 	GW_CGI_CONNECTOR
 
 inherit
-	GW_CONNECTOR
+	EWSGI_CONNECTOR
 
 create
 	make
@@ -17,7 +17,7 @@ feature -- Execution
 
 	launch
 		local
-			env: GW_ENVIRONMENT_VARIABLES
+			env: EWSGI_ENVIRONMENT_VARIABLES
 		do
 			create env.make_with_variables ((create {EXECUTION_ENVIRONMENT}).starting_environment_variables)
 			application.process (env, create {GW_CGI_INPUT_STREAM}.make, create {GW_CGI_OUTPUT_STREAM}.make)
