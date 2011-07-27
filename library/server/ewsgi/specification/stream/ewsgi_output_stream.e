@@ -36,7 +36,7 @@ feature -- Status writing
 
 	put_status_line (a_code: INTEGER)
 			-- Put status code line for `a_code'
-			--| Note this is a default implemantation, and could be redefined
+			--| Note this is a default implementation, and could be redefined
 			--| for instance in relation to NPH CGI script
 		local
 			s: STRING

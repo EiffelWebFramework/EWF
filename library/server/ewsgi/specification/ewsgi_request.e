@@ -45,7 +45,7 @@ feature -- Access: environment variables
 
 feature -- Access: execution variables		
 
-	execution_variables: EWSGI_EXECUTION_VARIABLES
+	execution_variables: EWSGI_VARIABLES [STRING_32]
 			-- Execution variables set by the application
 		deferred
 		end
@@ -59,7 +59,7 @@ feature -- Access: execution variables
 
 feature -- URL Parameters
 
-	parameters: EWSGI_REQUEST_VARIABLES
+	parameters: EWSGI_VARIABLES [STRING_32]
 			-- Variables extracted from QUERY_STRING
 		deferred
 		end
@@ -73,7 +73,7 @@ feature -- URL Parameters
 
 feature -- Form fields and related
 
-	form_fields: EWSGI_REQUEST_VARIABLES
+	form_fields: EWSGI_VARIABLES [STRING_32]
 			-- Variables sent by POST request
 		deferred
 		end

@@ -8,12 +8,12 @@ class
 	GW_IN_MEMORY_RESPONSE
 
 inherit
-	GW_RESPONSE
+	EWSGI_RESPONSE
 		redefine
 			commit
 		end
 
-create {GW_APPLICATION}
+create {EWSGI_APPLICATION}
 	make
 
 feature {NONE} -- Initialization
@@ -104,9 +104,9 @@ feature -- Header output operation
 			header := h
 		end
 
-feature {GW_APPLICATION} -- Commit
+feature {EWSGI_APPLICATION} -- Commit
 
-	commit (a_output: GW_OUTPUT_STREAM)
+	commit (a_output: EWSGI_OUTPUT_STREAM)
 		do
 			a_output.put_status_line (status_code)
 			a_output.put_string (header.string)

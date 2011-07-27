@@ -8,9 +8,9 @@ class
 	GW_RESPONSE_IMP
 
 inherit
-	GW_RESPONSE
+	EWSGI_RESPONSE
 
-create {GW_APPLICATION}
+create {EWSGI_APPLICATION}
 	make
 
 feature {NONE} -- Initialization
@@ -20,9 +20,9 @@ feature {NONE} -- Initialization
 			output := a_output
 		end
 
-feature {GW_APPLICATION} -- Commit
+feature {EWSGI_APPLICATION} -- Commit
 
-	commit (a_output_stream: GW_OUTPUT_STREAM)
+	commit (a_output_stream: EWSGI_OUTPUT_STREAM)
 			-- Commit the current response
 		do
 			a_output_stream.flush
@@ -94,7 +94,7 @@ feature -- Header output operation
 
 feature {NONE} -- Implementation: Access
 
-	output: GW_OUTPUT_STREAM
+	output: EWSGI_OUTPUT_STREAM
 			-- Server output channel
 
 ;note

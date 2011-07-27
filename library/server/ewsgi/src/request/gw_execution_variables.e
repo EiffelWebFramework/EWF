@@ -1,12 +1,12 @@
 note
-	description: "Summary description for {EWSGI_EXECUTION_VARIABLES}."
+	description: "Summary description for {GW_EXECUTION_VARIABLES}."
 	legal: "See notice at end of class."
 	status: "See notice at end of class."
 	date: "$Date$"
 	revision: "$Revision$"
 
 class
-	EWSGI_EXECUTION_VARIABLES
+	GW_EXECUTION_VARIABLES
 
 inherit
 	EWSGI_VARIABLES [STRING_32]

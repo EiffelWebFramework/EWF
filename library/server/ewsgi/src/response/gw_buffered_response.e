@@ -8,9 +8,9 @@ class
 	GW_BUFFERED_RESPONSE
 
 inherit
-	GW_RESPONSE
+	EWSGI_RESPONSE
 
-create {GW_APPLICATION}
+create {EWSGI_APPLICATION}
 	make
 
 feature {NONE} -- Initialization
@@ -22,7 +22,7 @@ feature {NONE} -- Initialization
 			create buffer.make (a_buffer_size)
 		end
 
-	output: GW_OUTPUT_STREAM
+	output: EWSGI_OUTPUT_STREAM
 
 	buffer: STRING_8
 
@@ -143,9 +143,9 @@ feature {NONE} -- Implementation
 			buffer_flushed: buffer_count = 0 and buffer.count = 0
 		end
 
-feature {GW_APPLICATION} -- Commit
+feature {EWSGI_APPLICATION} -- Commit
 
-	commit (a_output: GW_OUTPUT_STREAM)
+	commit (a_output: EWSGI_OUTPUT_STREAM)
 		do
 			flush_buffer
 			a_output.flush

@@ -10,6 +10,9 @@ note
 deferred class
 	EWSGI_VARIABLES [G -> STRING_GENERAL]
 
+inherit
+	ITERABLE [G]
+
 feature -- Status report
 
 	has_variable (a_name: STRING): BOOLEAN

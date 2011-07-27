@@ -5,7 +5,7 @@ note
 			You can create your own descendant of this class to
 			add/remove specific value or processing
 			
-			This object is created by {GW_APPLICATION}.new_request
+			This object is created by {EWSGI_APPLICATION}.new_request
 		]"
 	legal: "See notice at end of class."
 	status: "See notice at end of class."
@@ -16,14 +16,14 @@ class
 	GW_REQUEST_IMP
 
 inherit
-	GW_REQUEST
+	EWSGI_REQUEST
 
 create
 	make
 
 feature {NONE} -- Initialization
 
-	make (env: GW_ENVIRONMENT; a_input: like input)
+	make (env: EWSGI_ENVIRONMENT; a_input: like input)
 		require
 			env_attached: env /= Void
 		do
@@ -53,13 +53,13 @@ feature {NONE} -- Initialization
 			if attached env.request_uri as rq_uri then
 				p := rq_uri.index_of ('?', 1)
 				if p > 0 then
-					env.set_variable (rq_uri.substring (1, p-1), {GW_ENVIRONMENT_NAMES}.self)
+					env.set_variable (rq_uri.substring (1, p-1), {EWSGI_ENVIRONMENT_NAMES}.self)
 				else
-					env.set_variable (rq_uri, {GW_ENVIRONMENT_NAMES}.self)
+					env.set_variable (rq_uri, {EWSGI_ENVIRONMENT_NAMES}.self)
 				end
 			end
-			if env.variable ({GW_ENVIRONMENT_NAMES}.request_time) = Void then
-				env.set_variable (date_time_utilities.unix_time_stamp (Void).out, {GW_ENVIRONMENT_NAMES}.request_time)
+			if env.variable ({EWSGI_ENVIRONMENT_NAMES}.request_time) = Void then
+				env.set_variable (date_time_utilities.unix_time_stamp (Void).out, {EWSGI_ENVIRONMENT_NAMES}.request_time)
 			end
 		end
 
@@ -71,7 +71,7 @@ feature {NONE} -- Initialization
 
 feature -- Access: Input
 
-	input: GW_INPUT_STREAM
+	input: EWSGI_INPUT_STREAM
 			-- Server input channel
 
 feature -- Status
@@ -95,7 +95,7 @@ feature -- Error handling
 
 feature -- Access: environment variables		
 
-	environment: GW_ENVIRONMENT
+	environment: EWSGI_ENVIRONMENT
 			-- Environment variables
 
 	environment_variable (a_name: STRING): detachable STRING
@@ -202,7 +202,7 @@ feature -- Form fields and related
 			Result := form_fields.variable (a_name)
 		end
 
-	uploaded_files: HASH_TABLE [GW_UPLOADED_FILE_DATA, STRING]
+	uploaded_files: HASH_TABLE [EWSGI_UPLOADED_FILE_DATA, STRING]
 			-- Table of uploaded files information
 			--| name: original path from the user
 			--| type: content type
@@ -248,7 +248,7 @@ feature -- Cookies
 			Result := cookies_variables.item (a_name)
 		end
 
-	cookies: HASH_TABLE [GW_COOKIE, STRING]
+	cookies: HASH_TABLE [EWSGI_COOKIE, STRING]
 			-- Cookies Information
 		local
 			i,j,p,n: INTEGER
@@ -257,7 +257,7 @@ feature -- Cookies
 		do
 			l_cookies := internal_cookies
 			if l_cookies = Void then
-				if attached environment_variable ({GW_ENVIRONMENT_NAMES}.http_cookie) as s then
+				if attached environment_variable ({EWSGI_ENVIRONMENT_NAMES}.http_cookie) as s then
 					create l_cookies.make (5)
 					from
 						n := s.count
@@ -280,7 +280,7 @@ feature -- Cookies
 								v := s.substring (i + 1, j - 1)
 								p := j + 1
 							end
-							l_cookies.put (create {GW_COOKIE}.make (k,v), k)
+							l_cookies.put (create {EWSGI_COOKIE}.make (k,v), k)
 						end
 					end
 				else
@@ -385,7 +385,7 @@ feature -- Access extra information
 			-- Request time (UTC)
 		do
 			if
-				attached environment.variable ({GW_ENVIRONMENT_NAMES}.request_time) as t and then
+				attached environment.variable ({EWSGI_ENVIRONMENT_NAMES}.request_time) as t and then
 				t.is_integer_64
 			then
 				Result := date_time_utilities.unix_time_stamp_to_date_time (t.to_integer_64)
@@ -466,7 +466,7 @@ feature -- Element change
 			error_handler := ehdl
 		end
 
-	update_path_info (env: GW_ENVIRONMENT)
+	update_path_info (env: EWSGI_ENVIRONMENT)
 			-- Fix and update PATH_INFO value if needed
 		local
 			l_path_info: STRING
@@ -513,7 +513,7 @@ feature -- Uploaded File Handling
 
 feature {NONE} -- Temporary File handling		
 
-	delete_uploaded_file (uf: GW_UPLOADED_FILE_DATA)
+	delete_uploaded_file (uf: EWSGI_UPLOADED_FILE_DATA)
 			-- Delete file `a_filename'
 		require
 			uf_valid: uf /= Void
@@ -536,7 +536,7 @@ feature {NONE} -- Temporary File handling
 			end
 		end
 
-	save_uploaded_file (a_content: STRING; a_up_fn_info: GW_UPLOADED_FILE_DATA)
+	save_uploaded_file (a_content: STRING; a_up_fn_info: EWSGI_UPLOADED_FILE_DATA)
 			-- Save uploaded file content to `a_filename'
 		local
 			bn: STRING
@@ -703,7 +703,7 @@ feature {NONE} -- Implementation: Form analyzer
 			l_header: detachable STRING
 			l_content: detachable STRING
 			l_line: detachable STRING
-			l_up_file_info: GW_UPLOADED_FILE_DATA
+			l_up_file_info: EWSGI_UPLOADED_FILE_DATA
 		do
 			from
 				p := 1

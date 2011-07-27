@@ -8,12 +8,10 @@ note
 	revision: "$Revision$"
 
 class
-	EWSGI_REQUEST_VARIABLES
+	GW_REQUEST_VARIABLES
 
 inherit
 	EWSGI_VARIABLES [STRING_32]
-
-	ITERABLE [STRING_32]
 
 create
 	make,

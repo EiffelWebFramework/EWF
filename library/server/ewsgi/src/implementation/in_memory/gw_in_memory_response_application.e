@@ -8,7 +8,7 @@ deferred class
 	GW_IN_MEMORY_RESPONSE_APPLICATION
 
 inherit
-	GW_APPLICATION
+	EWSGI_APPLICATION
 		redefine
 			process
 		end
@@ -20,7 +20,7 @@ feature -- Access
 
 feature -- Execution
 
-	process (env: GW_ENVIRONMENT; a_input: GW_INPUT_STREAM; a_output: GW_OUTPUT_STREAM)
+	process (env: EWSGI_ENVIRONMENT; a_input: EWSGI_INPUT_STREAM; a_output: EWSGI_OUTPUT_STREAM)
 			-- Process request with environment `env', and i/o streams `a_input' and `a_output'
 		do
 			request_count := request_count + 1
@@ -29,13 +29,13 @@ feature -- Execution
 
 feature -- Factory
 
-	new_request (env: GW_ENVIRONMENT; a_input: GW_INPUT_STREAM): GW_REQUEST
+	new_request (env: EWSGI_ENVIRONMENT; a_input: EWSGI_INPUT_STREAM): EWSGI_REQUEST
 		do
 			create {GW_REQUEST_IMP} Result.make (env, a_input)
 			Result.execution_variables.set_variable (request_count.out, "REQUEST_COUNT")
 		end
 
-	new_response (req: GW_REQUEST; a_output: GW_OUTPUT_STREAM): GW_IN_MEMORY_RESPONSE
+	new_response (req: EWSGI_REQUEST; a_output: EWSGI_OUTPUT_STREAM): GW_IN_MEMORY_RESPONSE
 		do
 			create {GW_IN_MEMORY_RESPONSE} Result.make
 		end

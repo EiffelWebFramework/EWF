@@ -9,7 +9,7 @@ deferred class
 	GW_APPLICATION_IMP
 
 inherit
-	GW_APPLICATION
+	EWSGI_APPLICATION
 		redefine
 			process,
 			rescue_execute
@@ -22,14 +22,14 @@ feature -- Access
 
 feature -- Execution
 
-	process (env: GW_ENVIRONMENT; a_input: GW_INPUT_STREAM; a_output: GW_OUTPUT_STREAM)
+	process (env: EWSGI_ENVIRONMENT; a_input: EWSGI_INPUT_STREAM; a_output: EWSGI_OUTPUT_STREAM)
 			-- Process request with environment `env', and i/o streams `a_input' and `a_output'
 		do
 			request_count := request_count + 1
 			Precursor (env, a_input, a_output)
 		end
 
-	rescue_execute (req: detachable GW_REQUEST; res: detachable GW_RESPONSE; a_exception: detachable EXCEPTION)
+	rescue_execute (req: detachable EWSGI_REQUEST; res: detachable EWSGI_RESPONSE; a_exception: detachable EXCEPTION)
 			-- Operation processed on rescue of `execute'
 		do
 			if
@@ -44,13 +44,13 @@ feature -- Execution
 
 feature -- Factory
 
-	new_request (env: GW_ENVIRONMENT; a_input: GW_INPUT_STREAM): GW_REQUEST
+	new_request (env: EWSGI_ENVIRONMENT; a_input: EWSGI_INPUT_STREAM): EWSGI_REQUEST
 		do
 			create {GW_REQUEST_IMP} Result.make (env, a_input)
 			Result.execution_variables.set_variable (request_count.out, "REQUEST_COUNT")
 		end
 
-	new_response (req: GW_REQUEST; a_output: GW_OUTPUT_STREAM): GW_RESPONSE
+	new_response (req: EWSGI_REQUEST; a_output: EWSGI_OUTPUT_STREAM): EWSGI_RESPONSE
 		do
 			create {GW_RESPONSE_IMP} Result.make (a_output)
 		end
