@@ -20,13 +20,23 @@ feature {NONE} -- Initialization
 			output := a_output
 		end
 
-feature -- Output operation
+feature {NONE} -- Core output operation
 
 	write (s: STRING)
 			-- Send the content of `s'
 		do
 			output.put_string (s)
 		end
+
+feature {NONE} -- Status output
+
+	write_status (a_code: INTEGER)
+			-- Send status line for `a_code'
+		do
+			output.put_status_line (a_code)
+		end
+
+feature -- Output operation
 
 	write_file_content (fn: STRING)
 			-- Send the content of file `fn'
@@ -37,7 +47,7 @@ feature -- Output operation
 	write_header_object (h: GW_HEADER)
 			-- Send `header' to `output'.
 		do
-			h.send_to (output)
+			h.send_to (Current)
 		end
 
 feature {NONE} -- Implementation: Access

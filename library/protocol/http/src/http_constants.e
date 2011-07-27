@@ -48,6 +48,7 @@ feature -- Content type
 feature -- Server
 
 	http_version_1_0: STRING = "HTTP/1.0"
+	http_version_1_1: STRING = "HTTP/1.1"
 	http_host_header: STRING = "Host"
 	http_authorization_header: STRING = "Authorization: "
 	http_end_of_header_line: STRING = "%R%N"
@@ -85,7 +86,7 @@ feature -- Misc
 
 
 note
-	copyright: "Copyright (c) 1984-2011, Eiffel Software and others"
+	copyright: "2011-2011, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

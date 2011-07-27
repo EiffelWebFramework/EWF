@@ -1,5 +1,9 @@
 note
-	description: "Summary description for {GW_HEADER}."
+	description: "[
+			Summary description for {GW_HEADER}.
+
+			Note the return status code is not part of the HTTP header		
+		]"
 	legal: "See notice at end of class."
 	status: "See notice at end of class."
 	date: "$Date$"
@@ -7,9 +11,6 @@ note
 
 class
 	GW_HEADER
-
-inherit
-	HTTP_STATUS_CODE_MESSAGES
 
 create
 	make
@@ -20,16 +21,12 @@ feature {NONE} -- Initialization
 			-- Initialize current
 		do
 			create {ARRAYED_LIST [STRING]} headers.make (3)
-			http_version := "HTTP/1.1"
 		end
 
 feature -- Recycle
 
 	recycle
 		do
-			status_code := 0
-			status_message := Void
-			http_version := "HTTP/1.1"
 			headers.wipe_out
 		end
 
@@ -38,33 +35,22 @@ feature -- Access
 	headers: LIST [STRING]
 			-- Header's lines
 
-	send_to (a_output: GW_OUTPUT_STREAM)
+	send_to (res: GW_RESPONSE)
 			-- Send Current string representation to `a_output'
 		do
-			a_output.put_string (string)
-				--| TO OPTIMIZE
+			res.write_string (string)
+				--| Could be optimized
 		end
 
 	string: STRING
 			-- String representation of the headers
 		local
 			l_headers: like headers
-			h: STRING
 		do
 			create Result.make (32)
-			create h.make (16)
-			h.append_string (http_version)
-			h.append_character (' ')
-			h.append_integer (status_code)
-			h.append_character (' ')
-			if attached status_message as l_status_message then
-				h.append_string (l_status_message)
-			end
-			append_line_to (h, Result)
-
 			l_headers := headers
 			if l_headers.is_empty then
-				put_content_type_text_html
+				put_content_type_text_html -- See if this make sense to define a default content-type
 			else
 				from
 					l_headers.start
@@ -206,23 +192,6 @@ feature -- Content related header
 			end
 		end
 
-feature -- Status, ...
-
-	status_code: INTEGER
-			-- Status
-
-	status_message: detachable STRING
-			-- Optional reason
-
-	http_version: STRING
-			-- HTTP version
-
-	put_status (a_code: INTEGER)
-		do
-			status_code := a_code
-			status_message := http_status_code_message (a_code)
-		end
-
 feature -- Others
 
 	put_expires (n: INTEGER)
@@ -250,21 +219,11 @@ feature -- Redirection
 
 	put_redirection (a_location: STRING; a_code: INTEGER)
 		do
-			if a_code > 0 then
-				put_status (a_code)
-			else
-				put_status (302) -- Found
-			end
 			put_header_key_value ("Location", a_location)
 		end
 
 	put_refresh (a_location: STRING; a_timeout: INTEGER; a_code: INTEGER)
 		do
-			if a_code > 0 then
-				put_status (a_code)
-			else
-				put_status (200) -- Ok
-			end
 			put_header_key_value ("Refresh", a_timeout.out + "; url=" + a_location)
 		end
 

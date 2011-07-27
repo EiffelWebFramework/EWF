@@ -40,8 +40,7 @@ feature -- Access: environment variables
 			-- Environment variable related to `a_name'
 		require
 			a_name_valid: a_name /= Void and then not a_name.is_empty
-		do
-			Result := environment.variable (a_name)
+		deferred
 		end
 
 feature -- Access: execution variables		
@@ -55,33 +54,34 @@ feature -- Access: execution variables
 			-- Execution variable related to `a_name'
 		require
 			a_name_valid: a_name /= Void and then not a_name.is_empty
-		do
-			Result := execution_variables.variable (a_name)
+		deferred
 		end
 
 feature -- URL Parameters
-
-	parameter (n: STRING): detachable STRING_32
-			-- Parameter for name `n'.
-		do
-			Result := parameters.variable (n)
-		end
 
 	parameters: GW_REQUEST_VARIABLES
 			-- Variables extracted from QUERY_STRING
 		deferred
 		end
 
-feature -- Form fields and related
-
-	form_field (n: STRING): detachable STRING_32
-			-- Field for name `n'.
-		do
-			Result := form_fields.variable (n)
+	parameter (a_name: STRING): detachable STRING_32
+			-- Parameter for name `n'.
+		require
+			a_name_valid: a_name /= Void and then not a_name.is_empty
+		deferred
 		end
+
+feature -- Form fields and related
 
 	form_fields: GW_REQUEST_VARIABLES
 			-- Variables sent by POST request
+		deferred
+		end
+
+	form_field (a_name: STRING): detachable STRING_32
+			-- Field for name `a_name'.
+		require
+			a_name_valid: a_name /= Void and then not a_name.is_empty
 		deferred
 		end
 
@@ -98,14 +98,15 @@ feature -- Form fields and related
 
 feature -- Cookies	
 
-	cookies_variable (n: STRING): detachable STRING
-			-- Field for name `n'.
-		do
-			Result := cookies_variables.item (n)
-		end
-
 	cookies_variables: HASH_TABLE [STRING, STRING]
 			-- Expanded cookies variable
+		deferred
+		end
+
+	cookies_variable (a_name: STRING): detachable STRING
+			-- Field for name `a_name'.
+		require
+			a_name_valid: a_name /= Void and then not a_name.is_empty
 		deferred
 		end
 
@@ -120,100 +121,22 @@ feature -- Access: global variable
 			-- Table containing all the various variables
 			-- Warning: this is computed each time, if you change the content of other containers
 			-- this won't update this Result's content, unless you query it again
-		local
-			vars: HASH_TABLE [STRING_GENERAL, STRING_GENERAL]
-		do
-			create Result.make (100)
-
-			vars := execution_variables
-			from
-				vars.start
-			until
-				vars.after
-			loop
-				Result.put (vars.item_for_iteration, vars.key_for_iteration)
-				vars.forth
-			end
-
-			vars := environment.table
-			from
-				vars.start
-			until
-				vars.after
-			loop
-				Result.put (vars.item_for_iteration, vars.key_for_iteration)
-				vars.forth
-			end
-
-			vars := parameters.table
-			from
-				vars.start
-			until
-				vars.after
-			loop
-				Result.put (vars.item_for_iteration, vars.key_for_iteration)
-				vars.forth
-			end
-
-			vars := form_fields.table
-			from
-				vars.start
-			until
-				vars.after
-			loop
-				Result.put (vars.item_for_iteration, vars.key_for_iteration)
-				vars.forth
-			end
-
-			vars := cookies_variables
-			from
-				vars.start
-			until
-				vars.after
-			loop
-				Result.put (vars.item_for_iteration, vars.key_for_iteration)
-				vars.forth
-			end
+		deferred
 		end
 
-	variable (n8: STRING_8): detachable STRING_32
-			-- Variable named `n' from any of the variables container
+	variable (a_name: STRING_8): detachable STRING_32
+			-- Variable named `a_name' from any of the variables container
 			-- and following a specific order
 			-- execution, environment, get, post, cookies
-		local
-			s: detachable STRING_GENERAL
-		do
-			s := execution_variable (n8)
-			if s = Void then
-				s := environment_variable (n8)
-				if s = Void then
-					s := parameter (n8)
-					if s = Void then
-						s := form_field (n8)
-						if s = Void then
-							s := cookies_variable (n8)
-						end
-					end
-				end
-			end
-			if s /= Void then
-				Result := s.as_string_32
-			end
+		require
+			a_name_valid: a_name /= Void and then not a_name.is_empty
+		deferred
 		end
 
 feature -- Uploaded File Handling
 
 	is_uploaded_file (a_filename: STRING): BOOLEAN
 			-- Is `a_filename' a file uploaded via HTTP POST
-		deferred
-		end
-
-feature {NONE} -- Temporary File handling		
-
-	delete_uploaded_file (f: GW_UPLOADED_FILE_DATA)
-			-- Delete file `f'
-		require
-			f_valid: f /= Void
 		deferred
 		end
 

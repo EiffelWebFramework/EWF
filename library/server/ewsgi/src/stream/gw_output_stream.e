@@ -10,6 +10,14 @@ note
 deferred class
 	GW_OUTPUT_STREAM
 
+inherit
+	ANY
+
+	HTTP_STATUS_CODE_MESSAGES
+		export
+			{NONE} all
+		end
+
 feature -- Core operation
 
 	put_string (s: STRING_8)
@@ -24,7 +32,35 @@ feature -- Core operation
 		do
 		end
 
+feature -- Status writing
+
+	put_status_line (a_code: INTEGER)
+			-- Put status code line for `a_code'
+			--| Note this is a default implemantation, and could be redefined
+			--| for instance in relation to NPH CGI script
+		local
+			s: STRING
+		do
+			create s.make (16)
+			s.append ({HTTP_CONSTANTS}.http_version_1_1)
+			s.append_character (' ')
+			s.append_integer (a_code)
+			if attached http_status_code_message (a_code) as l_status_message then
+				s.append_character (' ')
+				s.append_string (l_status_message)
+			end
+			put_header_line (s)
+		end
+
 feature -- Basic operation
+
+	put_substring (s: STRING; start_index, end_index: INTEGER)
+			-- Write `s[start_index:end_index]' into the output stream
+		require
+			s_not_empty: s /= Void and then not s.is_empty
+		do
+			put_string (s.substring (start_index, end_index))
+		end
 
 	put_file_content (fn: STRING)
 			-- Send the content of file `fn'
@@ -38,31 +74,11 @@ feature -- Basic operation
 				until
 					f.exhausted
 				loop
-					f.read_stream (1024)
+					f.read_stream (4096)
 					put_string (f.last_string)
 				end
 				f.close
 			end
-		end
-
-	put_header (a_status: INTEGER; a_headers: ARRAY [TUPLE [key: STRING; value: STRING]])
-			-- Send headers with status `a_status', and headers from `a_headers'
-		local
-			h: GW_HEADER
-			i,n: INTEGER
-		do
-			create h.make
-			h.put_status (a_status)
-			from
-				i := a_headers.lower
-				n := a_headers.upper
-			until
-				i > n
-			loop
-				h.put_header_key_value (a_headers[i].key, a_headers[i].value)
-				i := i + 1
-			end
-			put_string (h.string)
 		end
 
 	put_header_line (s: STRING)

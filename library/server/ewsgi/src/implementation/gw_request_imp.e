@@ -98,6 +98,12 @@ feature -- Access: environment variables
 	environment: GW_ENVIRONMENT
 			-- Environment variables
 
+	environment_variable (a_name: STRING): detachable STRING
+			-- Environment variable related to `a_name'
+		do
+			Result := environment.variable (a_name)
+		end
+
 	content_length: INTEGER
 			-- Extracted Content-Length value
 
@@ -105,6 +111,12 @@ feature -- Access: execution variables
 
 	execution_variables: GW_EXECUTION_VARIABLES
 			-- Execution variables set by the application
+
+	execution_variable (a_name: STRING): detachable STRING_32
+			-- Execution variable related to `a_name'
+		do
+			Result := execution_variables.variable (a_name)
+		end
 
 feature -- URL parameters
 
@@ -139,6 +151,12 @@ feature -- URL parameters
 				internal_parameters := vars
 			end
 			Result := vars
+		end
+
+	parameter (a_name: STRING): detachable STRING_32
+			-- Parameter for name `n'.
+		do
+			Result := parameters.variable (a_name)
 		end
 
 feature -- Form fields and related
@@ -176,6 +194,12 @@ feature -- Form fields and related
 				internal_form_fields := vars
 			end
 			Result := vars
+		end
+
+	form_field (a_name: STRING): detachable STRING_32
+			-- Field for name `a_name'.
+		do
+			Result := form_fields.variable (a_name)
 		end
 
 	uploaded_files: HASH_TABLE [GW_UPLOADED_FILE_DATA, STRING]
@@ -216,6 +240,12 @@ feature -- Cookies
 				end
 				l_cookies.forth
 			end
+		end
+
+	cookies_variable (a_name: STRING): detachable STRING
+			-- Field for name `a_name'.
+		do
+			Result := cookies_variables.item (a_name)
 		end
 
 	cookies: HASH_TABLE [GW_COOKIE, STRING]
@@ -260,6 +290,94 @@ feature -- Cookies
 			end
 			Result := l_cookies
 		end
+
+feature -- Access: global variable
+
+	variables: HASH_TABLE [STRING_32, STRING_32]
+			-- Table containing all the various variables
+			-- Warning: this is computed each time, if you change the content of other containers
+			-- this won't update this Result's content, unless you query it again
+		local
+			vars: HASH_TABLE [STRING_GENERAL, STRING_GENERAL]
+		do
+			create Result.make (100)
+
+			vars := execution_variables
+			from
+				vars.start
+			until
+				vars.after
+			loop
+				Result.put (vars.item_for_iteration, vars.key_for_iteration)
+				vars.forth
+			end
+
+			vars := environment.table
+			from
+				vars.start
+			until
+				vars.after
+			loop
+				Result.put (vars.item_for_iteration, vars.key_for_iteration)
+				vars.forth
+			end
+
+			vars := parameters.table
+			from
+				vars.start
+			until
+				vars.after
+			loop
+				Result.put (vars.item_for_iteration, vars.key_for_iteration)
+				vars.forth
+			end
+
+			vars := form_fields.table
+			from
+				vars.start
+			until
+				vars.after
+			loop
+				Result.put (vars.item_for_iteration, vars.key_for_iteration)
+				vars.forth
+			end
+
+			vars := cookies_variables
+			from
+				vars.start
+			until
+				vars.after
+			loop
+				Result.put (vars.item_for_iteration, vars.key_for_iteration)
+				vars.forth
+			end
+		end
+
+	variable (a_name: STRING_8): detachable STRING_32
+			-- Variable named `a_name' from any of the variables container
+			-- and following a specific order
+			-- execution, environment, get, post, cookies
+		local
+			s: detachable STRING_GENERAL
+		do
+			s := execution_variable (a_name)
+			if s = Void then
+				s := environment_variable (a_name)
+				if s = Void then
+					s := parameter (a_name)
+					if s = Void then
+						s := form_field (a_name)
+						if s = Void then
+							s := cookies_variable (a_name)
+						end
+					end
+				end
+			end
+			if s /= Void then
+				Result := s.as_string_32
+			end
+		end
+
 
 feature -- Access extra information
 
@@ -397,6 +515,8 @@ feature {NONE} -- Temporary File handling
 
 	delete_uploaded_file (uf: GW_UPLOADED_FILE_DATA)
 			-- Delete file `a_filename'
+		require
+			uf_valid: uf /= Void
 		local
 			f: RAW_FILE
 		do

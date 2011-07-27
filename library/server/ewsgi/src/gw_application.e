@@ -61,7 +61,7 @@ feature {NONE} -- Execution
 				and a_exception /= Void and then attached a_exception.exception_trace as l_trace
 			then
 				res.write_header ({HTTP_STATUS_CODE}.internal_server_error, Void)
-				res.write ("<pre>" + l_trace + "</pre>")
+				res.write_string ("<pre>" + l_trace + "</pre>")
 			end
 			post_execute (req, res)
 		end
