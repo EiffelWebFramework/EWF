@@ -1,10 +1,10 @@
 note
-	description: "Summary description for {GW_NINO_APPLICATION}."
+	description: "Summary description for {NINO_APPLICATION}."
 	date: "$Date$"
 	revision: "$Revision$"
 
 class
-	GW_NINO_APPLICATION
+	NINO_APPLICATION
 
 create
 	make,

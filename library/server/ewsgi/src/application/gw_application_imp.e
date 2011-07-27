@@ -29,7 +29,7 @@ feature -- Execution
 			Precursor (env, a_input, a_output)
 		end
 
-	rescue_execute (req: detachable EWSGI_REQUEST; res: detachable EWSGI_RESPONSE; a_exception: detachable EXCEPTION)
+	rescue_execute (req: detachable EWSGI_REQUEST; res: detachable EWSGI_RESPONSE_STREAM; a_exception: detachable EXCEPTION)
 			-- Operation processed on rescue of `execute'
 		do
 			if
@@ -50,9 +50,9 @@ feature -- Factory
 			Result.execution_variables.set_variable (request_count.out, "REQUEST_COUNT")
 		end
 
-	new_response (req: EWSGI_REQUEST; a_output: EWSGI_OUTPUT_STREAM): EWSGI_RESPONSE
+	new_response (req: EWSGI_REQUEST; a_output: EWSGI_OUTPUT_STREAM): EWSGI_RESPONSE_STREAM
 		do
-			create {GW_RESPONSE_IMP} Result.make (a_output)
+			create {GW_RESPONSE_STREAM_IMP} Result.make (a_output)
 		end
 
 ;note

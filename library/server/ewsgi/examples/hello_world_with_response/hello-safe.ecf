@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<system xmlns="http://www.eiffel.com/developers/xml/configuration-1-8-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eiffel.com/developers/xml/configuration-1-8-0 http://www.eiffel.com/developers/xml/configuration-1-8-0.xsd" name="hello_world" uuid="09AE4913-629B-4D3C-B15D-BB615D9A7B7F">
+	<target name="hello_world">
+		<file_rule>
+			<exclude>/EIFGENs$</exclude>
+			<exclude>/\.git$</exclude>
+			<exclude>/\.svn$</exclude>
+		</file_rule>
+		<option warning="true" full_class_checking="true" is_attached_by_default="true" void_safety="all" syntax="provisional">
+		</option>
+		<setting name="concurrency" value="thread"/>
+		<library name="base" location="$ISE_LIBRARY\library\base\base-safe.ecf"/>
+		<library name="ewsgi_spec" location="..\..\ewsgi_specification-safe.ecf" readonly="false"/>
+		<library name="ewsgi" location="..\..\ewsgi-safe.ecf" readonly="false"/>
+	</target>
+	<target name="hello_nino_world" extends="hello_world">
+		<root class="HELLO_WORLD" feature="make_and_launch"/>
+		<library name="default_nino" location="..\..\default\ewsgi_nino-safe.ecf" readonly="false"/>
+		<library name="connector_nino" location="..\..\connectors\nino\nino-safe.ecf" readonly="false"/>
+		<cluster name="src" location="src\" recursive="true"/>
+	</target>
+	<target name="hello_cgi_world" extends="hello_world">
+		<root class="HELLO_WORLD" feature="make_and_launch"/>
+		<library name="default_cgi" location="..\..\default\ewsgi_cgi-safe.ecf" readonly="false"/>
+		<library name="connector_cgi" location="..\..\connectors\cgi\cgi-safe.ecf" readonly="false"/>
+		<cluster name="src" location="src\" recursive="true"/>
+	</target>
+
+</system>

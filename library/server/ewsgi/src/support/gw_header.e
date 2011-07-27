@@ -12,6 +12,14 @@ note
 class
 	GW_HEADER
 
+inherit
+	ANY
+
+	HTTP_STATUS_CODE_MESSAGES
+		export
+			{NONE} all
+		end
+
 create
 	make
 
@@ -83,6 +91,18 @@ feature -- Header change: general
 		end
 
 feature -- Content related header
+
+	put_status (c: INTEGER)
+		local
+			s: STRING
+		do
+			create s.make_from_string (c.out)
+			if attached http_status_code_message (c) as msg then
+				s.append_character (' ')
+				s.append (msg)
+			end
+			put_header_key_value ("Status", s)
+		end
 
 	put_content_type (t: STRING)
 		do

@@ -27,7 +27,7 @@ feature {NONE} -- Implementation
 
 	request_creator: FUNCTION [ANY, TUPLE [env: EWSGI_ENVIRONMENT; input: EWSGI_INPUT_STREAM], EWSGI_REQUEST]
 
-	response_creator: FUNCTION [ANY, TUPLE [req: EWSGI_REQUEST; output: EWSGI_OUTPUT_STREAM], EWSGI_RESPONSE]
+	response_creator: FUNCTION [ANY, TUPLE [req: EWSGI_REQUEST; output: EWSGI_OUTPUT_STREAM], EWSGI_RESPONSE_STREAM]
 
 	callback: PROCEDURE [ANY, TUPLE [req: like new_request; res: like new_response]]
 			-- Procedure called on `execute'
@@ -45,7 +45,7 @@ feature -- Factory
 			Result := request_creator.item ([env, a_input])
 		end
 
-	new_response (req: EWSGI_REQUEST; a_output: EWSGI_OUTPUT_STREAM): EWSGI_RESPONSE
+	new_response (req: EWSGI_REQUEST; a_output: EWSGI_OUTPUT_STREAM): EWSGI_RESPONSE_STREAM
 		do
 			Result := response_creator.item ([req, a_output])
 		end

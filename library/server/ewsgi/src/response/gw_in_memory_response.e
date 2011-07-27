@@ -8,7 +8,7 @@ class
 	GW_IN_MEMORY_RESPONSE
 
 inherit
-	EWSGI_RESPONSE
+	EWSGI_RESPONSE_STREAM
 		redefine
 			commit
 		end

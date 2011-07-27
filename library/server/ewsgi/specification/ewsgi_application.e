@@ -33,7 +33,7 @@ feature -- Process request
 
 feature {NONE} -- Execution
 
-	execute (req: EWSGI_REQUEST; res: EWSGI_RESPONSE)
+	execute (req: EWSGI_REQUEST; res: EWSGI_RESPONSE_STREAM)
 			-- Execute the request
 			-- See `req.input' for input stream
 			--     `req.environment' for the Gateway environment	
@@ -48,12 +48,12 @@ feature {NONE} -- Execution
 		do
 		end
 
-	post_execute (req: detachable EWSGI_REQUEST; res: detachable EWSGI_RESPONSE)
+	post_execute (req: detachable EWSGI_REQUEST; res: detachable EWSGI_RESPONSE_STREAM)
 			-- Operation processed after `execute', or after `rescue_execute'
 		do
 		end
 
-	rescue_execute (req: detachable EWSGI_REQUEST; res: detachable EWSGI_RESPONSE; a_exception: detachable EXCEPTION)
+	rescue_execute (req: detachable EWSGI_REQUEST; res: detachable EWSGI_RESPONSE_STREAM; a_exception: detachable EXCEPTION)
 			-- Operation processed on rescue of `execute'
 		do
 			post_execute (req, res)
@@ -64,16 +64,16 @@ feature -- Factory
 	new_request (env: EWSGI_ENVIRONMENT; a_input: EWSGI_INPUT_STREAM): EWSGI_REQUEST
 			-- New Request context based on `env' and `a_input'
 			--| note: you can redefine this function to create your own
-			--| descendant of GW_REQUEST_CONTEXT , or even to reuse/recycle existing
-			--| instance of GW_REQUEST_CONTEXT	
+			--| descendant of EWSGI_REQUEST , or even to reuse/recycle existing
+			--| instance of EWSGI_REQUEST	
 		deferred
 		end
 
-	new_response (req: EWSGI_REQUEST; a_output: EWSGI_OUTPUT_STREAM): EWSGI_RESPONSE
+	new_response (req: EWSGI_REQUEST; a_output: EWSGI_OUTPUT_STREAM): EWSGI_RESPONSE_STREAM
 			-- New Response based on `req' and `a_output'
 			--| note: you can redefine this function to create your own
-			--| descendant of GW_RESPONSE , or even to reuse/recycle existing
-			--| instance of GW_RESPONSE	
+			--| descendant of EWSGI_RESPONSE_STREAM , or even to reuse/recycle existing
+			--| instance of EWSGI_RESPONSE_STREAM	
 		deferred
 		end
 
