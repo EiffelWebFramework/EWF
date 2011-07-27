@@ -28,21 +28,15 @@ feature {NONE} -- Initialization
 
 	body: STRING_8
 
-feature -- Status setting
-
-	set_status_code (c: INTEGER)
-			-- Set the status code of the response
-		do
-			header.put_status (c)
-		end
-
-feature -- Output operation
+feature {NONE} -- Status output
 
 	write (s: STRING)
 			-- Send the content of `s'
 		do
 			body.append (s)
 		end
+
+feature -- Output operation
 
 	write_file_content (fn: STRING)
 			-- Send the content of file `fn'
@@ -73,6 +67,7 @@ feature {GW_APPLICATION} -- Commit
 
 	commit (a_output: GW_OUTPUT_STREAM)
 		do
+			a_output.put_status (status_code)
 			header.send_to (a_output)
 			write (body)
 			Precursor (a_output)

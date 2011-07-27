@@ -11,7 +11,8 @@ deferred class
 inherit
 	GW_APPLICATION
 		redefine
-			process
+			process,
+			rescue_execute
 		end
 
 feature -- Access
@@ -28,6 +29,19 @@ feature -- Execution
 			Precursor (env, a_input, a_output)
 		end
 
+	rescue_execute (req: detachable GW_REQUEST; res: detachable GW_RESPONSE; a_exception: detachable EXCEPTION)
+			-- Operation processed on rescue of `execute'
+		do
+			if
+				req /= Void and res /= Void
+				and a_exception /= Void and then attached a_exception.exception_trace as l_trace
+			then
+				res.write_header ({HTTP_STATUS_CODE}.internal_server_error, Void)
+				res.write_string ("<pre>" + l_trace + "</pre>")
+			end
+			Precursor (req, res, a_exception)
+		end
+
 feature -- Factory
 
 	new_request (env: GW_ENVIRONMENT; a_input: GW_INPUT_STREAM): GW_REQUEST
@@ -36,7 +50,7 @@ feature -- Factory
 			Result.execution_variables.set_variable (request_count.out, "REQUEST_COUNT")
 		end
 
-	new_response (a_output: GW_OUTPUT_STREAM): GW_RESPONSE
+	new_response (req: GW_REQUEST; a_output: GW_OUTPUT_STREAM): GW_RESPONSE
 		do
 			create {GW_RESPONSE_IMP} Result.make (a_output)
 		end

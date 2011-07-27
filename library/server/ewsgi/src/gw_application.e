@@ -20,7 +20,7 @@ feature -- Process request
 			if not rescued then
 				pre_execute (env)
 				req := new_request (env, a_input)
-				res := new_response (a_output)
+				res := new_response (req, a_output)
 				execute (req, res)
 				post_execute (req, res)
 			else
@@ -56,13 +56,6 @@ feature {NONE} -- Execution
 	rescue_execute (req: detachable GW_REQUEST; res: detachable GW_RESPONSE; a_exception: detachable EXCEPTION)
 			-- Operation processed on rescue of `execute'
 		do
-			if
-				req /= Void and res /= Void
-				and a_exception /= Void and then attached a_exception.exception_trace as l_trace
-			then
-				res.write_header ({HTTP_STATUS_CODE}.internal_server_error, Void)
-				res.write_string ("<pre>" + l_trace + "</pre>")
-			end
 			post_execute (req, res)
 		end
 
@@ -76,8 +69,8 @@ feature -- Factory
 		deferred
 		end
 
-	new_response (a_output: GW_OUTPUT_STREAM): GW_RESPONSE
-			-- New Response based on `a_output'
+	new_response (req: GW_REQUEST; a_output: GW_OUTPUT_STREAM): GW_RESPONSE
+			-- New Response based on `req' and `a_output'
 			--| note: you can redefine this function to create your own
 			--| descendant of GW_RESPONSE , or even to reuse/recycle existing
 			--| instance of GW_RESPONSE	
