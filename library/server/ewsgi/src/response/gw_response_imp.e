@@ -70,14 +70,6 @@ feature -- Output operation
 
 feature -- Header output operation		
 
-	write_header_object (h: GW_HEADER)
-			-- Send `header' to `output'.
-		require
-			status_set: is_status_set
-		do
-			h.send_to (Current)
-		end
-
 	write_header (a_status_code: INTEGER; a_headers: detachable ARRAY [TUPLE [key: STRING; value: STRING]])
 			-- Send headers with status `a_status', and headers from `a_headers'
 		local
@@ -97,7 +89,7 @@ feature -- Header output operation
 					i := i + 1
 				end
 			end
-			write_header_object (h)
+			write (h.string)
 		end
 
 feature {NONE} -- Implementation: Access

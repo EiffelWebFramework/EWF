@@ -2,7 +2,7 @@ note
 	description: "[
 			Summary description for {GW_HEADER}.
 
-			Note the return status code is not part of the HTTP header		
+			Note the return status code is not part of the HTTP header
 		]"
 	legal: "See notice at end of class."
 	status: "See notice at end of class."
@@ -34,13 +34,6 @@ feature -- Access
 
 	headers: LIST [STRING]
 			-- Header's lines
-
-	send_to (res: GW_RESPONSE)
-			-- Send Current string representation to `a_output'
-		do
-			res.write_string (string)
-				--| Could be optimized
-		end
 
 	string: STRING
 			-- String representation of the headers

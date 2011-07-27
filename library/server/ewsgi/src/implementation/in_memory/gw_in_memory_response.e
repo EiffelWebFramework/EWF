@@ -36,7 +36,30 @@ feature {NONE} -- Status output
 			body.append (s)
 		end
 
+feature -- Status setting
+
+	is_status_set: BOOLEAN
+		do
+			Result := status_code /= 0
+		end
+
+	set_status_code (a_code: INTEGER)
+			-- Set response status code
+			-- Should be done before sending any data back to the client
+		do
+			status_code := a_code
+		end
+
+	status_code: INTEGER
+			-- Response status		
+
 feature -- Output operation
+
+	write_string (s: STRING)
+			-- Send the string `s'
+		do
+			write (s)
+		end
 
 	write_file_content (fn: STRING)
 			-- Send the content of file `fn'
@@ -57,9 +80,27 @@ feature -- Output operation
 			end
 		end
 
-	write_header_object (h: GW_HEADER)
-			-- Send `header' to `output'.
+feature -- Header output operation		
+
+	write_header (a_status_code: INTEGER; a_headers: detachable ARRAY [TUPLE [key: STRING; value: STRING]])
+			-- Send headers with status `a_status', and headers from `a_headers'
+		local
+			h: GW_HEADER
+			i,n: INTEGER
 		do
+			set_status_code (a_status_code)
+			create h.make
+			if a_headers /= Void then
+				from
+					i := a_headers.lower
+					n := a_headers.upper
+				until
+					i > n
+				loop
+					h.put_header_key_value (a_headers[i].key, a_headers[i].value)
+					i := i + 1
+				end
+			end
 			header := h
 		end
 
@@ -67,10 +108,10 @@ feature {GW_APPLICATION} -- Commit
 
 	commit (a_output: GW_OUTPUT_STREAM)
 		do
-			a_output.put_status (status_code)
-			header.send_to (a_output)
-			write (body)
-			Precursor (a_output)
+			a_output.put_status_line (status_code)
+			a_output.put_string (header.string)
+			a_output.put_string (body)
+			a_output.flush
 		end
 
 ;note

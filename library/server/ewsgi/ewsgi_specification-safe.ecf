@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<system xmlns="http://www.eiffel.com/developers/xml/configuration-1-8-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eiffel.com/developers/xml/configuration-1-8-0 http://www.eiffel.com/developers/xml/configuration-1-8-0.xsd" name="ewsgi" uuid="D924DBE1-1231-434A-80EF-234BA09D1E30" library_target="ewsgi">
-	<target name="ewsgi">
+<system xmlns="http://www.eiffel.com/developers/xml/configuration-1-8-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eiffel.com/developers/xml/configuration-1-8-0 http://www.eiffel.com/developers/xml/configuration-1-8-0.xsd" name="ewsgi_spec" uuid="D6455232-E709-43B3-A2C7-D3E6F6A98288" library_target="ewsgi_spec">
+	<target name="ewsgi_spec">
 		<root all_classes="true"/>
 		<file_rule>
 			<exclude>/EIFGENs$</exclude>
@@ -11,10 +11,8 @@
 		</option>
 		<library name="base" location="$ISE_LIBRARY\library\base\base-safe.ecf"/>
 		<library name="time" location="$ISE_LIBRARY\library\time\time-safe.ecf"/>
-		<library name="ewsgi_spec" location="ewsgi_specification-safe.ecf"/>
-		<library name="error" location="..\..\error\error-safe.ecf"/>
 		<library name="http" location="..\..\protocol\http\http-safe.ecf"/>
 		<library name="encoder" location="..\..\text\encoder\encoder-safe.ecf" readonly="false"/>
-		<cluster name="interface" location="src\" recursive="true"/>
+		<cluster name="specification" location="specification\" recursive="true"/>
 	</target>
 </system>

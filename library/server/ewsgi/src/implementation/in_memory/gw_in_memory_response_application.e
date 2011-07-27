@@ -35,7 +35,7 @@ feature -- Factory
 			Result.execution_variables.set_variable (request_count.out, "REQUEST_COUNT")
 		end
 
-	new_response (a_output: GW_OUTPUT_STREAM): GW_IN_MEMORY_RESPONSE
+	new_response (req: GW_REQUEST; a_output: GW_OUTPUT_STREAM): GW_IN_MEMORY_RESPONSE
 		do
 			create {GW_IN_MEMORY_RESPONSE} Result.make
 		end
