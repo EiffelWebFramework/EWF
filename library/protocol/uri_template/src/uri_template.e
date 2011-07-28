@@ -153,6 +153,8 @@ feature -- Builder
 feature -- Match
 
 	match (a_uri: STRING): detachable URI_TEMPLATE_MATCH_RESULT
+		require
+			is_valid: is_valid
 		local
 			b: BOOLEAN
 			tpl: like template
@@ -163,6 +165,8 @@ feature -- Match
 			vv: STRING
 			l_vars, l_path_vars, l_query_vars: HASH_TABLE [STRING, STRING]
 			l_uri_count: INTEGER
+			tpl_count: INTEGER
+			l_next_literal_separator: detachable STRING
 		do
 				--| Extract expansion parts  "\\{([^\\}]*)\\}"
 			analyze
@@ -173,8 +177,10 @@ feature -- Match
 				b := True
 				l_uri_count := a_uri.count
 				tpl := template
+				tpl_count := tpl.count
 				if l_expressions.is_empty then
-					b := a_uri.substring (1, tpl.count).same_string (tpl)
+--					b := a_uri.substring (1, tpl_count).same_string (tpl)
+					b := a_uri.same_string (tpl)
 				else
 					from
 						l_expressions.start
@@ -200,6 +206,8 @@ feature -- Match
 							b := s.same_string (t)
 							p := exp.end_position
 						end
+						l_expressions.forth --| we forth `l_expressions' so be careful
+
 							--| Check related variable
 						if b and then not vn.is_empty then
 							if exp.is_query then
@@ -211,10 +219,21 @@ feature -- Match
 								inspect vn[1]
 								when '?' then
 									import_form_style_parameters_into (a_uri.substring (q + l_offset + 1, l_uri_count), l_vars)
+									p := tpl_count + 1
+									l_offset := l_offset + (l_uri_count - (q + l_offset + 1))
 								when ';' then
 									import_path_style_parameters_into (a_uri.substring (q + l_offset, l_uri_count), l_vars)
+									p := tpl_count + 1
 								else
-									vv := next_path_variable_value (a_uri, q + l_offset)
+									if not l_expressions.after then
+										exp := l_expressions.item --| We change `exp' here
+										l_next_literal_separator := tpl.substring (p, exp.position -1)
+									elseif p < tpl_count then
+										l_next_literal_separator := tpl.substring (p, tpl_count)
+									else
+										l_next_literal_separator := Void
+									end
+									vv := next_path_variable_value (a_uri, q + l_offset, l_next_literal_separator)
 									l_vars.force (vv, vn)
 									l_offset := l_offset + vv.count - (vn.count + 2)
 								end
@@ -222,7 +241,17 @@ feature -- Match
 								b := exp.is_query --| query are optional
 							end
 						end
-						l_expressions.forth
+						if b and l_expressions.after then
+							if
+								(p < tpl_count) or
+								(p + l_offset < l_uri_count)
+							then
+									--| Remaining literal part
+								t := tpl.substring (p, tpl_count)
+								s := a_uri.substring (p + l_offset, l_uri_count)
+								b := s.same_string (t)
+							end
+						end
 					end
 				end
 				if b then
@@ -231,7 +260,35 @@ feature -- Match
 			end
 		end
 
+feature -- Basic operation
+
+	parse
+			-- Parse template
+		do
+			reset
+			analyze
+		end
+
+feature -- Status report
+
+	is_valid: BOOLEAN
+			-- Is Current URI template valid?
+		do
+			analyze
+			Result := not has_syntax_error
+		end
+
 feature {NONE} -- Internal Access
+
+	reset
+		do
+			expressions := Void
+			has_syntax_error := False
+		end
+
+	has_syntax_error: BOOLEAN
+			-- Has syntax error
+			--| Make sense only if `analyze' was processed before
 
 	expressions: detachable LIST [URI_TEMPLATE_EXPRESSION]
 			-- Expansion parts
@@ -248,6 +305,7 @@ feature {NONE} -- Implementation
 			in_query: BOOLEAN
 			x: STRING
 			exp: URI_TEMPLATE_EXPRESSION
+			l_has_query_expression: BOOLEAN
 		do
 			l_expressions := expressions
 			if l_expressions = Void then
@@ -258,6 +316,7 @@ feature {NONE} -- Implementation
 				from
 					i := 1
 					n := tpl.count
+					l_has_query_expression := False
 					create x.make_empty
 				until
 					i > n
@@ -269,6 +328,10 @@ feature {NONE} -- Implementation
 							l_expressions.force (exp)
 							x.wipe_out
 							in_x := False
+							if l_has_query_expression and then i < n then
+								--| Remaining text after {?exp}
+								has_syntax_error := True
+							end
 						else
 							x.extend (c)
 						end
@@ -278,8 +341,11 @@ feature {NONE} -- Implementation
 							check x_is_empty: x.is_empty end
 							p := i
 							in_x := True
+							if not l_has_query_expression then
+								l_has_query_expression := tpl.valid_index (i+1) and then tpl[i+1] = '?'
+							end
 							if not in_query then
-								in_query := tpl.valid_index (i+1) and then tpl[i+1] = '?'
+								in_query := l_has_query_expression
 							end
 						when '?' then
 							in_query := True
@@ -344,23 +410,39 @@ feature {NONE} -- Implementation
 			end
 		end
 
-	next_path_variable_value (a_uri: STRING; a_index: INTEGER): STRING
+	next_path_variable_value (a_uri: STRING; a_index: INTEGER; a_end_token: detachable STRING): STRING
 		require
 			valid_index: a_index <= a_uri.count
 		local
+			c: CHARACTER
 			i,n,p: INTEGER
+			l_end_token_first_char: CHARACTER
+			l_end_token_count: INTEGER
 		do
 			from
+				if a_end_token /= Void and then not a_end_token.is_empty then
+					l_end_token_first_char := a_end_token.item (1)
+					l_end_token_count := a_end_token.count
+				end
 				i := a_index
 				n := a_uri.count
 			until
 				i > n
 			loop
-				inspect a_uri[i]
+				c := a_uri[i]
+				inspect c
 				when '/', '?' then
 					i := n
 				else
-					p := i
+					if
+						a_end_token /= Void and then
+						c = l_end_token_first_char and then
+						a_uri.substring (i, i + l_end_token_count - 1).same_string (a_end_token)
+					then
+						i := n
+					else
+						p := i
+					end
 				end
 				i := i + 1
 			end

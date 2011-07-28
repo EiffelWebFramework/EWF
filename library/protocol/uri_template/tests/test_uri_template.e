@@ -21,6 +21,9 @@ feature -- Test routines
 		do
 			uri_template_parse ("api/foo/{foo_id}/{?id,extra}", <<"foo_id">>, <<"id", "extra">>)
 			uri_template_parse ("weather/{state}/{city}?forecast={day}", <<"state", "city">>, <<"day">>)
+			uri_template_parse ("/hello/{name}.{format}", <<"name", "format">>, <<>>)
+			uri_template_parse ("/hello.{format}/{name}", <<"format", "name">>, <<>>)
+			uri_template_parse ("/hello/Joce.{format}/foo{?foobar};crazy=IDEA",  <<"name">>, <<"foobar">>)
 		end
 
 	test_uri_template_matcher
@@ -49,6 +52,32 @@ feature -- Test routines
 
 			create tpl.make ("weather/{state}/{city}?forecast={day}")
 			uri_template_match (tpl, "weather/California/Goleta?forecast=today", <<["state", "California"], ["city", "Goleta"]>>, <<["day", "today"]>>)
+
+			create tpl.make ("/hello")
+			uri_template_match (tpl, "/hello", <<>>, <<>>)
+			uri_template_mismatch (tpl, "/hello/Foo2") -- longer
+			uri_template_mismatch (tpl, "/hell") -- shorter
+
+			create tpl.make ("/hello.{format}")
+			uri_template_match (tpl, "/hello.xml", <<["format", "xml"]>>, <<>>)
+			uri_template_mismatch (tpl, "/hello.xml/Bar")
+
+
+			create tpl.make ("/hello.{format}/{name}")
+			uri_template_match (tpl, "/hello.xml/Joce", <<["format", "xml"], ["name", "Joce"]>>, <<>>)
+
+			create tpl.make ("/hello/{name}.{format}")
+			uri_template_match (tpl, "/hello/Joce.json", <<["name", "Joce"], ["format", "json"]>>, <<>>)
+
+			create tpl.make ("/hello/{name}.{format}/foo")
+			uri_template_match (tpl, "/hello/Joce.xml/foo", <<["name", "Joce"], ["format", "xml"]>>, <<>>)
+			uri_template_mismatch (tpl, "/hello/Joce.xml/fooBAR")
+
+			create tpl.make ("/hello/{name}.{format}/foo{?foo};crazy={idea}")
+--			uri_template_match (tpl, "/hello/Joce.xml/foo", <<["name", "Joce"], ["format", "xml"]>>, <<>>)
+			uri_template_match (tpl, "/hello/Joce.xml/foo?foo=FOO", <<["name", "Joce"], ["format", "xml"]>>, <<["foo", "FOO"]>>)
+			uri_template_match (tpl, "/hello/Joce.xml/foo;crazy=IDEA",  <<["name", "Joce"], ["format", "xml"]>>, <<["idea", "IDEA"], ["crazy", "IDEA"]>>)
+
 		end
 
 	uri_template_string_errors: detachable LIST [STRING]
@@ -544,6 +573,8 @@ feature -- Test routines
 			i: INTEGER
 		do
 			create u.make (s)
+			u.parse
+			assert ("Template %""+ s +"%" is valid", u.is_valid)
 			if attached u.path_variable_names as vars then
 				matched := vars.count = path_vars.count
 				from
@@ -559,7 +590,7 @@ feature -- Test routines
 			else
 				matched := path_vars.is_empty
 			end
-			assert ("path variables matched", matched)
+			assert ("path variables matched for %""+ s +"%"", matched)
 
 			if attached u.query_variable_names as vars then
 				matched := vars.count = query_vars.count
@@ -576,7 +607,7 @@ feature -- Test routines
 			else
 				matched := query_vars.is_empty
 			end
-			assert ("query variables matched", matched)
+			assert ("query variables matched %""+ s +"%"", matched)
 		end
 
 	uri_template_mismatch (a_uri_template: URI_TEMPLATE; a_uri: STRING)

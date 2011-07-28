@@ -11,7 +11,8 @@ inherit
 	ANY
 
 	DEBUG_OUTPUT
-
+		export {NONE} all end
+		
 	URI_TEMPLATE_CONSTANTS
 		export {NONE} all end
 
