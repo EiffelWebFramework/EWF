@@ -78,6 +78,7 @@ feature -- Header output operation
 		do
 			set_status_code (a_status_code)
 			create h.make
+			h.put_status (a_status_code)
 			if a_headers /= Void then
 				from
 					i := a_headers.lower
