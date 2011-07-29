@@ -7,6 +7,14 @@ note
 deferred class
 	REQUEST_HANDLER_CONTEXT
 
+inherit
+	ANY
+
+	REQUEST_FORMAT_UTILITY
+		export
+			{NONE} all
+		end
+
 feature -- Access
 
 	request: EWSGI_REQUEST
@@ -15,23 +23,39 @@ feature -- Access
 	path: STRING
 			-- ???
 
-	request_format: detachable STRING
-			-- Request format based on `Content-Type'.
+	request_content_type (content_type_supported: detachable ARRAY [STRING]): detachable STRING
 		local
 			s: detachable STRING
+			i,n: INTEGER
 		do
-			s := request.environment.content_type
-			if s = Void then
-			elseif s.same_string ({HTTP_CONSTANTS}.json_text) then
-				Result := {HTTP_FORMAT_CONSTANTS}.json_name
-			elseif s.same_string ({HTTP_CONSTANTS}.json_app) then
-				Result := {HTTP_FORMAT_CONSTANTS}.json_name
-			elseif s.same_string ({HTTP_CONSTANTS}.xml_text) then
-				Result := {HTTP_FORMAT_CONSTANTS}.xml_name
-			elseif s.same_string ({HTTP_CONSTANTS}.html_text) then
-				Result := {HTTP_FORMAT_CONSTANTS}.html_name
-			elseif s.same_string ({HTTP_CONSTANTS}.plain_text) then
-				Result := {HTTP_FORMAT_CONSTANTS}.text_name
+			Result := request.environment.content_type
+			if Result = Void then
+				s := request.environment.http_accept
+				if s /= Void then
+					if attached accepted_content_types (request) as l_accept_lst then
+						from
+							l_accept_lst.start
+						until
+							l_accept_lst.after or Result /= Void
+						loop
+							s := l_accept_lst.item
+							if content_type_supported /= Void then
+								from
+									i := content_type_supported.lower
+									n := content_type_supported.upper
+								until
+									i > n or Result /= Void
+								loop
+									if content_type_supported[i].same_string (s) then
+										Result := s
+									end
+									i := i + 1
+								end
+							end
+							l_accept_lst.forth
+						end
+					end
+				end
 			end
 		end
 
