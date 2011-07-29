@@ -7,18 +7,18 @@
 			<exclude>/\.git$</exclude>
 			<exclude>/\.svn$</exclude>
 		</file_rule>
-		<option warning="true" full_class_checking="true" syntax="provisional">
+		<option warning="true" full_class_checking="true" is_attached_by_default="true" void_safety="all" syntax="provisional">
 		</option>
-		<library name="base" location="$ISE_LIBRARY\library\base\base.ecf"/>
-		<library name="ewsgi_spec" location="ewsgi_specification.ecf"/>
-		<library name="error" location="..\..\error\error.ecf"/>
-		<library name="http" location="..\..\protocol\http\http.ecf"/>
-		<library name="encoder" location="..\..\text\encoder\encoder.ecf" readonly="false"/>
-		<library name="libfcgi" location="..\libfcgi\libfcgi.ecf"/>
-		<library name="nino" location="..\..\..\ext\server\nino\nino.ecf" readonly="false">
+		<library name="base" location="$ISE_LIBRARY\library\base\base-safe.ecf"/>
+		<library name="encoder" location="..\..\text\encoder\encoder-safe.ecf" readonly="false"/>
+		<library name="error" location="..\..\error\error-safe.ecf"/>
+		<library name="ewsgi_spec" location="ewsgi_specification-safe.ecf"/>
+		<library name="http" location="..\..\protocol\http\http-safe.ecf"/>
+		<library name="libfcgi" location="..\libfcgi\libfcgi-safe.ecf"/>
+		<library name="nino" location="..\..\..\ext\server\nino\nino-safe.ecf" readonly="false">
 			<renaming old_name="HTTP_CONSTANTS" new_name="NINO_HTTP_CONSTANTS"/>
 		</library>
-		<library name="time" location="$ISE_LIBRARY\library\time\time.ecf"/>
+		<library name="time" location="$ISE_LIBRARY\library\time\time-safe.ecf"/>
 		<cluster name="connectors" location="connectors\" recursive="true"/>
 		<cluster name="interface" location="src\" recursive="true"/>
 	</target>
