@@ -231,11 +231,13 @@ feature -- Others
 feature -- Redirection
 
 	put_redirection (a_location: STRING; a_code: INTEGER)
+			-- Tell the client to redirect to page with `a_location' right away
 		do
 			put_header_key_value ("Location", a_location)
 		end
 
 	put_refresh (a_location: STRING; a_timeout: INTEGER; a_code: INTEGER)
+			-- Tell the client to refresh page with `a_location' after `a_timeout' in seconds
 		do
 			put_header_key_value ("Refresh", a_timeout.out + "; url=" + a_location)
 		end
