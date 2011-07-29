@@ -81,6 +81,11 @@ feature -- Status setting
 
 feature -- Output operation
 
+	flush
+		do
+			flush_buffer
+		end
+
 	write_string (s: STRING)
 			-- Send the string `s'
 		do

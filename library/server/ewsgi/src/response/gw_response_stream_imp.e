@@ -56,6 +56,11 @@ feature -- Status setting
 
 feature -- Output operation
 
+	flush
+		do
+			output.flush
+		end
+
 	write_string (s: STRING)
 			-- Send the string `s'
 		do

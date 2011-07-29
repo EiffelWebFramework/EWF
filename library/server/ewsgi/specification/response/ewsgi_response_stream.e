@@ -49,6 +49,11 @@ feature -- Status setting
 
 feature -- Output operation
 
+	flush
+			-- Flush if it makes sense
+		deferred
+		end
+
 	write_string (s: STRING)
 			-- Send the string `s'
 		require

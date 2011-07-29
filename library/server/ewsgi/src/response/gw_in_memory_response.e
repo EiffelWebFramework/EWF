@@ -55,6 +55,11 @@ feature -- Status setting
 
 feature -- Output operation
 
+	flush
+		do
+			--| Do nothing ... this is in_memory response
+		end
+
 	write_string (s: STRING)
 			-- Send the string `s'
 		do
