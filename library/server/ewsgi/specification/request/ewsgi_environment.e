@@ -4,85 +4,66 @@ note
 		Interface for a request environment
 		It includes CGI interface and a few extra values that are usually valuable
 		
-		See http://ken.coar.org/cgi/draft-coar-cgi-v11-03.txt
+		See http://www.ietf.org/rfc/rfc3875
 
 		2.2. Basic Rules
 
 		   The following rules are used throughout this specification to
 		   describe basic parsing constructs.
-		   
-			alpha         = lowalpha | hialpha
-			alphanum      = alpha | digit
-			lowalpha      = a | b | c | d | e | f | g | h
-							| i | j | k | l | m | n | o | p
-							| q | r | s | t | u | v | w | x
-							| y | z
-			hialpha       = A | B | C | D | E | F | G | H
-							| I | J | K | L | M | N | O | P
-							| Q | R | S | T | U | V | W | X
-							| Y | Z
-			digit         = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7
-							| 8 | 9
-			hex           = digit | A | B | C | D | E | F | a
-							| b | c | d | e | f
-			escaped       = % hex hex
-			OCTET         = <any 8-bit sequence of data>
-			CHAR          = <any US-ASCII character (octets 0 - 127)>
-			CTL           = <any US-ASCII control character
-							(octets 0 - 31) and DEL (127)>
-			CR            = <US-ASCII CR, carriage return (13)>
-			LF            = <US-ASCII LF, linefeed (10)>
-			SP            = <US-ASCII SP, space (32)>
-			HT            = <US-ASCII HT, horizontal tab (9)>
-			NL            = CR | LF
-			LWSP          = SP | HT | NL
-			tspecial      = ( | ) | "@" | , | ; | : | \ | "
-							| / | [ | ] | ? | < | > | { | }
-							| SP | HT | NL
-			token         = 1*<any CHAR except CTLs or tspecials>
-			quoted-string = ( " *qdtext " ) | ( "<" *qatext ">")
-			qdtext        = <any CHAR except %" and CTLs but including LWSP>
-			qatext        = <any CHAR except "<", ">" and CTLs but including LWSP>
-			mark          = - | _ | . | ! | ~ | * | ' | ( | )
-			unreserved    = alphanum | mark
-			reserved      = ; | / | ? | : | @ | & | = | $ | , 
-			uric          = reserved | unreserved | escaped
+
+		      alpha         = lowalpha | hialpha
+		      lowalpha      = a | b | c | d | e | f | g | h |
+		                      i | j | k | l | m | n | o | p |
+		                      q | r | s | t | u | v | w | x |
+		                      y | z
+		      hialpha       = A | B | C | D | E | F | G | H |
+		                      I | J | K | L | M | N | O | P |
+		                      Q | R | S | T | U | V | W | X |
+		                      Y | Z
+		      digit         = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
+		                      8 | 9
+		      alphanum      = alpha | digit
+		      OCTET         = <any 8-bit byte>
+		      CHAR          = alpha | digit | separator | ! | # | $ |
+		                      %% | & | ' | * | + | - | . | ` |
+		                      ^ | _ | { | | | } | ~ | CTL
+		      CTL           = <any control character>
+		      SP            = <space character>
+		      HT            = <horizontal tab character>
+		      NL            = <newline>
+		      LWSP          = SP | HT | NL
+		      separator     = ( | ) | < | > | @ | , | ; | : |
+		                      \ | " | / | [ | ] | ? | = | { |
+		                      } | SP | HT
+		      token         = 1*<any CHAR except CTLs or separators>
+		      quoted-string = " *qdtext "
+		      qdtext        = <any CHAR except " and CTLs but including LWSP>
+		      TEXT          = <any printable character>
+
+			2.3.  URL Encoding
+
+		      reserved = ; | / | ? | : | @ | & | = | + | $ |
+		                 , | [ | ]
+
+		      hex        = digit | A | B | C | D | E | F | a | b
+		                   | c | d | e | f
+		      escaped    = "%%" hex hex
+		      unreserved = alpha | digit | mark
+		      mark       = - | _ | . | ! | ~ | * | ' | ( | )
 
 		   Note that newline (NL) need not be a single character, but can
 		   be a character sequence.
 
 		3.2. The Script-URI
 
-		   The 'Script-URI' is defined as the URI of the resource
-		   identified by the metavariables. Often, this URI will be the
-		   same as the URI requested by the client (the 'Client-URI');
-		   however, it need not be. Instead, it could be a URI invented
-		   by the server, and so it can only be used in the context of
-		   the server and its CGI interface.
-		   
-		   The Script-URI has the syntax of generic-RL as defined in
-		   section 2.1 of RFC 1808 [7], with the exception that object
-		   parameters and fragment identifiers are not permitted:
-		   
-			<scheme>://<host><port>/<path>?<query>
+		      script-URI = <scheme> "://" <server-name> ":" <server-port>
+		                   <script-path> <extra-path> "?" <query-string>
 
-		   The various components of the Script-URI are defined by some
-		   of the metavariables (see section 4 below);
-		   
-			script-uri = protocol "://" SERVER_NAME ":" SERVER_PORT enc-script
-						 enc-path-info "?" QUERY_STRING
+			where <scheme> is found from SERVER_PROTOCOL, <server-name>,
+			   <server-port> and <query-string> are the values of the respective
+			   meta-variables.  The SCRIPT_NAME and PATH_INFO values, URL-encoded
+			   with ";", "=" and "?"  reserved, give <script-path> and <extra-path>.
 
-		   where 'protocol' is obtained from SERVER_PROTOCOL,
-		   'enc-script' is a URL-encoded version of SCRIPT_NAME and
-		   'enc-path-info' is a URL-encoded version of PATH_INFO. See
-		   section 4.6 for more information about the PATH_INFO
-		   metavariable.
-		   
-		   Note that the scheme and the protocol are not identical; for
-		   instance, a resource accessed via an SSL mechanism may have a
-		   Client-URI with a scheme of "https" rather than "http".
-		   CGI/1.1 provides no means for the script to reconstruct this,
-		   and therefore the Script-URI includes the base protocol used.
 	]"
 	legal: "See notice at end of class."
 	status: "See notice at end of class."
@@ -517,6 +498,12 @@ feature -- Common Gateway Interface - 1.1       8 January 1996
 		end
 
 feature -- HTTP_*
+
+	http_accept: detachable STRING
+			-- Contents of the Accept: header from the current request, if there is one.
+			-- Example: 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+		deferred
+		end
 
 	http_accept_charset: detachable STRING
 			-- Contents of the Accept-Charset: header from the current request, if there is one.
