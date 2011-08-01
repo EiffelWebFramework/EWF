@@ -1,26 +1,31 @@
 note
-	description: "Summary description for {EWSGI_APPLICATION}."
+	description : "[
+			Objects that represents the input stream
+		]"
+	specification: "EWSGI/connector specification https://github.com/Eiffel-World/Eiffel-Web-Framework/wiki/EWSGI-specification"
 	legal: "See notice at end of class."
 	status: "See notice at end of class."
 	date: "$Date$"
 	revision: "$Revision$"
 
 deferred class
-	EWSGI_APPLICATION
+	EWSGI_INPUT_STREAM
 
-feature {NONE} -- Execution
+feature -- Access
 
-	execute (req: EWSGI_REQUEST; res: EWSGI_RESPONSE_BUFFER)
-			-- Execute the request
-			-- See `req.input' for input stream
-			--     `req.environment' for the Gateway environment	
-			-- and `res' for the output buffer
+	last_string: STRING_8
+			-- Last read string from stream
+		deferred
+		end
+
+feature -- Basic operation
+
+	read_stream (n: INTEGER)
 		require
-			res_status_unset: not res.status_is_set
+			n_positive: n > 0
 		deferred
 		ensure
-			res_status_set: res.status_is_set
-			res_committed: res.message_committed
+			at_max_n: last_string.count <= n
 		end
 
 note

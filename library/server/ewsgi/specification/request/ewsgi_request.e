@@ -4,8 +4,6 @@ note
 			
 			You can create your own descendant of this class to
 			add/remove specific value or processing
-			
-			This object is created by {GW_APPLICATION}.new_request_context
 		]"
 	legal: "See notice at end of class."
 	status: "See notice at end of class."

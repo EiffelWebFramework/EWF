@@ -7,7 +7,7 @@ deferred class
 	DEFAULT_EWSGI_APPLICATION
 
 inherit
-	GW_APPLICATION_IMP
+	EWSGI_APPLICATION
 
 feature {NONE} -- Initialization
 

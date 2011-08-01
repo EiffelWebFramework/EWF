@@ -1,19 +1,38 @@
 note
-	description: "Summary description for {EWSGI_RESPONSE_STREAM}."
+	description: "Summary description for {EWSGI_RESPONSE_BUFFER}."
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
 deferred class
-	EWSGI_RESPONSE_STREAM
+	EWSGI_RESPONSE_BUFFER
 
 feature {EWSGI_APPLICATION} -- Commit
 
-	commit (a_output_stream: EWSGI_OUTPUT_STREAM)
+	commit
 			-- Commit the current response
 		deferred
 		ensure
-			status_set: is_status_set
+			status_is_set: status_is_set
+			header_committed: header_committed
+			message_committed: message_committed
+		end
+
+feature -- Status report
+
+	header_committed: BOOLEAN
+			-- Header committed?
+		deferred
+		end
+
+	message_committed: BOOLEAN
+			-- Message committed?
+		deferred
+		end
+
+	message_writable: BOOLEAN
+			-- Can message be written?
+		deferred
 		end
 
 feature {NONE} -- Core output operation
@@ -26,7 +45,7 @@ feature {NONE} -- Core output operation
 
 feature -- Status setting
 
-	is_status_set: BOOLEAN
+	status_is_set: BOOLEAN
 			-- Is status set?
 		deferred
 		end
@@ -35,11 +54,12 @@ feature -- Status setting
 			-- Set response status code
 			-- Should be done before sending any data back to the client
 		require
-			status_not_set: not is_status_set
+			status_not_set: not status_is_set
+			header_not_committed: not header_committed
 		deferred
 		ensure
 			status_code_set: status_code = a_code
-			status_set: is_status_set
+			status_set: status_is_set
 		end
 
 	status_code: INTEGER
@@ -57,14 +77,21 @@ feature -- Output operation
 	write_string (s: STRING)
 			-- Send the string `s'
 		require
-			status_set: is_status_set
+			message_writable: message_writable
+		deferred
+		end
+
+	write_substring (s: STRING; a_begin_index, a_end_index: INTEGER)
+			-- Send the substring `s[a_begin_index:a_end_index]'
+		require
+			message_writable: message_writable
 		deferred
 		end
 
 	write_file_content (fn: STRING)
 			-- Send the content of file `fn'
 		require
-			status_set: is_status_set
+			message_writable: message_writable
 		deferred
 		end
 
@@ -73,10 +100,12 @@ feature -- Header output operation
 	write_header (a_status_code: INTEGER; a_headers: detachable ARRAY [TUPLE [key: STRING; value: STRING]])
 			-- Send headers with status `a_status', and headers from `a_headers'
 		require
-			status_not_set: not is_status_set
+			status_not_set: not status_is_set
+			header_not_committed: not header_committed
 		deferred
 		ensure
-			status_set: is_status_set
+			header_committed: header_committed
+			status_set: status_is_set
 		end
 
 note

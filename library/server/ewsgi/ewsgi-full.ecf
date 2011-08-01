@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<system xmlns="http://www.eiffel.com/developers/xml/configuration-1-8-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eiffel.com/developers/xml/configuration-1-8-0 http://www.eiffel.com/developers/xml/configuration-1-8-0.xsd" name="ewsgi-full" uuid="D924DBE1-1231-434A-80EF-234BA09D1E30" library_target="ewsgi-full">
+<system xmlns="http://www.eiffel.com/developers/xml/configuration-1-8-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eiffel.com/developers/xml/configuration-1-8-0 http://www.eiffel.com/developers/xml/configuration-1-8-0.xsd" name="ewsgi-full" uuid="663191A1-53D8-4974-AB46-7359C7377AD2" library_target="ewsgi-full">
 	<target name="ewsgi-full">
 		<root all_classes="true"/>
 		<file_rule>
@@ -10,7 +10,7 @@
 		<option warning="true" full_class_checking="true" syntax="provisional">
 		</option>
 		<library name="base" location="$ISE_LIBRARY\library\base\base.ecf"/>
-		<library name="ewsgi_spec" location="ewsgi_specification.ecf"/>
+		<library name="ewsgi" location="ewsgi.ecf"/>
 		<library name="error" location="..\..\error\error.ecf"/>
 		<library name="http" location="..\..\protocol\http\http.ecf"/>
 		<library name="encoder" location="..\..\text\encoder\encoder.ecf" readonly="false"/>

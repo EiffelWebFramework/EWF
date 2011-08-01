@@ -10,7 +10,7 @@
 		<option warning="true" full_class_checking="true">
 		</option>
 		<library name="base" location="$ISE_LIBRARY\library\base\base.ecf"/>
-		<library name="ewsgi_spec" location="..\..\ewsgi_specification.ecf" readonly="false"/>
+		<library name="ewsgi" location="..\..\ewsgi.ecf" readonly="false"/>
 		<library name="libfcgi" location="..\..\..\libfcgi\libfcgi.ecf" />
 		<library name="http" location="..\..\..\..\protocol\http\http.ecf"/>
 		<cluster name="src" location=".\" recursive="true"/>

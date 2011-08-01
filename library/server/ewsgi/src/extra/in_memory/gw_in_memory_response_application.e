@@ -10,34 +10,14 @@ deferred class
 inherit
 	EWSGI_APPLICATION
 		redefine
-			process
-		end
-
-feature -- Access
-
-	request_count: INTEGER
-			-- Request count
-
-feature -- Execution
-
-	process (env: EWSGI_ENVIRONMENT; a_input: EWSGI_INPUT_STREAM; a_output: EWSGI_OUTPUT_STREAM)
-			-- Process request with environment `env', and i/o streams `a_input' and `a_output'
-		do
-			request_count := request_count + 1
-			Precursor (env, a_input, a_output)
+			new_response
 		end
 
 feature -- Factory
 
-	new_request (env: EWSGI_ENVIRONMENT; a_input: EWSGI_INPUT_STREAM): EWSGI_REQUEST
-		do
-			create {GW_REQUEST_IMP} Result.make (env, a_input)
-			Result.execution_variables.set_variable (request_count.out, "REQUEST_COUNT")
-		end
-
 	new_response (req: EWSGI_REQUEST; a_output: EWSGI_OUTPUT_STREAM): GW_IN_MEMORY_RESPONSE
 		do
-			create {GW_IN_MEMORY_RESPONSE} Result.make
+			create {GW_IN_MEMORY_RESPONSE} Result.make (a_output)
 		end
 
 note

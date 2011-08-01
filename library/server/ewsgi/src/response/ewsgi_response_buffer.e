@@ -1,14 +1,14 @@
 note
-	description: "Summary description for {GW_RESPONSE_STREAM_IMP}."
-	author: ""
+	description: "[
+			Response buffer
+
+		]"
+	specification: "EWSGI specification https://github.com/Eiffel-World/Eiffel-Web-Framework/wiki/EWSGI-specification"
 	date: "$Date$"
 	revision: "$Revision$"
 
 class
-	GW_RESPONSE_STREAM_IMP
-
-inherit
-	EWSGI_RESPONSE_STREAM
+	EWSGI_RESPONSE_BUFFER
 
 create {EWSGI_APPLICATION}
 	make
@@ -22,23 +22,44 @@ feature {NONE} -- Initialization
 
 feature {EWSGI_APPLICATION} -- Commit
 
-	commit (a_output_stream: EWSGI_OUTPUT_STREAM)
+	commit
 			-- Commit the current response
 		do
-			a_output_stream.flush
+			output.flush
+			message_committed := True
+		ensure
+			status_is_set: status_is_set
+			header_committed: header_committed
+			message_committed: message_committed
+		end
+
+feature -- Status report
+
+	header_committed: BOOLEAN
+			-- Header committed?
+
+	message_committed: BOOLEAN
+			-- Message committed?
+
+	message_writable: BOOLEAN
+			-- Can message be written?
+		do
+			Result := status_is_set and header_committed
 		end
 
 feature {NONE} -- Core output operation
 
 	write (s: STRING)
 			-- Send the content of `s'
+			-- this can be used for header and body			
 		do
 			output.put_string (s)
 		end
 
 feature -- Status setting
 
-	is_status_set: BOOLEAN
+	status_is_set: BOOLEAN
+			-- Is status set?	
 		do
 			Result := status_code /= 0
 		end
@@ -46,13 +67,19 @@ feature -- Status setting
 	set_status_code (a_code: INTEGER)
 			-- Set response status code
 			-- Should be done before sending any data back to the client
+		require
+			status_not_set: not status_is_set
+			header_not_committed: not header_committed
 		do
 			status_code := a_code
 			output.put_status_line (a_code)
+		ensure
+			status_code_set: status_code = a_code
+			status_set: status_is_set
 		end
 
 	status_code: INTEGER
-			-- Response status		
+			-- Response status
 
 feature -- Output operation
 
@@ -63,12 +90,25 @@ feature -- Output operation
 
 	write_string (s: STRING)
 			-- Send the string `s'
+		require
+			message_writable: message_writable
 		do
 			write (s)
 		end
 
+	write_substring (s: STRING; start_index, end_index: INTEGER)
+			-- Send the substring `start_index:end_index]'
+			--| Could be optimized according to the target output
+		require
+			message_writable: message_writable
+		do
+			output.put_substring (s, start_index, end_index)
+		end
+
 	write_file_content (fn: STRING)
 			-- Send the content of file `fn'
+		require
+			message_writable: message_writable
 		do
 			output.put_file_content (fn)
 		end
@@ -77,6 +117,9 @@ feature -- Header output operation
 
 	write_header (a_status_code: INTEGER; a_headers: detachable ARRAY [TUPLE [key: STRING; value: STRING]])
 			-- Send headers with status `a_status', and headers from `a_headers'
+		require
+			status_not_set: not status_is_set
+			header_not_committed: not header_committed
 		local
 			h: GW_HEADER
 			i,n: INTEGER
@@ -96,6 +139,10 @@ feature -- Header output operation
 				end
 			end
 			write (h.string)
+			header_committed := True
+		ensure
+			status_set: status_is_set
+			header_committed: header_committed
 		end
 
 feature {NONE} -- Implementation: Access

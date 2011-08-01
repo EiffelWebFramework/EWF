@@ -1,21 +1,15 @@
 note
 	description: "[
-			Server request context of the httpd request
-			
-			You can create your own descendant of this class to
-			add/remove specific value or processing
-			
-			This object is created by {EWSGI_APPLICATION}.new_request
+			EWSGI interface to represent the Request
+
 		]"
+	specification: "EWSGI specification https://github.com/Eiffel-World/Eiffel-Web-Framework/wiki/EWSGI-specification"
 	legal: "See notice at end of class."
 	status: "See notice at end of class."
 	date: "$Date$"
 	revision: "$Revision$"
 
 class
-	GW_REQUEST_IMP
-
-inherit
 	EWSGI_REQUEST
 
 create
@@ -31,7 +25,6 @@ feature {NONE} -- Initialization
 			input := a_input
 			environment := env
 			content_length := env.content_length_value
-			create execution_variables.make (10)
 			create uploaded_files.make (0)
 
 			raw_post_data_recorded := True
@@ -100,6 +93,8 @@ feature -- Access: environment variables
 
 	environment_variable (a_name: STRING): detachable STRING
 			-- Environment variable related to `a_name'
+		require
+			a_name_valid: a_name /= Void and then not a_name.is_empty
 		do
 			Result := environment.variable (a_name)
 		end
@@ -107,20 +102,10 @@ feature -- Access: environment variables
 	content_length: INTEGER
 			-- Extracted Content-Length value
 
-feature -- Access: execution variables		
-
-	execution_variables: GW_EXECUTION_VARIABLES
-			-- Execution variables set by the application
-
-	execution_variable (a_name: STRING): detachable STRING_32
-			-- Execution variable related to `a_name'
-		do
-			Result := execution_variables.variable (a_name)
-		end
-
 feature -- URL parameters
 
-	parameters: GW_REQUEST_VARIABLES
+	parameters: EWSGI_REQUEST_VARIABLES
+			-- Variables extracted from QUERY_STRING	
 		local
 			vars: like internal_parameters
 			p,e: INTEGER
@@ -155,13 +140,16 @@ feature -- URL parameters
 
 	parameter (a_name: STRING): detachable STRING_32
 			-- Parameter for name `n'.
+		require
+			a_name_valid: a_name /= Void and then not a_name.is_empty
 		do
 			Result := parameters.variable (a_name)
 		end
 
 feature -- Form fields and related
 
-	form_fields: GW_REQUEST_VARIABLES
+	form_fields: EWSGI_REQUEST_VARIABLES
+			-- Variables sent by POST request	
 		local
 			vars: like internal_form_fields
 			s: STRING
@@ -198,6 +186,8 @@ feature -- Form fields and related
 
 	form_field (a_name: STRING): detachable STRING_32
 			-- Field for name `a_name'.
+		require
+			a_name_valid: a_name /= Void and then not a_name.is_empty
 		do
 			Result := form_fields.variable (a_name)
 		end
@@ -244,6 +234,8 @@ feature -- Cookies
 
 	cookies_variable (a_name: STRING): detachable STRING
 			-- Field for name `a_name'.
+		require
+			a_name_valid: a_name /= Void and then not a_name.is_empty
 		do
 			Result := cookies_variables.item (a_name)
 		end
@@ -302,16 +294,6 @@ feature -- Access: global variable
 		do
 			create Result.make (100)
 
-			vars := execution_variables
-			from
-				vars.start
-			until
-				vars.after
-			loop
-				Result.put (vars.item_for_iteration, vars.key_for_iteration)
-				vars.forth
-			end
-
 			vars := environment.table
 			from
 				vars.start
@@ -360,16 +342,13 @@ feature -- Access: global variable
 		local
 			s: detachable STRING_GENERAL
 		do
-			s := execution_variable (a_name)
+			s := environment_variable (a_name)
 			if s = Void then
-				s := environment_variable (a_name)
+				s := parameter (a_name)
 				if s = Void then
-					s := parameter (a_name)
+					s := form_field (a_name)
 					if s = Void then
-						s := form_field (a_name)
-						if s = Void then
-							s := cookies_variable (a_name)
-						end
+						s := cookies_variable (a_name)
 					end
 				end
 			end
@@ -377,7 +356,6 @@ feature -- Access: global variable
 				Result := s.as_string_32
 			end
 		end
-
 
 feature -- Access extra information
 
@@ -389,6 +367,28 @@ feature -- Access extra information
 				t.is_integer_64
 			then
 				Result := date_time_utilities.unix_time_stamp_to_date_time (t.to_integer_64)
+			end
+		end
+
+feature -- Uploaded File Handling
+
+	is_uploaded_file (a_filename: STRING): BOOLEAN
+			-- Is `a_filename' a file uploaded via HTTP Form
+		local
+			l_files: like uploaded_files
+		do
+			l_files := uploaded_files
+			if not l_files.is_empty then
+				from
+					l_files.start
+				until
+					l_files.after or Result
+				loop
+					if attached l_files.item_for_iteration.tmp_name as l_tmp_name and then l_tmp_name.same_string (a_filename) then
+						Result := True
+					end
+					l_files.forth
+				end
 			end
 		end
 
@@ -485,28 +485,6 @@ feature -- Element change
 					if l_path_info.starts_with (l_script_name) then
 						env.path_info := l_path_info.substring (l_script_name.count + 1 , l_path_info.count)
 					end
-				end
-			end
-		end
-
-feature -- Uploaded File Handling
-
-	is_uploaded_file (a_filename: STRING): BOOLEAN
-			-- Is `a_filename' a file uploaded via HTTP Form
-		local
-			l_files: like uploaded_files
-		do
-			l_files := uploaded_files
-			if not l_files.is_empty then
-				from
-					l_files.start
-				until
-					l_files.after or Result
-				loop
-					if attached l_files.item_for_iteration.tmp_name as l_tmp_name and then l_tmp_name.same_string (a_filename) then
-						Result := True
-					end
-					l_files.forth
 				end
 			end
 		end

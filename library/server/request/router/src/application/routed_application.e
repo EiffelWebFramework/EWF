@@ -35,7 +35,7 @@ feature -- Setup
 
 feature -- Execution
 
-	execute (req: EWSGI_REQUEST; res: EWSGI_RESPONSE_STREAM)
+	execute (req: EWSGI_REQUEST; res: EWSGI_RESPONSE_BUFFER)
 		do
 			if attached router.dispatch (req, res) as r then
 				--| done
@@ -44,7 +44,7 @@ feature -- Execution
 			end
 		end
 
-	execute_default (req: EWSGI_REQUEST; res: EWSGI_RESPONSE_STREAM)
+	execute_default (req: EWSGI_REQUEST; res: EWSGI_RESPONSE_BUFFER)
 		deferred
 		end
 

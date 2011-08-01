@@ -51,7 +51,7 @@ feature {NONE} -- Initialization
 
 feature -- Execution
 
-	execute_default (req: EWSGI_REQUEST; res: EWSGI_RESPONSE_STREAM)
+	execute_default (req: EWSGI_REQUEST; res: EWSGI_RESPONSE_BUFFER)
 		local
 			h: GW_HEADER
 			l_url: STRING
@@ -96,7 +96,7 @@ feature -- Execution
 			res.flush
 		end
 
-	execute_home (ctx: REQUEST_HANDLER_CONTEXT; req: EWSGI_REQUEST; res: EWSGI_RESPONSE_STREAM)
+	execute_home (ctx: REQUEST_HANDLER_CONTEXT; req: EWSGI_REQUEST; res: EWSGI_RESPONSE_BUFFER)
 		do
 			res.write_header (200, <<["Content-Type", "text/html"]>>)
 			res.write_string ("<html><body>Hello World ?!%N")
@@ -116,7 +116,7 @@ feature -- Execution
 			res.write_string ("</body></html>%N")
 		end
 
-	execute_hello (req: EWSGI_REQUEST; res: EWSGI_RESPONSE_STREAM; a_name: detachable STRING_32; ctx: REQUEST_HANDLER_CONTEXT)
+	execute_hello (req: EWSGI_REQUEST; res: EWSGI_RESPONSE_BUFFER; a_name: detachable STRING_32; ctx: REQUEST_HANDLER_CONTEXT)
 		local
 			l_response_content_type: detachable STRING
 			msg: STRING
@@ -160,12 +160,12 @@ feature -- Execution
 			end
 		end
 
-	handle_hello (ctx: REQUEST_HANDLER_CONTEXT; req: EWSGI_REQUEST; res: EWSGI_RESPONSE_STREAM)
+	handle_hello (ctx: REQUEST_HANDLER_CONTEXT; req: EWSGI_REQUEST; res: EWSGI_RESPONSE_BUFFER)
 		do
 			execute_hello (req, res, Void, ctx)
 		end
 
-	handle_anonymous_hello (ctx: REQUEST_HANDLER_CONTEXT; req: EWSGI_REQUEST; res: EWSGI_RESPONSE_STREAM)
+	handle_anonymous_hello (ctx: REQUEST_HANDLER_CONTEXT; req: EWSGI_REQUEST; res: EWSGI_RESPONSE_BUFFER)
 		do
 			execute_hello (req, res, ctx.parameter ("name"), ctx)
 		end

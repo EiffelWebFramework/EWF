@@ -11,7 +11,6 @@
 		</option>
 		<library name="base" location="$ISE_LIBRARY\library\base\base.ecf"/>
 		<library name="time" location="$ISE_LIBRARY\library\time\time.ecf"/>
-		<library name="ewsgi_spec" location="../ewsgi_specification.ecf"/>
 		<library name="ewsgi" location="../ewsgi.ecf"/>
 		<library name="connector_cgi" location="../connectors/cgi/cgi.ecf"/>
 		<library name="error" location="..\..\..\error\error.ecf"/>

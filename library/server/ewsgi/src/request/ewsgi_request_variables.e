@@ -8,7 +8,7 @@ note
 	revision: "$Revision$"
 
 class
-	GW_REQUEST_VARIABLES
+	EWSGI_REQUEST_VARIABLES
 
 inherit
 	EWSGI_VARIABLES [STRING_32]

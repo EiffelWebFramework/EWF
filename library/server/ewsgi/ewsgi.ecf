@@ -11,7 +11,6 @@
 		</option>
 		<library name="base" location="$ISE_LIBRARY\library\base\base.ecf"/>
 		<library name="time" location="$ISE_LIBRARY\library\time\time.ecf"/>
-		<library name="ewsgi_spec" location="ewsgi_specification.ecf"/>
 		<library name="error" location="..\..\error\error.ecf"/>
 		<library name="http" location="..\..\protocol\http\http.ecf"/>
 		<library name="encoder" location="..\..\text\encoder\encoder.ecf" readonly="false"/>

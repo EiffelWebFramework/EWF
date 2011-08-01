@@ -5,10 +5,10 @@ note
 	revision: "$Revision$"
 
 class
-	GW_AGENT_APPLICATION
+	EWSGI_AGENT_APPLICATION
 
 inherit
-	GW_APPLICATION_IMP
+	EWSGI_APPLICATION
 
 create
 	make

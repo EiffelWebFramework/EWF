@@ -13,7 +13,6 @@
 		<library name="base" location="$ISE_LIBRARY\library\base\base.ecf"/>
 		<library name="default_nino" location="..\..\default\ewsgi_nino.ecf" readonly="false"/>
 		<library name="connector_nino" location="..\..\connectors\nino\nino.ecf" readonly="false"/>
-		<library name="ewsgi_spec" location="..\..\ewsgi_specification.ecf" readonly="false"/>
 		<library name="ewsgi" location="..\..\ewsgi.ecf" readonly="false"/>
 		<cluster name="src" location="src\" recursive="true"/>
 	</target>

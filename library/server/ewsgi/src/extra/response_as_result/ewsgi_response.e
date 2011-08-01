@@ -28,7 +28,7 @@ feature {NONE} -- Initialization
 
 feature {EWSGI_RESPONSE_APPLICATION} -- Response status
 
-	transmit_to (res: EWSGI_RESPONSE_STREAM)
+	transmit_to (res: EWSGI_RESPONSE_BUFFER)
 		do
                 res.set_status_code (status)
                 res.write_string (headers)

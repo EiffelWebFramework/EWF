@@ -10,7 +10,7 @@ deferred class
 
 feature -- Execution
 
-	execute (req: EWSGI_REQUEST; res: EWSGI_RESPONSE_STREAM)
+	execute (req: EWSGI_REQUEST; res: EWSGI_RESPONSE_BUFFER)
 			-- Execute the request
 			-- See `req.input' for input stream
 			--     `req.environment' for the Gateway environment	

@@ -1,6 +1,5 @@
 note
 	description: "Summary description for {GW_IN_MEMORY_RESPONSE}."
-	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -8,9 +7,14 @@ class
 	GW_IN_MEMORY_RESPONSE
 
 inherit
-	EWSGI_RESPONSE_STREAM
+	EWSGI_RESPONSE_BUFFER
 		redefine
-			commit
+			make,
+			commit,
+			write,
+			set_status_code,
+			write_header,
+			flush
 		end
 
 create {EWSGI_APPLICATION}
@@ -18,8 +22,9 @@ create {EWSGI_APPLICATION}
 
 feature {NONE} -- Initialization
 
-	make
+	make (a_output: EWSGI_OUTPUT_STREAM)
 		do
+			Precursor (a_output)
 			create header.make
 			create body.make (100)
 		end
@@ -38,11 +43,6 @@ feature {NONE} -- Status output
 
 feature -- Status setting
 
-	is_status_set: BOOLEAN
-		do
-			Result := status_code /= 0
-		end
-
 	set_status_code (a_code: INTEGER)
 			-- Set response status code
 			-- Should be done before sending any data back to the client
@@ -50,39 +50,11 @@ feature -- Status setting
 			status_code := a_code
 		end
 
-	status_code: INTEGER
-			-- Response status		
-
 feature -- Output operation
 
 	flush
 		do
 			--| Do nothing ... this is in_memory response
-		end
-
-	write_string (s: STRING)
-			-- Send the string `s'
-		do
-			write (s)
-		end
-
-	write_file_content (fn: STRING)
-			-- Send the content of file `fn'
-		local
-			f: RAW_FILE
-		do
-			create f.make (fn)
-			if f.exists and then f.is_readable then
-				f.open_read
-				from
-				until
-					f.exhausted
-				loop
-					f.read_stream (1024)
-					write (f.last_string)
-				end
-				f.close
-			end
 		end
 
 feature -- Header output operation		
@@ -111,12 +83,17 @@ feature -- Header output operation
 
 feature {EWSGI_APPLICATION} -- Commit
 
-	commit (a_output: EWSGI_OUTPUT_STREAM)
+	commit
+		local
+			o: like output
 		do
-			a_output.put_status_line (status_code)
-			a_output.put_string (header.string)
-			a_output.put_string (body)
-			a_output.flush
+			o := output
+			o.put_status_line (status_code)
+			o.put_string (header.string)
+			header_committed := True
+			o.put_string (body)
+			o.flush
+			Precursor
 		end
 
 ;note

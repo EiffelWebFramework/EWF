@@ -13,7 +13,6 @@
 		<library name="base" location="$ISE_LIBRARY\library\base\base-safe.ecf"/>
 		<library name="default_nino" location="..\..\library\server\ewsgi\default\ewsgi_nino-safe.ecf" readonly="false"/>
 		<library name="connector_nino" location="..\..\library\server\ewsgi\connectors\nino\nino-safe.ecf" readonly="false"/>
-		<library name="ewsgi_spec" location="..\..\library\server\ewsgi\ewsgi_specification-safe.ecf" readonly="false"/>
 		<library name="ewsgi" location="..\..\library\server\ewsgi\ewsgi-safe.ecf" readonly="false"/>
 		<library name="router" location="..\..\library\server\request\router\router-safe.ecf" readonly="false"/>
 		<library name="uri_template" location="..\..\library\protocol\uri_template\uri_template-safe.ecf" readonly="false"/>

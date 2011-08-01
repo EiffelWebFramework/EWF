@@ -1,22 +1,34 @@
 note
-	description: "Summary description for {DEFAULT_EWSGI_APPLICATION}."
+	description: "Summary description for {EWSGI_CONNECTOR}."
+	specification: "EWSGI/connector specification https://github.com/Eiffel-World/Eiffel-Web-Framework/wiki/EWSGI-specification"
 	date: "$Date$"
 	revision: "$Revision$"
 
 deferred class
-	DEFAULT_EWSGI_APPLICATION
-
-inherit
-	EWSGI_APPLICATION
+	EWSGI_CONNECTOR
 
 feature {NONE} -- Initialization
 
-	make_and_launch
-		local
-			cgi: GW_CGI_CONNECTOR			
+	make (a_app: like application)
 		do
-			create cgi.make (Current)
-			cgi.launch
+			application := a_app
+			initialize
+		end
+
+	initialize
+			-- Initialize connector
+		do
+		end
+
+feature {NONE} -- Access
+
+	application: EWSGI_APPLICATION
+			-- Gateway Application
+
+feature -- Server
+
+	launch
+		deferred
 		end
 
 note

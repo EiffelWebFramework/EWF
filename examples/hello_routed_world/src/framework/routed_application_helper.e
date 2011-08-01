@@ -17,7 +17,7 @@ inherit
 
 feature -- Helper
 
-	execute_content_type_not_allowed (req: EWSGI_REQUEST; res: EWSGI_RESPONSE_STREAM; a_content_types: detachable ARRAY [STRING]; a_uri_formats: detachable ARRAY [STRING])
+	execute_content_type_not_allowed (req: EWSGI_REQUEST; res: EWSGI_RESPONSE_BUFFER; a_content_types: detachable ARRAY [STRING]; a_uri_formats: detachable ARRAY [STRING])
 		local
 			s, uri_s: detachable STRING
 			i, n: INTEGER
@@ -68,7 +68,7 @@ feature -- Helper
 			end
 		end
 
-	execute_method_not_allowed (req: EWSGI_REQUEST; res: EWSGI_RESPONSE_STREAM; a_methods: ARRAY [STRING])
+	execute_method_not_allowed (req: EWSGI_REQUEST; res: EWSGI_RESPONSE_BUFFER; a_methods: ARRAY [STRING])
 		local
 			s: STRING
 			i, n: INTEGER
@@ -94,13 +94,13 @@ feature -- Helper
 					>>)
 			res.write_string ("Unsupported request method, Allow: " + s + "%N")
 		end
-		
+
 feature -- Context helper
 
 	request_format_id (ctx: REQUEST_HANDLER_CONTEXT; a_format_variable_name: detachable STRING; content_type_supported: detachable ARRAY [STRING]): INTEGER
 			-- Format id for the request based on {HTTP_FORMAT_CONSTANTS}
 		local
-			l_format, l_content_type: detachable STRING_8
+			l_format: detachable STRING_8
 		do
 			if a_format_variable_name /= Void and then attached ctx.parameter (a_format_variable_name) as ctx_format then
 				l_format := ctx_format.as_string_8

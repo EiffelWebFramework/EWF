@@ -29,7 +29,7 @@ feature -- Status report
 
 feature -- Execution
 
-	execute (a_hdl_context: REQUEST_HANDLER_CONTEXT; req: EWSGI_REQUEST; res: EWSGI_RESPONSE_STREAM)
+	execute (a_hdl_context: REQUEST_HANDLER_CONTEXT; req: EWSGI_REQUEST; res: EWSGI_RESPONSE_BUFFER)
 			-- Execute request handler	
 		require
 			is_valid_context: is_valid_context (req)
@@ -52,7 +52,7 @@ feature -- Execution
 			retry
 		end
 
-	execute_method_not_allowed (a_hdl_context: REQUEST_HANDLER_CONTEXT; req: EWSGI_REQUEST; res: EWSGI_RESPONSE_STREAM)
+	execute_method_not_allowed (a_hdl_context: REQUEST_HANDLER_CONTEXT; req: EWSGI_REQUEST; res: EWSGI_RESPONSE_BUFFER)
 		local
 			s: STRING
 			lst: LIST [STRING]
@@ -75,7 +75,7 @@ feature -- Execution
 			res.write_header ({HTTP_STATUS_CODE}.method_not_allowed, <<["Allow", s]>>)
 		end
 
-	execute_application (a_hdl_context: REQUEST_HANDLER_CONTEXT; req: EWSGI_REQUEST; res: EWSGI_RESPONSE_STREAM)
+	execute_application (a_hdl_context: REQUEST_HANDLER_CONTEXT; req: EWSGI_REQUEST; res: EWSGI_RESPONSE_BUFFER)
 			-- Execute request handler
 		deferred
 		end
@@ -86,13 +86,13 @@ feature -- Execution
 			--| To be redefined if needed
 		end
 
-	post_execute (req: EWSGI_REQUEST; res: EWSGI_RESPONSE_STREAM)
+	post_execute (req: EWSGI_REQUEST; res: EWSGI_RESPONSE_BUFFER)
 			-- Operation processed after `execute'
 		do
 			--| To be redefined if needed
 		end
 
-	rescue_execute (req: EWSGI_REQUEST; res: EWSGI_RESPONSE_STREAM)
+	rescue_execute (req: EWSGI_REQUEST; res: EWSGI_RESPONSE_BUFFER)
 			-- Operation processed after a rescue
 		do
 			--| To be redefined if needed

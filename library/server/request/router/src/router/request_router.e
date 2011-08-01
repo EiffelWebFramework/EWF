@@ -32,7 +32,7 @@ feature -- Registration
 
 feature -- Execution
 
-	dispatch (req: EWSGI_REQUEST; res: EWSGI_RESPONSE_STREAM): detachable REQUEST_HANDLER
+	dispatch (req: EWSGI_REQUEST; res: EWSGI_RESPONSE_BUFFER): detachable REQUEST_HANDLER
 			-- Dispatch `req, res' to the associated handler
 			-- And return this handler
 			-- If Result is Void, this means no handler was found.
