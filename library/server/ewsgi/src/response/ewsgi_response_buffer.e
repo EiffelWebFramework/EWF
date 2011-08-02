@@ -115,6 +115,18 @@ feature -- Output operation
 
 feature -- Header output operation		
 
+	write_headers_string (a_headers: STRING)
+		require
+			status_set: status_is_set
+			header_not_committed: not header_committed
+		do
+			write (a_headers)
+			header_committed := True
+		ensure
+			status_set: status_is_set
+			header_committed: header_committed
+		end
+
 	write_header (a_status_code: INTEGER; a_headers: detachable ARRAY [TUPLE [key: STRING; value: STRING]])
 			-- Send headers with status `a_status', and headers from `a_headers'
 		require
@@ -138,8 +150,7 @@ feature -- Header output operation
 					i := i + 1
 				end
 			end
-			write (h.string)
-			header_committed := True
+			write_headers_string (h.string)
 		ensure
 			status_set: status_is_set
 			header_committed: header_committed

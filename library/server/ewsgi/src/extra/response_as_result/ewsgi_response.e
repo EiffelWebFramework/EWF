@@ -31,7 +31,7 @@ feature {EWSGI_RESPONSE_APPLICATION} -- Response status
 	transmit_to (res: EWSGI_RESPONSE_BUFFER)
 		do
                 res.set_status_code (status)
-                res.write_string (headers)
+                res.write_headers_string (headers)
                 from
                     read_block
                     res.write_string (last_block)

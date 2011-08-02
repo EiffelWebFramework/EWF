@@ -64,7 +64,7 @@ feature -- Execution
 			n := 3
 			h.put_refresh (l_url, 5, 200)
 			res.set_status_code (200)
-			res.write_string (h.string)
+			res.write_headers_string (h.string)
 			from
 				create e
 			until
