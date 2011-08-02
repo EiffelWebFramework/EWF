@@ -13,12 +13,15 @@ feature {NONE} -- Initialization
 
 	make_and_launch
 		do
-			print ("Example: start a Nino web server on port " + port_number.out + ", %Nand reply Hello World for any request such as http://localhost:8123/%N")
+			port_number := 80
+			print ("Example: start a Nino web server on port " + port_number.out + ", %Nand reply Hello World for any request such as http://localhost:" + port_number.out + "/%N")
 			(create {NINO_APPLICATION}.make_custom (agent execute, "")).listen (port_number)
 		end
 
-	port_number: INTEGER = 80
+	port_number: INTEGER
 
+invariant
+	port_number_valid: port_number > 0
 note
 	copyright: "2011-2011, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"

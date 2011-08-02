@@ -19,7 +19,19 @@ feature -- Response
 
     response (request: EWSGI_REQUEST): EWSGI_RESPONSE
         do
-            create {HELLO_WORLD_RESPONSE} Result.make
+        	if request.environment.path_info.starts_with ("/streaming/") then
+        		Result := streaming_response (request)
+        	else
+	            create Result.make
+	            Result.set_status (200)
+	            Result.set_header ("Content-Type", "text/html; charset=utf-8")
+	            Result.set_message_body ("<html><body>Hello World</body></html>")
+        	end
+        end
+
+    streaming_response (request: EWSGI_REQUEST): EWSGI_RESPONSE
+        do
+	        create {HELLO_WORLD_RESPONSE} Result.make
             Result.set_status (200)
             Result.set_header ("Content-Type", "text/html; charset=utf-8")
         end

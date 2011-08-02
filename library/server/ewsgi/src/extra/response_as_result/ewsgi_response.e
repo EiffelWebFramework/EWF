@@ -131,7 +131,8 @@ feature {EWSGI_RESPONSE_APPLICATION} -- Message body
 --                -- TBD!
             end
         ensure
-            not is_buffered implies last_block.count <= max_block_size
+--Commented, since it is far from obvious to ensure that:
+--        not is_buffered implies last_block.count <= max_block_size
         end
 
     last_block: STRING
