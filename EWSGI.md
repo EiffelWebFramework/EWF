@@ -1,2 +1,2 @@
 - See proposed specifications: [[EWSGI specification| EWSGI-specification]]
-- See [[Open questions| EWSGI-:-open-questions]]
+- See [[Open questions| EWSGI-open-questions]]
