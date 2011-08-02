@@ -59,7 +59,9 @@ Seibo-EWSGI: the user has to create the RESPONSE object.
 EWF-EWSGI: the user has the RESPONSE_BUFFER object passed as argument, and it is ready to use.
 
 The consequences are important because
+
 * Seibo-EWSGI: 
+
    - to make the creation of RESPONSE simple, the decision was to remove any notion of output stream in EWSGI. 
    - Then the RESPONSE has to be built before sending it. But the proposal also provides a way to get the response message by block during the transmission. A kind of delay RESPONSE filling which is for now using a read_block pattern. And this mimics the send immediately the message parts to the client.
    - This design allows the developer to use its own descendant of RESPONSE and then implement the "read_block" pattern when needed.
@@ -68,6 +70,7 @@ The consequences are important because
    - Seibo team find the Response-as-Result design more natural, and adopt the Request/Response model of HTTP protocol
 
 * EWF-EWSGI:
+
    - the RESPONSE_BUFFER is passed by argument to the user, then he does not have to worry about how to create it.
    - it is a buffer and could be implemented in various way by the implementation(s) to access the output stream if any
    - For now, there is no easy way for the user, from the proposed specification, to have a customized RESPONSE_BUFFER
@@ -75,6 +78,7 @@ The consequences are important because
    - the buffer specification allows the user to send the message parts immediately to the client without complicated pattern. As today implementation, the only restriction imposed by the design is to pass the Status code, and the headers before starting sending the message parts; this is checked by the associated assertions. However this part might be thinked again, to be more flexible, and let this to the responsibility of the user, or of other frameworks built on top of EWSGI spec.
 
 ## Notion of output stream ##
+
 As you might noticed 
 In EWF-EWSGI, the output stream is kind of hidden and replaced by the output buffer, which is in fact quite similar. However the goal is to allow the user to send immediately the message parts to the client as simple as writing in the buffer.
 The EWSGI implementation will handle this buffer to integrate nicely with the underlying web server techno. This will be done through the implementation of the various connectors.
@@ -86,9 +90,11 @@ The read_block pattern allows the user to send a big response part by part, and/
 So for now, those are the main critical (blocking) differences I (Jocelyn) can see.
 
 ## Personal point of views ##
+
 (Feel free to add your own point of view)
 
 ### Jocelyn ###
+
 * I prefer the EWF-EWSGI solution (obviously this is my proposal) mainly because with it, you can also implement the Seibo-EWSGI design. And the "more you can do, the less you can also do".
 * I find the  read_block pattern really not natural to use in non trivial application (even in trivial application, this might not be that easy to handle, and thus a potential source of bugs)
 * I admit the need to send immediately to the client might not be the vast majority of cases. But this is useful for big messages, and for long computing message where the client wants to follow the progression (concrete cases: drupal batch, wordpress online update, ...)
