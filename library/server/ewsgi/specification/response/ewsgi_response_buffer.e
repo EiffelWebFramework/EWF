@@ -67,34 +67,6 @@ feature -- Status setting
 		deferred
 		end
 
-feature -- Output operation
-
-	flush
-			-- Flush if it makes sense
-		deferred
-		end
-
-	write_string (s: STRING)
-			-- Send the string `s'
-		require
-			message_writable: message_writable
-		deferred
-		end
-
-	write_substring (s: STRING; a_begin_index, a_end_index: INTEGER)
-			-- Send the substring `s[a_begin_index:a_end_index]'
-		require
-			message_writable: message_writable
-		deferred
-		end
-
-	write_file_content (fn: STRING)
-			-- Send the content of file `fn'
-		require
-			message_writable: message_writable
-		deferred
-		end
-
 feature -- Header output operation
 
 	write_headers_string (a_headers: STRING)
@@ -118,6 +90,34 @@ feature -- Header output operation
 			status_set: status_is_set
 		end
 
+feature -- Output operation
+
+	write_string (s: STRING)
+			-- Send the string `s'
+		require
+			message_writable: message_writable
+		deferred
+		end
+
+	write_substring (s: STRING; a_begin_index, a_end_index: INTEGER)
+			-- Send the substring `s[a_begin_index:a_end_index]'
+		require
+			message_writable: message_writable
+		deferred
+		end
+
+	write_file_content (fn: STRING)
+			-- Send the content of file `fn'
+		require
+			message_writable: message_writable
+		deferred
+		end
+
+	flush
+			-- Flush if it makes sense
+		deferred
+		end
+		
 note
 	copyright: "2011-2011, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"

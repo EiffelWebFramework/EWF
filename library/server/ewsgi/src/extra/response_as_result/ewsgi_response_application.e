@@ -17,7 +17,6 @@ feature -- Execution
 			-- and `res.output' for output stream
         local
             rs: EWSGI_RESPONSE
-            s: STRING
         do
             rs := response (req)
             if rs.ready_to_transmit then

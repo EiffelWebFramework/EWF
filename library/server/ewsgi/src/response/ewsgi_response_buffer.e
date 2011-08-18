@@ -81,38 +81,6 @@ feature -- Status setting
 	status_code: INTEGER
 			-- Response status
 
-feature -- Output operation
-
-	flush
-		do
-			output.flush
-		end
-
-	write_string (s: STRING)
-			-- Send the string `s'
-		require
-			message_writable: message_writable
-		do
-			write (s)
-		end
-
-	write_substring (s: STRING; start_index, end_index: INTEGER)
-			-- Send the substring `start_index:end_index]'
-			--| Could be optimized according to the target output
-		require
-			message_writable: message_writable
-		do
-			output.put_substring (s, start_index, end_index)
-		end
-
-	write_file_content (fn: STRING)
-			-- Send the content of file `fn'
-		require
-			message_writable: message_writable
-		do
-			output.put_file_content (fn)
-		end
-
 feature -- Header output operation		
 
 	write_headers_string (a_headers: STRING)
@@ -154,6 +122,38 @@ feature -- Header output operation
 		ensure
 			status_set: status_is_set
 			header_committed: header_committed
+		end
+
+feature -- Output operation
+
+	write_string (s: STRING)
+			-- Send the string `s'
+		require
+			message_writable: message_writable
+		do
+			write (s)
+		end
+
+	write_substring (s: STRING; start_index, end_index: INTEGER)
+			-- Send the substring `start_index:end_index]'
+			--| Could be optimized according to the target output
+		require
+			message_writable: message_writable
+		do
+			output.put_substring (s, start_index, end_index)
+		end
+
+	write_file_content (fn: STRING)
+			-- Send the content of file `fn'
+		require
+			message_writable: message_writable
+		do
+			output.put_file_content (fn)
+		end
+
+	flush
+		do
+			output.flush
 		end
 
 feature {NONE} -- Implementation: Access
