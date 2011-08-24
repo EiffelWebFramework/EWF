@@ -151,7 +151,7 @@ feature -- Execution
 				h.put_content_type (l_response_content_type)
 				h.put_content_length (msg.count)
 				res.set_status_code (200)
-				res.write_string (h.string)
+				res.write_headers_string (h.string)
 --				res.write_header (200, <<
 --						["Content-Type", l_response_content_type],
 --						["Content-Length", msg.count.out
