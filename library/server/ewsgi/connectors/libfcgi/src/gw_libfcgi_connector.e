@@ -46,10 +46,12 @@ feature -- Execution
 
 	process_fcgi_request (vars: HASH_TABLE [STRING, STRING]; a_input: like input; a_output: like output)
 		local
-			gw_env: EWSGI_ENVIRONMENT_VARIABLES
+			req: EWSGI_REQUEST_FROM_TABLE
+			res: EWSGI_RESPONSE_STREAM_BUFFER
 		do
-			create gw_env.make_with_variables (vars)
-			application.process (gw_env, a_input, a_output)
+			create req.make (vars, a_input)
+			create res.make (a_output)
+			application.process (req, res)
 		end
 
 feature -- Input/Output

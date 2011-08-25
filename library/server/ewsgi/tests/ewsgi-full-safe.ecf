@@ -20,5 +20,8 @@
 		<library name="time" location="$ISE_LIBRARY\library\time\time-safe.ecf"/>
 		<cluster name="connectors" location="..\connectors\" recursive="true"/>
 		<cluster name="interface" location="..\src\" recursive="true"/>
+		<cluster name="specification_request" location="..\specification\request" recursive="true"/>
+		<cluster name="specification_response" location="..\specification\response" recursive="true"/>
+		
 	</target>
 </system>

@@ -9,15 +9,41 @@ deferred class
 
 inherit
 	EWSGI_APPLICATION
-		redefine
-			new_response
+		rename
+			execute as app_execute
 		end
 
-feature -- Factory
 
-	new_response (req: EWSGI_REQUEST; a_output: EWSGI_OUTPUT_STREAM): GW_IN_MEMORY_RESPONSE
+feature -- Execution
+
+	app_execute (req: EWSGI_REQUEST; res: EWSGI_RESPONSE_BUFFER)
+			-- Execute the request
+			-- See `req.input' for input stream
+			--     `req.environment' for the Gateway environment	
+			-- and `res' for output buffer
 		do
-			create {GW_IN_MEMORY_RESPONSE} Result.make (a_output)
+			execute (req, new_response (req, res))
+		end
+
+feature -- Execute
+
+	execute (req: EWSGI_REQUEST; res: EWSGI_RESPONSE_BUFFER)
+			-- Execute the request
+			-- See `req.input' for input stream
+			--     `req.environment' for the Gateway environment	
+			-- and `res' for output buffer
+		require
+			res_status_unset: not res.status_is_set
+		deferred
+		ensure
+			res_status_set: res.status_is_set
+		end
+
+feature {NONE} -- Implementation	
+
+	new_response (req: EWSGI_REQUEST; a_res: EWSGI_RESPONSE_BUFFER): GW_IN_MEMORY_RESPONSE
+		do
+			create {GW_IN_MEMORY_RESPONSE} Result.make (a_res)
 		end
 
 note

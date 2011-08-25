@@ -17,10 +17,12 @@ feature -- Execution
 
 	launch
 		local
-			env: EWSGI_ENVIRONMENT_VARIABLES
+			req: EWSGI_REQUEST_FROM_TABLE
+			res: EWSGI_RESPONSE_STREAM_BUFFER
 		do
-			create env.make_with_variables ((create {EXECUTION_ENVIRONMENT}).starting_environment_variables)
-			application.process (env, create {GW_CGI_INPUT_STREAM}.make, create {GW_CGI_OUTPUT_STREAM}.make)
+			create req.make ((create {EXECUTION_ENVIRONMENT}).starting_environment_variables, create {GW_CGI_INPUT_STREAM}.make)
+			create res.make (create {GW_CGI_OUTPUT_STREAM}.make)
+			application.process (req, res)
 		end
 
 note

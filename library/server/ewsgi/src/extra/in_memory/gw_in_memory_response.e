@@ -8,30 +8,71 @@ class
 
 inherit
 	EWSGI_RESPONSE_BUFFER
-		redefine
-			make,
-			commit,
-			write,
-			set_status_code,
-			write_header,
-			flush
-		end
 
 create {EWSGI_APPLICATION}
 	make
 
 feature {NONE} -- Initialization
 
-	make (a_output: EWSGI_OUTPUT_STREAM)
+	make (res: EWSGI_RESPONSE_BUFFER)
 		do
-			Precursor (a_output)
+			response_buffer := res
 			create header.make
 			create body.make (100)
 		end
 
+	response_buffer: EWSGI_RESPONSE_BUFFER
+
 	header: GW_HEADER
 
 	body: STRING_8
+
+feature {EWSGI_APPLICATION} -- Commit
+
+	commit
+		local
+			r: like response_buffer
+		do
+			r := response_buffer
+			r.set_status_code (status_code)
+			r.write_headers_string (header.string)
+			header_committed := True
+			r.write_string (body)
+			r.flush
+		end
+
+feature -- Status report
+
+	header_committed: BOOLEAN
+			-- Header committed?
+
+	message_committed: BOOLEAN
+			-- Message committed?
+
+	message_writable: BOOLEAN
+			-- Can message be written?
+		do
+			Result := status_is_set and header_committed
+		end
+
+
+feature -- Status setting
+
+	status_is_set: BOOLEAN
+			-- Is status set?	
+		do
+			Result := status_code /= 0
+		end
+
+	set_status_code (a_code: INTEGER)
+			-- Set response status code
+			-- Should be done before sending any data back to the client
+		do
+			status_code := a_code
+		end
+
+	status_code: INTEGER
+			-- Response status		
 
 feature {NONE} -- Status output
 
@@ -41,23 +82,13 @@ feature {NONE} -- Status output
 			body.append (s)
 		end
 
-feature -- Status setting
+feature -- Header output operation	
 
-	set_status_code (a_code: INTEGER)
-			-- Set response status code
-			-- Should be done before sending any data back to the client
+	write_headers_string (a_headers: STRING)
 		do
-			status_code := a_code
+			write (a_headers)
+			header_committed := True
 		end
-
-feature -- Output operation
-
-	flush
-		do
-			--| Do nothing ... this is in_memory response
-		end
-
-feature -- Header output operation		
 
 	write_header (a_status_code: INTEGER; a_headers: detachable ARRAY [TUPLE [key: STRING; value: STRING]])
 			-- Send headers with status `a_status', and headers from `a_headers'
@@ -81,19 +112,30 @@ feature -- Header output operation
 			header := h
 		end
 
-feature {EWSGI_APPLICATION} -- Commit
+feature -- Output operation
 
-	commit
-		local
-			o: like output
+	write_string (s: STRING)
+			-- Send the string `s'
 		do
-			o := output
-			o.put_status_line (status_code)
-			o.put_string (header.string)
-			header_committed := True
-			o.put_string (body)
-			o.flush
-			Precursor
+			write (s)
+		end
+
+	write_substring (s: STRING; start_index, end_index: INTEGER)
+			-- Send the substring `start_index:end_index]'
+			--| Could be optimized according to the target output
+		do
+			write_string (s.substring (start_index, end_index))
+		end
+
+	write_file_content (fn: STRING)
+			-- Send the content of file `fn'
+		do
+			response_buffer.write_file_content (fn)
+		end
+
+	flush
+		do
+			--| Do nothing ... this is in_memory response
 		end
 
 ;note

@@ -27,7 +27,7 @@ feature -- Query
 		do
 		end
 
-	query_parameter (a_name: STRING): detachable STRING_32
+	query_parameter (a_name: STRING): detachable READABLE_STRING_32
 		do
 			Result := request.parameter (a_name)
 		end

@@ -23,10 +23,10 @@ feature {NONE} -- Implementation
 
 feature {NONE} -- Implementation
 
-	callback: PROCEDURE [ANY, TUPLE [req: like new_request; res: like new_response]]
+	callback: PROCEDURE [ANY, TUPLE [req: EWSGI_REQUEST; res: EWSGI_RESPONSE_BUFFER]]
 			-- Procedure called on `execute'
 
-	execute (req: like new_request; res: like new_response)
+	execute (req: EWSGI_REQUEST; res: EWSGI_RESPONSE_BUFFER)
 			-- Execute the request
 		do
 			callback.call ([req, res])
