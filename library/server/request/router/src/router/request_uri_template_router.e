@@ -52,7 +52,7 @@ feature {NONE} -- Access: Implementation
 			t: STRING
 			p: STRING
 		do
-			p := req.environment.request_uri
+			p := req.request_uri
 			from
 				l_handlers := handlers
 				l_handlers.start
@@ -77,7 +77,7 @@ feature -- Context factory
 			if p /= Void then
 				create Result.make (req, tpl, tpl_res, p)
 			else
-				create Result.make (req, tpl, tpl_res, req.environment.path_info)
+				create Result.make (req, tpl, tpl_res, req.path_info)
 			end
 		end
 

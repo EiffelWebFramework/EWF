@@ -1,7 +1,6 @@
 note
 	description: "[
-			EWSGI interface to represent the Request
-
+				Request instanciated from a hash_table of meta variables
 		]"
 	specification: "EWSGI specification https://github.com/Eiffel-World/Eiffel-Web-Framework/wiki/EWSGI-specification"
 	legal: "See notice at end of class."
@@ -10,6 +9,9 @@ note
 	revision: "$Revision$"
 
 class
+	EWSGI_REQUEST_FROM_TABLE
+
+inherit
 	EWSGI_REQUEST
 
 create
@@ -17,14 +19,13 @@ create
 
 feature {NONE} -- Initialization
 
-	make (env: EWSGI_ENVIRONMENT; a_input: like input)
+	make (a_vars: HASH_TABLE [STRING, STRING]; a_input: like input)
 		require
-			env_attached: env /= Void
+			vars_attached: a_vars /= Void
 		do
 			create error_handler.make
 			input := a_input
-			environment := env
-			content_length := env.content_length_value
+			set_meta_parameters (a_vars)
 			create uploaded_files.make (0)
 
 			raw_post_data_recorded := True
@@ -33,26 +34,93 @@ feature {NONE} -- Initialization
 			analyze
 		end
 
+	set_meta_parameters (a_vars: HASH_TABLE [STRING, STRING])
+			-- Fill with variable from `a_vars'
+		local
+			s: detachable STRING
+			table: HASH_TABLE [STRING, STRING]
+		do
+			create empty_string.make_empty
+
+			create table.make (a_vars.count)
+			meta_parameters := table
+			from
+				a_vars.start
+			until
+				a_vars.after
+			loop
+				table.force (a_vars.item_for_iteration, a_vars.key_for_iteration)
+				a_vars.forth
+			end
+
+				--| QUERY_STRING
+			query_string := meta_parameter_or_default ({EWSGI_META_NAMES}.query_string, empty_string, False)
+
+				--| REQUEST_METHOD
+			request_method := meta_parameter_or_default ({EWSGI_META_NAMES}.request_method, empty_string, False)
+
+				--| CONTENT_TYPE
+			s := meta_parameter ({EWSGI_META_NAMES}.content_type)
+			if s /= Void and then not s.is_empty then
+				content_type := s
+			else
+				content_type := Void
+			end
+
+				--| CONTENT_LENGTH
+			s := meta_parameter ({EWSGI_META_NAMES}.content_length)
+			content_length := s
+			if s /= Void and then s.is_integer then
+				content_length_value := s.to_integer
+			else
+				--| content_length := 0
+			end
+
+				--| PATH_INFO
+			path_info := meta_parameter_or_default ({EWSGI_META_NAMES}.path_info, empty_string, False)
+
+				--| SERVER_NAME
+			server_name := meta_parameter_or_default ({EWSGI_META_NAMES}.server_name, empty_string, False)
+
+				--| SERVER_PORT
+			s := meta_parameter ({EWSGI_META_NAMES}.server_port)
+			if s /= Void and then s.is_integer then
+				server_port := s.to_integer
+			else
+				server_port := 80
+			end
+
+				--| SCRIPT_NAME
+			script_name := meta_parameter_or_default ({EWSGI_META_NAMES}.script_name, empty_string, False)
+
+				--| REMOTE_ADDR
+			remote_addr := meta_parameter_or_default ({EWSGI_META_NAMES}.remote_addr, empty_string, False)
+
+				--| REMOTE_HOST
+			remote_host := meta_parameter_or_default ({EWSGI_META_NAMES}.remote_host, empty_string, False)
+
+				--| REQUEST_URI
+			request_uri := meta_parameter_or_default ({EWSGI_META_NAMES}.request_uri, empty_string, False)
+		end
+
 	initialize
 			-- Specific initialization
 		local
 			p: INTEGER
-			env: like environment
 		do
-			env := environment
 				--| Here one can set its own environment entries if needed
 
 				--| do not use `force', to avoid overwriting existing variable
-			if attached env.request_uri as rq_uri then
+			if attached request_uri as rq_uri then
 				p := rq_uri.index_of ('?', 1)
 				if p > 0 then
-					env.set_variable (rq_uri.substring (1, p-1), {EWSGI_ENVIRONMENT_NAMES}.self)
+					set_meta_parameter (rq_uri.substring (1, p-1), {EWSGI_META_NAMES}.self)
 				else
-					env.set_variable (rq_uri, {EWSGI_ENVIRONMENT_NAMES}.self)
+					set_meta_parameter (rq_uri, {EWSGI_META_NAMES}.self)
 				end
 			end
-			if env.variable ({EWSGI_ENVIRONMENT_NAMES}.request_time) = Void then
-				env.set_variable (date_time_utilities.unix_time_stamp (Void).out, {EWSGI_ENVIRONMENT_NAMES}.request_time)
+			if meta_parameter ({EWSGI_META_NAMES}.request_time) = Void then
+				set_meta_parameter (date_time_utilities.unix_time_stamp (Void).out, {EWSGI_META_NAMES}.request_time)
 			end
 		end
 
@@ -62,15 +130,10 @@ feature {NONE} -- Initialization
 			extract_variables
 		end
 
-feature -- Access: Input
-
-	input: EWSGI_INPUT_STREAM
-			-- Server input channel
-
 feature -- Status
 
 	raw_post_data_recorded: BOOLEAN assign set_raw_post_data_recorded
-			-- Record RAW POST DATA in environment variables
+			-- Record RAW POST DATA in meta parameters
 			-- otherwise just forget about it
 			-- Default: true
 			--| warning: you might keep in memory big amount of memory ...
@@ -86,37 +149,261 @@ feature -- Error handling
 			-- Error handler
 			-- By default initialized to new handler
 
-feature -- Access: environment variables		
+feature -- Access: Input
 
-	environment: EWSGI_ENVIRONMENT
-			-- Environment variables
+	input: EWSGI_INPUT_STREAM
+			-- Server input channel
 
-	environment_variable (a_name: STRING): detachable STRING
-			-- Environment variable related to `a_name'
-		require
-			a_name_valid: a_name /= Void and then not a_name.is_empty
+feature -- Access extra information
+
+	request_time: detachable DATE_TIME
+			-- Request time (UTC)
 		do
-			Result := environment.variable (a_name)
+			if
+				attached meta_parameter ({EWSGI_META_NAMES}.request_time) as t and then
+				t.is_integer_64
+			then
+				Result := date_time_utilities.unix_time_stamp_to_date_time (t.to_integer_64)
+			end
 		end
 
-	content_length: INTEGER
-			-- Extracted Content-Length value
+feature -- Access: CGI meta parameters
 
-feature -- URL parameters
+	meta_parameters: HASH_TABLE [STRING, READABLE_STRING_GENERAL]
+			-- CGI Environment parameters
 
-	parameters: EWSGI_REQUEST_VARIABLES
+	meta_parameter (a_name: READABLE_STRING_GENERAL): detachable STRING
+			-- CGI meta variable related to `a_name'
+		do
+			Result := meta_parameters.item (a_name)
+		end
+
+	meta_parameter_or_default (a_name: READABLE_STRING_GENERAL; a_default: STRING; use_default_when_empty: BOOLEAN): STRING
+			-- Value for meta parameter `a_name'
+			-- If not found, return `a_default'
+		require
+			a_name_not_empty: a_name /= Void and then not a_name.is_empty
+		do
+			if attached meta_parameter (a_name) as s then
+				if use_default_when_empty and then s.is_empty then
+					Result := a_default
+				else
+					Result := s
+				end
+			else
+				Result := a_default
+			end
+		end
+
+	set_meta_parameter (a_name: READABLE_STRING_GENERAL; a_value: STRING)
+		do
+			meta_parameters.force (a_value, a_name)
+		ensure
+			param_set: meta_parameter (a_name) ~ a_value
+		end
+
+	unset_meta_parameter (a_name: READABLE_STRING_GENERAL)
+		do
+			meta_parameters.remove (a_name)
+		ensure
+			param_unset: meta_parameter (a_name) = Void
+		end
+
+feature -- Access: CGI meta parameters - 1.1
+
+	auth_type: detachable STRING
+
+	content_length: detachable STRING
+
+	content_length_value: INTEGER
+
+	content_type: detachable STRING
+
+	gateway_interface: STRING
+		do
+			Result := meta_parameter_or_default ({EWSGI_META_NAMES}.gateway_interface, "", False)
+		end
+
+	path_info: STRING
+			-- <Precursor/>
+			--
+			--| For instance, if the current script was accessed via the URL
+			--| http://www.example.com/eiffel/path_info.exe/some/stuff?foo=bar, then $_SERVER['PATH_INFO'] would contain /some/stuff.
+			--|
+			--| Note that is the PATH_INFO variable does not exists, the `path_info' value will be empty
+
+	path_translated: detachable STRING
+		do
+			Result := meta_parameter ({EWSGI_META_NAMES}.path_translated)
+		end
+
+	query_string: STRING
+
+	remote_addr: STRING
+
+	remote_host: STRING
+
+	remote_ident: detachable STRING
+		do
+			Result := meta_parameter ({EWSGI_META_NAMES}.remote_ident)
+		end
+
+	remote_user: detachable STRING
+		do
+			Result := meta_parameter ({EWSGI_META_NAMES}.remote_user)
+		end
+
+	request_method: STRING
+
+	script_name: STRING
+
+	server_name: STRING
+
+	server_port: INTEGER
+
+	server_protocol: STRING
+		do
+			Result := meta_parameter_or_default ({EWSGI_META_NAMES}.server_protocol, "HTTP/1.0", True)
+		end
+
+	server_software: STRING
+		do
+			Result := meta_parameter_or_default ({EWSGI_META_NAMES}.server_software, "Unknown Server", True)
+		end
+
+feature -- Access: HTTP_* CGI meta parameters - 1.1
+
+	http_accept: detachable STRING
+			-- Contents of the Accept: header from the current request, if there is one.
+		do
+			Result := meta_parameter ({EWSGI_META_NAMES}.http_accept)
+		end
+
+	http_accept_charset: detachable STRING
+			-- Contents of the Accept-Charset: header from the current request, if there is one.
+			-- Example: 'iso-8859-1,*,utf-8'.
+		do
+			Result := meta_parameter ({EWSGI_META_NAMES}.http_accept_charset)
+		end
+
+	http_accept_encoding: detachable STRING
+			-- Contents of the Accept-Encoding: header from the current request, if there is one.
+			-- Example: 'gzip'.
+		do
+			Result := meta_parameter ({EWSGI_META_NAMES}.http_accept_encoding)
+		end
+
+	http_accept_language: detachable STRING
+			-- Contents of the Accept-Language: header from the current request, if there is one.
+			-- Example: 'en'.
+		do
+			Result := meta_parameter ({EWSGI_META_NAMES}.http_accept_language)
+		end
+
+	http_connection: detachable STRING
+			-- Contents of the Connection: header from the current request, if there is one.
+			-- Example: 'Keep-Alive'.
+		do
+			Result := meta_parameter ({EWSGI_META_NAMES}.http_connection)
+		end
+
+	http_host: detachable STRING
+			-- Contents of the Host: header from the current request, if there is one.
+		do
+			Result := meta_parameter ({EWSGI_META_NAMES}.http_host)
+		end
+
+	http_referer: detachable STRING
+			-- The address of the page (if any) which referred the user agent to the current page.
+			-- This is set by the user agent.
+			-- Not all user agents will set this, and some provide the ability to modify HTTP_REFERER as a feature.
+			-- In short, it cannot really be trusted.
+		do
+			Result := meta_parameter ({EWSGI_META_NAMES}.http_referer)
+		end
+
+	http_user_agent: detachable STRING
+			-- Contents of the User-Agent: header from the current request, if there is one.
+			-- This is a string denoting the user agent being which is accessing the page.
+			-- A typical example is: Mozilla/4.5 [en] (X11; U; Linux 2.2.9 i586).
+			-- Among other things, you can use this value to tailor your page's
+			-- output to the capabilities of the user agent.
+		do
+			Result := meta_parameter ({EWSGI_META_NAMES}.http_user_agent)
+		end
+
+	http_authorization: detachable STRING
+			-- Contents of the Authorization: header from the current request, if there is one.
+		do
+			Result := meta_parameter ({EWSGI_META_NAMES}.http_authorization)
+		end
+
+feature -- Access: Extension to CGI meta parameters - 1.1
+
+	request_uri: STRING
+			-- The URI which was given in order to access this page; for instance, '/index.html'.
+
+	orig_path_info: detachable STRING
+			-- Original version of `path_info' before processed by Current environment
+
+feature {NONE} -- Element change: CGI meta parameter related to PATH_INFO
+
+	set_orig_path_info (s: STRING)
+			-- Set ORIG_PATH_INFO to `s'
+		require
+			s_attached: s /= Void
+		do
+			orig_path_info := s
+			set_meta_parameter ({EWSGI_META_NAMES}.orig_path_info, s)
+		end
+
+	unset_orig_path_info
+			-- Unset ORIG_PATH_INFO
+		do
+			orig_path_info := Void
+			unset_meta_parameter ({EWSGI_META_NAMES}.orig_path_info)
+		ensure
+			unset: attached meta_parameter ({EWSGI_META_NAMES}.orig_path_info)
+		end
+
+	update_path_info
+			-- Fix and update PATH_INFO value if needed
+		local
+			l_path_info: STRING
+		do
+			l_path_info := path_info
+			--| Warning
+			--| on IIS: we might have   PATH_INFO = /sample.exe/foo/bar
+			--| on apache:				PATH_INFO = /foo/bar
+			--| So, we might need to check with SCRIPT_NAME and remove it on IIS
+			--| store original PATH_INFO in ORIG_PATH_INFO
+			if l_path_info.is_empty then
+				unset_orig_path_info
+			else
+				set_orig_path_info (l_path_info)
+				if attached script_name as l_script_name then
+					if l_path_info.starts_with (l_script_name) then
+						path_info := l_path_info.substring (l_script_name.count + 1 , l_path_info.count)
+					end
+				end
+			end
+		end
+
+feature -- Query parameters
+
+	query_parameters: HASH_TABLE [READABLE_STRING_32, READABLE_STRING_GENERAL]
 			-- Variables extracted from QUERY_STRING	
 		local
-			vars: like internal_parameters
+			vars: like internal_query_parameters
 			p,e: INTEGER
-			rq_uri: like environment.request_uri
+			rq_uri: like request_uri
 			s: detachable STRING
 		do
-			vars := internal_parameters
+			vars := internal_query_parameters
 			if vars = Void then
-				s := environment.query_string
+				s := query_string
 				if s = Void then
-					rq_uri := environment.request_uri
+					rq_uri := request_uri
 					p := rq_uri.index_of ('?', 1)
 					if p > 0 then
 						e := rq_uri.index_of ('#', p + 1)
@@ -128,39 +415,80 @@ feature -- URL parameters
 						s := rq_uri.substring (p+1, e)
 					end
 				end
-				if s /= Void and then not s.is_empty then
-					create vars.make_from_urlencoded (s, True)
-				else
-					create vars.make (0)
-				end
-				internal_parameters := vars
+				vars := urlencoded_parameters (s, True)
+				internal_query_parameters := vars
 			end
 			Result := vars
 		end
 
-	parameter (a_name: STRING): detachable STRING_32
+	query_parameter (a_name: READABLE_STRING_GENERAL): detachable READABLE_STRING_32
 			-- Parameter for name `n'.
-		require
-			a_name_valid: a_name /= Void and then not a_name.is_empty
 		do
-			Result := parameters.variable (a_name)
+			Result := query_parameters.item (a_name)
+		end
+
+feature {NONE} -- Query parameters: implementation
+
+	urlencoded_parameters (a_content: detachable READABLE_STRING_8; decoding: BOOLEAN): HASH_TABLE [READABLE_STRING_32, STRING]
+			-- Import `a_content'
+		local
+			n, p, i, j: INTEGER
+			s: STRING
+			l_name,l_value: STRING_32
+		do
+			if a_content = Void then
+				create Result.make (0)
+			else
+				n := a_content.count
+				if n = 0 then
+					create Result.make (0)
+				else
+					create Result.make (3)
+					from
+						p := 1
+					until
+						p = 0
+					loop
+						i := a_content.index_of ('&', p)
+						if i = 0 then
+							s := a_content.substring (p, n)
+							p := 0
+						else
+							s := a_content.substring (p, i - 1)
+							p := i + 1
+						end
+						if not s.is_empty then
+							j := s.index_of ('=', 1)
+							if j > 0 then
+								l_name := s.substring (1, j - 1)
+								l_value := s.substring (j + 1, s.count)
+								if decoding then
+									l_name := url_encoder.decoded_string (l_name)
+									l_value := url_encoder.decoded_string (l_value)
+								end
+								Result.force (l_value, l_name)
+							end
+						end
+					end
+				end
+			end
 		end
 
 feature -- Form fields and related
 
-	form_fields: EWSGI_REQUEST_VARIABLES
+	form_data_parameters: HASH_TABLE [READABLE_STRING_32, READABLE_STRING_GENERAL]
 			-- Variables sent by POST request	
 		local
-			vars: like internal_form_fields
+			vars: like internal_form_data_parameters
 			s: STRING
 			n: INTEGER
 			l_type: detachable STRING
 		do
-			vars := internal_form_fields
+			vars := internal_form_data_parameters
 			if vars = Void then
-				n := content_length
+				n := content_length_value
 				if n > 0 then
-					l_type := environment.content_type
+					l_type := content_type
 					if
 						l_type /= Void and then
 						l_type.starts_with ({HTTP_CONSTANTS}.multipart_form)
@@ -171,25 +499,23 @@ feature -- Form fields and related
 						analyze_multipart_form (l_type, s, vars)
 					else
 						s := form_input_data (n)
-						create vars.make_from_urlencoded (s, True)
+						vars := urlencoded_parameters (s, True)
 					end
 					if raw_post_data_recorded then
-						vars.add_variable (s, "RAW_POST_DATA")
+						vars.force (s, "RAW_POST_DATA")
 					end
 				else
 					create vars.make (0)
 				end
-				internal_form_fields := vars
+				internal_form_data_parameters := vars
 			end
 			Result := vars
 		end
 
-	form_field (a_name: STRING): detachable STRING_32
+	form_data_parameter (a_name: READABLE_STRING_GENERAL): detachable READABLE_STRING_32
 			-- Field for name `a_name'.
-		require
-			a_name_valid: a_name /= Void and then not a_name.is_empty
 		do
-			Result := form_fields.variable (a_name)
+			Result := form_data_parameters.item (a_name)
 		end
 
 	uploaded_files: HASH_TABLE [EWSGI_UPLOADED_FILE_DATA, STRING]
@@ -203,45 +529,8 @@ feature -- Form fields and related
 
 feature -- Cookies
 
-	cookies_variables: HASH_TABLE [STRING, STRING]
+	cookies: HASH_TABLE [READABLE_STRING_32, READABLE_STRING_GENERAL]
 			-- Expanded cookies variable
-		local
-			l_cookies: like cookies
-		do
-			l_cookies := cookies
-			create Result.make (l_cookies.count)
-			from
-				l_cookies.start
-			until
-				l_cookies.after
-			loop
-				if attached l_cookies.item_for_iteration.variables as vars then
-					from
-						vars.start
-					until
-						vars.after
-					loop
-						Result.force (vars.item_for_iteration, vars.key_for_iteration)
-						vars.forth
-					end
-				else
-					check same_name: l_cookies.key_for_iteration.same_string (l_cookies.item_for_iteration.name) end
-					Result.force (l_cookies.item_for_iteration.value, l_cookies.key_for_iteration)
-				end
-				l_cookies.forth
-			end
-		end
-
-	cookies_variable (a_name: STRING): detachable STRING
-			-- Field for name `a_name'.
-		require
-			a_name_valid: a_name /= Void and then not a_name.is_empty
-		do
-			Result := cookies_variables.item (a_name)
-		end
-
-	cookies: HASH_TABLE [EWSGI_COOKIE, STRING]
-			-- Cookies Information
 		local
 			i,j,p,n: INTEGER
 			l_cookies: like internal_cookies
@@ -249,7 +538,7 @@ feature -- Cookies
 		do
 			l_cookies := internal_cookies
 			if l_cookies = Void then
-				if attached environment_variable ({EWSGI_ENVIRONMENT_NAMES}.http_cookie) as s then
+				if attached meta_parameter ({EWSGI_META_NAMES}.http_cookie) as s then
 					create l_cookies.make (5)
 					from
 						n := s.count
@@ -272,7 +561,7 @@ feature -- Cookies
 								v := s.substring (i + 1, j - 1)
 								p := j + 1
 							end
-							l_cookies.put (create {EWSGI_COOKIE}.make (k,v), k)
+							l_cookies.force (v, k)
 						end
 					end
 				else
@@ -283,90 +572,83 @@ feature -- Cookies
 			Result := l_cookies
 		end
 
+	cookie (a_name: READABLE_STRING_GENERAL): detachable READABLE_STRING_32
+			-- Field for name `a_name'.
+		do
+			Result := cookies.item (a_name)
+		end
+
 feature -- Access: global variable
 
-	variables: HASH_TABLE [STRING_32, STRING_32]
+	parameters: HASH_TABLE [READABLE_STRING_32, READABLE_STRING_GENERAL]
 			-- Table containing all the various variables
 			-- Warning: this is computed each time, if you change the content of other containers
 			-- this won't update this Result's content, unless you query it again
 		local
-			vars: HASH_TABLE [STRING_GENERAL, STRING_GENERAL]
+			vars: HASH_TABLE [READABLE_STRING_GENERAL, READABLE_STRING_GENERAL]
 		do
 			create Result.make (100)
 
-			vars := environment.table
+			vars := meta_parameters
 			from
 				vars.start
 			until
 				vars.after
 			loop
-				Result.put (vars.item_for_iteration, vars.key_for_iteration)
+				Result.force (vars.item_for_iteration.as_string_32, vars.key_for_iteration)
 				vars.forth
 			end
 
-			vars := parameters.table
+			vars := query_parameters
 			from
 				vars.start
 			until
 				vars.after
 			loop
-				Result.put (vars.item_for_iteration, vars.key_for_iteration)
+				Result.force (vars.item_for_iteration.as_string_32, vars.key_for_iteration)
 				vars.forth
 			end
 
-			vars := form_fields.table
+			vars := form_data_parameters
 			from
 				vars.start
 			until
 				vars.after
 			loop
-				Result.put (vars.item_for_iteration, vars.key_for_iteration)
+				Result.force (vars.item_for_iteration.as_string_32, vars.key_for_iteration)
 				vars.forth
 			end
 
-			vars := cookies_variables
+			vars := cookies
 			from
 				vars.start
 			until
 				vars.after
 			loop
-				Result.put (vars.item_for_iteration, vars.key_for_iteration)
+				Result.force (vars.item_for_iteration.as_string_32, vars.key_for_iteration)
 				vars.forth
 			end
 		end
 
-	variable (a_name: STRING_8): detachable STRING_32
+	parameter (a_name: READABLE_STRING_GENERAL): detachable READABLE_STRING_32
 			-- Variable named `a_name' from any of the variables container
 			-- and following a specific order
 			-- execution, environment, get, post, cookies
 		local
-			s: detachable STRING_GENERAL
+			s: detachable READABLE_STRING_GENERAL
 		do
-			s := environment_variable (a_name)
+			s := meta_parameter (a_name)
 			if s = Void then
-				s := parameter (a_name)
+				s := query_parameter (a_name)
 				if s = Void then
-					s := form_field (a_name)
+					s := form_data_parameter (a_name)
 					if s = Void then
-						s := cookies_variable (a_name)
+						s := cookie (a_name)
 					end
 				end
 			end
 			if s /= Void then
 				Result := s.as_string_32
-			end
-		end
-
-feature -- Access extra information
-
-	request_time: detachable DATE_TIME
-			-- Request time (UTC)
-		do
-			if
-				attached environment.variable ({EWSGI_ENVIRONMENT_NAMES}.request_time) as t and then
-				t.is_integer_64
-			then
-				Result := date_time_utilities.unix_time_stamp_to_date_time (t.to_integer_64)
 			end
 		end
 
@@ -398,7 +680,7 @@ feature -- URL Utility
 			-- Absolute Url for the script if any, extended by `a_path'
 		do
 			Result := script_url (a_path)
-			if attached environment.http_host as h then
+			if attached http_host as h then
 				Result.prepend (h)
 			else
 				--| Issue ??
@@ -410,14 +692,12 @@ feature -- URL Utility
 		local
 			l_base_url: like internal_url_base
 			i,m,n: INTEGER
-			l_rq_uri: like environment.request_uri
-			env: like environment
+			l_rq_uri: like request_uri
 		do
 			l_base_url := internal_url_base
 			if l_base_url = Void then
-				env := environment
-				if attached env.script_name as l_script_name then
-					l_rq_uri := env.request_uri
+				if attached script_name as l_script_name then
+					l_rq_uri := request_uri
 					if l_rq_uri.starts_with (l_script_name) then
 						l_base_url := l_script_name
 					else
@@ -464,29 +744,6 @@ feature -- Element change
 			-- Set `error_handler' to `ehdl'
 		do
 			error_handler := ehdl
-		end
-
-	update_path_info (env: EWSGI_ENVIRONMENT)
-			-- Fix and update PATH_INFO value if needed
-		local
-			l_path_info: STRING
-		do
-			l_path_info := env.path_info
-			--| Warning
-			--| on IIS: we might have   PATH_INFO = /sample.exe/foo/bar
-			--| on apache:				PATH_INFO = /foo/bar
-			--| So, we might need to check with SCRIPT_NAME and remove it on IIS
-			--| store original PATH_INFO in ORIG_PATH_INFO
-			if l_path_info.is_empty then
-				env.unset_orig_path_info
-			else
-				env.set_orig_path_info (l_path_info)
-				if attached env.script_name as l_script_name then
-					if l_path_info.starts_with (l_script_name) then
-						env.path_info := l_path_info.substring (l_script_name.count + 1 , l_path_info.count)
-					end
-				end
-			end
 		end
 
 feature {NONE} -- Temporary File handling		
@@ -605,7 +862,7 @@ feature {NONE} -- Temporary File handling
 
 feature {NONE} -- Implementation: Form analyzer
 
-	analyze_multipart_form (t: STRING; s: STRING; vars: like form_fields)
+	analyze_multipart_form (t: STRING; s: STRING; vars: like form_data_parameters)
 			-- Analyze multipart form content
 			--| FIXME[2011-06-21]: integrate eMIME parser library
 		require
@@ -671,7 +928,7 @@ feature {NONE} -- Implementation: Form analyzer
 			end
 		end
 
-	analyze_multipart_form_input (s: STRING; vars_post: like form_fields)
+	analyze_multipart_form_input (s: STRING; vars_post: like form_data_parameters)
 			-- Analyze multipart entry
 		require
 			s_not_empty: s /= Void and then not s.is_empty
@@ -778,7 +1035,7 @@ feature {NONE} -- Implementation: Form analyzer
 						save_uploaded_file (l_content, l_up_file_info)
 						uploaded_files.force (l_up_file_info, l_name)
 					else
-						vars_post.add_variable (l_content, l_name)
+						vars_post.force (l_content, l_name)
 					end
 				else
 					error_handler.add_custom_error (0, "unamed multipart entry", Void)
@@ -818,10 +1075,10 @@ feature {NONE} -- Internal value
 			end
 		end
 
-	internal_parameters: detachable like parameters
-			-- cached value for `parameters'
+	internal_query_parameters: detachable like query_parameters
+			-- cached value for `query_parameters'
 
-	internal_form_fields: detachable like form_fields
+	internal_form_data_parameters: detachable like form_data_parameters
 			-- cached value for `form_fields'
 
 	internal_cookies: detachable like cookies
@@ -856,38 +1113,49 @@ feature {NONE} -- Implementation
 		end
 
 	extract_variables
-			-- Extract relevant environment variables
+			-- Extract relevant meta parameters
 		local
 			s: detachable STRING
 		do
-			s := environment.request_uri
+			s := request_uri
 			if s.is_empty then
 				report_bad_request_error ("Missing URI")
 			end
 			if not has_error then
-				s := environment.request_method
+				s := request_method
 				if s.is_empty then
 					report_bad_request_error ("Missing request method")
 				end
 			end
 			if not has_error then
-				s := environment.http_host
+				s := http_host
 				if s = Void or else s.is_empty then
 					report_bad_request_error ("Missing host header")
 				end
 			end
 			if not has_error then
-				update_path_info (environment)
+				update_path_info
 			end
 		end
 
 feature {NONE} -- Implementation: utilities		
+
+	empty_string: STRING
+			-- Reusable empty string
+
+	url_encoder: URL_ENCODER
+		once
+			create Result
+		end
 
 	date_time_utilities: HTTP_DATE_TIME_UTILITIES
 			-- Utilities classes related to date and time.
 		once
 			create Result
 		end
+
+invariant
+	empty_string_unchanged: empty_string.is_empty
 
 note
 	copyright: "2011-2011, Eiffel Software and others"

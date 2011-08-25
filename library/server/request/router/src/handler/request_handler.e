@@ -24,7 +24,7 @@ feature -- Status report
 	is_valid_context (req: EWSGI_REQUEST): BOOLEAN
 			-- Is `req' valid context for current handler?
 		do
-			Result := request_method_name_supported (req.environment.request_method)
+			Result := request_method_name_supported (req.request_method)
 		end
 
 feature -- Execution
@@ -37,7 +37,7 @@ feature -- Execution
 			rescued: BOOLEAN
 		do
 			if not rescued then
-				if request_method_name_supported (req.environment.request_method) then
+				if request_method_name_supported (req.request_method) then
 					pre_execute (req)
 					execute_application (a_hdl_context, req, res)
 					post_execute (req, res)
@@ -165,12 +165,12 @@ feature -- Execution: report
 			s := args
 			if s /= Void and then s.count > 0 then
 				if s[1] /= '/' then
-					s := req.environment.request_uri + "/" + s
+					s := req.request_uri + "/" + s
 				else
-					s := req.environment.request_uri + s
+					s := req.request_uri + s
 				end
 			else
-				s := req.environment.request_uri
+				s := req.request_uri
 			end
 			if abs then
 				Result := req.absolute_script_url (s)

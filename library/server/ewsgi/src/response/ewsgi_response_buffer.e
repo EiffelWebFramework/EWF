@@ -10,7 +10,7 @@ note
 class
 	EWSGI_RESPONSE_BUFFER
 
-create {EWSGI_APPLICATION}
+create
 	make
 
 feature {NONE} -- Initialization

@@ -63,10 +63,10 @@ feature {NONE} -- Access: Implementation
 	handler (req: EWSGI_REQUEST): detachable TUPLE [handler: REQUEST_HANDLER; context: REQUEST_HANDLER_CONTEXT]
 			-- Handler whose map matched with `req'
 		require
-			req_valid: req /= Void and then req.environment.path_info /= Void
+			req_valid: req /= Void and then req.path_info /= Void
 		deferred
 		ensure
-			req_path_info_unchanged: req.environment.path_info.same_string (old req.environment.path_info)
+			req_path_info_unchanged: req.path_info.same_string (old req.path_info)
 		end
 
 feature {NONE} -- Implementation

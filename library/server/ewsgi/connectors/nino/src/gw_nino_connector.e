@@ -73,11 +73,13 @@ feature -- Server
 
 	process_request (env: HASH_TABLE [STRING, STRING]; a_headers_text: STRING; a_input: HTTP_INPUT_STREAM; a_output: HTTP_OUTPUT_STREAM)
 		local
-			gw_env: EWSGI_ENVIRONMENT_VARIABLES
+			req: EWSGI_REQUEST_FROM_TABLE
+			res: EWSGI_RESPONSE_BUFFER
 		do
-			create gw_env.make_with_variables (env)
-			gw_env.set_variable ("RAW_HEADER_DATA", a_headers_text)
-			application.process (gw_env, create {GW_NINO_INPUT_STREAM}.make (a_input), create {GW_NINO_OUTPUT_STREAM}.make (a_output))
+			create req.make (env, create {GW_NINO_INPUT_STREAM}.make (a_input))
+			create res.make (create {GW_NINO_OUTPUT_STREAM}.make (a_output))
+			req.set_meta_parameter ("RAW_HEADER_DATA", a_headers_text)
+			application.execute (req, res)
 		end
 
 note

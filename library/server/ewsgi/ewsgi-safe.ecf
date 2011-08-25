@@ -15,5 +15,6 @@
 		<library name="http" location="..\..\protocol\http\http-safe.ecf"/>
 		<library name="encoder" location="..\..\text\encoder\encoder-safe.ecf" readonly="false"/>
 		<cluster name="interface" location="src\" recursive="true"/>
+		<cluster name="specification_request" location="specification\request" recursive="true"/>
 	</target>
 </system>

@@ -77,6 +77,7 @@ feature -- Header output operation
 		ensure
 			status_set: status_is_set
 			header_committed: header_committed
+			message_writable: message_writable
 		end
 
 	write_header (a_status_code: INTEGER; a_headers: detachable ARRAY [TUPLE [key: STRING; value: STRING]])
@@ -88,6 +89,7 @@ feature -- Header output operation
 		ensure
 			header_committed: header_committed
 			status_set: status_is_set
+			message_writable: message_writable
 		end
 
 feature -- Output operation
@@ -117,7 +119,7 @@ feature -- Output operation
 			-- Flush if it makes sense
 		deferred
 		end
-		
+
 note
 	copyright: "2011-2011, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"

@@ -17,7 +17,7 @@ feature -- Access
 			lst: LIST [STRING]
 			qs: QUICK_SORTER [STRING]
 		do
-			l_accept := req.environment.http_accept
+			l_accept := req.http_accept
 --TEST		l_accept := "text/html,application/xhtml+xml;q=0.6,application/xml;q=0.2,text/plain;q=0.5,*/*;q=0.8"
 
 			if l_accept /= Void then

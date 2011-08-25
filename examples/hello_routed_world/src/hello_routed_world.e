@@ -110,13 +110,13 @@ feature -- Execution
 			res.write_string ("<li><a href=%""+ req.script_url ("/hello/Joce") + "%">/hello/Joce</a></li>%N")
 			res.write_string ("</ul>%N")
 
-			if attached req.environment_variable ("REQUEST_COUNT") as rqc then
+			if attached req.parameter ("REQUEST_COUNT") as rqc then
 				res.write_string ("request #"+ rqc + "%N")
 			end
 			res.write_string ("</body></html>%N")
 		end
 
-	execute_hello (req: EWSGI_REQUEST; res: EWSGI_RESPONSE_BUFFER; a_name: detachable STRING_32; ctx: REQUEST_HANDLER_CONTEXT)
+	execute_hello (req: EWSGI_REQUEST; res: EWSGI_RESPONSE_BUFFER; a_name: detachable READABLE_STRING_32; ctx: REQUEST_HANDLER_CONTEXT)
 		local
 			l_response_content_type: detachable STRING
 			msg: STRING

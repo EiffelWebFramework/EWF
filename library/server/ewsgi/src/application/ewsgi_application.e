@@ -11,7 +11,7 @@ note
 deferred class
 	EWSGI_APPLICATION
 
-feature {NONE} -- Execution
+feature -- Execution
 
 	execute (req: EWSGI_REQUEST; res: EWSGI_RESPONSE_BUFFER)
 			-- Execute the request
@@ -23,23 +23,19 @@ feature {NONE} -- Execution
 		deferred
 		ensure
 			res_status_set: res.status_is_set
-			res_committed: res.message_committed
+--			res_committed: res.message_committed
 		end
 
 feature -- Process request
 
-	process (env: EWSGI_ENVIRONMENT; a_input: EWSGI_INPUT_STREAM; a_output: EWSGI_OUTPUT_STREAM)
+	process (req: EWSGI_REQUEST; res: EWSGI_RESPONSE_BUFFER)
 			-- Process request with environment `env', and i/o streams `a_input' and `a_output'
 		local
 			rescued: BOOLEAN
-			req: detachable like new_request
-			res: detachable like new_response
 		do
 			if not rescued then
 				request_count := request_count + 1
-				pre_execute (env)
-				req := new_request (env, a_input)
-				res := new_response (req, a_output)
+				pre_execute (req)
 				execute (req, res)
 				post_execute (req, res)
 			else
@@ -57,42 +53,26 @@ feature -- Access
 
 feature {NONE} -- Execution
 
-	pre_execute (env: EWSGI_ENVIRONMENT)
+	pre_execute (req: EWSGI_REQUEST)
 			-- Operation processed before `execute'
-		require
-			env_attached: env /= Void
 		do
 		end
 
-	post_execute (req: detachable EWSGI_REQUEST; res: detachable EWSGI_RESPONSE_BUFFER)
+	post_execute (req: EWSGI_REQUEST; res: EWSGI_RESPONSE_BUFFER)
 			-- Operation processed after `execute', or after `rescue_execute'
 		do
 		end
 
-	rescue_execute (req: detachable EWSGI_REQUEST; res: detachable EWSGI_RESPONSE_BUFFER; a_exception: detachable EXCEPTION)
+	rescue_execute (req: EWSGI_REQUEST; res: EWSGI_RESPONSE_BUFFER; a_exception: detachable EXCEPTION)
 			-- Operation processed on rescue of `execute'
 		do
 			if
-				req /= Void and res /= Void
-				and a_exception /= Void and then attached a_exception.exception_trace as l_trace
+				a_exception /= Void and then attached a_exception.exception_trace as l_trace
 			then
 				res.write_header ({HTTP_STATUS_CODE}.internal_server_error, Void)
 				res.write_string ("<pre>" + l_trace + "</pre>")
 			end
 			post_execute (req, res)
-		end
-
-feature {NONE} -- Factory
-
-	new_request (env: EWSGI_ENVIRONMENT; a_input: EWSGI_INPUT_STREAM): EWSGI_REQUEST
-		do
-			create {EWSGI_REQUEST} Result.make (env, a_input)
-			Result.environment.set_variable (request_count.out, "REQUEST_COUNT")
-		end
-
-	new_response (req: EWSGI_REQUEST; a_output: EWSGI_OUTPUT_STREAM): EWSGI_RESPONSE_BUFFER
-		do
-			create {EWSGI_RESPONSE_BUFFER} Result.make (a_output)
 		end
 
 ;note
