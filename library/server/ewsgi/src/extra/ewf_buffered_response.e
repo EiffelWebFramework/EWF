@@ -1,11 +1,11 @@
 note
-	description: "Summary description for {GW_BUFFERED_RESPONSE}."
+	description: "Summary description for {EWF_BUFFERED_RESPONSE}."
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
 class
-	GW_BUFFERED_RESPONSE
+	EWF_BUFFERED_RESPONSE
 
 inherit
 	EWSGI_RESPONSE_BUFFER
@@ -130,7 +130,7 @@ feature -- Header output operation
 	write_header (a_status_code: INTEGER; a_headers: detachable ARRAY [TUPLE [key: STRING; value: STRING]])
 			-- Send headers with status `a_status', and headers from `a_headers'
 		local
-			h: GW_HEADER
+			h: EWF_HEADER
 			i,n: INTEGER
 		do
 			set_status_code (a_status_code)

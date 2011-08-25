@@ -1,11 +1,11 @@
 note
-	description: "Summary description for {GW_NINO_CONNECTOR}."
+	description: "Summary description for {EWF_NINO_CONNECTOR}."
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
 class
-	GW_NINO_CONNECTOR
+	EWF_NINO_CONNECTOR
 
 inherit
 	EWSGI_CONNECTOR
@@ -62,7 +62,7 @@ feature -- Server
 		local
 			l_http_handler : HTTP_HANDLER
 		do
-			create {GW_NINO_HANDLER} l_http_handler.make_with_callback (server, "NINO_HANDLER", Current)
+			create {EWF_NINO_HANDLER} l_http_handler.make_with_callback (server, "NINO_HANDLER", Current)
 			debug ("nino")
 				if attached base as l_base then
 					print ("Base=" + l_base + "%N")
@@ -76,8 +76,8 @@ feature -- Server
 			req: EWSGI_REQUEST_FROM_TABLE
 			res: EWSGI_RESPONSE_STREAM_BUFFER
 		do
-			create req.make (env, create {GW_NINO_INPUT_STREAM}.make (a_input))
-			create res.make (create {GW_NINO_OUTPUT_STREAM}.make (a_output))
+			create req.make (env, create {EWF_NINO_INPUT_STREAM}.make (a_input))
+			create res.make (create {EWF_NINO_OUTPUT_STREAM}.make (a_output))
 			req.set_meta_parameter ("RAW_HEADER_DATA", a_headers_text)
 			application.execute (req, res)
 		end

@@ -6,7 +6,7 @@ note
 	revision: "$Revision$"
 
 class
-	GW_CGI_INPUT_STREAM
+	EWF_CGI_INPUT_STREAM
 
 inherit
 	EWSGI_INPUT_STREAM

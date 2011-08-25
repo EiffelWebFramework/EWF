@@ -61,18 +61,18 @@ feature -- Access
 
 feature -- Query	
 
-	path_parameter (a_name: STRING): detachable READABLE_STRING_32
+	path_parameter (a_name: READABLE_STRING_GENERAL): detachable READABLE_STRING_32
 			-- Parameter value for path variable `a_name'
 		deferred
 		end
 
-	query_parameter (a_name: STRING): detachable READABLE_STRING_32
+	query_parameter (a_name: READABLE_STRING_GENERAL): detachable READABLE_STRING_32
 			-- Parameter value for query variable `a_name'	
 			--| i.e after the ? character
 		deferred
 		end
 
-	parameter (a_name: STRING): detachable READABLE_STRING_32
+	parameter (a_name: READABLE_STRING_GENERAL): detachable READABLE_STRING_32
 			-- Any parameter value for variable `a_name'
 			-- URI template parameter and query parameters
 		do

@@ -27,7 +27,7 @@ feature {NONE} -- Implementation
 			create connector.make_with_base (app, a_base_url)
 		end
 
-	connector: GW_NINO_CONNECTOR
+	connector: EWF_NINO_CONNECTOR
 			-- Web server connector
 
 feature -- Status settings

@@ -53,7 +53,7 @@ feature -- Execution
 
 	execute_default (req: EWSGI_REQUEST; res: EWSGI_RESPONSE_BUFFER)
 		local
-			h: GW_HEADER
+			h: EWF_HEADER
 			l_url: STRING
 			e: EXECUTION_ENVIRONMENT
 			n: INTEGER
@@ -120,7 +120,7 @@ feature -- Execution
 		local
 			l_response_content_type: detachable STRING
 			msg: STRING
-			h: GW_HEADER
+			h: EWF_HEADER
 			content_type_supported: ARRAY [STRING]
 		do
 			if a_name /= Void then

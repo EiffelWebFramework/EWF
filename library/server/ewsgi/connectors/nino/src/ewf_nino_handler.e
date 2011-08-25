@@ -5,7 +5,7 @@ note
 	revision    : "$Revision$"
 
 class
-	GW_NINO_HANDLER
+	EWF_NINO_HANDLER
 
 inherit
 	HTTP_CONNECTION_HANDLER
@@ -23,7 +23,7 @@ feature {NONE} -- Initialization
 			callback := a_callback
 		end
 
-	callback: GW_NINO_CONNECTOR
+	callback: EWF_NINO_CONNECTOR
 
 feature -- Access
 

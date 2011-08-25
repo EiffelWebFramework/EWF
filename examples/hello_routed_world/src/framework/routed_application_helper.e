@@ -21,7 +21,7 @@ feature -- Helper
 		local
 			s, uri_s: detachable STRING
 			i, n: INTEGER
-			h: GW_HEADER
+			h: EWF_HEADER
 		do
 			create h.make
 			h.put_status ({HTTP_STATUS_CODE}.unsupported_media_type)

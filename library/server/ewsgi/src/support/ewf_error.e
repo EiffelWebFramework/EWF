@@ -1,12 +1,12 @@
 note
-	description: "Summary description for {GW_ERROR}."
+	description: "Summary description for {EWF_ERROR}."
 	legal: "See notice at end of class."
 	status: "See notice at end of class."
 	date: "$Date$"
 	revision: "$Revision$"
 
 class
-	GW_ERROR
+	EWF_ERROR
 
 inherit
 	ERROR

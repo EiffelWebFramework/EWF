@@ -1,15 +1,23 @@
 note
-	description: "Summary description for {GW_NINO_OUTPUT_STREAM}."
+	description: "Summary description for GW_CGI_OUTPUT_STREAM."
 	legal: "See notice at end of class."
 	status: "See notice at end of class."
 	date: "$Date$"
 	revision: "$Revision$"
 
 class
-	GW_NINO_OUTPUT_STREAM
+	EWF_CGI_OUTPUT_STREAM
 
 inherit
 	EWSGI_OUTPUT_STREAM
+		undefine
+			flush
+		end
+
+	CONSOLE
+		rename
+			make as console_make
+		end
 
 	HTTP_STATUS_CODE_MESSAGES
 		export
@@ -21,19 +29,10 @@ create
 
 feature {NONE} -- Initialization
 
-	make (a_nino_output: like nino_output)
+	make
 		do
-			set_nino_output (a_nino_output)
+			make_open_stdout ("stdout")
 		end
-
-feature {GW_NINO_CONNECTOR, EWSGI_APPLICATION} -- Nino
-
-	set_nino_output (o: like nino_output)
-		do
-			nino_output := o
-		end
-
-	nino_output: HTTP_OUTPUT_STREAM
 
 feature -- Status writing
 
@@ -53,17 +52,6 @@ feature -- Status writing
 				s.append_string (l_status_message)
 			end
 			put_header_line (s)
-		end
-
-feature -- Basic operation
-
-	put_string (s: STRING_8)
-			-- Send `s' to http client
-		do
-			debug ("nino")
-				print (s)
-			end
-			nino_output.put_string (s)
 		end
 
 note

@@ -1,6 +1,6 @@
 note
 	description: "[
-			Summary description for {GW_HEADER}.
+			Summary description for {EWF_HEADER}.
 
 			Note the return status code is not part of the HTTP header
 		]"
@@ -10,7 +10,7 @@ note
 	revision: "$Revision$"
 
 class
-	GW_HEADER
+	EWF_HEADER
 
 inherit
 	ANY

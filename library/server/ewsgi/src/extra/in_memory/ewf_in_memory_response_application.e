@@ -1,11 +1,11 @@
 note
-	description: "Summary description for {GW_IN_MEMORY_RESPONSE_APPLICATION}."
+	description: "Summary description for {EWF_IN_MEMORY_RESPONSE_APPLICATION}."
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
 deferred class
-	GW_IN_MEMORY_RESPONSE_APPLICATION
+	EWF_IN_MEMORY_RESPONSE_APPLICATION
 
 inherit
 	EWSGI_APPLICATION
@@ -41,9 +41,9 @@ feature -- Execute
 
 feature {NONE} -- Implementation	
 
-	new_response (req: EWSGI_REQUEST; a_res: EWSGI_RESPONSE_BUFFER): GW_IN_MEMORY_RESPONSE
+	new_response (req: EWSGI_REQUEST; a_res: EWSGI_RESPONSE_BUFFER): EWF_IN_MEMORY_RESPONSE
 		do
-			create {GW_IN_MEMORY_RESPONSE} Result.make (a_res)
+			create {EWF_IN_MEMORY_RESPONSE} Result.make (a_res)
 		end
 
 note

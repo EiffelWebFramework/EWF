@@ -1103,7 +1103,7 @@ feature {NONE} -- Implementation
 	report_bad_request_error (a_message: detachable STRING)
 			-- Report error
 		local
-			e: GW_ERROR
+			e: EWF_ERROR
 		do
 			create e.make ({HTTP_STATUS_CODE}.bad_request)
 			if a_message /= Void then

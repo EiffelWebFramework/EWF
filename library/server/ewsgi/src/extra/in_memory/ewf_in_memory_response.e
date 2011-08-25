@@ -1,10 +1,10 @@
 note
-	description: "Summary description for {GW_IN_MEMORY_RESPONSE}."
+	description: "Summary description for {EWF_IN_MEMORY_RESPONSE}."
 	date: "$Date$"
 	revision: "$Revision$"
 
 class
-	GW_IN_MEMORY_RESPONSE
+	EWF_IN_MEMORY_RESPONSE
 
 inherit
 	EWSGI_RESPONSE_BUFFER
@@ -23,7 +23,7 @@ feature {NONE} -- Initialization
 
 	response_buffer: EWSGI_RESPONSE_BUFFER
 
-	header: GW_HEADER
+	header: EWF_HEADER
 
 	body: STRING_8
 
@@ -93,7 +93,7 @@ feature -- Header output operation
 	write_header (a_status_code: INTEGER; a_headers: detachable ARRAY [TUPLE [key: STRING; value: STRING]])
 			-- Send headers with status `a_status', and headers from `a_headers'
 		local
-			h: GW_HEADER
+			h: EWF_HEADER
 			i,n: INTEGER
 		do
 			set_status_code (a_status_code)

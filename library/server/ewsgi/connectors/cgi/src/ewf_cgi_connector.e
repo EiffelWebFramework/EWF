@@ -1,11 +1,11 @@
 note
-	description: "Summary description for {GW_CGI_CONNECTOR}."
+	description: "Summary description for {EWF_CGI_CONNECTOR}."
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
 class
-	GW_CGI_CONNECTOR
+	EWF_CGI_CONNECTOR
 
 inherit
 	EWSGI_CONNECTOR
@@ -20,8 +20,8 @@ feature -- Execution
 			req: EWSGI_REQUEST_FROM_TABLE
 			res: EWSGI_RESPONSE_STREAM_BUFFER
 		do
-			create req.make ((create {EXECUTION_ENVIRONMENT}).starting_environment_variables, create {GW_CGI_INPUT_STREAM}.make)
-			create res.make (create {GW_CGI_OUTPUT_STREAM}.make)
+			create req.make ((create {EXECUTION_ENVIRONMENT}).starting_environment_variables, create {EWF_CGI_INPUT_STREAM}.make)
+			create res.make (create {EWF_CGI_OUTPUT_STREAM}.make)
 			application.process (req, res)
 		end
 

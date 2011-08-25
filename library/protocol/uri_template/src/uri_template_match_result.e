@@ -27,27 +27,27 @@ feature {NONE} -- Initialization
 
 feature -- Access
 
-	path_variables: HASH_TABLE [STRING, STRING]
+	path_variables: HASH_TABLE [STRING, READABLE_STRING_GENERAL]
 			-- Variables being part of the path segments
 
-	query_variables: HASH_TABLE [STRING, STRING]
+	query_variables: HASH_TABLE [STRING, READABLE_STRING_GENERAL]
 			-- Variables being part of the query segments (i.e: after the ?)
 
 feature -- Query
 
-	path_variable (n: STRING): detachable STRING
+	path_variable (n: READABLE_STRING_GENERAL): detachable STRING
 			-- Value related to query variable name `n'
 		do
 			Result := path_variables.item (n)
 		end
 
-	query_variable (n: STRING): detachable STRING
+	query_variable (n: READABLE_STRING_GENERAL): detachable STRING
 			-- Value related to path variable name `n'
 		do
 			Result := query_variables.item (n)
 		end
 
-	variable (n: STRING): detachable STRING
+	variable (n: READABLE_STRING_GENERAL): detachable STRING
 			-- Value related to variable name `n'
 		do
 			Result := query_variable (n)
@@ -58,7 +58,7 @@ feature -- Query
 
 feature -- Query: url-decoded
 
-	url_decoded_query_variable (n: STRING): detachable STRING_32
+	url_decoded_query_variable (n: READABLE_STRING_GENERAL): detachable STRING_32
 			-- Unencoded value related to variable name `n'
 		do
 			if attached query_variable (n) as v then
@@ -66,15 +66,15 @@ feature -- Query: url-decoded
 			end
 		end
 
-	url_decoded_path_variable (n: STRING): detachable STRING_32
+	url_decoded_path_variable (n: READABLE_STRING_GENERAL): detachable STRING_32
 			-- Unencoded value related to variable name `n'
 		do
 			if attached path_variable (n) as v then
 				Result := url_decoded_string (v)
 			end
-		end		
+		end
 
-	url_decoded_variable (n: STRING): detachable STRING_32
+	url_decoded_variable (n: READABLE_STRING_GENERAL): detachable STRING_32
 			-- Unencoded value related to variable name `n'
 		do
 			if attached variable (n) as v then

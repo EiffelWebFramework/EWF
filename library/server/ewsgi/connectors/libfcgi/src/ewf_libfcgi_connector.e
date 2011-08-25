@@ -1,12 +1,12 @@
 note
-	description: "Summary description for {GW_LIBFCGI_CONNECTOR}."
+	description: "Summary description for {EWF_LIBFCGI_CONNECTOR}."
 	legal: "See notice at end of class."
 	status: "See notice at end of class."
 	date: "$Date$"
 	revision: "$Revision$"
 
 class
-	GW_LIBFCGI_CONNECTOR
+	EWF_LIBFCGI_CONNECTOR
 
 inherit
 	EWSGI_CONNECTOR
@@ -22,8 +22,8 @@ feature {NONE} -- Initialization
 	initialize
 		do
 			create fcgi.make
-			create {GW_LIBFCGI_INPUT_STREAM} input.make (fcgi)
-			create {GW_LIBFCGI_OUTPUT_STREAM} output.make (fcgi)
+			create {EWF_LIBFCGI_INPUT_STREAM} input.make (fcgi)
+			create {EWF_LIBFCGI_OUTPUT_STREAM} output.make (fcgi)
 		end
 
 feature -- Server

@@ -1,35 +1,36 @@
 note
-	description: "Summary description for {GW_NINO_INPUT_STREAM}."
+	description: "Summary description for GW_LIBFCGI_INPUT_STREAM."
 	legal: "See notice at end of class."
 	status: "See notice at end of class."
 	date: "$Date$"
 	revision: "$Revision$"
 
 class
-	GW_NINO_INPUT_STREAM
+	EWF_LIBFCGI_INPUT_STREAM
 
 inherit
 	EWSGI_INPUT_STREAM
+
+	STRING_HANDLER
 
 create
 	make
 
 feature {NONE} -- Initialization
 
-	make (a_nino_input: like nino_input)
+	make (a_fcgi: like fcgi)
+		require
+			valid_fcgi: a_fcgi /= Void
+		do
+			fcgi := a_fcgi
+			initialize
+		end
+
+	initialize
+			-- Initialize Current
 		do
 			create last_string.make_empty
-			set_nino_input (a_nino_input)
 		end
-
-feature {GW_NINO_CONNECTOR, EWSGI_APPLICATION} -- Nino
-
-	set_nino_input (i: like nino_input)
-		do
-			nino_input := i
-		end
-
-	nino_input: HTTP_INPUT_STREAM
 
 feature -- Basic operation
 
@@ -38,8 +39,7 @@ feature -- Basic operation
 			-- or until end of file.
 			-- Make result available in `last_string'.	
 		do
-			nino_input.read_stream (nb_char)
-			last_string := nino_input.last_string
+			fcgi.fill_string_from_stdin (last_string, nb_char)
 		end
 
 feature -- Access		
@@ -47,7 +47,12 @@ feature -- Access
 	last_string: STRING
 			-- Last string read	
 
-;note
+feature {NONE} -- Implementation
+
+	fcgi: FCGI;
+			-- Bridge to FCGI world
+
+note
 	copyright: "2011-2011, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
@@ -57,5 +62,4 @@ feature -- Access
 			Website http://www.eiffel.com
 			Customer support http://support.eiffel.com
 		]"
-
 end
