@@ -23,9 +23,9 @@ feature -- Access
 	path: STRING
 			-- ???
 
-	request_content_type (content_type_supported: detachable ARRAY [STRING]): detachable STRING
+	request_content_type (content_type_supported: detachable ARRAY [STRING]): detachable READABLE_STRING_8
 		local
-			s: detachable STRING
+			s: detachable READABLE_STRING_8
 			i,n: INTEGER
 		do
 			Result := request.content_type

@@ -114,7 +114,7 @@ feature -- Context helper
 			end
 		end
 
-	content_type_to_request_format (a_content_type: detachable STRING): detachable STRING
+	content_type_to_request_format (a_content_type: detachable READABLE_STRING_8): detachable STRING
 			-- `a_content_type' converted into a request format name
 		do
 			if a_content_type /= Void then

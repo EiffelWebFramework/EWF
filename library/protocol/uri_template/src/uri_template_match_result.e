@@ -27,27 +27,27 @@ feature {NONE} -- Initialization
 
 feature -- Access
 
-	path_variables: HASH_TABLE [STRING, READABLE_STRING_GENERAL]
+	path_variables: HASH_TABLE [READABLE_STRING_32, READABLE_STRING_GENERAL]
 			-- Variables being part of the path segments
 
-	query_variables: HASH_TABLE [STRING, READABLE_STRING_GENERAL]
+	query_variables: HASH_TABLE [READABLE_STRING_32, READABLE_STRING_GENERAL]
 			-- Variables being part of the query segments (i.e: after the ?)
 
 feature -- Query
 
-	path_variable (n: READABLE_STRING_GENERAL): detachable STRING
+	path_variable (n: READABLE_STRING_GENERAL): detachable READABLE_STRING_32
 			-- Value related to query variable name `n'
 		do
 			Result := path_variables.item (n)
 		end
 
-	query_variable (n: READABLE_STRING_GENERAL): detachable STRING
+	query_variable (n: READABLE_STRING_GENERAL): detachable READABLE_STRING_32
 			-- Value related to path variable name `n'
 		do
 			Result := query_variables.item (n)
 		end
 
-	variable (n: READABLE_STRING_GENERAL): detachable STRING
+	variable (n: READABLE_STRING_GENERAL): detachable READABLE_STRING_32
 			-- Value related to variable name `n'
 		do
 			Result := query_variable (n)
