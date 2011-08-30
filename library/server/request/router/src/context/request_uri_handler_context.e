@@ -15,7 +15,7 @@ create
 
 feature {NONE} -- Initialization
 
-	make (req: EWSGI_REQUEST; p: like path)
+	make (req: WGI_REQUEST; p: like path)
 		do
 			request := req
 			path := p

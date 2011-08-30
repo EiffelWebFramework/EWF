@@ -45,7 +45,7 @@ feature -- Registration
 
 feature {NONE} -- Access: Implementation
 
-	handler (req: EWSGI_REQUEST): detachable TUPLE [handler: REQUEST_HANDLER; context: REQUEST_HANDLER_CONTEXT]
+	handler (req: WGI_REQUEST): detachable TUPLE [handler: REQUEST_HANDLER; context: REQUEST_HANDLER_CONTEXT]
 		local
 			ctx: detachable REQUEST_URI_TEMPLATE_HANDLER_CONTEXT
 			l_handlers: like handlers
@@ -72,7 +72,7 @@ feature {NONE} -- Access: Implementation
 
 feature -- Context factory
 
-	handler_context (p: detachable STRING; req: EWSGI_REQUEST; tpl: URI_TEMPLATE; tpl_res: URI_TEMPLATE_MATCH_RESULT): REQUEST_URI_TEMPLATE_HANDLER_CONTEXT
+	handler_context (p: detachable STRING; req: WGI_REQUEST; tpl: URI_TEMPLATE; tpl_res: URI_TEMPLATE_MATCH_RESULT): REQUEST_URI_TEMPLATE_HANDLER_CONTEXT
 		do
 			if p /= Void then
 				create Result.make (req, tpl, tpl_res, p)

@@ -1,27 +1,24 @@
 note
-	description: "Summary description for {DEFAULT_EWSGI_APPLICATION}."
+	description: "Summary description for {DEFAULT_WGI_APPLICATION}."
 	date: "$Date$"
 	revision: "$Revision$"
 
 deferred class
-	DEFAULT_EWSGI_APPLICATION
+	DEFAULT_WGI_APPLICATION
 
 inherit
-	EWSGI_APPLICATION
+	WGI_APPLICATION
 
 feature {NONE} -- Initialization
 
 	make_and_launch
+		local
+			cgi: EWF_CGI_CONNECTOR
 		do
-			port_number := 80
-			print ("Example: start a Nino web server on port " + port_number.out + ", %Nand reply Hello World for any request such as http://localhost:" + port_number.out + "/%N")
-			(create {NINO_APPLICATION}.make_custom (agent execute, "")).listen (port_number)
+			create cgi.make (Current)
+			cgi.launch
 		end
 
-	port_number: INTEGER
-
-invariant
-	port_number_valid: port_number > 0
 note
 	copyright: "2011-2011, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"

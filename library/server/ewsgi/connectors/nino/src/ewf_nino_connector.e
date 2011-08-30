@@ -8,7 +8,7 @@ class
 	EWF_NINO_CONNECTOR
 
 inherit
-	EWSGI_CONNECTOR
+	WGI_CONNECTOR
 		redefine
 			initialize
 		end
@@ -73,8 +73,8 @@ feature -- Server
 
 	process_request (env: HASH_TABLE [STRING, STRING]; a_headers_text: STRING; a_input: HTTP_INPUT_STREAM; a_output: HTTP_OUTPUT_STREAM)
 		local
-			req: EWSGI_REQUEST_FROM_TABLE
-			res: EWSGI_RESPONSE_STREAM_BUFFER
+			req: WGI_REQUEST_FROM_TABLE
+			res: WGI_RESPONSE_STREAM_BUFFER
 		do
 			create req.make (env, create {EWF_NINO_INPUT_STREAM}.make (a_input))
 			create res.make (create {EWF_NINO_OUTPUT_STREAM}.make (a_output))

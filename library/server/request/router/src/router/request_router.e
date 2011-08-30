@@ -32,7 +32,7 @@ feature -- Registration
 
 feature -- Execution
 
-	dispatch (req: EWSGI_REQUEST; res: EWSGI_RESPONSE_BUFFER): detachable REQUEST_HANDLER
+	dispatch (req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER): detachable REQUEST_HANDLER
 			-- Dispatch `req, res' to the associated handler
 			-- And return this handler
 			-- If Result is Void, this means no handler was found.
@@ -60,7 +60,7 @@ feature -- Execution
 
 feature {NONE} -- Access: Implementation
 
-	handler (req: EWSGI_REQUEST): detachable TUPLE [handler: REQUEST_HANDLER; context: REQUEST_HANDLER_CONTEXT]
+	handler (req: WGI_REQUEST): detachable TUPLE [handler: REQUEST_HANDLER; context: REQUEST_HANDLER_CONTEXT]
 			-- Handler whose map matched with `req'
 		require
 			req_valid: req /= Void and then req.path_info /= Void

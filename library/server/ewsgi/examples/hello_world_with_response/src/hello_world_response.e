@@ -6,7 +6,7 @@ note
 class HELLO_WORLD_RESPONSE
 
 inherit
-    EWSGI_RESPONSE
+    WGI_RESPONSE
         redefine
             make,
             read_block

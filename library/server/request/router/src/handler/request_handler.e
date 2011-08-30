@@ -21,7 +21,7 @@ feature -- Access
 
 feature -- Status report
 
-	is_valid_context (req: EWSGI_REQUEST): BOOLEAN
+	is_valid_context (req: WGI_REQUEST): BOOLEAN
 			-- Is `req' valid context for current handler?
 		do
 			Result := request_method_name_supported (req.request_method)
@@ -29,7 +29,7 @@ feature -- Status report
 
 feature -- Execution
 
-	execute (a_hdl_context: REQUEST_HANDLER_CONTEXT; req: EWSGI_REQUEST; res: EWSGI_RESPONSE_BUFFER)
+	execute (a_hdl_context: REQUEST_HANDLER_CONTEXT; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
 			-- Execute request handler	
 		require
 			is_valid_context: is_valid_context (req)
@@ -52,7 +52,7 @@ feature -- Execution
 			retry
 		end
 
-	execute_method_not_allowed (a_hdl_context: REQUEST_HANDLER_CONTEXT; req: EWSGI_REQUEST; res: EWSGI_RESPONSE_BUFFER)
+	execute_method_not_allowed (a_hdl_context: REQUEST_HANDLER_CONTEXT; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
 		local
 			s: STRING
 			lst: LIST [STRING]
@@ -75,24 +75,24 @@ feature -- Execution
 			res.write_header ({HTTP_STATUS_CODE}.method_not_allowed, <<["Allow", s]>>)
 		end
 
-	execute_application (a_hdl_context: REQUEST_HANDLER_CONTEXT; req: EWSGI_REQUEST; res: EWSGI_RESPONSE_BUFFER)
+	execute_application (a_hdl_context: REQUEST_HANDLER_CONTEXT; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
 			-- Execute request handler
 		deferred
 		end
 
-	pre_execute (req: EWSGI_REQUEST)
+	pre_execute (req: WGI_REQUEST)
 			-- Operation processed before `execute'
 		do
 			--| To be redefined if needed
 		end
 
-	post_execute (req: EWSGI_REQUEST; res: EWSGI_RESPONSE_BUFFER)
+	post_execute (req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
 			-- Operation processed after `execute'
 		do
 			--| To be redefined if needed
 		end
 
-	rescue_execute (req: EWSGI_REQUEST; res: EWSGI_RESPONSE_BUFFER)
+	rescue_execute (req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
 			-- Operation processed after a rescue
 		do
 			--| To be redefined if needed
@@ -101,7 +101,7 @@ feature -- Execution
 
 feature -- Execution: report
 
---	execution_information (req: EWSGI_REQUEST): detachable REQUEST_HANDLER_CONTEXT
+--	execution_information (req: WGI_REQUEST): detachable REQUEST_HANDLER_CONTEXT
 --			-- Execution information related to the request
 --		do
 --			if attached path_information (req, req.environment.path_info) as info then
@@ -109,7 +109,7 @@ feature -- Execution: report
 --			end
 --		end
 
---	path_information (req: EWSGI_REQUEST; a_rq_path: STRING): detachable TUPLE [format: detachable STRING; arguments: detachable STRING]
+--	path_information (req: WGI_REQUEST; a_rq_path: STRING): detachable TUPLE [format: detachable STRING; arguments: detachable STRING]
 --			-- Information related to `a_path'
 --		local
 --			l_rq_path: STRING
@@ -156,7 +156,7 @@ feature -- Execution: report
 --			end
 --		end
 
-	url (req: EWSGI_REQUEST; args: detachable STRING; abs: BOOLEAN): STRING
+	url (req: WGI_REQUEST; args: detachable STRING; abs: BOOLEAN): STRING
 			-- Associated url based on `path' and `args'
 			-- if `abs' then return absolute url
 		local

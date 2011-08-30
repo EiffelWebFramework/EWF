@@ -9,17 +9,17 @@ note
 	revision: "$Revision$"
 
 class
-	EWSGI_REQUEST_FROM_TABLE
+	WGI_REQUEST_FROM_TABLE
 
 inherit
-	EWSGI_REQUEST
+	WGI_REQUEST
 
 create
 	make
 
 feature {NONE} -- Initialization
 
-	make (a_vars: HASH_TABLE [STRING, STRING]; a_input: like input)
+	make (a_vars: HASH_TABLE [READABLE_STRING_8, READABLE_STRING_8]; a_input: like input)
 		require
 			vars_attached: a_vars /= Void
 		do
@@ -34,11 +34,11 @@ feature {NONE} -- Initialization
 			analyze
 		end
 
-	set_meta_parameters (a_vars: HASH_TABLE [STRING, STRING])
+	set_meta_parameters (a_vars: HASH_TABLE [READABLE_STRING_8, READABLE_STRING_8])
 			-- Fill with variable from `a_vars'
 		local
-			s: detachable READABLE_STRING_8
-			table: HASH_TABLE [STRING, STRING]
+			s: like meta_variable
+			table: HASH_TABLE [READABLE_STRING_32, READABLE_STRING_GENERAL]
 		do
 			create empty_string.make_empty
 
@@ -54,13 +54,13 @@ feature {NONE} -- Initialization
 			end
 
 				--| QUERY_STRING
-			query_string := meta_parameter_or_default ({EWSGI_META_NAMES}.query_string, empty_string, False)
+			query_string := meta_parameter_or_default ({WGI_META_NAMES}.query_string, empty_string, False)
 
 				--| REQUEST_METHOD
-			request_method := meta_parameter_or_default ({EWSGI_META_NAMES}.request_method, empty_string, False)
+			request_method := meta_parameter_or_default ({WGI_META_NAMES}.request_method, empty_string, False)
 
 				--| CONTENT_TYPE
-			s := meta_variable ({EWSGI_META_NAMES}.content_type)
+			s := meta_variable ({WGI_META_NAMES}.content_type)
 			if s /= Void and then not s.is_empty then
 				content_type := s
 			else
@@ -68,7 +68,7 @@ feature {NONE} -- Initialization
 			end
 
 				--| CONTENT_LENGTH
-			s := meta_variable ({EWSGI_META_NAMES}.content_length)
+			s := meta_variable ({WGI_META_NAMES}.content_length)
 			content_length := s
 			if s /= Void and then s.is_natural_64 then
 				content_length_value := s.to_natural_64
@@ -77,13 +77,13 @@ feature {NONE} -- Initialization
 			end
 
 				--| PATH_INFO
-			path_info := meta_parameter_or_default ({EWSGI_META_NAMES}.path_info, empty_string, False)
+			path_info := meta_parameter_or_default ({WGI_META_NAMES}.path_info, empty_string, False)
 
 				--| SERVER_NAME
-			server_name := meta_parameter_or_default ({EWSGI_META_NAMES}.server_name, empty_string, False)
+			server_name := meta_parameter_or_default ({WGI_META_NAMES}.server_name, empty_string, False)
 
 				--| SERVER_PORT
-			s := meta_variable ({EWSGI_META_NAMES}.server_port)
+			s := meta_variable ({WGI_META_NAMES}.server_port)
 			if s /= Void and then s.is_integer then
 				server_port := s.to_integer
 			else
@@ -91,16 +91,16 @@ feature {NONE} -- Initialization
 			end
 
 				--| SCRIPT_NAME
-			script_name := meta_parameter_or_default ({EWSGI_META_NAMES}.script_name, empty_string, False)
+			script_name := meta_parameter_or_default ({WGI_META_NAMES}.script_name, empty_string, False)
 
 				--| REMOTE_ADDR
-			remote_addr := meta_parameter_or_default ({EWSGI_META_NAMES}.remote_addr, empty_string, False)
+			remote_addr := meta_parameter_or_default ({WGI_META_NAMES}.remote_addr, empty_string, False)
 
 				--| REMOTE_HOST
-			remote_host := meta_parameter_or_default ({EWSGI_META_NAMES}.remote_host, empty_string, False)
+			remote_host := meta_parameter_or_default ({WGI_META_NAMES}.remote_host, empty_string, False)
 
 				--| REQUEST_URI
-			request_uri := meta_parameter_or_default ({EWSGI_META_NAMES}.request_uri, empty_string, False)
+			request_uri := meta_parameter_or_default ({WGI_META_NAMES}.request_uri, empty_string, False)
 		end
 
 	initialize
@@ -114,13 +114,13 @@ feature {NONE} -- Initialization
 			if attached request_uri as rq_uri then
 				p := rq_uri.index_of ('?', 1)
 				if p > 0 then
-					set_meta_parameter (rq_uri.substring (1, p-1), {EWSGI_META_NAMES}.self)
+					set_meta_parameter (rq_uri.substring (1, p-1), {WGI_META_NAMES}.self)
 				else
-					set_meta_parameter (rq_uri, {EWSGI_META_NAMES}.self)
+					set_meta_parameter (rq_uri, {WGI_META_NAMES}.self)
 				end
 			end
-			if meta_variable ({EWSGI_META_NAMES}.request_time) = Void then
-				set_meta_parameter (date_time_utilities.unix_time_stamp (Void).out, {EWSGI_META_NAMES}.request_time)
+			if meta_variable ({WGI_META_NAMES}.request_time) = Void then
+				set_meta_parameter (date_time_utilities.unix_time_stamp (Void).out, {WGI_META_NAMES}.request_time)
 			end
 		end
 
@@ -151,7 +151,7 @@ feature -- Error handling
 
 feature -- Access: Input
 
-	input: EWSGI_INPUT_STREAM
+	input: WGI_INPUT_STREAM
 			-- Server input channel
 
 feature -- Access extra information
@@ -160,7 +160,7 @@ feature -- Access extra information
 			-- Request time (UTC)
 		do
 			if
-				attached meta_variable ({EWSGI_META_NAMES}.request_time) as t and then
+				attached meta_variable ({WGI_META_NAMES}.request_time) as t and then
 				t.is_integer_64
 			then
 				Result := date_time_utilities.unix_time_stamp_to_date_time (t.to_integer_64)
@@ -169,16 +169,16 @@ feature -- Access extra information
 
 feature -- Access: CGI meta parameters
 
-	meta_variables: HASH_TABLE [READABLE_STRING_8, READABLE_STRING_GENERAL]
+	meta_variables: HASH_TABLE [READABLE_STRING_32, READABLE_STRING_GENERAL]
 			-- CGI Environment parameters
 
-	meta_variable (a_name: READABLE_STRING_GENERAL): detachable READABLE_STRING_8
+	meta_variable (a_name: READABLE_STRING_GENERAL): detachable READABLE_STRING_32
 			-- CGI meta variable related to `a_name'
 		do
 			Result := meta_variables.item (a_name)
 		end
 
-	meta_parameter_or_default (a_name: READABLE_STRING_GENERAL; a_default: READABLE_STRING_8; use_default_when_empty: BOOLEAN): READABLE_STRING_8
+	meta_parameter_or_default (a_name: READABLE_STRING_GENERAL; a_default: READABLE_STRING_32; use_default_when_empty: BOOLEAN): READABLE_STRING_32
 			-- Value for meta parameter `a_name'
 			-- If not found, return `a_default'
 		require
@@ -195,7 +195,7 @@ feature -- Access: CGI meta parameters
 			end
 		end
 
-	set_meta_parameter (a_name: READABLE_STRING_GENERAL; a_value: STRING)
+	set_meta_parameter (a_name: READABLE_STRING_GENERAL; a_value: READABLE_STRING_32)
 		do
 			meta_variables.force (a_value, a_name)
 		ensure
@@ -211,20 +211,20 @@ feature -- Access: CGI meta parameters
 
 feature -- Access: CGI meta parameters - 1.1
 
-	auth_type: detachable READABLE_STRING_8
+	auth_type: detachable READABLE_STRING_32
 
-	content_length: detachable READABLE_STRING_8
+	content_length: detachable READABLE_STRING_32
 
 	content_length_value: NATURAL_64
 
-	content_type: detachable READABLE_STRING_8
+	content_type: detachable READABLE_STRING_32
 
-	gateway_interface: READABLE_STRING_8
+	gateway_interface: READABLE_STRING_32
 		do
-			Result := meta_parameter_or_default ({EWSGI_META_NAMES}.gateway_interface, "", False)
+			Result := meta_parameter_or_default ({WGI_META_NAMES}.gateway_interface, "", False)
 		end
 
-	path_info: READABLE_STRING_8
+	path_info: READABLE_STRING_32
 			-- <Precursor/>
 			--
 			--| For instance, if the current script was accessed via the URL
@@ -232,138 +232,138 @@ feature -- Access: CGI meta parameters - 1.1
 			--|
 			--| Note that is the PATH_INFO variable does not exists, the `path_info' value will be empty
 
-	path_translated: detachable READABLE_STRING_8
+	path_translated: detachable READABLE_STRING_32
 		do
-			Result := meta_variable ({EWSGI_META_NAMES}.path_translated)
+			Result := meta_variable ({WGI_META_NAMES}.path_translated)
 		end
 
-	query_string: READABLE_STRING_8
+	query_string: READABLE_STRING_32
 
-	remote_addr: READABLE_STRING_8
+	remote_addr: READABLE_STRING_32
 
-	remote_host: READABLE_STRING_8
+	remote_host: READABLE_STRING_32
 
-	remote_ident: detachable READABLE_STRING_8
+	remote_ident: detachable READABLE_STRING_32
 		do
-			Result := meta_variable ({EWSGI_META_NAMES}.remote_ident)
+			Result := meta_variable ({WGI_META_NAMES}.remote_ident)
 		end
 
-	remote_user: detachable READABLE_STRING_8
+	remote_user: detachable READABLE_STRING_32
 		do
-			Result := meta_variable ({EWSGI_META_NAMES}.remote_user)
+			Result := meta_variable ({WGI_META_NAMES}.remote_user)
 		end
 
-	request_method: READABLE_STRING_8
+	request_method: READABLE_STRING_32
 
-	script_name: READABLE_STRING_8
+	script_name: READABLE_STRING_32
 
-	server_name: READABLE_STRING_8
+	server_name: READABLE_STRING_32
 
 	server_port: INTEGER
 
-	server_protocol: READABLE_STRING_8
+	server_protocol: READABLE_STRING_32
 		do
-			Result := meta_parameter_or_default ({EWSGI_META_NAMES}.server_protocol, "HTTP/1.0", True)
+			Result := meta_parameter_or_default ({WGI_META_NAMES}.server_protocol, "HTTP/1.0", True)
 		end
 
-	server_software: READABLE_STRING_8
+	server_software: READABLE_STRING_32
 		do
-			Result := meta_parameter_or_default ({EWSGI_META_NAMES}.server_software, "Unknown Server", True)
+			Result := meta_parameter_or_default ({WGI_META_NAMES}.server_software, "Unknown Server", True)
 		end
 
 feature -- Access: HTTP_* CGI meta parameters - 1.1
 
-	http_accept: detachable READABLE_STRING_8
+	http_accept: detachable READABLE_STRING_32
 			-- Contents of the Accept: header from the current request, if there is one.
 		do
-			Result := meta_variable ({EWSGI_META_NAMES}.http_accept)
+			Result := meta_variable ({WGI_META_NAMES}.http_accept)
 		end
 
-	http_accept_charset: detachable READABLE_STRING_8
+	http_accept_charset: detachable READABLE_STRING_32
 			-- Contents of the Accept-Charset: header from the current request, if there is one.
 			-- Example: 'iso-8859-1,*,utf-8'.
 		do
-			Result := meta_variable ({EWSGI_META_NAMES}.http_accept_charset)
+			Result := meta_variable ({WGI_META_NAMES}.http_accept_charset)
 		end
 
-	http_accept_encoding: detachable READABLE_STRING_8
+	http_accept_encoding: detachable READABLE_STRING_32
 			-- Contents of the Accept-Encoding: header from the current request, if there is one.
 			-- Example: 'gzip'.
 		do
-			Result := meta_variable ({EWSGI_META_NAMES}.http_accept_encoding)
+			Result := meta_variable ({WGI_META_NAMES}.http_accept_encoding)
 		end
 
-	http_accept_language: detachable READABLE_STRING_8
+	http_accept_language: detachable READABLE_STRING_32
 			-- Contents of the Accept-Language: header from the current request, if there is one.
 			-- Example: 'en'.
 		do
-			Result := meta_variable ({EWSGI_META_NAMES}.http_accept_language)
+			Result := meta_variable ({WGI_META_NAMES}.http_accept_language)
 		end
 
-	http_connection: detachable READABLE_STRING_8
+	http_connection: detachable READABLE_STRING_32
 			-- Contents of the Connection: header from the current request, if there is one.
 			-- Example: 'Keep-Alive'.
 		do
-			Result := meta_variable ({EWSGI_META_NAMES}.http_connection)
+			Result := meta_variable ({WGI_META_NAMES}.http_connection)
 		end
 
-	http_host: detachable READABLE_STRING_8
+	http_host: detachable READABLE_STRING_32
 			-- Contents of the Host: header from the current request, if there is one.
 		do
-			Result := meta_variable ({EWSGI_META_NAMES}.http_host)
+			Result := meta_variable ({WGI_META_NAMES}.http_host)
 		end
 
-	http_referer: detachable READABLE_STRING_8
+	http_referer: detachable READABLE_STRING_32
 			-- The address of the page (if any) which referred the user agent to the current page.
 			-- This is set by the user agent.
 			-- Not all user agents will set this, and some provide the ability to modify HTTP_REFERER as a feature.
 			-- In short, it cannot really be trusted.
 		do
-			Result := meta_variable ({EWSGI_META_NAMES}.http_referer)
+			Result := meta_variable ({WGI_META_NAMES}.http_referer)
 		end
 
-	http_user_agent: detachable READABLE_STRING_8
+	http_user_agent: detachable READABLE_STRING_32
 			-- Contents of the User-Agent: header from the current request, if there is one.
 			-- This is a string denoting the user agent being which is accessing the page.
 			-- A typical example is: Mozilla/4.5 [en] (X11; U; Linux 2.2.9 i586).
 			-- Among other things, you can use this value to tailor your page's
 			-- output to the capabilities of the user agent.
 		do
-			Result := meta_variable ({EWSGI_META_NAMES}.http_user_agent)
+			Result := meta_variable ({WGI_META_NAMES}.http_user_agent)
 		end
 
-	http_authorization: detachable READABLE_STRING_8
+	http_authorization: detachable READABLE_STRING_32
 			-- Contents of the Authorization: header from the current request, if there is one.
 		do
-			Result := meta_variable ({EWSGI_META_NAMES}.http_authorization)
+			Result := meta_variable ({WGI_META_NAMES}.http_authorization)
 		end
 
 feature -- Access: Extension to CGI meta parameters - 1.1
 
-	request_uri: STRING
+	request_uri: READABLE_STRING_32
 			-- The URI which was given in order to access this page; for instance, '/index.html'.
 
-	orig_path_info: detachable STRING
+	orig_path_info: detachable READABLE_STRING_32
 			-- Original version of `path_info' before processed by Current environment
 
 feature {NONE} -- Element change: CGI meta parameter related to PATH_INFO
 
-	set_orig_path_info (s: STRING)
+	set_orig_path_info (s: READABLE_STRING_32)
 			-- Set ORIG_PATH_INFO to `s'
 		require
 			s_attached: s /= Void
 		do
 			orig_path_info := s
-			set_meta_parameter ({EWSGI_META_NAMES}.orig_path_info, s)
+			set_meta_parameter ({WGI_META_NAMES}.orig_path_info, s)
 		end
 
 	unset_orig_path_info
 			-- Unset ORIG_PATH_INFO
 		do
 			orig_path_info := Void
-			unset_meta_parameter ({EWSGI_META_NAMES}.orig_path_info)
+			unset_meta_parameter ({WGI_META_NAMES}.orig_path_info)
 		ensure
-			unset: attached meta_variable ({EWSGI_META_NAMES}.orig_path_info)
+			unset: attached meta_variable ({WGI_META_NAMES}.orig_path_info)
 		end
 
 	update_path_info
@@ -518,7 +518,7 @@ feature -- Form fields and related
 			Result := form_data_parameters.item (a_name)
 		end
 
-	uploaded_files: HASH_TABLE [EWSGI_UPLOADED_FILE_DATA, STRING]
+	uploaded_files: HASH_TABLE [WGI_UPLOADED_FILE_DATA, STRING]
 			-- Table of uploaded files information
 			--| name: original path from the user
 			--| type: content type
@@ -538,7 +538,7 @@ feature -- Cookies
 		do
 			l_cookies := internal_cookies
 			if l_cookies = Void then
-				if attached meta_variable ({EWSGI_META_NAMES}.http_cookie) as s then
+				if attached meta_variable ({WGI_META_NAMES}.http_cookie) as s then
 					create l_cookies.make (5)
 					from
 						n := s.count
@@ -748,7 +748,7 @@ feature -- Element change
 
 feature {NONE} -- Temporary File handling		
 
-	delete_uploaded_file (uf: EWSGI_UPLOADED_FILE_DATA)
+	delete_uploaded_file (uf: WGI_UPLOADED_FILE_DATA)
 			-- Delete file `a_filename'
 		require
 			uf_valid: uf /= Void
@@ -771,7 +771,7 @@ feature {NONE} -- Temporary File handling
 			end
 		end
 
-	save_uploaded_file (a_content: STRING; a_up_fn_info: EWSGI_UPLOADED_FILE_DATA)
+	save_uploaded_file (a_content: STRING; a_up_fn_info: WGI_UPLOADED_FILE_DATA)
 			-- Save uploaded file content to `a_filename'
 		local
 			bn: STRING
@@ -938,7 +938,7 @@ feature {NONE} -- Implementation: Form analyzer
 			l_header: detachable STRING
 			l_content: detachable STRING
 			l_line: detachable STRING
-			l_up_file_info: EWSGI_UPLOADED_FILE_DATA
+			l_up_file_info: WGI_UPLOADED_FILE_DATA
 		do
 			from
 				p := 1
@@ -1115,7 +1115,7 @@ feature {NONE} -- Implementation
 	extract_variables
 			-- Extract relevant meta parameters
 		local
-			s: detachable READABLE_STRING_8
+			s: detachable READABLE_STRING_32
 		do
 			s := request_uri
 			if s.is_empty then

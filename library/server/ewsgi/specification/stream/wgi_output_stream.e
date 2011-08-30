@@ -8,7 +8,7 @@ note
 	revision: "$Revision$"
 
 deferred class
-	EWSGI_OUTPUT_STREAM
+	WGI_OUTPUT_STREAM
 
 feature -- Core operation
 

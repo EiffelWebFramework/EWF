@@ -8,7 +8,7 @@ note
     author: "Paul Cohen <paul.cohen@seibostudio.se>"
     status: "Draft"
 
-class EWSGI_RESPONSE
+class WGI_RESPONSE
 
 create
     make
@@ -26,9 +26,9 @@ feature {NONE} -- Initialization
             create headers_table.make (10)
         end
 
-feature {EWSGI_RESPONSE_APPLICATION} -- Response status
+feature {WGI_RESPONSE_APPLICATION} -- Response status
 
-	transmit_to (res: EWSGI_RESPONSE_BUFFER)
+	transmit_to (res: WGI_RESPONSE_BUFFER)
 		do
                 res.set_status_code (status)
                 res.write_headers_string (headers)
@@ -64,7 +64,7 @@ feature {EWSGI_RESPONSE_APPLICATION} -- Response status
             ready_to_transmit
         end
 
-feature {EWSGI_RESPONSE_APPLICATION} -- Message start line and status
+feature {WGI_RESPONSE_APPLICATION} -- Message start line and status
 
     status: INTEGER
             -- HTTP status code
@@ -88,7 +88,7 @@ feature {EWSGI_RESPONSE_APPLICATION} -- Message start line and status
         	end
 		end
 
-feature {EWSGI_RESPONSE_APPLICATION} -- Message headers
+feature {WGI_RESPONSE_APPLICATION} -- Message headers
 
     headers: STRING
              -- HTTP message headers including trailing empty line.
@@ -119,7 +119,7 @@ feature {EWSGI_RESPONSE_APPLICATION} -- Message headers
             headers_table.has (key) and headers_table @ key = value
         end
 
-feature {EWSGI_RESPONSE_APPLICATION} -- Message body
+feature {WGI_RESPONSE_APPLICATION} -- Message body
 
     read_block
             -- Read a message body block.

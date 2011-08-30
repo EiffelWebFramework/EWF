@@ -8,7 +8,7 @@ note
 	revision: "$Revision$"
 
 deferred class
-	EWSGI_VARIABLES [G -> STRING_GENERAL]
+	WGI_VARIABLES [G -> STRING_GENERAL]
 
 inherit
 	ITERABLE [G]
@@ -49,7 +49,7 @@ feature -- Access
 			end
 		end
 
-feature {EWSGI_REQUEST, EWSGI_APPLICATION, EWSGI_CONNECTOR} -- Element change
+feature {WGI_REQUEST, WGI_APPLICATION, WGI_CONNECTOR} -- Element change
 
 	set_variable (a_name: STRING; a_value: G)
 		require

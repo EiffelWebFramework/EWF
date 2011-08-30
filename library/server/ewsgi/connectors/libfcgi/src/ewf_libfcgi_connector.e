@@ -9,7 +9,7 @@ class
 	EWF_LIBFCGI_CONNECTOR
 
 inherit
-	EWSGI_CONNECTOR
+	WGI_CONNECTOR
 		redefine
 			initialize
 		end
@@ -46,8 +46,8 @@ feature -- Execution
 
 	process_fcgi_request (vars: HASH_TABLE [STRING, STRING]; a_input: like input; a_output: like output)
 		local
-			req: EWSGI_REQUEST_FROM_TABLE
-			res: EWSGI_RESPONSE_STREAM_BUFFER
+			req: WGI_REQUEST_FROM_TABLE
+			res: WGI_RESPONSE_STREAM_BUFFER
 		do
 			create req.make (vars, a_input)
 			create res.make (a_output)
@@ -56,10 +56,10 @@ feature -- Execution
 
 feature -- Input/Output
 
-	input: EWSGI_INPUT_STREAM
+	input: WGI_INPUT_STREAM
 			-- Input from client (from httpd server via FCGI)
 
-	output: EWSGI_OUTPUT_STREAM
+	output: WGI_OUTPUT_STREAM
 			-- Output to client (via httpd server/fcgi)
 
 feature {NONE} -- Implementation

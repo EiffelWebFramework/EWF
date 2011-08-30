@@ -1,14 +1,14 @@
 note
-	description: "Summary description for {EWSGI_AGENT_APPLICATION}."
+	description: "Summary description for {WGI_AGENT_APPLICATION}."
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
 class
-	EWSGI_AGENT_APPLICATION
+	WGI_AGENT_APPLICATION
 
 inherit
-	EWSGI_APPLICATION
+	WGI_APPLICATION
 
 create
 	make
@@ -23,10 +23,10 @@ feature {NONE} -- Implementation
 
 feature {NONE} -- Implementation
 
-	callback: PROCEDURE [ANY, TUPLE [req: EWSGI_REQUEST; res: EWSGI_RESPONSE_BUFFER]]
+	callback: PROCEDURE [ANY, TUPLE [req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER]]
 			-- Procedure called on `execute'
 
-	execute (req: EWSGI_REQUEST; res: EWSGI_RESPONSE_BUFFER)
+	execute (req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
 			-- Execute the request
 		do
 			callback.call ([req, res])

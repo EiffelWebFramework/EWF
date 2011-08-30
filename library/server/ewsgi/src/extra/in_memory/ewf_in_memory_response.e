@@ -7,27 +7,27 @@ class
 	EWF_IN_MEMORY_RESPONSE
 
 inherit
-	EWSGI_RESPONSE_BUFFER
+	WGI_RESPONSE_BUFFER
 
-create {EWSGI_APPLICATION}
+create {WGI_APPLICATION}
 	make
 
 feature {NONE} -- Initialization
 
-	make (res: EWSGI_RESPONSE_BUFFER)
+	make (res: WGI_RESPONSE_BUFFER)
 		do
 			response_buffer := res
 			create header.make
 			create body.make (100)
 		end
 
-	response_buffer: EWSGI_RESPONSE_BUFFER
+	response_buffer: WGI_RESPONSE_BUFFER
 
 	header: EWF_HEADER
 
 	body: STRING_8
 
-feature {EWSGI_APPLICATION} -- Commit
+feature {WGI_APPLICATION} -- Commit
 
 	commit
 		local

@@ -10,9 +10,9 @@
 		<option warning="true" full_class_checking="true" syntax="provisional">
 		</option>
 		<library name="base" location="$ISE_LIBRARY\library\base\base.ecf"/>
+		<library name="encoder" location="..\..\..\text\encoder\encoder.ecf" readonly="false"/>
 		<library name="error" location="..\..\..\error\error.ecf"/>
 		<library name="http" location="..\..\..\protocol\http\http.ecf"/>
-		<library name="encoder" location="..\..\..\text\encoder\encoder.ecf" readonly="false"/>
 		<library name="libfcgi" location="..\..\libfcgi\libfcgi.ecf"/>
 		<library name="nino" location="..\..\..\..\ext\server\nino\nino.ecf" readonly="false">
 			<renaming old_name="HTTP_CONSTANTS" new_name="NINO_HTTP_CONSTANTS"/>
@@ -20,5 +20,7 @@
 		<library name="time" location="$ISE_LIBRARY\library\time\time.ecf"/>
 		<cluster name="connectors" location="..\connectors\" recursive="true"/>
 		<cluster name="interface" location="..\src\" recursive="true"/>
+		<cluster name="specification_request" location="..\specification\request" recursive="true"/>
+		<cluster name="specification_response" location="..\specification\response" recursive="true"/>
 	</target>
 </system>

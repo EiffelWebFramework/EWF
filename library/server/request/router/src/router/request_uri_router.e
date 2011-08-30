@@ -35,14 +35,14 @@ feature -- Registration
 
 feature {NONE} -- Access: Implementation
 
-	handler (req: EWSGI_REQUEST): detachable TUPLE [handler: REQUEST_HANDLER; context: REQUEST_HANDLER_CONTEXT]
+	handler (req: WGI_REQUEST): detachable TUPLE [handler: REQUEST_HANDLER; context: REQUEST_HANDLER_CONTEXT]
 		local
 			h: detachable REQUEST_HANDLER
 			ctx: detachable REQUEST_HANDLER_CONTEXT
 		do
-			h := handler_by_path (req.environment.path_info)
+			h := handler_by_path (req.path_info)
 			if h = Void then
-				if attached smart_handler_by_path (req.environment.path_info) as info then
+				if attached smart_handler_by_path (req.path_info) as info then
 					h := info.handler
 					ctx := handler_context (info.path, req)
 				end
@@ -59,13 +59,13 @@ feature {NONE} -- Access: Implementation
 			end
 		end
 
-	smart_handler (req: EWSGI_REQUEST): detachable TUPLE [path: STRING; handler: REQUEST_HANDLER]
+	smart_handler (req: WGI_REQUEST): detachable TUPLE [path: STRING; handler: REQUEST_HANDLER]
 		require
-			req_valid: req /= Void and then req.environment.path_info /= Void
+			req_valid: req /= Void and then req.path_info /= Void
 		do
-			Result := smart_handler_by_path (req.environment.path_info)
+			Result := smart_handler_by_path (req.path_info)
 		ensure
-			req_path_info_unchanged: req.environment.path_info.same_string (old req.environment.path_info)
+			req_path_info_unchanged: req.path_info.same_string (old req.path_info)
 		end
 
 	handler_by_path (a_path: STRING): detachable REQUEST_HANDLER
@@ -107,12 +107,12 @@ feature {NONE} -- Access: Implementation
 
 feature -- Context factory
 
-	handler_context (p: detachable STRING; req: EWSGI_REQUEST): REQUEST_URI_HANDLER_CONTEXT
+	handler_context (p: detachable STRING; req: WGI_REQUEST): REQUEST_URI_HANDLER_CONTEXT
 		do
 			if p /= Void then
 				create Result.make (req, p)
 			else
-				create Result.make (req, req.environment.path_info)
+				create Result.make (req, req.path_info)
 			end
 		end
 

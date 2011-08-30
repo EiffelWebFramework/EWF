@@ -8,7 +8,7 @@ deferred class
 	EWF_IN_MEMORY_RESPONSE_APPLICATION
 
 inherit
-	EWSGI_APPLICATION
+	WGI_APPLICATION
 		rename
 			execute as app_execute
 		end
@@ -16,7 +16,7 @@ inherit
 
 feature -- Execution
 
-	app_execute (req: EWSGI_REQUEST; res: EWSGI_RESPONSE_BUFFER)
+	app_execute (req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
 			-- Execute the request
 			-- See `req.input' for input stream
 			--     `req.environment' for the Gateway environment	
@@ -27,7 +27,7 @@ feature -- Execution
 
 feature -- Execute
 
-	execute (req: EWSGI_REQUEST; res: EWSGI_RESPONSE_BUFFER)
+	execute (req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
 			-- Execute the request
 			-- See `req.input' for input stream
 			--     `req.environment' for the Gateway environment	
@@ -41,7 +41,7 @@ feature -- Execute
 
 feature {NONE} -- Implementation	
 
-	new_response (req: EWSGI_REQUEST; a_res: EWSGI_RESPONSE_BUFFER): EWF_IN_MEMORY_RESPONSE
+	new_response (req: WGI_REQUEST; a_res: WGI_RESPONSE_BUFFER): EWF_IN_MEMORY_RESPONSE
 		do
 			create {EWF_IN_MEMORY_RESPONSE} Result.make (a_res)
 		end

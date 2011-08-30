@@ -1,5 +1,5 @@
 note
-	description: "Summary description for GW_LIBFCGI_INPUT_STREAM."
+	description: "Summary description for EWF_LIBFCGI_INPUT_STREAM."
 	legal: "See notice at end of class."
 	status: "See notice at end of class."
 	date: "$Date$"
@@ -9,7 +9,7 @@ class
 	EWF_LIBFCGI_INPUT_STREAM
 
 inherit
-	EWSGI_INPUT_STREAM
+	WGI_INPUT_STREAM
 
 	STRING_HANDLER
 

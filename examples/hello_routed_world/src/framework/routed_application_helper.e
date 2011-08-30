@@ -17,7 +17,7 @@ inherit
 
 feature -- Helper
 
-	execute_content_type_not_allowed (req: EWSGI_REQUEST; res: EWSGI_RESPONSE_BUFFER; a_content_types: detachable ARRAY [STRING]; a_uri_formats: detachable ARRAY [STRING])
+	execute_content_type_not_allowed (req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER; a_content_types: detachable ARRAY [STRING]; a_uri_formats: detachable ARRAY [STRING])
 		local
 			s, uri_s: detachable STRING
 			i, n: INTEGER
@@ -68,7 +68,7 @@ feature -- Helper
 			end
 		end
 
-	execute_method_not_allowed (req: EWSGI_REQUEST; res: EWSGI_RESPONSE_BUFFER; a_methods: ARRAY [STRING])
+	execute_method_not_allowed (req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER; a_methods: ARRAY [STRING])
 		local
 			s: STRING
 			i, n: INTEGER

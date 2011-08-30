@@ -1,6 +1,6 @@
 note
 	description: "[
-				EWSGI_APPLICATION
+				WGI_APPLICATION
 			]"
 	specification: "EWSGI specification https://github.com/Eiffel-World/Eiffel-Web-Framework/wiki/EWSGI-specification"
 	legal: "See notice at end of class."
@@ -9,11 +9,11 @@ note
 	revision: "$Revision$"
 
 deferred class
-	EWSGI_APPLICATION
+	WGI_APPLICATION
 
 feature -- Execution
 
-	execute (req: EWSGI_REQUEST; res: EWSGI_RESPONSE_BUFFER)
+	execute (req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
 			-- Execute the request
 			-- See `req.input' for input stream
 			--     `req.environment' for the Gateway environment	
@@ -28,7 +28,7 @@ feature -- Execution
 
 feature -- Process request
 
-	process (req: EWSGI_REQUEST; res: EWSGI_RESPONSE_BUFFER)
+	process (req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
 			-- Process request with environment `env', and i/o streams `a_input' and `a_output'
 		local
 			rescued: BOOLEAN
@@ -53,17 +53,17 @@ feature -- Access
 
 feature {NONE} -- Execution
 
-	pre_execute (req: EWSGI_REQUEST)
+	pre_execute (req: WGI_REQUEST)
 			-- Operation processed before `execute'
 		do
 		end
 
-	post_execute (req: EWSGI_REQUEST; res: EWSGI_RESPONSE_BUFFER)
+	post_execute (req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
 			-- Operation processed after `execute', or after `rescue_execute'
 		do
 		end
 
-	rescue_execute (req: EWSGI_REQUEST; res: EWSGI_RESPONSE_BUFFER; a_exception: detachable EXCEPTION)
+	rescue_execute (req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER; a_exception: detachable EXCEPTION)
 			-- Operation processed on rescue of `execute'
 		do
 			if

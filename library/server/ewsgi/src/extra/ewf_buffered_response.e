@@ -8,9 +8,9 @@ class
 	EWF_BUFFERED_RESPONSE
 
 inherit
-	EWSGI_RESPONSE_BUFFER
+	WGI_RESPONSE_BUFFER
 
-create {EWSGI_APPLICATION}
+create {WGI_APPLICATION}
 	make
 
 feature {NONE} -- Initialization
@@ -22,7 +22,7 @@ feature {NONE} -- Initialization
 			create buffer.make (a_buffer_size)
 		end
 
-	response_buffer: EWSGI_RESPONSE_BUFFER
+	response_buffer: WGI_RESPONSE_BUFFER
 
 	buffer: STRING_8
 
@@ -79,7 +79,7 @@ feature {NONE} -- Implementation
 			buffer_flushed: buffer_count = 0 and buffer.count = 0
 		end
 
-feature {EWSGI_APPLICATION} -- Commit
+feature {WGI_APPLICATION} -- Commit
 
 	commit
 		do

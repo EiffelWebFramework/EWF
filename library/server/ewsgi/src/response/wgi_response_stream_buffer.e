@@ -8,10 +8,10 @@ note
 	revision: "$Revision$"
 
 class
-	EWSGI_RESPONSE_STREAM_BUFFER
+	WGI_RESPONSE_STREAM_BUFFER
 
 inherit
-	EWSGI_RESPONSE_BUFFER
+	WGI_RESPONSE_BUFFER
 
 create
 	make
@@ -23,7 +23,7 @@ feature {NONE} -- Initialization
 			output := a_output
 		end
 
-feature {EWSGI_APPLICATION} -- Commit
+feature {WGI_APPLICATION} -- Commit
 
 	commit
 			-- Commit the current response
@@ -133,7 +133,7 @@ feature -- Output operation
 
 feature {NONE} -- Implementation: Access
 
-	output: EWSGI_OUTPUT_STREAM
+	output: WGI_OUTPUT_STREAM
 			-- Server output channel
 
 ;note

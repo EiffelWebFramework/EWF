@@ -1,13 +1,13 @@
 note
-	description: "Summary description for {EWSGI_RESPONSE_BUFFER}."
+	description: "Summary description for {WGI_RESPONSE_BUFFER}."
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
 deferred class
-	EWSGI_RESPONSE_BUFFER
+	WGI_RESPONSE_BUFFER
 
-feature {EWSGI_APPLICATION} -- Commit
+feature {WGI_APPLICATION} -- Commit
 
 	commit
 			-- Commit the current response
@@ -35,7 +35,7 @@ feature -- Status report
 		deferred
 		end
 
-feature {EWSGI_RESPONSE_BUFFER} -- Core output operation
+feature {WGI_RESPONSE_BUFFER} -- Core output operation
 
 	write (s: STRING)
 			-- Send the string `s'

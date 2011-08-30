@@ -15,7 +15,7 @@ create
 
 feature {NONE} -- Initialization
 
-	make (req: EWSGI_REQUEST; tpl: URI_TEMPLATE; tpl_res: URI_TEMPLATE_MATCH_RESULT; p: like path)
+	make (req: WGI_REQUEST; tpl: URI_TEMPLATE; tpl_res: URI_TEMPLATE_MATCH_RESULT; p: like path)
 		do
 			request := req
 			uri_template := tpl

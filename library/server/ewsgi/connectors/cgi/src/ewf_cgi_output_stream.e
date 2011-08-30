@@ -1,5 +1,5 @@
 note
-	description: "Summary description for GW_CGI_OUTPUT_STREAM."
+	description: "Summary description for EWF_CGI_OUTPUT_STREAM."
 	legal: "See notice at end of class."
 	status: "See notice at end of class."
 	date: "$Date$"
@@ -9,7 +9,7 @@ class
 	EWF_CGI_OUTPUT_STREAM
 
 inherit
-	EWSGI_OUTPUT_STREAM
+	WGI_OUTPUT_STREAM
 		undefine
 			flush
 		end

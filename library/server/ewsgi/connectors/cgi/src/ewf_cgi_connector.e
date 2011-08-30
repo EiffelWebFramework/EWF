@@ -8,7 +8,7 @@ class
 	EWF_CGI_CONNECTOR
 
 inherit
-	EWSGI_CONNECTOR
+	WGI_CONNECTOR
 
 create
 	make
@@ -17,8 +17,8 @@ feature -- Execution
 
 	launch
 		local
-			req: EWSGI_REQUEST_FROM_TABLE
-			res: EWSGI_RESPONSE_STREAM_BUFFER
+			req: WGI_REQUEST_FROM_TABLE
+			res: WGI_RESPONSE_STREAM_BUFFER
 		do
 			create req.make ((create {EXECUTION_ENVIRONMENT}).starting_environment_variables, create {EWF_CGI_INPUT_STREAM}.make)
 			create res.make (create {EWF_CGI_OUTPUT_STREAM}.make)

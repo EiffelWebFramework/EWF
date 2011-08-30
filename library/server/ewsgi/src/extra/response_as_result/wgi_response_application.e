@@ -1,22 +1,22 @@
 note
-	description: "Summary description for {EWSGI_RESPONSE_APPLICATION} "
+	description: "Summary description for {WGI_RESPONSE_APPLICATION} "
 	legal: "See notice at end of class."
 	status: "See notice at end of class."
 	date: "$Date$"
 	revision: "$Revision$"
 
 deferred class
-	EWSGI_RESPONSE_APPLICATION
+	WGI_RESPONSE_APPLICATION
 
 feature -- Execution
 
-	execute (req: EWSGI_REQUEST; res: EWSGI_RESPONSE_BUFFER)
+	execute (req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
 			-- Execute the request
 			-- See `req.input' for input stream
 			--     `req.environment' for the Gateway environment	
 			-- and `res.output' for output stream
         local
-            rs: EWSGI_RESPONSE
+            rs: WGI_RESPONSE
         do
             rs := response (req)
             if rs.ready_to_transmit then
@@ -24,7 +24,7 @@ feature -- Execution
             else
                 -- Report internal server error.
                 -- Response not ready to transmit!
-                -- Implementor of EWSGI_APPLICATION has not done his job!
+                -- Implementor of WGI_APPLICATION has not done his job!
                 create rs.make
                 rs.set_status (500)
                 rs.set_header ("Content-Type", "text/plain")
@@ -35,7 +35,7 @@ feature -- Execution
 
 feature -- Response		
 
-    response (request: EWSGI_REQUEST): EWSGI_RESPONSE
+    response (request: WGI_REQUEST): WGI_RESPONSE
             -- HTTP response for given 'request'.
         deferred
         ensure

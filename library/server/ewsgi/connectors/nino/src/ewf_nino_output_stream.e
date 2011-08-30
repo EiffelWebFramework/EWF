@@ -9,7 +9,7 @@ class
 	EWF_NINO_OUTPUT_STREAM
 
 inherit
-	EWSGI_OUTPUT_STREAM
+	WGI_OUTPUT_STREAM
 
 	HTTP_STATUS_CODE_MESSAGES
 		export
@@ -26,7 +26,7 @@ feature {NONE} -- Initialization
 			set_nino_output (a_nino_output)
 		end
 
-feature {EWF_NINO_CONNECTOR, EWSGI_APPLICATION} -- Nino
+feature {EWF_NINO_CONNECTOR, WGI_APPLICATION} -- Nino
 
 	set_nino_output (o: like nino_output)
 		do

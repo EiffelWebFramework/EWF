@@ -1,16 +1,16 @@
 note
-	description: "Summary description for {EWSGI_APPLICATION}."
+	description: "Summary description for {WGI_APPLICATION}."
 	legal: "See notice at end of class."
 	status: "See notice at end of class."
 	date: "$Date$"
 	revision: "$Revision$"
 
 deferred class
-	EWSGI_APPLICATION
+	WGI_APPLICATION
 
 feature {NONE} -- Execution
 
-	execute (req: EWSGI_REQUEST; res: EWSGI_RESPONSE_BUFFER)
+	execute (req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
 			-- Execute the request
 			-- See `req.input' for input stream
 			--     `req.environment' for the Gateway environment	

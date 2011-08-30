@@ -17,7 +17,7 @@ inherit
 
 feature -- Access
 
-	request: EWSGI_REQUEST
+	request: WGI_REQUEST
 			-- Associated request
 
 	path: STRING
@@ -25,35 +25,34 @@ feature -- Access
 
 	request_content_type (content_type_supported: detachable ARRAY [STRING]): detachable READABLE_STRING_8
 		local
-			s: detachable READABLE_STRING_8
+			s: detachable READABLE_STRING_32
 			i,n: INTEGER
 		do
-			Result := request.content_type
-			if Result = Void then
-				s := request.http_accept
-				if s /= Void then
-					if attached accepted_content_types (request) as l_accept_lst then
-						from
-							l_accept_lst.start
-						until
-							l_accept_lst.after or Result /= Void
-						loop
-							s := l_accept_lst.item
-							if content_type_supported /= Void then
-								from
-									i := content_type_supported.lower
-									n := content_type_supported.upper
-								until
-									i > n or Result /= Void
-								loop
-									if content_type_supported[i].same_string (s) then
-										Result := s
-									end
-									i := i + 1
+			s := request.content_type
+			if s /= Void then
+				Result := s
+			else
+				if attached accepted_content_types (request) as l_accept_lst then
+					from
+						l_accept_lst.start
+					until
+						l_accept_lst.after or Result /= Void
+					loop
+						s := l_accept_lst.item
+						if content_type_supported /= Void then
+							from
+								i := content_type_supported.lower
+								n := content_type_supported.upper
+							until
+								i > n or Result /= Void
+							loop
+								if content_type_supported[i].same_string (s) then
+									Result := s
 								end
+								i := i + 1
 							end
-							l_accept_lst.forth
 						end
+						l_accept_lst.forth
 					end
 				end
 			end

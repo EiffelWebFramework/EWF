@@ -1,34 +1,31 @@
 note
-	description: "Summary description for {EWSGI_CONNECTOR}."
+	description : "[
+			Objects that represents the input stream
+		]"
 	specification: "EWSGI/connector specification https://github.com/Eiffel-World/Eiffel-Web-Framework/wiki/EWSGI-specification"
+	legal: "See notice at end of class."
+	status: "See notice at end of class."
 	date: "$Date$"
 	revision: "$Revision$"
 
 deferred class
-	EWSGI_CONNECTOR
+	WGI_INPUT_STREAM
 
-feature {NONE} -- Initialization
+feature -- Access
 
-	make (a_app: like application)
-		do
-			application := a_app
-			initialize
-		end
-
-	initialize
-			-- Initialize connector
-		do
-		end
-
-feature {NONE} -- Access
-
-	application: EWSGI_APPLICATION
-			-- Gateway Application
-
-feature -- Server
-
-	launch
+	last_string: STRING_8
+			-- Last read string from stream
 		deferred
+		end
+
+feature -- Basic operation
+
+	read_stream (n: INTEGER)
+		require
+			n_positive: n > 0
+		deferred
+		ensure
+			at_max_n: last_string.count <= n
 		end
 
 note

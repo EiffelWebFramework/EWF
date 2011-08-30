@@ -1,12 +1,12 @@
 note
-	description: "Summary description for {EWSGI_META_NAMES}."
+	description: "Summary description for {WGI_META_NAMES}."
 	legal: "See notice at end of class."
 	status: "See notice at end of class."
 	date: "$Date$"
 	revision: "$Revision$"
 
 class
-	EWSGI_META_NAMES
+	WGI_META_NAMES
 
 feature -- Access
 

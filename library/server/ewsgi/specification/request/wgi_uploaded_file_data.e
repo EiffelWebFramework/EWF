@@ -1,11 +1,11 @@
 note
-	description: "Summary description for {GW_UPLOADED_FILE}."
+	description: "Summary description for {WGI_UPLOADED_FILE_DATA}."
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
 class
-	EWSGI_UPLOADED_FILE_DATA
+	WGI_UPLOADED_FILE_DATA
 
 create
 	make
