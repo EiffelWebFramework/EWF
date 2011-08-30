@@ -14,14 +14,14 @@ Note the following is work in progress, and reflect a specification proposal, ra
 For now, the specification from EWF is done in Eiffel interface
 please see: https://github.com/Eiffel-World/Eiffel-Web-Framework/tree/master/library/server/ewsgi/specification
 
-EWSGI_APPLICATION
+WGI_APPLICATION
 
     deferred class 
-    	EWSGI_APPLICATION
+    	WGI_APPLICATION
     
     feature {NONE} -- Execution
     
-    	execute (req: EWSGI_REQUEST; res: EWSGI_RESPONSE_BUFFER)
+    	execute (req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
     			-- Execute the request
     			-- See `req.input' for input stream
     			--     `req.environment' for the Gateway environment	
@@ -36,114 +36,100 @@ EWSGI_APPLICATION
     	
     end
 
-EWSGI_REQUEST
+WGI_REQUEST
 
 	deferred class 
-		EWSGI_REQUEST
+		WGI_REQUEST
 	feature -- Access: Input
 	
-		input: EWSGI_INPUT_STREAM
+		input: WGI_INPUT_STREAM
 				-- Server input channel
 			deferred
 			end
 		
-	 feature -- Access: extra values
+	feature -- Access: extra values
 	
 		request_time: detachable DATE_TIME
 				-- Request time (UTC)
 			deferred
 			end
 		
-	feature -- Access: environment variables		
+	feature -- Access: CGI meta variables		
 	
-		environment: EWSGI_ENVIRONMENT
-				-- Environment variables
-			deferred
-			end
-	
-		environment_variable (a_name: STRING_8): detachable STRING_8
+		meta_variable (a_name: READABLE_STRING_GENERAL): detachable READABLE_STRING_32
 				-- Environment variable related to `a_name'
 			require
 				a_name_valid: a_name /= Void and then not a_name.is_empty
 			deferred
 			end
-		
-	feature -- Access: execution variables		
 	
-		execution_variables: EWSGI_VARIABLES [STRING_32]
-				-- Execution variables set by the application
+		meta_variables: HASH_TABLE [READABLE_STRING_32, READABLE_STRING_GENERAL]
 			deferred
 			end
 	
-		execution_variable (a_name: STRING_8): detachable STRING_32
-				-- Execution variable related to `a_name'
-			require
-				a_name_valid: a_name /= Void and then not a_name.is_empty
-			deferred
-			end
-		
-	feature -- URL Parameters
+	feature -- Query string Parameters
 	
-		parameters: EWSGI_VARIABLES [STRING_32]
+		query_parameters: HASH_TABLE [READABLE_STRING_32, READABLE_STRING_GENERAL]
 				-- Variables extracted from QUERY_STRING
 			deferred
 			end
 	
-		parameter (a_name: STRING_8): detachable STRING_32
+		query_parameter (a_name: READABLE_STRING_GENERAL): detachable READABLE_STRING_32
 				-- Parameter for name `n'.
 			require
 				a_name_valid: a_name /= Void and then not a_name.is_empty
 			deferred
 			end
-		
+	
 	feature -- Form fields and related
 	
-		form_fields: EWSGI_VARIABLES [STRING_32]
+		form_data_parameters: HASH_TABLE [READABLE_STRING_32, READABLE_STRING_GENERAL]
 				-- Variables sent by POST request
 			deferred
 			end
 	
-		form_field (a_name: STRING_8): detachable STRING_32
+		form_data_parameter (a_name: READABLE_STRING_GENERAL): detachable READABLE_STRING_32
 				-- Field for name `a_name'.
 			require
 				a_name_valid: a_name /= Void and then not a_name.is_empty
 			deferred
 			end
 	
-		uploaded_files: HASH_TABLE [EWSGI_UPLOADED_FILE_DATA, STRING_8]
+		uploaded_files: HASH_TABLE [WGI_UPLOADED_FILE_DATA, READABLE_STRING_GENERAL]
 				-- Table of uploaded files information
+				--| name: original path from the user
+				--| type: content type
+				--| tmp_name: path to temp file that resides on server
+				--| tmp_base_name: basename of `tmp_name'
+				--| error: if /= 0 , there was an error : TODO ...
+				--| size: size of the file given by the http request
 			deferred
 			end
-		
+			
 	feature -- Cookies	
 	
-		cookies_variables: HASH_TABLE [STRING_8, STRING_8]
+		cookies: HASH_TABLE [READABLE_STRING_32, READABLE_STRING_GENERAL]
 				-- Expanded cookies variable
 			deferred
 			end
 	
-		cookies_variable (a_name: STRING_8): detachable STRING_8
+		cookie (a_name: READABLE_STRING_GENERAL): detachable READABLE_STRING_32
 				-- Field for name `a_name'.
 			require
 				a_name_valid: a_name /= Void and then not a_name.is_empty
 			deferred
 			end
 	
-		cookies: HASH_TABLE [EWSGI_COOKIE, STRING_8]
-				-- Cookies Information
-			deferred
-			end
-		
 	feature -- Access: global variable
 	
-		variables: HASH_TABLE [STRING_32, STRING_32]
+		parameters: HASH_TABLE [READABLE_STRING_32, READABLE_STRING_GENERAL]
 				-- Table containing all the various variables
 				-- Warning: this is computed each time, if you change the content of other containers
 				-- this won't update this Result's content, unless you query it again
 			deferred
 			end
 	
-		variable (a_name: STRING_8): detachable STRING_32
+		parameter (a_name: READABLE_STRING_GENERAL): detachable READABLE_STRING_32
 				-- Variable named `a_name' from any of the variables container
 				-- and following a specific order
 				-- execution, environment, get, post, cookies
@@ -151,7 +137,7 @@ EWSGI_REQUEST
 				a_name_valid: a_name /= Void and then not a_name.is_empty
 			deferred
 			end
-		
+	
 	feature -- Uploaded File Handling
 	
 		is_uploaded_file (a_filename: STRING_8): BOOLEAN
@@ -175,12 +161,12 @@ EWSGI_REQUEST
 		
 	end
 
-EWSGI_RESPONSE_BUFFER
+WGI_RESPONSE_BUFFER
 
-	deferred class 
-		EWSGI_RESPONSE_BUFFER
+	deferred class
+		WGI_RESPONSE_BUFFER
 	
-	feature {EWSGI_APPLICATION} -- Commit
+	feature {WGI_APPLICATION} -- Commit
 	
 		commit
 				-- Commit the current response
@@ -190,7 +176,7 @@ EWSGI_RESPONSE_BUFFER
 				header_committed: header_committed
 				message_committed: message_committed
 			end
-		
+	
 	feature -- Status report
 	
 		header_committed: BOOLEAN
@@ -207,15 +193,15 @@ EWSGI_RESPONSE_BUFFER
 				-- Can message be written?
 			deferred
 			end
-		
-	feature {NONE} -- Core output operation
 	
-		write (s: STRING_8)
+	feature {WGI_RESPONSE_BUFFER} -- Core output operation
+	
+		write (s: STRING)
 				-- Send the string `s'
 				-- this can be used for header and body
 			deferred
 			end
-		
+	
 	feature -- Status setting
 	
 		status_is_set: BOOLEAN
@@ -223,7 +209,7 @@ EWSGI_RESPONSE_BUFFER
 			deferred
 			end
 	
-		set_status_code (a_code: INTEGER_32)
+		set_status_code (a_code: INTEGER)
 				-- Set response status code
 				-- Should be done before sending any data back to the client
 			require
@@ -235,42 +221,25 @@ EWSGI_RESPONSE_BUFFER
 				status_set: status_is_set
 			end
 	
-		status_code: INTEGER_32
+		status_code: INTEGER
 				-- Response status
 			deferred
 			end
-		
-	feature -- Output operation
 	
-		flush
-				-- Flush if it makes sense
-			deferred
-			end
-	
-		write_string (s: STRING_8)
-				-- Send the string `s'
-			require
-				message_writable: message_writable
-			deferred
-			end
-	
-		write_substring (s: STRING_8; a_begin_index, a_end_index: INTEGER_32)
-				-- Send the substring `s[a_begin_index:a_end_index]'
-			require
-				message_writable: message_writable
-			deferred
-			end
-	
-		write_file_content (fn: STRING_8)
-				-- Send the content of file `fn'
-			require
-				message_writable: message_writable
-			deferred
-			end
-		
 	feature -- Header output operation
 	
-		write_header (a_status_code: INTEGER_32; a_headers: detachable ARRAY [TUPLE [key: STRING_8; value: STRING_8]])
+		write_headers_string (a_headers: STRING)
+			require
+				status_set: status_is_set
+				header_not_committed: not header_committed
+			deferred
+			ensure
+				status_set: status_is_set
+				header_committed: header_committed
+				message_writable: message_writable
+			end
+	
+		write_header (a_status_code: INTEGER; a_headers: detachable ARRAY [TUPLE [key: STRING; value: STRING]])
 				-- Send headers with status `a_status', and headers from `a_headers'
 			require
 				status_not_set: not status_is_set
@@ -279,10 +248,38 @@ EWSGI_RESPONSE_BUFFER
 			ensure
 				header_committed: header_committed
 				status_set: status_is_set
+				message_writable: message_writable
 			end
-		
+	
+	feature -- Output operation
+	
+		write_string (s: STRING)
+				-- Send the string `s'
+			require
+				message_writable: message_writable
+			deferred
+			end
+	
+		write_substring (s: STRING; a_begin_index, a_end_index: INTEGER)
+				-- Send the substring `s[a_begin_index:a_end_index]'
+			require
+				message_writable: message_writable
+			deferred
+			end
+	
+		write_file_content (fn: STRING)
+				-- Send the content of file `fn'
+			require
+				message_writable: message_writable
+			deferred
+			end
+	
+		flush
+				-- Flush if it makes sense
+			deferred
+			end
+	
 	end
-
 
 
 ## Proof-of-concept and reference implementation

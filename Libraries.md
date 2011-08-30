@@ -1,5 +1,5 @@
 ## libraries currently part of the Eiffel Web Framework ##
-* [[Library-EWSGI]]: Eiffel Web Server Gateway Interface  (prefix GW_  for **G**ate**W**ay)
+* [[Library-EWSGI]]: Eiffel Web Server Gateway Interface  (prefix WGI_  for **W**eb**G**ateway**I**nterface)
 * [[Library-libFCGI]]: Eiffel wrapper of libfcgi SDK (http://www.fastcgi.com/devkit/libfcgi/)
 * [[Library-encoder]]: simple encoder for base64, url-encode, xml entities
 * [[Library-error]]: simple framework to handle error in EWSGI and related
