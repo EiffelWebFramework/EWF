@@ -8,14 +8,13 @@
 			<exclude>/CVS$</exclude>
 			<exclude>/.svn$</exclude>
 		</file_rule>
-		<option warning="true">
+		<option warning="true" void_safety="none">
 			<assertions precondition="true" postcondition="true" check="true" invariant="true" loop="true" supplier_precondition="true"/>
 		</option>
 		<setting name="concurrency" value="thread"/>
 		<library name="base" location="$ISE_LIBRARY\library\base\base.ecf"/>
 		<library name="net" location="$ISE_LIBRARY\library\net\net.ecf"/>
 		<library name="thread" location="$ISE_LIBRARY\library\thread\thread.ecf"/>
-		<cluster name="nino" location=".\library\" recursive="true">
-		</cluster>
+		<cluster name="nino" location=".\library\" recursive="true"/>
 	</target>
 </system>
