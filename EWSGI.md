@@ -1,11 +1,11 @@
 - See proposed specifications: [[EWSGI specification| EWSGI-specification]]
 - See [[Open questions| EWSGI-open-questions]]
-- And below the various calls for decisions, and effective decisions
+- And below the various proposals and associated decision
 
+----
+# Waiting for decision
 
-# In progress
-
-### Return type of `parameter' (and similar query_, form_data_ ...) should be deferred WGI_VALUE
+## Return type of `parameter' (and similar query_, form_data_ ...) should be deferred WGI_VALUE
 - Code: **P-2011-09-05-WGI_VALUE**
 - Status: proposed on 2011-09-05.
 - **WAITING FOR APPROVAL**
@@ -16,7 +16,7 @@
 >   
 > Thus we would have: <code>parameter (a_name: READABLE_STRING_GENERAL): detachable WGI_VALUE </code>  
 
-### Include the parameter's name in WGI_VALUE interface
+## Include the parameter's name in WGI_VALUE interface
 - Code: **P-2011-09-05-WGI_VALUE_interface**
 - Dependence: adoption of P-2011-09-05-WGI_VALUE , may impact on P-2011-09-05-parameters_ITERABLE
 - Status: proposed on 2011-09-05 **WAITING FOR APPROVAL**
@@ -27,7 +27,7 @@
 > This would also allow a nicer signature for `parameters: ITERABLE [WGI__VALUE]'  
 > instead of `parameters: ITERABLE [TUPLE [name: READABLE_STRING_GENERAL; value: WGI__VALUE]]'  
 
-### Signature of parameters (and similar) using ITERABLE [...]
+## Signature of parameters (and similar) using ITERABLE [...]
 - Code: **P-2011-09-05-parameters_ITERABLE**
 - Status: proposed on 2011-09-05 **WAITING FOR APPROVAL**
 
@@ -40,15 +40,17 @@
 >  
 > `parameters: ITERABLE [WGI_VALUE]`  
 
+----
 # Adopted entries
 
-### Change prefix from EWSGI_ to WGI_ 
+## Change prefix from EWSGI_ to WGI_ 
 - Code: **P-2011-08-29-WGI_prefix**
 - Status: **adopted**
 - Decision: **WGI_**
 
 > shorter and pronouncable prefix for EWSGI class names
 
+----
 # Rejected entries
 
 ...
