@@ -7,8 +7,7 @@
 
 ## Return type of `parameter' (and similar query_, form_data_ ...) should be deferred WGI_VALUE
 - Code: **P-2011-09-05-WGI_VALUE**
-- Status: proposed on 2011-09-05.
-- **WAITING FOR APPROVAL**
+- Status: proposed on 2011-09-05 **WAITING FOR APPROVAL**
 
 > Instead of returning just `READABLE_STRING_32` , it would be better to use **WGI_VALUE** .  
 > Mainly to address the multiple value for the same param name, but also for uploaded files.  
