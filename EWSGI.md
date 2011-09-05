@@ -24,8 +24,9 @@
 > include the corresponding parameter's name in WGI_VALUE interface.  
 > Such as `{WGI_VALUE}.name: READABLE_STRING_GENERAL`  (or READABLE_STRING_32).   
 >  
-> This would also allow a nicer signature for `parameters: ITERABLE [WGI__VALUE]'  
-> instead of `parameters: ITERABLE [TUPLE [name: READABLE_STRING_GENERAL; value: WGI__VALUE]]'  
+> This would also allow to replace  
+> signature `parameters: ITERABLE [TUPLE [name: READABLE_STRING_GENERAL; value: WGI__VALUE]]'  
+> by a nicer signature  `parameters: ITERABLE [WGI__VALUE]`
 
 ## Signature of parameters (and similar) using ITERABLE [...]
 - Code: **P-2011-09-05-parameters_ITERABLE**
