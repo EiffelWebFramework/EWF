@@ -5,6 +5,14 @@
 ----
 # Waiting for decision
 
+## Rename `parameter' into `item'
+- Code: **P-2011-09-07-renaming_REQUEST_item**
+- Status: proposed on 2011-09-07 **WAITING FOR APPROVAL**
+
+> rename `{REQUEST}.parameter (n: READABLE_STRING_GENERAL): detachable WGI_VALUE`   
+> into `{REQUEST}.item (n: READABLE_STRING_GENERAL): detachable WGI_VALUE`   
+> and similar for `parameters` -> `items`
+
 ## Return type of `parameter' (and similar query_, form_data_ ...) should be deferred WGI_VALUE
 - Code: **P-2011-09-05-WGI_VALUE**
 - Status: proposed on 2011-09-05 **WAITING FOR APPROVAL**
