@@ -64,7 +64,7 @@ feature -- Request processing
 			until
 				a_headers_map.after
 			loop
-				vn := a_headers_map.key_for_iteration.as_upper
+				vn := "HTTP_" + a_headers_map.key_for_iteration.as_upper
 				vn.replace_substring_all ("-", "_")
 				add_environment_variable (a_headers_map.item_for_iteration, vn, env)
 				a_headers_map.forth
