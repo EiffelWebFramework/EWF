@@ -78,7 +78,7 @@ feature -- Server
 		do
 			create req.make (env, create {EWF_NINO_INPUT_STREAM}.make (a_input))
 			create res.make (create {EWF_NINO_OUTPUT_STREAM}.make (a_output))
-			req.set_meta_parameter ("RAW_HEADER_DATA", a_headers_text)
+			req.set_meta_variable ("RAW_HEADER_DATA", a_headers_text)
 			application.execute (req, res)
 		end
 

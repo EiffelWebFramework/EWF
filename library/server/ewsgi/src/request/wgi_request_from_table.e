@@ -40,7 +40,7 @@ feature {NONE} -- Initialization
 			s: like meta_variable
 			table: HASH_TABLE [READABLE_STRING_32, READABLE_STRING_GENERAL]
 		do
-			create empty_string.make_empty
+			create {STRING_32} empty_string.make_empty
 
 			create table.make (a_vars.count)
 			meta_variables := table
@@ -114,13 +114,13 @@ feature {NONE} -- Initialization
 			if attached request_uri as rq_uri then
 				p := rq_uri.index_of ('?', 1)
 				if p > 0 then
-					set_meta_parameter (rq_uri.substring (1, p-1), {WGI_META_NAMES}.self)
+					set_meta_variable (rq_uri.substring (1, p-1), {WGI_META_NAMES}.self)
 				else
-					set_meta_parameter (rq_uri, {WGI_META_NAMES}.self)
+					set_meta_variable (rq_uri, {WGI_META_NAMES}.self)
 				end
 			end
 			if meta_variable ({WGI_META_NAMES}.request_time) = Void then
-				set_meta_parameter (date_time_utilities.unix_time_stamp (Void).out, {WGI_META_NAMES}.request_time)
+				set_meta_variable (date_time_utilities.unix_time_stamp (Void).out, {WGI_META_NAMES}.request_time)
 			end
 		end
 
@@ -195,14 +195,14 @@ feature -- Access: CGI meta parameters
 			end
 		end
 
-	set_meta_parameter (a_name: READABLE_STRING_GENERAL; a_value: READABLE_STRING_32)
+	set_meta_variable (a_name: READABLE_STRING_GENERAL; a_value: READABLE_STRING_32)
 		do
 			meta_variables.force (a_value, a_name)
 		ensure
 			param_set: meta_variable (a_name) ~ a_value
 		end
 
-	unset_meta_parameter (a_name: READABLE_STRING_GENERAL)
+	unset_meta_variable (a_name: READABLE_STRING_GENERAL)
 		do
 			meta_variables.remove (a_name)
 		ensure
@@ -354,14 +354,14 @@ feature {NONE} -- Element change: CGI meta parameter related to PATH_INFO
 			s_attached: s /= Void
 		do
 			orig_path_info := s
-			set_meta_parameter ({WGI_META_NAMES}.orig_path_info, s)
+			set_meta_variable ({WGI_META_NAMES}.orig_path_info, s)
 		end
 
 	unset_orig_path_info
 			-- Unset ORIG_PATH_INFO
 		do
 			orig_path_info := Void
-			unset_meta_parameter ({WGI_META_NAMES}.orig_path_info)
+			unset_meta_variable ({WGI_META_NAMES}.orig_path_info)
 		ensure
 			unset: attached meta_variable ({WGI_META_NAMES}.orig_path_info)
 		end
@@ -1140,7 +1140,7 @@ feature {NONE} -- Implementation
 
 feature {NONE} -- Implementation: utilities		
 
-	empty_string: STRING
+	empty_string: READABLE_STRING_32
 			-- Reusable empty string
 
 	url_encoder: URL_ENCODER
