@@ -60,6 +60,8 @@ feature -- Helper
 					i := i + 1
 				end
 			end
+			res.set_status_code ({HTTP_STATUS_CODE}.unsupported_media_type)
+			res.write_headers_string (h.string)
 			if s /= Void then
 				res.write_string ("Unsupported request content-type, Accept: " + s + "%N")
 			end
