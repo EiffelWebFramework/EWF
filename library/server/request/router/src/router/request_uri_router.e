@@ -10,11 +10,6 @@ class
 inherit
 	REQUEST_ROUTER
 
-	ITERABLE [REQUEST_HANDLER]
-		redefine
-			new_cursor
-		end
-
 create
 	make
 
@@ -28,9 +23,9 @@ feature -- Initialization
 
 feature -- Registration
 
-	map (p: STRING; h: REQUEST_HANDLER)
+	map_with_request_methods (p: READABLE_STRING_8; h: REQUEST_HANDLER; rqst_methods: detachable ARRAY [READABLE_STRING_8])
 		do
-			handlers.force (h, p)
+			handlers.force ([h, p, formatted_request_methods (rqst_methods)])
 		end
 
 feature {NONE} -- Access: Implementation
@@ -40,9 +35,9 @@ feature {NONE} -- Access: Implementation
 			h: detachable REQUEST_HANDLER
 			ctx: detachable REQUEST_HANDLER_CONTEXT
 		do
-			h := handler_by_path (req.path_info)
+			h := handler_by_path (req.path_info, req.request_method)
 			if h = Void then
-				if attached smart_handler_by_path (req.path_info) as info then
+				if attached smart_handler_by_path (req.path_info, req.request_method) as info then
 					h := info.handler
 					ctx := handler_context (info.path, req)
 				end
@@ -59,30 +54,45 @@ feature {NONE} -- Access: Implementation
 			end
 		end
 
-	smart_handler (req: WGI_REQUEST): detachable TUPLE [path: STRING; handler: REQUEST_HANDLER]
+	smart_handler (req: WGI_REQUEST): detachable TUPLE [path: READABLE_STRING_8; handler: REQUEST_HANDLER]
 		require
 			req_valid: req /= Void and then req.path_info /= Void
 		do
-			Result := smart_handler_by_path (req.path_info)
+			Result := smart_handler_by_path (req.path_info, req.request_method)
 		ensure
 			req_path_info_unchanged: req.path_info.same_string (old req.path_info)
 		end
 
-	handler_by_path (a_path: STRING): detachable REQUEST_HANDLER
+	handler_by_path (a_path: READABLE_STRING_GENERAL; rqst_method: READABLE_STRING_GENERAL): detachable REQUEST_HANDLER
 		require
 			a_path_valid: a_path /= Void
+		local
+			l_handlers: like handlers
+			l_item: like handlers.item
 		do
-			Result := handlers.item (context_path (a_path))
+			l_handlers := handlers
+			from
+				l_handlers.start
+			until
+				l_handlers.after or Result /= Void
+			loop
+				l_item := l_handlers.item
+				if is_matching_request_methods (rqst_method, l_item.request_methods) and a_path.same_string (l_item.uri) then
+					Result := l_item.handler
+				end
+				l_handlers.forth
+			end
+--			Result := handlers.item (context_path (a_path))
 		ensure
 			a_path_unchanged: a_path.same_string (old a_path)
 		end
 
-	smart_handler_by_path (a_path: STRING): detachable TUPLE [path: STRING; handler: REQUEST_HANDLER]
+	smart_handler_by_path (a_path: READABLE_STRING_8; rqst_method: READABLE_STRING_GENERAL): detachable TUPLE [path: READABLE_STRING_8; handler: REQUEST_HANDLER]
 		require
 			a_path_valid: a_path /= Void
 		local
 			p: INTEGER
-			l_context_path, l_path: STRING
+			l_context_path, l_path: READABLE_STRING_8
 			h: detachable REQUEST_HANDLER
 		do
 			l_context_path := context_path (a_path)
@@ -92,7 +102,7 @@ feature {NONE} -- Access: Implementation
 				p <= 1 or Result /= Void
 			loop
 				l_path := l_context_path.substring (1, p - 1)
-				h := handler_by_path (l_path)
+				h := handler_by_path (l_path, rqst_method)
 				if h /= Void then
 					Result := [l_path, h]
 				else
@@ -118,34 +128,33 @@ feature -- Context factory
 
 feature -- Access
 
-	new_cursor: HASH_TABLE_ITERATION_CURSOR [REQUEST_HANDLER, STRING]
+	new_cursor: ITERATION_CURSOR [TUPLE [handler: REQUEST_HANDLER; id: READABLE_STRING_8; request_methods: detachable ARRAY [READABLE_STRING_8]]]
 			-- Fresh cursor associated with current structure
 		do
 			Result := handlers.new_cursor
 		end
 
-	item (a_path: STRING): detachable REQUEST_HANDLER
-		do
-			Result := handler_by_path (a_path)
-		end
-
 feature {NONE} -- Implementation
 
-	handlers: HASH_TABLE [REQUEST_HANDLER, STRING]
-			-- Handlers
+	handlers: ARRAYED_LIST [TUPLE [handler: REQUEST_HANDLER; uri: READABLE_STRING_8; request_methods: detachable ARRAY [READABLE_STRING_8]]]
+			-- Handlers indexed by the template expression
+			-- see `templates'
 
-	context_path (a_path: STRING): STRING
+	context_path (a_path: READABLE_STRING_8): READABLE_STRING_8
 			-- Prepared path from context which match requirement
 			-- i.e: not empty, starting with '/'
 		local
 			p: INTEGER
+			s: STRING_8
 		do
 			Result := a_path
 			if Result.is_empty then
 				Result := "/"
 			else
 				if Result[1] /= '/' then
-					Result := "/" + Result
+					create s.make_from_string (Result)
+					s.prepend_character ('/')
+					Result := s
 				end
 				p := Result.index_of ('.', 1)
 				if p > 0 then

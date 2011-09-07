@@ -29,6 +29,11 @@ feature {NONE} -- Initialization
 
 	create_router
 		do
+			debug
+				create {REQUEST_URI_ROUTER} router.make (5)
+				create {REQUEST_URI_TEMPLATE_ROUTER} router.make (5)
+			end
+
 --			create {REQUEST_URI_ROUTER} router.make (5)
 			create {REQUEST_URI_TEMPLATE_ROUTER} router.make (5)
 		end
@@ -47,6 +52,12 @@ feature {NONE} -- Initialization
 			create ra.make (agent handle_anonymous_hello)
 			router.map ("/hello", ra)
 			router.map ("/hello.{format}", ra)
+
+			router.map_agent_with_request_methods ("/method/any", agent handle_method_any, Void)
+			router.map_agent_with_request_methods ("/method/guess", agent handle_method_get_or_post, <<"GET", "POST">>)
+			router.map_agent_with_request_methods ("/method/custom", agent handle_method_get, <<"GET">>)
+			router.map_agent_with_request_methods ("/method/custom", agent handle_method_post, <<"POST">>)
+
 		end
 
 feature -- Execution
@@ -169,6 +180,29 @@ feature -- Execution
 		do
 			execute_hello (req, res, ctx.parameter ("name"), ctx)
 		end
+
+	handle_method_any (ctx: REQUEST_HANDLER_CONTEXT; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+		do
+			execute_hello (req, res, req.request_method, ctx)
+		end
+
+	handle_method_get (ctx: REQUEST_HANDLER_CONTEXT; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+		do
+			execute_hello (req, res, "GET", ctx)
+		end
+
+
+	handle_method_post (ctx: REQUEST_HANDLER_CONTEXT; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+		do
+			execute_hello (req, res, "POST", ctx)
+		end
+
+	handle_method_get_or_post (ctx: REQUEST_HANDLER_CONTEXT; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+		do
+			execute_hello (req, res, "GET or POST", ctx)
+		end
+
+
 
 note
 	copyright: "2011-2011, Eiffel Software and others"

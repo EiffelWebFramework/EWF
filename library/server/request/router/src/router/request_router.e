@@ -7,6 +7,9 @@ note
 deferred class
 	REQUEST_ROUTER
 
+inherit
+	ITERABLE [TUPLE [handler: REQUEST_HANDLER; id: READABLE_STRING_8; request_methods: detachable ARRAY [READABLE_STRING_8]]]
+
 feature -- Registration
 
 	map_default (r: like default_handler)
@@ -17,17 +20,28 @@ feature -- Registration
 			default_handler := r
 		end
 
-	map (a_id: STRING; h: REQUEST_HANDLER)
+	map (a_id: READABLE_STRING_8; h: REQUEST_HANDLER)
 			-- Map handler `h' with `a_id'
+		do
+			map_with_request_methods (a_id, h, Void)
+		end
+
+	map_with_request_methods (a_id: READABLE_STRING_8; h: REQUEST_HANDLER; rqst_methods: detachable ARRAY [READABLE_STRING_8])
+			-- Map handler `h' with `a_id' and `rqst_methods'
 		deferred
 		end
 
-	map_agent (a_id: STRING; a_action: like {REQUEST_AGENT_HANDLER}.action)
+	map_agent (a_id: READABLE_STRING_8; a_action: like {REQUEST_AGENT_HANDLER}.action)
+		do
+			map_agent_with_request_methods (a_id, a_action, Void)
+		end
+
+	map_agent_with_request_methods (a_id: READABLE_STRING_8; a_action: like {REQUEST_AGENT_HANDLER}.action; rqst_methods: detachable ARRAY [READABLE_STRING_8])
 		local
 			h: REQUEST_AGENT_HANDLER
 		do
 			create h.make (a_action)
-			map (a_id, h)
+			map_with_request_methods (a_id, h, rqst_methods)
 		end
 
 feature -- Execution
@@ -67,6 +81,48 @@ feature {NONE} -- Access: Implementation
 		deferred
 		ensure
 			req_path_info_unchanged: req.path_info.same_string (old req.path_info)
+		end
+
+	is_matching_request_methods (a_request_method: READABLE_STRING_GENERAL; rqst_methods: like formatted_request_methods): BOOLEAN
+			-- `a_request_method' is matching `rqst_methods' contents
+		local
+			i,n: INTEGER
+			m: READABLE_STRING_GENERAL
+		do
+			if rqst_methods /= Void and then not rqst_methods.is_empty then
+				m := a_request_method
+				from
+					i := rqst_methods.lower
+					n := rqst_methods.upper
+				until
+					i > n or Result
+				loop
+					Result := m.same_string (rqst_methods[i])
+					i := i + 1
+				end
+			else
+				Result := True
+			end
+		end
+
+	formatted_request_methods (rqst_methods: like formatted_request_methods): detachable ARRAY [READABLE_STRING_8]
+			-- Formatted request methods values
+		local
+			i,l,u: INTEGER
+		do
+			if rqst_methods /= Void and then not rqst_methods.is_empty then
+				l := rqst_methods.lower
+				u := rqst_methods.upper
+				create Result.make_filled (rqst_methods[l], l, u)
+				from
+					i := l + 1
+				until
+					i > u
+				loop
+					Result[i] := rqst_methods[i].as_string_8.as_upper
+					i := i + 1
+				end
+			end
 		end
 
 feature {NONE} -- Implementation

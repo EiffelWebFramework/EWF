@@ -20,8 +20,8 @@ feature -- Access
 	request: WGI_REQUEST
 			-- Associated request
 
-	path: STRING
-			-- ???
+	path: READABLE_STRING_GENERAL
+			-- Associated path
 
 	request_content_type (content_type_supported: detachable ARRAY [STRING]): detachable READABLE_STRING_8
 		local
