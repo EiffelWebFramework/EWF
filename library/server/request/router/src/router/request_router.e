@@ -8,7 +8,7 @@ deferred class
 	REQUEST_ROUTER
 
 inherit
-	ITERABLE [TUPLE [handler: REQUEST_HANDLER; id: READABLE_STRING_8; request_methods: detachable ARRAY [READABLE_STRING_8]]]
+	ITERABLE [TUPLE [handler: REQUEST_HANDLER; resource: READABLE_STRING_8; request_methods: detachable ARRAY [READABLE_STRING_8]]]
 
 feature -- Registration
 

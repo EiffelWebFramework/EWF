@@ -77,7 +77,7 @@ feature {NONE} -- Access: Implementation
 				l_handlers.after or Result /= Void
 			loop
 				l_item := l_handlers.item
-				if is_matching_request_methods (rqst_method, l_item.request_methods) and a_path.same_string (l_item.uri) then
+				if is_matching_request_methods (rqst_method, l_item.request_methods) and a_path.same_string (l_item.resource) then
 					Result := l_item.handler
 				end
 				l_handlers.forth
@@ -128,7 +128,7 @@ feature -- Context factory
 
 feature -- Access
 
-	new_cursor: ITERATION_CURSOR [TUPLE [handler: REQUEST_HANDLER; id: READABLE_STRING_8; request_methods: detachable ARRAY [READABLE_STRING_8]]]
+	new_cursor: ITERATION_CURSOR [TUPLE [handler: REQUEST_HANDLER; resource: READABLE_STRING_8; request_methods: detachable ARRAY [READABLE_STRING_8]]]
 			-- Fresh cursor associated with current structure
 		do
 			Result := handlers.new_cursor
@@ -136,7 +136,7 @@ feature -- Access
 
 feature {NONE} -- Implementation
 
-	handlers: ARRAYED_LIST [TUPLE [handler: REQUEST_HANDLER; uri: READABLE_STRING_8; request_methods: detachable ARRAY [READABLE_STRING_8]]]
+	handlers: ARRAYED_LIST [TUPLE [handler: REQUEST_HANDLER; resource: READABLE_STRING_8; request_methods: detachable ARRAY [READABLE_STRING_8]]]
 			-- Handlers indexed by the template expression
 			-- see `templates'
 

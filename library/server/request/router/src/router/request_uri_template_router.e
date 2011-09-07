@@ -63,7 +63,7 @@ feature {NONE} -- Access: Implementation
 			loop
 				if attached l_handlers.item as l_info then
 					if is_matching_request_methods (l_req_method, l_info.request_methods) then
-						t := l_info.template
+						t := l_info.resource
 						if attached templates.item (t) as tpl and then
 							attached tpl.match (p) as res
 						then
@@ -89,7 +89,7 @@ feature -- Context factory
 
 feature -- Access: ITERABLE
 
-	new_cursor: ITERATION_CURSOR [TUPLE [handler: REQUEST_HANDLER; template: READABLE_STRING_8; request_methods: detachable ARRAY [READABLE_STRING_8]]]
+	new_cursor: ITERATION_CURSOR [TUPLE [handler: REQUEST_HANDLER; resource: READABLE_STRING_8; request_methods: detachable ARRAY [READABLE_STRING_8]]]
 			-- Fresh cursor associated with current structure
 		do
 			Result := handlers.new_cursor
@@ -97,7 +97,7 @@ feature -- Access: ITERABLE
 
 feature {NONE} -- Implementation
 
-	handlers: ARRAYED_LIST [TUPLE [handler: REQUEST_HANDLER; template: READABLE_STRING_8; request_methods: detachable ARRAY [READABLE_STRING_8]]]
+	handlers: ARRAYED_LIST [TUPLE [handler: REQUEST_HANDLER; resource: READABLE_STRING_8; request_methods: detachable ARRAY [READABLE_STRING_8]]]
 			-- Handlers indexed by the template expression
 			-- see `templates'
 
