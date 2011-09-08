@@ -21,6 +21,7 @@ create
 
 feature {NONE} -- Initialization
 
+
 	make
 		do
 			initialize_router
