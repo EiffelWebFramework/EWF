@@ -1,35 +1,34 @@
 note
-	description: "Summary description for {REQUEST_URI_HANDLER_CONTEXT}."
+	description: "Summary description for {WGI_CONNECTOR}."
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
-class
-	REQUEST_URI_HANDLER_CONTEXT
-
-inherit
-	REQUEST_HANDLER_CONTEXT
-
-create
-	make
+deferred class
+	WGI_CONNECTOR
 
 feature {NONE} -- Initialization
 
-	make (req: WGI_REQUEST; p: like path)
+	make (a_app: like application)
 		do
-			request := req
-			path := p
+			application := a_app
+			initialize
 		end
 
-feature -- Query	
-
-	path_parameter (a_name: READABLE_STRING_GENERAL): detachable STRING_32
+	initialize
+			-- Initialize connector
 		do
 		end
 
-	query_parameter (a_name: READABLE_STRING_GENERAL): detachable READABLE_STRING_32
-		do
-			Result := request.parameter (a_name)
+feature {NONE} -- Access
+
+	application: WGI_APPLICATION
+			-- Gateway Application
+
+feature -- Server
+
+	launch
+		deferred
 		end
 
 note

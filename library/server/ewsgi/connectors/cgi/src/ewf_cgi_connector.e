@@ -1,35 +1,28 @@
 note
-	description: "Summary description for REQUEST_AGENT_HANDLER."
+	description: "Summary description for {EWF_CGI_CONNECTOR}."
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
 class
-	REQUEST_AGENT_HANDLER
+	EWF_CGI_CONNECTOR
 
 inherit
-	REQUEST_HANDLER
+	WGI_CONNECTOR
 
 create
 	make
 
-feature -- Initialization
-
-	make (act: like action)
-		do
-			action := act
-			initialize
-		end
-
-feature -- Access
-
-	action: PROCEDURE [ANY, TUPLE [ctx: REQUEST_HANDLER_CONTEXT; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER]]
-
 feature -- Execution
 
-	execute_application (ctx: REQUEST_HANDLER_CONTEXT; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	launch
+		local
+			req: WGI_REQUEST_FROM_TABLE
+			res: WGI_RESPONSE_STREAM_BUFFER
 		do
-			action.call ([ctx, req, res])
+			create req.make ((create {EXECUTION_ENVIRONMENT}).starting_environment_variables, create {EWF_CGI_INPUT_STREAM}.make)
+			create res.make (create {EWF_CGI_OUTPUT_STREAM}.make)
+			application.process (req, res)
 		end
 
 note

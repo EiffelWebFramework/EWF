@@ -14,7 +14,7 @@ inherit
 
 	ROUTED_APPLICATION_HELPER
 
-	DEFAULT_EWSGI_APPLICATION
+	DEFAULT_WGI_APPLICATION
 
 create
 	make
@@ -30,6 +30,11 @@ feature {NONE} -- Initialization
 
 	create_router
 		do
+			debug
+				create {REQUEST_URI_ROUTER} router.make (5)
+				create {REQUEST_URI_TEMPLATE_ROUTER} router.make (5)
+			end
+
 --			create {REQUEST_URI_ROUTER} router.make (5)
 			create {REQUEST_URI_TEMPLATE_ROUTER} router.make (5)
 		end
@@ -48,13 +53,19 @@ feature {NONE} -- Initialization
 			create ra.make (agent handle_anonymous_hello)
 			router.map ("/hello", ra)
 			router.map ("/hello.{format}", ra)
+
+			router.map_agent_with_request_methods ("/method/any", agent handle_method_any, Void)
+			router.map_agent_with_request_methods ("/method/guess", agent handle_method_get_or_post, <<"GET", "POST">>)
+			router.map_agent_with_request_methods ("/method/custom", agent handle_method_get, <<"GET">>)
+			router.map_agent_with_request_methods ("/method/custom", agent handle_method_post, <<"POST">>)
+
 		end
 
 feature -- Execution
 
-	execute_default (req: EWSGI_REQUEST; res: EWSGI_RESPONSE_BUFFER)
+	execute_default (req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
 		local
-			h: GW_HEADER
+			h: EWF_HEADER
 			l_url: STRING
 			e: EXECUTION_ENVIRONMENT
 			n: INTEGER
@@ -65,7 +76,7 @@ feature -- Execution
 			n := 3
 			h.put_refresh (l_url, 5, 200)
 			res.set_status_code (200)
-			res.write_string (h.string)
+			res.write_headers_string (h.string)
 			from
 				create e
 			until
@@ -97,7 +108,7 @@ feature -- Execution
 			res.flush
 		end
 
-	execute_home (ctx: REQUEST_HANDLER_CONTEXT; req: EWSGI_REQUEST; res: EWSGI_RESPONSE_BUFFER)
+	execute_home (ctx: REQUEST_HANDLER_CONTEXT; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
 		do
 			res.write_header (200, <<["Content-Type", "text/html"]>>)
 			res.write_string ("<html><body>Hello World ?!%N")
@@ -111,17 +122,17 @@ feature -- Execution
 			res.write_string ("<li><a href=%""+ req.script_url ("/hello/Joce") + "%">/hello/Joce</a></li>%N")
 			res.write_string ("</ul>%N")
 
-			if attached req.environment_variable ("REQUEST_COUNT") as rqc then
+			if attached req.parameter ("REQUEST_COUNT") as rqc then
 				res.write_string ("request #"+ rqc + "%N")
 			end
 			res.write_string ("</body></html>%N")
 		end
 
-	execute_hello (req: EWSGI_REQUEST; res: EWSGI_RESPONSE_BUFFER; a_name: detachable STRING_32; ctx: REQUEST_HANDLER_CONTEXT)
+	execute_hello (req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER; a_name: detachable READABLE_STRING_32; ctx: REQUEST_HANDLER_CONTEXT)
 		local
 			l_response_content_type: detachable STRING
 			msg: STRING
-			h: GW_HEADER
+			h: EWF_HEADER
 			content_type_supported: ARRAY [STRING]
 		do
 			if a_name /= Void then
@@ -152,7 +163,7 @@ feature -- Execution
 				h.put_content_type (l_response_content_type)
 				h.put_content_length (msg.count)
 				res.set_status_code (200)
-				res.write_string (h.string)
+				res.write_headers_string (h.string)
 --				res.write_header (200, <<
 --						["Content-Type", l_response_content_type],
 --						["Content-Length", msg.count.out
@@ -161,15 +172,38 @@ feature -- Execution
 			end
 		end
 
-	handle_hello (ctx: REQUEST_HANDLER_CONTEXT; req: EWSGI_REQUEST; res: EWSGI_RESPONSE_BUFFER)
+	handle_hello (ctx: REQUEST_HANDLER_CONTEXT; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
 		do
 			execute_hello (req, res, Void, ctx)
 		end
 
-	handle_anonymous_hello (ctx: REQUEST_HANDLER_CONTEXT; req: EWSGI_REQUEST; res: EWSGI_RESPONSE_BUFFER)
+	handle_anonymous_hello (ctx: REQUEST_HANDLER_CONTEXT; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
 		do
 			execute_hello (req, res, ctx.parameter ("name"), ctx)
 		end
+
+	handle_method_any (ctx: REQUEST_HANDLER_CONTEXT; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+		do
+			execute_hello (req, res, req.request_method, ctx)
+		end
+
+	handle_method_get (ctx: REQUEST_HANDLER_CONTEXT; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+		do
+			execute_hello (req, res, "GET", ctx)
+		end
+
+
+	handle_method_post (ctx: REQUEST_HANDLER_CONTEXT; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+		do
+			execute_hello (req, res, "POST", ctx)
+		end
+
+	handle_method_get_or_post (ctx: REQUEST_HANDLER_CONTEXT; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+		do
+			execute_hello (req, res, "GET or POST", ctx)
+		end
+
+
 
 note
 	copyright: "2011-2011, Eiffel Software and others"

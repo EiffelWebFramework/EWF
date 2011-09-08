@@ -17,43 +17,42 @@ inherit
 
 feature -- Access
 
-	request: EWSGI_REQUEST
+	request: WGI_REQUEST
 			-- Associated request
 
-	path: STRING
-			-- ???
+	path: READABLE_STRING_GENERAL
+			-- Associated path
 
-	request_content_type (content_type_supported: detachable ARRAY [STRING]): detachable STRING
+	request_content_type (content_type_supported: detachable ARRAY [STRING]): detachable READABLE_STRING_8
 		local
-			s: detachable STRING
+			s: detachable READABLE_STRING_32
 			i,n: INTEGER
 		do
-			Result := request.environment.content_type
-			if Result = Void then
-				s := request.environment.http_accept
-				if s /= Void then
-					if attached accepted_content_types (request) as l_accept_lst then
-						from
-							l_accept_lst.start
-						until
-							l_accept_lst.after or Result /= Void
-						loop
-							s := l_accept_lst.item
-							if content_type_supported /= Void then
-								from
-									i := content_type_supported.lower
-									n := content_type_supported.upper
-								until
-									i > n or Result /= Void
-								loop
-									if content_type_supported[i].same_string (s) then
-										Result := s
-									end
-									i := i + 1
+			s := request.content_type
+			if s /= Void then
+				Result := s
+			else
+				if attached accepted_content_types (request) as l_accept_lst then
+					from
+						l_accept_lst.start
+					until
+						l_accept_lst.after or Result /= Void
+					loop
+						s := l_accept_lst.item
+						if content_type_supported /= Void then
+							from
+								i := content_type_supported.lower
+								n := content_type_supported.upper
+							until
+								i > n or Result /= Void
+							loop
+								if content_type_supported[i].same_string (s) then
+									Result := s
 								end
+								i := i + 1
 							end
-							l_accept_lst.forth
 						end
+						l_accept_lst.forth
 					end
 				end
 			end
@@ -61,18 +60,18 @@ feature -- Access
 
 feature -- Query	
 
-	path_parameter (a_name: STRING): detachable STRING_32
+	path_parameter (a_name: READABLE_STRING_GENERAL): detachable READABLE_STRING_32
 			-- Parameter value for path variable `a_name'
 		deferred
 		end
 
-	query_parameter (a_name: STRING): detachable STRING_32
+	query_parameter (a_name: READABLE_STRING_GENERAL): detachable READABLE_STRING_32
 			-- Parameter value for query variable `a_name'	
 			--| i.e after the ? character
 		deferred
 		end
 
-	parameter (a_name: STRING): detachable STRING_32
+	parameter (a_name: READABLE_STRING_GENERAL): detachable READABLE_STRING_32
 			-- Any parameter value for variable `a_name'
 			-- URI template parameter and query parameters
 		do

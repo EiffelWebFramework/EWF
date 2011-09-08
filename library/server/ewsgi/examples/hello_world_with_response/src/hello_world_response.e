@@ -6,7 +6,7 @@ note
 class HELLO_WORLD_RESPONSE
 
 inherit
-    EWSGI_RESPONSE
+    WGI_RESPONSE
         redefine
             make,
             read_block
@@ -31,23 +31,26 @@ feature {NONE} -- Entity body
         local
             i: INTEGER
         do
-            if current_hello >= 100000 then
+            if current_hello >= 10000 then
                 end_of_blocks := True
             else
                 if current_hello = 0 then
-                    current_block := "<html><body>%N"
+                    current_block := "<html><style>div#status {position: absolute; top: 30%%; left: 40%%; border: red solid 1px; padding: 10px; background-color: #ffcccc;}</style><body>%N"
+                    current_block.append ("<a name=%"top%">Welcome</a><br/><div id=%"status%">In progress</div>")
                 end
                 from
                     i := 0
                 until
-                    i = 10000
+                    i = 1000
                 loop
                     current_block.append ("Hello World ("+ current_hello.out +","+ i.out +")<br/>%N")
                     i := i + 1
                 end
                 current_hello := current_hello + i
-                if current_hello = 100000 then
-                    current_block.append ("Bye bye..<br/></body></html>")
+				current_block.append ("<div id=%"status%">In progress - "+ (100 * current_hello // 10000).out +"%%</div>")
+                if current_hello = 10000 then
+                    current_block.append ("<a name=%"bottom%">Bye bye..</a><br/><div id=%"status%">Completed - GO TO <a href=%"#bottom%">BOTTOM</a></div></body></html>")
+					end_of_blocks := True
                 end
             end
         end

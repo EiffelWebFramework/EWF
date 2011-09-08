@@ -9,19 +9,20 @@ class
 
 feature -- Access
 
-	accepted_content_types (req: EWSGI_REQUEST): detachable ARRAYED_LIST [STRING]
+	accepted_content_types (req: WGI_REQUEST): detachable ARRAYED_LIST [READABLE_STRING_8]
 		local
-			l_accept: detachable STRING
-			s,q: STRING
+			l_accept: detachable READABLE_STRING_32
+			s: STRING_8
+			q: READABLE_STRING_8
 			p: INTEGER
-			lst: LIST [STRING]
-			qs: QUICK_SORTER [STRING]
+			lst: LIST [READABLE_STRING_8]
+			qs: QUICK_SORTER [READABLE_STRING_8]
 		do
-			l_accept := req.environment.http_accept
+			l_accept := req.http_accept
 --TEST		l_accept := "text/html,application/xhtml+xml;q=0.6,application/xml;q=0.2,text/plain;q=0.5,*/*;q=0.8"
 
 			if l_accept /= Void then
-				lst := l_accept.split (',')
+				lst := l_accept.as_string_8.split (',')
 				create Result.make (lst.count)
 				from
 					lst.start
@@ -40,7 +41,7 @@ feature -- Access
 
 					lst.forth
 				end
-				create qs.make (create {COMPARABLE_COMPARATOR [STRING]})
+				create qs.make (create {COMPARABLE_COMPARATOR [READABLE_STRING_8]})
 				qs.reverse_sort (Result)
 				from
 					Result.start

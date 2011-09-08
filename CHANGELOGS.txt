@@ -1,0 +1,9 @@
+History for Eiffel-Web-Framework
+
+[2011-09-07] Jocelyn
+	* library "router": now routing depends on uri (or uri template) and request methods
+	* Nino connector: Fixed issue where HTTP_ prefix were missing for header meta variable.
+
+[2011-09-07] Jocelyn
+	* changelog: starting to write down changelogs file
+

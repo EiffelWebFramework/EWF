@@ -1,35 +1,29 @@
 note
-	description: "Summary description for {REQUEST_URI_HANDLER_CONTEXT}."
-	author: ""
+	description: "Summary description for EWF_CGI_INPUT_STREAM."
+	legal: "See notice at end of class."
+	status: "See notice at end of class."
 	date: "$Date$"
 	revision: "$Revision$"
 
 class
-	REQUEST_URI_HANDLER_CONTEXT
+	EWF_CGI_INPUT_STREAM
 
 inherit
-	REQUEST_HANDLER_CONTEXT
+	WGI_INPUT_STREAM
+
+	CONSOLE
+		rename
+			make as console_make
+		end
 
 create
 	make
 
 feature {NONE} -- Initialization
 
-	make (req: WGI_REQUEST; p: like path)
+	make
 		do
-			request := req
-			path := p
-		end
-
-feature -- Query	
-
-	path_parameter (a_name: READABLE_STRING_GENERAL): detachable STRING_32
-		do
-		end
-
-	query_parameter (a_name: READABLE_STRING_GENERAL): detachable READABLE_STRING_32
-		do
-			Result := request.parameter (a_name)
+			make_open_stdin ("stdin")
 		end
 
 note

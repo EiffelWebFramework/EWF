@@ -8,6 +8,11 @@ note
 class
 	ERROR_HANDLER
 
+inherit
+	ANY
+
+	DEBUG_OUTPUT
+
 create
 	make
 
@@ -35,6 +40,18 @@ feature -- Status
 	errors: LIST [ERROR]
 			-- Errors container
 
+feature -- Status report
+
+	debug_output: STRING
+			-- String that should be displayed in debugger to represent `Current'.
+		do
+			if has_error then
+				Result := count.out +  " errors"
+			else
+				Result := "no error"
+			end
+		end
+
 feature -- Basic operation
 
 	add_error (a_error: ERROR)
@@ -52,6 +69,12 @@ feature -- Basic operation
 			add_error (e)
 		end
 
+	append (a_err_handler: ERROR_HANDLER)
+			-- Append errors from `a_err_handler'
+		do
+			errors.append (a_err_handler.errors)
+		end
+
 feature -- Access
 
 	as_single_error: detachable ERROR
@@ -60,6 +83,20 @@ feature -- Access
 				create {ERROR_GROUP} Result.make (errors)
 			elseif count > 0 then
 				Result := errors.first
+			end
+		ensure
+			has_error_implies_result_attached: has_error implies Result /= Void
+		end
+
+	as_string_representation: STRING
+		require
+			has_error
+		do
+			if attached as_single_error as e then
+				Result := e.string_representation
+			else
+				check has_error: False end
+				Result := "Error occured"
 			end
 		end
 

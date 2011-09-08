@@ -17,11 +17,11 @@ inherit
 
 feature -- Helper
 
-	execute_content_type_not_allowed (req: EWSGI_REQUEST; res: EWSGI_RESPONSE_BUFFER; a_content_types: detachable ARRAY [STRING]; a_uri_formats: detachable ARRAY [STRING])
+	execute_content_type_not_allowed (req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER; a_content_types: detachable ARRAY [STRING]; a_uri_formats: detachable ARRAY [STRING])
 		local
 			s, uri_s: detachable STRING
 			i, n: INTEGER
-			h: GW_HEADER
+			h: EWF_HEADER
 		do
 			create h.make
 			h.put_status ({HTTP_STATUS_CODE}.unsupported_media_type)
@@ -60,6 +60,8 @@ feature -- Helper
 					i := i + 1
 				end
 			end
+			res.set_status_code ({HTTP_STATUS_CODE}.unsupported_media_type)
+			res.write_headers_string (h.string)
 			if s /= Void then
 				res.write_string ("Unsupported request content-type, Accept: " + s + "%N")
 			end
@@ -68,7 +70,7 @@ feature -- Helper
 			end
 		end
 
-	execute_method_not_allowed (req: EWSGI_REQUEST; res: EWSGI_RESPONSE_BUFFER; a_methods: ARRAY [STRING])
+	execute_method_not_allowed (req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER; a_methods: ARRAY [STRING])
 		local
 			s: STRING
 			i, n: INTEGER
@@ -114,7 +116,7 @@ feature -- Context helper
 			end
 		end
 
-	content_type_to_request_format (a_content_type: detachable STRING): detachable STRING
+	content_type_to_request_format (a_content_type: detachable READABLE_STRING_8): detachable STRING
 			-- `a_content_type' converted into a request format name
 		do
 			if a_content_type /= Void then

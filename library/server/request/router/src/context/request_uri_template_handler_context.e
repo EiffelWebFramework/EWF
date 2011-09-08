@@ -15,7 +15,7 @@ create
 
 feature {NONE} -- Initialization
 
-	make (req: EWSGI_REQUEST; tpl: URI_TEMPLATE; tpl_res: URI_TEMPLATE_MATCH_RESULT; p: like path)
+	make (req: WGI_REQUEST; tpl: URI_TEMPLATE; tpl_res: URI_TEMPLATE_MATCH_RESULT; p: like path)
 		do
 			request := req
 			uri_template := tpl
@@ -31,12 +31,12 @@ feature -- Access
 
 feature -- Query	
 
-	path_parameter (a_name: STRING): detachable STRING_32
+	path_parameter (a_name: READABLE_STRING_GENERAL): detachable READABLE_STRING_32
 		do
 			Result := uri_template_match.url_decoded_path_variable (a_name)
 		end
 
-	query_parameter (a_name: STRING): detachable STRING_32
+	query_parameter (a_name: READABLE_STRING_GENERAL): detachable READABLE_STRING_32
 		do
 			Result := uri_template_match.url_decoded_query_variable (a_name)
 			if Result = Void then
