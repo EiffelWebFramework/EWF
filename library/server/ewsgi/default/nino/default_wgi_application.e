@@ -15,13 +15,19 @@ feature {NONE} -- Initialization
 		local
 			app: NINO_APPLICATION
 		do
-			port_number := 8123
-			print ("Example: start a Nino web server on port " + port_number.out + ", %Nand reply Hello World for any request such as http://localhost:" + port_number.out + "/%N")
-			create app.make_custom (agent execute, "")
+			port_number := 80
+			base_url := ""
+			debug ("nino")
+				print ("Example: start a Nino web server on port " + port_number.out +
+					 ", %Nand reply Hello World for any request such as http://localhost:" + port_number.out + "/" + base_url + "%N")
+			end
+			create app.make_custom (agent execute, base_url)
 			app.listen (port_number)
 		end
 
 	port_number: INTEGER
+
+	base_url: STRING
 
 invariant
 	port_number_valid: port_number > 0
