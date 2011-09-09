@@ -10,7 +10,7 @@ class
 inherit
 	ANY
 
-	ROUTED_APPLICATION
+	DEFAULT_URI_TEMPLATE_ROUTED_APPLICATION
 
 	ROUTED_APPLICATION_HELPER
 
@@ -29,18 +29,12 @@ feature {NONE} -- Initialization
 
 	create_router
 		do
-			debug
-				create {REQUEST_URI_ROUTER} router.make (5)
-				create {REQUEST_URI_TEMPLATE_ROUTER} router.make (5)
-			end
-
---			create {REQUEST_URI_ROUTER} router.make (5)
-			create {REQUEST_URI_TEMPLATE_ROUTER} router.make (5)
+			create router.make (5)
 		end
 
 	setup_router
 		local
-			ra: REQUEST_AGENT_HANDLER
+			ra: REQUEST_AGENT_HANDLER [REQUEST_URI_TEMPLATE_HANDLER_CONTEXT]
 		do
 			router.map_agent ("/home", agent execute_home)
 
@@ -107,7 +101,7 @@ feature -- Execution
 			res.flush
 		end
 
-	execute_home (ctx: REQUEST_HANDLER_CONTEXT; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	execute_home (ctx: REQUEST_URI_TEMPLATE_HANDLER_CONTEXT; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
 		do
 			res.write_header (200, <<["Content-Type", "text/html"]>>)
 			res.write_string ("<html><body>Hello World ?!%N")
@@ -171,33 +165,33 @@ feature -- Execution
 			end
 		end
 
-	handle_hello (ctx: REQUEST_HANDLER_CONTEXT; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	handle_hello (ctx: REQUEST_URI_TEMPLATE_HANDLER_CONTEXT; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
 		do
 			execute_hello (req, res, Void, ctx)
 		end
 
-	handle_anonymous_hello (ctx: REQUEST_HANDLER_CONTEXT; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	handle_anonymous_hello (ctx: REQUEST_URI_TEMPLATE_HANDLER_CONTEXT; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
 		do
 			execute_hello (req, res, ctx.parameter ("name"), ctx)
 		end
 
-	handle_method_any (ctx: REQUEST_HANDLER_CONTEXT; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	handle_method_any (ctx: REQUEST_URI_TEMPLATE_HANDLER_CONTEXT; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
 		do
 			execute_hello (req, res, req.request_method, ctx)
 		end
 
-	handle_method_get (ctx: REQUEST_HANDLER_CONTEXT; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	handle_method_get (ctx: REQUEST_URI_TEMPLATE_HANDLER_CONTEXT; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
 		do
 			execute_hello (req, res, "GET", ctx)
 		end
 
 
-	handle_method_post (ctx: REQUEST_HANDLER_CONTEXT; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	handle_method_post (ctx: REQUEST_URI_TEMPLATE_HANDLER_CONTEXT; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
 		do
 			execute_hello (req, res, "POST", ctx)
 		end
 
-	handle_method_get_or_post (ctx: REQUEST_HANDLER_CONTEXT; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	handle_method_get_or_post (ctx: REQUEST_URI_TEMPLATE_HANDLER_CONTEXT; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
 		do
 			execute_hello (req, res, "GET or POST", ctx)
 		end

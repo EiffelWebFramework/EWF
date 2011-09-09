@@ -5,10 +5,10 @@ note
 	revision: "$Revision$"
 
 class
-	REQUEST_URI_ROUTER
+	REQUEST_URI_ROUTER [H -> REQUEST_HANDLER [C], C -> REQUEST_URI_HANDLER_CONTEXT create make end]
 
 inherit
-	REQUEST_ROUTER
+	REQUEST_ROUTER [H, C]
 
 create
 	make
@@ -23,16 +23,16 @@ feature -- Initialization
 
 feature -- Registration
 
-	map_with_request_methods (p: READABLE_STRING_8; h: REQUEST_HANDLER; rqst_methods: detachable ARRAY [READABLE_STRING_8])
+	map_with_request_methods (p: READABLE_STRING_8; h: H; rqst_methods: detachable ARRAY [READABLE_STRING_8])
 		do
 			handlers.force ([h, p, formatted_request_methods (rqst_methods)])
 		end
 
 feature {NONE} -- Access: Implementation
 
-	handler (req: WGI_REQUEST): detachable TUPLE [handler: REQUEST_HANDLER; context: like default_handler_context]
+	handler (req: WGI_REQUEST): detachable TUPLE [handler: H; context: like default_handler_context]
 		local
-			h: detachable REQUEST_HANDLER
+			h: detachable H
 			ctx: detachable like default_handler_context
 		do
 			h := handler_by_path (req.path_info, req.request_method)
@@ -54,7 +54,7 @@ feature {NONE} -- Access: Implementation
 			end
 		end
 
-	smart_handler (req: WGI_REQUEST): detachable TUPLE [path: READABLE_STRING_8; handler: REQUEST_HANDLER]
+	smart_handler (req: WGI_REQUEST): detachable TUPLE [path: READABLE_STRING_8; handler: H]
 		require
 			req_valid: req /= Void and then req.path_info /= Void
 		do
@@ -63,7 +63,7 @@ feature {NONE} -- Access: Implementation
 			req_path_info_unchanged: req.path_info.same_string (old req.path_info)
 		end
 
-	handler_by_path (a_path: READABLE_STRING_GENERAL; rqst_method: READABLE_STRING_GENERAL): detachable REQUEST_HANDLER
+	handler_by_path (a_path: READABLE_STRING_GENERAL; rqst_method: READABLE_STRING_GENERAL): detachable H
 		require
 			a_path_valid: a_path /= Void
 		local
@@ -86,13 +86,13 @@ feature {NONE} -- Access: Implementation
 			a_path_unchanged: a_path.same_string (old a_path)
 		end
 
-	smart_handler_by_path (a_path: READABLE_STRING_8; rqst_method: READABLE_STRING_GENERAL): detachable TUPLE [path: READABLE_STRING_8; handler: REQUEST_HANDLER]
+	smart_handler_by_path (a_path: READABLE_STRING_8; rqst_method: READABLE_STRING_GENERAL): detachable TUPLE [path: READABLE_STRING_8; handler: H]
 		require
 			a_path_valid: a_path /= Void
 		local
 			p: INTEGER
 			l_context_path, l_path: READABLE_STRING_8
-			h: detachable REQUEST_HANDLER
+			h: detachable H
 		do
 			l_context_path := context_path (a_path)
 			from
@@ -116,18 +116,21 @@ feature {NONE} -- Access: Implementation
 
 feature {NONE} -- Context factory
 
-	handler_context (p: detachable STRING; req: WGI_REQUEST): like default_handler_context
+	handler_context (p: detachable STRING; req: WGI_REQUEST): C
+		local
+			ctx: C
 		do
 			if p /= Void then
-				create {REQUEST_URI_HANDLER_CONTEXT} Result.make (req, p)
+				create ctx.make (req, p)
 			else
-				create {REQUEST_URI_HANDLER_CONTEXT} Result.make (req, req.path_info)
+				create ctx.make (req, req.path_info)
 			end
+			Result := ctx
 		end
 
 feature -- Access
 
-	new_cursor: ITERATION_CURSOR [TUPLE [handler: REQUEST_HANDLER; resource: READABLE_STRING_8; request_methods: detachable ARRAY [READABLE_STRING_8]]]
+	new_cursor: ITERATION_CURSOR [TUPLE [handler: H; resource: READABLE_STRING_8; request_methods: detachable ARRAY [READABLE_STRING_8]]]
 			-- Fresh cursor associated with current structure
 		do
 			Result := handlers.new_cursor
@@ -135,7 +138,7 @@ feature -- Access
 
 feature {NONE} -- Implementation
 
-	handlers: ARRAYED_LIST [TUPLE [handler: REQUEST_HANDLER; resource: READABLE_STRING_8; request_methods: detachable ARRAY [READABLE_STRING_8]]]
+	handlers: ARRAYED_LIST [TUPLE [handler: H; resource: READABLE_STRING_8; request_methods: detachable ARRAY [READABLE_STRING_8]]]
 			-- Handlers indexed by the template expression
 			-- see `templates'
 
@@ -166,14 +169,14 @@ feature {NONE} -- Implementation
 
 feature {NONE} -- Default: implementation		
 
-	default_handler: detachable REQUEST_HANDLER
+	default_handler: detachable H
 
 	set_default_handler (h: like default_handler)
 		do
 			default_handler := h
 		end
 
-	default_handler_context (req: WGI_REQUEST): REQUEST_HANDLER_CONTEXT
+	default_handler_context (req: WGI_REQUEST): C
 		do
 			Result := handler_context (Void, req)
 		end

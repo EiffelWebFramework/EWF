@@ -5,7 +5,7 @@ note
 	revision: "$Revision$"
 
 deferred class
-	ROUTED_APPLICATION
+	ROUTED_APPLICATION [H -> REQUEST_HANDLER [C], C -> REQUEST_HANDLER_CONTEXT]
 
 feature -- Setup
 
@@ -30,7 +30,7 @@ feature -- Setup
 		deferred
 		end
 
-	router: REQUEST_ROUTER
+	router: REQUEST_ROUTER [H, C]
 			-- Request router
 
 feature -- Execution

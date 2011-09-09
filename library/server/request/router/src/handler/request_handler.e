@@ -5,7 +5,7 @@ note
 	revision: "$Revision$"
 
 deferred class
-	REQUEST_HANDLER
+	REQUEST_HANDLER [C -> REQUEST_HANDLER_CONTEXT]
 
 inherit
 	ANY
@@ -37,7 +37,7 @@ feature -- Status report
 
 feature -- Execution
 
-	execute (a_hdl_context: REQUEST_HANDLER_CONTEXT; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	execute (a_hdl_context: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
 			-- Execute request handler	
 		require
 			is_valid_context: is_valid_context (req)
@@ -60,7 +60,7 @@ feature -- Execution
 			retry
 		end
 
-	execute_application (a_hdl_context: REQUEST_HANDLER_CONTEXT; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	execute_application (a_hdl_context: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
 			-- Execute request handler
 		deferred
 		end
