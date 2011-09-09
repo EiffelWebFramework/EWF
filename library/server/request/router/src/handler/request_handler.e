@@ -7,6 +7,14 @@ note
 deferred class
 	REQUEST_HANDLER
 
+inherit
+	ANY
+
+	ROUTED_APPLICATION_HELPER
+		export
+			{NONE} all
+		end
+
 feature {NONE} -- Initialization
 
 	initialize
@@ -42,7 +50,7 @@ feature -- Execution
 					execute_application (a_hdl_context, req, res)
 					post_execute (req, res)
 				else
-					execute_method_not_allowed (a_hdl_context, req, res)
+					execute_request_method_not_allowed (req, res, supported_request_method_names)
 				end
 			else
 				rescue_execute (req, res)
@@ -50,29 +58,6 @@ feature -- Execution
 		rescue
 			rescued := True
 			retry
-		end
-
-	execute_method_not_allowed (a_hdl_context: REQUEST_HANDLER_CONTEXT; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
-		local
-			s: STRING
-			lst: LIST [STRING]
-		do
-			res.set_status_code ({HTTP_STATUS_CODE}.method_not_allowed)
-			create s.make (25)
-			from
-				lst := supported_request_method_names
-				lst.start
-			until
-				lst.after
-			loop
-				s.append_string (lst.item)
-				if not lst.islast then
-					s.append_character (',')
-					s.append_character (' ')
-				end
-				lst.forth
-			end
-			res.write_header ({HTTP_STATUS_CODE}.method_not_allowed, <<["Allow", s]>>)
 		end
 
 	execute_application (a_hdl_context: REQUEST_HANDLER_CONTEXT; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
@@ -101,76 +86,27 @@ feature -- Execution
 
 feature -- Execution: report
 
---	execution_information (req: WGI_REQUEST): detachable REQUEST_HANDLER_CONTEXT
---			-- Execution information related to the request
---		do
---			if attached path_information (req, req.environment.path_info) as info then
---				create Result.make (req.environment.path_info)
---			end
---		end
-
---	path_information (req: WGI_REQUEST; a_rq_path: STRING): detachable TUPLE [format: detachable STRING; arguments: detachable STRING]
---			-- Information related to `a_path'
---		local
---			l_rq_path: STRING
---			i,p,n: INTEGER
---			l_format, l_args: detachable STRING
---		do
---			l_rq_path := a_rq_path
---			if l_rq_path.count > 0 and then l_rq_path[1] /= '/' then
---				l_rq_path := "/" + l_rq_path
---			end
---			n := l_rq_path.count
---			i := req.environment.path_info.count + 1
-
---			if format_located_before_parameters then
---					--| path = app-path{.format}/parameters
-
---				if l_rq_path.valid_index (i) and then l_rq_path[i] = '.' then
---					p := l_rq_path.index_of ('/', i + 1)
---					if p = 0 then
---						p := n + 1
---					else
---						l_args := l_rq_path.substring (p + 1, n)
---					end
---					l_format := l_rq_path.substring (i + 1, p - 1)
---				elseif n > i then
---					check l_rq_path[i] = '/' end
---					l_args := l_rq_path.substring (i + 1, n)
---				end
---			elseif format_located_after_parameters then
---					--| path = app-path/parameters{.format}
-
---				p := l_rq_path.last_index_of ('.', n)
---				if p > i then
---					l_format := l_rq_path.substring (p + 1, n)
---					l_args := l_rq_path.substring (i + 1, p - 1)
---				elseif n > i then
---					check l_rq_path[i] = '/' end
---					l_format := Void
---					l_args := l_rq_path.substring (i + 1, n)
---				end
---			end
---			if l_format /= Void or l_args /= Void then
---				Result := [l_format, l_args]
---			end
---		end
-
-	url (req: WGI_REQUEST; args: detachable STRING; abs: BOOLEAN): STRING
-			-- Associated url based on `path' and `args'
+	url (req: WGI_REQUEST; a_base: detachable READABLE_STRING_8; args: detachable STRING; abs: BOOLEAN): STRING
+			-- Associated url based on `a_base' and `args'
 			-- if `abs' then return absolute url
 		local
 			s: detachable STRING
+			l_base: STRING
 		do
+			if a_base /= Void then
+				l_base := a_base
+			else
+				l_base := req.request_uri
+			end
 			s := args
 			if s /= Void and then s.count > 0 then
 				if s[1] /= '/' then
-					s := req.request_uri + "/" + s
+					s := l_base + "/" + s
 				else
-					s := req.request_uri + s
+					s := l_base + s
 				end
 			else
-				s := req.request_uri
+				s := l_base
 			end
 			if abs then
 				Result := req.absolute_script_url (s)

@@ -30,10 +30,10 @@ feature -- Registration
 
 feature {NONE} -- Access: Implementation
 
-	handler (req: WGI_REQUEST): detachable TUPLE [handler: REQUEST_HANDLER; context: REQUEST_HANDLER_CONTEXT]
+	handler (req: WGI_REQUEST): detachable TUPLE [handler: REQUEST_HANDLER; context: like default_handler_context]
 		local
 			h: detachable REQUEST_HANDLER
-			ctx: detachable REQUEST_HANDLER_CONTEXT
+			ctx: detachable like default_handler_context
 		do
 			h := handler_by_path (req.path_info, req.request_method)
 			if h = Void then
@@ -82,7 +82,6 @@ feature {NONE} -- Access: Implementation
 				end
 				l_handlers.forth
 			end
---			Result := handlers.item (context_path (a_path))
 		ensure
 			a_path_unchanged: a_path.same_string (old a_path)
 		end
@@ -115,14 +114,14 @@ feature {NONE} -- Access: Implementation
 			a_path_unchanged: a_path.same_string (old a_path)
 		end
 
-feature -- Context factory
+feature {NONE} -- Context factory
 
-	handler_context (p: detachable STRING; req: WGI_REQUEST): REQUEST_URI_HANDLER_CONTEXT
+	handler_context (p: detachable STRING; req: WGI_REQUEST): like default_handler_context
 		do
 			if p /= Void then
-				create Result.make (req, p)
+				create {REQUEST_URI_HANDLER_CONTEXT} Result.make (req, p)
 			else
-				create Result.make (req, req.path_info)
+				create {REQUEST_URI_HANDLER_CONTEXT} Result.make (req, req.path_info)
 			end
 		end
 
@@ -165,7 +164,21 @@ feature {NONE} -- Implementation
 			result_not_empty: not Result.is_empty
 		end
 
-;note
+feature {NONE} -- Default: implementation		
+
+	default_handler: detachable REQUEST_HANDLER
+
+	set_default_handler (h: like default_handler)
+		do
+			default_handler := h
+		end
+
+	default_handler_context (req: WGI_REQUEST): REQUEST_HANDLER_CONTEXT
+		do
+			Result := handler_context (Void, req)
+		end
+
+note
 	copyright: "2011-2011, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[

@@ -140,7 +140,7 @@ feature -- Execution
 				msg := "Hello anonymous visitor !%N"
 			end
 			content_type_supported := <<{HTTP_CONSTANTS}.json_app, {HTTP_CONSTANTS}.html_text, {HTTP_CONSTANTS}.xml_text, {HTTP_CONSTANTS}.plain_text>>
-			inspect request_format_id (ctx, "format", content_type_supported)
+			inspect ctx.request_format_id ("format", content_type_supported)
 			when {HTTP_FORMAT_CONSTANTS}.json then
 				l_response_content_type := {HTTP_CONSTANTS}.json_app
 				msg := "{%N%"application%": %"/hello%",%N %"message%": %"" + msg + "%" %N}"

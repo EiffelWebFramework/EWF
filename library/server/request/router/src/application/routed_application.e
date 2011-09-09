@@ -36,10 +36,11 @@ feature -- Setup
 feature -- Execution
 
 	execute (req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+		local
+			l_handled: BOOLEAN
 		do
-			if attached router.dispatch (req, res) as r then
-				--| done
-			else
+			l_handled := router.dispatch (req, res)
+			if not l_handled then
 				execute_default (req, res)
 			end
 		end

@@ -45,9 +45,8 @@ feature -- Registration
 
 feature {NONE} -- Access: Implementation
 
-	handler (req: WGI_REQUEST): detachable TUPLE [handler: REQUEST_HANDLER; context: REQUEST_HANDLER_CONTEXT]
+	handler (req: WGI_REQUEST): detachable TUPLE [handler: attached like default_handler; context: like default_handler_context]
 		local
-			ctx: detachable REQUEST_URI_TEMPLATE_HANDLER_CONTEXT
 			l_handlers: like handlers
 			t: STRING
 			p: STRING
@@ -67,8 +66,7 @@ feature {NONE} -- Access: Implementation
 						if attached templates.item (t) as tpl and then
 							attached tpl.match (p) as res
 						then
-							ctx := handler_context (p, req, tpl, res)
-							Result := [l_info.handler, ctx]
+							Result := [l_info.handler, handler_context (p, req, tpl, res)]
 						end
 					end
 				end
@@ -76,14 +74,14 @@ feature {NONE} -- Access: Implementation
 			end
 		end
 
-feature -- Context factory
+feature {NONE} -- Context factory
 
-	handler_context (p: detachable STRING; req: WGI_REQUEST; tpl: URI_TEMPLATE; tpl_res: URI_TEMPLATE_MATCH_RESULT): REQUEST_URI_TEMPLATE_HANDLER_CONTEXT
+	handler_context (p: detachable STRING; req: WGI_REQUEST; tpl: URI_TEMPLATE; tpl_res: URI_TEMPLATE_MATCH_RESULT): like default_handler_context
 		do
 			if p /= Void then
-				create Result.make (req, tpl, tpl_res, p)
+				create {REQUEST_URI_TEMPLATE_HANDLER_CONTEXT} Result.make (req, tpl, tpl_res, p)
 			else
-				create Result.make (req, tpl, tpl_res, req.path_info)
+				create {REQUEST_URI_TEMPLATE_HANDLER_CONTEXT} Result.make (req, tpl, tpl_res, req.path_info)
 			end
 		end
 
@@ -124,6 +122,20 @@ feature {NONE} -- Implementation
 			end
 		ensure
 			result_not_empty: not Result.is_empty
+		end
+
+feature {NONE} -- Default: implementation		
+
+	default_handler: detachable REQUEST_HANDLER
+
+	set_default_handler (h: like default_handler)
+		do
+			default_handler := h
+		end
+
+	default_handler_context (req: WGI_REQUEST): REQUEST_HANDLER_CONTEXT
+		do
+			create {REQUEST_URI_HANDLER_CONTEXT} Result.make (req, "/")
 		end
 
 ;note
