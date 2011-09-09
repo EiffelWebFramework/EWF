@@ -38,11 +38,11 @@ feature -- Name
 
 feature -- Query
 
-	format_id (a_id: STRING): INTEGER
+	format_id (a_id: READABLE_STRING_GENERAL): INTEGER
 		local
 			s: STRING
 		do
-			s := a_id.as_lower
+			s := a_id.as_string_8.as_lower
 			if s.same_string (json_name) then
 				Result := json
 			elseif s.same_string (xml_name) then
@@ -58,7 +58,7 @@ feature -- Query
 			end
 		end
 
-	format_name (a_id: INTEGER): STRING
+	format_name (a_id: INTEGER): READABLE_STRING_8
 		do
 			inspect a_id
 			when json then Result := json_name
@@ -74,7 +74,7 @@ feature -- Query
 		end
 
 note
-	copyright: "Copyright (c) 1984-2011, Eiffel Software and others"
+	copyright: "2011-2011, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software
