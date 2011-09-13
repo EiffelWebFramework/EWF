@@ -37,7 +37,7 @@ feature -- Status report
 
 feature -- Execution
 
-	execute (a_hdl_context: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	execute (ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
 			-- Execute request handler	
 		require
 			is_valid_context: is_valid_context (req)
@@ -46,42 +46,42 @@ feature -- Execution
 		do
 			if not rescued then
 				if request_method_name_supported (req.request_method) then
-					pre_execute (req)
-					execute_application (a_hdl_context, req, res)
-					post_execute (req, res)
+					pre_execute (ctx, req, res)
+					execute_application (ctx, req, res)
+					post_execute (ctx, req, res)
 				else
 					execute_request_method_not_allowed (req, res, supported_request_method_names)
 				end
 			else
-				rescue_execute (req, res)
+				rescue_execute (ctx, req, res)
 			end
 		rescue
 			rescued := True
 			retry
 		end
 
-	execute_application (a_hdl_context: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	execute_application (ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
 			-- Execute request handler
 		deferred
 		end
 
-	pre_execute (req: WGI_REQUEST)
+	pre_execute (ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
 			-- Operation processed before `execute'
 		do
 			--| To be redefined if needed
 		end
 
-	post_execute (req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	post_execute (ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
 			-- Operation processed after `execute'
 		do
 			--| To be redefined if needed
 		end
 
-	rescue_execute (req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	rescue_execute (ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
 			-- Operation processed after a rescue
 		do
 			--| To be redefined if needed
-			post_execute (req, res)
+			post_execute (ctx, req, res)
 		end
 
 feature -- Execution: report

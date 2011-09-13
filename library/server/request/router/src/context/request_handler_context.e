@@ -15,11 +15,6 @@ inherit
 			{NONE} all
 		end
 
-	HTTP_FORMAT_CONSTANTS
-		export
-			{NONE} all
-		end
-
 feature -- Access
 
 	request: WGI_REQUEST
@@ -28,9 +23,17 @@ feature -- Access
 	path: READABLE_STRING_8
 			-- Associated path
 
-	request_format (a_format_variable_name: detachable STRING; content_type_supported: detachable ARRAY [STRING]): detachable READABLE_STRING_8
+feature {NONE} -- Constants
+
+	Format_constants: HTTP_FORMAT_CONSTANTS
+		once
+			create Result
+		end
+
+feature -- Query
+
+	request_format (a_format_variable_name: detachable READABLE_STRING_GENERAL; content_type_supported: detachable ARRAY [READABLE_STRING_8]): detachable READABLE_STRING_8
 			-- Format id for the request based on {HTTP_FORMAT_CONSTANTS}
-		local
 		do
 			if a_format_variable_name /= Void and then attached parameter (a_format_variable_name) as ctx_format then
 				Result := ctx_format.as_string_8
@@ -38,13 +41,12 @@ feature -- Access
 				Result := content_type_to_request_format (request_content_type (content_type_supported))
 			end
 		end
-			
 
-	request_format_id (a_format_variable_name: detachable STRING; content_type_supported: detachable ARRAY [STRING]): INTEGER
+	request_format_id (a_format_variable_name: detachable READABLE_STRING_GENERAL; content_type_supported: detachable ARRAY [READABLE_STRING_8]): INTEGER
 			-- Format id for the request based on {HTTP_FORMAT_CONSTANTS}
 		do
 			if attached request_format (a_format_variable_name, content_type_supported) as l_format then
-				Result := format_id (l_format)
+				Result := Format_constants.format_id (l_format)
 			else
 				Result := 0
 			end
@@ -68,7 +70,7 @@ feature -- Access
 			end
 		end
 
-	request_content_type (content_type_supported: detachable ARRAY [STRING]): detachable READABLE_STRING_8
+	request_content_type (content_type_supported: detachable ARRAY [READABLE_STRING_8]): detachable READABLE_STRING_8
 		local
 			s: detachable READABLE_STRING_32
 			i,n: INTEGER

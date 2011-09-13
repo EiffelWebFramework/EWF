@@ -9,38 +9,44 @@ deferred class
 
 feature -- Mapping
 
-	map_default (r: like default_handler)
+	map_default (h: like default_handler)
 			-- Map default handler
 			-- If no route/handler is found,
 			-- then use `default_handler' as default if not Void
 		do
-			set_default_handler (r)
+			set_default_handler (h)
 		end
 
-	map (a_id: READABLE_STRING_8; h: H)
-			-- Map handler `h' with `a_id'
+	map (a_resource: READABLE_STRING_8; h: H)
+			-- Map handler `h' with `a_resource'
 		do
-			map_with_request_methods (a_id, h, Void)
+			map_with_request_methods (a_resource, h, Void)
 		end
 
-	map_with_request_methods (a_id: READABLE_STRING_8; h: H; rqst_methods: detachable ARRAY [READABLE_STRING_8])
-			-- Map handler `h' with `a_id' and `rqst_methods'
+	map_routing (a_resource: READABLE_STRING_8; h: H)
+			-- Map handler `h' with `a_resource'
+		do
+			map (a_resource, h)
+		end
+
+	map_with_request_methods (a_resource: READABLE_STRING_8; h: H; rqst_methods: detachable ARRAY [READABLE_STRING_8])
+			-- Map handler `h' with `a_resource' and `rqst_methods'
 		deferred
 		end
 
-	map_agent (a_id: READABLE_STRING_8; a_action: PROCEDURE [ANY, TUPLE [ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER]])
+	map_agent (a_resource: READABLE_STRING_8; a_action: PROCEDURE [ANY, TUPLE [ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER]])
 		do
-			map_agent_with_request_methods (a_id, a_action, Void)
+			map_agent_with_request_methods (a_resource, a_action, Void)
 		end
 
-	map_agent_with_request_methods (a_id: READABLE_STRING_8; a_action: PROCEDURE [ANY, TUPLE [ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER]];
+	map_agent_with_request_methods (a_resource: READABLE_STRING_8; a_action: PROCEDURE [ANY, TUPLE [ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER]];
 			 rqst_methods: detachable ARRAY [READABLE_STRING_8])
 		local
 			rah: REQUEST_AGENT_HANDLER [C]
 		do
 			create rah.make (a_action)
 			if attached {H} rah as h then
-				map_with_request_methods (a_id, h, rqst_methods)
+				map_with_request_methods (a_resource, h, rqst_methods)
 			else
 				check valid_agent_handler: False end
 			end

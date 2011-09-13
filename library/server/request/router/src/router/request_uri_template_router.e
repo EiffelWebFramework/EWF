@@ -42,7 +42,7 @@ feature -- Registration
 			create uri.make (tpl)
 			map_with_uri_template_and_request_methods (uri, h, rqst_methods)
 		end
-		
+
 feature {NONE} -- Access: Implementation
 
 	handler (req: WGI_REQUEST): detachable TUPLE [handler: attached like default_handler; context: like default_handler_context]
@@ -51,6 +51,7 @@ feature {NONE} -- Access: Implementation
 			t: STRING
 			p: STRING
 			l_req_method: READABLE_STRING_GENERAL
+			l_res: URI_TEMPLATE_MATCH_RESULT
 		do
 			p := req.request_uri
 			from
@@ -63,7 +64,15 @@ feature {NONE} -- Access: Implementation
 				if attached l_handlers.item as l_info then
 					if is_matching_request_methods (l_req_method, l_info.request_methods) then
 						t := l_info.resource
-						if attached templates.item (t) as tpl and then
+						if
+							attached {REQUEST_ROUTING_HANDLER [H, C]} l_info.handler as rah and then
+							p.starts_with (t)
+						then
+							create l_res.make_empty
+							l_res.path_variables.force (p.substring (t.count, p.count), "path")
+
+							Result := [l_info.handler, handler_context (p, req, create {URI_TEMPLATE}.make (t), l_res)]
+						elseif attached templates.item (t) as tpl and then
 							attached tpl.match (p) as res
 						then
 							Result := [l_info.handler, handler_context (p, req, tpl, res)]
