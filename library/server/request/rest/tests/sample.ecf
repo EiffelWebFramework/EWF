@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<system xmlns="http://www.eiffel.com/developers/xml/configuration-1-8-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eiffel.com/developers/xml/configuration-1-8-0 http://www.eiffel.com/developers/xml/configuration-1-8-0.xsd" name="common" uuid="4E02DF53-9DF0-44B6-B8A8-7554E0B94957">
+	<target name="common">
+		<file_rule>
+			<exclude>/EIFGENs$</exclude>
+			<exclude>/\.git$</exclude>
+			<exclude>/\.svn$</exclude>
+		</file_rule>
+		<option cat_call_detection="false" is_attached_by_default="true" void_safety="all" syntax="provisional">
+		</option>
+		<setting name="console_application" value="true"/>
+		<setting name="concurrency" value="thread"/>
+		<library name="base" location="$ISE_LIBRARY\library\base\base-safe.ecf"/>
+		<library name="rest" location="..\rest-safe.ecf" readonly="false"/>
+		<library name="ewsgi" location="..\..\..\ewsgi\ewsgi-safe.ecf" readonly="false"/>
+		<library name="http" location="..\..\..\..\protocol\http\http-safe.ecf" readonly="false"/>
+	</target>
+	<target name="sample_fcgi" extends="common">
+		<root class="APP_SERVER" feature="make"/>
+		<setting name="executable_name" value="sample"/>
+		<library name="ewsgi_fcgi" location="..\..\..\ewsgi/connectors\fcgi\fcgi-safe.ecf" readonly="false"/>
+		<cluster name="src" location=".\src\" recursive="true">
+			<file_rule>
+				<exclude>/gateway$</exclude>
+			</file_rule>
+		</cluster>
+		<cluster name="gateway" location=".\src\gateway\fcgi\" recursive="true"/>
+	</target>
+	<target name="sample_cgi" extends="common">
+		<root class="APP_SERVER" feature="make"/>
+		<setting name="executable_name" value="sample"/>
+		<library name="ewsgi_cgi" location="..\..\..\ewsgi/connectors\cgi\cgi-safe.ecf" readonly="false"/>
+		<cluster name="src" location=".\src\" recursive="true">
+			<file_rule>
+				<exclude>/gateway$</exclude>
+			</file_rule>
+		</cluster>
+		<cluster name="gateway" location=".\src\gateway\cgi\" recursive="true"/>
+
+	</target>
+	<target name="sample_nino" extends="common">
+		<root class="APP_SERVER" feature="make"/>
+		<setting name="executable_name" value="sample"/>
+		<library name="ewsgi_nino" location="..\..\..\ewsgi/connectors\nino\nino-safe.ecf" readonly="false"/>
+		<library name="ewsgi_default_nino" location="..\..\..\ewsgi/default\ewsgi_nino-safe.ecf" readonly="false"/>
+
+
+		<cluster name="src" location=".\src\" recursive="true">
+			<file_rule>
+				<exclude>/gateway$</exclude>
+			</file_rule>
+		</cluster>
+		<cluster name="gateway" location=".\src\gateway\nino\" recursive="true"/>
+	</target>
+</system>
