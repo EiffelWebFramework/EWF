@@ -35,7 +35,7 @@ feature -- Query
 	request_format (a_format_variable_name: detachable READABLE_STRING_GENERAL; content_type_supported: detachable ARRAY [READABLE_STRING_8]): detachable READABLE_STRING_8
 			-- Format id for the request based on {HTTP_FORMAT_CONSTANTS}
 		do
-			if a_format_variable_name /= Void and then attached parameter (a_format_variable_name) as ctx_format then
+			if a_format_variable_name /= Void and then attached string_parameter (a_format_variable_name) as ctx_format then
 				Result := ctx_format.as_string_8
 			else
 				Result := content_type_to_request_format (request_content_type (content_type_supported))
@@ -107,25 +107,49 @@ feature -- Query
 
 feature -- Query	
 
-	path_parameter (a_name: READABLE_STRING_GENERAL): detachable READABLE_STRING_32
+	path_parameter (a_name: READABLE_STRING_GENERAL): detachable WGI_VALUE
 			-- Parameter value for path variable `a_name'
 		deferred
 		end
 
-	query_parameter (a_name: READABLE_STRING_GENERAL): detachable READABLE_STRING_32
+	query_parameter (a_name: READABLE_STRING_GENERAL): detachable WGI_VALUE
 			-- Parameter value for query variable `a_name'	
 			--| i.e after the ? character
 		deferred
 		end
 
-	parameter (a_name: READABLE_STRING_GENERAL): detachable READABLE_STRING_32
+	parameter (a_name: READABLE_STRING_GENERAL): detachable WGI_VALUE
 			-- Any parameter value for variable `a_name'
 			-- URI template parameter and query parameters
 		do
-			Result  := query_parameter (a_name)
+			Result := query_parameter (a_name)
 			if Result = Void then
 				Result := path_parameter (a_name)
 			end
+		end
+
+feature -- String query
+
+	string_from (a_value: detachable WGI_VALUE): detachable READABLE_STRING_32
+		do
+			if attached {WGI_STRING_VALUE} a_value as val then
+				Result := val.value
+			end
+		end
+
+	string_path_parameter (a_name: READABLE_STRING_GENERAL): detachable READABLE_STRING_32
+		do
+			Result := string_from (path_parameter (a_name))
+		end
+
+	string_query_parameter (a_name: READABLE_STRING_GENERAL): detachable READABLE_STRING_32
+		do
+			Result := string_from (query_parameter (a_name))
+		end
+
+	string_parameter (a_name: READABLE_STRING_GENERAL): detachable READABLE_STRING_32
+		do
+			Result := string_from (parameter (a_name))
 		end
 
 ;note

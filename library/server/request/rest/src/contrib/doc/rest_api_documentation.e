@@ -48,7 +48,10 @@ feature -- Execution
 			rep.headers.put_content_type_text_html
 			create s.make_empty
 
-			if attached ctx.path_parameter ("resource") as l_resource then
+			if
+				attached {WGI_STRING_VALUE} ctx.path_parameter ("resource") as l_resource_value and then
+				attached l_resource_value.value as l_resource
+			then
 				from
 					hdl_cursor := router.new_cursor
 				until

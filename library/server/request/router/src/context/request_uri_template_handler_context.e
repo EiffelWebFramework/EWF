@@ -31,16 +31,19 @@ feature -- Access
 
 feature -- Query	
 
-	path_parameter (a_name: READABLE_STRING_GENERAL): detachable READABLE_STRING_32
+	path_parameter (a_name: READABLE_STRING_GENERAL): detachable WGI_VALUE
 		do
-			Result := uri_template_match.url_decoded_path_variable (a_name)
+			if attached uri_template_match.url_decoded_path_variable (a_name) as s then
+				create {WGI_STRING_VALUE} Result.make (a_name, s)
+			end
 		end
 
-	query_parameter (a_name: READABLE_STRING_GENERAL): detachable READABLE_STRING_32
+	query_parameter (a_name: READABLE_STRING_GENERAL): detachable WGI_VALUE
 		do
-			Result := uri_template_match.url_decoded_query_variable (a_name)
-			if Result = Void then
-				Result := request.parameter (a_name)
+			if attached uri_template_match.url_decoded_query_variable (a_name) as s then
+				create {WGI_STRING_VALUE} Result.make (a_name, s)
+			else
+				Result := request.query_parameter (a_name)
 			end
 		end
 

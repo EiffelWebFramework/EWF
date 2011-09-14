@@ -89,14 +89,14 @@ feature -- Access: extra values
 
 feature -- Access: CGI meta variables		
 
-	meta_variable (a_name: READABLE_STRING_GENERAL): detachable READABLE_STRING_32
+	meta_variable (a_name: READABLE_STRING_GENERAL): detachable WGI_VALUE
 			-- Environment variable related to `a_name'
 		require
 			a_name_valid: a_name /= Void and then not a_name.is_empty
 		deferred
 		end
 
-	meta_variables: HASH_TABLE [READABLE_STRING_32, READABLE_STRING_GENERAL]
+	meta_variables: ITERATION_CURSOR [WGI_VALUE]
 			-- These variables are specific to requests made with HTTP.
 			-- Interpretation of these variables may depend on the value of
 			-- SERVER_PROTOCOL.
@@ -575,28 +575,14 @@ feature -- Extra CGI environment variables
 		deferred
 		end
 
---feature -- Access: execution variables		
-
---	execution_variables: WGI_VARIABLES [STRING_32]
---			-- Execution variables set by the application
---		deferred
---		end
-
---	execution_variable (a_name: STRING): detachable STRING_32
---			-- Execution variable related to `a_name'
---		require
---			a_name_valid: a_name /= Void and then not a_name.is_empty
---		deferred
---		end
-
 feature -- Query string Parameters
 
-	query_parameters: HASH_TABLE [READABLE_STRING_32, READABLE_STRING_GENERAL]
+	query_parameters: ITERATION_CURSOR [WGI_VALUE]
 			-- Variables extracted from QUERY_STRING
 		deferred
 		end
 
-	query_parameter (a_name: READABLE_STRING_GENERAL): detachable READABLE_STRING_32
+	query_parameter (a_name: READABLE_STRING_GENERAL): detachable WGI_VALUE
 			-- Parameter for name `n'.
 		require
 			a_name_valid: a_name /= Void and then not a_name.is_empty
@@ -605,12 +591,12 @@ feature -- Query string Parameters
 
 feature -- Form fields and related
 
-	form_data_parameters: HASH_TABLE [READABLE_STRING_32, READABLE_STRING_GENERAL]
+	form_data_parameters: ITERATION_CURSOR [WGI_VALUE]
 			-- Variables sent by POST request
 		deferred
 		end
 
-	form_data_parameter (a_name: READABLE_STRING_GENERAL): detachable READABLE_STRING_32
+	form_data_parameter (a_name: READABLE_STRING_GENERAL): detachable WGI_VALUE
 			-- Field for name `a_name'.
 		require
 			a_name_valid: a_name /= Void and then not a_name.is_empty
@@ -630,12 +616,12 @@ feature -- Form fields and related
 
 feature -- Cookies	
 
-	cookies: HASH_TABLE [READABLE_STRING_32, READABLE_STRING_GENERAL]
+	cookies: ITERATION_CURSOR [WGI_VALUE]
 			-- Expanded cookies variable
 		deferred
 		end
 
-	cookie (a_name: READABLE_STRING_GENERAL): detachable READABLE_STRING_32
+	cookie (a_name: READABLE_STRING_GENERAL): detachable WGI_VALUE
 			-- Field for name `a_name'.
 		require
 			a_name_valid: a_name /= Void and then not a_name.is_empty
@@ -644,14 +630,26 @@ feature -- Cookies
 
 feature -- Access: global variable
 
-	parameters: HASH_TABLE [READABLE_STRING_32, READABLE_STRING_GENERAL]
+	parameters: like items
+		obsolete "use items"
+		do
+			Result := items
+		end
+
+	parameter (a_name: READABLE_STRING_GENERAL): like item
+		obsolete "use item"
+		do
+			Result := item (a_name)
+		end
+
+	items: ITERATION_CURSOR [WGI_VALUE]
 			-- Table containing all the various variables
 			-- Warning: this is computed each time, if you change the content of other containers
 			-- this won't update this Result's content, unless you query it again
 		deferred
 		end
 
-	parameter (a_name: READABLE_STRING_GENERAL): detachable READABLE_STRING_32
+	item (a_name: READABLE_STRING_GENERAL): detachable WGI_VALUE
 			-- Variable named `a_name' from any of the variables container
 			-- and following a specific order
 			-- execution, environment, get, post, cookies

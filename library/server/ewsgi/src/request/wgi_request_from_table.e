@@ -34,33 +34,33 @@ feature {NONE} -- Initialization
 			analyze
 		end
 
-	set_meta_parameters (a_vars: HASH_TABLE [READABLE_STRING_8, READABLE_STRING_8])
+	set_meta_parameters (a_vars: HASH_TABLE [READABLE_STRING_8, READABLE_STRING_GENERAL])
 			-- Fill with variable from `a_vars'
 		local
-			s: like meta_variable
-			table: HASH_TABLE [READABLE_STRING_32, READABLE_STRING_GENERAL]
+			s: like meta_string_variable
+			table: HASH_TABLE [WGI_VALUE, READABLE_STRING_GENERAL]
 		do
 			create {STRING_32} empty_string.make_empty
 
 			create table.make (a_vars.count)
-			meta_variables := table
+			meta_variables_table := table
 			from
 				a_vars.start
 			until
 				a_vars.after
 			loop
-				table.force (a_vars.item_for_iteration, a_vars.key_for_iteration)
+				table.force (new_string_value (a_vars.key_for_iteration, a_vars.item_for_iteration), a_vars.key_for_iteration)
 				a_vars.forth
 			end
 
 				--| QUERY_STRING
-			query_string := meta_parameter_or_default ({WGI_META_NAMES}.query_string, empty_string, False)
+			query_string := meta_string_variable_or_default ({WGI_META_NAMES}.query_string, empty_string, False)
 
 				--| REQUEST_METHOD
-			request_method := meta_parameter_or_default ({WGI_META_NAMES}.request_method, empty_string, False)
+			request_method := meta_string_variable_or_default ({WGI_META_NAMES}.request_method, empty_string, False)
 
 				--| CONTENT_TYPE
-			s := meta_variable ({WGI_META_NAMES}.content_type)
+			s := meta_string_variable ({WGI_META_NAMES}.content_type)
 			if s /= Void and then not s.is_empty then
 				content_type := s
 			else
@@ -68,7 +68,7 @@ feature {NONE} -- Initialization
 			end
 
 				--| CONTENT_LENGTH
-			s := meta_variable ({WGI_META_NAMES}.content_length)
+			s := meta_string_variable ({WGI_META_NAMES}.content_length)
 			content_length := s
 			if s /= Void and then s.is_natural_64 then
 				content_length_value := s.to_natural_64
@@ -77,13 +77,13 @@ feature {NONE} -- Initialization
 			end
 
 				--| PATH_INFO
-			path_info := meta_parameter_or_default ({WGI_META_NAMES}.path_info, empty_string, False)
+			path_info := meta_string_variable_or_default ({WGI_META_NAMES}.path_info, empty_string, False)
 
 				--| SERVER_NAME
-			server_name := meta_parameter_or_default ({WGI_META_NAMES}.server_name, empty_string, False)
+			server_name := meta_string_variable_or_default ({WGI_META_NAMES}.server_name, empty_string, False)
 
 				--| SERVER_PORT
-			s := meta_variable ({WGI_META_NAMES}.server_port)
+			s := meta_string_variable ({WGI_META_NAMES}.server_port)
 			if s /= Void and then s.is_integer then
 				server_port := s.to_integer
 			else
@@ -91,16 +91,16 @@ feature {NONE} -- Initialization
 			end
 
 				--| SCRIPT_NAME
-			script_name := meta_parameter_or_default ({WGI_META_NAMES}.script_name, empty_string, False)
+			script_name := meta_string_variable_or_default ({WGI_META_NAMES}.script_name, empty_string, False)
 
 				--| REMOTE_ADDR
-			remote_addr := meta_parameter_or_default ({WGI_META_NAMES}.remote_addr, empty_string, False)
+			remote_addr := meta_string_variable_or_default ({WGI_META_NAMES}.remote_addr, empty_string, False)
 
 				--| REMOTE_HOST
-			remote_host := meta_parameter_or_default ({WGI_META_NAMES}.remote_host, empty_string, False)
+			remote_host := meta_string_variable_or_default ({WGI_META_NAMES}.remote_host, empty_string, False)
 
 				--| REQUEST_URI
-			request_uri := meta_parameter_or_default ({WGI_META_NAMES}.request_uri, empty_string, False)
+			request_uri := meta_string_variable_or_default ({WGI_META_NAMES}.request_uri, empty_string, False)
 		end
 
 	initialize
@@ -114,13 +114,13 @@ feature {NONE} -- Initialization
 			if attached request_uri as rq_uri then
 				p := rq_uri.index_of ('?', 1)
 				if p > 0 then
-					set_meta_variable (rq_uri.substring (1, p-1), {WGI_META_NAMES}.self)
+					set_meta_string_variable (rq_uri.substring (1, p-1), {WGI_META_NAMES}.self)
 				else
-					set_meta_variable (rq_uri, {WGI_META_NAMES}.self)
+					set_meta_string_variable (rq_uri, {WGI_META_NAMES}.self)
 				end
 			end
 			if meta_variable ({WGI_META_NAMES}.request_time) = Void then
-				set_meta_variable (date_time_utilities.unix_time_stamp (Void).out, {WGI_META_NAMES}.request_time)
+				set_meta_string_variable (date_time_utilities.unix_time_stamp (Void).out, {WGI_META_NAMES}.request_time)
 			end
 		end
 
@@ -160,51 +160,65 @@ feature -- Access extra information
 			-- Request time (UTC)
 		do
 			if
-				attached meta_variable ({WGI_META_NAMES}.request_time) as t and then
-				t.is_integer_64
+				attached {WGI_STRING_VALUE} meta_variable ({WGI_META_NAMES}.request_time) as t and then
+				t.value.is_integer_64
 			then
-				Result := date_time_utilities.unix_time_stamp_to_date_time (t.to_integer_64)
+				Result := date_time_utilities.unix_time_stamp_to_date_time (t.value.to_integer_64)
 			end
 		end
 
-feature -- Access: CGI meta parameters
+feature {NONE} -- Access: CGI meta parameters
 
-	meta_variables: HASH_TABLE [READABLE_STRING_32, READABLE_STRING_GENERAL]
+	meta_variables_table: HASH_TABLE [WGI_VALUE, READABLE_STRING_GENERAL]
 			-- CGI Environment parameters
 
-	meta_variable (a_name: READABLE_STRING_GENERAL): detachable READABLE_STRING_32
-			-- CGI meta variable related to `a_name'
+feature -- Access: CGI meta parameters
+
+	meta_variables: ITERATION_CURSOR [WGI_VALUE]
 		do
-			Result := meta_variables.item (a_name)
+			Result := meta_variables_table.new_cursor
 		end
 
-	meta_parameter_or_default (a_name: READABLE_STRING_GENERAL; a_default: READABLE_STRING_32; use_default_when_empty: BOOLEAN): READABLE_STRING_32
+	meta_variable (a_name: READABLE_STRING_GENERAL): detachable WGI_VALUE
+			-- CGI meta variable related to `a_name'
+		do
+			Result := meta_variables_table.item (a_name)
+		end
+
+	meta_string_variable (a_name: READABLE_STRING_GENERAL): detachable READABLE_STRING_32
+			-- CGI meta variable related to `a_name'
+		do
+			if attached meta_variables_table.item (a_name) as val then
+				Result := val.as_string
+			end
+		end
+
+	meta_string_variable_or_default (a_name: READABLE_STRING_GENERAL; a_default: READABLE_STRING_32; use_default_when_empty: BOOLEAN): READABLE_STRING_32
 			-- Value for meta parameter `a_name'
 			-- If not found, return `a_default'
 		require
 			a_name_not_empty: a_name /= Void and then not a_name.is_empty
 		do
-			if attached meta_variable (a_name) as s then
-				if use_default_when_empty and then s.is_empty then
+			if attached meta_variable (a_name) as val then
+				Result := val.as_string
+				if use_default_when_empty and then Result.is_empty then
 					Result := a_default
-				else
-					Result := s
 				end
 			else
 				Result := a_default
 			end
 		end
 
-	set_meta_variable (a_name: READABLE_STRING_GENERAL; a_value: READABLE_STRING_32)
+	set_meta_string_variable (a_name: READABLE_STRING_GENERAL; a_value: READABLE_STRING_32)
 		do
-			meta_variables.force (a_value, a_name)
+			meta_variables_table.force (new_string_value (a_name, a_value), a_name)
 		ensure
-			param_set: meta_variable (a_name) ~ a_value
+			param_set: attached {WGI_STRING_VALUE} meta_variable (a_name) as val and then val ~ a_value
 		end
 
 	unset_meta_variable (a_name: READABLE_STRING_GENERAL)
 		do
-			meta_variables.remove (a_name)
+			meta_variables_table.remove (a_name)
 		ensure
 			param_unset: meta_variable (a_name) = Void
 		end
@@ -221,7 +235,7 @@ feature -- Access: CGI meta parameters - 1.1
 
 	gateway_interface: READABLE_STRING_32
 		do
-			Result := meta_parameter_or_default ({WGI_META_NAMES}.gateway_interface, "", False)
+			Result := meta_string_variable_or_default ({WGI_META_NAMES}.gateway_interface, "", False)
 		end
 
 	path_info: READABLE_STRING_32
@@ -234,7 +248,7 @@ feature -- Access: CGI meta parameters - 1.1
 
 	path_translated: detachable READABLE_STRING_32
 		do
-			Result := meta_variable ({WGI_META_NAMES}.path_translated)
+			Result := meta_string_variable ({WGI_META_NAMES}.path_translated)
 		end
 
 	query_string: READABLE_STRING_32
@@ -245,12 +259,12 @@ feature -- Access: CGI meta parameters - 1.1
 
 	remote_ident: detachable READABLE_STRING_32
 		do
-			Result := meta_variable ({WGI_META_NAMES}.remote_ident)
+			Result := meta_string_variable ({WGI_META_NAMES}.remote_ident)
 		end
 
 	remote_user: detachable READABLE_STRING_32
 		do
-			Result := meta_variable ({WGI_META_NAMES}.remote_user)
+			Result := meta_string_variable ({WGI_META_NAMES}.remote_user)
 		end
 
 	request_method: READABLE_STRING_32
@@ -263,12 +277,12 @@ feature -- Access: CGI meta parameters - 1.1
 
 	server_protocol: READABLE_STRING_32
 		do
-			Result := meta_parameter_or_default ({WGI_META_NAMES}.server_protocol, "HTTP/1.0", True)
+			Result := meta_string_variable_or_default ({WGI_META_NAMES}.server_protocol, "HTTP/1.0", True)
 		end
 
 	server_software: READABLE_STRING_32
 		do
-			Result := meta_parameter_or_default ({WGI_META_NAMES}.server_software, "Unknown Server", True)
+			Result := meta_string_variable_or_default ({WGI_META_NAMES}.server_software, "Unknown Server", True)
 		end
 
 feature -- Access: HTTP_* CGI meta parameters - 1.1
@@ -276,41 +290,41 @@ feature -- Access: HTTP_* CGI meta parameters - 1.1
 	http_accept: detachable READABLE_STRING_32
 			-- Contents of the Accept: header from the current request, if there is one.
 		do
-			Result := meta_variable ({WGI_META_NAMES}.http_accept)
+			Result := meta_string_variable ({WGI_META_NAMES}.http_accept)
 		end
 
 	http_accept_charset: detachable READABLE_STRING_32
 			-- Contents of the Accept-Charset: header from the current request, if there is one.
 			-- Example: 'iso-8859-1,*,utf-8'.
 		do
-			Result := meta_variable ({WGI_META_NAMES}.http_accept_charset)
+			Result := meta_string_variable ({WGI_META_NAMES}.http_accept_charset)
 		end
 
 	http_accept_encoding: detachable READABLE_STRING_32
 			-- Contents of the Accept-Encoding: header from the current request, if there is one.
 			-- Example: 'gzip'.
 		do
-			Result := meta_variable ({WGI_META_NAMES}.http_accept_encoding)
+			Result := meta_string_variable ({WGI_META_NAMES}.http_accept_encoding)
 		end
 
 	http_accept_language: detachable READABLE_STRING_32
 			-- Contents of the Accept-Language: header from the current request, if there is one.
 			-- Example: 'en'.
 		do
-			Result := meta_variable ({WGI_META_NAMES}.http_accept_language)
+			Result := meta_string_variable ({WGI_META_NAMES}.http_accept_language)
 		end
 
 	http_connection: detachable READABLE_STRING_32
 			-- Contents of the Connection: header from the current request, if there is one.
 			-- Example: 'Keep-Alive'.
 		do
-			Result := meta_variable ({WGI_META_NAMES}.http_connection)
+			Result := meta_string_variable ({WGI_META_NAMES}.http_connection)
 		end
 
 	http_host: detachable READABLE_STRING_32
 			-- Contents of the Host: header from the current request, if there is one.
 		do
-			Result := meta_variable ({WGI_META_NAMES}.http_host)
+			Result := meta_string_variable ({WGI_META_NAMES}.http_host)
 		end
 
 	http_referer: detachable READABLE_STRING_32
@@ -319,7 +333,7 @@ feature -- Access: HTTP_* CGI meta parameters - 1.1
 			-- Not all user agents will set this, and some provide the ability to modify HTTP_REFERER as a feature.
 			-- In short, it cannot really be trusted.
 		do
-			Result := meta_variable ({WGI_META_NAMES}.http_referer)
+			Result := meta_string_variable ({WGI_META_NAMES}.http_referer)
 		end
 
 	http_user_agent: detachable READABLE_STRING_32
@@ -329,13 +343,13 @@ feature -- Access: HTTP_* CGI meta parameters - 1.1
 			-- Among other things, you can use this value to tailor your page's
 			-- output to the capabilities of the user agent.
 		do
-			Result := meta_variable ({WGI_META_NAMES}.http_user_agent)
+			Result := meta_string_variable ({WGI_META_NAMES}.http_user_agent)
 		end
 
 	http_authorization: detachable READABLE_STRING_32
 			-- Contents of the Authorization: header from the current request, if there is one.
 		do
-			Result := meta_variable ({WGI_META_NAMES}.http_authorization)
+			Result := meta_string_variable ({WGI_META_NAMES}.http_authorization)
 		end
 
 feature -- Access: Extension to CGI meta parameters - 1.1
@@ -354,7 +368,7 @@ feature {NONE} -- Element change: CGI meta parameter related to PATH_INFO
 			s_attached: s /= Void
 		do
 			orig_path_info := s
-			set_meta_variable ({WGI_META_NAMES}.orig_path_info, s)
+			set_meta_string_variable ({WGI_META_NAMES}.orig_path_info, s)
 		end
 
 	unset_orig_path_info
@@ -389,17 +403,17 @@ feature {NONE} -- Element change: CGI meta parameter related to PATH_INFO
 			end
 		end
 
-feature -- Query parameters
+feature {NONE} -- Query parameters
 
-	query_parameters: HASH_TABLE [READABLE_STRING_32, READABLE_STRING_GENERAL]
+	query_parameters_table: HASH_TABLE [WGI_VALUE, READABLE_STRING_GENERAL]
 			-- Variables extracted from QUERY_STRING	
 		local
-			vars: like internal_query_parameters
+			vars: like internal_query_parameters_table
 			p,e: INTEGER
 			rq_uri: like request_uri
 			s: detachable STRING
 		do
-			vars := internal_query_parameters
+			vars := internal_query_parameters_table
 			if vars = Void then
 				s := query_string
 				if s = Void then
@@ -416,20 +430,27 @@ feature -- Query parameters
 					end
 				end
 				vars := urlencoded_parameters (s, True)
-				internal_query_parameters := vars
+				internal_query_parameters_table := vars
 			end
 			Result := vars
 		end
 
-	query_parameter (a_name: READABLE_STRING_GENERAL): detachable READABLE_STRING_32
+feature -- Query parameters
+
+	query_parameters: ITERATION_CURSOR [WGI_VALUE]
+		do
+			Result := query_parameters_table.new_cursor
+		end
+
+	query_parameter (a_name: READABLE_STRING_GENERAL): detachable WGI_VALUE
 			-- Parameter for name `n'.
 		do
-			Result := query_parameters.item (a_name)
+			Result := query_parameters_table.item (a_name)
 		end
 
 feature {NONE} -- Query parameters: implementation
 
-	urlencoded_parameters (a_content: detachable READABLE_STRING_8; decoding: BOOLEAN): HASH_TABLE [READABLE_STRING_32, STRING]
+	urlencoded_parameters (a_content: detachable READABLE_STRING_8; decoding: BOOLEAN): HASH_TABLE [WGI_VALUE, STRING]
 			-- Import `a_content'
 		local
 			n, p, i, j: INTEGER
@@ -466,7 +487,7 @@ feature {NONE} -- Query parameters: implementation
 									l_name := url_encoder.decoded_string (l_name)
 									l_value := url_encoder.decoded_string (l_value)
 								end
-								Result.force (l_value, l_name)
+								Result.force (new_string_value (l_name, l_value), l_name)
 							end
 						end
 					end
@@ -474,17 +495,17 @@ feature {NONE} -- Query parameters: implementation
 			end
 		end
 
-feature -- Form fields and related
+feature {NONE} -- Form fields and related
 
-	form_data_parameters: HASH_TABLE [READABLE_STRING_32, READABLE_STRING_GENERAL]
+	form_data_parameters_table: HASH_TABLE [WGI_VALUE, READABLE_STRING_GENERAL]
 			-- Variables sent by POST request	
 		local
-			vars: like internal_form_data_parameters
+			vars: like internal_form_data_parameters_table
 			s: STRING
 			n: NATURAL_64
 			l_type: like content_type
 		do
-			vars := internal_form_data_parameters
+			vars := internal_form_data_parameters_table
 			if vars = Void then
 				n := content_length_value
 				if n > 0 then
@@ -502,20 +523,27 @@ feature -- Form fields and related
 						vars := urlencoded_parameters (s, True)
 					end
 					if raw_post_data_recorded then
-						vars.force (s, "RAW_POST_DATA")
+						vars.force (new_string_value ("RAW_POST_DATA", s), "RAW_POST_DATA")
 					end
 				else
 					create vars.make (0)
 				end
-				internal_form_data_parameters := vars
+				internal_form_data_parameters_table := vars
 			end
 			Result := vars
 		end
 
-	form_data_parameter (a_name: READABLE_STRING_GENERAL): detachable READABLE_STRING_32
+feature -- Form fields and related	
+
+	form_data_parameters: ITERATION_CURSOR [WGI_VALUE]
+		do
+			Result := form_data_parameters_table.new_cursor
+		end
+
+	form_data_parameter (a_name: READABLE_STRING_GENERAL): detachable WGI_VALUE
 			-- Field for name `a_name'.
 		do
-			Result := form_data_parameters.item (a_name)
+			Result := form_data_parameters_table.item (a_name)
 		end
 
 	uploaded_files: HASH_TABLE [WGI_UPLOADED_FILE_DATA, STRING]
@@ -527,18 +555,19 @@ feature -- Form fields and related
 			--| error: if /= 0 , there was an error : TODO ...
 			--| size: size of the file given by the http request
 
-feature -- Cookies
+feature {NONE} -- Cookies
 
-	cookies: HASH_TABLE [READABLE_STRING_32, READABLE_STRING_GENERAL]
+	cookies_table: HASH_TABLE [WGI_VALUE, READABLE_STRING_GENERAL]
 			-- Expanded cookies variable
 		local
 			i,j,p,n: INTEGER
-			l_cookies: like internal_cookies
-			k,v: STRING
+			l_cookies: like internal_cookies_table
+			k,v,s: STRING
 		do
-			l_cookies := internal_cookies
+			l_cookies := internal_cookies_table
 			if l_cookies = Void then
-				if attached meta_variable ({WGI_META_NAMES}.http_cookie) as s then
+				if attached {WGI_STRING_VALUE} meta_variable ({WGI_META_NAMES}.http_cookie) as val then
+					s := val.value
 					create l_cookies.make (5)
 					from
 						n := s.count
@@ -561,94 +590,117 @@ feature -- Cookies
 								v := s.substring (i + 1, j - 1)
 								p := j + 1
 							end
-							l_cookies.force (v, k)
+							l_cookies.force (new_string_value (k, v), k)
 						end
 					end
 				else
 					create l_cookies.make (0)
 				end
-				internal_cookies := l_cookies
+				internal_cookies_table := l_cookies
 			end
 			Result := l_cookies
 		end
 
-	cookie (a_name: READABLE_STRING_GENERAL): detachable READABLE_STRING_32
-			-- Field for name `a_name'.
+feature -- Cookies
+
+	cookies: ITERATION_CURSOR [WGI_VALUE]
 		do
-			Result := cookies.item (a_name)
+			Result := cookies_table.new_cursor
 		end
 
-feature -- Access: global variable
+	cookie (a_name: READABLE_STRING_GENERAL): detachable WGI_VALUE
+			-- Field for name `a_name'.
+		do
+			Result := cookies_table.item (a_name)
+		end
 
-	parameters: HASH_TABLE [READABLE_STRING_32, READABLE_STRING_GENERAL]
+feature {NONE} -- Access: global variable
+
+	items_table: HASH_TABLE [WGI_VALUE, READABLE_STRING_GENERAL]
 			-- Table containing all the various variables
 			-- Warning: this is computed each time, if you change the content of other containers
 			-- this won't update this Result's content, unless you query it again
 		local
-			vars: HASH_TABLE [READABLE_STRING_GENERAL, READABLE_STRING_GENERAL]
+			vars: ITERATION_CURSOR [WGI_VALUE]
 		do
 			create Result.make (100)
 
 			vars := meta_variables
 			from
-				vars.start
+--				vars.start
 			until
 				vars.after
 			loop
-				Result.force (vars.item_for_iteration.as_string_32, vars.key_for_iteration)
+				Result.force (vars.item, vars.item.name)
 				vars.forth
 			end
 
 			vars := query_parameters
 			from
-				vars.start
+--				vars.start
 			until
 				vars.after
 			loop
-				Result.force (vars.item_for_iteration.as_string_32, vars.key_for_iteration)
+				Result.force (vars.item, vars.item.name)
 				vars.forth
 			end
 
 			vars := form_data_parameters
 			from
-				vars.start
+--				vars.start
 			until
 				vars.after
 			loop
-				Result.force (vars.item_for_iteration.as_string_32, vars.key_for_iteration)
+				Result.force (vars.item, vars.item.name)
 				vars.forth
 			end
 
 			vars := cookies
 			from
-				vars.start
+--				vars.start
 			until
 				vars.after
 			loop
-				Result.force (vars.item_for_iteration.as_string_32, vars.key_for_iteration)
+				Result.force (vars.item, vars.item.name)
 				vars.forth
 			end
 		end
 
-	parameter (a_name: READABLE_STRING_GENERAL): detachable READABLE_STRING_32
+feature -- Access: global variable		
+
+	items: ITERATION_CURSOR [WGI_VALUE]
+		do
+			Result := items_table.new_cursor
+		end
+
+	item (a_name: READABLE_STRING_GENERAL): detachable WGI_VALUE
 			-- Variable named `a_name' from any of the variables container
 			-- and following a specific order
 			-- execution, environment, get, post, cookies
 		local
-			s: detachable READABLE_STRING_GENERAL
+			v: detachable WGI_VALUE
 		do
-			s := meta_variable (a_name)
-			if s = Void then
-				s := query_parameter (a_name)
-				if s = Void then
-					s := form_data_parameter (a_name)
-					if s = Void then
-						s := cookie (a_name)
+			v := meta_variable (a_name)
+			if v = Void then
+				v := query_parameter (a_name)
+				if v = Void then
+					v := form_data_parameter (a_name)
+					if v = Void then
+						v := cookie (a_name)
 					end
 				end
 			end
-			if s /= Void then
-				Result := s.as_string_32
+--			if s /= Void then
+--				Result := s.as_string_32
+--			end
+		end
+
+	string_item (a_name: READABLE_STRING_GENERAL): detachable READABLE_STRING_32
+		do
+			if attached {WGI_STRING_VALUE} item (a_name) as val then
+				Result := val.value
+			else
+				check is_string_value: False end
 			end
 		end
 
@@ -862,7 +914,7 @@ feature {NONE} -- Temporary File handling
 
 feature {NONE} -- Implementation: Form analyzer
 
-	analyze_multipart_form (t: STRING; s: STRING; vars: like form_data_parameters)
+	analyze_multipart_form (t: STRING; s: STRING; vars: like form_data_parameters_table)
 			-- Analyze multipart form content
 			--| FIXME[2011-06-21]: integrate eMIME parser library
 		require
@@ -928,7 +980,7 @@ feature {NONE} -- Implementation: Form analyzer
 			end
 		end
 
-	analyze_multipart_form_input (s: STRING; vars_post: like form_data_parameters)
+	analyze_multipart_form_input (s: STRING; vars_post: like form_data_parameters_table)
 			-- Analyze multipart entry
 		require
 			s_not_empty: s /= Void and then not s.is_empty
@@ -1035,7 +1087,7 @@ feature {NONE} -- Implementation: Form analyzer
 						save_uploaded_file (l_content, l_up_file_info)
 						uploaded_files.force (l_up_file_info, l_name)
 					else
-						vars_post.force (l_content, l_name)
+						vars_post.force (new_string_value (l_name, l_content), l_name)
 					end
 				else
 					error_handler.add_custom_error (0, "unamed multipart entry", Void)
@@ -1075,13 +1127,13 @@ feature {NONE} -- Internal value
 			end
 		end
 
-	internal_query_parameters: detachable like query_parameters
+	internal_query_parameters_table: detachable like query_parameters_table
 			-- cached value for `query_parameters'
 
-	internal_form_data_parameters: detachable like form_data_parameters
+	internal_form_data_parameters_table: detachable like form_data_parameters_table
 			-- cached value for `form_fields'
 
-	internal_cookies: detachable like cookies
+	internal_cookies_table: detachable like cookies_table
 			-- cached value for `cookies'
 
 feature {NONE} -- I/O: implementation
@@ -1138,7 +1190,12 @@ feature {NONE} -- Implementation
 			end
 		end
 
-feature {NONE} -- Implementation: utilities		
+feature {NONE} -- Implementation: utilities	
+
+	new_string_value (a_name: READABLE_STRING_GENERAL; a_value: READABLE_STRING_32): WGI_STRING_VALUE
+		do
+			create Result.make (a_name, a_value)
+		end
 
 	empty_string: READABLE_STRING_32
 			-- Reusable empty string

@@ -38,15 +38,28 @@ feature -- Execution
 	execute (req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
 		local
 			l_handled: BOOLEAN
+			rescued: BOOLEAN
 		do
-			l_handled := router.dispatch (req, res)
-			if not l_handled then
-				execute_default (req, res)
+			if not rescued then
+				l_handled := router.dispatch (req, res)
+				if not l_handled then
+					execute_default (req, res)
+				end
+			else
+				execute_rescue (req, res)
 			end
 		end
 
 	execute_default (req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
 		deferred
+		end
+
+	execute_rescue (req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+		do
+			if not res.header_committed then
+				res.write_header ({HTTP_STATUS_CODE}.internal_server_error, Void)
+			end
+			res.flush
 		end
 
 note

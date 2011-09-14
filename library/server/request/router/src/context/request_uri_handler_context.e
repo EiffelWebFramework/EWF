@@ -23,13 +23,13 @@ feature {NONE} -- Initialization
 
 feature -- Query	
 
-	path_parameter (a_name: READABLE_STRING_GENERAL): detachable STRING_32
+	path_parameter (a_name: READABLE_STRING_GENERAL): detachable WGI_VALUE
 		do
 		end
 
-	query_parameter (a_name: READABLE_STRING_GENERAL): detachable READABLE_STRING_32
+	query_parameter (a_name: READABLE_STRING_GENERAL): detachable WGI_VALUE
 		do
-			Result := request.parameter (a_name)
+			Result := request.query_parameter (a_name)
 		end
 
 note
