@@ -18,7 +18,6 @@ feature -- Initialization
 	make (act: like action)
 		do
 			action := act
-			initialize
 		end
 
 feature -- Access
@@ -27,7 +26,7 @@ feature -- Access
 
 feature -- Execution
 
-	execute_application (ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	execute (ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
 		do
 			action.call ([ctx, req, res])
 		end

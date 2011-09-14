@@ -22,26 +22,33 @@ create
 
 feature -- status
 
-	authentication_required: BOOLEAN
+	authentication_required (req: WGI_REQUEST): BOOLEAN
+		do
+			Result := internal_authentication_required
+		end
 
 feature -- Element change
 
 	set_authentication_required (b: like authentication_required)
 		do
-			authentication_required := b
+			internal_authentication_required := b
 		end
+
+feature {NONE} -- Implementation
+
+	internal_authentication_required: BOOLEAN
 
 feature -- Execution
 
-	execute (a_hdl_context: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	execute (ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
 		do
-			Precursor {REST_REQUEST_HANDLER} (a_hdl_context, req, res)
+			Precursor {REST_REQUEST_HANDLER} (ctx, req, res)
 		end
 
---	execute_application (ctx: REST_REQUEST_HANDLER_CONTEXT; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
---		do
---			action.call ([ctx, req, res])
---		end
+	execute_application (ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+		do
+			check should_not_occur: False end
+		end
 
 ;note
 	copyright: "Copyright (c) 1984-2011, Eiffel Software and others"

@@ -20,7 +20,6 @@ feature {NONE} -- Initialization
 			router := a_router
 			base_doc_url := a_base_doc_url
 			description := "Technical documention for the API"
-			initialize
 		end
 
 feature {NONE} -- Access: Implementation
@@ -31,7 +30,9 @@ feature {NONE} -- Access: Implementation
 
 feature -- Access
 
-	authentication_required: BOOLEAN = False
+	authentication_required (req: WGI_REQUEST): BOOLEAN
+		do
+		end
 
 feature -- Execution
 
@@ -187,7 +188,7 @@ feature -- Execution
 					end
 					s.append_string ("</strong></div>")
 				end
-				s.append_string ("<div class=%"api-auth%">Authentication required: <strong>" + rq.authentication_required.out + "</strong></div>")
+				s.append_string ("<div class=%"api-auth%">Authentication required: <strong>" + rq.authentication_required (req).out + "</strong></div>")
 				if attached {REST_REQUEST_URI_TEMPLATE_ROUTER_I [REST_REQUEST_HANDLER [REST_REQUEST_URI_TEMPLATE_HANDLER_CONTEXT], REST_REQUEST_URI_TEMPLATE_HANDLER_CONTEXT]} router as l_uri_template_router then
 					create l_uri_tpl.make (a_resource)
 					if attached l_uri_tpl.query_variable_names as l_query_variable_names and then not l_query_variable_names.is_empty then

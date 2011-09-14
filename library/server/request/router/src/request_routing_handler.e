@@ -13,7 +13,7 @@ inherit
 
 feature -- Execution
 
-	execute_application (ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	execute (ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
 			-- Execute request handler
 		local
 			hdl: detachable H

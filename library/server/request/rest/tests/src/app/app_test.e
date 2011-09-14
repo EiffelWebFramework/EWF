@@ -32,7 +32,9 @@ feature {NONE} -- Initialization
 
 feature -- Access
 
-	authentication_required: BOOLEAN = False
+	authentication_required (req: WGI_REQUEST): BOOLEAN
+		do
+		end
 
 feature -- Execution
 

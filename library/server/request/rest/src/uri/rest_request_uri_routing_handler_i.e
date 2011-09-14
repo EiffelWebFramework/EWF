@@ -29,10 +29,16 @@ feature -- Status report
 
 feature -- Execution
 
-	execute (a_hdl_context: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	execute (ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
 		do
-			Precursor {REST_REQUEST_HANDLER} (a_hdl_context, req, res)
+			Precursor {REST_REQUEST_HANDLER} (ctx, req, res)
 		end
+
+	execute_application (ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+		do
+			check should_not_occur: False end
+		end
+
 
 feature {NONE} -- Routing
 

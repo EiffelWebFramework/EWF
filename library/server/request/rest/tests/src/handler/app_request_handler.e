@@ -11,6 +11,13 @@ inherit
 
 	APP_REQUEST_HELPER
 
+feature {NONE} -- Initialization
+
+	initialize
+			-- Initialize various attributes
+		do
+		end
+		
 feature {NONE} -- Implementation
 
 	wgi_value_iteration_to_string (cur: ITERATION_CURSOR [WGI_VALUE]; using_pre: BOOLEAN): STRING_8
