@@ -5,7 +5,7 @@ note
 	revision: "$Revision$"
 
 class
-	REQUEST_URI_ROUTER [H -> REQUEST_HANDLER [C], C -> REQUEST_URI_HANDLER_CONTEXT create make end]
+	REQUEST_URI_ROUTER_I [H -> REQUEST_HANDLER [C], C -> REQUEST_URI_HANDLER_CONTEXT_I create make end]
 
 inherit
 	REQUEST_ROUTER [H, C]

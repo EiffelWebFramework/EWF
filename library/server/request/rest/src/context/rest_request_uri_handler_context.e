@@ -8,7 +8,7 @@ class
 	REST_REQUEST_URI_HANDLER_CONTEXT
 
 inherit
-	REQUEST_URI_HANDLER_CONTEXT
+	REQUEST_URI_HANDLER_CONTEXT_I
 
 	REST_REQUEST_HANDLER_CONTEXT
 
@@ -16,7 +16,7 @@ create
 	make
 
 note
-	copyright: "2011-2011, Eiffel Software and others"
+	copyright: "Copyright (c) 1984-2011, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

@@ -1,24 +1,22 @@
 note
-	description: "Summary description for {DEFAULT_REST_REQUEST_URI_TEMPLATE_ROUTING_HANDLER}."
+	description: "Summary description for {REST_APPLICATION}."
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
-class
-	DEFAULT_REST_REQUEST_URI_TEMPLATE_ROUTING_HANDLER
+deferred class
+	REST_APPLICATION_I [H -> REST_REQUEST_HANDLER [C], C -> REST_REQUEST_HANDLER_CONTEXT]
 
 inherit
-	REST_REQUEST_URI_TEMPLATE_ROUTING_HANDLER [REST_REQUEST_HANDLER [REST_REQUEST_URI_TEMPLATE_HANDLER_CONTEXT], REST_REQUEST_URI_TEMPLATE_HANDLER_CONTEXT]
+	ROUTED_APPLICATION [H, C]
 		redefine
 			router
 		end
 
-create
-	make
+feature -- Setup	
 
-feature {NONE} -- Routing
-
-	router: DEFAULT_REST_REQUEST_URI_TEMPLATE_ROUTER
+	router: REST_REQUEST_ROUTER [H, C]
+			-- Request router
 
 ;note
 	copyright: "Copyright (c) 1984-2011, Eiffel Software and others"

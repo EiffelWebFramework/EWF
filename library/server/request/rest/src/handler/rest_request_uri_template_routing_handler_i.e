@@ -5,11 +5,11 @@ note
 	revision: "$Revision$"
 
 class
-	REST_REQUEST_URI_ROUTING_HANDLER [H -> REST_REQUEST_HANDLER [C],
-							 C -> REST_REQUEST_URI_HANDLER_CONTEXT create make end]
+	REST_REQUEST_URI_TEMPLATE_ROUTING_HANDLER_I [H -> REST_REQUEST_HANDLER [C],
+							 C -> REST_REQUEST_URI_TEMPLATE_HANDLER_CONTEXT create make end]
 
 inherit
-	REQUEST_URI_ROUTING_HANDLER [H, C]
+	REQUEST_URI_TEMPLATE_ROUTING_HANDLER_I [H, C]
 		redefine
 			router,
 			execute
@@ -22,7 +22,7 @@ inherit
 
 create
 	make
-	
+
 feature -- Status report
 
 	authentication_required: BOOLEAN
@@ -36,7 +36,7 @@ feature -- Execution
 
 feature {NONE} -- Routing
 
-	router: REST_REQUEST_URI_ROUTER [H, C]
+	router: REST_REQUEST_URI_TEMPLATE_ROUTER_I [H, C]
 
 ;note
 	copyright: "Copyright (c) 1984-2011, Eiffel Software and others"

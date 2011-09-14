@@ -1,29 +1,21 @@
 note
-	description: "Summary description for {REQUEST_ROUTING_HANDLER}."
+	description: "Summary description for {DEFAULT_URI_TEMPLATE_ROUTED_APPLICATION}."
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
-class
-	REQUEST_URI_TEMPLATE_ROUTING_HANDLER [H -> REQUEST_HANDLER [C],
-							 C -> REQUEST_URI_TEMPLATE_HANDLER_CONTEXT create make end]
+deferred class
+	URI_TEMPLATE_ROUTED_APPLICATION
 
 inherit
-	REQUEST_ROUTING_HANDLER [H, C]
-
-create
-	make
-
-feature {NONE} -- Initialization
-
-	make (n: INTEGER)
-		do
-			create router.make (n)
+	ROUTED_APPLICATION [REQUEST_HANDLER [REQUEST_URI_TEMPLATE_HANDLER_CONTEXT_I], REQUEST_URI_TEMPLATE_HANDLER_CONTEXT_I]
+		redefine
+			router
 		end
 
-feature {NONE} -- Routing
+feature -- Router
 
-	router: REQUEST_URI_TEMPLATE_ROUTER [H, C]
+	router: REQUEST_URI_TEMPLATE_ROUTER
 
 ;note
 	copyright: "2011-2011, Eiffel Software and others"

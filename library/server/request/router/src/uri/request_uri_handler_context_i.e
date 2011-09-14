@@ -1,31 +1,38 @@
 note
-	description: "Summary description for {REQUEST_ROUTING_HANDLER}."
+	description: "Summary description for {REQUEST_URI_HANDLER_CONTEXT}."
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
 class
-	REQUEST_URI_ROUTING_HANDLER [H -> REQUEST_HANDLER [C],
-							 C -> REQUEST_URI_HANDLER_CONTEXT create make end]
+	REQUEST_URI_HANDLER_CONTEXT_I
 
 inherit
-	REQUEST_ROUTING_HANDLER [H, C]
+	REQUEST_HANDLER_CONTEXT
 
 create
 	make
 
 feature {NONE} -- Initialization
 
-	make (n: INTEGER)
+	make (req: WGI_REQUEST; p: like path)
 		do
-			create router.make (n)
+			request := req
+			path := p
 		end
 
-feature {NONE} -- Routing
+feature -- Query	
 
-	router: REQUEST_URI_ROUTER [H, C]
+	path_parameter (a_name: READABLE_STRING_GENERAL): detachable WGI_VALUE
+		do
+		end
 
-;note
+	query_parameter (a_name: READABLE_STRING_GENERAL): detachable WGI_VALUE
+		do
+			Result := request.query_parameter (a_name)
+		end
+
+note
 	copyright: "2011-2011, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[

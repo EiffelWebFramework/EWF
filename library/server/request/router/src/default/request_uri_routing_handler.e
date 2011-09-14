@@ -1,22 +1,27 @@
 note
-	description: "Summary description for {REST_REQUEST_URI_TEMPLATE_ROUTER}."
+	description: "Summary description for {DEFAULT_REQUEST_URI_ROUTING_HANDLER}."
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
 class
-	REST_REQUEST_URI_TEMPLATE_ROUTER [H -> REST_REQUEST_HANDLER [C], C -> REST_REQUEST_URI_TEMPLATE_HANDLER_CONTEXT create make end]
+	REQUEST_URI_ROUTING_HANDLER
 
 inherit
-	REQUEST_URI_TEMPLATE_ROUTER [H, C]
-
-	REST_REQUEST_ROUTER [H, C]
+	REQUEST_URI_ROUTING_HANDLER_I [REQUEST_HANDLER [REQUEST_URI_HANDLER_CONTEXT_I], REQUEST_URI_HANDLER_CONTEXT_I]
+		redefine
+			router
+		end
 
 create
 	make
 
-note
-	copyright: "Copyright (c) 1984-2011, Eiffel Software and others"
+feature {NONE} -- Routing
+
+	router: REQUEST_URI_ROUTER
+
+;note
+	copyright: "2011-2011, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software
