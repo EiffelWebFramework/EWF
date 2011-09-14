@@ -8,7 +8,7 @@ deferred class
 	REST_APPLICATION_I [H -> REST_REQUEST_HANDLER [C], C -> REST_REQUEST_HANDLER_CONTEXT]
 
 inherit
-	ROUTED_APPLICATION [H, C]
+	ROUTED_APPLICATION_I [H, C]
 		redefine
 			router
 		end

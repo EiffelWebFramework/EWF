@@ -13,19 +13,18 @@ inherit
 
 feature {NONE} -- Implementation
 
-	string_hash_table_string_string (ht: HASH_TABLE_ITERATION_CURSOR [READABLE_STRING_GENERAL, READABLE_STRING_GENERAL]; using_pre: BOOLEAN): STRING_8
+	wgi_value_iteration_to_string (cur: ITERATION_CURSOR [WGI_VALUE]; using_pre: BOOLEAN): STRING_8
 		do
 			create Result.make (100)
 			if using_pre then
 				Result.append ("<pre>")
 			end
 			from
-				ht.start
 			until
-				ht.after
+				cur.after
 			loop
-				Result.append_string (ht.key.as_string_8 + " = " + ht.item.as_string_8 + "%N")
-				ht.forth
+				Result.append_string (cur.item.name.as_string_8 + " = " + cur.item.as_string.as_string_8 + "%N")
+				cur.forth
 			end
 			if using_pre then
 				Result.append ("</pre>")

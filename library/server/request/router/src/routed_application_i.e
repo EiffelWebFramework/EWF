@@ -5,7 +5,7 @@ note
 	revision: "$Revision$"
 
 deferred class
-	ROUTED_APPLICATION [H -> REQUEST_HANDLER [C], C -> REQUEST_HANDLER_CONTEXT]
+	ROUTED_APPLICATION_I [H -> REQUEST_HANDLER [C], C -> REQUEST_HANDLER_CONTEXT]
 
 feature -- Setup
 
