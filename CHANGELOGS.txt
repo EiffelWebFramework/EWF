@@ -1,5 +1,15 @@
 History for Eiffel-Web-Framework
 
+[2011-09-13] Jocelyn
+	* library "router": now using a generic design to allow customization of
+	request handler context class.
+	* library "server/request/rest": first attempt to provide a library to
+	help building RESTful application (the interfaces are likely to change
+	soon) EXPERIMENTAL
+
+[2011-09-09] Jocelyn
+	* library "uri-template": better support for {/vars} and {?vars}
+
 [2011-09-07] Jocelyn
 	* library "router": now routing depends on uri (or uri template) and request methods
 	* Nino connector: Fixed issue where HTTP_ prefix were missing for header meta variable.

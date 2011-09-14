@@ -5,54 +5,69 @@ note
 	revision: "$Revision$"
 
 deferred class
-	REQUEST_ROUTER
+	REQUEST_ROUTER [H -> REQUEST_HANDLER [C], C -> REQUEST_HANDLER_CONTEXT]
 
-inherit
-	ITERABLE [TUPLE [handler: REQUEST_HANDLER; resource: READABLE_STRING_8; request_methods: detachable ARRAY [READABLE_STRING_8]]]
+feature -- Mapping
 
-feature -- Registration
-
-	map_default (r: like default_handler)
+	map_default (h: like default_handler)
 			-- Map default handler
 			-- If no route/handler is found,
 			-- then use `default_handler' as default if not Void
 		do
-			default_handler := r
+			set_default_handler (h)
 		end
 
-	map (a_id: READABLE_STRING_8; h: REQUEST_HANDLER)
-			-- Map handler `h' with `a_id'
+	map (a_resource: READABLE_STRING_8; h: H)
+			-- Map handler `h' with `a_resource'
 		do
-			map_with_request_methods (a_id, h, Void)
+			map_with_request_methods (a_resource, h, Void)
 		end
 
-	map_with_request_methods (a_id: READABLE_STRING_8; h: REQUEST_HANDLER; rqst_methods: detachable ARRAY [READABLE_STRING_8])
-			-- Map handler `h' with `a_id' and `rqst_methods'
+	map_routing (a_resource: READABLE_STRING_8; h: H)
+			-- Map handler `h' with `a_resource'
+		do
+			map (a_resource, h)
+		end
+
+	map_with_request_methods (a_resource: READABLE_STRING_8; h: H; rqst_methods: detachable ARRAY [READABLE_STRING_8])
+			-- Map handler `h' with `a_resource' and `rqst_methods'
 		deferred
 		end
 
-	map_agent (a_id: READABLE_STRING_8; a_action: like {REQUEST_AGENT_HANDLER}.action)
+	map_agent (a_resource: READABLE_STRING_8; a_action: PROCEDURE [ANY, TUPLE [ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER]])
 		do
-			map_agent_with_request_methods (a_id, a_action, Void)
+			map_agent_with_request_methods (a_resource, a_action, Void)
 		end
 
-	map_agent_with_request_methods (a_id: READABLE_STRING_8; a_action: like {REQUEST_AGENT_HANDLER}.action; rqst_methods: detachable ARRAY [READABLE_STRING_8])
+	map_agent_with_request_methods (a_resource: READABLE_STRING_8; a_action: PROCEDURE [ANY, TUPLE [ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER]];
+			 rqst_methods: detachable ARRAY [READABLE_STRING_8])
 		local
-			h: REQUEST_AGENT_HANDLER
+			rah: REQUEST_AGENT_HANDLER [C]
 		do
-			create h.make (a_action)
-			map_with_request_methods (a_id, h, rqst_methods)
+			create rah.make (a_action)
+			if attached {H} rah as h then
+				map_with_request_methods (a_resource, h, rqst_methods)
+			else
+				check valid_agent_handler: False end
+			end
 		end
 
 feature -- Execution
 
-	dispatch (req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER): detachable REQUEST_HANDLER
+	dispatch (req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER): BOOLEAN
+			-- Dispatch `req, res' to the associated handler
+			-- And return True is handled, otherwise False
+		do
+			Result := dispatch_and_return_handler (req, res) /= Void
+		end
+
+	dispatch_and_return_handler (req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER): detachable H
 			-- Dispatch `req, res' to the associated handler
 			-- And return this handler
 			-- If Result is Void, this means no handler was found.
 		local
 			d: like handler
-			ctx: detachable REQUEST_HANDLER_CONTEXT
+			ctx: detachable like default_handler_context
 		do
 			d := handler (req)
 			if d /= Void then
@@ -60,21 +75,29 @@ feature -- Execution
 				ctx := d.context
 			else
 				Result := default_handler
-			end
-			if Result /= Void then
-				if ctx = Void then
-					check is_default_handler: Result = default_handler end
-					create {REQUEST_URI_HANDLER_CONTEXT} ctx.make (req, "/")
+				if Result /= Void then
+					ctx := default_handler_context (req)
 				end
+			end
+			if Result /= Void and ctx /= Void then
 				Result.execute (ctx, req, res)
 			end
 		ensure
 			result_void_implie_no_default: Result = Void implies default_handler = Void
 		end
 
+feature -- Traversing
+
+	new_cursor: ITERATION_CURSOR [TUPLE [handler: H; resource: READABLE_STRING_8; request_methods: detachable ARRAY [READABLE_STRING_8]]]
+			-- Fresh cursor associated with current structure
+		deferred
+		ensure
+			result_attached: Result /= Void
+		end
+
 feature {NONE} -- Access: Implementation
 
-	handler (req: WGI_REQUEST): detachable TUPLE [handler: REQUEST_HANDLER; context: REQUEST_HANDLER_CONTEXT]
+	handler (req: WGI_REQUEST): detachable TUPLE [handler: H; context: like default_handler_context]
 			-- Handler whose map matched with `req'
 		require
 			req_valid: req /= Void and then req.path_info /= Void
@@ -127,8 +150,24 @@ feature {NONE} -- Access: Implementation
 
 feature {NONE} -- Implementation
 
-	default_handler: detachable REQUEST_HANDLER
+	set_default_handler (h: like default_handler)
+			-- Set `default_handler' to `h'
+		deferred
+		ensure
+			default_handler_set: h = default_handler
+		end
+
+	default_handler: detachable H
 			-- Default handler
+		deferred
+		end
+
+	default_handler_context (req: WGI_REQUEST): C
+			-- Default handler context associated with `default_handler'
+		require
+			has_default_handler: default_handler /= Void
+		deferred
+		end
 
 ;note
 	copyright: "2011-2011, Eiffel Software and others"

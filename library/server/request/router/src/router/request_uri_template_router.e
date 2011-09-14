@@ -5,10 +5,10 @@ note
 	revision: "$Revision$"
 
 class
-	REQUEST_URI_TEMPLATE_ROUTER
+	REQUEST_URI_TEMPLATE_ROUTER [H -> REQUEST_HANDLER [C], C -> REQUEST_URI_TEMPLATE_HANDLER_CONTEXT create make end]
 
 inherit
-	REQUEST_ROUTER
+	REQUEST_ROUTER [H, C]
 
 create
 	make
@@ -24,18 +24,18 @@ feature -- Initialization
 
 feature -- Registration
 
-	map_with_uri_template (uri: URI_TEMPLATE; h: REQUEST_HANDLER)
+	map_with_uri_template (uri: URI_TEMPLATE; h: H)
 		do
 			map_with_uri_template_and_request_methods (uri, h, Void)
 		end
 
-	map_with_uri_template_and_request_methods (uri: URI_TEMPLATE; h: REQUEST_HANDLER; rqst_methods: detachable ARRAY [READABLE_STRING_8])
+	map_with_uri_template_and_request_methods (uri: URI_TEMPLATE; h: H; rqst_methods: detachable ARRAY [READABLE_STRING_8])
 		do
 			handlers.force ([h, uri.template, formatted_request_methods (rqst_methods)])
 			templates.force (uri, uri.template)
 		end
 
-	map_with_request_methods (tpl: READABLE_STRING_8; h: REQUEST_HANDLER; rqst_methods: detachable ARRAY [READABLE_STRING_8])
+	map_with_request_methods (tpl: READABLE_STRING_8; h: H; rqst_methods: detachable ARRAY [READABLE_STRING_8])
 		local
 			uri: URI_TEMPLATE
 		do
@@ -45,13 +45,13 @@ feature -- Registration
 
 feature {NONE} -- Access: Implementation
 
-	handler (req: WGI_REQUEST): detachable TUPLE [handler: REQUEST_HANDLER; context: REQUEST_HANDLER_CONTEXT]
+	handler (req: WGI_REQUEST): detachable TUPLE [handler: attached like default_handler; context: like default_handler_context]
 		local
-			ctx: detachable REQUEST_URI_TEMPLATE_HANDLER_CONTEXT
 			l_handlers: like handlers
 			t: STRING
 			p: STRING
 			l_req_method: READABLE_STRING_GENERAL
+			l_res: URI_TEMPLATE_MATCH_RESULT
 		do
 			p := req.request_uri
 			from
@@ -64,11 +64,18 @@ feature {NONE} -- Access: Implementation
 				if attached l_handlers.item as l_info then
 					if is_matching_request_methods (l_req_method, l_info.request_methods) then
 						t := l_info.resource
-						if attached templates.item (t) as tpl and then
+						if
+							attached {REQUEST_ROUTING_HANDLER [H, C]} l_info.handler as rah and then
+							p.starts_with (t)
+						then
+							create l_res.make_empty
+							l_res.path_variables.force (p.substring (t.count, p.count), "path")
+
+							Result := [l_info.handler, handler_context (p, req, create {URI_TEMPLATE}.make (t), l_res)]
+						elseif attached templates.item (t) as tpl and then
 							attached tpl.match (p) as res
 						then
-							ctx := handler_context (p, req, tpl, res)
-							Result := [l_info.handler, ctx]
+							Result := [l_info.handler, handler_context (p, req, tpl, res)]
 						end
 					end
 				end
@@ -76,9 +83,9 @@ feature {NONE} -- Access: Implementation
 			end
 		end
 
-feature -- Context factory
+feature {NONE} -- Context factory
 
-	handler_context (p: detachable STRING; req: WGI_REQUEST; tpl: URI_TEMPLATE; tpl_res: URI_TEMPLATE_MATCH_RESULT): REQUEST_URI_TEMPLATE_HANDLER_CONTEXT
+	handler_context (p: detachable STRING; req: WGI_REQUEST; tpl: URI_TEMPLATE; tpl_res: URI_TEMPLATE_MATCH_RESULT): C
 		do
 			if p /= Void then
 				create Result.make (req, tpl, tpl_res, p)
@@ -89,7 +96,7 @@ feature -- Context factory
 
 feature -- Access: ITERABLE
 
-	new_cursor: ITERATION_CURSOR [TUPLE [handler: REQUEST_HANDLER; resource: READABLE_STRING_8; request_methods: detachable ARRAY [READABLE_STRING_8]]]
+	new_cursor: ITERATION_CURSOR [TUPLE [handler: H; resource: READABLE_STRING_8; request_methods: detachable ARRAY [READABLE_STRING_8]]]
 			-- Fresh cursor associated with current structure
 		do
 			Result := handlers.new_cursor
@@ -97,7 +104,7 @@ feature -- Access: ITERABLE
 
 feature {NONE} -- Implementation
 
-	handlers: ARRAYED_LIST [TUPLE [handler: REQUEST_HANDLER; resource: READABLE_STRING_8; request_methods: detachable ARRAY [READABLE_STRING_8]]]
+	handlers: ARRAYED_LIST [TUPLE [handler: H; resource: READABLE_STRING_8; request_methods: detachable ARRAY [READABLE_STRING_8]]]
 			-- Handlers indexed by the template expression
 			-- see `templates'
 
@@ -124,6 +131,23 @@ feature {NONE} -- Implementation
 			end
 		ensure
 			result_not_empty: not Result.is_empty
+		end
+
+feature {NONE} -- Default: implementation		
+
+	default_handler: detachable H
+
+	set_default_handler (h: like default_handler)
+		do
+			default_handler := h
+		end
+
+	default_handler_context (req: WGI_REQUEST): C
+		local
+			tpl: URI_TEMPLATE
+		do
+			create tpl.make ("/")
+			Result := handler_context ("/", req, tpl, create {URI_TEMPLATE_MATCH_RESULT}.make_empty)
 		end
 
 ;note

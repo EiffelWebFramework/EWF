@@ -10,11 +10,6 @@ class
 inherit
 	ANY
 
-	HTTP_FORMAT_CONSTANTS
-		export
-			{NONE} all
-		end
-
 feature -- Helper
 
 	execute_content_type_not_allowed (req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER; a_content_types: detachable ARRAY [STRING]; a_uri_formats: detachable ARRAY [STRING])
@@ -70,68 +65,27 @@ feature -- Helper
 			end
 		end
 
-	execute_method_not_allowed (req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER; a_methods: ARRAY [STRING])
+	execute_request_method_not_allowed (req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER; a_methods: ITERABLE [STRING])
 		local
 			s: STRING
-			i, n: INTEGER
 		do
-			create s.make (10)
-			from
-				i := a_methods.lower
-				n := a_methods.upper
-			until
-				i > n
+			res.set_status_code ({HTTP_STATUS_CODE}.method_not_allowed)
+			create s.make (25)
+			across
+				a_methods as c
 			loop
-				s.append_string (a_methods[i])
-				if i < n then
+				if not s.is_empty then
 					s.append_character (',')
 					s.append_character (' ')
 				end
-				i := i + 1
+				s.append_string (c.item)
 			end
-
+			res.set_status_code ({HTTP_STATUS_CODE}.method_not_allowed)
 			res.write_header ({HTTP_STATUS_CODE}.method_not_allowed, <<
 						["Content-Type", {HTTP_CONSTANTS}.plain_text],
 						["Allow", s]
 					>>)
 			res.write_string ("Unsupported request method, Allow: " + s + "%N")
-		end
-
-feature -- Context helper
-
-	request_format_id (ctx: REQUEST_HANDLER_CONTEXT; a_format_variable_name: detachable STRING; content_type_supported: detachable ARRAY [STRING]): INTEGER
-			-- Format id for the request based on {HTTP_FORMAT_CONSTANTS}
-		local
-			l_format: detachable STRING_8
-		do
-			if a_format_variable_name /= Void and then attached ctx.parameter (a_format_variable_name) as ctx_format then
-				l_format := ctx_format.as_string_8
-			else
-				l_format := content_type_to_request_format (ctx.request_content_type (content_type_supported))
-			end
-			if l_format /= Void then
-				Result := format_id (l_format)
-			else
-				Result := 0
-			end
-		end
-
-	content_type_to_request_format (a_content_type: detachable READABLE_STRING_8): detachable STRING
-			-- `a_content_type' converted into a request format name
-		do
-			if a_content_type /= Void then
-				if a_content_type.same_string ({HTTP_CONSTANTS}.json_text) then
-					Result := {HTTP_FORMAT_CONSTANTS}.json_name
-				elseif a_content_type.same_string ({HTTP_CONSTANTS}.json_app) then
-					Result := {HTTP_FORMAT_CONSTANTS}.json_name
-				elseif a_content_type.same_string ({HTTP_CONSTANTS}.xml_text) then
-					Result := {HTTP_FORMAT_CONSTANTS}.xml_name
-				elseif a_content_type.same_string ({HTTP_CONSTANTS}.html_text) then
-					Result := {HTTP_FORMAT_CONSTANTS}.html_name
-				elseif a_content_type.same_string ({HTTP_CONSTANTS}.plain_text) then
-					Result := {HTTP_FORMAT_CONSTANTS}.text_name
-				end
-			end
 		end
 
 note

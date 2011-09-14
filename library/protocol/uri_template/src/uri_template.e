@@ -159,10 +159,10 @@ feature -- Match
 			b: BOOLEAN
 			tpl: like template
 			l_offset: INTEGER
-			p,q: INTEGER
+			p,q,nb: INTEGER
 			exp: URI_TEMPLATE_EXPRESSION
 			vn, s,t: STRING
-			vv: STRING
+			vv, path_vv: STRING
 			l_vars, l_path_vars, l_query_vars: HASH_TABLE [READABLE_STRING_32, READABLE_STRING_GENERAL]
 			l_uri_count: INTEGER
 			tpl_count: INTEGER
@@ -196,7 +196,10 @@ feature -- Match
 						if p = q then
 							--| There should be at least one literal between two expression
 							--|  {var}{foobar}  is ambigous for matching ...
-							b := False
+							--| unless with {/var} or {?var} ... since we can search for '/' or '?'
+							exp.analyze
+							b := exp.operator = '/' or exp.operator = '?'
+							p := exp.end_position
 						elseif q > p then
 							if p = 0 then
 								p := 1
@@ -227,15 +230,42 @@ feature -- Match
 								else
 									if not l_expressions.after then
 										exp := l_expressions.item --| We change `exp' here
-										l_next_literal_separator := tpl.substring (p, exp.position -1)
+										exp.analyze
+										if exp.operator = '/' or exp.operator = '?' then
+											l_next_literal_separator := Void
+										else
+											l_next_literal_separator := tpl.substring (p, exp.position -1)
+										end
 									elseif p < tpl_count then
 										l_next_literal_separator := tpl.substring (p, tpl_count)
 									else
 										l_next_literal_separator := Void
 									end
-									vv := next_path_variable_value (a_uri, q + l_offset, l_next_literal_separator)
-									l_vars.force (vv, vn)
-									l_offset := l_offset + vv.count - (vn.count + 2)
+									if vn[1] = '/' then
+										vn := vn.substring (2, vn.count)
+										from
+											create path_vv.make_empty
+											vv := "/"
+											nb := 0
+										until
+											vv.is_empty or q + l_offset > a_uri.count
+										loop
+											vv := next_path_variable_value (a_uri, q + l_offset + 1, l_next_literal_separator)
+											l_offset := l_offset + vv.count + 1
+											nb := nb + 1
+											if not vv.is_empty then
+												path_vv.extend ('/')
+												path_vv.append (vv)
+												l_vars.force (vv, vn + "[" + nb.out + "]")
+											end
+										end
+										l_vars.force (path_vv, vn)
+										l_offset := l_offset - (1 + vn.count + 2)
+									else
+										vv := next_path_variable_value (a_uri, q + l_offset, l_next_literal_separator)
+										l_vars.force (vv, vn)
+										l_offset := l_offset + vv.count - (vn.count + 2)
+									end
 								end
 							else
 								b := exp.is_query --| query are optional

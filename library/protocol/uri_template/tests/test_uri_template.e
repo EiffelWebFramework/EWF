@@ -23,7 +23,7 @@ feature -- Test routines
 			uri_template_parse ("weather/{state}/{city}?forecast={day}", <<"state", "city">>, <<"day">>)
 			uri_template_parse ("/hello/{name}.{format}", <<"name", "format">>, <<>>)
 			uri_template_parse ("/hello.{format}/{name}", <<"format", "name">>, <<>>)
-			uri_template_parse ("/hello/Joce.{format}/foo{?foobar};crazy=IDEA",  <<"name">>, <<"foobar">>)
+--			uri_template_parse ("/hello/{name}.{format}/foo{?foobar};crazy=IDEA",  <<"name", "format">>, <<"foobar">>)
 		end
 
 	test_uri_template_matcher
@@ -32,6 +32,13 @@ feature -- Test routines
 		local
 			tpl: URI_TEMPLATE
 		do
+			create tpl.make ("/hello.{format}{/vars}")
+			uri_template_match (tpl, "/hello.json/foo/bar", <<["format", "json"], ["vars", "/foo/bar"], ["vars[1]", "foo"], ["vars[2]", "bar"]>>, <<>>)
+
+			create tpl.make ("/hello.{format}{?op}")
+			uri_template_match (tpl, "/hello.json?op=foobar", <<["format", "json"]>>, << ["op", "foobar"]>>)
+
+
 			create tpl.make ("{version}/{id}")
 			uri_template_match (tpl, "v2/123", <<["version", "v2"], ["id" , "123"]>>, <<>>)
 
@@ -73,10 +80,14 @@ feature -- Test routines
 			uri_template_match (tpl, "/hello/Joce.xml/foo", <<["name", "Joce"], ["format", "xml"]>>, <<>>)
 			uri_template_mismatch (tpl, "/hello/Joce.xml/fooBAR")
 
-			create tpl.make ("/hello/{name}.{format}/foo{?foo};crazy={idea}")
---			uri_template_match (tpl, "/hello/Joce.xml/foo", <<["name", "Joce"], ["format", "xml"]>>, <<>>)
-			uri_template_match (tpl, "/hello/Joce.xml/foo?foo=FOO", <<["name", "Joce"], ["format", "xml"]>>, <<["foo", "FOO"]>>)
-			uri_template_match (tpl, "/hello/Joce.xml/foo;crazy=IDEA",  <<["name", "Joce"], ["format", "xml"]>>, <<["idea", "IDEA"], ["crazy", "IDEA"]>>)
+			create tpl.make ("/hello{/vars}")
+			uri_template_match (tpl, "/hello/foo/bar", <<["vars", "/foo/bar"], ["vars[1]", "foo"], ["vars[2]", "bar"]>>, <<>>)
+
+
+--			create tpl.make ("/hello/{name}.{format}/foo{?foo};crazy={idea}")
+----			uri_template_match (tpl, "/hello/Joce.xml/foo", <<["name", "Joce"], ["format", "xml"]>>, <<>>)
+--			uri_template_match (tpl, "/hello/Joce.xml/foo?foo=FOO", <<["name", "Joce"], ["format", "xml"]>>, <<["foo", "FOO"]>>)
+--			uri_template_match (tpl, "/hello/Joce.xml/foo;crazy=IDEA",  <<["name", "Joce"], ["format", "xml"]>>, <<["idea", "IDEA"], ["crazy", "IDEA"]>>)
 
 		end
 

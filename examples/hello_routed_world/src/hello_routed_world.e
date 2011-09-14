@@ -10,7 +10,7 @@ class
 inherit
 	ANY
 
-	ROUTED_APPLICATION
+	DEFAULT_URI_TEMPLATE_ROUTED_APPLICATION
 
 	ROUTED_APPLICATION_HELPER
 
@@ -30,29 +30,33 @@ feature {NONE} -- Initialization
 
 	create_router
 		do
-			debug
-				create {REQUEST_URI_ROUTER} router.make (5)
-				create {REQUEST_URI_TEMPLATE_ROUTER} router.make (5)
-			end
-
---			create {REQUEST_URI_ROUTER} router.make (5)
-			create {REQUEST_URI_TEMPLATE_ROUTER} router.make (5)
+			create router.make (5)
 		end
 
 	setup_router
 		local
-			ra: REQUEST_AGENT_HANDLER
+			ra: REQUEST_AGENT_HANDLER [REQUEST_URI_TEMPLATE_HANDLER_CONTEXT]
+			rag: DEFAULT_REQUEST_URI_TEMPLATE_ROUTING_HANDLER
 		do
 			router.map_agent ("/home", agent execute_home)
 
+			create rag.make (3)
+
 			create ra.make (agent handle_hello)
-			router.map ("/hello/{name}.{format}", ra)
-			router.map ("/hello.{format}/{name}", ra)
-			router.map ("/hello/{name}", ra)
+			rag.map ("/hello/{name}.{format}", ra)
+			rag.map ("/hello.{format}/{name}", ra)
+			rag.map ("/hello/{name}", ra)
+--			router.map ("/hello/{name}.{format}", ra)
+--			router.map ("/hello.{format}/{name}", ra)
+--			router.map ("/hello/{name}", ra)
 
 			create ra.make (agent handle_anonymous_hello)
-			router.map ("/hello", ra)
-			router.map ("/hello.{format}", ra)
+			rag.map ("/hello", ra)
+			rag.map ("/hello.{format}", ra)
+--			router.map ("/hello", ra)
+--			router.map ("/hello.{format}", ra)
+
+			router.map ("/hello", rag)
 
 			router.map_agent_with_request_methods ("/method/any", agent handle_method_any, Void)
 			router.map_agent_with_request_methods ("/method/guess", agent handle_method_get_or_post, <<"GET", "POST">>)
@@ -108,7 +112,7 @@ feature -- Execution
 			res.flush
 		end
 
-	execute_home (ctx: REQUEST_HANDLER_CONTEXT; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	execute_home (ctx: REQUEST_URI_TEMPLATE_HANDLER_CONTEXT; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
 		do
 			res.write_header (200, <<["Content-Type", "text/html"]>>)
 			res.write_string ("<html><body>Hello World ?!%N")
@@ -141,7 +145,7 @@ feature -- Execution
 				msg := "Hello anonymous visitor !%N"
 			end
 			content_type_supported := <<{HTTP_CONSTANTS}.json_app, {HTTP_CONSTANTS}.html_text, {HTTP_CONSTANTS}.xml_text, {HTTP_CONSTANTS}.plain_text>>
-			inspect request_format_id (ctx, "format", content_type_supported)
+			inspect ctx.request_format_id ("format", content_type_supported)
 			when {HTTP_FORMAT_CONSTANTS}.json then
 				l_response_content_type := {HTTP_CONSTANTS}.json_app
 				msg := "{%N%"application%": %"/hello%",%N %"message%": %"" + msg + "%" %N}"
@@ -172,33 +176,33 @@ feature -- Execution
 			end
 		end
 
-	handle_hello (ctx: REQUEST_HANDLER_CONTEXT; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	handle_hello (ctx: REQUEST_URI_TEMPLATE_HANDLER_CONTEXT; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
 		do
 			execute_hello (req, res, Void, ctx)
 		end
 
-	handle_anonymous_hello (ctx: REQUEST_HANDLER_CONTEXT; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	handle_anonymous_hello (ctx: REQUEST_URI_TEMPLATE_HANDLER_CONTEXT; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
 		do
 			execute_hello (req, res, ctx.parameter ("name"), ctx)
 		end
 
-	handle_method_any (ctx: REQUEST_HANDLER_CONTEXT; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	handle_method_any (ctx: REQUEST_URI_TEMPLATE_HANDLER_CONTEXT; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
 		do
 			execute_hello (req, res, req.request_method, ctx)
 		end
 
-	handle_method_get (ctx: REQUEST_HANDLER_CONTEXT; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	handle_method_get (ctx: REQUEST_URI_TEMPLATE_HANDLER_CONTEXT; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
 		do
 			execute_hello (req, res, "GET", ctx)
 		end
 
 
-	handle_method_post (ctx: REQUEST_HANDLER_CONTEXT; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	handle_method_post (ctx: REQUEST_URI_TEMPLATE_HANDLER_CONTEXT; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
 		do
 			execute_hello (req, res, "POST", ctx)
 		end
 
-	handle_method_get_or_post (ctx: REQUEST_HANDLER_CONTEXT; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	handle_method_get_or_post (ctx: REQUEST_URI_TEMPLATE_HANDLER_CONTEXT; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
 		do
 			execute_hello (req, res, "GET or POST", ctx)
 		end

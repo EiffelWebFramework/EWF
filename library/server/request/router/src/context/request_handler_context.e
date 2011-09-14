@@ -20,10 +20,57 @@ feature -- Access
 	request: WGI_REQUEST
 			-- Associated request
 
-	path: READABLE_STRING_GENERAL
+	path: READABLE_STRING_8
 			-- Associated path
 
-	request_content_type (content_type_supported: detachable ARRAY [STRING]): detachable READABLE_STRING_8
+feature {NONE} -- Constants
+
+	Format_constants: HTTP_FORMAT_CONSTANTS
+		once
+			create Result
+		end
+
+feature -- Query
+
+	request_format (a_format_variable_name: detachable READABLE_STRING_GENERAL; content_type_supported: detachable ARRAY [READABLE_STRING_8]): detachable READABLE_STRING_8
+			-- Format id for the request based on {HTTP_FORMAT_CONSTANTS}
+		do
+			if a_format_variable_name /= Void and then attached parameter (a_format_variable_name) as ctx_format then
+				Result := ctx_format.as_string_8
+			else
+				Result := content_type_to_request_format (request_content_type (content_type_supported))
+			end
+		end
+
+	request_format_id (a_format_variable_name: detachable READABLE_STRING_GENERAL; content_type_supported: detachable ARRAY [READABLE_STRING_8]): INTEGER
+			-- Format id for the request based on {HTTP_FORMAT_CONSTANTS}
+		do
+			if attached request_format (a_format_variable_name, content_type_supported) as l_format then
+				Result := Format_constants.format_id (l_format)
+			else
+				Result := 0
+			end
+		end
+
+	content_type_to_request_format (a_content_type: detachable READABLE_STRING_8): detachable READABLE_STRING_8
+			-- `a_content_type' converted into a request format name
+		do
+			if a_content_type /= Void then
+				if a_content_type.same_string ({HTTP_CONSTANTS}.json_text) then
+					Result := {HTTP_FORMAT_CONSTANTS}.json_name
+				elseif a_content_type.same_string ({HTTP_CONSTANTS}.json_app) then
+					Result := {HTTP_FORMAT_CONSTANTS}.json_name
+				elseif a_content_type.same_string ({HTTP_CONSTANTS}.xml_text) then
+					Result := {HTTP_FORMAT_CONSTANTS}.xml_name
+				elseif a_content_type.same_string ({HTTP_CONSTANTS}.html_text) then
+					Result := {HTTP_FORMAT_CONSTANTS}.html_name
+				elseif a_content_type.same_string ({HTTP_CONSTANTS}.plain_text) then
+					Result := {HTTP_FORMAT_CONSTANTS}.text_name
+				end
+			end
+		end
+
+	request_content_type (content_type_supported: detachable ARRAY [READABLE_STRING_8]): detachable READABLE_STRING_8
 		local
 			s: detachable READABLE_STRING_32
 			i,n: INTEGER

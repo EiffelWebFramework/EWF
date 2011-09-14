@@ -5,10 +5,10 @@ note
 	revision: "$Revision$"
 
 class
-	REQUEST_AGENT_HANDLER
+	REQUEST_AGENT_HANDLER [C -> REQUEST_HANDLER_CONTEXT]
 
 inherit
-	REQUEST_HANDLER
+	REQUEST_HANDLER [C]
 
 create
 	make
@@ -23,11 +23,11 @@ feature -- Initialization
 
 feature -- Access
 
-	action: PROCEDURE [ANY, TUPLE [ctx: REQUEST_HANDLER_CONTEXT; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER]]
+	action: PROCEDURE [ANY, TUPLE [ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER]]
 
 feature -- Execution
 
-	execute_application (ctx: REQUEST_HANDLER_CONTEXT; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	execute_application (ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
 		do
 			action.call ([ctx, req, res])
 		end
