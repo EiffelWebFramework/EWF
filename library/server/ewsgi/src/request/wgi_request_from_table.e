@@ -161,9 +161,9 @@ feature -- Access extra information
 		do
 			if
 				attached {WGI_STRING_VALUE} meta_variable ({WGI_META_NAMES}.request_time) as t and then
-				t.value.is_integer_64
+				t.string.is_integer_64
 			then
-				Result := date_time_utilities.unix_time_stamp_to_date_time (t.value.to_integer_64)
+				Result := date_time_utilities.unix_time_stamp_to_date_time (t.string.to_integer_64)
 			end
 		end
 
@@ -567,7 +567,7 @@ feature {NONE} -- Cookies
 			l_cookies := internal_cookies_table
 			if l_cookies = Void then
 				if attached {WGI_STRING_VALUE} meta_variable ({WGI_META_NAMES}.http_cookie) as val then
-					s := val.value
+					s := val.string
 					create l_cookies.make (5)
 					from
 						n := s.count
@@ -698,7 +698,7 @@ feature -- Access: global variable
 	string_item (a_name: READABLE_STRING_GENERAL): detachable READABLE_STRING_32
 		do
 			if attached {WGI_STRING_VALUE} item (a_name) as val then
-				Result := val.value
+				Result := val.string
 			else
 				check is_string_value: False end
 			end

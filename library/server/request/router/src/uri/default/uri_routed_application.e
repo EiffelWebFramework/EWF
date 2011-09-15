@@ -1,21 +1,21 @@
 note
-	description: "Summary description for {DEFAULT_URI_TEMPLATE_ROUTED_APPLICATION}."
+	description: "Summary description for {DEFAULT_URI_ROUTED_APPLICATION}."
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
 deferred class
-	URI_TEMPLATE_ROUTED_APPLICATION
+	URI_ROUTED_APPLICATION
 
 inherit
-	ROUTED_APPLICATION_I [REQUEST_HANDLER [REQUEST_URI_TEMPLATE_HANDLER_CONTEXT_I], REQUEST_URI_TEMPLATE_HANDLER_CONTEXT_I]
+	ROUTED_APPLICATION_I [REQUEST_HANDLER [REQUEST_URI_HANDLER_CONTEXT], REQUEST_URI_HANDLER_CONTEXT]
 		redefine
 			router
 		end
 
 feature -- Router
 
-	router: REQUEST_URI_TEMPLATE_ROUTER
+	router: REQUEST_URI_ROUTER
 
 ;note
 	copyright: "2011-2011, Eiffel Software and others"

@@ -18,32 +18,32 @@ convert
 
 feature {NONE} -- Initialization
 
-	make (a_name: like name; a_value: like value)
+	make (a_name: like name; a_string: like string)
 		do
 			name := a_name
-			value := a_value
+			string := a_string
 		end
 
 feature -- Access
 
 	name: READABLE_STRING_GENERAL
 
-	value: READABLE_STRING_32
+	string: READABLE_STRING_32
 
 feature -- Helper
 
 	same_string (a_other: READABLE_STRING_GENERAL): BOOLEAN
 			-- Does `a_other' represent the same string as `Current'?	
 		do
-			Result := value.same_string_general (a_other)
+			Result := string.same_string_general (a_other)
 		end
 
 	is_case_insensitive_equal (a_other: READABLE_STRING_8): BOOLEAN
 			-- Does `a_other' represent the same case insensitive string as `Current'?
 		local
-			v: like value
+			v: like string
 		do
-			v := value
+			v := string
 			if v = a_other then
 				Result := True
 			elseif v.is_valid_as_string_8 then
@@ -55,7 +55,7 @@ feature -- Conversion
 
 	as_string: STRING_32
 		do
-			create Result.make_from_string (value)
+			create Result.make_from_string (string)
 		end
 
 ;note

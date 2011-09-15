@@ -51,7 +51,7 @@ feature -- Execution
 
 			if
 				attached {WGI_STRING_VALUE} ctx.path_parameter ("resource") as l_resource_value and then
-				attached l_resource_value.value as l_resource
+				attached l_resource_value.string as l_resource
 			then
 				from
 					hdl_cursor := router.new_cursor

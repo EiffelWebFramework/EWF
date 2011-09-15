@@ -10,7 +10,7 @@ class
 inherit
 	ANY
 
-	DEFAULT_URI_TEMPLATE_ROUTED_APPLICATION
+	URI_TEMPLATE_ROUTED_APPLICATION
 
 	ROUTED_APPLICATION_HELPER
 
@@ -35,7 +35,7 @@ feature {NONE} -- Initialization
 	setup_router
 		local
 			ra: REQUEST_AGENT_HANDLER [REQUEST_URI_TEMPLATE_HANDLER_CONTEXT]
-			rag: DEFAULT_REQUEST_URI_TEMPLATE_ROUTING_HANDLER
+			rag: REQUEST_URI_TEMPLATE_ROUTING_HANDLER
 		do
 			router.map_agent ("/home", agent execute_home)
 
@@ -125,8 +125,8 @@ feature -- Execution
 			res.write_string ("<li><a href=%""+ req.script_url ("/hello/Joce") + "%">/hello/Joce</a></li>%N")
 			res.write_string ("</ul>%N")
 
-			if attached req.parameter ("REQUEST_COUNT") as rqc then
-				res.write_string ("request #"+ rqc + "%N")
+			if attached req.item ("REQUEST_COUNT") as rqc then
+				res.write_string ("request #"+ rqc.as_string + "%N")
 			end
 			res.write_string ("</body></html>%N")
 		end
@@ -182,7 +182,7 @@ feature -- Execution
 
 	handle_anonymous_hello (ctx: REQUEST_URI_TEMPLATE_HANDLER_CONTEXT; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
 		do
-			execute_hello (req, res, ctx.parameter ("name"), ctx)
+			execute_hello (req, res, ctx.string_parameter ("name"), ctx)
 		end
 
 	handle_method_any (ctx: REQUEST_URI_TEMPLATE_HANDLER_CONTEXT; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)

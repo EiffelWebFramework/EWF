@@ -133,7 +133,7 @@ feature -- String query
 	string_from (a_value: detachable WGI_VALUE): detachable READABLE_STRING_32
 		do
 			if attached {WGI_STRING_VALUE} a_value as val then
-				Result := val.value
+				Result := val.string
 			end
 		end
 

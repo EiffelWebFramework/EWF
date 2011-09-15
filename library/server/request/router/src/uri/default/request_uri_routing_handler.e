@@ -1,14 +1,14 @@
 note
-	description: "Summary description for {DEFAULT_REQUEST_URI_TEMPLATE_ROUTING_HANDLER}."
+	description: "Summary description for {DEFAULT_REQUEST_URI_ROUTING_HANDLER}."
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
 class
-	REQUEST_URI_TEMPLATE_ROUTING_HANDLER
+	REQUEST_URI_ROUTING_HANDLER
 
 inherit
-	REQUEST_URI_TEMPLATE_ROUTING_HANDLER_I [REQUEST_HANDLER [REQUEST_URI_TEMPLATE_HANDLER_CONTEXT_I], REQUEST_URI_TEMPLATE_HANDLER_CONTEXT_I]
+	REQUEST_URI_ROUTING_HANDLER_I [REQUEST_HANDLER [REQUEST_URI_HANDLER_CONTEXT], REQUEST_URI_HANDLER_CONTEXT]
 		redefine
 			router
 		end
@@ -18,7 +18,7 @@ create
 
 feature {NONE} -- Routing
 
-	router: REQUEST_URI_TEMPLATE_ROUTER
+	router: REQUEST_URI_ROUTER
 
 ;note
 	copyright: "2011-2011, Eiffel Software and others"
