@@ -2,7 +2,7 @@ Options Indexes FollowSymLinks ExecCGI
 
 <IfModule mod_fcgid.c>
 AddHandler fcgid-script .eapp
-FcgidWrapper c:/_dev/Dev-Process/web-library/library/server/rest/tests/htdocs/../EIFGENs/rest_sample_cgi/W_code/sample.exe .eapp
+FcgidWrapper c:/_dev/Dev-Process/web-framework/library/server/request/rest/tests/htdocs/../EIFGENs/rest_sample_cgi/W_code/sample.exe .eapp
 
 </IfModule>
 
