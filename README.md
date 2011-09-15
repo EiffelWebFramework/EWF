@@ -1,5 +1,5 @@
 Official project site for Eiffel Web Framework:
-* https://github.com/Eiffel-World/Eiffel-Web-Framework
+* http://eiffel-world.github.com/Eiffel-Web-Framework/
 
 For more information please have a look at the related wiki:
 * https://github.com/Eiffel-World/Eiffel-Web-Framework/wiki
@@ -19,6 +19,9 @@ Overview
 * library/server/ewsgi: Eiffel Web Server Gateway Interface
 * library/server/ewsgi/connectors: various web server connectors for EWSGI
 * library/server/libfcgi: Wrapper for libfcgi SDK
+
+* library/server/request/router: URL dispatching/routing based on uri, uri_template, or custom.
+* library/server/request/rest: experimental: RESTful library to help building RESTful services
 
 * library/protocol/http: HTTP related classes, constants for status code, content types, ...
 * library/protocol/uri_template: URI Template library (parsing and expander)
