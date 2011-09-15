@@ -22,6 +22,7 @@ feature {NONE} -- Initialization
 			-- Initialize `Current'.
 		do
 			create {ARRAYED_LIST [ERROR]} errors.make (3)
+			create error_added_actions
 		end
 
 feature -- Status
@@ -36,6 +37,8 @@ feature -- Status
 		do
 			Result := errors.count
 		end
+
+feature {ERROR_HANDLER, ERROR_VISITOR} -- Restricted access
 
 	errors: LIST [ERROR]
 			-- Errors container
@@ -52,12 +55,26 @@ feature -- Status report
 			end
 		end
 
+feature -- Events
+
+	error_added_actions: ACTION_SEQUENCE [TUPLE [ERROR]]
+			-- Actions triggered when a new error is added
+
+feature {NONE} -- Event: implementation
+
+	on_error_added (e: ERROR)
+			-- Error `e' was just added
+		do
+			error_added_actions.call ([e])
+		end
+
 feature -- Basic operation
 
 	add_error (a_error: ERROR)
 			-- Add `a_error' to the stack of error
 		do
 			errors.force (a_error)
+			on_error_added (a_error)
 		end
 
 	add_error_details, add_custom_error (a_code: INTEGER; a_name: STRING; a_message: detachable STRING_32)
@@ -69,10 +86,25 @@ feature -- Basic operation
 			add_error (e)
 		end
 
-	append (a_err_handler: ERROR_HANDLER)
+	append (other: ERROR_HANDLER)
 			-- Append errors from `a_err_handler'
+		local
+			other_errs: LIST [ERROR]
 		do
-			errors.append (a_err_handler.errors)
+			other_errs := other.errors
+			if other_errs.count > 0 then
+				from
+					other_errs.start
+				until
+					other_errs.after
+				loop
+					add_error (other_errs.item)
+					other_errs.forth
+				end
+			end
+		ensure
+			other_error_appended: other.has_error implies has_error
+			new_count: count = old count + other.count
 		end
 
 feature -- Access
@@ -107,7 +139,7 @@ feature -- Element changes
 		do
 			if count > 1 and then attached as_single_error as e then
 				wipe_out
-				add_error (e)
+				errors.force (e)
 			end
 		end
 
