@@ -1,34 +1,32 @@
 note
-	description: "Summary description for {APP_REQUEST_ROUTING_HANDLER}."
+	description: "Summary description for {REQUEST_ROUTING_HANDLER}."
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
 class
-	APP_REQUEST_ROUTING_HANDLER
+	REQUEST_URI_ROUTING_HANDLER_I [H -> REQUEST_HANDLER [C],
+							 C -> REQUEST_URI_HANDLER_CONTEXT create make end]
 
 inherit
-	APP_REQUEST_HANDLER
-		undefine
-			execute,
-			pre_execute,
-			post_execute
-		end
-
-	REST_REQUEST_URI_TEMPLATE_ROUTING_HANDLER_I [APP_REQUEST_HANDLER, APP_REQUEST_HANDLER_CONTEXT]
-		redefine
-			router
-		end
+	REQUEST_ROUTING_HANDLER [H, C]
 
 create
 	make
 
+feature {NONE} -- Initialization
+
+	make (n: INTEGER)
+		do
+			create router.make (n)
+		end
+
 feature {NONE} -- Routing
 
-	router: APP_REQUEST_ROUTER
+	router: REQUEST_URI_ROUTER_I [H, C]
 
 ;note
-	copyright: "Copyright (c) 1984-2011, Eiffel Software and others"
+	copyright: "2011-2011, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

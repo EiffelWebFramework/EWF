@@ -58,7 +58,7 @@ feature -- Query
 
 feature -- Query: url-decoded
 
-	url_decoded_query_variable (n: READABLE_STRING_GENERAL): detachable STRING_32
+	url_decoded_query_variable (n: READABLE_STRING_GENERAL): detachable READABLE_STRING_32
 			-- Unencoded value related to variable name `n'
 		do
 			if attached query_variable (n) as v then
@@ -66,7 +66,7 @@ feature -- Query: url-decoded
 			end
 		end
 
-	url_decoded_path_variable (n: READABLE_STRING_GENERAL): detachable STRING_32
+	url_decoded_path_variable (n: READABLE_STRING_GENERAL): detachable READABLE_STRING_32
 			-- Unencoded value related to variable name `n'
 		do
 			if attached path_variable (n) as v then
@@ -74,7 +74,7 @@ feature -- Query: url-decoded
 			end
 		end
 
-	url_decoded_variable (n: READABLE_STRING_GENERAL): detachable STRING_32
+	url_decoded_variable (n: READABLE_STRING_GENERAL): detachable READABLE_STRING_32
 			-- Unencoded value related to variable name `n'
 		do
 			if attached variable (n) as v then
@@ -84,7 +84,7 @@ feature -- Query: url-decoded
 
 feature {NONE} -- Implementation
 
-	url_decoded_string (s: READABLE_STRING_GENERAL): STRING_32
+	url_decoded_string (s: READABLE_STRING_GENERAL): READABLE_STRING_32
 		do
 			Result := url_encoder.decoded_string (s.as_string_8)
 		end

@@ -32,7 +32,9 @@ feature {NONE} -- Initialization
 
 feature -- Access
 
-	authentication_required: BOOLEAN = False
+	authentication_required (req: WGI_REQUEST): BOOLEAN
+		do
+		end
 
 feature -- Execution
 
@@ -47,8 +49,8 @@ feature -- Execution
 
 			create s.make_empty
 			s.append_string ("test")
-			if attached req.meta_variable ("REQUEST_COUNT") as l_request_count then
-				s.append_string ("(request_count="+ l_request_count +")%N")
+			if attached req.meta_variable ("REQUEST_COUNT") as l_request_count_val then
+				s.append_string ("(request_count="+ l_request_count_val.as_string +")%N")
 			end
 
 --			ctx.request_format_id ("format", Void)
@@ -57,13 +59,13 @@ feature -- Execution
 				s.append_string (" format=" + l_format + "%N")
 			end
 
-			if attached ctx.parameter ("op") as l_op then
+			if attached ctx.string_parameter ("op") as l_op then
 				s.append_string (" op=" + l_op)
 				if l_op.same_string ("crash") then
 					(create {DEVELOPER_EXCEPTION}).raise
 				elseif l_op.starts_with ("env") then
 					s.append_string ("%N%NAll variables:")
-					s.append (string_hash_table_string_string (req.parameters.new_cursor, False))
+					s.append (wgi_value_iteration_to_string (req.parameters, False))
 					s.append_string ("<br/>script_url(%"" + req.path_info + "%")=" + ctx.script_url (req.path_info) + "%N")
 --					if attached ctx.http_authorization_login_password as t then
 --						s.append_string ("Check login=" + t.login + "<br/>%N")

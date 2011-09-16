@@ -1,21 +1,21 @@
 note
-	description: "Summary description for {APP_APPLICATION}."
+	description: "Summary description for {DEFAULT_REST_URI_APPLICATION}."
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
 deferred class
-	APP_APPLICATION
+	REST_URI_APPLICATION
 
 inherit
-	REST_APPLICATION_I [APP_REQUEST_HANDLER, APP_REQUEST_HANDLER_CONTEXT]
+	REST_APPLICATION_I [REST_REQUEST_HANDLER [REST_REQUEST_URI_HANDLER_CONTEXT], REST_REQUEST_URI_HANDLER_CONTEXT]
 		redefine
 			router
 		end
 
-feature {NONE} -- Router
+feature -- Router
 
-	router: APP_REQUEST_ROUTER
+	router: REST_REQUEST_URI_ROUTER
 
 ;note
 	copyright: "Copyright (c) 1984-2011, Eiffel Software and others"

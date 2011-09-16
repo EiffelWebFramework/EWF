@@ -1,21 +1,14 @@
 note
-	description: "Summary description for {APP_REQUEST_ROUTING_HANDLER}."
+	description: "Summary description for {DEFAULT_REQUEST_URI_TEMPLATE_ROUTING_HANDLER}."
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
 class
-	APP_REQUEST_ROUTING_HANDLER
+	REQUEST_URI_TEMPLATE_ROUTING_HANDLER
 
 inherit
-	APP_REQUEST_HANDLER
-		undefine
-			execute,
-			pre_execute,
-			post_execute
-		end
-
-	REST_REQUEST_URI_TEMPLATE_ROUTING_HANDLER_I [APP_REQUEST_HANDLER, APP_REQUEST_HANDLER_CONTEXT]
+	REQUEST_URI_TEMPLATE_ROUTING_HANDLER_I [REQUEST_HANDLER [REQUEST_URI_TEMPLATE_HANDLER_CONTEXT], REQUEST_URI_TEMPLATE_HANDLER_CONTEXT]
 		redefine
 			router
 		end
@@ -25,10 +18,10 @@ create
 
 feature {NONE} -- Routing
 
-	router: APP_REQUEST_ROUTER
+	router: REQUEST_URI_TEMPLATE_ROUTER
 
 ;note
-	copyright: "Copyright (c) 1984-2011, Eiffel Software and others"
+	copyright: "2011-2011, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software
