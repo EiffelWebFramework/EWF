@@ -23,7 +23,7 @@ feature -- Access
 		end
 
 	description: detachable STRING
-			-- Optional descriptiong		
+			-- Optional description		
 
 feature -- Element change
 
@@ -83,6 +83,7 @@ feature -- Execution
 			res.write_header ({HTTP_STATUS_CODE}.unauthorized, Void)
 			res.write_string ("Unauthorized")
 		end
+		
 feature {NONE} -- Implementation
 
 	supported_formats: INTEGER
