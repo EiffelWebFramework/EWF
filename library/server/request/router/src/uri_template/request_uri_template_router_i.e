@@ -54,7 +54,7 @@ feature {NONE} -- Access: Implementation
 			l_req_method: READABLE_STRING_GENERAL
 			l_res: URI_TEMPLATE_MATCH_RESULT
 		do
-			p := req.request_uri
+			p := req.path_info
 			from
 				l_req_method := req.request_method
 				l_handlers := handlers
