@@ -185,14 +185,6 @@ feature -- Access: CGI meta parameters
 			Result := meta_variables_table.item (a_name)
 		end
 
-	meta_string_variable (a_name: READABLE_STRING_GENERAL): detachable READABLE_STRING_32
-			-- CGI meta variable related to `a_name'
-		do
-			if attached meta_variables_table.item (a_name) as val then
-				Result := val.as_string
-			end
-		end
-
 	meta_string_variable_or_default (a_name: READABLE_STRING_GENERAL; a_default: READABLE_STRING_32; use_default_when_empty: BOOLEAN): READABLE_STRING_32
 			-- Value for meta parameter `a_name'
 			-- If not found, return `a_default'
@@ -325,8 +317,6 @@ feature -- Access: HTTP_* CGI meta parameters - 1.1
 			-- Contents of the Host: header from the current request, if there is one.
 		do
 			Result := meta_string_variable ({WGI_META_NAMES}.http_host)
-		ensure
-			Result /= Void
 		end
 
 	http_referer: detachable READABLE_STRING_32
