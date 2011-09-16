@@ -33,6 +33,7 @@ feature -- Registration
 		do
 			handlers.force ([h, uri.template, formatted_request_methods (rqst_methods)])
 			templates.force (uri, uri.template)
+			h.on_handler_mapped (uri.template, rqst_methods)
 		end
 
 	map_with_request_methods (tpl: READABLE_STRING_8; h: H; rqst_methods: detachable ARRAY [READABLE_STRING_8])
