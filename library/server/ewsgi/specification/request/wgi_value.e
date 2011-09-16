@@ -7,6 +7,9 @@ note
 deferred class
 	WGI_VALUE
 
+inherit
+	DEBUG_OUTPUT
+
 convert
 	as_string: {READABLE_STRING_32, STRING_32}
 
@@ -27,6 +30,14 @@ feature -- Helper
 	is_case_insensitive_equal (a_other: READABLE_STRING_8): BOOLEAN
 			-- Does `a_other' represent the same case insensitive string as `Current'?	
 		deferred
+		end
+
+feature -- Status report
+
+	debug_output: STRING
+			-- String that should be displayed in debugger to represent `Current'.
+		do
+			create Result.make_from_string (name.as_string_8 + "=" + as_string.as_string_8)
 		end
 
 feature -- Query
