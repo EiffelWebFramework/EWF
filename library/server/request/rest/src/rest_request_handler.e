@@ -42,7 +42,7 @@ feature -- Execution
 		do
 			if not rescued then
 				if request_method_name_supported (req.request_method) then
-					if authentication_required (req) and then not ctx.authenticated then
+					if authentication_required (req) and then not authenticated (ctx) then
 						execute_unauthorized (ctx, req, res)
 					else
 						pre_execute (ctx, req, res)
@@ -83,7 +83,15 @@ feature -- Execution
 			res.write_header ({HTTP_STATUS_CODE}.unauthorized, Void)
 			res.write_string ("Unauthorized")
 		end
-		
+
+feature -- Auth
+
+	authenticated (ctx: C): BOOLEAN
+			-- Is authenticated?
+		do
+			--| To redefine if needed
+		end
+
 feature {NONE} -- Implementation
 
 	supported_formats: INTEGER
