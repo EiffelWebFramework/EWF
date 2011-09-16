@@ -114,13 +114,13 @@ feature {NONE} -- Initialization
 			if attached request_uri as rq_uri then
 				p := rq_uri.index_of ('?', 1)
 				if p > 0 then
-					set_meta_string_variable (rq_uri.substring (1, p-1), {WGI_META_NAMES}.self)
+					set_meta_string_variable ({WGI_META_NAMES}.self, rq_uri.substring (1, p-1))
 				else
-					set_meta_string_variable (rq_uri, {WGI_META_NAMES}.self)
+					set_meta_string_variable ({WGI_META_NAMES}.self, rq_uri)
 				end
 			end
 			if meta_variable ({WGI_META_NAMES}.request_time) = Void then
-				set_meta_string_variable (date_time_utilities.unix_time_stamp (Void).out, {WGI_META_NAMES}.request_time)
+				set_meta_string_variable ({WGI_META_NAMES}.request_time, date_time_utilities.unix_time_stamp (Void).out)
 			end
 		end
 
@@ -325,6 +325,8 @@ feature -- Access: HTTP_* CGI meta parameters - 1.1
 			-- Contents of the Host: header from the current request, if there is one.
 		do
 			Result := meta_string_variable ({WGI_META_NAMES}.http_host)
+		ensure
+			Result /= Void
 		end
 
 	http_referer: detachable READABLE_STRING_32
