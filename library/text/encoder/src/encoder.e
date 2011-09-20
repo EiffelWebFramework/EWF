@@ -6,7 +6,7 @@ note
 	revision: "$Revision$"
 
 deferred class 
-	ENCODER [U -> STRING_GENERAL, E -> STRING_GENERAL] --| U:unencoded type, E:encoded type
+	ENCODER [U -> READABLE_STRING_GENERAL, E -> READABLE_STRING_GENERAL] --| U:unencoded type, E:encoded type
 
 feature -- Access
 

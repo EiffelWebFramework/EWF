@@ -13,7 +13,7 @@ class
 	URL_ENCODER
 
 inherit
-	ENCODER [STRING_32, STRING_8]
+	ENCODER [READABLE_STRING_32, READABLE_STRING_8]
 
 	PLATFORM
 		export
@@ -30,48 +30,17 @@ feature -- Status report
 
 feature -- Encoder
 
-	encoded_string (s: STRING_32): STRING_8
+	encoded_string (s: READABLE_STRING_32): READABLE_STRING_8
 			-- URL-encoded value of `s'.
 		local
 			i, n: INTEGER
 			uc: CHARACTER_32
 			c: CHARACTER_8
+			s8: STRING_8
 		do
 			has_error := False
-			create Result.make (s.count + s.count // 10)
-			n := s.count
-			from i := 1 until i > n loop
-				uc := s.item (i)
-				if uc.is_character_8 then
-					c := uc.to_character_8
-					inspect c
-					when
-						'A' .. 'Z',
-						'a' .. 'z', '0' .. '9',
-						'.', '-', '~', '_'
-					 then
-						 Result.extend (c)
-					when ' ' then
-						Result.extend ('+')
-					else
-						Result.append (url_encoded_char (uc))
-					end
-				else
-					Result.append (url_encoded_char (uc))
-				end
-				i := i + 1
-			end
-		end
-
-	partial_encoded_string (s: STRING_32; a_ignore: ARRAY [CHARACTER]): STRING_8
-			-- URL-encoded value of `s'.
-		local
-			i, n: INTEGER
-			uc: CHARACTER_32
-			c: CHARACTER_8
-		do
-			has_error := False
-			create Result.make (s.count + s.count // 10)
+			create s8.make (s.count + s.count // 10)
+			Result := s8
 			n := s.count
 			from i := 1 until i > n loop
 				uc := s.item (i)
@@ -83,21 +52,56 @@ feature -- Encoder
 						'a' .. 'z', '0' .. '9',
 						'.', '-', '~', '_'
 					then
-						Result.extend (c)
+						s8.extend (c)
 					when ' ' then
-						Result.extend ('+')
+						s8.extend ('+')
+					else
+						s8.append (url_encoded_char (uc))
+					end
+				else
+					s8.append (url_encoded_char (uc))
+				end
+				i := i + 1
+			end
+		end
+
+	partial_encoded_string (s: READABLE_STRING_32; a_ignore: ARRAY [CHARACTER]): READABLE_STRING_8
+			-- URL-encoded value of `s'.
+		local
+			i, n: INTEGER
+			uc: CHARACTER_32
+			c: CHARACTER_8
+			s8: STRING_8
+		do
+			has_error := False
+			create s8.make (s.count + s.count // 10)
+			Result := s8
+			n := s.count
+			from i := 1 until i > n loop
+				uc := s.item (i)
+				if uc.is_character_8 then
+					c := uc.to_character_8
+					inspect c
+					when
+						'A' .. 'Z',
+						'a' .. 'z', '0' .. '9',
+						'.', '-', '~', '_'
+					then
+						s8.extend (c)
+					when ' ' then
+						s8.extend ('+')
 					else
 						if a_ignore.has (c) then
-							Result.extend (c)
+							s8.extend (c)
 						else
-							Result.append (url_encoded_char (uc))
+							s8.append (url_encoded_char (uc))
 						end
 					end
 				else
 					if a_ignore.has (c) then
-						Result.extend (c)
+						s8.extend (c)
 					else
-						Result.append (url_encoded_char (uc))
+						s8.append (url_encoded_char (uc))
 					end
 				end
 				i := i + 1
@@ -127,33 +131,35 @@ feature {NONE} -- encoder character
 
 feature -- Decoder
 
-	decoded_string (v: STRING_8): STRING_32
+	decoded_string (v: READABLE_STRING_8): READABLE_STRING_32
 			-- The URL-encoded equivalent of the given string
 		local
 			i, n: INTEGER
 			c: CHARACTER
 			pr: CELL [INTEGER]
+			s32: STRING_32
 		do
 			n := v.count
-			create Result.make (n)
+			create s32.make (n)
+			Result := s32
 			from i := 1
 			until i > n
 			loop
 				c := v.item (i)
 				inspect c
 				when '+' then
-					Result.append_character ({CHARACTER_32}' ')
+					s32.append_character ({CHARACTER_32}' ')
 				when '%%' then
 					-- An escaped character ?
 					if i = n then
-						Result.append_character (c.to_character_32)
+						s32.append_character (c.to_character_32)
 					else
 						create pr.put (i)
-						Result.append (url_decoded_char (v, pr))
+						s32.append (url_decoded_char (v, pr))
 						i := pr.item
 					end
 				else
-					Result.append_character (c.to_character_32)
+					s32.append_character (c.to_character_32)
 				end
 				i := i + 1
 			end
