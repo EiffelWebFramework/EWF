@@ -20,6 +20,8 @@ feature {NONE} -- Implementation
 
 	make_custom (a_callback: like {WGI_AGENT_APPLICATION}.callback;	a_base_url: detachable STRING)
 			-- Initialize `Current'.
+		require
+			base_url_starts_with_slash: (a_base_url /= Void and then not a_base_url.is_empty) implies a_base_url.starts_with ("/")
 		local
 			app: WGI_AGENT_APPLICATION
 		do
