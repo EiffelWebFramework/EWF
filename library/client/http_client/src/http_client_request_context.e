@@ -8,7 +8,8 @@ class
 	HTTP_CLIENT_REQUEST_CONTEXT
 
 create
-	make
+	make,
+	make_with_credentials_required
 
 feature {NONE} -- Initialization
 
@@ -17,6 +18,12 @@ feature {NONE} -- Initialization
 			create headers.make (2)
 			create query_parameters.make (5)
 			create form_data_parameters.make (10)
+		end
+
+	make_with_credentials_required
+		do
+			make
+			set_credentials_required (True)
 		end
 
 feature -- Settings
@@ -39,6 +46,16 @@ feature -- Status report
 		end
 
 feature -- Element change
+
+	add_query_parameter (k: READABLE_STRING_8; v: READABLE_STRING_32)
+		do
+			query_parameters.force (v, k)
+		end
+
+	add_form_data_parameter (k: READABLE_STRING_8; v: READABLE_STRING_32)
+		do
+			form_data_parameters.force (v, k)
+		end
 
 	set_credentials_required (b: BOOLEAN)
 		do

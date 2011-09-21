@@ -92,11 +92,16 @@ feature -- Authentication
 			-- See {HTTP_CLIENT_CONSTANTS}.Auth_type_*
 
 	username,
-	password: detachable READABLE_STRING_8
+	password: detachable READABLE_STRING_32
 
-	credentials: detachable READABLE_STRING_8
+	credentials: detachable READABLE_STRING_32
 
 feature -- Change
+
+	set_base_url (u: like base_url)
+		do
+			base_url := u
+		end
 
 	set_timeout (n: like timeout)
 		do
@@ -111,6 +116,11 @@ feature -- Change
 	add_header (k: READABLE_STRING_8; v: READABLE_STRING_8)
 		do
 			headers.force (v, k)
+		end
+
+	remove_header (k: READABLE_STRING_8)
+		do
+			headers.prune (k)
 		end
 
 	set_credentials (u: like username; p: like password)
