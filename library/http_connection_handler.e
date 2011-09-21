@@ -137,7 +137,7 @@ feature -- Parsing
                 end_of_stream
             loop
                 line := a_input.last_string
-		n := line.count
+				n := line.count
                 print ("%N" +line+ "%N")
                 pos := line.index_of (':',1)
 				if pos > 0 then
@@ -163,7 +163,7 @@ feature -- Parsing
 
 	analyze_request_line (line: STRING)
 		require
-			line /= Void
+			line /= Void and then line.count > 0
 		local
 			pos, next_pos: INTEGER
 		do
