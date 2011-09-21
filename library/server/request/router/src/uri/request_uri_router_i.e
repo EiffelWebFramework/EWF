@@ -26,6 +26,7 @@ feature -- Registration
 	map_with_request_methods (p: READABLE_STRING_8; h: H; rqst_methods: detachable ARRAY [READABLE_STRING_8])
 		do
 			handlers.force ([h, p, formatted_request_methods (rqst_methods)])
+			h.on_handler_mapped (p, rqst_methods)
 		end
 
 feature {NONE} -- Access: Implementation

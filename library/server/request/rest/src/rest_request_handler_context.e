@@ -54,17 +54,6 @@ feature -- Status report
 			result_attached: Result /= Void
 		end
 
-	authenticated: BOOLEAN
-		do
-			if request.http_authorization /= Void then
-				Result := True
-			end
-		end
-
-	authenticated_identifier: detachable READABLE_STRING_32
-		do
-		end
-
 note
 	copyright: "Copyright (c) 1984-2011, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"

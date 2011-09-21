@@ -65,6 +65,13 @@ feature -- Execution: report
 			result_attached: Result /= Void
 		end
 
+feature {REQUEST_ROUTER} -- Routes change
+
+	on_handler_mapped (a_resource: READABLE_STRING_8; a_rqst_methods: detachable ARRAY [READABLE_STRING_8])
+			-- Callback called when a router map a route to Current handler
+		do
+		end
+
 note
 	copyright: "2011-2011, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"

@@ -18,7 +18,7 @@
 	<target name="sample_fcgi" extends="common">
 		<root class="APP_SERVER" feature="make"/>
 		<setting name="executable_name" value="sample"/>
-		<library name="ewsgi_fcgi" location="..\..\..\ewsgi/connectors\fcgi\fcgi-safe.ecf" readonly="false"/>
+		<library name="ewsgi_fcgi" location="..\..\..\ewsgi/connectors\libfcgi\libfcgi-safe.ecf" readonly="false"/>
 		<cluster name="src" location=".\src\" recursive="true">
 			<file_rule>
 				<exclude>/gateway$</exclude>

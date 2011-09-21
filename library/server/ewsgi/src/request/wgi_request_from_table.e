@@ -114,13 +114,13 @@ feature {NONE} -- Initialization
 			if attached request_uri as rq_uri then
 				p := rq_uri.index_of ('?', 1)
 				if p > 0 then
-					set_meta_string_variable (rq_uri.substring (1, p-1), {WGI_META_NAMES}.self)
+					set_meta_string_variable ({WGI_META_NAMES}.self, rq_uri.substring (1, p-1))
 				else
-					set_meta_string_variable (rq_uri, {WGI_META_NAMES}.self)
+					set_meta_string_variable ({WGI_META_NAMES}.self, rq_uri)
 				end
 			end
 			if meta_variable ({WGI_META_NAMES}.request_time) = Void then
-				set_meta_string_variable (date_time_utilities.unix_time_stamp (Void).out, {WGI_META_NAMES}.request_time)
+				set_meta_string_variable ({WGI_META_NAMES}.request_time, date_time_utilities.unix_time_stamp (Void).out)
 			end
 		end
 
@@ -183,14 +183,6 @@ feature -- Access: CGI meta parameters
 			-- CGI meta variable related to `a_name'
 		do
 			Result := meta_variables_table.item (a_name)
-		end
-
-	meta_string_variable (a_name: READABLE_STRING_GENERAL): detachable READABLE_STRING_32
-			-- CGI meta variable related to `a_name'
-		do
-			if attached meta_variables_table.item (a_name) as val then
-				Result := val.as_string
-			end
 		end
 
 	meta_string_variable_or_default (a_name: READABLE_STRING_GENERAL; a_default: READABLE_STRING_32; use_default_when_empty: BOOLEAN): READABLE_STRING_32

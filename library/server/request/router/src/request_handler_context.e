@@ -98,6 +98,8 @@ feature -- Query
 								end
 								i := i + 1
 							end
+						else
+							Result := s
 						end
 						l_accept_lst.forth
 					end

@@ -33,6 +33,7 @@ feature -- Registration
 		do
 			handlers.force ([h, uri.template, formatted_request_methods (rqst_methods)])
 			templates.force (uri, uri.template)
+			h.on_handler_mapped (uri.template, rqst_methods)
 		end
 
 	map_with_request_methods (tpl: READABLE_STRING_8; h: H; rqst_methods: detachable ARRAY [READABLE_STRING_8])
@@ -53,7 +54,7 @@ feature {NONE} -- Access: Implementation
 			l_req_method: READABLE_STRING_GENERAL
 			l_res: URI_TEMPLATE_MATCH_RESULT
 		do
-			p := req.request_uri
+			p := req.path_info
 			from
 				l_req_method := req.request_method
 				l_handlers := handlers
