@@ -64,8 +64,16 @@ feature -- Request processing
 			until
 				a_headers_map.after
 			loop
-				vn := "HTTP_" + a_headers_map.key_for_iteration.as_upper
+				create vn.make_from_string (a_headers_map.key_for_iteration.as_upper)
 				vn.replace_substring_all ("-", "_")
+				if
+					vn.starts_with ("CONTENT_") and then
+					(vn.same_string_general ({WGI_META_NAMES}.content_type) or vn.same_string_general ({WGI_META_NAMES}.content_length))
+				then
+					--| Keep this name
+				else
+					vn.prepend ("HTTP_")
+				end
 				add_environment_variable (a_headers_map.item_for_iteration, vn, env)
 				a_headers_map.forth
 			end
@@ -90,6 +98,8 @@ feature -- Request processing
 					l_server_name := l_host
 					l_server_port := "80" -- Default
 				end
+			else
+				check host_available: False end
 			end
 
 			if attached a_headers_map.item ("Authorization") as l_authorization then
