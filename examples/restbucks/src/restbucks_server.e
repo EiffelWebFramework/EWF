@@ -5,7 +5,7 @@ note
 	revision    : "$Revision$"
 
 class
-	HELLO_ROUTED_WORLD
+	RESTBUCKS_SERVER
 
 inherit
 	ANY
@@ -35,34 +35,11 @@ feature {NONE} -- Initialization
 
 	setup_router
 		local
-			ra: REQUEST_AGENT_HANDLER [REQUEST_URI_TEMPLATE_HANDLER_CONTEXT]
-			rag: REQUEST_URI_TEMPLATE_ROUTING_HANDLER
+			order_handler: ORDER_HANDLER [REQUEST_URI_TEMPLATE_HANDLER_CONTEXT]
 		do
-			router.map_agent ("/home", agent execute_home)
-
-			create rag.make (3)
-
-			create ra.make (agent handle_hello)
-			rag.map ("/hello/{name}.{format}", ra)
-			rag.map ("/hello.{format}/{name}", ra)
-			rag.map ("/hello/{name}", ra)
---			router.map ("/hello/{name}.{format}", ra)
---			router.map ("/hello.{format}/{name}", ra)
---			router.map ("/hello/{name}", ra)
-
-			create ra.make (agent handle_anonymous_hello)
-			rag.map ("/hello", ra)
-			rag.map ("/hello.{format}", ra)
---			router.map ("/hello", ra)
---			router.map ("/hello.{format}", ra)
-
-			router.map ("/hello", rag)
-
-			router.map_agent_with_request_methods ("/method/any", agent handle_method_any, Void)
-			router.map_agent_with_request_methods ("/method/guess", agent handle_method_get_or_post, <<"GET", "POST">>)
-			router.map_agent_with_request_methods ("/method/custom", agent handle_method_get, <<"GET">>)
-			router.map_agent_with_request_methods ("/method/custom", agent handle_method_post, <<"POST">>)
-
+			create order_handler
+			router.map_with_request_methods ("/order", order_handler, <<"POST">>)
+			router.map_with_request_methods ("/order/{orderid}", order_handler, <<"GET", "DELETE", "PUT">>)
 		end
 
 feature -- Execution
