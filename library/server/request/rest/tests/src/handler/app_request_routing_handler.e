@@ -10,12 +10,14 @@ class
 inherit
 	APP_REQUEST_HANDLER
 		undefine
-			execute,
-			pre_execute,
-			post_execute
+			execute
 		end
 
 	REST_REQUEST_URI_TEMPLATE_ROUTING_HANDLER_I [APP_REQUEST_HANDLER, APP_REQUEST_HANDLER_CONTEXT]
+		undefine
+			authenticated,
+			pre_execute,
+			post_execute
 		redefine
 			router
 		end

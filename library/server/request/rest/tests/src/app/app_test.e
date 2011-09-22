@@ -70,7 +70,7 @@ feature -- Execution
 --					if attached ctx.http_authorization_login_password as t then
 --						s.append_string ("Check login=" + t.login + "<br/>%N")
 --					end
-					if ctx.authenticated and then attached ctx.authenticated_identifier as l_login then
+					if authenticated (ctx) and then attached authenticated_identifier (ctx) as l_login then
 						s.append_string ("Authenticated: login=" + l_login.as_string_8 + "<br/>%N")
 					end
 				end

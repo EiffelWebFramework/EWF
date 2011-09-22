@@ -63,9 +63,9 @@ feature -- Execution
 		do
 			content_type_supported := <<{HTTP_CONSTANTS}.json_app, {HTTP_CONSTANTS}.xml_text, {HTTP_CONSTANTS}.plain_text>>
 			l_format_id := ctx.request_format_id ("format", content_type_supported)
-			if ctx.authenticated then
+			if authenticated (ctx) then
 				l_full := attached ctx.query_parameter ("details") as v and then v.is_case_insensitive_equal ("true")
-				if attached ctx.authenticated_identifier as log then
+				if attached authenticated_identifier (ctx) as log then
 					l_login := log.as_string_8
 
 					create h.make

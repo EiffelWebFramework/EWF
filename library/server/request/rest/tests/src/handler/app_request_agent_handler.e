@@ -14,6 +14,9 @@ inherit
 		end
 
 	REST_REQUEST_AGENT_HANDLER [APP_REQUEST_HANDLER_CONTEXT]
+		undefine
+			authenticated
+		end
 
 create
 	make
