@@ -20,9 +20,11 @@ create
 feature {NONE} -- Initialization
 
 	make_with_base (a_app: like application; a_base: like base)
+		require
+			a_base_starts_with_slash: (a_base /= Void and then not a_base.is_empty) implies a_base.starts_with ("/")
 		do
 			make (a_app)
-			base := a_base
+			set_base (a_base)
 		end
 
 feature {NONE} -- Initialization
@@ -52,8 +54,12 @@ feature -- Access
 feature -- Element change
 
 	set_base (b: like base)
+		require
+			b_starts_with_slash: (b /= Void and then not b.is_empty) implies b.starts_with ("/")
 		do
 			base := b
+		ensure
+			valid_base: (attached base as l_base and then not l_base.is_empty) implies l_base.starts_with ("/")
 		end
 
 feature -- Server

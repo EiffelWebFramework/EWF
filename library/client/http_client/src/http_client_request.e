@@ -59,17 +59,17 @@ feature -- Authentication
 			Result := session.auth_type_id
 		end
 
-	username: detachable READABLE_STRING_8
+	username: detachable READABLE_STRING_32
 		do
 			Result := session.username
 		end
 
-	password: detachable READABLE_STRING_8
+	password: detachable READABLE_STRING_32
 		do
 			Result := session.password
 		end
 
-	credentials: detachable READABLE_STRING_8
+	credentials: detachable READABLE_STRING_32
 		do
 			Result := session.credentials
 		end
