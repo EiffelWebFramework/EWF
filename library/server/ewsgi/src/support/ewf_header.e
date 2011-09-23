@@ -28,7 +28,7 @@ feature {NONE} -- Initialization
 	make
 			-- Initialize current
 		do
-			create {ARRAYED_LIST [STRING]} headers.make (3)
+			create {ARRAYED_LIST [READABLE_STRING_8]} headers.make (3)
 		end
 
 feature -- Recycle
@@ -40,7 +40,7 @@ feature -- Recycle
 
 feature -- Access
 
-	headers: LIST [STRING]
+	headers: LIST [READABLE_STRING_8]
 			-- Header's lines
 
 	string: STRING
@@ -67,24 +67,24 @@ feature -- Access
 
 feature -- Header change: general
 
-	add_header (h: STRING)
+	add_header (h: READABLE_STRING_8)
 		do
 			headers.force (h)
 		end
 
-	put_header (h: STRING)
+	put_header (h: READABLE_STRING_8)
 			-- Add header `h' or replace existing header of same header name
 		do
 			force_header_by_name (header_name (h), h)
 		end
 
-	add_header_key_value (k,v: STRING)
+	add_header_key_value (k,v: READABLE_STRING_8)
 			-- Add header `k:v', or replace existing header of same header name/key
 		do
 			add_header (k + colon_space + v)
 		end
 
-	put_header_key_value (k,v: STRING)
+	put_header_key_value (k,v: READABLE_STRING_8)
 			-- Add header `k:v', or replace existing header of same header name/key
 		do
 			put_header (k + colon_space + v)
@@ -104,23 +104,23 @@ feature -- Content related header
 			put_header_key_value ("Status", s)
 		end
 
-	put_content_type (t: STRING)
+	put_content_type (t: READABLE_STRING_8)
 		do
 			put_header_key_value (name_content_type, t)
 		end
 
-	add_content_type (t: STRING)
+	add_content_type (t: READABLE_STRING_8)
 			-- same as `put_content_type', but allow multiple definition of "Content-Type"
 		do
 			add_header_key_value (name_content_type, t)
 		end
 
-	put_content_type_with_name (t: STRING; n: STRING)
+	put_content_type_with_name (t: READABLE_STRING_8; n: READABLE_STRING_8)
 		do
 			put_header_key_value (name_content_type, t + "; name=%"" + n + "%"")
 		end
 
-	add_content_type_with_name (t: STRING; n: STRING)
+	add_content_type_with_name (t: READABLE_STRING_8; n: READABLE_STRING_8)
 			-- same as `put_content_type_with_name', but allow multiple definition of "Content-Type"	
 		do
 			add_header_key_value (name_content_type, t + "; name=%"" + n + "%"")
@@ -158,7 +158,7 @@ feature -- Content related header
 			put_header_key_value (name_content_length, n.out)
 		end
 
-	put_content_transfer_encoding (a_mechanism: STRING)
+	put_content_transfer_encoding (a_mechanism: READABLE_STRING_8)
 			-- Put "Content-Transfer-Encoding" header with for instance "binary"
 			--|   encoding := "Content-Transfer-Encoding" ":" mechanism
 			--|
@@ -173,7 +173,7 @@ feature -- Content related header
 			put_header_key_value ("Content-Transfer-Encoding", a_mechanism)
 		end
 
-	put_content_disposition (a_type: STRING; a_params: detachable STRING)
+	put_content_disposition (a_type: READABLE_STRING_8; a_params: detachable READABLE_STRING_8)
 			-- Put "Content-Disposition" header
 			--| See RFC2183
 			--|     disposition := "Content-Disposition" ":"
@@ -212,13 +212,13 @@ feature -- Others
 			put_header_key_value ("Expires", n.out)
 		end
 
-	put_cache_control (s: STRING)
+	put_cache_control (s: READABLE_STRING_8)
 			-- `s' could be for instance "no-cache, must-revalidate"
 		do
 			put_header_key_value ("Cache-Control", s)
 		end
 
-	put_pragma (s: STRING)
+	put_pragma (s: READABLE_STRING_8)
 		do
 			put_header_key_value ("Pragma", s)
 		end
@@ -230,13 +230,13 @@ feature -- Others
 
 feature -- Redirection
 
-	put_redirection (a_location: STRING; a_code: INTEGER)
-			-- Tell the client to redirect to page with `a_location' right away
+	put_location (a_location: READABLE_STRING_8)
+			-- Tell the client the new location `a_location'
 		do
 			put_header_key_value ("Location", a_location)
 		end
 
-	put_refresh (a_location: STRING; a_timeout: INTEGER; a_code: INTEGER)
+	put_refresh (a_location: READABLE_STRING_8; a_timeout: INTEGER)
 			-- Tell the client to refresh page with `a_location' after `a_timeout' in seconds
 		do
 			put_header_key_value ("Refresh", a_timeout.out + "; url=" + a_location)
@@ -244,7 +244,7 @@ feature -- Redirection
 
 feature -- Cookie
 
-	put_cookie (key, value: STRING_8; expiration, path, domain, secure: detachable STRING_8)
+	put_cookie (key, value: READABLE_STRING_8; expiration, path, domain, secure: detachable READABLE_STRING_8)
 			-- Set a cookie on the client's machine
 			-- with key 'key' and value 'value'.
 		require
@@ -270,7 +270,7 @@ feature -- Cookie
 
 feature -- Status report
 
-	has_header_named (a_name: STRING): BOOLEAN
+	has_header_named (a_name: READABLE_STRING_8): BOOLEAN
 			-- Has header item for `n'?
 		local
 			c: like headers.new_cursor
@@ -295,7 +295,7 @@ feature -- Status report
 
 feature {NONE} -- Implementation: Header
 
-	force_header_by_name (n: detachable STRING; h: STRING)
+	force_header_by_name (n: detachable READABLE_STRING_8; h: READABLE_STRING_8)
 			-- Add header `h' or replace existing header of same header name `n'
 		require
 			h_has_name_n: (n /= Void and attached header_name (h) as hn) implies n.same_string (hn)
@@ -321,36 +321,38 @@ feature {NONE} -- Implementation: Header
 			end
 		end
 
-	header_name (h: STRING): detachable STRING
+	header_name (h: READABLE_STRING_8): detachable READABLE_STRING_8
 			-- If any, header's name with colon
 			--| ex: for "Foo-bar: something", this will return "Foo-bar:"
 		local
+			s: detachable STRING_8
 			i,n: INTEGER
 			c: CHARACTER
 		do
 			from
 				i := 1
 				n := h.count
-				create Result.make (10)
+				create s.make (10)
 			until
-				i > n or c = ':' or Result = Void
+				i > n or c = ':' or s = Void
 			loop
 				c := h[i]
 				inspect c
 				when ':' then
-					Result.extend (c)
+					s.extend (c)
 				when '-', 'a' .. 'z', 'A' .. 'Z' then
-					Result.extend (c)
+					s.extend (c)
 				else
-					Result := Void
+					s := Void
 				end
 				i := i + 1
 			end
+			Result := s
 		end
 
 feature {NONE} -- Implementation
 
-	append_line_to (s, h: STRING)
+	append_line_to (s: READABLE_STRING_8; h: like string)
 		do
 			h.append_string (s)
 			append_end_of_line_to (h)
