@@ -14,26 +14,47 @@ inherit
 	SHARED_ORDER_VALIDATION
 	WGI_RESPONSE_STATUS_CODES
 
+
 feature -- execute
 	execute (ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
 			-- Execute request handler	
 		do
 				if req.request_method.same_string ("GET") then
---					pre_process_get (ctx, a_format, a_args)
+					process_get (ctx,req,res)
 				elseif req.request_method.same_string ("PUT")  then
---					pre_process_put (ctx, a_format, a_args)
+					process_put (ctx,req,res)
 				elseif req.request_method.same_string ("DELETE")  then
---					pre_process_delete (ctx, a_format, a_args)
+					process_delete (ctx,req,res)
 				elseif req.request_method.same_string ("POST")  then
 					process_post (ctx,req,res)
 				else
-					-- TODO HANDLE METHOD NOT SUPPORTED
+					handle_method_not_allowed (req.request_method + " " + req.request_uri +"%N API Contract %N" +api_doc, res)
 				end
 		end
 
+feature -- API DOC
+	api_doc : STRING = "URI:/order METHOD: POST%N URI:/order/{orderid} METHOD: GET, PUT, DELETE%N"
 feature -- HTTP Methods
 
+	process_get (ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+		do
+			handle_not_implemented ("GET: "+ req.request_uri + "%N Not implemented", res)
+		end
+
+	process_put (ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+		do
+			handle_not_implemented ("PUT: "+ req.request_uri + "%N Not implemented", res)
+		end
+
+	process_delete (ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+		do
+			handle_not_implemented ("DELETE: "+ req.request_uri + "%N Not implemented", res)
+		end
+
 	process_post (ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+		-- Here the convention is the following.
+		-- POST is used for creation and the server determines the URI
+		-- of the created resource.
 		local
 			l_values: HASH_TABLE [STRING_32, STRING]
 			l_missings: LINKED_LIST [STRING]
@@ -46,8 +67,7 @@ feature -- HTTP Methods
 			h : EWF_HEADER
 		do
 				fixme ("TODO handle an Internal Server Error")
-				fixme ("Refactor the code, create new abstractions")
-				fixme ("Add Header Date to the response")
+				fixme ("Refactor the code, We need an Extract Method tool :)")
 				if  req.content_length_value > 0 then
 					req.input.read_stream (req.content_length_value.as_integer_32)
 					l_post := req.input.last_string
@@ -63,18 +83,21 @@ feature -- HTTP Methods
 							l_msg := jv.representation
 							h.put_content_length (l_msg.count)
 							if attached req.http_host as host then
-								l_location := "http://"+host +"/" +req.request_uri+"/" + l_order.id
+								l_location := "http://"+host +req.request_uri+"/" + l_order.id
 								h.add_header ("Location:"+ l_location)
+							end
+							if attached req.request_time as time then
+								h.add_header ("Date:" +time.formatted_out ("ddd,[0]dd mmm yyyy [0]hh:[0]mi:[0]ss.ff2") + " GMT")
 							end
 							res.set_status_code (created)
 							res.write_headers_string (h.string)
 							res.write_string (l_msg)
 						end
 					else
---						handle_bad_request_response(l_post +"%N is not a valid ORDER",ctx.output)
+						handle_bad_request_response(l_post +"%N is not a valid ORDER",res)
 					end
 				else
---					handle_bad_request_response("Bad request, content_lenght empty",ctx.output)
+					handle_bad_request_response("Bad request, content_lenght empty",res)
 				end
 		end
 
@@ -132,17 +155,49 @@ feature -- Implementation
 		end
 
 
---	handle_bad_request_response (a_description:STRING; an_output: HTTPD_SERVER_OUTPUT )
---		local
---			rep: detachable REST_RESPONSE
---		do
---					create rep.make (path)
---					rep.headers.put_status (rep.headers.bad_request)
---					rep.headers.put_content_type_application_json
---					rep.set_message (a_description)
---					an_output.put_string (rep.string)
---					rep.recycle
---		end
+	handle_bad_request_response (a_description:STRING; res: WGI_RESPONSE_BUFFER )
+		local
+			h : EWF_HEADER
+		do
+					create h.make
+					h.put_status (bad_request)
+					h.put_content_type ("application/json")
+					h.put_content_length (a_description.count)
+					h.add_header ("Date:"+ ((create{HTTP_DATE_TIME_UTILITIES}).now_utc).formatted_out ("ddd,[0]dd mmm yyyy [0]hh:[0]mi:[0]ss.ff2") + " GMT")
+					res.set_status_code (bad_request)
+					res.write_headers_string (h.string)
+					res.write_string (a_description)
+		end
+
+
+	handle_method_not_allowed (a_description:STRING; res: WGI_RESPONSE_BUFFER )
+		local
+			h : EWF_HEADER
+		do
+					create h.make
+					h.put_status (method_not_allowed)
+					h.put_content_type ("application/json")
+					h.put_content_length (a_description.count)
+					h.add_header ("Date:"+ ((create{HTTP_DATE_TIME_UTILITIES}).now_utc).formatted_out ("ddd,[0]dd mmm yyyy [0]hh:[0]mi:[0]ss.ff2") + " GMT")
+					res.set_status_code (method_not_allowed)
+					res.write_headers_string (h.string)
+					res.write_string (a_description)
+		end
+
+
+	handle_not_implemented (a_description:STRING; res: WGI_RESPONSE_BUFFER )
+		local
+			h : EWF_HEADER
+		do
+					create h.make
+					h.put_status (not_implemented)
+					h.put_content_type ("application/json")
+					h.put_content_length (a_description.count)
+					h.add_header ("Date:"+ ((create{HTTP_DATE_TIME_UTILITIES}).now_utc).formatted_out ("ddd,[0]dd mmm yyyy [0]hh:[0]mi:[0]ss.ff2") + " GMT")
+					res.set_status_code (not_implemented)
+					res.write_headers_string (h.string)
+					res.write_string (a_description)
+		end
 
 --	handle_conflic_request_response (a_description:STRING; an_output: HTTPD_SERVER_OUTPUT )
 --		local
