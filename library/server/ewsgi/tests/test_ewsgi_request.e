@@ -1,0 +1,215 @@
+note
+	description: "[
+		Eiffel tests that can be executed by testing tool.
+	]"
+	author: "EiffelStudio test wizard"
+	date: "$Date$"
+	revision: "$Revision$"
+	testing: "type/manual"
+
+class
+	TEST_EWSGI_REQUEST
+
+inherit
+	EQA_TEST_SET
+		redefine
+			on_prepare,
+			on_clean
+		end
+
+feature {NONE} -- Events
+
+	web_app: detachable NINO_APPLICATION
+
+	port_number: INTEGER
+	base_url: detachable STRING
+
+	on_prepare
+			-- <Precursor>
+		local
+			app: NINO_APPLICATION
+			wt: WORKER_THREAD
+			e: EXECUTION_ENVIRONMENT
+		do
+			port_number := 8087
+			base_url := "test/"
+			create app.make_custom (agent execute, base_url)
+			web_app := app
+
+			create wt.make (agent app.listen (port_number))
+			wt.launch
+
+			create e
+			e.sleep (1_000_000_000 * 5)
+		end
+
+	execute (req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+		local
+			q: detachable STRING_32
+			qcur: ITERATION_CURSOR [WGI_VALUE]
+		do
+			if attached req.request_uri as l_uri then
+				if l_uri.starts_with (test_url ("get/01")) then
+					res.write_header (200, <<["Content-Type", "text/plain"]>>)
+					res.write_string ("get-01")
+					create q.make_empty
+
+					from
+						qcur :=	req.query_parameters
+					until
+						qcur.after
+					loop
+						if not q.is_empty then
+							q.append_character ('&')
+						end
+						q.append (qcur.item.name.as_string_32 + "=" + qcur.item.as_string)
+						qcur.forth
+					end
+					if not q.is_empty then
+						res.write_string ("(" + q + ")")
+					end
+				elseif l_uri.starts_with (test_url ("post/01")) then
+					res.write_header (200, <<["Content-Type", "text/plain"]>>)
+					res.write_string ("post-01")
+					create q.make_empty
+
+					from
+						qcur :=	req.query_parameters
+					until
+						qcur.after
+					loop
+						if not q.is_empty then
+							q.append_character ('&')
+						end
+						q.append (qcur.item.name.as_string_32 + "=" + qcur.item.as_string)
+						qcur.forth
+					end
+					if not q.is_empty then
+						res.write_string ("(" + q + ")")
+					end
+
+					create q.make_empty
+
+					from
+						qcur :=	req.form_data_parameters
+					until
+						qcur.after
+					loop
+						if not q.is_empty then
+							q.append_character ('&')
+						end
+						q.append (qcur.item.name.as_string_32 + "=" + qcur.item.as_string)
+						qcur.forth
+					end
+					if not q.is_empty then
+						res.write_string (" : " + q )
+					end
+				else
+					res.write_header (200, <<["Content-Type", "text/plain"]>>)
+					res.write_string ("Hello")
+				end
+			else
+				res.write_header (200, <<["Content-Type", "text/plain"]>>)
+				res.write_string ("Bye")
+			end
+		end
+
+	test_url (a_query_url: READABLE_STRING_8): READABLE_STRING_8
+		local
+			b: like base_url
+		do
+			b := base_url
+			if b = Void then
+				b := ""
+			end
+			Result := "/" + b + a_query_url
+		end
+
+	on_clean
+			-- <Precursor>
+		do
+			if attached web_app as app then
+				app.shutdown
+			end
+		end
+
+	http_session: detachable HTTP_CLIENT_SESSION
+
+	get_http_session
+		local
+			h: LIBCURL_HTTP_CLIENT
+			b: like base_url
+		do
+			create h.make
+			b := base_url
+			if b = Void then
+				b := ""
+			end
+			if attached {HTTP_CLIENT_SESSION} h.new_session ("localhost:" + port_number.out + "/" + b) as sess then
+				http_session := sess
+				sess.set_timeout (-1)
+				sess.set_connect_timeout (-1)
+			end
+		end
+
+	test_get_request (a_url: READABLE_STRING_8; ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT; a_expected_body: READABLE_STRING_8)
+		do
+			get_http_session
+			if attached http_session as sess then
+				if attached sess.get (a_url, ctx) as res and then not res.error_occurred and then attached res.body as l_body then
+					assert ("Good answer got=%""+l_body+"%" expected=%""+a_expected_body+"%"", l_body.same_string (a_expected_body))
+				else
+					assert ("Request %""+a_url+"%" failed", False)
+				end
+			end
+		end
+
+	test_post_request (a_url: READABLE_STRING_8; ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT; a_expected_body: READABLE_STRING_8)
+		do
+			get_http_session
+			if attached http_session as sess then
+				if attached sess.post (a_url, ctx) as res and then not res.error_occurred and then attached res.body as l_body then
+					assert ("Good answer got=%""+l_body+"%" expected=%""+a_expected_body+"%"", l_body.same_string (a_expected_body))
+				else
+					assert ("Request %""+a_url+"%" failed", False)
+				end
+			end
+		end
+
+feature -- Test routines
+
+	test_get_request_01
+			-- New test routine
+		do
+			get_http_session
+			if attached http_session as sess then
+				test_get_request ("get/01", Void, "get-01")
+				test_get_request ("get/01/?foo=bar", Void, "get-01(foo=bar)")
+				test_get_request ("get/01/?foo=bar&abc=def", Void, "get-01(foo=bar&abc=def)")
+				test_get_request ("get/01/?lst=a&lst=b", Void, "get-01(lst=[a,b])")
+			else
+				assert ("not_implemented", False)
+			end
+		end
+
+	test_post_request_01
+			-- New test routine
+		local
+			ctx: HTTP_CLIENT_REQUEST_CONTEXT
+		do
+			get_http_session
+			if attached http_session as sess then
+				create ctx.make
+				ctx.add_form_data_parameter ("id", "123")
+				test_post_request ("post/01", ctx, "post-01 : id=123")
+				test_post_request ("post/01/?foo=bar", ctx, "post-01(foo=bar) : id=123")
+				test_post_request ("post/01/?foo=bar&abc=def", ctx, "post-01(foo=bar&abc=def) : id=123")
+				test_post_request ("post/01/?lst=a&lst=b", ctx, "post-01(lst=[a,b]) : id=123")
+			else
+				assert ("not_implemented", False)
+			end
+		end
+
+end
+
+
