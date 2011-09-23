@@ -448,6 +448,7 @@ feature {NONE} -- Query parameters: implementation
 			n, p, i, j: INTEGER
 			s: STRING
 			l_name,l_value: STRING_32
+			v: WGI_VALUE
 		do
 			if a_content = Void then
 				create Result.make (0)
@@ -479,7 +480,17 @@ feature {NONE} -- Query parameters: implementation
 									l_name := url_encoder.decoded_string (l_name)
 									l_value := url_encoder.decoded_string (l_value)
 								end
-								Result.force (new_string_value (l_name, l_value), l_name)
+								v := new_string_value (l_name, l_value)
+								if Result.has_key (l_name) and then attached Result.found_item as l_existing_value then
+									if attached {WGI_MULTIPLE_STRING_VALUE} l_existing_value as l_multi then
+										l_multi.add_value (v)
+									else
+										Result.force (create {WGI_MULTIPLE_STRING_VALUE}.make_with_array (<<l_existing_value, v>>), l_name)
+										check replaced: Result.found and then Result.found_item ~ l_existing_value end
+									end
+								else
+									Result.force (v, l_name)
+								end
 							end
 						end
 					end
@@ -515,7 +526,7 @@ feature {NONE} -- Form fields and related
 						vars := urlencoded_parameters (s, True)
 					end
 					if raw_post_data_recorded then
-						vars.force (new_string_value ("RAW_POST_DATA", s), "RAW_POST_DATA")
+						set_meta_string_variable ("RAW_POST_DATA", s)
 					end
 				else
 					create vars.make (0)

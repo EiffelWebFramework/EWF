@@ -14,6 +14,7 @@ inherit
 
 create
 	make_with_value,
+	make_with_array,
 	make_with_string
 
 feature {NONE} -- Initialization
@@ -23,6 +24,26 @@ feature {NONE} -- Initialization
 			name := a_value.name
 			create {LINKED_LIST [WGI_STRING_VALUE]} string_values.make
 			add_value (a_value)
+		end
+
+	make_with_array (arr: ARRAY [WGI_VALUE])
+		require
+			arr_not_empty: not arr.is_empty
+			all_same_name: across arr as c all c.item.name.same_string (arr[arr.lower].name) end
+		local
+			i,up: INTEGER
+		do
+			up := arr.upper
+			i := arr.lower
+			make_with_value (arr[i])
+			from
+				i := i + 1
+			until
+				i > up
+			loop
+				add_value (arr[i])
+				i := i + 1
+			end
 		end
 
 	make_with_string (a_name: like name; a_string: READABLE_STRING_32)
@@ -75,7 +96,7 @@ feature -- Helper
 				across
 					string_values as c
 				loop
-					if Result.count = 1 then
+					if Result.count > 1 then
 						Result.append_character (',')
 					end
 					Result.append_string (c.item)
