@@ -37,7 +37,7 @@ feature -- Status report
 
 feature {WGI_RESPONSE_BUFFER} -- Core output operation
 
-	write (s: STRING)
+	write (s: READABLE_STRING_8)
 			-- Send the string `s'
 			-- this can be used for header and body
 		deferred
