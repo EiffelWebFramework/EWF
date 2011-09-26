@@ -83,15 +83,15 @@ feature -- Execution
 			l_redir_url: STRING
 		do
 			create h.make
---			h.put_refresh (ctx.script_url ("/doc"), 2, {HTTP_STATUS_CODE}.temp_redirect)
+--			h.put_refresh (ctx.script_url ("/doc"), 2)
 			l_redir_url := "/doc"
-			h.put_refresh (l_redir_url, 2, {HTTP_STATUS_CODE}.temp_redirect)
+			h.put_refresh (l_redir_url, 2)
 			h.put_content_type_text_html
 			create s.make_empty
 			s := "Request [" + req.path_info + "] is not available. <br/>%N";
 			s.append ("You are being redirected to <a href=%"" + l_redir_url + "%">/doc</a> in 2 seconds ...%N")
 			h.put_content_length (s.count)
-			res.set_status_code (200)
+			res.set_status_code ({HTTP_STATUS_CODE}.temp_redirect)
 			res.write_headers_string (h.string)
 			res.write_string (s)
 		end

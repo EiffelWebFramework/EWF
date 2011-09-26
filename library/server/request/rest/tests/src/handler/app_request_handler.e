@@ -23,18 +23,16 @@ feature {NONE} -- Initialization
 
 feature {NONE} -- Implementation
 
-	wgi_value_iteration_to_string (cur: ITERATION_CURSOR [WGI_VALUE]; using_pre: BOOLEAN): STRING_8
+	wgi_value_iteration_to_string (v: ITERABLE [WGI_VALUE]; using_pre: BOOLEAN): STRING_8
 		do
 			create Result.make (100)
 			if using_pre then
 				Result.append ("<pre>")
 			end
-			from
-			until
-				cur.after
+			across
+				 v as cur
 			loop
 				Result.append_string (cur.item.name.as_string_8 + " = " + cur.item.as_string.as_string_8 + "%N")
-				cur.forth
 			end
 			if using_pre then
 				Result.append ("</pre>")
