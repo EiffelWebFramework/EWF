@@ -638,7 +638,7 @@ feature -- Cookies
 		deferred
 		end
 
-feature -- Access: global variable
+feature -- Access: all variables
 
 	parameters: like items
 		obsolete "use items"
