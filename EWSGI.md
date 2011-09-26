@@ -5,11 +5,11 @@
 ----
 # Waiting for decision
 
-## Include EWF_HEADER into EWSGI as WGI_HEADER
-- Code: **P-2011-09-26-include-wgi-header**
+## Include EWF_HEADER into EWSGI as WGI_HEADERS
+- Code: **P-2011-09-26-include-wgi-headers**
 - Status: proposed on 2011-09-26 **WAITING FOR APPROVAL**
 
-> Include WGI_HEADER to help the user to build HTTP Header. 
+> Include WGI_HEADERS to help the user to build HTTP Header. 
 > So that he doesn't have to know the HTTP specification for usual needs
 
 ## Rename `parameter` into `item`
