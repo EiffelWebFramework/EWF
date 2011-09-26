@@ -5,7 +5,14 @@
 ----
 # Waiting for decision
 
-## Rename `parameter' into `item'
+## Include EWF_HEADER into EWSGI as WGI_HEADER
+- Code: **P-2011-09-26-include-wgi-header**
+- Status: proposed on 2011-09-26 **WAITING FOR APPROVAL**
+
+> Include WGI_HEADER to help the user to build HTTP Header. 
+> So that he doesn't have to know the HTTP specification for usual needs
+
+## Rename `parameter` into `item`
 - Code: **P-2011-09-07-renaming_REQUEST_item**
 - Status: proposed on 2011-09-07 **WAITING FOR APPROVAL**
 
