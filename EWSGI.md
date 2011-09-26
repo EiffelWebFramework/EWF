@@ -12,9 +12,13 @@
 > Include WGI_HEADERS to help the user to build HTTP Header. 
 > So that he doesn't have to know the HTTP specification for usual needs
 
+
+----
+# Adopted entries
+
 ## Rename `parameter` into `item`
 - Code: **P-2011-09-07-renaming_REQUEST_item**
-- Status: proposed on 2011-09-07 **WAITING FOR APPROVAL**
+- Status: proposed on 2011-09-07 **ADOPTED-by-default**
 
 > rename `{REQUEST}.parameter (n: READABLE_STRING_GENERAL): detachable WGI_VALUE`   
 > into `{REQUEST}.item (n: READABLE_STRING_GENERAL): detachable WGI_VALUE`   
@@ -22,7 +26,7 @@
 
 ## Return type of `parameter' (and similar query_, form_data_ ...) should be deferred WGI_VALUE
 - Code: **P-2011-09-05-WGI_VALUE**
-- Status: proposed on 2011-09-05 **WAITING FOR APPROVAL**
+- Status: proposed on 2011-09-05 **ADOPTED-by-default**
 
 > Instead of returning just `READABLE_STRING_32` , it would be better to use **WGI_VALUE** .  
 > Mainly to address the multiple value for the same param name, but also for uploaded files.  
@@ -33,7 +37,7 @@
 ## Include the parameter's name in WGI_VALUE interface
 - Code: **P-2011-09-05-WGI_VALUE_interface**
 - Dependence: adoption of P-2011-09-05-WGI_VALUE , may impact on P-2011-09-05-parameters_ITERABLE
-- Status: proposed on 2011-09-05 **WAITING FOR APPROVAL**
+- Status: proposed on 2011-09-05 **ADOPTED-by-default**
 
 > include the corresponding parameter's name in WGI_VALUE interface.  
 > Such as `{WGI_VALUE}.name: READABLE_STRING_GENERAL`  (or READABLE_STRING_32).   
@@ -44,7 +48,7 @@
 
 ## Signature of parameters (and similar) using ITERABLE [...]
 - Code: **P-2011-09-05-parameters_ITERABLE**
-- Status: proposed on 2011-09-05 **WAITING FOR APPROVAL**
+- Status: proposed on 2011-09-05 **ADOPTED-by-default**
 
 > Description: Instead of forcing the implementation to use HASH_TABLE, DS_HASH_TABLE, DS_HASH_SET, ... or similar 
 > we should use `ITERABLE`
@@ -54,9 +58,6 @@
 >  Or, if `P-2011-09-05-WGI_VALUE_interface` is adopted  (WGI_VALUE.name holds the related parameter's name)  
 >  
 > `parameters: ITERABLE [WGI_VALUE]`  
-
-----
-# Adopted entries
 
 ## Change prefix from EWSGI_ to WGI_ 
 - Code: **P-2011-08-29-WGI_prefix**
