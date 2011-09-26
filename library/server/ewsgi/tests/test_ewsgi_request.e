@@ -46,7 +46,6 @@ feature {NONE} -- Events
 	execute (req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
 		local
 			q: detachable STRING_32
-			qcur: ITERATION_CURSOR [WGI_VALUE]
 		do
 			if attached req.request_uri as l_uri then
 				if l_uri.starts_with (test_url ("get/01")) then
@@ -54,16 +53,13 @@ feature {NONE} -- Events
 					res.write_string ("get-01")
 					create q.make_empty
 
-					from
-						qcur :=	req.query_parameters
-					until
-						qcur.after
+					across
+						req.query_parameters as qcur
 					loop
 						if not q.is_empty then
 							q.append_character ('&')
 						end
 						q.append (qcur.item.name.as_string_32 + "=" + qcur.item.as_string)
-						qcur.forth
 					end
 					if not q.is_empty then
 						res.write_string ("(" + q + ")")
@@ -73,34 +69,31 @@ feature {NONE} -- Events
 					res.write_string ("post-01")
 					create q.make_empty
 
-					from
-						qcur :=	req.query_parameters
-					until
-						qcur.after
+					across
+						req.query_parameters as qcur
 					loop
 						if not q.is_empty then
 							q.append_character ('&')
 						end
 						q.append (qcur.item.name.as_string_32 + "=" + qcur.item.as_string)
-						qcur.forth
 					end
+
 					if not q.is_empty then
 						res.write_string ("(" + q + ")")
 					end
 
 					create q.make_empty
 
-					from
-						qcur :=	req.form_data_parameters
-					until
-						qcur.after
+
+					across
+						req.form_data_parameters as fcur
 					loop
 						if not q.is_empty then
 							q.append_character ('&')
 						end
-						q.append (qcur.item.name.as_string_32 + "=" + qcur.item.as_string)
-						qcur.forth
+						q.append (fcur.item.name.as_string_32 + "=" + fcur.item.as_string)
 					end
+
 					if not q.is_empty then
 						res.write_string (" : " + q )
 					end
