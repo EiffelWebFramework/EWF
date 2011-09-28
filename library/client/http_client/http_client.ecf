@@ -12,10 +12,6 @@
 		<library name="base" location="$ISE_LIBRARY/library/base/base.ecf"/>
 		<library name="cURL" location="$ISE_LIBRARY/library/cURL/cURL.ecf"/>
 		<library name="encoder" location="../../text/encoder/encoder.ecf"/>
-		<cluster name="src" location=".\src\" recursive="true">
-			<file_rule>
-				<exclude>/request$</exclude>
-			</file_rule>
-		</cluster>
+		<cluster name="src" location=".\src\" recursive="true"/>
 	</target>
 </system>
