@@ -89,7 +89,7 @@ feature -- Access: extra values
 
 feature -- Access: CGI meta variables		
 
-	meta_variable (a_name: READABLE_STRING_GENERAL): detachable WGI_VALUE
+	meta_variable (a_name: READABLE_STRING_GENERAL): detachable WGI_STRING_VALUE
 			-- Environment variable related to `a_name'
 		require
 			a_name_valid: a_name /= Void and then not a_name.is_empty
@@ -102,11 +102,11 @@ feature -- Access: CGI meta variables
 			a_name_valid: a_name /= Void and then not a_name.is_empty
 		do
 			if attached meta_variable (a_name) as val then
-				Result := val.as_string
+				Result := val.string
 			end
 		end
 
-	meta_variables: ITERABLE [WGI_VALUE]
+	meta_variables: ITERABLE [WGI_STRING_VALUE]
 			-- These variables are specific to requests made with HTTP.
 			-- Interpretation of these variables may depend on the value of
 			-- SERVER_PROTOCOL.

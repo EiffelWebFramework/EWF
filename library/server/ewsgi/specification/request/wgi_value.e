@@ -15,7 +15,7 @@ convert
 
 feature -- Access
 
-	name: READABLE_STRING_GENERAL
+	name: READABLE_STRING_32
 			-- Parameter name
 		deferred
 		end

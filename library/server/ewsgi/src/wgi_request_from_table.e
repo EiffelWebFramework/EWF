@@ -38,11 +38,14 @@ feature {NONE} -- Initialization
 			-- Fill with variable from `a_vars'
 		local
 			s: like meta_string_variable
-			table: HASH_TABLE [WGI_VALUE, READABLE_STRING_GENERAL]
+			table: HASH_TABLE [WGI_STRING_VALUE, READABLE_STRING_GENERAL]
+			l_query_string: like query_string
+			l_request_uri: detachable STRING_32
 		do
 			create {STRING_32} empty_string.make_empty
 
 			create table.make (a_vars.count)
+			table.compare_objects
 			meta_variables_table := table
 			from
 				a_vars.start
@@ -54,7 +57,8 @@ feature {NONE} -- Initialization
 			end
 
 				--| QUERY_STRING
-			query_string := meta_string_variable_or_default ({WGI_META_NAMES}.query_string, empty_string, False)
+			l_query_string := meta_string_variable_or_default ({WGI_META_NAMES}.query_string, empty_string, False)
+			query_string := l_query_string
 
 				--| REQUEST_METHOD
 			request_method := meta_string_variable_or_default ({WGI_META_NAMES}.request_method, empty_string, False)
@@ -100,34 +104,27 @@ feature {NONE} -- Initialization
 			remote_host := meta_string_variable_or_default ({WGI_META_NAMES}.remote_host, empty_string, False)
 
 				--| REQUEST_URI
-			request_uri := meta_string_variable_or_default ({WGI_META_NAMES}.request_uri, empty_string, False)
+			s := meta_string_variable ({WGI_META_NAMES}.request_uri)
+			if s /= Void then
+				l_request_uri := s
+			else
+					--| It might occur that REQUEST_URI is not available, so let's compute it from SCRIPT_NAME
+				create l_request_uri.make_from_string (script_name)
+				if not l_query_string.is_empty then
+					 l_request_uri.append_character ('?')
+					 l_request_uri.append (l_query_string)
+				end
+			end
+			request_uri := single_slash_starting_string (l_request_uri)
 		end
 
 	initialize
 			-- Specific initialization
-		local
-			p: INTEGER
 		do
 				--| Here one can set its own environment entries if needed
-
-				--| do not use `force', to avoid overwriting existing variable
-			if attached request_uri as rq_uri then
-				p := rq_uri.index_of ('?', 1)
-				if p > 0 then
-					set_meta_string_variable ({WGI_META_NAMES}.self, rq_uri.substring (1, p-1))
-				else
-					set_meta_string_variable ({WGI_META_NAMES}.self, rq_uri)
-				end
-			end
 			if meta_variable ({WGI_META_NAMES}.request_time) = Void then
 				set_meta_string_variable ({WGI_META_NAMES}.request_time, date_time_utilities.unix_time_stamp (Void).out)
 			end
-		end
-
-	analyze
-			-- Analyze context, set various attributes and validate values
-		do
-			extract_variables
 		end
 
 feature -- Status
@@ -169,17 +166,17 @@ feature -- Access extra information
 
 feature {NONE} -- Access: CGI meta parameters
 
-	meta_variables_table: HASH_TABLE [WGI_VALUE, READABLE_STRING_GENERAL]
+	meta_variables_table: HASH_TABLE [WGI_STRING_VALUE, READABLE_STRING_GENERAL]
 			-- CGI Environment parameters
 
 feature -- Access: CGI meta parameters
 
-	meta_variables: ITERABLE [WGI_VALUE]
+	meta_variables: ITERABLE [WGI_STRING_VALUE]
 		do
 			Result := meta_variables_table
 		end
 
-	meta_variable (a_name: READABLE_STRING_GENERAL): detachable WGI_VALUE
+	meta_variable (a_name: READABLE_STRING_GENERAL): detachable WGI_STRING_VALUE
 			-- CGI meta variable related to `a_name'
 		do
 			Result := meta_variables_table.item (a_name)
@@ -192,7 +189,7 @@ feature -- Access: CGI meta parameters
 			a_name_not_empty: a_name /= Void and then not a_name.is_empty
 		do
 			if attached meta_variable (a_name) as val then
-				Result := val.as_string
+				Result := val.string
 				if use_default_when_empty and then Result.is_empty then
 					Result := a_default
 				end
@@ -422,6 +419,7 @@ feature {NONE} -- Query parameters
 					end
 				end
 				vars := urlencoded_parameters (s, True)
+				vars.compare_objects
 				internal_query_parameters_table := vars
 			end
 			Result := vars
@@ -518,6 +516,7 @@ feature {NONE} -- Form fields and related
 						l_type.starts_with ({HTTP_CONSTANTS}.multipart_form)
 					then
 						create vars.make (5)
+						vars.compare_objects
 						--| FIXME: optimization ... fetch the input data progressively, otherwise we might run out of memory ...
 						s := form_input_data (n.to_integer_32) --| FIXME truncated from NAT64 to INT32
 						analyze_multipart_form (l_type, s, vars)
@@ -530,6 +529,7 @@ feature {NONE} -- Form fields and related
 					end
 				else
 					create vars.make (0)
+					vars.compare_objects
 				end
 				internal_form_data_parameters_table := vars
 			end
@@ -572,6 +572,7 @@ feature {NONE} -- Cookies
 				if attached {WGI_STRING_VALUE} meta_variable ({WGI_META_NAMES}.http_cookie) as val then
 					s := val.string
 					create l_cookies.make (5)
+					l_cookies.compare_objects
 					from
 						n := s.count
 						p := 1
@@ -598,6 +599,7 @@ feature {NONE} -- Cookies
 					end
 				else
 					create l_cookies.make (0)
+					l_cookies.compare_objects
 				end
 				internal_cookies_table := l_cookies
 			end
@@ -1150,7 +1152,7 @@ feature {NONE} -- Implementation
 			error_handler.add_error (e)
 		end
 
-	extract_variables
+	analyze
 			-- Extract relevant meta parameters
 		local
 			s: detachable READABLE_STRING_32
@@ -1177,6 +1179,52 @@ feature {NONE} -- Implementation
 		end
 
 feature {NONE} -- Implementation: utilities	
+
+	single_slash_starting_string (s: READABLE_STRING_32): STRING_32
+			-- Return the string `s' (or twin) with one and only one starting slash
+		local
+			i, n: INTEGER
+		do
+			n := s.count
+			if n > 1 then
+				if s[1] /= '/' then
+					create Result.make (1 + n)
+					Result.append_character ('/')
+					Result.append (s)
+				elseif s[2] = '/' then
+					--| We need to remove all starting slash, except one
+					from
+						i := 3
+					until
+						i > n
+					loop
+						if s[i] /= '/' then
+							n := 0 --| exit loop
+						else
+							i := i + 1
+						end
+					end
+					n := s.count
+					check i >= 2 and i <= n end
+					Result := s.substring (i - 1, s.count)
+				else
+					--| starts with one '/' and only one		
+					Result := s
+				end
+			elseif n = 1 then
+				if s[1] = '/' then
+					Result := s
+				else
+					create Result.make (2)
+					Result.append_character ('/')
+					Result.append (s)
+				end
+			else --| n = 0
+				create Result.make_filled ('/', 1)
+			end
+		ensure
+			one_starting_slash: Result[1] = '/' and (Result.count = 1 or else Result[2] /= '/')
+		end
 
 	new_string_value (a_name: READABLE_STRING_GENERAL; a_value: READABLE_STRING_32): WGI_STRING_VALUE
 		do

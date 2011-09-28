@@ -53,7 +53,7 @@ feature {NONE} -- Initialization
 
 feature -- Access
 
-	name: READABLE_STRING_GENERAL
+	name: READABLE_STRING_32
 
 	string_values: LIST [WGI_STRING_VALUE]
 

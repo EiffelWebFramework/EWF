@@ -18,15 +18,15 @@ convert
 
 feature {NONE} -- Initialization
 
-	make (a_name: like name; a_string: like string)
+	make (a_name: READABLE_STRING_GENERAL; a_string: like string)
 		do
-			name := a_name
+			name := a_name.as_string_32
 			string := a_string
 		end
 
 feature -- Access
 
-	name: READABLE_STRING_GENERAL
+	name: READABLE_STRING_32
 
 	string: READABLE_STRING_32
 
