@@ -65,12 +65,12 @@ feature -- Execution
 					(create {DEVELOPER_EXCEPTION}).raise
 				elseif l_op.starts_with ("env") then
 					s.append_string ("%N%NAll variables:")
-					s.append (wgi_value_iteration_to_string (req.parameters, False))
+					s.append (wgi_value_iteration_to_string (req.items, False))
 					s.append_string ("<br/>script_url(%"" + req.path_info + "%")=" + ctx.script_url (req.path_info) + "%N")
 --					if attached ctx.http_authorization_login_password as t then
 --						s.append_string ("Check login=" + t.login + "<br/>%N")
 --					end
-					if ctx.authenticated and then attached ctx.authenticated_identifier as l_login then
+					if authenticated (ctx) and then attached authenticated_identifier (ctx) as l_login then
 						s.append_string ("Authenticated: login=" + l_login.as_string_8 + "<br/>%N")
 					end
 				end

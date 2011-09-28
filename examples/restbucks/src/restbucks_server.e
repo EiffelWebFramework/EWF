@@ -55,7 +55,7 @@ feature -- Execution
 			create h.make
 			l_url := req.script_url ("/home")
 			n := 3
-			h.put_refresh (l_url, 5, 200)
+			h.put_refresh (l_url, 5)
 			res.set_status_code (200)
 			res.write_headers_string (h.string)
 			from

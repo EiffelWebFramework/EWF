@@ -14,31 +14,28 @@ feature -- Helper
 
 	execute_content_type_not_allowed (req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER; a_content_types: detachable ARRAY [STRING]; a_uri_formats: detachable ARRAY [STRING])
 		local
-			s, uri_s: detachable STRING
+			accept_s, uri_s: detachable STRING
 			i, n: INTEGER
-			h: EWF_HEADER
 		do
-			create h.make
-			h.put_status ({HTTP_STATUS_CODE}.unsupported_media_type)
-			h.put_content_type_text_plain
-
 			if a_content_types /= Void then
-				create s.make (10)
+				create accept_s.make (10)
 				from
 					i := a_content_types.lower
 					n := a_content_types.upper
 				until
 					i > n
 				loop
-					s.append_string (a_content_types[i])
+					accept_s.append_string (a_content_types[i])
 					if i < n then
-						s.append_character (',')
-						s.append_character (' ')
+						accept_s.append_character (',')
+						accept_s.append_character (' ')
 					end
 					i := i + 1
 				end
-				h.put_header_key_value ("Accept", s)
+			else
+				accept_s := "*/*"
 			end
+
 			if a_uri_formats /= Void then
 				create uri_s.make (10)
 				from
@@ -56,9 +53,9 @@ feature -- Helper
 				end
 			end
 			res.set_status_code ({HTTP_STATUS_CODE}.unsupported_media_type)
-			res.write_headers_string (h.string)
-			if s /= Void then
-				res.write_string ("Unsupported request content-type, Accept: " + s + "%N")
+			res.write_header ({HTTP_STATUS_CODE}.unsupported_media_type, << ["Content-Type", "text/plain"], ["Accept", accept_s]>>)
+			if accept_s /= Void then
+				res.write_string ("Unsupported request content-type, Accept: " + accept_s + "%N")
 			end
 			if uri_s /= Void then
 				res.write_string ("Unsupported request format from the URI: " + uri_s + "%N")

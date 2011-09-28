@@ -7,42 +7,87 @@ note
 class
 	HTTP_AUTHORIZATION
 
+inherit
+	REFACTORING_HELPER
+
 create
-	make
+	make,
+	make_basic_auth,
+	make_custom_auth
 
 feature {NONE} -- Initialization
 
 	make (a_http_authorization: detachable READABLE_STRING_GENERAL)
 			-- Initialize `Current'.
 		local
-			p: INTEGER
-			s: STRING_8
+			i: INTEGER
+			t, s: STRING_8
+			u,p: READABLE_STRING_8
 		do
 			if attached a_http_authorization as l_auth then
 				s := l_auth.as_string_8
 				if not s.is_empty then
-					p := 1
-					if s[p] = ' ' then
-						p := p + 1
+					i := 1
+					if s[i] = ' ' then
+						i := i + 1
 					end
-					p := s.index_of (' ', p)
-					if p > 0 then
-						s := (create {BASE64}).decoded_string (s.substring (p + 1, s.count))
-						p := s.index_of (':', 1) --| Let's assume ':' is forbidden in login ...
-						if p > 0 then
-							login := s.substring (1, p - 1).as_string_32
-							password := s.substring (p + 1, s.count).as_string_32
+					i := s.index_of (' ', i)
+					if i > 0 then
+						t := s.substring (1, i - 1).as_lower
+						t.right_adjust; t.left_adjust
+						type := t
+						if t.same_string ("basic") then
+							s := (create {BASE64}).decoded_string (s.substring (i + 1, s.count))
+							i := s.index_of (':', 1) --| Let's assume ':' is forbidden in login ...
+							if i > 0 then
+								u := s.substring (1, i - 1).as_string_32
+								p := s.substring (i + 1, s.count).as_string_32
+								login := u
+								password := p
+								check
+									(create {HTTP_AUTHORIZATION}.make_custom_auth (u, p, t)).http_authorization ~ http_authorization
+								end
+							end
+						elseif t.same_string ("digest") then
+							to_implement ("HTTP Authorization %"digest%", not yet implemented")
+						else
+							to_implement ("HTTP Authorization %""+ t +"%", not yet implemented")
 						end
 					end
 				end
 			end
 		end
 
+	make_basic_auth (u: READABLE_STRING_32; p: READABLE_STRING_32)
+		do
+			make_custom_auth (u, p, "basic")
+		end
+
+	make_custom_auth (u: READABLE_STRING_32; p: READABLE_STRING_32; a_type: READABLE_STRING_8)
+		local
+			t: STRING_8
+		do
+			login := u
+			password := p
+			create t.make_from_string (a_type.as_lower)
+			t.left_adjust; t.right_adjust
+			type := t
+			if t.same_string ("basic") then
+				http_authorization := "Basic " + (create {BASE64}).encoded_string (u + ":" + p)
+			else
+				to_implement ("HTTP Authorization %""+ t +"%", not yet implemented")
+			end
+		end
+
 feature -- Access
+
+	type: detachable READABLE_STRING_8
 
 	login: detachable READABLE_STRING_32
 
 	password: detachable READABLE_STRING_32
+
+	http_authorization: detachable READABLE_STRING_32
 
 
 end

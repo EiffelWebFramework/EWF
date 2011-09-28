@@ -37,7 +37,7 @@ feature -- Status report
 
 feature {WGI_RESPONSE_BUFFER} -- Core output operation
 
-	write (s: STRING)
+	write (s: READABLE_STRING_8)
 			-- Send the string `s'
 			-- this can be used for header and body
 		deferred
@@ -69,7 +69,7 @@ feature -- Status setting
 
 feature -- Header output operation
 
-	write_headers_string (a_headers: STRING)
+	write_headers_string (a_headers: READABLE_STRING_8)
 		require
 			status_set: status_is_set
 			header_not_committed: not header_committed
@@ -80,7 +80,7 @@ feature -- Header output operation
 			message_writable: message_writable
 		end
 
-	write_header (a_status_code: INTEGER; a_headers: detachable ARRAY [TUPLE [key: STRING; value: STRING]])
+	write_header (a_status_code: INTEGER; a_headers: detachable ARRAY [TUPLE [key: READABLE_STRING_8; value: READABLE_STRING_8]])
 			-- Send headers with status `a_status', and headers from `a_headers'
 		require
 			status_not_set: not status_is_set
@@ -94,21 +94,21 @@ feature -- Header output operation
 
 feature -- Output operation
 
-	write_string (s: STRING)
+	write_string (s: READABLE_STRING_8)
 			-- Send the string `s'
 		require
 			message_writable: message_writable
 		deferred
 		end
 
-	write_substring (s: STRING; a_begin_index, a_end_index: INTEGER)
+	write_substring (s: READABLE_STRING_8; a_begin_index, a_end_index: INTEGER)
 			-- Send the substring `s[a_begin_index:a_end_index]'
 		require
 			message_writable: message_writable
 		deferred
 		end
 
-	write_file_content (fn: STRING)
+	write_file_content (fn: READABLE_STRING_8)
 			-- Send the content of file `fn'
 		require
 			message_writable: message_writable

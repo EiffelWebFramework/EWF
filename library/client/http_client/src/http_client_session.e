@@ -108,6 +108,11 @@ feature -- Change
 			timeout := n
 		end
 
+	set_connect_timeout (n: like connect_timeout)
+		do
+			connect_timeout := n
+		end
+
 	set_user_agent (v: READABLE_STRING_8)
 		do
 			add_header ("User-Agent", v)

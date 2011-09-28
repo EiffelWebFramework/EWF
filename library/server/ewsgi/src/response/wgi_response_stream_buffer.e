@@ -48,7 +48,7 @@ feature -- Status report
 
 feature {NONE} -- Core output operation
 
-	write (s: STRING)
+	write (s: READABLE_STRING_8)
 			-- Send the content of `s'
 			-- this can be used for header and body			
 		do
@@ -76,13 +76,13 @@ feature -- Status setting
 
 feature -- Header output operation		
 
-	write_headers_string (a_headers: STRING)
+	write_headers_string (a_headers: READABLE_STRING_8)
 		do
 			write (a_headers)
 			header_committed := True
 		end
 
-	write_header (a_status_code: INTEGER; a_headers: detachable ARRAY [TUPLE [key: STRING; value: STRING]])
+	write_header (a_status_code: INTEGER; a_headers: detachable ARRAY [TUPLE [key: READABLE_STRING_8; value: READABLE_STRING_8]])
 			-- Send headers with status `a_status', and headers from `a_headers'
 		local
 			h: EWF_HEADER
@@ -107,20 +107,20 @@ feature -- Header output operation
 
 feature -- Output operation
 
-	write_string (s: STRING)
+	write_string (s: READABLE_STRING_8)
 			-- Send the string `s'
 		do
 			write (s)
 		end
 
-	write_substring (s: STRING; start_index, end_index: INTEGER)
+	write_substring (s: READABLE_STRING_8; start_index, end_index: INTEGER)
 			-- Send the substring `start_index:end_index]'
 			--| Could be optimized according to the target output
 		do
 			output.put_substring (s, start_index, end_index)
 		end
 
-	write_file_content (fn: STRING)
+	write_file_content (fn: READABLE_STRING_8)
 			-- Send the content of file `fn'
 		do
 			output.put_file_content (fn)

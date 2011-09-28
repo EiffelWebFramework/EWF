@@ -21,6 +21,17 @@ feature {NONE} -- Initialization
 
 feature -- Status
 
+	error_occurred: BOOLEAN
+			-- Error occurred during request
+
+feature {HTTP_CLIENT_REQUEST} -- Status setting
+
+	set_error_occurred (b: BOOLEAN)
+			-- Set `error_occurred' to `b'
+		do
+			error_occurred := b
+		end
+
 feature -- Access
 
 	status: INTEGER assign set_status

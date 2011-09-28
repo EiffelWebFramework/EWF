@@ -25,7 +25,14 @@ create
 
 feature -- Status report
 
-	authentication_required: BOOLEAN
+	authentication_required (req: WGI_REQUEST): BOOLEAN
+		do
+			Result := internal_authentication_required
+		end
+
+feature {NONE} -- Implementation
+
+	internal_authentication_required: BOOLEAN
 
 feature -- Execution
 

@@ -15,7 +15,6 @@ inherit
 			session
 		end
 
-
 create
 	make
 
@@ -174,19 +173,20 @@ feature -- Execution
 			create Result.make
 			l_result := curl_easy.perform (curl_handle)
 
-			create a_data.put (Void)
-			l_result := curl_easy.getinfo (curl_handle, {CURL_INFO_CONSTANTS}.curlinfo_response_code, a_data)
-			if l_result = 0 and then attached {INTEGER} a_data.item as l_http_status then
-				Result.status := l_http_status
+			if l_result = {CURL_CODES}.curle_ok then
+				create a_data.put (Void)
+				l_result := curl_easy.getinfo (curl_handle, {CURL_INFO_CONSTANTS}.curlinfo_response_code, a_data)
+				if l_result = 0 and then attached {INTEGER} a_data.item as l_http_status then
+					Result.status := l_http_status
+				else
+					Result.status := 0
+				end
+				Result.body := l_curl_string.string
 			else
-				Result.status := 0
+				Result.set_error_occurred (True)
 			end
 
---			last_api_call := l_url
 			curl_easy.cleanup (curl_handle)
-
-
-			Result.body := l_curl_string.string
 		end
 
 end

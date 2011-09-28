@@ -106,7 +106,7 @@ feature -- Access: CGI meta variables
 			end
 		end
 
-	meta_variables: ITERATION_CURSOR [WGI_VALUE]
+	meta_variables: ITERABLE [WGI_VALUE]
 			-- These variables are specific to requests made with HTTP.
 			-- Interpretation of these variables may depend on the value of
 			-- SERVER_PROTOCOL.
@@ -587,7 +587,7 @@ feature -- Extra CGI environment variables
 
 feature -- Query string Parameters
 
-	query_parameters: ITERATION_CURSOR [WGI_VALUE]
+	query_parameters: ITERABLE [WGI_VALUE]
 			-- Variables extracted from QUERY_STRING
 		deferred
 		end
@@ -601,7 +601,7 @@ feature -- Query string Parameters
 
 feature -- Form fields and related
 
-	form_data_parameters: ITERATION_CURSOR [WGI_VALUE]
+	form_data_parameters: ITERABLE [WGI_VALUE]
 			-- Variables sent by POST request
 		deferred
 		end
@@ -626,7 +626,7 @@ feature -- Form fields and related
 
 feature -- Cookies	
 
-	cookies: ITERATION_CURSOR [WGI_VALUE]
+	cookies: ITERABLE [WGI_VALUE]
 			-- Expanded cookies variable
 		deferred
 		end
@@ -638,7 +638,7 @@ feature -- Cookies
 		deferred
 		end
 
-feature -- Access: global variable
+feature -- Access: all variables
 
 	parameters: like items
 		obsolete "use items"
@@ -652,7 +652,7 @@ feature -- Access: global variable
 			Result := item (a_name)
 		end
 
-	items: ITERATION_CURSOR [WGI_VALUE]
+	items: ITERABLE [WGI_VALUE]
 			-- Table containing all the various variables
 			-- Warning: this is computed each time, if you change the content of other containers
 			-- this won't update this Result's content, unless you query it again

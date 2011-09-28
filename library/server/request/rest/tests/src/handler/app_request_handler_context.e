@@ -9,29 +9,10 @@ class
 
 inherit
 	REST_REQUEST_URI_TEMPLATE_HANDLER_CONTEXT
-		redefine
-			authenticated,
-			authenticated_identifier
-		end
 
 create
 	make
 
-feature -- Auth
-
-	authenticated: BOOLEAN
-		do
-			if attached request.http_authorization as l_http_auth then
-				Result := True
-			end
-		end
-
-	authenticated_identifier: detachable READABLE_STRING_32
-		do
-			if authenticated then
-				Result := "foo"
-			end
-		end
 
 feature -- Format
 

@@ -16,14 +16,13 @@ feature -- Execution
 	execute (req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
 			-- Execute the request
 			-- See `req.input' for input stream
-			--     `req.environment' for the Gateway environment	
+    		--     `req.meta_variables' for the CGI meta variable
 			-- and `res' for output buffer
 		require
 			res_status_unset: not res.status_is_set
 		deferred
 		ensure
 			res_status_set: res.status_is_set
---			res_committed: res.message_committed
 		end
 
 feature -- Process request

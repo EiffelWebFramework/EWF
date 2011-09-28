@@ -174,9 +174,9 @@ feature {NONE} -- Access: CGI meta parameters
 
 feature -- Access: CGI meta parameters
 
-	meta_variables: ITERATION_CURSOR [WGI_VALUE]
+	meta_variables: ITERABLE [WGI_VALUE]
 		do
-			Result := meta_variables_table.new_cursor
+			Result := meta_variables_table
 		end
 
 	meta_variable (a_name: READABLE_STRING_GENERAL): detachable WGI_VALUE
@@ -429,9 +429,9 @@ feature {NONE} -- Query parameters
 
 feature -- Query parameters
 
-	query_parameters: ITERATION_CURSOR [WGI_VALUE]
+	query_parameters: ITERABLE [WGI_VALUE]
 		do
-			Result := query_parameters_table.new_cursor
+			Result := query_parameters_table
 		end
 
 	query_parameter (a_name: READABLE_STRING_GENERAL): detachable WGI_VALUE
@@ -448,6 +448,7 @@ feature {NONE} -- Query parameters: implementation
 			n, p, i, j: INTEGER
 			s: STRING
 			l_name,l_value: STRING_32
+			v: WGI_VALUE
 		do
 			if a_content = Void then
 				create Result.make (0)
@@ -479,7 +480,17 @@ feature {NONE} -- Query parameters: implementation
 									l_name := url_encoder.decoded_string (l_name)
 									l_value := url_encoder.decoded_string (l_value)
 								end
-								Result.force (new_string_value (l_name, l_value), l_name)
+								v := new_string_value (l_name, l_value)
+								if Result.has_key (l_name) and then attached Result.found_item as l_existing_value then
+									if attached {WGI_MULTIPLE_STRING_VALUE} l_existing_value as l_multi then
+										l_multi.add_value (v)
+									else
+										Result.force (create {WGI_MULTIPLE_STRING_VALUE}.make_with_array (<<l_existing_value, v>>), l_name)
+										check replaced: Result.found and then Result.found_item ~ l_existing_value end
+									end
+								else
+									Result.force (v, l_name)
+								end
 							end
 						end
 					end
@@ -515,7 +526,7 @@ feature {NONE} -- Form fields and related
 						vars := urlencoded_parameters (s, True)
 					end
 					if raw_post_data_recorded then
-						vars.force (new_string_value ("RAW_POST_DATA", s), "RAW_POST_DATA")
+						set_meta_string_variable ("RAW_POST_DATA", s)
 					end
 				else
 					create vars.make (0)
@@ -527,9 +538,9 @@ feature {NONE} -- Form fields and related
 
 feature -- Form fields and related	
 
-	form_data_parameters: ITERATION_CURSOR [WGI_VALUE]
+	form_data_parameters: ITERABLE [WGI_VALUE]
 		do
-			Result := form_data_parameters_table.new_cursor
+			Result := form_data_parameters_table
 		end
 
 	form_data_parameter (a_name: READABLE_STRING_GENERAL): detachable WGI_VALUE
@@ -595,9 +606,9 @@ feature {NONE} -- Cookies
 
 feature -- Cookies
 
-	cookies: ITERATION_CURSOR [WGI_VALUE]
+	cookies: ITERABLE [WGI_VALUE]
 		do
-			Result := cookies_table.new_cursor
+			Result := cookies_table
 		end
 
 	cookie (a_name: READABLE_STRING_GENERAL): detachable WGI_VALUE
@@ -612,57 +623,40 @@ feature {NONE} -- Access: global variable
 			-- Table containing all the various variables
 			-- Warning: this is computed each time, if you change the content of other containers
 			-- this won't update this Result's content, unless you query it again
-		local
-			vars: ITERATION_CURSOR [WGI_VALUE]
 		do
 			create Result.make (100)
 
-			vars := meta_variables
-			from
---				vars.start
-			until
-				vars.after
+			across
+				meta_variables as vars
 			loop
 				Result.force (vars.item, vars.item.name)
-				vars.forth
 			end
 
-			vars := query_parameters
-			from
---				vars.start
-			until
-				vars.after
+			across
+				query_parameters as vars
 			loop
 				Result.force (vars.item, vars.item.name)
-				vars.forth
 			end
 
-			vars := form_data_parameters
-			from
---				vars.start
-			until
-				vars.after
+			across
+				form_data_parameters as vars
 			loop
 				Result.force (vars.item, vars.item.name)
-				vars.forth
 			end
 
-			vars := cookies
-			from
---				vars.start
-			until
-				vars.after
+			across
+				cookies as vars
 			loop
 				Result.force (vars.item, vars.item.name)
-				vars.forth
 			end
+
 		end
 
 feature -- Access: global variable		
 
-	items: ITERATION_CURSOR [WGI_VALUE]
+	items: ITERABLE [WGI_VALUE]
 		do
-			Result := items_table.new_cursor
+			Result := items_table
 		end
 
 	item (a_name: READABLE_STRING_GENERAL): detachable WGI_VALUE
