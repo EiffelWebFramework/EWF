@@ -1,0 +1,38 @@
+ 
+# Available libraries.  
+  
+http_client-safe : c:\_dev\Dev-Process\web-framework\library\client\http_client\http_client-safe.ecf  
+http_client : c:\_dev\Dev-Process\web-framework\library\client\http_client\http_client.ecf  
+error-safe : c:\_dev\Dev-Process\web-framework\library\error\error-safe.ecf  
+error : c:\_dev\Dev-Process\web-framework\library\error\error.ecf  
+http-safe : c:\_dev\Dev-Process\web-framework\library\protocol\http\http-safe.ecf  
+http : c:\_dev\Dev-Process\web-framework\library\protocol\http\http.ecf  
+uri_template-safe : c:\_dev\Dev-Process\web-framework\library\protocol\uri_template\uri_template-safe.ecf  
+uri_template : c:\_dev\Dev-Process\web-framework\library\protocol\uri_template\uri_template.ecf  
+http_authorization-safe : c:\_dev\Dev-Process\web-framework\library\server\authentication\http_authorization\http_authorization-safe.ecf  
+http_authorization : c:\_dev\Dev-Process\web-framework\library\server\authentication\http_authorization\http_authorization.ecf  
+ewsgi-safe : c:\_dev\Dev-Process\web-framework\library\server\ewsgi\ewsgi-safe.ecf  
+ewsgi : c:\_dev\Dev-Process\web-framework\library\server\ewsgi\ewsgi.ecf  
+ewsgi_spec-safe : c:\_dev\Dev-Process\web-framework\library\server\ewsgi\ewsgi_spec-safe.ecf  
+ewsgi_spec : c:\_dev\Dev-Process\web-framework\library\server\ewsgi\ewsgi_spec.ecf  
+cgi-safe : c:\_dev\Dev-Process\web-framework\library\server\ewsgi\connectors\cgi\cgi-safe.ecf  
+cgi : c:\_dev\Dev-Process\web-framework\library\server\ewsgi\connectors\cgi\cgi.ecf  
+libfcgi-safe : c:\_dev\Dev-Process\web-framework\library\server\ewsgi\connectors\libfcgi\libfcgi-safe.ecf  
+libfcgi : c:\_dev\Dev-Process\web-framework\library\server\ewsgi\connectors\libfcgi\libfcgi.ecf  
+nino-safe : c:\_dev\Dev-Process\web-framework\library\server\ewsgi\connectors\nino\nino-safe.ecf  
+nino : c:\_dev\Dev-Process\web-framework\library\server\ewsgi\connectors\nino\nino.ecf  
+ewsgi_cgi-safe : c:\_dev\Dev-Process\web-framework\library\server\ewsgi\default\ewsgi_cgi-safe.ecf  
+ewsgi_cgi : c:\_dev\Dev-Process\web-framework\library\server\ewsgi\default\ewsgi_cgi.ecf  
+ewsgi_nino-safe : c:\_dev\Dev-Process\web-framework\library\server\ewsgi\default\ewsgi_nino-safe.ecf  
+ewsgi_nino : c:\_dev\Dev-Process\web-framework\library\server\ewsgi\default\ewsgi_nino.ecf  
+fcgi-safe : c:\_dev\Dev-Process\web-framework\library\server\libfcgi\fcgi-safe.ecf  
+fcgi : c:\_dev\Dev-Process\web-framework\library\server\libfcgi\fcgi.ecf  
+libfcgi-safe : c:\_dev\Dev-Process\web-framework\library\server\libfcgi\libfcgi-safe.ecf  
+libfcgi : c:\_dev\Dev-Process\web-framework\library\server\libfcgi\libfcgi.ecf  
+rest-safe : c:\_dev\Dev-Process\web-framework\library\server\request\rest\rest-safe.ecf  
+rest : c:\_dev\Dev-Process\web-framework\library\server\request\rest\rest.ecf  
+router-safe : c:\_dev\Dev-Process\web-framework\library\server\request\router\router-safe.ecf  
+router : c:\_dev\Dev-Process\web-framework\library\server\request\router\router.ecf  
+encoder-safe : c:\_dev\Dev-Process\web-framework\library\text\encoder\encoder-safe.ecf  
+encoder : c:\_dev\Dev-Process\web-framework\library\text\encoder\encoder.ecf  
+  
