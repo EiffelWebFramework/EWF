@@ -27,8 +27,6 @@ feature -- execute
 					process_delete (ctx,req,res)
 				elseif req.request_method.same_string ("POST")  then
 					process_post (ctx,req,res)
-				else
-					handle_method_not_allowed (req.request_method + " " + req.request_uri +"%N API Contract %N" +api_doc, res)
 				end
 		end
 
@@ -37,12 +35,54 @@ feature -- API DOC
 feature -- HTTP Methods
 
 	process_get (ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+		local
+			l_values: HASH_TABLE [STRING_32, STRING]
+			l_missings: LINKED_LIST [STRING]
+			l_full: BOOLEAN
+			l_post: STRING
+			joc : JSON_ORDER_CONVERTER
+			parser : JSON_PARSER
+			l_order : detachable ORDER
+			jv : detachable JSON_VALUE
+			l_location, id :  STRING
+			uri : LIST[READABLE_STRING_32]
+			h : EWF_HEADER
+			http_if_not_match : STRING
 		do
-			handle_not_implemented ("GET: "+ req.request_uri + "%N Not implemented", res)
+				fixme ("TODO handle error conditions")
+				if  attached req.orig_path_info as orig_path then
+					uri := orig_path.split ('/')
+					id := uri.at (3)
+					create joc.make
+					json.add_converter(joc)
+					if db_access.orders.has_key (id) then
+						l_order := db_access.orders.item (id)
+						jv ?= json.value (l_order)
+						if attached jv as j then
+							create h.make
+							h.put_status (ok)
+							h.put_content_type ("application/json")
+
+							if l_order /= Void then
+								h.add_header ("Etag: " + l_order.etag)
+							end
+							res.set_status_code (ok)
+							res.write_headers_string (h.string)
+							res.write_string (j.representation)
+						end
+					else
+						handle_resource_not_found_response ("The following resource"+ orig_path+ " is not found ", res)
+					end
+				end
+
+
 		end
 
 	process_put (ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
 		do
+			if  req.content_length_value > 0 then
+					req.input.read_stream (req.content_length_value.as_integer_32)
+			end
 			handle_not_implemented ("PUT: "+ req.request_uri + "%N Not implemented", res)
 		end
 
@@ -170,20 +210,6 @@ feature -- Implementation
 		end
 
 
-	handle_method_not_allowed (a_description:STRING; res: WGI_RESPONSE_BUFFER )
-		local
-			h : EWF_HEADER
-		do
-					create h.make
-					h.put_status (method_not_allowed)
-					h.put_content_type ("application/json")
-					h.put_content_length (a_description.count)
-					h.add_header ("Date:"+ ((create{HTTP_DATE_TIME_UTILITIES}).now_utc).formatted_out ("ddd,[0]dd mmm yyyy [0]hh:[0]mi:[0]ss.ff2") + " GMT")
-					res.set_status_code (method_not_allowed)
-					res.write_headers_string (h.string)
-					res.write_string (a_description)
-		end
-
 
 	handle_not_implemented (a_description:STRING; res: WGI_RESPONSE_BUFFER )
 		local
@@ -212,17 +238,19 @@ feature -- Implementation
 --		end
 
 
---	handle_resource_not_found_response (a_description:STRING; an_output: HTTPD_SERVER_OUTPUT )
---		local
---			rep: detachable REST_RESPONSE
---		do
---					create rep.make (path)
---					rep.headers.put_status (rep.headers.not_found)
---					rep.headers.put_content_type_application_json
---					rep.set_message (a_description)
---					an_output.put_string (rep.string)
---					rep.recycle
---		end
+	handle_resource_not_found_response (a_description:STRING; res: WGI_RESPONSE_BUFFER)
+		local
+			h : EWF_HEADER
+		do
+					create h.make
+					h.put_status (not_found)
+					h.put_content_type ("application/json")
+					h.put_content_length (a_description.count)
+					h.add_header ("Date:"+ ((create{HTTP_DATE_TIME_UTILITIES}).now_utc).formatted_out ("ddd,[0]dd mmm yyyy [0]hh:[0]mi:[0]ss.ff2") + " GMT")
+					res.set_status_code (not_found)
+					res.write_headers_string (h.string)
+					res.write_string (a_description)
+		end
 
 
 --	handle_method_not_supported_response (ctx :REST_REQUEST_CONTEXT)
