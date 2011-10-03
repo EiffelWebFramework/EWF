@@ -62,7 +62,9 @@ feature -- HTTP Methods
 							create h.make
 							h.put_status (ok)
 							h.put_content_type ("application/json")
-
+							if attached req.request_time as time then
+								h.add_header ("Date:" +time.formatted_out ("ddd,[0]dd mmm yyyy [0]hh:[0]mi:[0]ss.ff2") + " GMT")
+							end
 							if l_order /= Void then
 								h.add_header ("Etag: " + l_order.etag)
 							end
@@ -79,16 +81,83 @@ feature -- HTTP Methods
 		end
 
 	process_put (ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+		local
+			l_values: HASH_TABLE [STRING_32, STRING]
+			l_missings: LINKED_LIST [STRING]
+			l_full: BOOLEAN
+			l_post: STRING
+			l_location :  STRING
+			l_order : detachable ORDER
+			jv : detachable JSON_VALUE
+			h : EWF_HEADER
 		do
-			if  req.content_length_value > 0 then
+				fixme ("TODO handle an Internal Server Error")
+				fixme ("Refactor the code, create new abstractions")
+				fixme ("Add Header Date to the response")
+				fixme ("Put implememntation is wrong!!!!")
+				if req.content_length_value > 0 then
 					req.input.read_stream (req.content_length_value.as_integer_32)
-			end
-			handle_not_implemented ("PUT: "+ req.request_uri + "%N Not implemented", res)
+					l_post := req.input.last_string
+					l_order := extract_order_request(l_post)
+					fixme ("TODO move to a service method")
+					if  l_order /= Void and then db_access.orders.has_key (l_order.id) then
+						update_order( l_order)
+							create h.make
+							h.put_status (ok)
+							h.put_content_type ("application/json")
+							if attached req.request_time as time then
+								h.add_header ("Date:" +time.formatted_out ("ddd,[0]dd mmm yyyy [0]hh:[0]mi:[0]ss.ff2") + " GMT")
+							end
+						if attached req.http_host as host then
+							l_location := "http://"+host +req.request_uri+"/" + l_order.id
+							h.add_header ("Location:"+ l_location)
+						end
+						jv ?= json.value (l_order)
+						if jv /= Void then
+							h.put_content_length (jv.representation.count)
+							res.set_status_code (ok)
+							res.write_headers_string (h.string)
+							res.write_string (jv.representation)
+						end
+					else
+						handle_bad_request_response(l_post +"%N is not a valid ORDER, maybe the order does not exist in the system",res)
+					end
+				else
+					handle_bad_request_response("Bad request, content_lenght empty",res)
+				end
 		end
 
+
 	process_delete (ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+		local
+			l_values: HASH_TABLE [STRING_32, STRING]
+			uri: LIST [READABLE_STRING_32]
+			l_full: BOOLEAN
+			id: STRING
+			l_location :  STRING
+			l_order : detachable ORDER
+			jv : detachable JSON_VALUE
+			h : EWF_HEADER
 		do
-			handle_not_implemented ("DELETE: "+ req.request_uri + "%N Not implemented", res)
+				fixme ("TODO handle an Internal Server Error")
+				fixme ("Refactor the code, create new abstractions")
+				if  attached req.orig_path_info as orig_path then
+					uri := orig_path.split ('/')
+					id := uri.at (3)
+					if  db_access.orders.has_key (id) then
+						delete_order( id)
+						create h.make
+						h.put_status (no_content)
+						h.put_content_type ("application/json")
+						if attached req.request_time as time then
+								h.add_header ("Date:" +time.formatted_out ("ddd,[0]dd mmm yyyy [0]hh:[0]mi:[0]ss.ff2") + " GMT")
+						end
+						res.set_status_code (no_content)
+						res.write_headers_string (h.string)
+					else
+						handle_resource_not_found_response (orig_path + " not found in this server", res)
+					end
+				end
 		end
 
 	process_post (ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
@@ -162,18 +231,18 @@ feature -- Implementation
 				db_access.orders.force (an_order, an_order.id)
 		end
 
---	update_order ( an_order : ORDER)
---		-- update the order to the repository
---		do
---			an_order.add_revision
---			db_access.orders.force (an_order, an_order.id)
---		end
+	update_order ( an_order : ORDER)
+		-- update the order to the repository
+		do
+			an_order.add_revision
+			db_access.orders.force (an_order, an_order.id)
+		end
 
---	delete_order ( an_order : STRING)
---		-- update the order to the repository
---		do
---			db_access.orders.remove (an_order)
---		end
+	delete_order ( an_order : STRING)
+		-- update the order to the repository
+		do
+			db_access.orders.remove (an_order)
+		end
 
 	extract_order_request (l_post : STRING) : detachable ORDER
 		-- extract an object Order from the request, or Void
