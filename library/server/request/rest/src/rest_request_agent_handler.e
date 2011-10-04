@@ -42,7 +42,15 @@ feature -- Execution
 
 	execute (ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
 		do
-			Precursor {REQUEST_AGENT_HANDLER} (ctx, req, res)
+			if
+				authentication_required (req) and then not authenticated (ctx)
+			then
+				execute_unauthorized (ctx, req, res)
+			else
+				pre_execute (ctx, req, res)
+				Precursor {REQUEST_AGENT_HANDLER} (ctx, req, res)
+				post_execute (ctx, req, res)
+			end
 		end
 
 	execute_application (ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
