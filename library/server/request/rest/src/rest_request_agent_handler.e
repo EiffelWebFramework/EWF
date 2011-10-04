@@ -42,7 +42,7 @@ feature -- Execution
 
 	execute (ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
 		do
-			Precursor {REST_REQUEST_HANDLER} (ctx, req, res)
+			Precursor {REQUEST_AGENT_HANDLER} (ctx, req, res)
 		end
 
 	execute_application (ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
