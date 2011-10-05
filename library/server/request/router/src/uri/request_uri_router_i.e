@@ -24,9 +24,16 @@ feature -- Initialization
 feature -- Registration
 
 	map_with_request_methods (p: READABLE_STRING_8; h: H; rqst_methods: detachable ARRAY [READABLE_STRING_8])
+		local
+			l_uri: READABLE_STRING_8
 		do
-			handlers.force ([h, p, formatted_request_methods (rqst_methods)])
-			h.on_handler_mapped (p, rqst_methods)
+			if attached base_url as l_base_url then
+				l_uri := l_base_url + p
+			else
+				l_uri := p
+			end
+			handlers.force ([h, l_uri, formatted_request_methods (rqst_methods)])
+			h.on_handler_mapped (l_uri, rqst_methods)
 		end
 
 feature {NONE} -- Access: Implementation
@@ -36,9 +43,9 @@ feature {NONE} -- Access: Implementation
 			h: detachable H
 			ctx: detachable like default_handler_context
 		do
-			h := handler_by_path (req.path_info, req.request_method)
+			h := handler_by_path (source_uri (req), req.request_method)
 			if h = Void then
-				if attached smart_handler_by_path (req.path_info, req.request_method) as info then
+				if attached smart_handler_by_path (source_uri (req), req.request_method) as info then
 					h := info.handler
 					ctx := handler_context (info.path, req)
 				end
@@ -57,11 +64,11 @@ feature {NONE} -- Access: Implementation
 
 	smart_handler (req: WGI_REQUEST): detachable TUPLE [path: READABLE_STRING_8; handler: H]
 		require
-			req_valid: req /= Void and then req.path_info /= Void
+			req_valid: req /= Void and then source_uri (req) /= Void
 		do
-			Result := smart_handler_by_path (req.path_info, req.request_method)
+			Result := smart_handler_by_path (source_uri (req), req.request_method)
 		ensure
-			req_path_info_unchanged: req.path_info.same_string (old req.path_info)
+			req_path_info_unchanged: source_uri (req).same_string (old source_uri (req))
 		end
 
 	handler_by_path (a_path: READABLE_STRING_GENERAL; rqst_method: READABLE_STRING_GENERAL): detachable H
@@ -124,7 +131,7 @@ feature {NONE} -- Context factory
 			if p /= Void then
 				create ctx.make (req, p)
 			else
-				create ctx.make (req, req.path_info)
+				create ctx.make (req, source_uri (req))
 			end
 			Result := ctx
 		end

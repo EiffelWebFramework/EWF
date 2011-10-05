@@ -30,18 +30,26 @@ feature -- Registration
 		end
 
 	map_with_uri_template_and_request_methods (uri: URI_TEMPLATE; h: H; rqst_methods: detachable ARRAY [READABLE_STRING_8])
+		local
+			l_tpl: like {URI_TEMPLATE}.template
+			l_uri: URI_TEMPLATE
 		do
-			handlers.force ([h, uri.template, formatted_request_methods (rqst_methods)])
-			templates.force (uri, uri.template)
-			h.on_handler_mapped (uri.template, rqst_methods)
+			l_uri := uri
+			l_tpl := l_uri.template
+			if attached base_url as l_base_url then
+				l_uri := l_uri.duplicate
+				l_uri.set_template (l_base_url + l_tpl)
+				l_tpl := l_uri.template
+			end
+
+			handlers.force ([h, l_tpl, formatted_request_methods (rqst_methods)])
+			templates.force (l_uri, l_tpl)
+			h.on_handler_mapped (l_tpl, rqst_methods)
 		end
 
 	map_with_request_methods (tpl: READABLE_STRING_8; h: H; rqst_methods: detachable ARRAY [READABLE_STRING_8])
-		local
-			uri: URI_TEMPLATE
 		do
-			create uri.make (tpl)
-			map_with_uri_template_and_request_methods (uri, h, rqst_methods)
+			map_with_uri_template_and_request_methods (create {URI_TEMPLATE}.make (tpl), h, rqst_methods)
 		end
 
 feature {NONE} -- Access: Implementation
@@ -54,7 +62,7 @@ feature {NONE} -- Access: Implementation
 			l_req_method: READABLE_STRING_GENERAL
 			l_res: URI_TEMPLATE_MATCH_RESULT
 		do
-			p := req.path_info
+			p := source_uri (req)
 			from
 				l_req_method := req.request_method
 				l_handlers := handlers
@@ -70,7 +78,7 @@ feature {NONE} -- Access: Implementation
 							p.starts_with (t)
 						then
 							create l_res.make_empty
-							l_res.path_variables.force (p.substring (t.count, p.count), "path")
+							l_res.path_variables.force (p.substring (t.count + 1, p.count), "path")
 
 							Result := [l_info.handler, handler_context (p, req, create {URI_TEMPLATE}.make (t), l_res)]
 						elseif attached templates.item (t) as tpl and then
@@ -91,7 +99,7 @@ feature {NONE} -- Context factory
 			if p /= Void then
 				create Result.make (req, tpl, tpl_res, p)
 			else
-				create Result.make (req, tpl, tpl_res, req.path_info)
+				create Result.make (req, tpl, tpl_res, source_uri (req))
 			end
 		end
 
@@ -144,11 +152,8 @@ feature {NONE} -- Default: implementation
 		end
 
 	default_handler_context (req: WGI_REQUEST): C
-		local
-			tpl: URI_TEMPLATE
 		do
-			create tpl.make ("/")
-			Result := handler_context ("/", req, tpl, create {URI_TEMPLATE_MATCH_RESULT}.make_empty)
+			Result := handler_context (Void, req, create {URI_TEMPLATE}.make ("/"), create {URI_TEMPLATE_MATCH_RESULT}.make_empty)
 		end
 
 ;note

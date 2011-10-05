@@ -52,6 +52,17 @@ feature -- Mapping
 			end
 		end
 
+feature -- Base url
+
+	base_url: detachable READABLE_STRING_8
+			-- Common start of any route url
+
+	set_base_url (a_base_url: like base_url)
+			-- Set `base_url' to `a_base_url'
+		do
+			base_url := a_base_url
+		end
+
 feature -- Execution
 
 	dispatch (req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER): BOOLEAN
@@ -97,13 +108,19 @@ feature -- Traversing
 
 feature {NONE} -- Access: Implementation
 
+	source_uri (req: WGI_REQUEST): READABLE_STRING_32
+			-- URI to use to find handler.
+		do
+			Result := req.path_info
+		end
+
 	handler (req: WGI_REQUEST): detachable TUPLE [handler: H; context: like default_handler_context]
 			-- Handler whose map matched with `req'
 		require
-			req_valid: req /= Void and then req.path_info /= Void
+			req_valid: source_uri (req) /= Void
 		deferred
 		ensure
-			req_path_info_unchanged: req.path_info.same_string (old req.path_info)
+			source_uri_unchanged: source_uri (req).same_string (old source_uri (req))
 		end
 
 	is_matching_request_methods (a_request_method: READABLE_STRING_GENERAL; rqst_methods: like formatted_request_methods): BOOLEAN

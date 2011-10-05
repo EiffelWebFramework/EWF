@@ -23,17 +23,43 @@ inherit
 create
 	make
 
+create {URI_TEMPLATE}
+	make_from_uri_template
+
+convert
+	make ({READABLE_STRING_8})
+
 feature {NONE} -- Initialization
 
-	make (s: STRING)
+	make (s: READABLE_STRING_8)
 		do
 			template := s
 		end
 
+	make_from_uri_template (a_tpl: like Current)
+		do
+			template := a_tpl.template.string
+		end
+
 feature -- Access
 
-	template: STRING
+	template: READABLE_STRING_8
 			-- URI string representation
+
+	duplicate: like Current
+			-- Duplicate object from Current
+		do
+			create Result.make_from_uri_template (Current)
+		end
+
+feature -- Element change
+
+	set_template (t: like template)
+			-- Set `template' to `t'
+		do
+			template := t
+			reset
+		end
 
 feature -- Status report
 

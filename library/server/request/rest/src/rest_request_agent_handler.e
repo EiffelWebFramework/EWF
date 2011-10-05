@@ -9,14 +9,15 @@ class
 
 inherit
 	REQUEST_AGENT_HANDLER [C]
-		redefine
-			execute
+		rename
+			execute as execute_application
 		end
 
 	REST_REQUEST_HANDLER [C]
-		redefine
+		select
 			execute
 		end
+
 create
 	make
 
@@ -37,26 +38,6 @@ feature -- Element change
 feature {NONE} -- Implementation
 
 	internal_authentication_required: BOOLEAN
-
-feature -- Execution
-
-	execute (ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
-		do
-			if
-				authentication_required (req) and then not authenticated (ctx)
-			then
-				execute_unauthorized (ctx, req, res)
-			else
-				pre_execute (ctx, req, res)
-				Precursor {REQUEST_AGENT_HANDLER} (ctx, req, res)
-				post_execute (ctx, req, res)
-			end
-		end
-
-	execute_application (ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
-		do
-			check should_not_occur: False end
-		end
 
 ;note
 	copyright: "Copyright (c) 1984-2011, Eiffel Software and others"
