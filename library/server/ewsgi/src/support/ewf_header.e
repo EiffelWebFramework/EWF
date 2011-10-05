@@ -236,10 +236,10 @@ feature -- Redirection
 			put_header_key_value ("Location", a_location)
 		end
 
-	put_refresh (a_location: READABLE_STRING_8; a_timeout: INTEGER)
-			-- Tell the client to refresh page with `a_location' after `a_timeout' in seconds
+	put_refresh (a_location: READABLE_STRING_8; a_timeout_in_seconds: INTEGER)
+			-- Tell the client to refresh page with `a_location' after `a_timeout_in_seconds' in seconds
 		do
-			put_header_key_value ("Refresh", a_timeout.out + "; url=" + a_location)
+			put_header_key_value ("Refresh", a_timeout_in_seconds.out + "; url=" + a_location)
 		end
 
 feature -- Cookie
