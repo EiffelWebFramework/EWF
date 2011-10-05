@@ -722,6 +722,7 @@ feature -- URL Utility
 			Result := script_url (a_path)
 			if attached http_host as h then
 				Result.prepend (h)
+				Result.prepend ("http://")
 			else
 				--| Issue ??
 			end
