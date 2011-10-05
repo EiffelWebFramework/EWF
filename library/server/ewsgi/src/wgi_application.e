@@ -27,16 +27,14 @@ feature -- Execution
 
 feature -- Process request
 
-	process (req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	frozen process (req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
 			-- Process request with environment `env', and i/o streams `a_input' and `a_output'
 		local
 			rescued: BOOLEAN
 		do
 			if not rescued then
 				request_count := request_count + 1
-				pre_execute (req)
 				execute (req, res)
-				post_execute (req, res)
 			else
 				rescue_execute (req, res, (create {EXCEPTION_MANAGER}).last_exception)
 			end
@@ -52,16 +50,6 @@ feature -- Access
 
 feature {NONE} -- Execution
 
-	pre_execute (req: WGI_REQUEST)
-			-- Operation processed before `execute'
-		do
-		end
-
-	post_execute (req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
-			-- Operation processed after `execute', or after `rescue_execute'
-		do
-		end
-
 	rescue_execute (req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER; a_exception: detachable EXCEPTION)
 			-- Operation processed on rescue of `execute'
 		do
@@ -71,7 +59,6 @@ feature {NONE} -- Execution
 				res.write_header ({HTTP_STATUS_CODE}.internal_server_error, Void)
 				res.write_string ("<pre>" + l_trace + "</pre>")
 			end
-			post_execute (req, res)
 		end
 
 ;note
