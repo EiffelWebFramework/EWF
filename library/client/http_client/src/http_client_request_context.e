@@ -38,11 +38,25 @@ feature -- Access
 
 	form_data_parameters: HASH_TABLE [READABLE_STRING_32, READABLE_STRING_8]
 
+	upload_data: detachable READABLE_STRING_8
+
+	upload_filename: detachable READABLE_STRING_8
+
 feature -- Status report
 
 	has_form_data: BOOLEAN
 		do
 			Result := not form_data_parameters.is_empty
+		end
+
+	has_upload_data: BOOLEAN
+		do
+			Result := attached upload_data as d and then not d.is_empty
+		end
+
+	has_upload_filename: BOOLEAN
+		do
+			Result := attached upload_filename as fn and then not fn.is_empty
 		end
 
 feature -- Element change
@@ -60,6 +74,20 @@ feature -- Element change
 	set_credentials_required (b: BOOLEAN)
 		do
 			credentials_required := b
+		end
+
+	set_upload_data (a_data: like upload_data)
+		require
+			has_no_upload_data: not has_upload_data
+		do
+			upload_data := a_data
+		end
+
+	set_upload_filename (a_fn: like upload_filename)
+		require
+			has_no_upload_filename: not has_upload_filename
+		do
+			upload_filename := a_fn
 		end
 
 end

@@ -142,6 +142,22 @@ feature -- Execution
 					curl_easy.setopt_form (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_httppost, l_form)
 				end
 			end
+			if ctx /= Void then
+				if
+					request_method.is_case_insensitive_equal ("POST") and then
+					ctx.has_upload_data and then attached ctx.upload_data as l_upload_data
+				then
+					curl_easy.setopt_string (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_postfields, l_upload_data)
+					curl_easy.setopt_integer (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_postfieldsize, l_upload_data.count)
+				elseif
+					request_method.is_case_insensitive_equal ("PUT") and then
+					ctx.has_upload_filename and then attached ctx.upload_filename as l_upload_filename
+				then
+--					curl_easy.setopt_string (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_postfields, l_upload_data)
+--					curl_easy.setopt_integer (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_postfieldsize, l_upload_data.count)
+--| Not Yet Implemented
+				end
+			end
 
 
 			curl.global_init
