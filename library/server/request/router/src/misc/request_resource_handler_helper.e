@@ -157,13 +157,20 @@ feature -- Method Extension Method
 
 feature -- Handle responses
 
+	supported_content_types: detachable ARRAY [READABLE_STRING_8]
+			-- Supported content types
+			-- Can be redefined
+		do
+			Result := Void
+		end
+
 	handle_bad_request_response (a_description:STRING; ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER )
 		local
 			h : EWF_HEADER
 		do
 			create h.make
 			h.put_status ({HTTP_STATUS_CODE}.bad_request)
-			if attached ctx.request_content_type (Void) as l_content_type then
+			if attached ctx.request_content_type (supported_content_types) as l_content_type then
 				h.put_content_type (l_content_type)
 			else
 				h.put_content_type ("*/*")
@@ -181,10 +188,12 @@ feature -- Handle responses
 		do
 			create h.make
 			h.put_status ({HTTP_STATUS_CODE}.internal_server_error)
-			if attached ctx.request_content_type (Void) as l_content_type then
+			if attached ctx.request_content_type (supported_content_types) as l_content_type then
 				h.put_content_type (l_content_type)
 			else
 				h.put_content_type ("*/*")
+				--| FIXME: I guess it should be plain/text ,
+				--| */* sounds more for Accept header in request
 			end
 			h.put_content_length (a_description.count)
 			h.put_current_date
@@ -199,7 +208,7 @@ feature -- Handle responses
 		do
 			create h.make
 			h.put_status ({HTTP_STATUS_CODE}.not_implemented)
-			if attached ctx.request_content_type (Void) as l_content_type then
+			if attached ctx.request_content_type (supported_content_types) as l_content_type then
 				h.put_content_type (l_content_type)
 			else
 				h.put_content_type ("*/*")
@@ -217,7 +226,7 @@ feature -- Handle responses
 		do
 			create h.make
 			h.put_status ({HTTP_STATUS_CODE}.not_found)
-			if attached ctx.request_content_type (Void) as l_content_type then
+			if attached ctx.request_content_type (supported_content_types) as l_content_type then
 				h.put_content_type (l_content_type)
 			else
 				h.put_content_type ("*/*")
