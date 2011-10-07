@@ -25,11 +25,11 @@ create
     make_json
 
 convert
-	make_json ({STRING})
+	make_json ({READABLE_STRING_8, STRING_8, IMMUTABLE_STRING_8})
 
 feature {NONE} -- Initialization
 
-    make_json (an_item: STRING)
+    make_json (an_item: READABLE_STRING_8)
             -- Initialize.
         require
             item_not_void: an_item /= Void
