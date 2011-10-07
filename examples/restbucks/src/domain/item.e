@@ -84,4 +84,7 @@ invariant
 		valid_coffe : is_valid_coffee_type (name)
 		valid_customization : is_valid_milk_type (option)
 		valid_quantity :   quantity > 0
+note
+	copyright: "2011-2011, Javier Velilla and others"
+	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 end

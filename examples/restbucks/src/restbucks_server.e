@@ -16,14 +16,10 @@ inherit
 
 	DEFAULT_WGI_APPLICATION
 
-	WGI_RESPONSE_STATUS_CODES
-
-
 create
 	make
 
 feature {NONE} -- Initialization
-
 
 	make
 		do
@@ -33,7 +29,7 @@ feature {NONE} -- Initialization
 
 	create_router
 		do
-			create router.make (5)
+			create router.make (2)
 		end
 
 	setup_router
@@ -48,32 +44,31 @@ feature {NONE} -- Initialization
 feature -- Execution
 
 	execute_default (req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
-		-- I'm using this method to handle the method not allowed response
-		-- in the case that the given uri does not have a corresponding http method
-		-- to handle it.
-
+			-- I'm using this method to handle the method not allowed response
+			-- in the case that the given uri does not have a corresponding http method
+			-- to handle it.
 		local
 			h : EWF_HEADER
 			l_description : STRING
 			l_api_doc : STRING
 		do
-					if  req.content_length_value > 0 then
-						req.input.read_stream (req.content_length_value.as_integer_32)
-					end
-					create h.make
-					h.put_status (method_not_allowed)
-					h.put_content_type ("application/json")
-					l_api_doc := "%NPlease check the API%NURI:/order METHOD: POST%NURI:/order/{orderid} METHOD: GET, PUT, DELETE%N"
-					l_description := req.request_method + req.request_uri + " is not allowed" + "%N" + l_api_doc
-					h.put_content_length (l_description.count)
-					h.add_header ("Date:"+ ((create{HTTP_DATE_TIME_UTILITIES}).now_utc).formatted_out ("ddd,[0]dd mmm yyyy [0]hh:[0]mi:[0]ss.ff2") + " GMT")
-					res.set_status_code (method_not_allowed)
-					res.write_headers_string (h.string)
-					res.write_string (l_description)
+			if req.content_length_value > 0 then
+				req.input.read_stream (req.content_length_value.as_integer_32)
+			end
+			create h.make
+			h.put_status ({HTTP_STATUS_CODE}.method_not_allowed)
+			h.put_content_type_text_plain
+			l_api_doc := "%NPlease check the API%NURI:/order METHOD: POST%NURI:/order/{orderid} METHOD: GET, PUT, DELETE%N"
+			l_description := req.request_method + req.request_uri + " is not allowed" + "%N" + l_api_doc
+			h.put_content_length (l_description.count)
+			h.put_current_date
+			res.set_status_code ({HTTP_STATUS_CODE}.method_not_allowed)
+			res.write_headers_string (h.string)
+			res.write_string (l_description)
 		end
 
 note
-	copyright: "2011-2011, Eiffel Software and others"
+	copyright: "2011-2011, Javier Velilla and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

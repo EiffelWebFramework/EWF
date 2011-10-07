@@ -6,9 +6,14 @@ note
 
 class
 	SHARED_DATABASE_API
-feature
+
+feature -- Access
+
 	db_access: DATABASE_API
 		once
 			create Result.make
 		end
+note
+	copyright: "2011-2011, Javier Velilla and others"
+	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 end

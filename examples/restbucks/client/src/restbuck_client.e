@@ -18,6 +18,8 @@ feature {NONE} -- Initialization
 			h: LIBCURL_HTTP_CLIENT
 			sess: HTTP_CLIENT_SESSION
 			s: READABLE_STRING_8
+			j: JSON_PARSER
+			id: detachable STRING
 		do
 			create h.make
 			sess := h.new_session ("http://127.0.0.1")
@@ -36,11 +38,23 @@ feature {NONE} -- Initialization
 				]"
 
 			if attached sess.post ("/order", Void, s) as r then
-				print (r.body)
+				if attached r.body as m then
+					create j.make_parser (m)
+
+					if j.is_parsed and attached j.parse_object as j_o then
+						if attached {JSON_STRING} j_o.item ("id") as l_id then
+							id := l_id.item
+						end
+						print (m)
+						io.put_new_line
+
+					end
+				end
 			end
 
-			if attached sess.get ("/order/1", Void) as r then
+			if id /= Void and then attached sess.get ("/order/" + id, Void) as r then
 				print (r.body)
+				io.put_new_line
 			end
 		end
 

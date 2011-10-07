@@ -12,14 +12,14 @@ feature -- Initialization
 
 	make ( an_id : detachable STRING_32; a_location: detachable STRING_32; a_status: detachable STRING_32)
 		do
-			create {ARRAYED_LIST[ITEM]}items.make (10)
+			create {ARRAYED_LIST [ITEM]} items.make (10)
 			if an_id /= Void then
-				set_id(an_id)
+				set_id (an_id)
 			else
 				set_id ("")
 			end
 			if a_location /= Void then
-				set_location(a_location)
+				set_location (a_location)
 			else
 				set_location ("")
 			end
@@ -40,6 +40,7 @@ feature -- Access
 	revision : INTEGER
 
 feature -- element change
+
 	set_id (an_id : STRING_32)
 		do
 			id := an_id
@@ -61,7 +62,6 @@ feature -- element change
 			status_asigned : status.same_string (a_status)
 		end
 
-
 	add_item (a_item : ITEM)
 		require
 			valid_item:  a_item /= Void
@@ -70,7 +70,6 @@ feature -- element change
 		ensure
 			has_item : items.has (a_item)
 		end
-
 
 	add_revision
 		do
@@ -82,7 +81,7 @@ feature -- element change
 feature -- Etag
 
 	etag : STRING_32
-		-- Etag generation for Order objects
+			-- Etag generation for Order objects
 		do
 			Result := hash_code.out + revision.out
 		end
@@ -106,4 +105,7 @@ feature -- Report
             end
         end
 
+note
+	copyright: "2011-2011, Javier Velilla and others"
+	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 end

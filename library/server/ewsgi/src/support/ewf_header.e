@@ -207,6 +207,23 @@ feature -- Content related header
 
 feature -- Others
 
+	put_date (s: READABLE_STRING_8)
+		do
+			put_header_key_value ("Date", s)
+		end
+
+	put_current_date
+			-- Put current date time with "Date" header
+		do
+			put_utc_date (create {DATE_TIME}.make_now_utc)
+		end
+
+	put_utc_date (dt: DATE_TIME)
+			-- Put UTC date time `dt' with "Date" header
+		do
+			put_date (dt.formatted_out ("ddd,[0]dd mmm yyyy [0]hh:[0]mi:[0]ss.ff2") + " GMT")
+		end
+
 	put_expires (n: INTEGER)
 		do
 			put_header_key_value ("Expires", n.out)

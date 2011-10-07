@@ -11,6 +11,7 @@
 		</option>
 		<setting name="concurrency" value="thread"/>
 		<library name="http_client" location="..\..\..\library\client\http_client\http_client.ecf"/>
+		<library name="json" location="..\..\..\ext\text\json\library\json.ecf" readonly="false"/>
 		<library name="base" location="$ISE_LIBRARY/library/base/base.ecf"/>
 		<library name="thread" location="$ISE_LIBRARY/library/thread/thread.ecf"/>
 		<cluster name="src" location="./src" recursive="true"/>
