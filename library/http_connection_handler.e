@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 note
 	description: "Summary description for {HTTP_CONNECTION_HANDLER}."
 	author: ""
