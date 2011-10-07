@@ -14,25 +14,26 @@ feature -- Execute template
 		local
 			m: READABLE_STRING_8
 		do
-			m := req.request_method
-			if m.same_string ("GET") then
+			m := req.request_method.as_upper
+			if     m.same_string ("GET") then
 				execute_get (ctx, req, res)
-			elseif m.same_string ("PUT")  then
+			elseif m.same_string ("PUT") then
 				execute_put (ctx, req, res)
-			elseif m.same_string ("DELETE")  then
+			elseif m.same_string ("DELETE") then
 				execute_delete (ctx, req, res)
-			elseif m.same_string ("POST")  then
+			elseif m.same_string ("POST") then
 				execute_post (ctx, req, res)
-			elseif m.same_string ("TRACE")  then
+			elseif m.same_string ("TRACE") then
 				execute_trace (ctx, req, res)
-			elseif m.same_string ("OPTIONS")  then
+			elseif m.same_string ("OPTIONS") then
 				execute_options (ctx, req, res)
-			elseif m.same_string ("HEAD")  then
+			elseif m.same_string ("HEAD") then
 				execute_head (ctx, req, res)
-			elseif m.same_string ("CONNECT")  then
+			elseif m.same_string ("CONNECT") then
 				execute_connect (ctx, req, res)
 			else
-				--| Eventually handle other methods...
+					--| Eventually handle other methods...
+				execute_extension_method (ctx, req, res)
 			end
 		rescue
 			handle_internal_server_error ("Internal Server Error", ctx, req, res)
@@ -151,7 +152,7 @@ feature -- Method Extension Method
 
 	do_extension_method (ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
 		do
-			handle_not_implemented ("Method EXTENSION method not implemented", ctx, req, res)
+			handle_not_implemented ("Method extension-method not implemented", ctx, req, res)
 		end
 
 feature -- Handle responses
