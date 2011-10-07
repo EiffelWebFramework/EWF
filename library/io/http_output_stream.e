@@ -26,5 +26,8 @@ feature -- Basic operation
 		do
 			target.put_string (s)
 		end
-		
+
+note
+	copyright: "2011-2011, Javier Velilla and others"
+	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 end

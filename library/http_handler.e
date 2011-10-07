@@ -121,4 +121,7 @@ feature -- Execution
 invariant
 	main_server_attached: main_server /= Void
 
+note
+	copyright: "2011-2011, Javier Velilla and others"
+	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 end
