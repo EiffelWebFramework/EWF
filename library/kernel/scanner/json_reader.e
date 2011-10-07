@@ -25,7 +25,7 @@ feature -- Commands
         do
         	a_json.left_adjust
         	a_json.right_adjust
-		representation := a_json
+			representation := a_json
             index := 1
         end
 

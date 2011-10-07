@@ -8,7 +8,7 @@ note
 class EJSON
 
 inherit
-    {NONE} EXCEPTIONS
+    EXCEPTIONS
 
 feature -- Access
 
@@ -91,8 +91,6 @@ feature -- Access
             ll: LINKED_LIST [detachable ANY]
             t: HASH_TABLE [detachable ANY, STRING_GENERAL]
             keys: ARRAY [JSON_STRING]
-            s32: STRING_32
-            s: detachable STRING_GENERAL
         do
 			if a_value = Void then
 				Result := Void
@@ -119,8 +117,7 @@ feature -- Access
 	                        Result := jn.item.to_double
 	                    end
 	                elseif attached {JSON_STRING} a_value as js then
-	                    create s32.make_from_string (js.item)
-	                    Result := s32
+	                    create {STRING_32} Result.make_from_string (js.item)
 	                elseif attached {JSON_ARRAY} a_value as ja then
 	                    from
 	                        create ll.make
@@ -140,9 +137,9 @@ feature -- Access
 	                    until
 	                        i > keys.upper
 	                    loop
-	                        s ?= object (keys [i], Void)
-	                        check s /= Void end
-	                        t.put (object (jo.item (keys [i]), Void), s)
+	                        if attached {STRING_GENERAL} object (keys [i], Void) as s then
+		                        t.put (object (jo.item (keys [i]), Void), s)
+		                    end
 	                        i := i + 1
 	                    end
 	                    Result := t
@@ -266,47 +263,6 @@ feature {NONE} -- Implementation (JSON parser)
     json_parser: JSON_PARSER
         once
             create Result.make_parser ("")
-        end
-
-feature {NONE} -- Implementation (Basic Eiffel objects)
-
-    a_boolean: BOOLEAN
-
-    an_integer_8: INTEGER_8
-
-    an_integer_16: INTEGER_16
-
-    an_integer_32: INTEGER_32
-
-    an_integer_64: INTEGER_64
-
-    a_natural_8: NATURAL_8
-
-    a_natural_16: NATURAL_16
-
-    a_natural_32: NATURAL_32
-
-    a_natural_64: NATURAL_64
-
-    a_real_32: REAL_32
-
-    a_real_64: REAL_64
-
-    an_array: ARRAY [ANY]
-        once
-            Result := <<>>
-        end
-
-    a_character: CHARACTER
-
-    a_string_8: STRING_8
-        once
-            Result := ""
-        end
-
-    a_string_32: STRING_32
-        once
-			Result := {STRING_32} ""
         end
 
 end -- class EJSON

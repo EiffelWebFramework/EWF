@@ -24,6 +24,9 @@ inherit
 create
     make_json
 
+convert
+	make_json ({STRING})
+
 feature {NONE} -- Initialization
 
     make_json (an_item: STRING)
@@ -45,7 +48,7 @@ feature -- Access
             Result.append (item)
             Result.append_character ('%"')
         end
-        
+
 feature -- Visitor pattern
 
     accept (a_visitor: JSON_VISITOR)
@@ -92,7 +95,7 @@ feature -- Status report
 
 feature {NONE} -- Implementation
 
-    escaped_json_string (s: STRING): STRING
+    escaped_json_string (s: READABLE_STRING_8): STRING
             -- JSON string with '"' and '\' characters escaped
         require
             s_not_void: s /= Void
@@ -101,7 +104,7 @@ feature {NONE} -- Implementation
             Result.replace_substring_all ("\", "\\")
             Result.replace_substring_all ("%"", "\%"")
         end
-    
+
 invariant
     value_not_void: item /= Void
 
