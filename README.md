@@ -7,11 +7,11 @@ For more information please have a look at the related wiki:
 How to get the source code?
 ---------------------------
 
-   git clone https://github.com/Eiffel-World/Eiffel-Web-Framework.git
-   cd Eiffel-Web-Framework
-   git submodule update --init
-   git submodule foreach git pull origin master
-   git submodule foreach git checkout master
+* git clone https://github.com/Eiffel-World/Eiffel-Web-Framework.git
+* cd Eiffel-Web-Framework
+* git submodule update --init
+* git submodule foreach git pull origin master
+* git submodule foreach git checkout master
 
 Overview
 --------
