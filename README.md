@@ -13,6 +13,10 @@ How to get the source code?
 * git submodule foreach git pull origin master
 * git submodule foreach git checkout master
 
+* And to build the required and related Clibs
+** cd ext/ise_library/curl
+** geant compile
+
 Overview
 --------
 
