@@ -41,40 +41,38 @@ feature -- HTTP Methods
 			-- If the GET request is not SUCCESS, we response with
 			-- 404 Resource not found
 		local
-			joc : JSON_ORDER_CONVERTER
-			l_order : detachable ORDER
-			jv : detachable JSON_VALUE
 			id :  STRING
-			uri : LIST [READABLE_STRING_32]
-			h : EWF_HEADER
 		do
 			if attached req.orig_path_info as orig_path then
-				uri := orig_path.split ('/')
-				id := uri.at (3)
-				create joc.make
-				json.add_converter(joc)
-				if db_access.orders.has_key (id) then
-					l_order := db_access.orders.item (id)
-					jv ?= json.value (l_order)
-					if attached jv as j then
-						create h.make
-						h.put_status ({HTTP_STATUS_CODE}.ok)
-						h.put_content_type ("application/json")
-						if attached req.request_time as time then
-							h.add_header ("Date:" +time.formatted_out ("ddd,[0]dd mmm yyyy [0]hh:[0]mi:[0]ss.ff2") + " GMT")
-						end
-						if l_order /= Void then
-							h.add_header ("Etag: " + l_order.etag)
-						end
-						res.set_status_code ({HTTP_STATUS_CODE}.ok)
-						res.write_headers_string (h.string)
-						res.write_string (j.representation)
-					end
+				id := get_order_id_from_path (orig_path)
+				if attached retrieve_order (id) as l_order then
+					compute_response_get (ctx, req, res, l_order)
 				else
 					handle_resource_not_found_response ("The following resource" + orig_path + " is not found ", ctx, req, res)
 				end
 			end
 		end
+
+	compute_response_get (ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER; l_order : ORDER)
+		local
+			h: EWF_HEADER
+			l_msg : STRING
+		do
+			create h.make
+			h.put_status ({HTTP_STATUS_CODE}.ok)
+			h.put_content_type_application_json
+			if attached {JSON_VALUE} json.value (l_order) as jv then
+				l_msg := jv.representation
+				h.put_content_length (l_msg.count)
+				if attached req.request_time as time then
+					h.add_header ("Date:" + time.formatted_out ("ddd,[0]dd mmm yyyy [0]hh:[0]mi:[0]ss.ff2") + " GMT")
+				end
+				res.set_status_code ({HTTP_STATUS_CODE}.ok)
+				res.write_headers_string (h.string)
+				res.write_string (l_msg)
+			end
+		end
+
 
 	do_put (ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
 		local
@@ -118,15 +116,13 @@ feature -- HTTP Methods
 
 	do_delete (ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
 		local
-			uri: LIST [READABLE_STRING_32]
 			id: STRING
 			h : EWF_HEADER
 		do
 			fixme ("TODO handle an Internal Server Error")
 			fixme ("Refactor the code, create new abstractions")
 			if  attached req.orig_path_info as orig_path then
-				uri := orig_path.split ('/')
-				id := uri.at (3)
+				id := get_order_id_from_path (orig_path)
 				if  db_access.orders.has_key (id) then
 					delete_order( id)
 					create h.make
@@ -148,7 +144,7 @@ feature -- HTTP Methods
 			-- POST is used for creation and the server determines the URI
 			-- of the created resource.
 			-- If the request post is SUCCESS, the server will create the order and will response with
-			-- HTTP_RESPONSE 201 CREATED
+			-- HTTP_RESPONSE 201 CREATED, the Location header will contains the newly created order's URI
 			-- if the request post is not SUCCESS, the server will response with
 			-- HTTP_RESPONSE 400 BAD REQUEST, the client send a bad request
 			-- HTTP_RESPONSE 500 INTERNAL_SERVER_ERROR, when the server can deliver the request
@@ -170,8 +166,13 @@ feature -- HTTP Methods
 			h: EWF_HEADER
 			l_msg : STRING
 			l_location :  STRING
+			joc : JSON_ORDER_CONVERTER
 		do
 			create h.make
+
+			create joc.make
+			json.add_converter(joc)
+
 			h.put_status ({HTTP_STATUS_CODE}.created)
 			h.put_content_type_application_json
 			if attached {JSON_VALUE} json.value (l_order) as jv then
@@ -190,7 +191,20 @@ feature -- HTTP Methods
 			end
 		end
 
+feature {NONE} -- URI helper methods
+
+	get_order_id_from_path ( a_path: READABLE_STRING_32) : STRING
+		do
+				Result := a_path.split ('/').at(3)
+		end
+
 feature {NONE} -- Implementation Repository Layer
+
+	retrieve_order ( id : STRING) : detachable ORDER
+		-- get the order by id if it exist, in other case, Void
+		do
+			Result := db_access.orders.item (id)
+		end
 
 	save_order (an_order: ORDER)
 			-- save the order to the repository
@@ -227,8 +241,8 @@ feature {NONE} -- Implementation Repository Layer
 			-- extract an object Order from the request, or Void
 			-- if the request is invalid
 		local
-			joc : JSON_ORDER_CONVERTER
 			parser : JSON_PARSER
+			joc : JSON_ORDER_CONVERTER
 		do
 			create joc.make
 			json.add_converter(joc)
