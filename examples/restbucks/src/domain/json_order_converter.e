@@ -6,36 +6,30 @@
 
 class
 	JSON_ORDER_CONVERTER
-
 inherit
 	JSON_CONVERTER
-
 create
 	make
-
 feature -- Initialization
-
 	make
 		do
-			create object.make ("", "", "")
+			create object.make ("","","")
 		end
-
 feature	 -- Access
+	 object : ORDER
 
-	 object: ORDER
 
-	 value: detachable JSON_OBJECT
-
+	 value : detachable JSON_OBJECT
 feature -- Conversion
 
-	from_json (j: attached like value): detachable like object
+	from_json (j: attached  like value): detachable like object
             -- Convert from JSON value. Returns Void if unable to convert
        local
             s_id, s_location, s_status: detachable STRING_32
             q: INTEGER_8
             o: ORDER
             i : ITEM
-            l_array : detachable LIST [JSON_VALUE]
+            l_array : detachable ARRAYED_LIST [JSON_VALUE]
             is_valid_from_json : BOOLEAN
         do
             is_valid_from_json := True
@@ -105,7 +99,7 @@ feature -- Conversion
             	i := o.items.item_for_iteration
             	create jv.make
             	jv.put (json.value (i.name), name_key)
-            	jv.put (json.value (i.size), size_key)
+            	jv.put (json.value (i.size),size_key)
             	jv.put (json.value (i.quantity), quantity_key)
             	jv.put (json.value (i.option), option_key)
             	ja.add (jv)
@@ -115,7 +109,6 @@ feature -- Conversion
         end
 
  feature {NONE} -- Implementation
-
 	id_key: JSON_STRING
         once
             create Result.make_json ("id")
@@ -155,12 +148,12 @@ feature -- Conversion
     		create Result.make_json ("quantity")
     	end
 
+
     option_key : JSON_STRING
 
     	once
     		create Result.make_json ("option")
     	end
-
 feature -- Validation
 
 	is_valid_item_customization ( name :  STRING_32; size: STRING_32; option :  STRING_32; quantity :  INTEGER_8  ) : BOOLEAN
