@@ -10,7 +10,7 @@
 		<option warning="true" full_class_checking="true" void_safety="none" syntax="provisional">
 		</option>
 		<library name="base" location="$ISE_LIBRARY/library/base/base.ecf"/>
-		<library name="cURL" location="../../../ext/ise_library/curl/curl.ecf"/>
+		<library name="cURL" location="../../../ext/ise_library/curl.ecf"/>
 		<library name="encoder" location="../../text/encoder/encoder.ecf"/>
 		<cluster name="src" location=".\src\" recursive="true"/>
 	</target>
