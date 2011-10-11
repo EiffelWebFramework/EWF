@@ -31,7 +31,7 @@ feature -- Conversion
 	from_json (j: attached like value): detachable like object
             -- Convert from JSON value. Returns Void if unable to convert
        local
-            s_name, s_key, s_option: detachable STRING_32
+            s_id, s_location, s_status: detachable STRING_32
             q: INTEGER_8
             o: ORDER
             i : ITEM
@@ -40,11 +40,11 @@ feature -- Conversion
         do
             is_valid_from_json := True
 
-            s_name   ?= json.object (j.item (id_key), Void)
-            s_key    ?= json.object (j.item (location_key), Void)
-            s_option ?= json.object (j.item (status_key), Void)
+            s_id   ?= json.object (j.item (id_key), Void)
+            s_location ?= json.object (j.item (location_key), Void)
+            s_status ?= json.object (j.item (status_key), Void)
 
-         	create o.make (s_name, s_key, s_option)
+         	create o.make (s_id, s_location, s_status)
 
 			if attached {JSON_ARRAY} j.item (items_key) as l_val then
 				l_array := l_val.array_representation
@@ -59,12 +59,11 @@ feature -- Conversion
 						else
 							q := 0
 						end
-
-						s_name   ?= json.object (jv.item (id_key), Void)
-						s_key    ?= json.object (jv.item (location_key), Void)
-						s_option ?= json.object (jv.item (status_key), Void)
-
-						if s_name /= Void and s_key /= Void and s_option /= Void then
+						if
+							attached {STRING_32} json.object (jv.item (name_key), Void) as s_name and then
+						  	attached {STRING_32} json.object (jv.item (size_key), Void) as s_key and then
+						  	attached {STRING_32} json.object (jv.item (option_key), Void) as s_option
+						  then
 							if is_valid_item_customization (s_name, s_key, s_option,q) then
 								create i.make (s_name, s_key, s_option, q)
 								o.add_item (i)
