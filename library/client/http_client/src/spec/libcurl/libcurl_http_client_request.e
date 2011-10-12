@@ -124,41 +124,37 @@ feature -- Execution
 			end
 
 			if ctx /= Void and then ctx.has_form_data then
-				if attached ctx.form_data_parameters as l_posts and then not l_posts.is_empty then
+				if attached ctx.form_parameters as l_forms and then not l_forms.is_empty then
 --					curl_easy.set_debug_function (curl_handle)
 --					curl_easy.setopt_integer (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_verbose, 1)
 
 					create l_form.make
 					create l_last.make
 					from
-						l_posts.start
+						l_forms.start
 					until
-						l_posts.after
+						l_forms.after
 					loop
-						curl.formadd_string_string (l_form, l_last, {CURL_FORM_CONSTANTS}.CURLFORM_COPYNAME, l_posts.key_for_iteration, {CURL_FORM_CONSTANTS}.CURLFORM_COPYCONTENTS, l_posts.item_for_iteration, {CURL_FORM_CONSTANTS}.CURLFORM_END)
-						l_posts.forth
+						curl.formadd_string_string (l_form, l_last, {CURL_FORM_CONSTANTS}.CURLFORM_COPYNAME, l_forms.key_for_iteration, {CURL_FORM_CONSTANTS}.CURLFORM_COPYCONTENTS, l_forms.item_for_iteration, {CURL_FORM_CONSTANTS}.CURLFORM_END)
+						l_forms.forth
 					end
 					l_last.release_item
 					curl_easy.setopt_form (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_httppost, l_form)
 				end
 			end
 			if ctx /= Void then
-				if
-					request_method.is_case_insensitive_equal ("POST") and then
-					ctx.has_upload_data and then attached ctx.upload_data as l_upload_data
-				then
-					curl_easy.setopt_string (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_postfields, l_upload_data)
-					curl_easy.setopt_integer (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_postfieldsize, l_upload_data.count)
-				elseif
-					request_method.is_case_insensitive_equal ("PUT") and then
-					ctx.has_upload_filename and then attached ctx.upload_filename as l_upload_filename
-				then
---					curl_easy.setopt_string (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_postfields, l_upload_data)
---					curl_easy.setopt_integer (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_postfieldsize, l_upload_data.count)
+				if request_method.is_case_insensitive_equal ("POST") or request_method.is_case_insensitive_equal ("PUT") then
+					if ctx.has_upload_data and then attached ctx.upload_data as l_upload_data then
+						curl_easy.setopt_string (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_postfields, l_upload_data)
+						curl_easy.setopt_integer (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_postfieldsize, l_upload_data.count)
+					end
+					if ctx.has_upload_filename and then attached ctx.upload_filename as l_upload_filename then
+--						curl_easy.setopt_string (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_postfields, l_upload_data)
+--						curl_easy.setopt_integer (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_postfieldsize, l_upload_data.count)
 --| Not Yet Implemented
+					end
 				end
 			end
-
 
 			curl.global_init
 			if attached headers as l_headers then

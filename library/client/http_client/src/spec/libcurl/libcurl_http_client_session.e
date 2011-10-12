@@ -39,23 +39,55 @@ feature -- Basic operation
 			Result := execute_request (req, ctx)
 		end
 
-	post (a_path: READABLE_STRING_8; a_ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT; a_data: detachable READABLE_STRING_8): HTTP_CLIENT_RESPONSE
+	post (a_path: READABLE_STRING_8; a_ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT; data: detachable READABLE_STRING_8): HTTP_CLIENT_RESPONSE
+		do
+			Result := post_multipart (a_path, a_ctx, data, Void)
+		end
+
+	post_file (a_path: READABLE_STRING_8; a_ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT; fn: detachable READABLE_STRING_8): HTTP_CLIENT_RESPONSE
+		do
+			Result := post_multipart (a_path, a_ctx, Void, fn)
+		end
+
+	post_multipart (a_path: READABLE_STRING_8; a_ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT; data: detachable READABLE_STRING_8; fn: detachable READABLE_STRING_8): HTTP_CLIENT_RESPONSE
 		local
 			req: HTTP_CLIENT_REQUEST
 			ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT
 		do
 			create {LIBCURL_HTTP_CLIENT_REQUEST} req.make (base_url + a_path, "POST", Current)
 			ctx := a_ctx
-			if a_data /= Void then
+			if data /= Void then
 				if ctx = Void then
 					create ctx.make
 				end
-				ctx.set_upload_data (a_data)
+				ctx.set_upload_data (data)
+			end
+			if fn /= Void then
+				if ctx = Void then
+					create ctx.make
+				end
+				ctx.set_upload_filename (fn)
 			end
 			Result := execute_request (req, ctx)
 		end
 
-	put (a_path: READABLE_STRING_8; a_ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT; fn: detachable READABLE_STRING_8): HTTP_CLIENT_RESPONSE
+	put (a_path: READABLE_STRING_8; a_ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT; data: detachable READABLE_STRING_8): HTTP_CLIENT_RESPONSE
+		local
+			req: HTTP_CLIENT_REQUEST
+			ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT
+		do
+			create {LIBCURL_HTTP_CLIENT_REQUEST} req.make (base_url + a_path, "PUT", Current)
+			ctx := a_ctx
+			if data /= Void then
+				if ctx = Void then
+					create ctx.make
+				end
+				ctx.set_upload_data (data)
+			end
+			Result := execute_request (req, ctx)
+		end
+
+	put_file (a_path: READABLE_STRING_8; a_ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT; fn: detachable READABLE_STRING_8): HTTP_CLIENT_RESPONSE
 		local
 			req: HTTP_CLIENT_REQUEST
 			ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT

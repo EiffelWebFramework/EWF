@@ -17,7 +17,7 @@ feature {NONE} -- Initialization
 		do
 			create headers.make (2)
 			create query_parameters.make (5)
-			create form_data_parameters.make (10)
+			create form_parameters.make (10)
 		end
 
 	make_with_credentials_required
@@ -36,7 +36,7 @@ feature -- Access
 
 	query_parameters: HASH_TABLE [READABLE_STRING_32, READABLE_STRING_8]
 
-	form_data_parameters: HASH_TABLE [READABLE_STRING_32, READABLE_STRING_8]
+	form_parameters: HASH_TABLE [READABLE_STRING_32, READABLE_STRING_8]
 
 	upload_data: detachable READABLE_STRING_8
 
@@ -46,7 +46,7 @@ feature -- Status report
 
 	has_form_data: BOOLEAN
 		do
-			Result := not form_data_parameters.is_empty
+			Result := not form_parameters.is_empty
 		end
 
 	has_upload_data: BOOLEAN
@@ -66,9 +66,9 @@ feature -- Element change
 			query_parameters.force (v, k)
 		end
 
-	add_form_data_parameter (k: READABLE_STRING_8; v: READABLE_STRING_32)
+	add_form_parameter (k: READABLE_STRING_8; v: READABLE_STRING_32)
 		do
-			form_data_parameters.force (v, k)
+			form_parameters.force (v, k)
 		end
 
 	set_credentials_required (b: BOOLEAN)
