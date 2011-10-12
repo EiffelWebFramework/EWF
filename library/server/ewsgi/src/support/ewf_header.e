@@ -1,8 +1,18 @@
 note
 	description: "[
-			Summary description for {EWF_HEADER}.
-
+			The class provides an easy way to build HTTP header.
+			
+			You will also find some helper feature to help coding most common usage
+			
+			Please, have a look at constants classes such as
+				HTTP_MIME_TYPES
+				HTTP_HEADER_NAMES
+				HTTP_STATUS_CODE
+				HTTP_REQUEST_METHODS
+			(or HTTP_CONSTANTS which groups them for convenience)
+			
 			Note the return status code is not part of the HTTP header
+			However you can set the "Status: " header line if you want
 		]"
 	legal: "See notice at end of class."
 	status: "See notice at end of class."
@@ -15,25 +25,33 @@ class
 inherit
 	ANY
 
-	HTTP_STATUS_CODE_MESSAGES
+	HTTP_STATUS_CODE_MESSAGES --| useful for `put_status'
 		export
 			{NONE} all
 		end
 
 create
-	make
+	make,
+	make_with_count
 
 feature {NONE} -- Initialization
 
 	make
 			-- Initialize current
 		do
-			create {ARRAYED_LIST [READABLE_STRING_8]} headers.make (3)
+			make_with_count (3)
+		end
+
+	make_with_count (n: INTEGER)
+			-- Make with a capacity of `n' header entries
+		do
+			create {ARRAYED_LIST [READABLE_STRING_8]} headers.make (n)
 		end
 
 feature -- Recycle
 
 	recycle
+			-- Recycle current object
 		do
 			headers.wipe_out
 		end
@@ -68,12 +86,19 @@ feature -- Access
 feature -- Header change: general
 
 	add_header (h: READABLE_STRING_8)
+			-- Add header `h'
+			-- if it already exists, there will be multiple header with same name
+			-- which can also be valid
+		require
+			h_not_empty: not h.is_empty
 		do
 			headers.force (h)
 		end
 
 	put_header (h: READABLE_STRING_8)
 			-- Add header `h' or replace existing header of same header name
+		require
+			h_not_empty: not h.is_empty
 		do
 			force_header_by_name (header_name (h), h)
 		end
@@ -90,9 +115,11 @@ feature -- Header change: general
 			put_header (k + colon_space + v)
 		end
 
-feature -- Content related header
+feature -- Status related
 
 	put_status (c: INTEGER)
+			-- Put "Status: " header
+			-- Rarely used
 		local
 			s: STRING
 		do
@@ -104,58 +131,33 @@ feature -- Content related header
 			put_header_key_value ("Status", s)
 		end
 
+feature -- Content related header
+
 	put_content_type (t: READABLE_STRING_8)
 		do
-			put_header_key_value (name_content_type, t)
+			put_header_key_value ({HTTP_HEADER_NAMES}.header_content_type, t)
 		end
 
 	add_content_type (t: READABLE_STRING_8)
 			-- same as `put_content_type', but allow multiple definition of "Content-Type"
 		do
-			add_header_key_value (name_content_type, t)
+			add_header_key_value ({HTTP_HEADER_NAMES}.header_content_type, t)
 		end
 
 	put_content_type_with_name (t: READABLE_STRING_8; n: READABLE_STRING_8)
 		do
-			put_header_key_value (name_content_type, t + "; name=%"" + n + "%"")
+			put_header_key_value ({HTTP_HEADER_NAMES}.header_content_type, t + "; name=%"" + n + "%"")
 		end
 
 	add_content_type_with_name (t: READABLE_STRING_8; n: READABLE_STRING_8)
 			-- same as `put_content_type_with_name', but allow multiple definition of "Content-Type"	
 		do
-			add_header_key_value (name_content_type, t + "; name=%"" + n + "%"")
+			add_header_key_value ({HTTP_HEADER_NAMES}.header_content_type, t + "; name=%"" + n + "%"")
 		end
-
-	put_content_type_text_css				do put_content_type ("text/css") end
-	put_content_type_text_csv				do put_content_type ("text/csv") end
-	put_content_type_text_html				do put_content_type ("text/html") end
-	put_content_type_text_javascript		do put_content_type ("text/javascript") end
-	put_content_type_text_json				do put_content_type ("text/json") end
-	put_content_type_text_plain				do put_content_type ("text/plain") end
-	put_content_type_text_xml				do put_content_type ("text/xml") end
-
-	put_content_type_application_json		do put_content_type ("application/json") end
-	put_content_type_application_javascript	do put_content_type ("application/javascript") end
-	put_content_type_application_zip		do put_content_type ("application/zip")	end
-
-	put_content_type_image_gif				do put_content_type ("image/gif") end
-	put_content_type_image_png				do put_content_type ("image/png") end
-	put_content_type_image_jpg				do put_content_type ("image/jpg") end
-	put_content_type_image_svg_xml			do put_content_type ("image/svg+xml") end
-
-	put_content_type_message_http			do put_content_type ("message/http") end
-
-	put_content_type_multipart_mixed		do put_content_type ("multipart/mixed") end
-	put_content_type_multipart_alternative	do put_content_type ("multipart/alternative") end
-	put_content_type_multipart_related		do put_content_type ("multipart/related") end
-	put_content_type_multipart_form_data	do put_content_type ("multipart/form-data") end
-	put_content_type_multipart_signed		do put_content_type ("multipart/signed") end
-	put_content_type_multipart_encrypted	do put_content_type ("multipart/encrypted") end
-
 
 	put_content_length (n: INTEGER)
 		do
-			put_header_key_value (name_content_length, n.out)
+			put_header_key_value ({HTTP_HEADER_NAMES}.header_content_length, n.out)
 		end
 
 	put_content_transfer_encoding (a_mechanism: READABLE_STRING_8)
@@ -170,7 +172,19 @@ feature -- Content related header
 			--|                  / x-token
 
 		do
-			put_header_key_value ("Content-Transfer-Encoding", a_mechanism)
+			put_header_key_value ({HTTP_HEADER_NAMES}.header_content_transfer_encoding, a_mechanism)
+		end
+
+	put_transfer_encoding (a_enc: READABLE_STRING_8)
+			-- Put "Transfer-Encoding" header with for instance "chunked"
+		do
+			put_header_key_value ({HTTP_HEADER_NAMES}.header_transfer_encoding, a_enc)
+		end
+
+	put_transfer_encoding_chunked
+			-- Put "Transfer-Encoding: chunked" header
+		do
+			put_transfer_encoding ("chunked")
 		end
 
 	put_content_disposition (a_type: READABLE_STRING_8; a_params: detachable READABLE_STRING_8)
@@ -199,17 +213,46 @@ feature -- Content related header
 			--|                      ; numeric timezones (+HHMM or -HHMM) MUST be used
 		do
 			if a_params /= Void then
-				put_header_key_value ("Content-Disposition", a_type + "; " + a_params)
+				put_header_key_value ({HTTP_HEADER_NAMES}.header_content_disposition, a_type + semi_colon_space + a_params)
 			else
-				put_header_key_value ("Content-Disposition", a_type)
+				put_header_key_value ({HTTP_HEADER_NAMES}.header_content_disposition, a_type)
 			end
 		end
 
-feature -- Others
+feature -- Content-type helpers
+
+	put_content_type_text_css				do put_content_type ({HTTP_MIME_TYPES}.text_css) end
+	put_content_type_text_csv				do put_content_type ({HTTP_MIME_TYPES}.text_csv) end
+	put_content_type_text_html				do put_content_type ({HTTP_MIME_TYPES}.text_html) end
+	put_content_type_text_javascript		do put_content_type ({HTTP_MIME_TYPES}.text_javascript) end
+	put_content_type_text_json				do put_content_type ({HTTP_MIME_TYPES}.text_json) end
+	put_content_type_text_plain				do put_content_type ({HTTP_MIME_TYPES}.text_plain) end
+	put_content_type_text_xml				do put_content_type ({HTTP_MIME_TYPES}.text_xml) end
+
+	put_content_type_application_json		do put_content_type ({HTTP_MIME_TYPES}.application_json) end
+	put_content_type_application_javascript	do put_content_type ({HTTP_MIME_TYPES}.application_javascript) end
+	put_content_type_application_zip		do put_content_type ({HTTP_MIME_TYPES}.application_zip)	end
+
+	put_content_type_image_gif				do put_content_type ({HTTP_MIME_TYPES}.image_gif) end
+	put_content_type_image_png				do put_content_type ({HTTP_MIME_TYPES}.image_png) end
+	put_content_type_image_jpg				do put_content_type ({HTTP_MIME_TYPES}.image_jpg) end
+	put_content_type_image_svg_xml			do put_content_type ({HTTP_MIME_TYPES}.image_svg_xml) end
+
+	put_content_type_message_http			do put_content_type ({HTTP_MIME_TYPES}.message_http) end
+
+	put_content_type_multipart_mixed		do put_content_type ({HTTP_MIME_TYPES}.multipart_mixed) end
+	put_content_type_multipart_alternative	do put_content_type ({HTTP_MIME_TYPES}.multipart_alternative) end
+	put_content_type_multipart_related		do put_content_type ({HTTP_MIME_TYPES}.multipart_related) end
+	put_content_type_multipart_form_data	do put_content_type ({HTTP_MIME_TYPES}.multipart_form_data) end
+	put_content_type_multipart_signed		do put_content_type ({HTTP_MIME_TYPES}.multipart_signed) end
+	put_content_type_multipart_encrypted	do put_content_type ({HTTP_MIME_TYPES}.multipart_encrypted) end
+
+feature -- Date
 
 	put_date (s: READABLE_STRING_8)
+			-- Put "Date: " header
 		do
-			put_header_key_value ("Date", s)
+			put_header_key_value ({HTTP_HEADER_NAMES}.header_date, s)
 		end
 
 	put_current_date
@@ -223,6 +266,8 @@ feature -- Others
 		do
 			put_date (dt.formatted_out ("ddd,[0]dd mmm yyyy [0]hh:[0]mi:[0]ss.ff2") + " GMT")
 		end
+
+feature -- Others		
 
 	put_expires (n: INTEGER)
 		do
@@ -249,14 +294,18 @@ feature -- Redirection
 
 	put_location (a_location: READABLE_STRING_8)
 			-- Tell the client the new location `a_location'
+		require
+			a_location_valid: not a_location.is_empty
 		do
-			put_header_key_value ("Location", a_location)
+			put_header_key_value ({HTTP_HEADER_NAMES}.header_location, a_location)
 		end
 
 	put_refresh (a_location: READABLE_STRING_8; a_timeout_in_seconds: INTEGER)
 			-- Tell the client to refresh page with `a_location' after `a_timeout_in_seconds' in seconds
+		require
+			a_location_valid: not a_location.is_empty
 		do
-			put_header_key_value ("Refresh", a_timeout_in_seconds.out + "; url=" + a_location)
+			put_header_key_value ({HTTP_HEADER_NAMES}.header_refresh, a_timeout_in_seconds.out + "; url=" + a_location)
 		end
 
 feature -- Cookie
@@ -269,18 +318,18 @@ feature -- Cookie
 		local
 			s: STRING
 		do
-			s := "Set-Cookie:" + key + "=" + value
+			s := {HTTP_HEADER_NAMES}.header_set_cookie + colon_space + key + "=" + value
 			if expiration /= Void then
-				s.append (";expires=" + expiration)
+				s.append ("; expires=" + expiration)
 			end
 			if path /= Void then
-				s.append (";path=" + path)
+				s.append ("; path=" + path)
 			end
 			if domain /= Void then
-				s.append (";domain=" + domain)
+				s.append ("; domain=" + domain)
 			end
 			if secure /= Void then
-				s.append (";secure=" + secure)
+				s.append ("; secure=" + secure)
 			end
 			add_header (s)
 		end
@@ -292,6 +341,7 @@ feature -- Status report
 		local
 			c: like headers.new_cursor
 			n: INTEGER
+			l_line: READABLE_STRING_8
 		do
 			from
 				n := a_name.count
@@ -299,7 +349,12 @@ feature -- Status report
 			until
 				c.after or Result
 			loop
-				Result := c.item.starts_with (a_name) and then c.item [n + 1] = ':'
+				l_line := c.item
+				if l_line.starts_with (a_name) then
+					if l_line.valid_index (n + 1) then
+						Result := l_line [n + 1] = ':'
+					end
+				end
 				c.forth
 			end
 		end
@@ -307,7 +362,7 @@ feature -- Status report
 	has_content_length: BOOLEAN
 			-- Has header "content_length"
 		do
-			Result := has_header_named (name_content_length)
+			Result := has_header_named ({HTTP_HEADER_NAMES}.header_content_length)
 		end
 
 feature {NONE} -- Implementation: Header
@@ -384,8 +439,7 @@ feature {NONE} -- Implementation
 feature {NONE} -- Constants
 
 	colon_space: STRING = ": "
-	name_content_length: STRING = "Content-Length"
-	name_content_type: STRING = "Content-Type"
+	semi_colon_space: STRING = "; "
 
 note
 	copyright: "2011-2011, Eiffel Software and others"

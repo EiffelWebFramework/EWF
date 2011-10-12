@@ -161,7 +161,7 @@ feature {NONE} -- Events
 		do
 			get_http_session
 			if attached http_session as sess then
-				if attached sess.post (a_url, ctx) as res and then not res.error_occurred and then attached res.body as l_body then
+				if attached sess.post (a_url, ctx, Void) as res and then not res.error_occurred and then attached res.body as l_body then
 					assert ("Good answer got=%""+l_body+"%" expected=%""+a_expected_body+"%"", l_body.same_string (a_expected_body))
 				else
 					assert ("Request %""+a_url+"%" failed", False)

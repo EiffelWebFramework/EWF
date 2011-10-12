@@ -1,6 +1,5 @@
 note
 	description: "Summary description for {REQUEST_HANDLER_CONTEXT}."
-	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -56,15 +55,15 @@ feature -- Query
 			-- `a_content_type' converted into a request format name
 		do
 			if a_content_type /= Void then
-				if a_content_type.same_string ({HTTP_CONSTANTS}.json_text) then
+				if a_content_type.same_string ({HTTP_MIME_TYPES}.text_json) then
 					Result := {HTTP_FORMAT_CONSTANTS}.json_name
-				elseif a_content_type.same_string ({HTTP_CONSTANTS}.json_app) then
+				elseif a_content_type.same_string ({HTTP_MIME_TYPES}.application_json) then
 					Result := {HTTP_FORMAT_CONSTANTS}.json_name
-				elseif a_content_type.same_string ({HTTP_CONSTANTS}.xml_text) then
+				elseif a_content_type.same_string ({HTTP_MIME_TYPES}.text_xml) then
 					Result := {HTTP_FORMAT_CONSTANTS}.xml_name
-				elseif a_content_type.same_string ({HTTP_CONSTANTS}.html_text) then
+				elseif a_content_type.same_string ({HTTP_MIME_TYPES}.text_html) then
 					Result := {HTTP_FORMAT_CONSTANTS}.html_name
-				elseif a_content_type.same_string ({HTTP_CONSTANTS}.plain_text) then
+				elseif a_content_type.same_string ({HTTP_MIME_TYPES}.text_plain) then
 					Result := {HTTP_FORMAT_CONSTANTS}.text_name
 				end
 			end

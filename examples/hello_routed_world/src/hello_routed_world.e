@@ -30,7 +30,6 @@ feature {NONE} -- Initialization
 
 	create_router
 		do
---			(create {EXCEPTIONS}).raise ("ouch")
 			check False end
 			create router.make (5)
 		end
@@ -38,33 +37,28 @@ feature {NONE} -- Initialization
 	setup_router
 		local
 			ra: REQUEST_AGENT_HANDLER [REQUEST_URI_TEMPLATE_HANDLER_CONTEXT]
-			rag: REQUEST_URI_TEMPLATE_ROUTING_HANDLER
+			hello: REQUEST_URI_TEMPLATE_ROUTING_HANDLER
 		do
 			router.map_agent ("/home", agent execute_home)
 
-			create rag.make (3)
+			--| Map all "/hello*" using a ROUTING_HANDLER
+			create hello.make (3)
+			router.map ("/hello", hello)
 
 			create ra.make (agent handle_hello)
-			rag.map ("/hello/{name}.{format}", ra)
-			rag.map ("/hello.{format}/{name}", ra)
-			rag.map ("/hello/{name}", ra)
---			router.map ("/hello/{name}.{format}", ra)
---			router.map ("/hello.{format}/{name}", ra)
---			router.map ("/hello/{name}", ra)
+			hello.map ("/hello/{name}.{format}", ra)
+			hello.map ("/hello.{format}/{name}", ra)
+			hello.map ("/hello/{name}", ra)
 
 			create ra.make (agent handle_anonymous_hello)
-			rag.map ("/hello", ra)
-			rag.map ("/hello.{format}", ra)
---			router.map ("/hello", ra)
---			router.map ("/hello.{format}", ra)
+			hello.map ("/hello", ra)
+			hello.map ("/hello.{format}", ra)
 
-			router.map ("/hello", rag)
-
+			--| Various various route, directly on the "router"
 			router.map_agent_with_request_methods ("/method/any", agent handle_method_any, Void)
 			router.map_agent_with_request_methods ("/method/guess", agent handle_method_get_or_post, <<"GET", "POST">>)
 			router.map_agent_with_request_methods ("/method/custom", agent handle_method_get, <<"GET">>)
 			router.map_agent_with_request_methods ("/method/custom", agent handle_method_post, <<"POST">>)
-
 		end
 
 feature -- Execution
@@ -81,8 +75,9 @@ feature -- Execution
 			n := 3
 			create h.make
 			h.put_refresh (l_url, 5)
-			res.set_status_code (200)
+			res.set_status_code ({HTTP_STATUS_CODE}.moved_permanently)
 			res.write_headers_string (h.string)
+
 			from
 				create e
 			until
@@ -115,49 +110,53 @@ feature -- Execution
 		end
 
 	execute_home (ctx: REQUEST_URI_TEMPLATE_HANDLER_CONTEXT; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+		local
+			l_body: STRING_8
 		do
-			res.write_header (200, <<["Content-Type", "text/html"]>>)
-			res.write_string ("<html><body>Hello World ?!%N")
-			res.write_string ("<h3>Please try the following links</h3><ul>%N")
-			res.write_string ("<li><a href=%""+ req.script_url ("/") + "%">default</a></li>%N")
-			res.write_string ("<li><a href=%""+ req.script_url ("/hello") + "%">/hello</a></li>%N")
-			res.write_string ("<li><a href=%""+ req.script_url ("/hello.html/Joce") + "%">/hello.html/Joce</a></li>%N")
-			res.write_string ("<li><a href=%""+ req.script_url ("/hello.json/Joce") + "%">/hello.json/Joce</a></li>%N")
-			res.write_string ("<li><a href=%""+ req.script_url ("/hello/Joce.html") + "%">/hello/Joce.html</a></li>%N")
-			res.write_string ("<li><a href=%""+ req.script_url ("/hello/Joce.xml") + "%">/hello/Joce.xml</a></li>%N")
-			res.write_string ("<li><a href=%""+ req.script_url ("/hello/Joce") + "%">/hello/Joce</a></li>%N")
-			res.write_string ("</ul>%N")
-
+			create l_body.make (255)
+			l_body.append ("<html><body>Hello World ?!%N")
+			l_body.append ("<h3>Please try the following links</h3><ul>%N")
+			l_body.append ("<li><a href=%""+ req.script_url ("/") + "%">default</a></li>%N")
+			l_body.append ("<li><a href=%""+ req.script_url ("/hello") + "%">/hello</a></li>%N")
+			l_body.append ("<li><a href=%""+ req.script_url ("/hello.html/Joce") + "%">/hello.html/Joce</a></li>%N")
+			l_body.append ("<li><a href=%""+ req.script_url ("/hello.json/Joce") + "%">/hello.json/Joce</a></li>%N")
+			l_body.append ("<li><a href=%""+ req.script_url ("/hello/Joce.html") + "%">/hello/Joce.html</a></li>%N")
+			l_body.append ("<li><a href=%""+ req.script_url ("/hello/Joce.xml") + "%">/hello/Joce.xml</a></li>%N")
+			l_body.append ("<li><a href=%""+ req.script_url ("/hello/Joce") + "%">/hello/Joce</a></li>%N")
+			l_body.append ("</ul>%N")
 			if attached req.item ("REQUEST_COUNT") as rqc then
-				res.write_string ("request #"+ rqc.as_string + "%N")
+				l_body.append ("request #"+ rqc.as_string + "%N")
 			end
-			res.write_string ("</body></html>%N")
+			l_body.append ("</body></html>%N")
+
+			res.write_header ({HTTP_STATUS_CODE}.ok, <<["Content-Type", "text/html"], ["Content-Length", l_body.count.out]>>)
+			res.write_string (l_body)
 		end
 
 	execute_hello (req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER; a_name: detachable READABLE_STRING_32; ctx: REQUEST_HANDLER_CONTEXT)
 		local
 			l_response_content_type: detachable STRING
-			msg: STRING
 			h: EWF_HEADER
 			content_type_supported: ARRAY [STRING]
+			l_body: STRING_8
 		do
 			if a_name /= Void then
-				msg := "Hello %"" + a_name + "%" !%N"
+				l_body := "Hello %"" + a_name + "%" !%N"
 			else
-				msg := "Hello anonymous visitor !%N"
+				l_body := "Hello anonymous visitor !%N"
 			end
-			content_type_supported := <<{HTTP_CONSTANTS}.json_app, {HTTP_CONSTANTS}.html_text, {HTTP_CONSTANTS}.xml_text, {HTTP_CONSTANTS}.plain_text>>
+			content_type_supported := <<{HTTP_MIME_TYPES}.application_json, {HTTP_MIME_TYPES}.text_html, {HTTP_MIME_TYPES}.text_xml, {HTTP_MIME_TYPES}.text_plain>>
 			inspect ctx.request_format_id ("format", content_type_supported)
 			when {HTTP_FORMAT_CONSTANTS}.json then
-				l_response_content_type := {HTTP_CONSTANTS}.json_app
-				msg := "{%N%"application%": %"/hello%",%N %"message%": %"" + msg + "%" %N}"
+				l_response_content_type := {HTTP_MIME_TYPES}.application_json
+				l_body := "{%N%"application%": %"/hello%",%N %"message%": %"" + l_body + "%" %N}"
 			when {HTTP_FORMAT_CONSTANTS}.html then
-				l_response_content_type := {HTTP_CONSTANTS}.html_text
+				l_response_content_type := {HTTP_MIME_TYPES}.text_html
 			when {HTTP_FORMAT_CONSTANTS}.xml then
-				l_response_content_type := {HTTP_CONSTANTS}.xml_text
-				msg := "<response><application>/hello</application><message>" + msg + "</message></response>%N"
+				l_response_content_type := {HTTP_MIME_TYPES}.text_xml
+				l_body := "<response><application>/hello</application><message>" + l_body + "</message></response>%N"
 			when {HTTP_FORMAT_CONSTANTS}.text then
-				l_response_content_type := {HTTP_CONSTANTS}.plain_text
+				l_response_content_type := {HTTP_MIME_TYPES}.text_plain
 			else
 				execute_content_type_not_allowed (req, res,	content_type_supported,
 						<<{HTTP_FORMAT_CONSTANTS}.json_name, {HTTP_FORMAT_CONSTANTS}.html_name, {HTTP_FORMAT_CONSTANTS}.xml_name, {HTTP_FORMAT_CONSTANTS}.text_name>>
@@ -165,16 +164,11 @@ feature -- Execution
 			end
 			if l_response_content_type /= Void then
 				create h.make
-				h.put_status (200)
 				h.put_content_type (l_response_content_type)
-				h.put_content_length (msg.count)
-				res.set_status_code (200)
+				h.put_content_length (l_body.count)
+				res.set_status_code ({HTTP_STATUS_CODE}.ok)
 				res.write_headers_string (h.string)
---				res.write_header (200, <<
---						["Content-Type", l_response_content_type],
---						["Content-Length", msg.count.out
---						>>)
-				res.write_string (msg)
+				res.write_string (l_body)
 			end
 		end
 

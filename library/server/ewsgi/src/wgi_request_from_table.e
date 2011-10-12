@@ -513,7 +513,7 @@ feature {NONE} -- Form fields and related
 					l_type := content_type
 					if
 						l_type /= Void and then
-						l_type.starts_with ({HTTP_CONSTANTS}.multipart_form)
+						l_type.starts_with ({HTTP_MIME_TYPES}.multipart_form_data)
 					then
 						create vars.make (5)
 						vars.compare_objects

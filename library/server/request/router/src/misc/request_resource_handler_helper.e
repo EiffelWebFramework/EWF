@@ -15,21 +15,21 @@ feature -- Execute template
 			m: READABLE_STRING_8
 		do
 			m := req.request_method.as_upper
-			if     m.same_string ("GET") then
+			if     m.same_string ({HTTP_REQUEST_METHODS}.method_get) then
 				execute_get (ctx, req, res)
-			elseif m.same_string ("PUT") then
+			elseif m.same_string ({HTTP_REQUEST_METHODS}.method_put) then
 				execute_put (ctx, req, res)
-			elseif m.same_string ("DELETE") then
+			elseif m.same_string ({HTTP_REQUEST_METHODS}.method_delete) then
 				execute_delete (ctx, req, res)
-			elseif m.same_string ("POST") then
+			elseif m.same_string ({HTTP_REQUEST_METHODS}.method_post) then
 				execute_post (ctx, req, res)
-			elseif m.same_string ("TRACE") then
+			elseif m.same_string ({HTTP_REQUEST_METHODS}.method_trace) then
 				execute_trace (ctx, req, res)
-			elseif m.same_string ("OPTIONS") then
+			elseif m.same_string ({HTTP_REQUEST_METHODS}.method_options) then
 				execute_options (ctx, req, res)
-			elseif m.same_string ("HEAD") then
+			elseif m.same_string ({HTTP_REQUEST_METHODS}.method_head) then
 				execute_head (ctx, req, res)
-			elseif m.same_string ("CONNECT") then
+			elseif m.same_string ({HTTP_REQUEST_METHODS}.method_connect) then
 				execute_connect (ctx, req, res)
 			else
 					--| Eventually handle other methods...

@@ -79,7 +79,7 @@ feature -- Helper
 			end
 			res.set_status_code ({HTTP_STATUS_CODE}.method_not_allowed)
 			res.write_header ({HTTP_STATUS_CODE}.method_not_allowed, <<
-						["Content-Type", {HTTP_CONSTANTS}.plain_text],
+						["Content-Type", {HTTP_MIME_TYPES}.text_plain],
 						["Allow", s]
 					>>)
 			res.write_string ("Unsupported request method, Allow: " + s + "%N")
