@@ -233,45 +233,45 @@ feature -- Status report
 		do
 			create {LINKED_LIST [STRING]} Result.make
 			if method_get_supported then
-				Result.extend (request_method_constants.method_get_name)
+				Result.extend (request_method_constants.method_get)
 			end
 			if method_post_supported then
-				Result.extend (request_method_constants.method_post_name)
+				Result.extend (request_method_constants.method_post)
 			end
 			if method_put_supported then
-				Result.extend (request_method_constants.method_put_name)
+				Result.extend (request_method_constants.method_put)
 			end
 			if method_delete_supported then
-				Result.extend (request_method_constants.method_delete_name)
+				Result.extend (request_method_constants.method_delete)
 			end
 			if method_head_supported then
-				Result.extend (request_method_constants.method_head_name)
+				Result.extend (request_method_constants.method_head)
 			end
 		end
 
 	method_get_supported: BOOLEAN
 		do
-			Result := request_method_id_supported ({HTTP_REQUEST_METHOD_CONSTANTS}.method_get)
+			Result := request_method_id_supported ({HTTP_REQUEST_METHOD_CONSTANTS}.get)
 		end
 
 	method_post_supported: BOOLEAN
 		do
-			Result := request_method_id_supported ({HTTP_REQUEST_METHOD_CONSTANTS}.method_post)
+			Result := request_method_id_supported ({HTTP_REQUEST_METHOD_CONSTANTS}.post)
 		end
 
 	method_put_supported: BOOLEAN
 		do
-			Result := request_method_id_supported ({HTTP_REQUEST_METHOD_CONSTANTS}.method_put)
+			Result := request_method_id_supported ({HTTP_REQUEST_METHOD_CONSTANTS}.put)
 		end
 
 	method_delete_supported: BOOLEAN
 		do
-			Result := request_method_id_supported ({HTTP_REQUEST_METHOD_CONSTANTS}.method_delete)
+			Result := request_method_id_supported ({HTTP_REQUEST_METHOD_CONSTANTS}.delete)
 		end
 
 	method_head_supported: BOOLEAN
 		do
-			Result := request_method_id_supported ({HTTP_REQUEST_METHOD_CONSTANTS}.method_head)
+			Result := request_method_id_supported ({HTTP_REQUEST_METHOD_CONSTANTS}.head)
 		end
 
 feature -- Element change: request methods		
@@ -283,27 +283,27 @@ feature -- Element change: request methods
 
 	enable_request_method_get
 		do
-			enable_request_method ({HTTP_REQUEST_METHOD_CONSTANTS}.method_get)
+			enable_request_method ({HTTP_REQUEST_METHOD_CONSTANTS}.get)
 		end
 
 	enable_request_method_post
 		do
-			enable_request_method ({HTTP_REQUEST_METHOD_CONSTANTS}.method_post)
+			enable_request_method ({HTTP_REQUEST_METHOD_CONSTANTS}.post)
 		end
 
 	enable_request_method_put
 		do
-			enable_request_method ({HTTP_REQUEST_METHOD_CONSTANTS}.method_put)
+			enable_request_method ({HTTP_REQUEST_METHOD_CONSTANTS}.put)
 		end
 
 	enable_request_method_delete
 		do
-			enable_request_method ({HTTP_REQUEST_METHOD_CONSTANTS}.method_delete)
+			enable_request_method ({HTTP_REQUEST_METHOD_CONSTANTS}.delete)
 		end
 
 	enable_request_method_head
 		do
-			enable_request_method ({HTTP_REQUEST_METHOD_CONSTANTS}.method_head)
+			enable_request_method ({HTTP_REQUEST_METHOD_CONSTANTS}.head)
 		end
 
 	enable_request_method (m: INTEGER)
