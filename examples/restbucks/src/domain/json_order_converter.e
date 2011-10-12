@@ -88,8 +88,8 @@ feature -- Conversion
         do
         	create Result.make
             Result.put (json.value (o.id), id_key)
-            Result.put (json.value (o.location),location_key)
-			Result.put (json.value (o.status),status_key)
+            Result.put (json.value (o.location), location_key)
+			Result.put (json.value (o.status), status_key)
             from
             	create ja.make_array
             	o.items.start
@@ -105,7 +105,7 @@ feature -- Conversion
             	ja.add (jv)
             	o.items.forth
             end
-            Result.put(ja,items_key)
+            Result.put (ja, items_key)
         end
 
  feature {NONE} -- Implementation
