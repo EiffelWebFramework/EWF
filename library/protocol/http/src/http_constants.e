@@ -31,6 +31,8 @@ feature -- Server, header
 
 feature -- Misc
 
+	crlf: STRING = "%R%N"
+
 	default_bufsize: INTEGER = 16384 --| 16K
 
 note

@@ -69,42 +69,58 @@ feature -- Execution
 			e: EXECUTION_ENVIRONMENT
 			n: INTEGER
 			i: INTEGER
+			s: STRING_8
 		do
 			l_url := req.script_url ("/home")
 			n := 3
 			create h.make
 			h.put_refresh (l_url, 5)
+			h.put_content_type_text_plain
+			h.put_transfer_encoding_chunked
+--			h.put_content_length (0)
 			res.set_status_code ({HTTP_STATUS_CODE}.moved_permanently)
 			res.write_headers_string (h.string)
 
 			from
 				create e
+				create s.make (255)
 			until
 				n = 0
 			loop
 				if n > 1 then
-					res.write_string ("Redirected to " + l_url + " in " + n.out + " seconds :%N")
+					s.append ("%NRedirected to " + l_url + " in " + n.out + " seconds :%N")
 				else
-					res.write_string ("Redirected to " + l_url + " in 1 second :%N")
+					s.append ("%NRedirected to " + l_url + " in 1 second :%N")
 				end
-				res.flush
+				write_chunk (s, res); s.wipe_out
 				from
 					i := 1
 				until
 					i = 1001
 				loop
-					res.write_string (".")
+					s.append_character ('.')
 					if i \\ 100 = 0 then
-						res.write_string ("%N")
+						s.append_character ('%N')
 					end
-					res.flush
+					write_chunk (s, res); s.wipe_out
 					e.sleep (1_000_000)
 					i := i + 1
 				end
-				res.write_string ("%N")
 				n := n - 1
 			end
-			res.write_string ("You are now being redirected...%N")
+			s.append ("%NYou are now being redirected...%N")
+			write_chunk (s, res); s.wipe_out
+			write_chunk (Void, res)
+		end
+
+	write_chunk (s: detachable READABLE_STRING_8; res: WGI_RESPONSE_BUFFER)
+		do
+			if s /= Void then
+				res.write_string (s.count.to_hex_string + {HTTP_CONSTANTS}.crlf)
+				res.write_string (s)
+			else
+				res.write_string ("0" + {HTTP_CONSTANTS}.crlf)
+			end
 			res.flush
 		end
 
