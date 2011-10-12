@@ -30,7 +30,6 @@ feature {NONE} -- Initialization
 
 	create_router
 		do
-			check False end
 			create router.make (5)
 		end
 
