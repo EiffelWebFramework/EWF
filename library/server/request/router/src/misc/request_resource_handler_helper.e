@@ -238,6 +238,25 @@ feature -- Handle responses
 			res.write_string (a_description)
 		end
 
+
+	handle_resource_conflict_response (a_description:STRING; ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+		local
+			h : EWF_HEADER
+		do
+			create h.make
+			h.put_status ({HTTP_STATUS_CODE}.conflict)
+			if attached ctx.request_content_type (supported_content_types) as l_content_type then
+				h.put_content_type (l_content_type)
+			else
+				h.put_content_type ("*/*")
+			end
+			h.put_content_length (a_description.count)
+			h.put_current_date
+			res.set_status_code ({HTTP_STATUS_CODE}.conflict)
+			res.write_headers_string (h.string)
+			res.write_string (a_description)
+		end
+
 note
 	copyright: "2011-2011, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"

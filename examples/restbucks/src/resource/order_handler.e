@@ -1,5 +1,5 @@
 note
-	description: "Summary description for {ORDER_HANDLER}."
+	description: "{ORDER_HANDLER} handle the resources that we want to expose"
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
@@ -74,66 +74,95 @@ feature -- HTTP Methods
 		end
 
 	do_put (ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+		-- Updating a resource with PUT
+		-- A successful PUT request will not create a new resource, instead it will
+		-- change the state of the resource identified by the current uri.
+		-- If success we response with 200 and the updated order.
+		-- 404 if the order is not found
+		-- 400 in case of a bad request
+		-- 500 internal server error
 		local
 			l_post: STRING
-			l_location :  STRING
 			l_order : detachable ORDER
-			h : EWF_HEADER
 		do
-			fixme ("TODO handle an Internal Server Error")
-			fixme ("Refactor the code, create new abstractions")
-			fixme ("Add Header Date to the response")
-			fixme ("Put implementation is wrong!!!!")
 			req.input.read_stream (req.content_length_value.as_integer_32)
 			l_post := req.input.last_string
 			l_order := extract_order_request(l_post)
-			fixme ("TODO move to a service method")
 			if  l_order /= Void and then db_access.orders.has_key (l_order.id) then
-				update_order( l_order)
-				create h.make
-				h.put_status ({HTTP_STATUS_CODE}.ok)
-				h.put_content_type ("application/json")
-				if attached req.request_time as time then
-					h.add_header ("Date:" +time.formatted_out ("ddd,[0]dd mmm yyyy [0]hh:[0]mi:[0]ss.ff2") + " GMT")
-				end
-				if attached req.http_host as host then
-					l_location := "http://"+host +req.request_uri+"/" + l_order.id
-					h.add_header ("Location:"+ l_location)
-				end
-				if attached {JSON_VALUE} json.value (l_order) as jv then
-					h.put_content_length (jv.representation.count)
-					res.set_status_code ({HTTP_STATUS_CODE}.ok)
-					res.write_headers_string (h.string)
-					res.write_string (jv.representation)
+				if is_valid_to_update(l_order) then
+					update_order( l_order)
+					compute_response_put (ctx, req, res, l_order)
+				else
+					--| FIXME: Here we need to define the Allow methods
+					handle_resource_conflict_response (l_post +"%N There is conflict while trying to update the order, the order could not be update in the current state", ctx, req, res)
 				end
 			else
 				handle_bad_request_response (l_post +"%N is not a valid ORDER, maybe the order does not exist in the system", ctx, req, res)
 			end
 		end
 
+	compute_response_put (ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER; l_order : ORDER)
+		local
+			h: EWF_HEADER
+			joc : JSON_ORDER_CONVERTER
+		do
+			create h.make
+			create joc.make
+			json.add_converter(joc)
+
+			create h.make
+			h.put_status ({HTTP_STATUS_CODE}.ok)
+			h.put_content_type_application_json
+			if attached req.request_time as time then
+				h.add_header ("Date:" +time.formatted_out ("ddd,[0]dd mmm yyyy [0]hh:[0]mi:[0]ss.ff2") + " GMT")
+			end
+			if attached {JSON_VALUE} json.value (l_order) as jv then
+				h.put_content_length (jv.representation.count)
+				res.set_status_code ({HTTP_STATUS_CODE}.ok)
+				res.write_headers_string (h.string)
+				res.write_string (jv.representation)
+			end
+		end
+
+
 	do_delete (ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+		-- Here we use DELETE to cancel an order, if that order is in state where
+		-- it can still be canceled.
+		-- 200 if is ok
+		-- 409 if consumer and service's view of the resouce state is inconsisent
+		-- 500 if we have an internal server error
 		local
 			id: STRING
 			h : EWF_HEADER
 		do
-			fixme ("TODO handle an Internal Server Error")
-			fixme ("Refactor the code, create new abstractions")
 			if  attached req.orig_path_info as orig_path then
 				id := get_order_id_from_path (orig_path)
 				if db_access.orders.has_key (id) then
-					delete_order( id)
-					create h.make
-					h.put_status ({HTTP_STATUS_CODE}.no_content)
-					h.put_content_type ("application/json")
-					if attached req.request_time as time then
-						h.put_utc_date (time)
+					if is_valid_to_delete (id) then
+						delete_order( id)
+						compute_response_delete (ctx, req, res)
+					else
+						--| FIXME: Here we need to define the Allow methods
+						handle_resource_conflict_response (orig_path + "%N There is conflict while trying to delete the order, the order could not be deleted in the current state", ctx, req, res)
 					end
-					res.set_status_code ({HTTP_STATUS_CODE}.no_content)
-					res.write_headers_string (h.string)
 				else
 					handle_resource_not_found_response (orig_path + " not found in this server", ctx, req, res)
 				end
 			end
+		end
+
+	compute_response_delete (ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+		local
+			h: EWF_HEADER
+		do
+			create h.make
+			h.put_status ({HTTP_STATUS_CODE}.no_content)
+			h.put_content_type_application_json
+			if attached req.request_time as time then
+					h.put_utc_date (time)
+			end
+			res.set_status_code ({HTTP_STATUS_CODE}.no_content)
+			res.write_headers_string (h.string)
 		end
 
 	do_post (ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
@@ -219,6 +248,28 @@ feature {NONE} -- Implementation Repository Layer
 			an_order.set_status ("submitted")
 			an_order.add_revision
 			db_access.orders.force (an_order, an_order.id)
+		end
+
+
+	is_valid_to_delete ( an_id : STRING)  : BOOLEAN
+		-- Is the order identified by `an_id' in a state whre it can still be deleted?
+		do
+			if attached retrieve_order (an_id) as l_order then
+				if order_validation.is_state_valid_to_update (l_order.status) then
+					Result := True
+				end
+			end
+		end
+
+	is_valid_to_update (an_order: ORDER) : BOOLEAN
+			-- Check if there is a conflict while trying to update the order
+		do
+			   	if attached retrieve_order (an_order.id) as l_order then
+					if order_validation.is_state_valid_to_update (l_order.status) and then order_validation.is_valid_status_state (an_order.status) and then
+					   order_validation.is_valid_transition (l_order, an_order.status) then
+					 	Result := True
+					end
+				end
 		end
 
 	update_order (an_order: ORDER)
