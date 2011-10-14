@@ -19,11 +19,7 @@ feature -- Content type	: application
 	application_atom_xml: STRING = "application/atom+xml"
 			-- atom application content-type header
 
-	application_x_www_form_encoded: STRING = "application/x-www-form-urlencoded"
-			-- Starting chars of form url-encoded data content-type header
-
-	application_octet_stream: STRING = "application/octet-stream"
-			-- Octet stream content-type header
+	application_force_download: STRING = "application/force-download"
 
 	application_javascript: STRING = "application/javascript"
 			-- JavaScript application content-type header
@@ -31,24 +27,53 @@ feature -- Content type	: application
 	application_json: STRING = "application/json"
 			-- JSON application content-type header
 
+	application_octet_stream: STRING = "application/octet-stream"
+			-- Octet stream content-type header
+
 	application_pdf: STRING = "application/pdf"
 			-- pdf application content-type header
+
+	application_postscript: STRING = "application/postscript"
+			-- postscript application content-type header
 
 	application_rss_xml: STRING = "application/rss+xml"
 			-- rss application content-type header
 
+	application_rtf: STRING = "application/rtf"
+			-- RTF application content-type header			
+
 	application_xml: STRING = "application/xml"
 			-- xml application content-type header
 
+	application_x_shockwave_flash: STRING = "application/x-shockwave-flash"
+
 	application_x_compressed: STRING = "application/x-compressed"
-			-- x-compressed application content-type header
+
+	application_x_gzip: STRING = "application/x-gzip"
 
 	application_zip: STRING = "application/zip"
-			-- ZIP application content-type header
+
+	application_x_bzip: STRING = "application/x-bzip"
+
+	application_x_bzip2: STRING = "application/x-bzip2"
+
+	application_x_tar: STRING = "application/x-tar"
+
+	application_x_www_form_encoded: STRING = "application/x-www-form-urlencoded"
+			-- Starting chars of form url-encoded data content-type header
 
 feature -- Content type	: audio
 
+	audio_mpeg3: STRING = "audio/mpeg3"
+
+	audio_mpeg: STRING = "audio/mpeg"
+
+	audio_wav: STRING = "audio/wav"
+
 feature -- Content type	: image
+
+	image_bmp: STRING = "image/bmp"
+			-- BMP image content-type header
 
 	image_gif: STRING = "image/gif"
 			-- GIF image content-type header
@@ -64,6 +89,12 @@ feature -- Content type	: image
 
 	image_svg_xml: STRING = "image/svg+xml"
 			-- SVG+XML image content-type header
+
+	image_tiff: STRING = "image/tiff"
+			-- TIFF image content-type header	
+
+	image_x_ico: STRING = "image/x-ico"
+			-- ICO image content-type header
 
 feature -- Content type	: message
 
@@ -81,6 +112,8 @@ feature -- Content type	: message
 
 feature -- Content type	: model
 
+	model_vrml: STRING = "model/vrml"
+
 feature -- Content type	: multipart
 
 	multipart_mixed: STRING = "multipart/mixed"
@@ -94,6 +127,8 @@ feature -- Content type	: multipart
 	multipart_signed: STRING = "multipart/signed"
 
 	multipart_encrypted: STRING = "multipart/encrypted"
+
+	multipart_x_gzip: STRING = "multipart/x-gzip"
 
 feature -- Content type	: text
 
@@ -119,13 +154,23 @@ feature -- Content type	: text
 	text_rtf: STRING = "text/rtf"
 			-- rtf content-type header	
 
+	text_tab_separated_values: STRING = "text/tab-separated-values"
+			-- TSV text content-type header						
+
 	text_xml: STRING = "text/xml"
 			-- XML text content-type header
 
 	text_vcard: STRING = "text/vcard"
 			-- vcard text content-type header
 
-feature -- Content type	: video			
+feature -- Content type	: video	
+
+	video_avi: STRING = "video/avi"
+
+	video_quicktime: STRING = "video/quicktime"
+
+	video_x_motion_jpeg: STRING = "video/x-motion-jpeg"
+
 
 note
 	copyright: "2011-2011, Eiffel Software and others"

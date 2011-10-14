@@ -51,7 +51,7 @@ feature -- Methods intented for actions
 
 	method_delete: STRING = "DELETE"
 			-- Deletes the specified resource.
-			
+
 feature -- Other Methods
 
 	method_connect: STRING = "CONNECT"

@@ -37,8 +37,13 @@ feature {NONE} -- Initialization
 		local
 			ra: REQUEST_AGENT_HANDLER [REQUEST_URI_TEMPLATE_HANDLER_CONTEXT]
 			hello: REQUEST_URI_TEMPLATE_ROUTING_HANDLER
+			www: REQUEST_FILE_SYSTEM_HANDLER [REQUEST_URI_TEMPLATE_HANDLER_CONTEXT]
 		do
 			router.map_agent ("/home", agent execute_home)
+			create www.make (document_root)
+			www.set_directory_index (<<"index.html">>)
+
+			router.map ("/www{/path}{?query}", www)
 
 			--| Map all "/hello*" using a ROUTING_HANDLER
 			create hello.make (3)
@@ -58,6 +63,21 @@ feature {NONE} -- Initialization
 			router.map_agent_with_request_methods ("/method/guess", agent handle_method_get_or_post, <<"GET", "POST">>)
 			router.map_agent_with_request_methods ("/method/custom", agent handle_method_get, <<"GET">>)
 			router.map_agent_with_request_methods ("/method/custom", agent handle_method_post, <<"POST">>)
+		end
+
+
+	document_root: READABLE_STRING_8
+		local
+			e: EXECUTION_ENVIRONMENT
+			dn: DIRECTORY_NAME
+		once
+			create e
+			create dn.make_from_string (e.current_working_directory)
+			dn.extend ("htdocs")
+			Result := dn.string
+			if Result[Result.count] = Operating_environment.directory_separator then
+				Result := Result.substring (1, Result.count - 1)
+			end
 		end
 
 feature -- Execution
