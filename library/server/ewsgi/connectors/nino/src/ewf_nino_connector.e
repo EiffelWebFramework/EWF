@@ -80,12 +80,29 @@ feature -- Server
 	process_request (env: HASH_TABLE [STRING, STRING]; a_headers_text: STRING; a_input: HTTP_INPUT_STREAM; a_output: HTTP_OUTPUT_STREAM)
 		local
 			req: WGI_REQUEST_FROM_TABLE
-			res: WGI_RESPONSE_STREAM_BUFFER
+			res: detachable WGI_RESPONSE_STREAM_BUFFER
+			rescued: BOOLEAN
 		do
-			create req.make (env, create {EWF_NINO_INPUT_STREAM}.make (a_input))
-			create res.make (create {EWF_NINO_OUTPUT_STREAM}.make (a_output))
-			req.set_meta_string_variable ("RAW_HEADER_DATA", a_headers_text)
-			application.execute (req, res)
+			if not rescued then
+				create req.make (env, create {EWF_NINO_INPUT_STREAM}.make (a_input))
+				create res.make (create {EWF_NINO_OUTPUT_STREAM}.make (a_output))
+				req.set_meta_string_variable ("RAW_HEADER_DATA", a_headers_text)
+				application.execute (req, res)
+			else
+				if attached (create {EXCEPTION_MANAGER}).last_exception as e and then attached e.exception_trace as l_trace then
+					if res /= Void then
+						if not res.status_is_set then
+							res.write_header ({HTTP_STATUS_CODE}.internal_server_error, Void)
+						end
+						if res.message_writable then
+							res.write_string ("<pre>" + l_trace + "</pre>")
+						end
+					end
+				end
+			end
+		rescue
+			rescued := True
+			retry
 		end
 
 note
