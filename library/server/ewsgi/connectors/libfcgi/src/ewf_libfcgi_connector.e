@@ -47,11 +47,28 @@ feature -- Execution
 	process_fcgi_request (vars: HASH_TABLE [STRING, STRING]; a_input: like input; a_output: like output)
 		local
 			req: WGI_REQUEST_FROM_TABLE
-			res: WGI_RESPONSE_STREAM_BUFFER
+			res: detachable WGI_RESPONSE_STREAM_BUFFER
+			rescued: BOOLEAN
 		do
-			create req.make (vars, a_input)
-			create res.make (a_output)
-			application.process (req, res)
+			if not rescued then
+				create req.make (vars, a_input)
+				create res.make (a_output)
+				application.execute (req, res)
+			else
+				if attached (create {EXCEPTION_MANAGER}).last_exception as e and then attached e.exception_trace as l_trace then
+					if res /= Void then
+						if not res.status_is_set then
+							res.write_header ({HTTP_STATUS_CODE}.internal_server_error, Void)
+						end
+						if res.message_writable then
+							res.write_string ("<pre>" + l_trace + "</pre>")
+						end
+					end
+				end
+			end
+		rescue
+			rescued := True
+			retry
 		end
 
 feature -- Input/Output
