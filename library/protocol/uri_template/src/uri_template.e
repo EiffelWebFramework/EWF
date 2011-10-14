@@ -274,7 +274,7 @@ feature -- Match
 											vv := "/"
 											nb := 0
 										until
-											vv.is_empty or q + l_offset > a_uri.count
+											vv.is_empty or q + l_offset + 1 > a_uri.count
 										loop
 											vv := next_path_variable_value (a_uri, q + l_offset + 1, l_next_literal_separator)
 											l_offset := l_offset + vv.count + 1
