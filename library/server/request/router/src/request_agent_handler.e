@@ -22,11 +22,11 @@ feature -- Initialization
 
 feature -- Access
 
-	action: PROCEDURE [ANY, TUPLE [ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER]]
+	action: PROCEDURE [ANY, TUPLE [ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE]]
 
 feature -- Execution
 
-	execute (ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	execute (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
 		do
 			action.call ([ctx, req, res])
 		end

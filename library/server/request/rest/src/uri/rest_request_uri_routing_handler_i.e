@@ -25,7 +25,7 @@ create
 
 feature -- Status report
 
-	authentication_required (req: WGI_REQUEST): BOOLEAN
+	authentication_required (req: WSF_REQUEST): BOOLEAN
 		do
 			Result := internal_authentication_required
 		end
@@ -36,12 +36,12 @@ feature {NONE} -- Implementation
 
 feature -- Execution
 
-	execute (ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	execute (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
 		do
 			Precursor {REQUEST_URI_ROUTING_HANDLER_I} (ctx, req, res)
 		end
 
-	execute_application (ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	execute_application (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
 		do
 			check should_not_occur: False end
 		end

@@ -17,7 +17,7 @@ inherit
 
 feature -- Status report
 
-	is_valid_context (req: WGI_REQUEST): BOOLEAN
+	is_valid_context (req: WSF_REQUEST): BOOLEAN
 			-- Is `req' valid context for current handler?
 		do
 			Result := True
@@ -25,7 +25,7 @@ feature -- Status report
 
 feature -- Execution
 
-	execute (ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	execute (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
 			-- Execute request handler	
 		require
 			is_valid_context: is_valid_context (req)
@@ -34,7 +34,7 @@ feature -- Execution
 
 feature -- Execution: report
 
-	url (req: WGI_REQUEST; a_base: detachable READABLE_STRING_8; args: detachable STRING; abs: BOOLEAN): STRING
+	url (req: WSF_REQUEST; a_base: detachable READABLE_STRING_8; args: detachable STRING; abs: BOOLEAN): STRING
 			-- Associated url based on `a_base' and `args'
 			-- if `abs' then return absolute url
 		local

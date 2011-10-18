@@ -34,12 +34,12 @@ feature -- Mapping
 		deferred
 		end
 
-	map_agent (a_resource: READABLE_STRING_8; a_action: PROCEDURE [ANY, TUPLE [ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER]])
+	map_agent (a_resource: READABLE_STRING_8; a_action: PROCEDURE [ANY, TUPLE [ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE]])
 		do
 			map_agent_with_request_methods (a_resource, a_action, Void)
 		end
 
-	map_agent_with_request_methods (a_resource: READABLE_STRING_8; a_action: PROCEDURE [ANY, TUPLE [ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER]];
+	map_agent_with_request_methods (a_resource: READABLE_STRING_8; a_action: PROCEDURE [ANY, TUPLE [ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE]];
 			 rqst_methods: detachable ARRAY [READABLE_STRING_8])
 		local
 			rah: REQUEST_AGENT_HANDLER [C]
@@ -65,14 +65,14 @@ feature -- Base url
 
 feature -- Execution
 
-	dispatch (req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER): BOOLEAN
+	dispatch (req: WSF_REQUEST; res: WSF_RESPONSE): BOOLEAN
 			-- Dispatch `req, res' to the associated handler
 			-- And return True is handled, otherwise False
 		do
 			Result := dispatch_and_return_handler (req, res) /= Void
 		end
 
-	dispatch_and_return_handler (req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER): detachable H
+	dispatch_and_return_handler (req: WSF_REQUEST; res: WSF_RESPONSE): detachable H
 			-- Dispatch `req, res' to the associated handler
 			-- And return this handler
 			-- If Result is Void, this means no handler was found.
@@ -108,13 +108,13 @@ feature -- Traversing
 
 feature {NONE} -- Access: Implementation
 
-	source_uri (req: WGI_REQUEST): READABLE_STRING_32
+	source_uri (req: WSF_REQUEST): READABLE_STRING_32
 			-- URI to use to find handler.
 		do
 			Result := req.path_info
 		end
 
-	handler (req: WGI_REQUEST): detachable TUPLE [handler: H; context: like default_handler_context]
+	handler (req: WSF_REQUEST): detachable TUPLE [handler: H; context: like default_handler_context]
 			-- Handler whose map matched with `req'
 		require
 			req_valid: source_uri (req) /= Void
@@ -179,7 +179,7 @@ feature {NONE} -- Implementation
 		deferred
 		end
 
-	default_handler_context (req: WGI_REQUEST): C
+	default_handler_context (req: WSF_REQUEST): C
 			-- Default handler context associated with `default_handler'
 		require
 			has_default_handler: default_handler /= Void

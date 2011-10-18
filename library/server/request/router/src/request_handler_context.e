@@ -16,7 +16,7 @@ inherit
 
 feature -- Access
 
-	request: WGI_REQUEST
+	request: WSF_REQUEST
 			-- Associated request
 
 	path: READABLE_STRING_8
@@ -71,12 +71,11 @@ feature -- Query
 
 	request_content_type (content_type_supported: detachable ARRAY [READABLE_STRING_8]): detachable READABLE_STRING_8
 		local
-			s: detachable READABLE_STRING_32
+			s: detachable READABLE_STRING_8
 			i,n: INTEGER
 		do
-			s := request.content_type
-			if s /= Void then
-				Result := s
+			if attached request.content_type as ct then
+				Result := ct
 			else
 				if attached accepted_content_types (request) as l_accept_lst then
 					from
@@ -108,18 +107,18 @@ feature -- Query
 
 feature -- Query	
 
-	path_parameter (a_name: READABLE_STRING_GENERAL): detachable WGI_VALUE
+	path_parameter (a_name: READABLE_STRING_GENERAL): detachable WSF_VALUE
 			-- Parameter value for path variable `a_name'
 		deferred
 		end
 
-	query_parameter (a_name: READABLE_STRING_GENERAL): detachable WGI_VALUE
+	query_parameter (a_name: READABLE_STRING_GENERAL): detachable WSF_VALUE
 			-- Parameter value for query variable `a_name'	
 			--| i.e after the ? character
 		deferred
 		end
 
-	parameter (a_name: READABLE_STRING_GENERAL): detachable WGI_VALUE
+	parameter (a_name: READABLE_STRING_GENERAL): detachable WSF_VALUE
 			-- Any parameter value for variable `a_name'
 			-- URI template parameter and query parameters
 		do
@@ -131,9 +130,9 @@ feature -- Query
 
 feature -- String query
 
-	string_from (a_value: detachable WGI_VALUE): detachable READABLE_STRING_32
+	string_from (a_value: detachable WSF_VALUE): detachable READABLE_STRING_32
 		do
-			if attached {WGI_STRING_VALUE} a_value as val then
+			if attached {WSF_STRING_VALUE} a_value as val then
 				Result := val.string
 			end
 		end

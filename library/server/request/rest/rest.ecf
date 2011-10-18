@@ -9,7 +9,7 @@
 		</file_rule>
 		<option warning="true" full_class_checking="true"/>
 		<library name="base" location="$ISE_LIBRARY\library\base\base.ecf"/>
-		<library name="ewsgi" location="..\..\ewsgi\ewsgi.ecf"/>
+		<library name="wsf" location="..\..\wsf\wsf.ecf"/>
 		<library name="http" location="..\..\..\protocol\http\http.ecf"/>
 		<library name="router" location="..\..\request\router\router.ecf" readonly="false"/>
 		<library name="uri_template" location="..\..\..\protocol\uri_template\uri_template.ecf"/>

@@ -35,7 +35,7 @@ feature -- Setup
 
 feature -- Execution
 
-	execute (req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	execute (req: WSF_REQUEST; res: WSF_RESPONSE)
 		local
 			l_handled: BOOLEAN
 			rescued: BOOLEAN
@@ -50,11 +50,11 @@ feature -- Execution
 			end
 		end
 
-	execute_default (req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	execute_default (req: WSF_REQUEST; res: WSF_RESPONSE)
 		deferred
 		end
 
-	execute_rescue (req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	execute_rescue (req: WSF_REQUEST; res: WSF_RESPONSE)
 		do
 			if not res.header_committed then
 				res.write_header ({HTTP_STATUS_CODE}.internal_server_error, Void)

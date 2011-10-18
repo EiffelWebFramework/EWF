@@ -68,17 +68,17 @@ feature {NONE} -- Handlers
 
 feature -- Execution
 
-	execute (req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	execute (req: WSF_REQUEST; res: WSF_RESPONSE)
 		do
 			request_count := request_count + 1
 			Precursor (req, res)
 		end
 
-	execute_default (req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	execute_default (req: WSF_REQUEST; res: WSF_RESPONSE)
 		local
 			rqst_uri: detachable STRING
 			l_path_info: detachable STRING
-			h: EWF_HEADER
+			h: WSF_HEADER
 			s: STRING
 			l_redir_url: STRING
 		do
@@ -96,6 +96,8 @@ feature -- Execution
 			res.write_string (s)
 		end
 
+	request_count: INTEGER
+
 --	execute_rescue (ctx: like new_request_context)
 --			-- Execute the default rescue behavior
 --		do
@@ -106,7 +108,7 @@ feature -- Implementation
 
 --	execute_exception_trace (ctx: like new_request_context)
 --		local
---			h: EWF_HEADER
+--			h: WSF_HEADER
 --			s: STRING
 --		do
 --			create h.make
@@ -121,7 +123,7 @@ feature -- Implementation
 --			exit_with_code (-1)
 --		end
 
-	execute_exit_application (ctx: APP_REQUEST_HANDLER_CONTEXT; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	execute_exit_application (ctx: APP_REQUEST_HANDLER_CONTEXT; req: WSF_REQUEST; res: WSF_RESPONSE)
 		local
 			s: STRING
 		do

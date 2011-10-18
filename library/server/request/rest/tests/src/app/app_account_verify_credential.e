@@ -35,14 +35,14 @@ feature {NONE} -- Initialization
 
 feature -- Access
 
-	authentication_required (req: WGI_REQUEST): BOOLEAN
+	authentication_required (req: WSF_REQUEST): BOOLEAN
 		do
 			Result := True
 		end
 
 feature -- Execution
 
-	execute_unauthorized (a_hdl_context: APP_REQUEST_HANDLER_CONTEXT; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	execute_unauthorized (a_hdl_context: APP_REQUEST_HANDLER_CONTEXT; req: WSF_REQUEST; res: WSF_RESPONSE)
 		local
 			s: STRING
 			lst: LIST [STRING]
@@ -52,16 +52,16 @@ feature -- Execution
 			res.write_string ("Unauthorized")
 		end
 
-	execute_application (ctx: APP_REQUEST_HANDLER_CONTEXT; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	execute_application (ctx: APP_REQUEST_HANDLER_CONTEXT; req: WSF_REQUEST; res: WSF_RESPONSE)
 		local
 			l_full: BOOLEAN
-			h: EWF_HEADER
+			h: WSF_HEADER
 			l_login: STRING_8
 			s: STRING
 			content_type_supported: ARRAY [STRING]
 			l_format_id: INTEGER
 		do
-			content_type_supported := <<{HTTP_CONSTANTS}.json_app, {HTTP_CONSTANTS}.xml_text, {HTTP_CONSTANTS}.plain_text>>
+			content_type_supported := <<{HTTP_CONSTANTS}.application_json, {HTTP_CONSTANTS}.text_xml, {HTTP_CONSTANTS}.text_plain>>
 			l_format_id := ctx.request_format_id ("format", content_type_supported)
 			if authenticated (ctx) then
 				l_full := attached ctx.query_parameter ("details") as v and then v.is_case_insensitive_equal ("true")

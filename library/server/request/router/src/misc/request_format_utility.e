@@ -9,7 +9,7 @@ class
 
 feature -- Access
 
-	accepted_content_types (req: WGI_REQUEST): detachable ARRAYED_LIST [READABLE_STRING_8]
+	accepted_content_types (req: WSF_REQUEST): detachable ARRAYED_LIST [READABLE_STRING_8]
 		local
 			s: STRING_8
 			q: READABLE_STRING_8

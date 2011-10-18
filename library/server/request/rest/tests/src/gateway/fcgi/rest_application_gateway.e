@@ -2,7 +2,7 @@ deferred class
 	REST_APPLICATION_GATEWAY
 
 inherit
-	WGI_APPLICATION
+	WSF_APPLICATION
 
 feature -- Access
 

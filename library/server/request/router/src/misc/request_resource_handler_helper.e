@@ -9,7 +9,7 @@ class
 
 feature -- Execute template
 
-	execute_methods (ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	execute_methods (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
 			-- Execute request and dispatch according to the request method
 		local
 			m: READABLE_STRING_8
@@ -41,7 +41,7 @@ feature -- Execute template
 
 feature -- Method Post
 
-	execute_post (ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	execute_post (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
 		do
 			if req.content_length_value > 0 then
 				do_post (ctx, req, res)
@@ -50,14 +50,14 @@ feature -- Method Post
 			end
 		end
 
-	do_post (ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	do_post (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
 		do
 			handle_not_implemented ("Method POST not implemented", ctx, req, res)
 		end
 
 feature-- Method Put
 
-	execute_put (ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	execute_put (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
 		do
 			if req.content_length_value > 0 then
 				do_put (ctx, req, res)
@@ -66,91 +66,91 @@ feature-- Method Put
 			end
 		end
 
-	do_put (ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	do_put (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
 		do
 			handle_not_implemented ("Method PUT not implemented", ctx, req, res)
 		end
 
 feature -- Method Get
 
-	execute_get (ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	execute_get (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
 		do
 			do_get (ctx, req, res)
 		end
 
-	do_get (ctx: C;req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	do_get (ctx: C;req: WSF_REQUEST; res: WSF_RESPONSE)
 		do
 			handle_not_implemented ("Method HEAD not implemented", ctx, req, res)
 		end
 
 feature -- Method DELETE
 
-	execute_delete (ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	execute_delete (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
 		do
 			do_delete (ctx, req, res)
 		end
 
-	do_delete (ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	do_delete (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
 		do
 			handle_not_implemented ("Method DELETE  not implemented", ctx, req, res)
 		end
 
 feature -- Method CONNECT
 
-	execute_connect (ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	execute_connect (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
 		do
 			do_connect (ctx, req, res)
 		end
 
-	do_connect (ctx: C;req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	do_connect (ctx: C;req: WSF_REQUEST; res: WSF_RESPONSE)
 		do
 			handle_not_implemented ("Method CONNECT  not implemented", ctx, req, res)
 		end
 
 feature -- Method HEAD
 
-	execute_head (ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	execute_head (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
 		do
 			do_head (ctx, req, res)
 		end
 
-	do_head (ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	do_head (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
 		do
 			handle_not_implemented ("Method HEAD not implemented", ctx, req, res)
 		end
 
 feature -- Method OPTIONS
 
-	execute_options (ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	execute_options (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
 		do
 			do_options (ctx, req, res)
 		end
 
-	do_options (ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	do_options (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
 		do
 			handle_not_implemented ("Method OPTIONS not implemented", ctx, req, res)
 		end
 
 feature -- Method TRACE
 
-	execute_trace (ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	execute_trace (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
 		do
 			do_trace (ctx, req, res)
 		end
 
-	do_trace (ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	do_trace (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
 		do
 			handle_not_implemented ("Method TRACE not implemented", ctx, req, res)
 		end
 
 feature -- Method Extension Method
 
-	execute_extension_method (ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	execute_extension_method (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
 		do
 			do_extension_method (ctx, req, res)
 		end
 
-	do_extension_method (ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	do_extension_method (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
 		do
 			handle_not_implemented ("Method extension-method not implemented", ctx, req, res)
 		end
@@ -164,9 +164,9 @@ feature -- Handle responses
 			Result := Void
 		end
 
-	handle_bad_request_response (a_description:STRING; ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER )
+	handle_bad_request_response (a_description:STRING; ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE )
 		local
-			h : EWF_HEADER
+			h : WSF_HEADER
 		do
 			create h.make
 			h.put_status ({HTTP_STATUS_CODE}.bad_request)
@@ -182,9 +182,9 @@ feature -- Handle responses
 			res.write_string (a_description)
 		end
 
-	handle_internal_server_error (a_description:STRING; ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER )
+	handle_internal_server_error (a_description:STRING; ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE )
 		local
-			h : EWF_HEADER
+			h : WSF_HEADER
 		do
 			create h.make
 			h.put_status ({HTTP_STATUS_CODE}.internal_server_error)
@@ -202,9 +202,9 @@ feature -- Handle responses
 			res.write_string (a_description)
 		end
 
-	handle_not_implemented (a_description: STRING; ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER )
+	handle_not_implemented (a_description: STRING; ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE )
 		local
-			h : EWF_HEADER
+			h : WSF_HEADER
 		do
 			create h.make
 			h.put_status ({HTTP_STATUS_CODE}.not_implemented)
@@ -220,9 +220,9 @@ feature -- Handle responses
 			res.write_string (a_description)
 		end
 
-	handle_resource_not_found_response (a_description:STRING; ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	handle_resource_not_found_response (a_description:STRING; ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
 		local
-			h : EWF_HEADER
+			h : WSF_HEADER
 		do
 			create h.make
 			h.put_status ({HTTP_STATUS_CODE}.not_found)

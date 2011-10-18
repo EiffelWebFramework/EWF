@@ -9,7 +9,7 @@ deferred class
 
 feature -- Helpers
 
-	send_error (a_path: STRING; a_error_id: INTEGER; a_error_name: STRING; a_error_message: detachable STRING; ctx: APP_REQUEST_HANDLER_CONTEXT; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	send_error (a_path: STRING; a_error_id: INTEGER; a_error_name: STRING; a_error_message: detachable STRING; ctx: APP_REQUEST_HANDLER_CONTEXT; req: WSF_REQUEST; res: WSF_RESPONSE)
 		local
 			s: STRING
 			i,nb: INTEGER

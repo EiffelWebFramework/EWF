@@ -15,7 +15,7 @@ create
 
 feature {NONE} -- Initialization
 
-	make (req: WGI_REQUEST; tpl: URI_TEMPLATE; tpl_res: URI_TEMPLATE_MATCH_RESULT; p: like path)
+	make (req: WSF_REQUEST; tpl: URI_TEMPLATE; tpl_res: URI_TEMPLATE_MATCH_RESULT; p: like path)
 		do
 			request := req
 			uri_template := tpl
@@ -31,17 +31,17 @@ feature -- Access
 
 feature -- Query	
 
-	path_parameter (a_name: READABLE_STRING_GENERAL): detachable WGI_VALUE
+	path_parameter (a_name: READABLE_STRING_GENERAL): detachable WSF_VALUE
 		do
 			if attached uri_template_match.url_decoded_path_variable (a_name) as s then
-				create {WGI_STRING_VALUE} Result.make (a_name, s)
+				create {WSF_STRING_VALUE} Result.make (a_name, s)
 			end
 		end
 
-	query_parameter (a_name: READABLE_STRING_GENERAL): detachable WGI_VALUE
+	query_parameter (a_name: READABLE_STRING_GENERAL): detachable WSF_VALUE
 		do
 			if attached uri_template_match.url_decoded_query_variable (a_name) as s then
-				create {WGI_STRING_VALUE} Result.make (a_name, s)
+				create {WSF_STRING_VALUE} Result.make (a_name, s)
 			else
 				Result := request.query_parameter (a_name)
 			end

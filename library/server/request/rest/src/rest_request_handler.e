@@ -15,7 +15,7 @@ inherit
 
 feature -- Access
 
-	authentication_required (req: WGI_REQUEST): BOOLEAN
+	authentication_required (req: WSF_REQUEST): BOOLEAN
 			-- Is authentication required
 			-- might depend on the request environment
 			-- or the associated resources
@@ -35,7 +35,7 @@ feature -- Element change
 
 feature -- Execution
 
-	execute (ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	execute (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
 			-- Execute request handler	
 		local
 			rescued: BOOLEAN
@@ -60,24 +60,24 @@ feature -- Execution
 			retry
 		end
 
-	execute_application (ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	execute_application (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
 		deferred
 		end
 
-	pre_execute (ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	pre_execute (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
 		do
 		end
 
-	post_execute (ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	post_execute (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
 		do
 		end
 
-	rescue_execute (ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	rescue_execute (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
 		do
 			post_execute (ctx, req, res)
 		end
 
-	execute_unauthorized (ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	execute_unauthorized (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
 		do
 			res.set_status_code ({HTTP_STATUS_CODE}.unauthorized)
 			res.write_header ({HTTP_STATUS_CODE}.unauthorized, Void)

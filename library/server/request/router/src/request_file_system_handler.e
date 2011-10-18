@@ -45,10 +45,10 @@ feature -- Element change
 
 feature -- Execution
 
-	execute (ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	execute (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
 			-- Execute request handler	
 		local
-			h: EWF_HEADER
+			h: WSF_HEADER
 			s: STRING
 			uri: STRING
 		do
@@ -68,7 +68,7 @@ feature -- Execution
 			end
 		end
 
-	process_uri (uri: READABLE_STRING_8; ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	process_uri (uri: READABLE_STRING_8; ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
 		local
 			f: RAW_FILE
 			fn: READABLE_STRING_8
@@ -90,9 +90,9 @@ feature -- Execution
 			end
 		end
 
-	respond_index (a_uri: READABLE_STRING_8; dn: READABLE_STRING_8; ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	respond_index (a_uri: READABLE_STRING_8; dn: READABLE_STRING_8; ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
 		local
-			h: EWF_HEADER
+			h: WSF_HEADER
 			uri, s: STRING_8
 			d: DIRECTORY
 			l_files: LIST [STRING_8]
@@ -145,10 +145,10 @@ feature -- Execution
 			d.close
 		end
 
-	respond_file (f: FILE; ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	respond_file (f: FILE; ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
 		local
 			fn: READABLE_STRING_8
-			h: EWF_HEADER
+			h: WSF_HEADER
 			ext: READABLE_STRING_8
 			ct: detachable READABLE_STRING_8
 		do
@@ -175,9 +175,9 @@ feature -- Execution
 			res.flush
 		end
 
-	respond_not_found (uri: READABLE_STRING_8; ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	respond_not_found (uri: READABLE_STRING_8; ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
 		local
-			h: EWF_HEADER
+			h: WSF_HEADER
 			s: STRING_8
 		do
 			create h.make
@@ -191,9 +191,9 @@ feature -- Execution
 			res.flush
 		end
 
-	respond_access_denied (uri: READABLE_STRING_8; ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	respond_access_denied (uri: READABLE_STRING_8; ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
 		local
-			h: EWF_HEADER
+			h: WSF_HEADER
 			s: STRING_8
 		do
 			create h.make
