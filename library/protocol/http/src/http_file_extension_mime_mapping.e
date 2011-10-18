@@ -79,7 +79,6 @@ feature {NONE} -- Initialization
 			-- One can use `map' to add new mapping
 		local
 			f: RAW_FILE
-			s: READABLE_STRING_8
 		do
 			create f.make (fn)
 			if f.exists and then f.is_readable then
