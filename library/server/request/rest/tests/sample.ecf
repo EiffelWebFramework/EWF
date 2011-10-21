@@ -42,7 +42,7 @@
 		<root class="APP_SERVER" feature="make"/>
 		<setting name="executable_name" value="sample"/>
 		<library name="ewsgi_nino" location="..\..\..\ewsgi/connectors\nino\nino-safe.ecf" readonly="false"/>
-		<library name="ewsgi_default_nino" location="..\..\..\ewsgi/default\ewsgi_nino-safe.ecf" readonly="false"/>
+		<library name="default_nino" location="..\..\..\wsf\default\nino-safe.ecf" readonly="false"/>
 
 
 		<cluster name="src" location=".\src\" recursive="true">

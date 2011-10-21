@@ -1,29 +1,26 @@
+note
+	description: "Summary description for {DEFAULT_APPLICATION}."
+	date: "$Date$"
+	revision: "$Revision$"
+
 deferred class
-	REST_APPLICATION_GATEWAY
+	DEFAULT_APPLICATION
 
 inherit
 	WSF_APPLICATION
 
-feature -- Access
+feature {NONE} -- Initialization
 
-	build_gateway_and_launch
+	make_and_launch
 		local
-			libfcgi: WGI_LIBFCGI_CONNECTOR
+			cgi: WGI_CGI_CONNECTOR
 		do
-			create libfcgi.make (Current)
-			libfcgi.launch
-		end	
-
-	gateway_name: STRING = "libFCGI"
-
-	exit_with_code (a_code: INTEGER)
-		do
-			(create {EXCEPTIONS}).die (a_code)
+			create cgi.make (Current)
+			cgi.launch
 		end
-	
 
 note
-	copyright: "Copyright (c) 1984-2011, Eiffel Software and others"
+	copyright: "2011-2011, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

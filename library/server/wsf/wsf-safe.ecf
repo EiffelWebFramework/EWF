@@ -14,7 +14,7 @@
 		<library name="time" location="$ISE_LIBRARY\library\time\time-safe.ecf"/>
 		<library name="error" location="..\..\error\error-safe.ecf"/>
 		<library name="http" location="..\..\protocol\http\http-safe.ecf"/>
-		<library name="encoder" location="..\..\text\encoder\encoder-safe.ecf" readonly="false"/>
-		<cluster name="src" location=".\" recursive="true"/>
+		<library name="encoder" location="..\..\text\encoder\encoder-safe.ecf"/>
+		<cluster name="src" location=".\src" recursive="true"/>
 	</target>
 </system>
