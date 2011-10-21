@@ -96,22 +96,6 @@ feature -- Access
 
 feature -- Parsing
 
-	parse_http_request_line (line: STRING)
-		require
-			line /= Void
-		local
-			pos, next_pos: INTEGER
-		do
-			print ("%N parse http request line:%N" + line)
-			-- parse (this should be done by a lexer)
-			pos := line.index_of (' ', 1)
-			method := line.substring (1, pos - 1)
-			next_pos := line.index_of (' ', pos+1)
-			uri := line.substring (pos+1, next_pos-1)
-		ensure
-			not_void_method: method /= Void
-		end
-
 	analyze_request_message (a_input: HTTP_INPUT_STREAM)
         require
             input_readable: a_input /= Void and then a_input.is_readable
@@ -137,14 +121,16 @@ feature -- Parsing
             loop
                 line := a_input.last_string
 				n := line.count
-                print ("%N" + line + "%N")
+                debug ("nino")
+					print ("%N" + line)
+				end
                 pos := line.index_of (':',1)
 				if pos > 0 then
-					k := line.substring(1, pos-1)
-					if line[pos+1].is_space then
+					k := line.substring (1, pos-1)
+					if line [pos+1].is_space then
 						pos := pos + 1
 					end
-					if line[n] = '%R' then
+					if line [n] = '%R' then
 						n := n - 1
 					end
 					val := line.substring (pos + 1, n)
@@ -152,7 +138,7 @@ feature -- Parsing
 				end
                 txt.append (line)
                 txt.append_character ('%N')
-                if line.is_empty or else line[1] = '%R' then
+                if line.is_empty or else line [1] = '%R' then
         			end_of_stream := True
         		else
         			a_input.read_line
@@ -166,15 +152,20 @@ feature -- Parsing
 		local
 			pos, next_pos: INTEGER
 		do
-			print ("%N parse request line:%N" + line)
+			debug ("nino")
+				print ("%N## Parse HTTP request line ##")
+				print ("%N")
+				print (line)
+			end
 			pos := line.index_of (' ', 1)
 			method := line.substring (1, pos - 1)
-			next_pos := line.index_of (' ', pos+1)
-			uri := line.substring (pos+1, next_pos-1)
+			next_pos := line.index_of (' ', pos + 1)
+			uri := line.substring (pos + 1, next_pos - 1)
 			version := line.substring (next_pos + 1, line.count)
 		ensure
 			not_void_method: method /= Void
 		end
+
 
 invariant
 	request_header_attached: request_header /= Void
