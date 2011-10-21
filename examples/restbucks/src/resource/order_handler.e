@@ -40,25 +40,48 @@ feature -- HTTP Methods
 			-- 200 OK, and a representation of the order
 			-- If the GET request is not SUCCESS, we response with
 			-- 404 Resource not found
+			-- If is a Condition GET and the resource does not change we send a
+			-- 304, Resource not modifed
 		local
 			id :  STRING
 		do
 			if attached req.orig_path_info as orig_path then
 				id := get_order_id_from_path (orig_path)
 				if attached retrieve_order (id) as l_order then
-					compute_response_get (ctx, req, res, l_order)
+					if is_conditional_get (req, l_order) then
+						handle_resource_not_modified_response ("The resource" + orig_path + "does not change", ctx, req, res)
+					else
+						compute_response_get (ctx, req, res, l_order)
+					end
 				else
 					handle_resource_not_found_response ("The following resource" + orig_path + " is not found ", ctx, req, res)
 				end
 			end
 		end
 
+	is_conditional_get (req : WGI_REQUEST; l_order : ORDER) : BOOLEAN
+		-- Check if If-None-Match is present and then if there is a representation that has that etag
+		-- if the representation hasn't changed, we return TRUE
+		-- then the response is a 304 with no entity body returned.
+		local
+			etag_util : ETAG_UTILS
+		do
+				if attached req.meta_variable ("HTTP_IF_NONE_MATCH") as if_none_match then
+						create etag_util
+						if if_none_match.as_string.same_string (etag_util.md5_digest (l_order.out).as_string_32) then
+							Result := True
+						end
+				end
+		end
+
 	compute_response_get (ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER; l_order : ORDER)
 		local
 			h: EWF_HEADER
 			l_msg : STRING
+			etag_utils : ETAG_UTILS
 		do
 			create h.make
+			create etag_utils
 			h.put_status ({HTTP_STATUS_CODE}.ok)
 			h.put_content_type_application_json
 			if attached {JSON_VALUE} json.value (l_order) as jv then
@@ -67,6 +90,7 @@ feature -- HTTP Methods
 				if attached req.request_time as time then
 					h.add_header ("Date:" + time.formatted_out ("ddd,[0]dd mmm yyyy [0]hh:[0]mi:[0]ss.ff2") + " GMT")
 				end
+				h.add_header ("etag:" + etag_utils.md5_digest (l_order.out))
 				res.set_status_code ({HTTP_STATUS_CODE}.ok)
 				res.write_headers_string (h.string)
 				res.write_string (l_msg)
@@ -81,6 +105,8 @@ feature -- HTTP Methods
 		-- 404 if the order is not found
 		-- 400 in case of a bad request
 		-- 500 internal server error
+		-- If the request is a Conditional PUT, and it does not mat we response
+		-- 415, precondition failed.
 		local
 			l_post: STRING
 			l_order : detachable ORDER
@@ -90,8 +116,12 @@ feature -- HTTP Methods
 			l_order := extract_order_request(l_post)
 			if  l_order /= Void and then db_access.orders.has_key (l_order.id) then
 				if is_valid_to_update(l_order) then
-					update_order( l_order)
-					compute_response_put (ctx, req, res, l_order)
+					if is_conditional_put (req, l_order) then
+						update_order( l_order)
+						compute_response_put (ctx, req, res, l_order)
+					else
+						handle_precondition_fail_response ("", ctx, req, res)
+					end
 				else
 					--| FIXME: Here we need to define the Allow methods
 					handle_resource_conflict_response (l_post +"%N There is conflict while trying to update the order, the order could not be update in the current state", ctx, req, res)
@@ -101,13 +131,34 @@ feature -- HTTP Methods
 			end
 		end
 
+	is_conditional_put (req : WGI_REQUEST; order : ORDER) : BOOLEAN
+		-- Check if If-Match is present and then if there is a representation that has that etag
+		-- if the representation hasn't changed, we return TRUE
+		local
+			etag_util : ETAG_UTILS
+		do
+			if attached retrieve_order (order.id) as l_order then
+				if attached req.meta_variable ("HTTP_IF_MATCH") as if_match then
+						create etag_util
+						if if_match.as_string.same_string (etag_util.md5_digest (l_order.out).as_string_32) then
+							Result := True
+						end
+				else
+					Result := True
+				end
+			end
+		end
+
+
 	compute_response_put (ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER; l_order : ORDER)
 		local
 			h: EWF_HEADER
 			joc : JSON_ORDER_CONVERTER
+			etag_utils : ETAG_UTILS
 		do
 			create h.make
 			create joc.make
+			create etag_utils
 			json.add_converter(joc)
 
 			create h.make
@@ -116,6 +167,7 @@ feature -- HTTP Methods
 			if attached req.request_time as time then
 				h.add_header ("Date:" +time.formatted_out ("ddd,[0]dd mmm yyyy [0]hh:[0]mi:[0]ss.ff2") + " GMT")
 			end
+			h.add_header ("etag:" + etag_utils.md5_digest (l_order.out))
 			if attached {JSON_VALUE} json.value (l_order) as jv then
 				h.put_content_length (jv.representation.count)
 				res.set_status_code ({HTTP_STATUS_CODE}.ok)
@@ -133,7 +185,6 @@ feature -- HTTP Methods
 		-- 500 if we have an internal server error
 		local
 			id: STRING
-			h : EWF_HEADER
 		do
 			if  attached req.orig_path_info as orig_path then
 				id := get_order_id_from_path (orig_path)

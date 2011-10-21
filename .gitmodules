@@ -10,3 +10,9 @@
 [submodule "ext/ise_library/curl"]
 	path = ext/ise_library/curl
 	url = http://github.com/EiffelSoftware/mirror-Eiffel-cURL.git
+[submodule "ext/crypto/eel"]
+	path = ext/crypto/eel
+	url = http://github.com/Eiffel-World/eel.git
+[submodule "ext/crypto/eapml"]
+	path = ext/crypto/eapml
+	url = http://github.com/Eiffel-World/eapml.git
