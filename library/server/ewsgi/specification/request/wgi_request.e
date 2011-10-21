@@ -168,11 +168,6 @@ feature -- Common Gateway Interface - 1.1       8 January 1996
 		deferred
 		end
 
-	content_length_value: NATURAL_64
-			-- Integer value related to `content_length"
-		deferred
-		end
-
 	content_type: detachable READABLE_STRING_8
 			-- If the request includes a message-body, CONTENT_TYPE is set to
 			-- the Internet Media Type [9] of the attached entity if the type

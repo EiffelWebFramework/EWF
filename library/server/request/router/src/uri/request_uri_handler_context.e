@@ -23,11 +23,11 @@ feature {NONE} -- Initialization
 
 feature -- Query	
 
-	path_parameter (a_name: READABLE_STRING_GENERAL): detachable WSF_VALUE
+	path_parameter (a_name: READABLE_STRING_8): detachable WSF_VALUE
 		do
 		end
 
-	query_parameter (a_name: READABLE_STRING_GENERAL): detachable WSF_VALUE
+	query_parameter (a_name: READABLE_STRING_8): detachable WSF_VALUE
 		do
 			Result := request.query_parameter (a_name)
 		end

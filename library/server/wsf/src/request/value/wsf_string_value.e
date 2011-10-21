@@ -18,10 +18,13 @@ convert
 
 feature {NONE} -- Initialization
 
-	make (a_name: READABLE_STRING_GENERAL; a_string: like string)
+	make (a_name: READABLE_STRING_8; a_string: READABLE_STRING_8)
 		do
-			name := a_name.as_string_32
-			string := a_string
+			name := url_decoded_string (a_name)
+			string := url_decoded_string (a_string)
+
+			url_encoded_name := a_name
+			url_encoded_string := a_string
 		end
 
 feature -- Access
@@ -29,6 +32,10 @@ feature -- Access
 	name: READABLE_STRING_32
 
 	string: READABLE_STRING_32
+
+	url_encoded_name: READABLE_STRING_32
+
+	url_encoded_string: READABLE_STRING_32
 
 feature -- Helper
 
@@ -56,6 +63,19 @@ feature -- Conversion
 	as_string: STRING_32
 		do
 			create Result.make_from_string (string)
+		end
+
+feature {NONE} -- Implementation
+
+	url_decoded_string (s: READABLE_STRING_8): READABLE_STRING_32
+			-- Decoded url-encoded string `s'
+		do
+			Result := url_encoder.decoded_string (s)
+		end
+
+	url_encoder: URL_ENCODER
+		once
+			create Result
 		end
 
 ;note

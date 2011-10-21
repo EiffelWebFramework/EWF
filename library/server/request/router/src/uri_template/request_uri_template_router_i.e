@@ -57,8 +57,8 @@ feature {NONE} -- Access: Implementation
 	handler (req: WSF_REQUEST): detachable TUPLE [handler: attached like default_handler; context: like default_handler_context]
 		local
 			l_handlers: like handlers
-			t: STRING
-			p: STRING
+			t: READABLE_STRING_8
+			p: READABLE_STRING_8
 			l_req_method: READABLE_STRING_GENERAL
 			l_res: URI_TEMPLATE_MATCH_RESULT
 		do

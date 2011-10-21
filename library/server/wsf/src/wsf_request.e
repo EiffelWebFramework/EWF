@@ -8,6 +8,9 @@ note
 class
 	WSF_REQUEST
 
+inherit
+	DEBUG_OUTPUT
+
 create {WSF_APPLICATION}
 	make_from_wgi
 
@@ -41,7 +44,25 @@ feature {NONE} -- Initialization
 
 	initialize
 			-- Specific initialization
+		local
+			s8: detachable READABLE_STRING_8
 		do
+			--| Content-Length
+			if attached content_length as s and then s.is_natural_64 then
+				content_length_value := s.to_natural_64
+			else
+				content_length_value := 0
+			end
+
+			--| PATH_INFO
+			path_info := url_encoder.decoded_string (wgi_request.path_info)
+
+			--| PATH_TRANSLATED
+			s8 := wgi_request.path_translated
+			if s8 /= Void then
+				path_translated := url_encoder.decoded_string (s8)
+			end
+
 				--| Here one can set its own environment entries if needed
 			if meta_variable ({CGI_META_NAMES}.request_time) = Void then
 				set_meta_string_variable ({CGI_META_NAMES}.request_time, date_time_utilities.unix_time_stamp (Void).out)
@@ -49,6 +70,13 @@ feature {NONE} -- Initialization
 		end
 
 	wgi_request: WGI_REQUEST
+
+feature -- Status report
+
+	debug_output: STRING_8
+		do
+			create Result.make_from_string (request_method + " " + request_uri)
+		end
 
 feature -- Status
 
@@ -79,7 +107,7 @@ feature -- Access: Input
 
 feature {NONE} -- Access: global variable
 
-	items_table: HASH_TABLE [WSF_VALUE, READABLE_STRING_GENERAL]
+	items_table: HASH_TABLE [WSF_VALUE, READABLE_STRING_8]
 			-- Table containing all the various variables
 			-- Warning: this is computed each time, if you change the content of other containers
 			-- this won't update this Result's content, unless you query it again
@@ -109,7 +137,6 @@ feature {NONE} -- Access: global variable
 			loop
 				Result.force (vars.item, vars.item.name)
 			end
-
 		end
 
 feature -- Access: global variable		
@@ -136,9 +163,6 @@ feature -- Access: global variable
 					end
 				end
 			end
---			if s /= Void then
---				Result := s.as_string_32
---			end
 		end
 
 	string_item (a_name: READABLE_STRING_8): detachable READABLE_STRING_32
@@ -251,10 +275,6 @@ feature -- Access: CGI meta parameters - 1.1
 
 	content_length_value: NATURAL_64
 			-- Integer value related to `content_length"
-		do
---			Result := wgi_request.content_length_value
-			check not_yet_implemented: False then end
-		end
 
 	content_type: detachable READABLE_STRING_8
 			-- If the wgi_request includes a message-body, CONTENT_TYPE is set to
@@ -334,7 +354,7 @@ feature -- Access: CGI meta parameters - 1.1
 			Result := wgi_request.gateway_interface
 		end
 
-	path_info: READABLE_STRING_8
+	path_info: READABLE_STRING_32
 			-- The PATH_INFO metavariable specifies a path to be interpreted
 			-- by the CGI script. It identifies the resource or sub-resource
 			-- to be returned by the CGI script, and it is derived from the
@@ -362,11 +382,8 @@ feature -- Access: CGI meta parameters - 1.1
 			-- The PATH_INFO value is case-sensitive, and the server MUST
 			-- preserve the case of the PATH_INFO element of the URI when
 			-- making it available to scripts.
-		do
-			Result := wgi_request.path_info
-		end
 
-	path_translated: detachable READABLE_STRING_8
+	path_translated: detachable READABLE_STRING_32
 			-- PATH_TRANSLATED is derived by taking any path-info component
 			-- of the wgi_request URI (see section 6.1.6), decoding it (see
 			-- section 3.1), parsing it as a URI in its own right, and
@@ -409,9 +426,6 @@ feature -- Access: CGI meta parameters - 1.1
 			--
 			-- Servers SHOULD provide this metavariable to scripts if and
 			-- only if the wgi_request URI includes a path-info component.
-		do
-			Result := wgi_request.path_translated
-		end
 
 	query_string: READABLE_STRING_8
 			-- A URL-encoded string; the <query> part of the Script-URI. (See
@@ -707,7 +721,7 @@ feature -- Cookies
 			Result := cookies_table
 		end
 
-	cookie (a_name: READABLE_STRING_GENERAL): detachable WSF_VALUE
+	cookie (a_name: READABLE_STRING_8): detachable WSF_VALUE
 			-- Field for name `a_name'.
 		do
 			Result := cookies_table.item (a_name)
@@ -715,7 +729,7 @@ feature -- Cookies
 
 feature {NONE} -- Cookies
 
-	cookies_table: HASH_TABLE [WSF_VALUE, READABLE_STRING_GENERAL]
+	cookies_table: HASH_TABLE [WSF_VALUE, READABLE_STRING_32]
 			-- Expanded cookies variable
 		local
 			i,j,p,n: INTEGER
@@ -749,7 +763,7 @@ feature {NONE} -- Cookies
 								v := s.substring (i + 1, j - 1)
 								p := j + 1
 							end
-							l_cookies.force (new_string_value (k, v), k)
+							add_value_to_table (k, v, l_cookies)
 						end
 					end
 				else
@@ -768,7 +782,7 @@ feature -- Query parameters
 			Result := query_parameters_table
 		end
 
-	query_parameter (a_name: READABLE_STRING_GENERAL): detachable WSF_VALUE
+	query_parameter (a_name: READABLE_STRING_32): detachable WSF_VALUE
 			-- Parameter for name `n'.
 		do
 			Result := query_parameters_table.item (a_name)
@@ -776,7 +790,7 @@ feature -- Query parameters
 
 feature {NONE} -- Query parameters: implementation
 
-	query_parameters_table: HASH_TABLE [WSF_VALUE, READABLE_STRING_GENERAL]
+	query_parameters_table: HASH_TABLE [WSF_VALUE, READABLE_STRING_32]
 			-- Variables extracted from QUERY_STRING	
 		local
 			vars: like internal_query_parameters_table
@@ -800,20 +814,19 @@ feature {NONE} -- Query parameters: implementation
 						s := rq_uri.substring (p+1, e)
 					end
 				end
-				vars := urlencoded_parameters (s, True)
+				vars := urlencoded_parameters (s)
 				vars.compare_objects
 				internal_query_parameters_table := vars
 			end
 			Result := vars
 		end
 
-	urlencoded_parameters (a_content: detachable READABLE_STRING_8; decoding: BOOLEAN): HASH_TABLE [WSF_VALUE, STRING]
+	urlencoded_parameters (a_content: detachable READABLE_STRING_8): HASH_TABLE [WSF_VALUE, READABLE_STRING_32]
 			-- Import `a_content'
 		local
 			n, p, i, j: INTEGER
-			s: STRING
-			l_name,l_value: STRING_32
-			v: WSF_VALUE
+			s: READABLE_STRING_8
+			l_name, l_value: READABLE_STRING_8
 		do
 			if a_content = Void then
 				create Result.make (0)
@@ -841,25 +854,28 @@ feature {NONE} -- Query parameters: implementation
 							if j > 0 then
 								l_name := s.substring (1, j - 1)
 								l_value := s.substring (j + 1, s.count)
-								if decoding then
-									l_name := url_encoder.decoded_string (l_name)
-									l_value := url_encoder.decoded_string (l_value)
-								end
-								v := new_string_value (l_name, l_value)
-								if Result.has_key (l_name) and then attached Result.found_item as l_existing_value then
-									if attached {WSF_MULTIPLE_STRING_VALUE} l_existing_value as l_multi then
-										l_multi.add_value (v)
-									else
-										Result.force (create {WSF_MULTIPLE_STRING_VALUE}.make_with_array (<<l_existing_value, v>>), l_name)
-										check replaced: Result.found and then Result.found_item ~ l_existing_value end
-									end
-								else
-									Result.force (v, l_name)
-								end
+								add_value_to_table (l_name, l_value, Result)
 							end
 						end
 					end
 				end
+			end
+		end
+
+	add_value_to_table (a_name: READABLE_STRING_32; a_value: READABLE_STRING_32; a_table: HASH_TABLE [WSF_VALUE, READABLE_STRING_32])
+		local
+			v: WSF_VALUE
+		do
+			v := new_string_value (a_name, a_value)
+			if a_table.has_key (v.name) and then attached a_table.found_item as l_existing_value then
+				if attached {WSF_MULTIPLE_STRING_VALUE} l_existing_value as l_multi then
+					l_multi.add_value (v)
+				else
+					a_table.force (create {WSF_MULTIPLE_STRING_VALUE}.make_with_array (<<l_existing_value, v>>), v.name)
+					check replaced: a_table.found and then a_table.found_item ~ l_existing_value end
+				end
+			else
+				a_table.force (v, v.name)
 			end
 		end
 
@@ -870,7 +886,7 @@ feature -- Form fields and related
 			Result := form_data_parameters_table
 		end
 
-	form_data_parameter (a_name: READABLE_STRING_GENERAL): detachable WSF_VALUE
+	form_data_parameter (a_name: READABLE_STRING_8): detachable WSF_VALUE
 			-- Field for name `a_name'.
 		do
 			Result := form_data_parameters_table.item (a_name)
@@ -887,7 +903,7 @@ feature -- Form fields and related
 
 feature {NONE} -- Form fields and related
 
-	form_data_parameters_table: HASH_TABLE [WSF_VALUE, READABLE_STRING_GENERAL]
+	form_data_parameters_table: HASH_TABLE [WSF_VALUE, READABLE_STRING_32]
 			-- Variables sent by POST request	
 		local
 			vars: like internal_form_data_parameters_table
@@ -911,7 +927,7 @@ feature {NONE} -- Form fields and related
 						analyze_multipart_form (l_type, s, vars)
 					else
 						s := form_input_data (n.to_integer_32) --| FIXME truncated from NAT64 to INT32
-						vars := urlencoded_parameters (s, True)
+						vars := urlencoded_parameters (s)
 					end
 					if raw_post_data_recorded then
 						set_meta_string_variable ("RAW_POST_DATA", s)
@@ -1309,7 +1325,7 @@ feature {NONE} -- Implementation: Form analyzer
 						save_uploaded_file (l_content, l_up_file_info)
 						uploaded_files.force (l_up_file_info, l_name)
 					else
-						vars_post.force (new_string_value (l_name, l_content), l_name)
+						add_value_to_table (l_name, l_content, vars_post)
 					end
 				else
 					error_handler.add_custom_error (0, "unamed multipart entry", Void)
@@ -1407,9 +1423,6 @@ feature {NONE} -- Implementation
 					report_bad_request_error ("Missing host header")
 				end
 			end
---			if not has_error then
---				update_path_info
---			end
 		end
 
 feature {NONE} -- Implementation: utilities	
@@ -1460,7 +1473,7 @@ feature {NONE} -- Implementation: utilities
 			one_starting_slash: Result[1] = '/' and (Result.count = 1 or else Result[2] /= '/')
 		end
 
-	new_string_value (a_name: READABLE_STRING_GENERAL; a_value: READABLE_STRING_32): WSF_STRING_VALUE
+	new_string_value (a_name: READABLE_STRING_8; a_value: READABLE_STRING_8): WSF_STRING_VALUE
 		do
 			create Result.make (a_name, a_value)
 		end

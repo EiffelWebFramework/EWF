@@ -126,7 +126,6 @@ feature {NONE} -- Initialization
 			end
 		end
 
-
 feature -- Access
 
 	mime_type (ext: READABLE_STRING_8): detachable READABLE_STRING_8

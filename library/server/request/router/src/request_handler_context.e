@@ -31,7 +31,7 @@ feature {NONE} -- Constants
 
 feature -- Query
 
-	request_format (a_format_variable_name: detachable READABLE_STRING_GENERAL; content_type_supported: detachable ARRAY [READABLE_STRING_8]): detachable READABLE_STRING_8
+	request_format (a_format_variable_name: detachable READABLE_STRING_8; content_type_supported: detachable ARRAY [READABLE_STRING_8]): detachable READABLE_STRING_8
 			-- Format id for the request based on {HTTP_FORMAT_CONSTANTS}
 		do
 			if a_format_variable_name /= Void and then attached string_parameter (a_format_variable_name) as ctx_format then
@@ -41,7 +41,7 @@ feature -- Query
 			end
 		end
 
-	request_format_id (a_format_variable_name: detachable READABLE_STRING_GENERAL; content_type_supported: detachable ARRAY [READABLE_STRING_8]): INTEGER
+	request_format_id (a_format_variable_name: detachable READABLE_STRING_8; content_type_supported: detachable ARRAY [READABLE_STRING_8]): INTEGER
 			-- Format id for the request based on {HTTP_FORMAT_CONSTANTS}
 		do
 			if attached request_format (a_format_variable_name, content_type_supported) as l_format then
@@ -107,18 +107,18 @@ feature -- Query
 
 feature -- Query	
 
-	path_parameter (a_name: READABLE_STRING_GENERAL): detachable WSF_VALUE
+	path_parameter (a_name: READABLE_STRING_8): detachable WSF_VALUE
 			-- Parameter value for path variable `a_name'
 		deferred
 		end
 
-	query_parameter (a_name: READABLE_STRING_GENERAL): detachable WSF_VALUE
+	query_parameter (a_name: READABLE_STRING_8): detachable WSF_VALUE
 			-- Parameter value for query variable `a_name'	
 			--| i.e after the ? character
 		deferred
 		end
 
-	parameter (a_name: READABLE_STRING_GENERAL): detachable WSF_VALUE
+	parameter (a_name: READABLE_STRING_8): detachable WSF_VALUE
 			-- Any parameter value for variable `a_name'
 			-- URI template parameter and query parameters
 		do
@@ -137,17 +137,17 @@ feature -- String query
 			end
 		end
 
-	string_path_parameter (a_name: READABLE_STRING_GENERAL): detachable READABLE_STRING_32
+	string_path_parameter (a_name: READABLE_STRING_8): detachable READABLE_STRING_32
 		do
 			Result := string_from (path_parameter (a_name))
 		end
 
-	string_query_parameter (a_name: READABLE_STRING_GENERAL): detachable READABLE_STRING_32
+	string_query_parameter (a_name: READABLE_STRING_8): detachable READABLE_STRING_32
 		do
 			Result := string_from (query_parameter (a_name))
 		end
 
-	string_parameter (a_name: READABLE_STRING_GENERAL): detachable READABLE_STRING_32
+	string_parameter (a_name: READABLE_STRING_8): detachable READABLE_STRING_32
 		do
 			Result := string_from (parameter (a_name))
 		end

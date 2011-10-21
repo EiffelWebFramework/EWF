@@ -23,152 +23,26 @@ feature {NONE} -- Initialization
 		require
 			vars_attached: a_vars /= Void
 		do
-			create error_handler.make
 			input := a_input
-			set_meta_parameters (a_vars)
+			set_meta_variables (a_vars)
 
-			initialize
-			analyze
+			update_path_info
 		end
-
-	set_meta_parameters (a_vars: HASH_TABLE [READABLE_STRING_8, READABLE_STRING_8])
-			-- Fill with variable from `a_vars'
-		local
-			s: like meta_string_variable
-			table: HASH_TABLE [READABLE_STRING_8, READABLE_STRING_8]
-			l_query_string: like query_string
-			l_request_uri: detachable STRING_32
-		do
-			create {STRING_8} empty_string.make_empty
-
-			create table.make (a_vars.count)
-			table.compare_objects
-			meta_variables_table := table
-			from
-				a_vars.start
-			until
-				a_vars.after
-			loop
-				table.force (new_string_value (a_vars.key_for_iteration, a_vars.item_for_iteration), a_vars.key_for_iteration)
-				a_vars.forth
-			end
-
-				--| QUERY_STRING
-			l_query_string := meta_string_variable_or_default ({WGI_META_NAMES}.query_string, empty_string, False)
-			query_string := l_query_string
-
-				--| REQUEST_METHOD
-			request_method := meta_string_variable_or_default ({WGI_META_NAMES}.request_method, empty_string, False)
-
-				--| CONTENT_TYPE
-			s := meta_string_variable ({WGI_META_NAMES}.content_type)
-			if s /= Void and then not s.is_empty then
-				content_type := s
-			else
-				content_type := Void
-			end
-
-				--| CONTENT_LENGTH
-			s := meta_string_variable ({WGI_META_NAMES}.content_length)
-			content_length := s
-			if s /= Void and then s.is_natural_64 then
-				content_length_value := s.to_natural_64
-			else
-				--| content_length := 0
-			end
-
-				--| PATH_INFO
-			path_info := meta_string_variable_or_default ({WGI_META_NAMES}.path_info, empty_string, False)
-
-				--| SERVER_NAME
-			server_name := meta_string_variable_or_default ({WGI_META_NAMES}.server_name, empty_string, False)
-
-				--| SERVER_PORT
-			s := meta_string_variable ({WGI_META_NAMES}.server_port)
-			if s /= Void and then s.is_integer then
-				server_port := s.to_integer
-			else
-				server_port := 80
-			end
-
-				--| SCRIPT_NAME
-			script_name := meta_string_variable_or_default ({WGI_META_NAMES}.script_name, empty_string, False)
-
-				--| REMOTE_ADDR
-			remote_addr := meta_string_variable_or_default ({WGI_META_NAMES}.remote_addr, empty_string, False)
-
-				--| REMOTE_HOST
-			remote_host := meta_string_variable_or_default ({WGI_META_NAMES}.remote_host, empty_string, False)
-
-				--| REQUEST_URI
-			s := meta_string_variable ({WGI_META_NAMES}.request_uri)
-			if s /= Void then
-				l_request_uri := s
-			else
-					--| It might occur that REQUEST_URI is not available, so let's compute it from SCRIPT_NAME
-				create l_request_uri.make_from_string (script_name)
-				if not l_query_string.is_empty then
-					 l_request_uri.append_character ('?')
-					 l_request_uri.append (l_query_string)
-				end
-			end
-			request_uri := single_slash_starting_string (l_request_uri)
-		end
-
-	initialize
-			-- Specific initialization
-		do
-				--| Here one can set its own environment entries if needed
---			if meta_variable ({WGI_META_NAMES}.request_time) = Void then
---				set_meta_string_variable ({WGI_META_NAMES}.request_time, date_time_utilities.unix_time_stamp (Void).out)
---			end
-		end
-
-feature -- Error handling
-
-	has_error: BOOLEAN
-		do
-			Result := error_handler.has_error
-		end
-
-	error_handler: ERROR_HANDLER
-			-- Error handler
-			-- By default initialized to new handler
 
 feature -- Access: Input
 
 	input: WGI_INPUT_STREAM
 			-- Server input channel
 
---feature -- Access extra information
---
---	request_time: detachable DATE_TIME
---			-- Request time (UTC)
---		do
---			if
---				attached {WGI_STRING_VALUE} meta_variable ({WGI_META_NAMES}.request_time) as t and then
---				t.string.is_integer_64
---			then
---				Result := date_time_utilities.unix_time_stamp_to_date_time (t.string.to_integer_64)
---			end
---		end
-
-feature {NONE} -- Access: CGI meta parameters
-
-	meta_variables_table: HASH_TABLE [READABLE_STRING_8, READABLE_STRING_8]
-			-- CGI Environment parameters
-
 feature -- Access: CGI meta parameters
 
 	meta_variables: HASH_TABLE [READABLE_STRING_8, READABLE_STRING_8]
-		do
-			Result := meta_variables_table
-		end
+			-- CGI Environment parameters
 
 	meta_variable (a_name: READABLE_STRING_8): detachable READABLE_STRING_8
 			-- CGI meta variable related to `a_name'
 		do
-			Result := meta_variables_table.item (a_name)
+			Result := meta_variables.item (a_name)
 		end
 
 	meta_string_variable_or_default (a_name: READABLE_STRING_8; a_default: READABLE_STRING_8; use_default_when_empty: BOOLEAN): READABLE_STRING_8
@@ -189,14 +63,14 @@ feature -- Access: CGI meta parameters
 
 	set_meta_string_variable (a_name: READABLE_STRING_8; a_value: READABLE_STRING_8)
 		do
-			meta_variables_table.force (new_string_value (a_name, a_value), a_name)
+			meta_variables.force (a_value, a_name)
 		ensure
 			param_set: attached meta_variable (a_name) as val and then val ~ a_value
 		end
 
 	unset_meta_variable (a_name: READABLE_STRING_8)
 		do
-			meta_variables_table.remove (a_name)
+			meta_variables.remove (a_name)
 		ensure
 			param_unset: meta_variable (a_name) = Void
 		end
@@ -206,8 +80,6 @@ feature -- Access: CGI meta parameters - 1.1
 	auth_type: detachable READABLE_STRING_8
 
 	content_length: detachable READABLE_STRING_8
-
-	content_length_value: NATURAL_64
 
 	content_type: detachable READABLE_STRING_8
 
@@ -340,6 +212,84 @@ feature -- Access: Extension to CGI meta parameters - 1.1
 
 feature {NONE} -- Element change: CGI meta parameter related to PATH_INFO
 
+	set_meta_variables (a_vars: HASH_TABLE [READABLE_STRING_8, READABLE_STRING_8])
+			-- Fill with variable from `a_vars'
+		local
+			s: like meta_string_variable
+			table: HASH_TABLE [READABLE_STRING_8, READABLE_STRING_8]
+			l_query_string: like query_string
+			l_request_uri: detachable STRING_32
+		do
+			create {STRING_8} empty_string.make_empty
+
+			create table.make (a_vars.count)
+			table.compare_objects
+			meta_variables := table
+			from
+				a_vars.start
+			until
+				a_vars.after
+			loop
+				table.force (a_vars.item_for_iteration, a_vars.key_for_iteration)
+				a_vars.forth
+			end
+
+				--| QUERY_STRING
+			l_query_string := meta_string_variable_or_default ({WGI_META_NAMES}.query_string, empty_string, False)
+			query_string := l_query_string
+
+				--| REQUEST_METHOD
+			request_method := meta_string_variable_or_default ({WGI_META_NAMES}.request_method, empty_string, False)
+
+				--| CONTENT_TYPE
+			s := meta_string_variable ({WGI_META_NAMES}.content_type)
+			if s /= Void and then not s.is_empty then
+				content_type := s
+			else
+				content_type := Void
+			end
+
+				--| CONTENT_LENGTH
+			content_length := meta_string_variable ({WGI_META_NAMES}.content_length)
+
+				--| PATH_INFO
+			path_info := meta_string_variable_or_default ({WGI_META_NAMES}.path_info, empty_string, False)
+
+				--| SERVER_NAME
+			server_name := meta_string_variable_or_default ({WGI_META_NAMES}.server_name, empty_string, False)
+
+				--| SERVER_PORT
+			s := meta_string_variable ({WGI_META_NAMES}.server_port)
+			if s /= Void and then s.is_integer then
+				server_port := s.to_integer
+			else
+				server_port := 80
+			end
+
+				--| SCRIPT_NAME
+			script_name := meta_string_variable_or_default ({WGI_META_NAMES}.script_name, empty_string, False)
+
+				--| REMOTE_ADDR
+			remote_addr := meta_string_variable_or_default ({WGI_META_NAMES}.remote_addr, empty_string, False)
+
+				--| REMOTE_HOST
+			remote_host := meta_string_variable_or_default ({WGI_META_NAMES}.remote_host, empty_string, False)
+
+				--| REQUEST_URI
+			s := meta_string_variable ({WGI_META_NAMES}.request_uri)
+			if s /= Void then
+				l_request_uri := s
+			else
+					--| It might occur that REQUEST_URI is not available, so let's compute it from SCRIPT_NAME
+				create l_request_uri.make_from_string (script_name)
+				if not l_query_string.is_empty then
+					 l_request_uri.append_character ('?')
+					 l_request_uri.append (l_query_string)
+				end
+			end
+			request_uri := single_slash_starting_string (l_request_uri)
+		end
+
 	set_orig_path_info (s: READABLE_STRING_8)
 			-- Set ORIG_PATH_INFO to `s'
 		require
@@ -381,14 +331,6 @@ feature {NONE} -- Element change: CGI meta parameter related to PATH_INFO
 			end
 		end
 
-feature -- Element change
-
-	set_error_handler (ehdl: like error_handler)
-			-- Set `error_handler' to `ehdl'
-		do
-			error_handler := ehdl
-		end
-
 feature {NONE} -- I/O: implementation
 
 	read_input (nb: INTEGER)
@@ -401,46 +343,6 @@ feature {NONE} -- I/O: implementation
 			-- Last string read from `input'
 		do
 			Result := input.last_string
-		end
-
-feature {NONE} -- Implementation
-
-	report_bad_request_error (a_message: detachable STRING)
-			-- Report error
-		local
-			e: EWF_ERROR
-		do
-			create e.make ({HTTP_STATUS_CODE}.bad_request)
-			if a_message /= Void then
-				e.set_message (a_message)
-			end
-			error_handler.add_error (e)
-		end
-
-	analyze
-			-- Extract relevant meta parameters
-		local
-			s: detachable READABLE_STRING_8
-		do
-			s := request_uri
-			if s.is_empty then
-				report_bad_request_error ("Missing URI")
-			end
-			if not has_error then
-				s := request_method
-				if s.is_empty then
-					report_bad_request_error ("Missing request method")
-				end
-			end
-			if not has_error then
-				s := http_host
-				if s = Void or else s.is_empty then
-					report_bad_request_error ("Missing host header")
-				end
-			end
-			if not has_error then
-				update_path_info
-			end
 		end
 
 feature {NONE} -- Implementation: utilities	
@@ -491,19 +393,8 @@ feature {NONE} -- Implementation: utilities
 			one_starting_slash: Result[1] = '/' and (Result.count = 1 or else Result[2] /= '/')
 		end
 
-	new_string_value (a_name: READABLE_STRING_8; a_value: READABLE_STRING_8): READABLE_STRING_8
-		do
-			Result := a_value
-		end
-
 	empty_string: READABLE_STRING_8
 			-- Reusable empty string
-
---	date_time_utilities: HTTP_DATE_TIME_UTILITIES
---			-- Utilities classes related to date and time.
---		once
---			create Result
---		end
 
 invariant
 	empty_string_unchanged: empty_string.is_empty

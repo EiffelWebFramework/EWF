@@ -31,14 +31,14 @@ feature -- Access
 
 feature -- Query	
 
-	path_parameter (a_name: READABLE_STRING_GENERAL): detachable WSF_VALUE
+	path_parameter (a_name: READABLE_STRING_8): detachable WSF_VALUE
 		do
 			if attached uri_template_match.url_decoded_path_variable (a_name) as s then
 				create {WSF_STRING_VALUE} Result.make (a_name, s)
 			end
 		end
 
-	query_parameter (a_name: READABLE_STRING_GENERAL): detachable WSF_VALUE
+	query_parameter (a_name: READABLE_STRING_8): detachable WSF_VALUE
 		do
 			if attached uri_template_match.url_decoded_query_variable (a_name) as s then
 				create {WSF_STRING_VALUE} Result.make (a_name, s)
