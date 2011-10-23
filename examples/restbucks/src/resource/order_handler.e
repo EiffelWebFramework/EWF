@@ -181,7 +181,8 @@ feature -- HTTP Methods
 		-- Here we use DELETE to cancel an order, if that order is in state where
 		-- it can still be canceled.
 		-- 200 if is ok
-		-- 409 if consumer and service's view of the resouce state is inconsisent
+		-- 404 Resource not found
+		-- 405 if consumer and service's view of the resouce state is inconsisent
 		-- 500 if we have an internal server error
 		local
 			id: STRING
@@ -194,7 +195,7 @@ feature -- HTTP Methods
 						compute_response_delete (ctx, req, res)
 					else
 						--| FIXME: Here we need to define the Allow methods
-						handle_resource_conflict_response (orig_path + "%N There is conflict while trying to delete the order, the order could not be deleted in the current state", ctx, req, res)
+						handle_method_not_allowed_response (orig_path + "%N There is conflict while trying to delete the order, the order could not be deleted in the current state", ctx, req, res)
 					end
 				else
 					handle_resource_not_found_response (orig_path + " not found in this server", ctx, req, res)
