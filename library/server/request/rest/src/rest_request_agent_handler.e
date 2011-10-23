@@ -23,7 +23,7 @@ create
 
 feature -- status
 
-	authentication_required (req: WGI_REQUEST): BOOLEAN
+	authentication_required (req: WSF_REQUEST): BOOLEAN
 		do
 			Result := internal_authentication_required
 		end

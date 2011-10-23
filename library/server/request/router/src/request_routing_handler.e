@@ -13,7 +13,7 @@ inherit
 
 feature -- Execution
 
-	execute (ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	execute (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
 			-- Execute request handler
 		local
 			hdl: detachable H
@@ -49,12 +49,12 @@ feature -- Mapping
 			router.map_with_request_methods (a_resource, h, rqst_methods)
 		end
 
-	map_agent (a_resource: READABLE_STRING_8; a_action: PROCEDURE [ANY, TUPLE [ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER]])
+	map_agent (a_resource: READABLE_STRING_8; a_action: PROCEDURE [ANY, TUPLE [ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE]])
 		do
 			router.map_agent (a_resource, a_action)
 		end
 
-	map_agent_with_request_methods (a_resource: READABLE_STRING_8; a_action: PROCEDURE [ANY, TUPLE [ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER]];
+	map_agent_with_request_methods (a_resource: READABLE_STRING_8; a_action: PROCEDURE [ANY, TUPLE [ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE]];
 			 rqst_methods: detachable ARRAY [READABLE_STRING_8])
 		do
 			router.map_agent_with_request_methods (a_resource, a_action, rqst_methods)

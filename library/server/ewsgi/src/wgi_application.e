@@ -25,43 +25,7 @@ feature -- Execution
 			res_status_set: res.status_is_set
 		end
 
-feature -- Process request
-
-	frozen process (req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
-			-- Process request with environment `env', and i/o streams `a_input' and `a_output'
-		local
-			rescued: BOOLEAN
-		do
-			if not rescued then
-				request_count := request_count + 1
-				execute (req, res)
-			else
-				rescue_execute (req, res, (create {EXCEPTION_MANAGER}).last_exception)
-			end
-			if res /= Void then
-				res.commit
-			end
-		end
-
-feature -- Access
-
-	request_count: INTEGER
-			-- Request count
-
-feature {NONE} -- Execution
-
-	rescue_execute (req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER; a_exception: detachable EXCEPTION)
-			-- Operation processed on rescue of `execute'
-		do
-			if
-				a_exception /= Void and then attached a_exception.exception_trace as l_trace
-			then
-				res.write_header ({HTTP_STATUS_CODE}.internal_server_error, Void)
-				res.write_string ("<pre>" + l_trace + "</pre>")
-			end
-		end
-
-;note
+note
 	copyright: "2011-2011, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[

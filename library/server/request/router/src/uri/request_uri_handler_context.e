@@ -15,7 +15,7 @@ create
 
 feature {NONE} -- Initialization
 
-	make (req: WGI_REQUEST; p: like path)
+	make (req: WSF_REQUEST; p: like path)
 		do
 			request := req
 			path := p
@@ -23,11 +23,11 @@ feature {NONE} -- Initialization
 
 feature -- Query	
 
-	path_parameter (a_name: READABLE_STRING_GENERAL): detachable WGI_VALUE
+	path_parameter (a_name: READABLE_STRING_8): detachable WSF_VALUE
 		do
 		end
 
-	query_parameter (a_name: READABLE_STRING_GENERAL): detachable WGI_VALUE
+	query_parameter (a_name: READABLE_STRING_8): detachable WSF_VALUE
 		do
 			Result := request.query_parameter (a_name)
 		end

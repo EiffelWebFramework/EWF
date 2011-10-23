@@ -22,7 +22,7 @@ inherit
 
 feature -- execute
 
-	execute (ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	execute (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
 			-- Execute request handler	
 		do
 			execute_methods (ctx, req, res)
@@ -34,7 +34,7 @@ feature -- API DOC
 
 feature -- HTTP Methods
 
-	do_get (ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	do_get (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
 			-- Using GET to retrieve resource information.
 			-- If the GET request is SUCCESS, we response with
 			-- 200 OK, and a representation of the order
@@ -59,7 +59,7 @@ feature -- HTTP Methods
 			end
 		end
 
-	is_conditional_get (req : WGI_REQUEST; l_order : ORDER) : BOOLEAN
+	is_conditional_get (req : WSF_REQUEST; l_order : ORDER) : BOOLEAN
 		-- Check if If-None-Match is present and then if there is a representation that has that etag
 		-- if the representation hasn't changed, we return TRUE
 		-- then the response is a 304 with no entity body returned.
@@ -74,9 +74,9 @@ feature -- HTTP Methods
 				end
 		end
 
-	compute_response_get (ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER; l_order : ORDER)
+	compute_response_get (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE; l_order : ORDER)
 		local
-			h: EWF_HEADER
+			h: WSF_HEADER
 			l_msg : STRING
 			etag_utils : ETAG_UTILS
 		do
@@ -97,7 +97,7 @@ feature -- HTTP Methods
 			end
 		end
 
-	do_put (ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	do_put (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
 		-- Updating a resource with PUT
 		-- A successful PUT request will not create a new resource, instead it will
 		-- change the state of the resource identified by the current uri.
@@ -131,7 +131,7 @@ feature -- HTTP Methods
 			end
 		end
 
-	is_conditional_put (req : WGI_REQUEST; order : ORDER) : BOOLEAN
+	is_conditional_put (req : WSF_REQUEST; order : ORDER) : BOOLEAN
 		-- Check if If-Match is present and then if there is a representation that has that etag
 		-- if the representation hasn't changed, we return TRUE
 		local
@@ -150,9 +150,9 @@ feature -- HTTP Methods
 		end
 
 
-	compute_response_put (ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER; l_order : ORDER)
+	compute_response_put (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE; l_order : ORDER)
 		local
-			h: EWF_HEADER
+			h: WSF_HEADER
 			joc : JSON_ORDER_CONVERTER
 			etag_utils : ETAG_UTILS
 		do
@@ -177,7 +177,7 @@ feature -- HTTP Methods
 		end
 
 
-	do_delete (ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	do_delete (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
 		-- Here we use DELETE to cancel an order, if that order is in state where
 		-- it can still be canceled.
 		-- 200 if is ok
@@ -203,9 +203,9 @@ feature -- HTTP Methods
 			end
 		end
 
-	compute_response_delete (ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	compute_response_delete (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
 		local
-			h: EWF_HEADER
+			h : WSF_HEADER
 		do
 			create h.make
 			h.put_status ({HTTP_STATUS_CODE}.no_content)
@@ -217,7 +217,7 @@ feature -- HTTP Methods
 			res.write_headers_string (h.string)
 		end
 
-	do_post (ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	do_post (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
 			-- Here the convention is the following.
 			-- POST is used for creation and the server determines the URI
 			-- of the created resource.
@@ -239,9 +239,9 @@ feature -- HTTP Methods
 			end
 		end
 
-	compute_response_post (ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER; l_order : ORDER)
+	compute_response_post (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE; l_order : ORDER)
 		local
-			h: EWF_HEADER
+			h: WSF_HEADER
 			l_msg : STRING
 			l_location :  STRING
 			joc : JSON_ORDER_CONVERTER

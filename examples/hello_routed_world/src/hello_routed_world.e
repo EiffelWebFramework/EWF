@@ -14,7 +14,7 @@ inherit
 
 	ROUTED_APPLICATION_HELPER
 
-	DEFAULT_WGI_APPLICATION
+	DEFAULT_APPLICATION
 
 create
 	make
@@ -37,8 +37,13 @@ feature {NONE} -- Initialization
 		local
 			ra: REQUEST_AGENT_HANDLER [REQUEST_URI_TEMPLATE_HANDLER_CONTEXT]
 			hello: REQUEST_URI_TEMPLATE_ROUTING_HANDLER
+			www: REQUEST_FILE_SYSTEM_HANDLER [REQUEST_URI_TEMPLATE_HANDLER_CONTEXT]
 		do
 			router.map_agent ("/home", agent execute_home)
+			create www.make (document_root)
+			www.set_directory_index (<<"index.html">>)
+
+			router.map ("/www{/path}{?query}", www)
 
 			--| Map all "/hello*" using a ROUTING_HANDLER
 			create hello.make (3)
@@ -60,11 +65,26 @@ feature {NONE} -- Initialization
 			router.map_agent_with_request_methods ("/method/custom", agent handle_method_post, <<"POST">>)
 		end
 
+
+	document_root: READABLE_STRING_8
+		local
+			e: EXECUTION_ENVIRONMENT
+			dn: DIRECTORY_NAME
+		once
+			create e
+			create dn.make_from_string (e.current_working_directory)
+			dn.extend ("htdocs")
+			Result := dn.string
+			if Result[Result.count] = Operating_environment.directory_separator then
+				Result := Result.substring (1, Result.count - 1)
+			end
+		end
+
 feature -- Execution
 
-	execute_default (req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	execute_default (req: WSF_REQUEST; res: WSF_RESPONSE)
 		local
-			h: EWF_HEADER
+			h: WSF_HEADER
 			l_url: STRING
 			e: EXECUTION_ENVIRONMENT
 			n: INTEGER
@@ -113,7 +133,7 @@ feature -- Execution
 			write_chunk (Void, res)
 		end
 
-	write_chunk (s: detachable READABLE_STRING_8; res: WGI_RESPONSE_BUFFER)
+	write_chunk (s: detachable READABLE_STRING_8; res: WSF_RESPONSE)
 		do
 			if s /= Void then
 				res.write_string (s.count.to_hex_string + {HTTP_CONSTANTS}.crlf)
@@ -124,7 +144,7 @@ feature -- Execution
 			res.flush
 		end
 
-	execute_home (ctx: REQUEST_URI_TEMPLATE_HANDLER_CONTEXT; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	execute_home (ctx: REQUEST_URI_TEMPLATE_HANDLER_CONTEXT; req: WSF_REQUEST; res: WSF_RESPONSE)
 		local
 			l_body: STRING_8
 		do
@@ -148,10 +168,10 @@ feature -- Execution
 			res.write_string (l_body)
 		end
 
-	execute_hello (req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER; a_name: detachable READABLE_STRING_32; ctx: REQUEST_HANDLER_CONTEXT)
+	execute_hello (req: WSF_REQUEST; res: WSF_RESPONSE; a_name: detachable READABLE_STRING_32; ctx: REQUEST_HANDLER_CONTEXT)
 		local
 			l_response_content_type: detachable STRING
-			h: EWF_HEADER
+			h: WSF_HEADER
 			content_type_supported: ARRAY [STRING]
 			l_body: STRING_8
 		do
@@ -187,33 +207,33 @@ feature -- Execution
 			end
 		end
 
-	handle_hello (ctx: REQUEST_URI_TEMPLATE_HANDLER_CONTEXT; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	handle_hello (ctx: REQUEST_URI_TEMPLATE_HANDLER_CONTEXT; req: WSF_REQUEST; res: WSF_RESPONSE)
 		do
 			execute_hello (req, res, Void, ctx)
 		end
 
-	handle_anonymous_hello (ctx: REQUEST_URI_TEMPLATE_HANDLER_CONTEXT; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	handle_anonymous_hello (ctx: REQUEST_URI_TEMPLATE_HANDLER_CONTEXT; req: WSF_REQUEST; res: WSF_RESPONSE)
 		do
 			execute_hello (req, res, ctx.string_parameter ("name"), ctx)
 		end
 
-	handle_method_any (ctx: REQUEST_URI_TEMPLATE_HANDLER_CONTEXT; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	handle_method_any (ctx: REQUEST_URI_TEMPLATE_HANDLER_CONTEXT; req: WSF_REQUEST; res: WSF_RESPONSE)
 		do
 			execute_hello (req, res, req.request_method, ctx)
 		end
 
-	handle_method_get (ctx: REQUEST_URI_TEMPLATE_HANDLER_CONTEXT; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	handle_method_get (ctx: REQUEST_URI_TEMPLATE_HANDLER_CONTEXT; req: WSF_REQUEST; res: WSF_RESPONSE)
 		do
 			execute_hello (req, res, "GET", ctx)
 		end
 
 
-	handle_method_post (ctx: REQUEST_URI_TEMPLATE_HANDLER_CONTEXT; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	handle_method_post (ctx: REQUEST_URI_TEMPLATE_HANDLER_CONTEXT; req: WSF_REQUEST; res: WSF_RESPONSE)
 		do
 			execute_hello (req, res, "POST", ctx)
 		end
 
-	handle_method_get_or_post (ctx: REQUEST_URI_TEMPLATE_HANDLER_CONTEXT; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	handle_method_get_or_post (ctx: REQUEST_URI_TEMPLATE_HANDLER_CONTEXT; req: WSF_REQUEST; res: WSF_RESPONSE)
 		do
 			execute_hello (req, res, "GET or POST", ctx)
 		end

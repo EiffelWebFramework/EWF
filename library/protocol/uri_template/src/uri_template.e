@@ -189,7 +189,7 @@ feature -- Match
 			exp: URI_TEMPLATE_EXPRESSION
 			vn, s,t: STRING
 			vv, path_vv: STRING
-			l_vars, l_path_vars, l_query_vars: HASH_TABLE [READABLE_STRING_32, READABLE_STRING_GENERAL]
+			l_vars, l_path_vars, l_query_vars: HASH_TABLE [READABLE_STRING_8, READABLE_STRING_8]
 			l_uri_count: INTEGER
 			tpl_count: INTEGER
 			l_next_literal_separator: detachable STRING
@@ -274,7 +274,7 @@ feature -- Match
 											vv := "/"
 											nb := 0
 										until
-											vv.is_empty or q + l_offset > a_uri.count
+											vv.is_empty or q + l_offset + 1 > a_uri.count
 										loop
 											vv := next_path_variable_value (a_uri, q + l_offset + 1, l_next_literal_separator)
 											l_offset := l_offset + vv.count + 1
@@ -414,7 +414,7 @@ feature {NONE} -- Implementation
 			end
 		end
 
-	import_path_style_parameters_into (a_content: STRING; res: HASH_TABLE [READABLE_STRING_32, READABLE_STRING_GENERAL])
+	import_path_style_parameters_into (a_content: STRING; res: HASH_TABLE [READABLE_STRING_8, READABLE_STRING_8])
 		require
 			a_content_attached: a_content /= Void
 			res_attached: res /= Void
@@ -422,7 +422,7 @@ feature {NONE} -- Implementation
 			import_custom_style_parameters_into (a_content, ';', res)
 		end
 
-	import_form_style_parameters_into (a_content: STRING; res: HASH_TABLE [READABLE_STRING_32, READABLE_STRING_GENERAL])
+	import_form_style_parameters_into (a_content: STRING; res: HASH_TABLE [READABLE_STRING_8, READABLE_STRING_8])
 		require
 			a_content_attached: a_content /= Void
 			res_attached: res /= Void
@@ -430,14 +430,14 @@ feature {NONE} -- Implementation
 			import_custom_style_parameters_into (a_content, '&', res)
 		end
 
-	import_custom_style_parameters_into (a_content: STRING; a_separator: CHARACTER; res: HASH_TABLE [READABLE_STRING_32, READABLE_STRING_GENERAL])
+	import_custom_style_parameters_into (a_content: STRING; a_separator: CHARACTER; res: HASH_TABLE [READABLE_STRING_8, READABLE_STRING_8])
 		require
 			a_content_attached: a_content /= Void
 			res_attached: res /= Void
 		local
 			n, p, i, j: INTEGER
-			s: STRING
-			l_name,l_value: STRING
+			s: READABLE_STRING_8
+			l_name, l_value: READABLE_STRING_8
 		do
 			n := a_content.count
 			if n > 0 then

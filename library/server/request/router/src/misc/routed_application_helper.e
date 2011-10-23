@@ -12,7 +12,7 @@ inherit
 
 feature -- Helper
 
-	execute_content_type_not_allowed (req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER; a_content_types: detachable ARRAY [STRING]; a_uri_formats: detachable ARRAY [STRING])
+	execute_content_type_not_allowed (req: WSF_REQUEST; res: WSF_RESPONSE; a_content_types: detachable ARRAY [STRING]; a_uri_formats: detachable ARRAY [STRING])
 		local
 			accept_s, uri_s: detachable STRING
 			i, n: INTEGER
@@ -62,7 +62,7 @@ feature -- Helper
 			end
 		end
 
-	execute_request_method_not_allowed (req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER; a_methods: ITERABLE [STRING])
+	execute_request_method_not_allowed (req: WSF_REQUEST; res: WSF_RESPONSE; a_methods: ITERABLE [STRING])
 		local
 			s: STRING
 		do

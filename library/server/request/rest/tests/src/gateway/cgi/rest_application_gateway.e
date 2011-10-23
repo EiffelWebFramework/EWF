@@ -2,17 +2,17 @@ deferred class
 	REST_APPLICATION_GATEWAY
 
 inherit
-	WGI_APPLICATION
+	WSF_APPLICATION
 
 feature -- Access
 
 	build_gateway_and_launch
 		local
-			cgi: EWF_CGI_CONNECTOR
+			cgi: WGI_CGI_CONNECTOR
 		do
 			create cgi.make (Current)
 			cgi.launch
-		end	
+		end
 
 	gateway_name: STRING = "CGI"
 
@@ -20,5 +20,5 @@ feature -- Access
 		do
 			(create {EXCEPTIONS}).die (a_code)
 		end
-	
+
 end

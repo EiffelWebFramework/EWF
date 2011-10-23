@@ -23,7 +23,7 @@ feature {NONE} -- Initialization
 
 feature {NONE} -- Implementation
 
-	wgi_value_iteration_to_string (v: ITERABLE [WGI_VALUE]; using_pre: BOOLEAN): STRING_8
+	wgi_value_iteration_to_string (v: ITERABLE [WSF_VALUE]; using_pre: BOOLEAN): STRING_8
 		do
 			create Result.make (100)
 			if using_pre then

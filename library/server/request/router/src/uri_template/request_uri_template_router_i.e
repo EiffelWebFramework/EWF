@@ -54,11 +54,11 @@ feature -- Registration
 
 feature {NONE} -- Access: Implementation
 
-	handler (req: WGI_REQUEST): detachable TUPLE [handler: attached like default_handler; context: like default_handler_context]
+	handler (req: WSF_REQUEST): detachable TUPLE [handler: attached like default_handler; context: like default_handler_context]
 		local
 			l_handlers: like handlers
-			t: STRING
-			p: STRING
+			t: READABLE_STRING_8
+			p: READABLE_STRING_8
 			l_req_method: READABLE_STRING_GENERAL
 			l_res: URI_TEMPLATE_MATCH_RESULT
 		do
@@ -94,7 +94,7 @@ feature {NONE} -- Access: Implementation
 
 feature {NONE} -- Context factory
 
-	handler_context (p: detachable STRING; req: WGI_REQUEST; tpl: URI_TEMPLATE; tpl_res: URI_TEMPLATE_MATCH_RESULT): C
+	handler_context (p: detachable STRING; req: WSF_REQUEST; tpl: URI_TEMPLATE; tpl_res: URI_TEMPLATE_MATCH_RESULT): C
 		do
 			if p /= Void then
 				create Result.make (req, tpl, tpl_res, p)
@@ -151,7 +151,7 @@ feature {NONE} -- Default: implementation
 			default_handler := h
 		end
 
-	default_handler_context (req: WGI_REQUEST): C
+	default_handler_context (req: WSF_REQUEST): C
 		do
 			Result := handler_context (Void, req, create {URI_TEMPLATE}.make ("/"), create {URI_TEMPLATE_MATCH_RESULT}.make_empty)
 		end

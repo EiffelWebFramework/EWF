@@ -16,14 +16,14 @@ create
 
 feature -- Format
 
-	get_format_id (a_format_variable_name: detachable READABLE_STRING_GENERAL; a_content_type_supported: detachable ARRAY [STRING_8])
+	get_format_id (a_format_variable_name: detachable READABLE_STRING_8; a_content_type_supported: detachable ARRAY [STRING_8])
 		do
 			if internal_format_id = 0 then
 				internal_format_id := request_format_id (a_format_variable_name, a_content_type_supported)
 			end
 		end
 
-	get_format_name (a_format_variable_name: detachable READABLE_STRING_GENERAL; a_content_type_supported: detachable ARRAY [STRING_8])
+	get_format_name (a_format_variable_name: detachable READABLE_STRING_8; a_content_type_supported: detachable ARRAY [STRING_8])
 		do
 			if internal_format_name = Void then
 				internal_format_name := request_format (a_format_variable_name, a_content_type_supported)
