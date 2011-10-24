@@ -1,6 +1,12 @@
 note
 	description: "[
-				Summary description for {WSF_REQUEST}.
+			Server request context of the httpd request
+			
+			It includes CGI interface and a few extra values that are usually valuable
+			In addition it provides
+				query_parameter(s)
+				form_data_parameter(s)
+				...
 			]"
 	date: "$Date$"
 	revision: "$Revision$"
@@ -602,8 +608,7 @@ feature -- Access: CGI meta parameters - 1.1
 			--
 			-- Servers MUST provide this metavariable to scripts.
 		do
-			check not_yet_implemented: False then end
---			Result := wgi_request.server_protocol
+			Result := wgi_request.server_protocol
 		end
 
 	server_software: READABLE_STRING_8
@@ -617,8 +622,7 @@ feature -- Access: CGI meta parameters - 1.1
 
 			-- Servers MUST provide this metavariable to scripts.
 		do
-			check not_yet_implemented: False then end
---			Result := wgi_request.server_software
+			Result := wgi_request.server_software
 		end
 
 feature -- HTTP_*
@@ -1121,7 +1125,7 @@ feature {NONE} -- Temporary File handling
 			i, n, p: INTEGER
 			l_accentued, l_non_accentued: STRING
 		do
-			l_accentued := "ÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÒÓÔÕÖÙÚÛÜİàáâãäåçèéêëìíîïğòóôõöùúûüıÿ"
+			l_accentued := "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½"
 			l_non_accentued := "AAAAAACEEEEIIIIOOOOOUUUUYaaaaaaceeeeiiiioooooouuuuyy"
 
 				--| Compute safe filename, to avoid creating impossible filename, or dangerous one
