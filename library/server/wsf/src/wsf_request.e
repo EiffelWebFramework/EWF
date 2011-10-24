@@ -892,7 +892,7 @@ feature {NONE} -- Query parameters: implementation
 					k := a_name.substring (p + 1, q - 1)
 					k.left_adjust; k.right_adjust
 					if k.is_empty then
-						k.append_integer (tb.count)
+						k.append_integer (tb.count + 1)
 					end
 					v := tb
 					n.append_character ('[')
@@ -920,7 +920,7 @@ feature {NONE} -- Query parameters: implementation
 								r := r.substring (q + 1, r.count)
 								r.left_adjust; r.right_adjust
 								if k.is_empty then
-									k.append_integer (tb.count)
+									k.append_integer (tb.count + 1)
 								end
 								n.append_character ('[')
 								n.append (k)
