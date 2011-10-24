@@ -16,6 +16,6 @@
 		<library name="http_client" location="..\..\..\client\http_client\http_client.ecf"/>
 		<library name="testing" location="$ISE_LIBRARY/library/testing/testing.ecf"/>
 		<library name="thread" location="$ISE_LIBRARY\library\thread\thread-safe.ecf"/>
-		<tests name="src" location="." recursive="true"/>
+		<tests name="src" location="./src" recursive="true"/>
 	</target>
 </system>

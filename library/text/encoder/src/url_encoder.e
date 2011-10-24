@@ -22,7 +22,10 @@ inherit
 
 feature -- Access
 
-	name: STRING = "URL-encoded"
+	name: READABLE_STRING_8
+		do
+			create {IMMUTABLE_STRING_8} Result.make_from_string ("URL-encoded")
+		end
 
 feature -- Status report
 
@@ -138,7 +141,9 @@ feature -- Decoder
 			c: CHARACTER
 			pr: CELL [INTEGER]
 			s32: STRING_32
+			changed: BOOLEAN
 		do
+			has_error := False
 			n := v.count
 			create s32.make (n)
 			Result := s32
@@ -148,12 +153,14 @@ feature -- Decoder
 				c := v.item (i)
 				inspect c
 				when '+' then
+					changed := True
 					s32.append_character ({CHARACTER_32}' ')
 				when '%%' then
 					-- An escaped character ?
 					if i = n then
 						s32.append_character (c.to_character_32)
 					else
+						changed := True
 						create pr.put (i)
 						s32.append (url_decoded_char (v, pr))
 						i := pr.item

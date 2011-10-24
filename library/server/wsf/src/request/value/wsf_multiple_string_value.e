@@ -127,10 +127,17 @@ feature -- Element change
 			string_values.extend (s)
 		end
 
+feature -- Visitor
+
+	process (vis: WSF_VALUE_VISITOR)
+		do
+			vis.process_multiple_string (Current)
+		end
+
 invariant
 	string_values_not_empty: string_values.count >= 1
 
-;note
+note
 	copyright: "2011-2011, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[

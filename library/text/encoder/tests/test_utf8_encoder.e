@@ -8,7 +8,7 @@ note
 	testing: "type/manual"
 
 class
-	TEST_URL_ENCODER
+	TEST_UTF8_ENCODER
 
 inherit
 	EQA_TEST_SET
@@ -19,31 +19,19 @@ feature -- Test routines
 		note
 			testing:  "url-encoded"
 		do
-			test_url_encoded_encoding ("http://domain.tld/foo/bar/script.php?test='toto'&foo=bar&title=il était une fois")
-			test_url_encoded_encoding ("été")
-			test_url_encoded_decoding ("%%E9t%%E9", "été")
-			test_url_encoded_decoding ("%%C3%%A9t%%C3%%A9", "été")
+--			test_utf8_decoding ("summer=été&weird=à", "summer=été&weird=à")
+			test_utf8_decoding ("%%C3%%A9t%%C3%%A9", "été")
 		end
 
-	test_url_encoded_encoding (s: STRING_32)
+	test_utf8_decoding (s: STRING_8; e: STRING_32)
 		local
+			url: URL_ENCODER
 			u: STRING_32
-			e: STRING_8
-			b: URL_ENCODER
+			b: UTF8_ENCODER
 		do
 			create b
-			e := b.encoded_string (s)
-			u := b.decoded_string (e)
-			assert ("decoded encoded string is same for string %"" + u + "%"", u ~ s)
-		end
-
-	test_url_encoded_decoding (s: STRING_8; e: STRING_32)
-		local
-			u: STRING_32
-			b: URL_ENCODER
-		do
-			create b
-			u := b.decoded_string (s)
+			create url
+			u := b.decoded_string (url.decoded_string (s))
 			assert ("decoded encoded string is same for %"" + s + "%"", u ~ e)
 		end
 

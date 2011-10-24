@@ -1,6 +1,5 @@
 note
 	description: "Summary description for {WSF_VALUE}."
-	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -28,7 +27,7 @@ feature -- Helper
 		end
 
 	is_case_insensitive_equal (a_other: READABLE_STRING_8): BOOLEAN
-			-- Does `a_other' represent the same case insensitive string as `Current'?	
+			-- Does `a_other' represent the same case insensitive string as `Current'?
 		deferred
 		end
 
@@ -43,6 +42,25 @@ feature -- Status report
 feature -- Query
 
 	as_string: STRING_32
+		deferred
+		end
+
+feature {NONE} -- Implementation
+
+	url_decoded_string (s: READABLE_STRING_8): READABLE_STRING_32
+			-- Decoded url-encoded string `s'
+		do
+			Result := url_encoder.decoded_string (s)
+		end
+
+	url_encoder: URL_ENCODER
+		once
+			create {UTF8_URL_ENCODER} Result --| Chrome is UTF-8 encoding the non ascii in query
+		end
+
+feature -- Visitor
+
+	process (vis: WSF_VALUE_VISITOR)
 		deferred
 		end
 

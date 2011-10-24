@@ -16,7 +16,10 @@ inherit
 
 feature -- Access
 
-	name: STRING = "base64"
+	name: READABLE_STRING_8
+		do
+			create {IMMUTABLE_STRING_8} Result.make_from_string ("base64")
+		end
 
 feature -- Status report
 

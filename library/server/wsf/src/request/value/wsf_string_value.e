@@ -65,20 +65,14 @@ feature -- Conversion
 			create Result.make_from_string (string)
 		end
 
-feature {NONE} -- Implementation
+feature -- Visitor
 
-	url_decoded_string (s: READABLE_STRING_8): READABLE_STRING_32
-			-- Decoded url-encoded string `s'
+	process (vis: WSF_VALUE_VISITOR)
 		do
-			Result := url_encoder.decoded_string (s)
+			vis.process_string (Current)
 		end
 
-	url_encoder: URL_ENCODER
-		once
-			create Result
-		end
-
-;note
+note
 	copyright: "2011-2011, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[

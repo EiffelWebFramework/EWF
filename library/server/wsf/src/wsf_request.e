@@ -133,7 +133,7 @@ feature {NONE} -- Access: global variable
 			end
 
 			across
-				form_data_parameters as vars
+				form_parameters as vars
 			loop
 				Result.force (vars.item, vars.item.name)
 			end
@@ -163,7 +163,7 @@ feature -- Access: global variable
 			if v = Void then
 				v := query_parameter (a_name)
 				if v = Void then
-					v := form_data_parameter (a_name)
+					v := form_parameter (a_name)
 					if v = Void then
 						v := cookie (a_name)
 					end
@@ -866,13 +866,83 @@ feature {NONE} -- Query parameters: implementation
 			end
 		end
 
-	add_value_to_table (a_name: READABLE_STRING_32; a_value: READABLE_STRING_32; a_table: HASH_TABLE [WSF_VALUE, READABLE_STRING_32])
+	add_value_to_table (a_name: READABLE_STRING_8; a_value: READABLE_STRING_8; a_table: HASH_TABLE [WSF_VALUE, READABLE_STRING_32])
 		local
-			v: WSF_VALUE
+
+			v: detachable WSF_VALUE
+			n,k,r: STRING_8
+			k32: STRING_32
+			p,q: INTEGER
+			tb,ptb: detachable WSF_TABLE_VALUE
 		do
-			v := new_string_value (a_name, a_value)
+			--| Check if this is a list format such as   choice[]  or choice[a] or even choice[a][] or choice[a][b][c]...
+			p := a_name.index_of ('[', 1)
+			if p > 0 then
+				q := a_name.index_of (']', p + 1)
+				if q > p then
+					n := a_name.substring (1, p - 1)
+					r := a_name.substring (q + 1, a_name.count)
+					r.left_adjust; r.right_adjust
+
+					create tb.make (n)
+					if a_table.has_key (tb.name) and then attached {WSF_TABLE_VALUE} a_table.found_item as l_existing_table then
+						tb := l_existing_table
+					end
+
+					k := a_name.substring (p + 1, q - 1)
+					k.left_adjust; k.right_adjust
+					if k.is_empty then
+						k.append_integer (tb.count)
+					end
+					v := tb
+					n.append_character ('[')
+					n.append (k)
+					n.append_character (']')
+
+					from
+					until
+						r.is_empty
+					loop
+						ptb := tb
+						p := r.index_of ({CHARACTER_8} '[', 1)
+						if p > 0 then
+							q := r.index_of ({CHARACTER_8} ']', p + 1)
+							if q > p then
+								k32 := url_encoder.decoded_string (k)
+								if attached {WSF_TABLE_VALUE} ptb.value (k32) as l_tb_value then
+									tb := l_tb_value
+								else
+									create tb.make (n)
+									ptb.add_value (tb, k32)
+								end
+
+								k := r.substring (p + 1, q - 1)
+								r := r.substring (q + 1, r.count)
+								r.left_adjust; r.right_adjust
+								if k.is_empty then
+									k.append_integer (tb.count)
+								end
+								n.append_character ('[')
+								n.append (k)
+								n.append_character (']')
+							end
+						else
+							r.wipe_out
+							--| Ignore bad value
+						end
+					end
+					tb.add_value (new_string_value (n, a_value), k)
+				else
+					--| Missing end bracket
+				end
+			end
+			if v = Void then
+				v := new_string_value (a_name, a_value)
+			end
 			if a_table.has_key (v.name) and then attached a_table.found_item as l_existing_value then
-				if attached {WSF_MULTIPLE_STRING_VALUE} l_existing_value as l_multi then
+				if tb /= Void then
+					--| Already done in previous part
+				elseif attached {WSF_MULTIPLE_STRING_VALUE} l_existing_value as l_multi then
 					l_multi.add_value (v)
 				else
 					a_table.force (create {WSF_MULTIPLE_STRING_VALUE}.make_with_array (<<l_existing_value, v>>), v.name)
@@ -883,17 +953,29 @@ feature {NONE} -- Query parameters: implementation
 			end
 		end
 
-feature -- Form fields and related	
+feature -- Form fields and related
 
-	form_data_parameters: ITERABLE [WSF_VALUE]
+	form_data_parameters: like form_parameters
+		obsolete "[2011-oct-24] Use form_parameters"
 		do
-			Result := form_data_parameters_table
+			Result := form_parameters
 		end
 
-	form_data_parameter (a_name: READABLE_STRING_8): detachable WSF_VALUE
+	form_data_parameter (a_name: READABLE_STRING_8): like form_parameter
+		obsolete "[2011-oct-24] Use form_parameter (a_name:...)"
+		do
+			Result := form_parameter (a_name)
+		end
+
+	form_parameters: ITERABLE [WSF_VALUE]
+		do
+			Result := form_parameters_table
+		end
+
+	form_parameter (a_name: READABLE_STRING_8): detachable WSF_VALUE
 			-- Field for name `a_name'.
 		do
-			Result := form_data_parameters_table.item (a_name)
+			Result := form_parameters_table.item (a_name)
 		end
 
 	uploaded_files: HASH_TABLE [WGI_UPLOADED_FILE_DATA, STRING]
@@ -907,7 +989,7 @@ feature -- Form fields and related
 
 feature {NONE} -- Form fields and related
 
-	form_data_parameters_table: HASH_TABLE [WSF_VALUE, READABLE_STRING_32]
+	form_parameters_table: HASH_TABLE [WSF_VALUE, READABLE_STRING_32]
 			-- Variables sent by POST request	
 		local
 			vars: like internal_form_data_parameters_table
@@ -1156,7 +1238,7 @@ feature {NONE} -- Temporary File handling
 
 feature {NONE} -- Implementation: Form analyzer
 
-	analyze_multipart_form (t: STRING; s: STRING; vars: like form_data_parameters_table)
+	analyze_multipart_form (t: STRING; s: STRING; vars: like form_parameters_table)
 			-- Analyze multipart form content
 			--| FIXME[2011-06-21]: integrate eMIME parser library
 		require
@@ -1222,16 +1304,16 @@ feature {NONE} -- Implementation: Form analyzer
 			end
 		end
 
-	analyze_multipart_form_input (s: STRING; vars_post: like form_data_parameters_table)
+	analyze_multipart_form_input (s: STRING; vars_post: like form_parameters_table)
 			-- Analyze multipart entry
 		require
 			s_not_empty: s /= Void and then not s.is_empty
 		local
 			n, i,p, b,e: INTEGER
-			l_name, l_filename, l_content_type: detachable STRING
-			l_header: detachable STRING
-			l_content: detachable STRING
-			l_line: detachable STRING
+			l_name, l_filename, l_content_type: detachable STRING_8
+			l_header: detachable STRING_8
+			l_content: detachable STRING_8
+			l_line: detachable STRING_8
 			l_up_file_info: WGI_UPLOADED_FILE_DATA
 		do
 			from
@@ -1372,7 +1454,7 @@ feature {NONE} -- Internal value
 	internal_query_parameters_table: detachable like query_parameters_table
 			-- cached value for `query_parameters'
 
-	internal_form_data_parameters_table: detachable like form_data_parameters_table
+	internal_form_data_parameters_table: detachable like form_parameters_table
 			-- cached value for `form_fields'
 
 	internal_cookies_table: detachable like cookies_table
@@ -1487,7 +1569,7 @@ feature {NONE} -- Implementation: utilities
 
 	url_encoder: URL_ENCODER
 		once
-			create Result
+			create {UTF8_URL_ENCODER} Result
 		end
 
 	date_time_utilities: HTTP_DATE_TIME_UTILITIES

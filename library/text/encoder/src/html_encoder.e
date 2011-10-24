@@ -22,7 +22,10 @@ inherit
 
 feature -- Access
 
-	name: STRING = "HTML-encoded"
+	name: READABLE_STRING_8
+		do
+			create {IMMUTABLE_STRING_8} Result.make_from_string ("HTML-encoded")
+		end
 
 feature -- Status report
 
@@ -71,6 +74,7 @@ feature -- Decoder
 			c: CHARACTER
 			cl_i: CELL [INTEGER]
 		do
+			has_error := False
 			n := v.count
 			create Result.make (n)
 			create cl_i.put (0)
@@ -255,7 +259,7 @@ feature {NONE} -- Implementation: decoder
 		end
 
 note
-	copyright: "Copyright (c) 1984-2011, Eiffel Software and others"
+	copyright: "2011-2011, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software
