@@ -156,7 +156,10 @@ feature -- Method Extension Method
 		end
 
 feature -- Handle responses
-
+	-- TODO Handle Content negotiation.
+	-- The option : Server-driven negotiation: uses request headers to select a variant
+	-- More info : http://www.w3.org/Protocols/rfc2616/rfc2616-sec12.html#sec12
+	
 	supported_content_types: detachable ARRAY [READABLE_STRING_8]
 			-- Supported content types
 			-- Can be redefined
@@ -170,11 +173,7 @@ feature -- Handle responses
 		do
 			create h.make
 			h.put_status ({HTTP_STATUS_CODE}.bad_request)
-			if attached ctx.request_content_type (supported_content_types) as l_content_type then
-				h.put_content_type (l_content_type)
-			else
-				h.put_content_type ("*/*")
-			end
+			h.put_content_type_application_json
 			h.put_content_length (a_description.count)
 			h.put_current_date
 			res.set_status_code ({HTTP_STATUS_CODE}.bad_request)
@@ -189,11 +188,7 @@ feature -- Handle responses
 		do
 			create h.make
 			h.put_status ({HTTP_STATUS_CODE}.precondition_failed)
-			if attached ctx.request_content_type (supported_content_types) as l_content_type then
-				h.put_content_type (l_content_type)
-			else
-				h.put_content_type ("*/*")
-			end
+			h.put_content_type_application_json
 			h.put_content_length (a_description.count)
 			h.put_current_date
 			res.set_status_code ({HTTP_STATUS_CODE}.precondition_failed)
@@ -207,13 +202,7 @@ feature -- Handle responses
 		do
 			create h.make
 			h.put_status ({HTTP_STATUS_CODE}.internal_server_error)
-			if attached ctx.request_content_type (supported_content_types) as l_content_type then
-				h.put_content_type (l_content_type)
-			else
-				h.put_content_type ("*/*")
-				--| FIXME: I guess it should be plain/text ,
-				--| */* sounds more for Accept header in request
-			end
+			h.put_content_type_application_json
 			h.put_content_length (a_description.count)
 			h.put_current_date
 			res.set_status_code ({HTTP_STATUS_CODE}.internal_server_error)
@@ -227,11 +216,7 @@ feature -- Handle responses
 		do
 			create h.make
 			h.put_status ({HTTP_STATUS_CODE}.not_implemented)
-			if attached ctx.request_content_type (supported_content_types) as l_content_type then
-				h.put_content_type (l_content_type)
-			else
-				h.put_content_type ("*/*")
-			end
+			h.put_content_type_application_json
 			h.put_content_length (a_description.count)
 			h.put_current_date
 			res.set_status_code ({HTTP_STATUS_CODE}.not_implemented)
@@ -245,11 +230,7 @@ feature -- Handle responses
 		do
 			create h.make
 			h.put_status ({HTTP_STATUS_CODE}.method_not_allowed)
-			if attached ctx.request_content_type (supported_content_types) as l_content_type then
-				h.put_content_type (l_content_type)
-			else
-				h.put_content_type ("*/*")
-			end
+			h.put_content_type_application_json
 			h.put_content_length (a_description.count)
 			h.put_current_date
 			res.set_status_code ({HTTP_STATUS_CODE}.method_not_allowed)
@@ -263,11 +244,7 @@ feature -- Handle responses
 		do
 			create h.make
 			h.put_status ({HTTP_STATUS_CODE}.not_found)
-			if attached ctx.request_content_type (supported_content_types) as l_content_type then
-				h.put_content_type (l_content_type)
-			else
-				h.put_content_type ("*/*")
-			end
+			h.put_content_type_application_json
 			h.put_content_length (a_description.count)
 			h.put_current_date
 			res.set_status_code ({HTTP_STATUS_CODE}.not_found)
@@ -283,11 +260,7 @@ feature -- Handle responses
 			res.flush
 			create h.make
 			h.put_status ({HTTP_STATUS_CODE}.not_modified)
-			if attached ctx.request_content_type (supported_content_types) as l_content_type then
-				h.put_content_type (l_content_type)
-			else
-				h.put_content_type ("*/*")
-			end
+			h.put_content_type_application_json
 			h.put_content_length (a_description.count)
 			h.put_current_date
 			res.set_status_code ({HTTP_STATUS_CODE}.not_modified)
@@ -302,11 +275,7 @@ feature -- Handle responses
 		do
 			create h.make
 			h.put_status ({HTTP_STATUS_CODE}.conflict)
-			if attached ctx.request_content_type (supported_content_types) as l_content_type then
-				h.put_content_type (l_content_type)
-			else
-				h.put_content_type ("*/*")
-			end
+			h.put_content_type_application_json
 			h.put_content_length (a_description.count)
 			h.put_current_date
 			res.set_status_code ({HTTP_STATUS_CODE}.conflict)
