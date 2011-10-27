@@ -19,7 +19,7 @@ rename library.index.tmp library.index
 
 call:sed test library.index
 call:sed example library.index
-call:sed wsf library.index
+call:sed template library.index
 
 echo. > library.index.tmp
 For /F "tokens=* delims=" %%A in (library.index) do echo.%%A >> library.index.tmp
