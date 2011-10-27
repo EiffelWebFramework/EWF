@@ -18,7 +18,7 @@
 	<target name="sample_fcgi" extends="common">
 		<root class="APP_SERVER" feature="make"/>
 		<setting name="executable_name" value="sample"/>
-		<library name="ewsgi_fcgi" location="..\..\..\ewsgi/connectors\libfcgi\libfcgi-safe.ecf" readonly="false"/>
+		<library name="ewsgi_fcgi" location="..\..\..\ewsgi\connectors\libfcgi\libfcgi-safe.ecf" readonly="false"/>
 		<cluster name="src" location=".\src\" recursive="true">
 			<file_rule>
 				<exclude>/gateway$</exclude>
@@ -29,7 +29,7 @@
 	<target name="sample_cgi" extends="common">
 		<root class="APP_SERVER" feature="make"/>
 		<setting name="executable_name" value="sample"/>
-		<library name="ewsgi_cgi" location="..\..\..\ewsgi/connectors\cgi\cgi-safe.ecf" readonly="false"/>
+		<library name="ewsgi_cgi" location="..\..\..\ewsgi\connectors\cgi\cgi-safe.ecf" readonly="false"/>
 		<cluster name="src" location=".\src\" recursive="true">
 			<file_rule>
 				<exclude>/gateway$</exclude>
@@ -41,7 +41,7 @@
 	<target name="sample_nino" extends="common">
 		<root class="APP_SERVER" feature="make"/>
 		<setting name="executable_name" value="sample"/>
-		<library name="ewsgi_nino" location="..\..\..\ewsgi/connectors\nino\nino-safe.ecf" readonly="false"/>
+		<library name="ewsgi_nino" location="..\..\..\ewsgi\connectors\nino\nino-safe.ecf" readonly="false"/>
 		<library name="default_nino" location="..\..\..\wsf\default\nino-safe.ecf" readonly="false"/>
 
 
