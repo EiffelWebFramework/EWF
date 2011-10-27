@@ -1,5 +1,5 @@
 note
-	description: "Summary description for {ORDER_HANDLER}."
+	description: "{ORDER_HANDLER} handle the resources that we want to expose"
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
@@ -40,25 +40,48 @@ feature -- HTTP Methods
 			-- 200 OK, and a representation of the order
 			-- If the GET request is not SUCCESS, we response with
 			-- 404 Resource not found
+			-- If is a Condition GET and the resource does not change we send a
+			-- 304, Resource not modifed
 		local
 			id :  STRING
 		do
 			if attached req.orig_path_info as orig_path then
 				id := get_order_id_from_path (orig_path)
 				if attached retrieve_order (id) as l_order then
-					compute_response_get (ctx, req, res, l_order)
+					if is_conditional_get (req, l_order) then
+						handle_resource_not_modified_response ("The resource" + orig_path + "does not change", ctx, req, res)
+					else
+						compute_response_get (ctx, req, res, l_order)
+					end
 				else
 					handle_resource_not_found_response ("The following resource" + orig_path + " is not found ", ctx, req, res)
 				end
 			end
 		end
 
+	is_conditional_get (req : WSF_REQUEST; l_order : ORDER) : BOOLEAN
+		-- Check if If-None-Match is present and then if there is a representation that has that etag
+		-- if the representation hasn't changed, we return TRUE
+		-- then the response is a 304 with no entity body returned.
+		local
+			etag_util : ETAG_UTILS
+		do
+				if attached req.meta_variable ("HTTP_IF_NONE_MATCH") as if_none_match then
+						create etag_util
+						if if_none_match.as_string.same_string (etag_util.md5_digest (l_order.out).as_string_32) then
+							Result := True
+						end
+				end
+		end
+
 	compute_response_get (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE; l_order : ORDER)
 		local
 			h: WSF_HEADER
 			l_msg : STRING
+			etag_utils : ETAG_UTILS
 		do
 			create h.make
+			create etag_utils
 			h.put_status ({HTTP_STATUS_CODE}.ok)
 			h.put_content_type_application_json
 			if attached {JSON_VALUE} json.value (l_order) as jv then
@@ -67,6 +90,7 @@ feature -- HTTP Methods
 				if attached req.request_time as time then
 					h.add_header ("Date:" + time.formatted_out ("ddd,[0]dd mmm yyyy [0]hh:[0]mi:[0]ss.ff2") + " GMT")
 				end
+				h.add_header ("etag:" + etag_utils.md5_digest (l_order.out))
 				res.set_status_code ({HTTP_STATUS_CODE}.ok)
 				res.write_headers_string (h.string)
 				res.write_string (l_msg)
@@ -74,66 +98,123 @@ feature -- HTTP Methods
 		end
 
 	do_put (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
+		-- Updating a resource with PUT
+		-- A successful PUT request will not create a new resource, instead it will
+		-- change the state of the resource identified by the current uri.
+		-- If success we response with 200 and the updated order.
+		-- 404 if the order is not found
+		-- 400 in case of a bad request
+		-- 500 internal server error
+		-- If the request is a Conditional PUT, and it does not mat we response
+		-- 415, precondition failed.
 		local
 			l_post: STRING
-			l_location :  STRING
 			l_order : detachable ORDER
-			h : WSF_HEADER
 		do
-			fixme ("TODO handle an Internal Server Error")
-			fixme ("Refactor the code, create new abstractions")
-			fixme ("Add Header Date to the response")
-			fixme ("Put implementation is wrong!!!!")
 			req.input.read_stream (req.content_length_value.as_integer_32)
 			l_post := req.input.last_string
 			l_order := extract_order_request(l_post)
-			fixme ("TODO move to a service method")
 			if  l_order /= Void and then db_access.orders.has_key (l_order.id) then
-				update_order( l_order)
-				create h.make
-				h.put_status ({HTTP_STATUS_CODE}.ok)
-				h.put_content_type ("application/json")
-				if attached req.request_time as time then
-					h.add_header ("Date:" +time.formatted_out ("ddd,[0]dd mmm yyyy [0]hh:[0]mi:[0]ss.ff2") + " GMT")
-				end
-				if attached req.http_host as host then
-					l_location := "http://"+host +req.request_uri+"/" + l_order.id
-					h.add_header ("Location:"+ l_location)
-				end
-				if attached {JSON_VALUE} json.value (l_order) as jv then
-					h.put_content_length (jv.representation.count)
-					res.set_status_code ({HTTP_STATUS_CODE}.ok)
-					res.write_headers_string (h.string)
-					res.write_string (jv.representation)
+				if is_valid_to_update(l_order) then
+					if is_conditional_put (req, l_order) then
+						update_order( l_order)
+						compute_response_put (ctx, req, res, l_order)
+					else
+						handle_precondition_fail_response ("", ctx, req, res)
+					end
+				else
+					--| FIXME: Here we need to define the Allow methods
+					handle_resource_conflict_response (l_post +"%N There is conflict while trying to update the order, the order could not be update in the current state", ctx, req, res)
 				end
 			else
 				handle_bad_request_response (l_post +"%N is not a valid ORDER, maybe the order does not exist in the system", ctx, req, res)
 			end
 		end
 
+	is_conditional_put (req : WSF_REQUEST; order : ORDER) : BOOLEAN
+		-- Check if If-Match is present and then if there is a representation that has that etag
+		-- if the representation hasn't changed, we return TRUE
+		local
+			etag_util : ETAG_UTILS
+		do
+			if attached retrieve_order (order.id) as l_order then
+				if attached req.meta_variable ("HTTP_IF_MATCH") as if_match then
+						create etag_util
+						if if_match.as_string.same_string (etag_util.md5_digest (l_order.out).as_string_32) then
+							Result := True
+						end
+				else
+					Result := True
+				end
+			end
+		end
+
+
+	compute_response_put (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE; l_order : ORDER)
+		local
+			h: WSF_HEADER
+			joc : JSON_ORDER_CONVERTER
+			etag_utils : ETAG_UTILS
+		do
+			create h.make
+			create joc.make
+			create etag_utils
+			json.add_converter(joc)
+
+			create h.make
+			h.put_status ({HTTP_STATUS_CODE}.ok)
+			h.put_content_type_application_json
+			if attached req.request_time as time then
+				h.add_header ("Date:" +time.formatted_out ("ddd,[0]dd mmm yyyy [0]hh:[0]mi:[0]ss.ff2") + " GMT")
+			end
+			h.add_header ("etag:" + etag_utils.md5_digest (l_order.out))
+			if attached {JSON_VALUE} json.value (l_order) as jv then
+				h.put_content_length (jv.representation.count)
+				res.set_status_code ({HTTP_STATUS_CODE}.ok)
+				res.write_headers_string (h.string)
+				res.write_string (jv.representation)
+			end
+		end
+
+
 	do_delete (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
+		-- Here we use DELETE to cancel an order, if that order is in state where
+		-- it can still be canceled.
+		-- 200 if is ok
+		-- 404 Resource not found
+		-- 405 if consumer and service's view of the resouce state is inconsisent
+		-- 500 if we have an internal server error
 		local
 			id: STRING
-			h : WSF_HEADER
 		do
-			fixme ("TODO handle an Internal Server Error")
-			fixme ("Refactor the code, create new abstractions")
 			if  attached req.orig_path_info as orig_path then
 				id := get_order_id_from_path (orig_path)
 				if db_access.orders.has_key (id) then
-					delete_order( id)
-					create h.make
-					h.put_status ({HTTP_STATUS_CODE}.no_content)
-					h.put_content_type ("application/json")
-					if attached req.request_time as time then
-						h.put_utc_date (time)
+					if is_valid_to_delete (id) then
+						delete_order( id)
+						compute_response_delete (ctx, req, res)
+					else
+						--| FIXME: Here we need to define the Allow methods
+						handle_method_not_allowed_response (orig_path + "%N There is conflict while trying to delete the order, the order could not be deleted in the current state", ctx, req, res)
 					end
-					res.set_status_code ({HTTP_STATUS_CODE}.no_content)
-					res.write_headers_string (h.string)
 				else
 					handle_resource_not_found_response (orig_path + " not found in this server", ctx, req, res)
 				end
 			end
+		end
+
+	compute_response_delete (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
+		local
+			h : WSF_HEADER
+		do
+			create h.make
+			h.put_status ({HTTP_STATUS_CODE}.no_content)
+			h.put_content_type_application_json
+			if attached req.request_time as time then
+					h.put_utc_date (time)
+			end
+			res.set_status_code ({HTTP_STATUS_CODE}.no_content)
+			res.write_headers_string (h.string)
 		end
 
 	do_post (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
@@ -219,6 +300,28 @@ feature {NONE} -- Implementation Repository Layer
 			an_order.set_status ("submitted")
 			an_order.add_revision
 			db_access.orders.force (an_order, an_order.id)
+		end
+
+
+	is_valid_to_delete ( an_id : STRING)  : BOOLEAN
+		-- Is the order identified by `an_id' in a state whre it can still be deleted?
+		do
+			if attached retrieve_order (an_id) as l_order then
+				if order_validation.is_state_valid_to_update (l_order.status) then
+					Result := True
+				end
+			end
+		end
+
+	is_valid_to_update (an_order: ORDER) : BOOLEAN
+			-- Check if there is a conflict while trying to update the order
+		do
+			   	if attached retrieve_order (an_order.id) as l_order then
+					if order_validation.is_state_valid_to_update (l_order.status) and then order_validation.is_valid_status_state (an_order.status) and then
+					   order_validation.is_valid_transition (l_order, an_order.status) then
+					 	Result := True
+					end
+				end
 		end
 
 	update_order (an_order: ORDER)

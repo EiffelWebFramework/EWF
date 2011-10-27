@@ -86,6 +86,9 @@ feature -- Etag
 			Result := hash_code.out + revision.out
 		end
 
+
+feature -- Output
+
 feature -- Report
 
 	hash_code: INTEGER_32
