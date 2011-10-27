@@ -73,34 +73,39 @@ feature -- Query
 		local
 			s: detachable READABLE_STRING_8
 			i,n: INTEGER
+			l_accept_lst: detachable ARRAYED_LIST [READABLE_STRING_8]
 		do
+			l_accept_lst := accepted_content_types (request)
 			if attached request.content_type as ct then
-				Result := ct
-			else
-				if attached accepted_content_types (request) as l_accept_lst then
-					from
-						l_accept_lst.start
-					until
-						l_accept_lst.after or Result /= Void
-					loop
-						s := l_accept_lst.item
-						if content_type_supported /= Void then
-							from
-								i := content_type_supported.lower
-								n := content_type_supported.upper
-							until
-								i > n or Result /= Void
-							loop
-								if content_type_supported[i].same_string (s) then
-									Result := s
-								end
-								i := i + 1
+				if l_accept_lst /= Void then
+					l_accept_lst.put_front (ct)
+				else
+					Result := ct
+				end
+			end
+			if Result = Void and l_accept_lst /= Void then
+				from
+					l_accept_lst.start
+				until
+					l_accept_lst.after or Result /= Void
+				loop
+					s := l_accept_lst.item
+					if content_type_supported /= Void then
+						from
+							i := content_type_supported.lower
+							n := content_type_supported.upper
+						until
+							i > n or Result /= Void
+						loop
+							if content_type_supported[i].same_string (s) then
+								Result := s
 							end
-						else
-							Result := s
+							i := i + 1
 						end
-						l_accept_lst.forth
+					else
+						Result := s
 					end
+					l_accept_lst.forth
 				end
 			end
 		end

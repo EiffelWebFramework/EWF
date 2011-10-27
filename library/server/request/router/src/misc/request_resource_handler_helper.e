@@ -167,7 +167,7 @@ feature -- Handle responses
 			Result := Void
 		end
 
-	handle_bad_request_response (a_description:STRING; ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE )
+	handle_bad_request_response (a_description: STRING; ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE )
 		local
 			h : WSF_HEADER
 		do
@@ -182,7 +182,7 @@ feature -- Handle responses
 		end
 
 
-	handle_precondition_fail_response (a_description:STRING; ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE )
+	handle_precondition_fail_response (a_description: STRING; ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE )
 		local
 			h : WSF_HEADER
 		do
@@ -196,7 +196,7 @@ feature -- Handle responses
 			res.write_string (a_description)
 		end
 
-	handle_internal_server_error (a_description:STRING; ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE )
+	handle_internal_server_error (a_description: STRING; ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE )
 		local
 			h : WSF_HEADER
 		do
@@ -224,7 +224,7 @@ feature -- Handle responses
 			res.write_string (a_description)
 		end
 
-	handle_method_not_allowed_response (a_description:STRING; ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
+	handle_method_not_allowed_response (a_description: STRING; ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
 		local
 			h : WSF_HEADER
 		do
@@ -238,7 +238,7 @@ feature -- Handle responses
 			res.write_string (a_description)
 		end
 
-	handle_resource_not_found_response (a_description:STRING; ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
+	handle_resource_not_found_response (a_description: STRING; ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
 		local
 			h : WSF_HEADER
 		do
@@ -253,7 +253,7 @@ feature -- Handle responses
 		end
 
 
-	handle_resource_not_modified_response (a_description:STRING; ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
+	handle_resource_not_modified_response (a_description: STRING; ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
 		local
 			h : WSF_HEADER
 		do
@@ -269,7 +269,7 @@ feature -- Handle responses
 		end
 
 
-	handle_resource_conflict_response (a_description:STRING; ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
+	handle_resource_conflict_response (a_description: STRING; ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
 		local
 			h : WSF_HEADER
 		do

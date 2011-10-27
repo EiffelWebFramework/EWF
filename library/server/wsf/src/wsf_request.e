@@ -1205,11 +1205,7 @@ feature {NONE} -- Temporary File handling
 		local
 			c: CHARACTER
 			i, n, p: INTEGER
-			l_accentued, l_non_accentued: STRING
 		do
-			l_accentued := "����������������������������������������������������"
-			l_non_accentued := "AAAAAACEEEEIIIIOOOOOUUUUYaaaaaaceeeeiiiioooooouuuuyy"
-
 				--| Compute safe filename, to avoid creating impossible filename, or dangerous one
 			from
 				i := 1
@@ -1225,9 +1221,59 @@ feature {NONE} -- Temporary File handling
 				when 'A' .. 'Z', 'a' .. 'z', '0' .. '9' then
 					Result.extend (c)
 				else
-					p := l_accentued.index_of (c, 1)
-					if p > 0 then
-						Result.extend (l_non_accentued[p])
+					inspect c
+					when 'À' then Result.extend ('A')
+					when 'Á' then Result.extend ('A')
+					when 'Â' then Result.extend ('A')
+					when 'Ã' then Result.extend ('A')
+					when 'Ä' then Result.extend ('A')
+					when 'Å' then Result.extend ('A')
+					when 'Ç' then Result.extend ('C')
+					when 'È' then Result.extend ('E')
+					when 'É' then Result.extend ('E')
+					when 'Ê' then Result.extend ('E')
+					when 'Ë' then Result.extend ('E')
+					when 'Ì' then Result.extend ('I')
+					when 'Í' then Result.extend ('I')
+					when 'Î' then Result.extend ('I')
+					when 'Ï' then Result.extend ('I')
+					when 'Ò' then Result.extend ('O')
+					when 'Ó' then Result.extend ('O')
+					when 'Ô' then Result.extend ('O')
+					when 'Õ' then Result.extend ('O')
+					when 'Ö' then Result.extend ('O')
+					when 'Ù' then Result.extend ('U')
+					when 'Ú' then Result.extend ('U')
+					when 'Û' then Result.extend ('U')
+					when 'Ü' then Result.extend ('U')
+					when 'Ý' then Result.extend ('Y')
+					when 'à' then Result.extend ('a')
+					when 'á' then Result.extend ('a')
+					when 'â' then Result.extend ('a')
+					when 'ã' then Result.extend ('a')
+					when 'ä' then Result.extend ('a')
+					when 'å' then Result.extend ('a')
+					when 'ç' then Result.extend ('c')
+					when 'è' then Result.extend ('e')
+					when 'é' then Result.extend ('e')
+					when 'ê' then Result.extend ('e')
+					when 'ë' then Result.extend ('e')
+					when 'ì' then Result.extend ('i')
+					when 'í' then Result.extend ('i')
+					when 'î' then Result.extend ('i')
+					when 'ï' then Result.extend ('i')
+					when 'ð' then Result.extend ('o')
+					when 'ò' then Result.extend ('o')
+					when 'ó' then Result.extend ('o')
+					when 'ô' then Result.extend ('o')
+					when 'õ' then Result.extend ('o')
+					when 'ö' then Result.extend ('o')
+					when 'ù' then Result.extend ('u')
+					when 'ú' then Result.extend ('u')
+					when 'û' then Result.extend ('u')
+					when 'ü' then Result.extend ('u')
+					when 'ý' then Result.extend ('y')
+					when 'ÿ' then Result.extend ('y')
 					else
 						Result.extend ('-')
 					end
