@@ -1222,58 +1222,58 @@ feature {NONE} -- Temporary File handling
 					Result.extend (c)
 				else
 					inspect c
-					when 'À' then Result.extend ('A')
-					when 'Á' then Result.extend ('A')
-					when 'Â' then Result.extend ('A')
-					when 'Ã' then Result.extend ('A')
-					when 'Ä' then Result.extend ('A')
-					when 'Å' then Result.extend ('A')
-					when 'Ç' then Result.extend ('C')
-					when 'È' then Result.extend ('E')
-					when 'É' then Result.extend ('E')
-					when 'Ê' then Result.extend ('E')
-					when 'Ë' then Result.extend ('E')
-					when 'Ì' then Result.extend ('I')
-					when 'Í' then Result.extend ('I')
-					when 'Î' then Result.extend ('I')
-					when 'Ï' then Result.extend ('I')
-					when 'Ò' then Result.extend ('O')
-					when 'Ó' then Result.extend ('O')
-					when 'Ô' then Result.extend ('O')
-					when 'Õ' then Result.extend ('O')
-					when 'Ö' then Result.extend ('O')
-					when 'Ù' then Result.extend ('U')
-					when 'Ú' then Result.extend ('U')
-					when 'Û' then Result.extend ('U')
-					when 'Ü' then Result.extend ('U')
-					when 'Ý' then Result.extend ('Y')
-					when 'à' then Result.extend ('a')
-					when 'á' then Result.extend ('a')
-					when 'â' then Result.extend ('a')
-					when 'ã' then Result.extend ('a')
-					when 'ä' then Result.extend ('a')
-					when 'å' then Result.extend ('a')
-					when 'ç' then Result.extend ('c')
-					when 'è' then Result.extend ('e')
-					when 'é' then Result.extend ('e')
-					when 'ê' then Result.extend ('e')
-					when 'ë' then Result.extend ('e')
-					when 'ì' then Result.extend ('i')
-					when 'í' then Result.extend ('i')
-					when 'î' then Result.extend ('i')
-					when 'ï' then Result.extend ('i')
-					when 'ð' then Result.extend ('o')
-					when 'ò' then Result.extend ('o')
-					when 'ó' then Result.extend ('o')
-					when 'ô' then Result.extend ('o')
-					when 'õ' then Result.extend ('o')
-					when 'ö' then Result.extend ('o')
-					when 'ù' then Result.extend ('u')
-					when 'ú' then Result.extend ('u')
-					when 'û' then Result.extend ('u')
-					when 'ü' then Result.extend ('u')
-					when 'ý' then Result.extend ('y')
-					when 'ÿ' then Result.extend ('y')
+					when '%/192/' then Result.extend ('A') -- À
+					when '%/193/' then Result.extend ('A') -- Á
+					when '%/194/' then Result.extend ('A') -- Â
+					when '%/195/' then Result.extend ('A') -- Ã
+					when '%/196/' then Result.extend ('A') -- Ä
+					when '%/197/' then Result.extend ('A') -- Å
+					when '%/199/' then Result.extend ('C') -- Ç
+					when '%/200/' then Result.extend ('E') -- È
+					when '%/201/' then Result.extend ('E') -- É
+					when '%/202/' then Result.extend ('E') -- Ê
+					when '%/203/' then Result.extend ('E') -- Ë
+					when '%/204/' then Result.extend ('I') -- Ì
+					when '%/205/' then Result.extend ('I') -- Í
+					when '%/206/' then Result.extend ('I') -- Î
+					when '%/207/' then Result.extend ('I') -- Ï
+					when '%/210/' then Result.extend ('O') -- Ò
+					when '%/211/' then Result.extend ('O') -- Ó
+					when '%/212/' then Result.extend ('O') -- Ô
+					when '%/213/' then Result.extend ('O') -- Õ
+					when '%/214/' then Result.extend ('O') -- Ö
+					when '%/217/' then Result.extend ('U') -- Ù
+					when '%/218/' then Result.extend ('U') -- Ú
+					when '%/219/' then Result.extend ('U') -- Û
+					when '%/220/' then Result.extend ('U') -- Ü
+					when '%/221/' then Result.extend ('Y') -- Ý
+					when '%/224/' then Result.extend ('a') -- à
+					when '%/225/' then Result.extend ('a') -- á
+					when '%/226/' then Result.extend ('a') -- â
+					when '%/227/' then Result.extend ('a') -- ã
+					when '%/228/' then Result.extend ('a') -- ä
+					when '%/229/' then Result.extend ('a') -- å
+					when '%/231/' then Result.extend ('c') -- ç
+					when '%/232/' then Result.extend ('e') -- è
+					when '%/233/' then Result.extend ('e') -- é
+					when '%/234/' then Result.extend ('e') -- ê
+					when '%/235/' then Result.extend ('e') -- ë
+					when '%/236/' then Result.extend ('i') -- ì
+					when '%/237/' then Result.extend ('i') -- í
+					when '%/238/' then Result.extend ('i') -- î
+					when '%/239/' then Result.extend ('i') -- ï
+					when '%/240/' then Result.extend ('o') -- ð
+					when '%/242/' then Result.extend ('o') -- ò
+					when '%/243/' then Result.extend ('o') -- ó
+					when '%/244/' then Result.extend ('o') -- ô
+					when '%/245/' then Result.extend ('o') -- õ
+					when '%/246/' then Result.extend ('o') -- ö
+					when '%/249/' then Result.extend ('u') -- ù
+					when '%/250/' then Result.extend ('u') -- ú
+					when '%/251/' then Result.extend ('u') -- û
+					when '%/252/' then Result.extend ('u') -- ü
+					when '%/253/' then Result.extend ('y') -- ý
+					when '%/255/' then Result.extend ('y') -- ÿ
 					else
 						Result.extend ('-')
 					end
