@@ -18,7 +18,7 @@
 		<library name="wsf" location="..\..\library\server\wsf\wsf-safe.ecf" readonly="false"/>
 		<library name="json" location="..\..\ext\text\json\library\json-safe.ecf" readonly="false"/>
 		<library name="http" location="..\..\library\protocol\http\http-safe.ecf" readonly="false"/>
-		<library name="eel" location="..\..\ext\crypto\eel\eel-safe.ecf" readonly="false"/>
+		<library name="eel" location="..\..\library\crypto\eel\eel-safe.ecf" readonly="false"/>
 		<library name="router" location="..\..\library\server\request\router\router-safe.ecf" readonly="false"/>
 		<library name="uri_template" location="..\..\library\protocol\uri_template\uri_template-safe.ecf" readonly="false"/>
 		<cluster name="src" location="src\" recursive="true"/>
