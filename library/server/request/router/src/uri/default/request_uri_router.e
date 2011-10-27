@@ -17,7 +17,7 @@ create
 
 feature -- Mapping
 
-	map_agent_with_request_methods (a_id: READABLE_STRING_8; a_action: PROCEDURE [ANY, TUPLE [ctx: REQUEST_URI_HANDLER_CONTEXT; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER]];
+	map_agent_with_request_methods (a_id: READABLE_STRING_8; a_action: PROCEDURE [ANY, TUPLE [ctx: REQUEST_URI_HANDLER_CONTEXT; req: WSF_REQUEST; res: WSF_RESPONSE]];
 			 rqst_methods: detachable ARRAY [READABLE_STRING_8])
 		local
 			h: REQUEST_AGENT_HANDLER [REQUEST_URI_HANDLER_CONTEXT]

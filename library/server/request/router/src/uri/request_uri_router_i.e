@@ -38,7 +38,7 @@ feature -- Registration
 
 feature {NONE} -- Access: Implementation
 
-	handler (req: WGI_REQUEST): detachable TUPLE [handler: H; context: like default_handler_context]
+	handler (req: WSF_REQUEST): detachable TUPLE [handler: H; context: like default_handler_context]
 		local
 			h: detachable H
 			ctx: detachable like default_handler_context
@@ -62,7 +62,7 @@ feature {NONE} -- Access: Implementation
 			end
 		end
 
-	smart_handler (req: WGI_REQUEST): detachable TUPLE [path: READABLE_STRING_8; handler: H]
+	smart_handler (req: WSF_REQUEST): detachable TUPLE [path: READABLE_STRING_8; handler: H]
 		require
 			req_valid: req /= Void and then source_uri (req) /= Void
 		do
@@ -124,7 +124,7 @@ feature {NONE} -- Access: Implementation
 
 feature {NONE} -- Context factory
 
-	handler_context (p: detachable STRING; req: WGI_REQUEST): C
+	handler_context (p: detachable STRING; req: WSF_REQUEST): C
 		local
 			ctx: C
 		do
@@ -184,7 +184,7 @@ feature {NONE} -- Default: implementation
 			default_handler := h
 		end
 
-	default_handler_context (req: WGI_REQUEST): C
+	default_handler_context (req: WSF_REQUEST): C
 		do
 			Result := handler_context (Void, req)
 		end

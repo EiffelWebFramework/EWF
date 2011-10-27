@@ -11,6 +11,7 @@
 			<assertions precondition="true"/>
 		</option>
 		<library name="base" location="$ISE_LIBRARY\library\base\base.ecf"/>
+		<library name="encoding" location="$ISE_LIBRARY\library\encoding\encoding.ecf"/>
 		<cluster name="src" location="src\" recursive="true">
 			<file_rule>
 				<exclude>/tests$</exclude>

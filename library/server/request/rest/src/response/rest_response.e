@@ -32,7 +32,7 @@ feature -- Recycle
 
 feature -- Access
 
-	headers: EWF_HEADER
+	headers: WSF_HEADER
 
 	api: STRING
 			-- Associated api query string.
@@ -129,7 +129,7 @@ feature -- Output
 			Result := o
 		end
 
-	send (res: WGI_RESPONSE_BUFFER)
+	send (res: WSF_RESPONSE)
 		do
 			compute
 			res.set_status_code (200)

@@ -22,7 +22,7 @@ inherit
 
 feature -- execute
 
-	execute (ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	execute (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
 			-- Execute request handler	
 		do
 			execute_methods (ctx, req, res)
@@ -34,7 +34,7 @@ feature -- API DOC
 
 feature -- HTTP Methods
 
-	do_get (ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	do_get (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
 			-- Using GET to retrieve resource information.
 			-- If the GET request is SUCCESS, we response with
 			-- 200 OK, and a representation of the order
@@ -53,9 +53,9 @@ feature -- HTTP Methods
 			end
 		end
 
-	compute_response_get (ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER; l_order : ORDER)
+	compute_response_get (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE; l_order : ORDER)
 		local
-			h: EWF_HEADER
+			h: WSF_HEADER
 			l_msg : STRING
 		do
 			create h.make
@@ -73,12 +73,12 @@ feature -- HTTP Methods
 			end
 		end
 
-	do_put (ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	do_put (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
 		local
 			l_post: STRING
 			l_location :  STRING
 			l_order : detachable ORDER
-			h : EWF_HEADER
+			h : WSF_HEADER
 		do
 			fixme ("TODO handle an Internal Server Error")
 			fixme ("Refactor the code, create new abstractions")
@@ -111,10 +111,10 @@ feature -- HTTP Methods
 			end
 		end
 
-	do_delete (ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	do_delete (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
 		local
 			id: STRING
-			h : EWF_HEADER
+			h : WSF_HEADER
 		do
 			fixme ("TODO handle an Internal Server Error")
 			fixme ("Refactor the code, create new abstractions")
@@ -136,7 +136,7 @@ feature -- HTTP Methods
 			end
 		end
 
-	do_post (ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	do_post (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
 			-- Here the convention is the following.
 			-- POST is used for creation and the server determines the URI
 			-- of the created resource.
@@ -158,9 +158,9 @@ feature -- HTTP Methods
 			end
 		end
 
-	compute_response_post (ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER; l_order : ORDER)
+	compute_response_post (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE; l_order : ORDER)
 		local
-			h: EWF_HEADER
+			h: WSF_HEADER
 			l_msg : STRING
 			l_location :  STRING
 			joc : JSON_ORDER_CONVERTER

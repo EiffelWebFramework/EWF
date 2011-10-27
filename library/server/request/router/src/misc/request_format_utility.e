@@ -9,19 +9,16 @@ class
 
 feature -- Access
 
-	accepted_content_types (req: WGI_REQUEST): detachable ARRAYED_LIST [READABLE_STRING_8]
+	accepted_content_types (req: WSF_REQUEST): detachable ARRAYED_LIST [READABLE_STRING_8]
 		local
-			l_accept: detachable READABLE_STRING_32
 			s: STRING_8
 			q: READABLE_STRING_8
 			p: INTEGER
 			lst: LIST [READABLE_STRING_8]
 			qs: QUICK_SORTER [READABLE_STRING_8]
 		do
-			l_accept := req.http_accept
---TEST		l_accept := "text/html,application/xhtml+xml;q=0.6,application/xml;q=0.2,text/plain;q=0.5,*/*;q=0.8"
-
-			if l_accept /= Void then
+--TEST		if attached ("text/html,application/xhtml+xml;q=0.6,application/xml;q=0.2,text/plain;q=0.5,*/*;q=0.8") as l_accept then
+			if attached req.http_accept as l_accept then
 				lst := l_accept.as_string_8.split (',')
 				create Result.make (lst.count)
 				from

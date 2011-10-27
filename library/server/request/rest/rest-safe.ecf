@@ -7,12 +7,13 @@
 			<exclude>/\.git$</exclude>
 			<exclude>/\.svn$</exclude>
 		</file_rule>
-		<option warning="true" full_class_checking="true" is_attached_by_default="true" void_safety="all"/>
+		<option warning="true" full_class_checking="true" is_attached_by_default="true" void_safety="all">
+		</option>
 		<library name="base" location="$ISE_LIBRARY\library\base\base-safe.ecf"/>
-		<library name="ewsgi" location="..\..\ewsgi\ewsgi-safe.ecf"/>
+		<library name="wsf" location="..\..\wsf\wsf-safe.ecf" readonly="false"/>
 		<library name="http" location="..\..\..\protocol\http\http-safe.ecf"/>
 		<library name="router" location="..\..\request\router\router-safe.ecf" readonly="false"/>
-		<library name="uri_template" location="..\..\..\protocol\uri_template\uri_template-safe.ecf"/>
+		<library name="uri_template" location="..\..\..\protocol\uri_template\uri_template-safe.ecf" readonly="false"/>
 		<cluster name="contrib" location=".\src\contrib\" recursive="true">
 			<file_rule>
 				<exclude>/html$</exclude>

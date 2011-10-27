@@ -31,7 +31,7 @@ feature {NONE} -- Initialization
 
 feature -- Access
 
-	headers: EWF_HEADER
+	headers: WSF_HEADER
 
 feature -- Recycle
 
@@ -155,7 +155,7 @@ feature -- Output
 			Result := o
 		end
 
-	send (buf: WGI_RESPONSE_BUFFER)
+	send (buf: WSF_RESPONSE)
 		do
 			buf.set_status_code (200)
 			buf.write_headers_string (header_string)

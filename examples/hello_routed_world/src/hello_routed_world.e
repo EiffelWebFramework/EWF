@@ -14,7 +14,7 @@ inherit
 
 	ROUTED_APPLICATION_HELPER
 
-	DEFAULT_WGI_APPLICATION
+	DEFAULT_APPLICATION
 
 create
 	make
@@ -30,7 +30,6 @@ feature {NONE} -- Initialization
 
 	create_router
 		do
-			check False end
 			create router.make (5)
 		end
 
@@ -38,8 +37,13 @@ feature {NONE} -- Initialization
 		local
 			ra: REQUEST_AGENT_HANDLER [REQUEST_URI_TEMPLATE_HANDLER_CONTEXT]
 			hello: REQUEST_URI_TEMPLATE_ROUTING_HANDLER
+			www: REQUEST_FILE_SYSTEM_HANDLER [REQUEST_URI_TEMPLATE_HANDLER_CONTEXT]
 		do
 			router.map_agent ("/home", agent execute_home)
+			create www.make (document_root)
+			www.set_directory_index (<<"index.html">>)
+
+			router.map ("/www{/path}{?query}", www)
 
 			--| Map all "/hello*" using a ROUTING_HANDLER
 			create hello.make (3)
@@ -61,55 +65,86 @@ feature {NONE} -- Initialization
 			router.map_agent_with_request_methods ("/method/custom", agent handle_method_post, <<"POST">>)
 		end
 
+
+	document_root: READABLE_STRING_8
+		local
+			e: EXECUTION_ENVIRONMENT
+			dn: DIRECTORY_NAME
+		once
+			create e
+			create dn.make_from_string (e.current_working_directory)
+			dn.extend ("htdocs")
+			Result := dn.string
+			if Result[Result.count] = Operating_environment.directory_separator then
+				Result := Result.substring (1, Result.count - 1)
+			end
+		end
+
 feature -- Execution
 
-	execute_default (req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	execute_default (req: WSF_REQUEST; res: WSF_RESPONSE)
 		local
-			h: EWF_HEADER
+			h: WSF_HEADER
 			l_url: STRING
 			e: EXECUTION_ENVIRONMENT
 			n: INTEGER
 			i: INTEGER
+			s: STRING_8
 		do
 			l_url := req.script_url ("/home")
 			n := 3
 			create h.make
 			h.put_refresh (l_url, 5)
+			h.put_content_type_text_plain
+			h.put_transfer_encoding_chunked
+--			h.put_content_length (0)
 			res.set_status_code ({HTTP_STATUS_CODE}.moved_permanently)
 			res.write_headers_string (h.string)
 
 			from
 				create e
+				create s.make (255)
 			until
 				n = 0
 			loop
 				if n > 1 then
-					res.write_string ("Redirected to " + l_url + " in " + n.out + " seconds :%N")
+					s.append ("%NRedirected to " + l_url + " in " + n.out + " seconds :%N")
 				else
-					res.write_string ("Redirected to " + l_url + " in 1 second :%N")
+					s.append ("%NRedirected to " + l_url + " in 1 second :%N")
 				end
-				res.flush
+				write_chunk (s, res); s.wipe_out
 				from
 					i := 1
 				until
 					i = 1001
 				loop
-					res.write_string (".")
+					s.append_character ('.')
 					if i \\ 100 = 0 then
-						res.write_string ("%N")
+						s.append_character ('%N')
 					end
-					res.flush
+					write_chunk (s, res); s.wipe_out
 					e.sleep (1_000_000)
 					i := i + 1
 				end
-				res.write_string ("%N")
 				n := n - 1
 			end
-			res.write_string ("You are now being redirected...%N")
+			s.append ("%NYou are now being redirected...%N")
+			write_chunk (s, res); s.wipe_out
+			write_chunk (Void, res)
+		end
+
+	write_chunk (s: detachable READABLE_STRING_8; res: WSF_RESPONSE)
+		do
+			if s /= Void then
+				res.write_string (s.count.to_hex_string + {HTTP_CONSTANTS}.crlf)
+				res.write_string (s)
+			else
+				res.write_string ("0" + {HTTP_CONSTANTS}.crlf)
+			end
 			res.flush
 		end
 
-	execute_home (ctx: REQUEST_URI_TEMPLATE_HANDLER_CONTEXT; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	execute_home (ctx: REQUEST_URI_TEMPLATE_HANDLER_CONTEXT; req: WSF_REQUEST; res: WSF_RESPONSE)
 		local
 			l_body: STRING_8
 		do
@@ -133,10 +168,10 @@ feature -- Execution
 			res.write_string (l_body)
 		end
 
-	execute_hello (req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER; a_name: detachable READABLE_STRING_32; ctx: REQUEST_HANDLER_CONTEXT)
+	execute_hello (req: WSF_REQUEST; res: WSF_RESPONSE; a_name: detachable READABLE_STRING_32; ctx: REQUEST_HANDLER_CONTEXT)
 		local
 			l_response_content_type: detachable STRING
-			h: EWF_HEADER
+			h: WSF_HEADER
 			content_type_supported: ARRAY [STRING]
 			l_body: STRING_8
 		do
@@ -172,33 +207,33 @@ feature -- Execution
 			end
 		end
 
-	handle_hello (ctx: REQUEST_URI_TEMPLATE_HANDLER_CONTEXT; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	handle_hello (ctx: REQUEST_URI_TEMPLATE_HANDLER_CONTEXT; req: WSF_REQUEST; res: WSF_RESPONSE)
 		do
 			execute_hello (req, res, Void, ctx)
 		end
 
-	handle_anonymous_hello (ctx: REQUEST_URI_TEMPLATE_HANDLER_CONTEXT; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	handle_anonymous_hello (ctx: REQUEST_URI_TEMPLATE_HANDLER_CONTEXT; req: WSF_REQUEST; res: WSF_RESPONSE)
 		do
 			execute_hello (req, res, ctx.string_parameter ("name"), ctx)
 		end
 
-	handle_method_any (ctx: REQUEST_URI_TEMPLATE_HANDLER_CONTEXT; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	handle_method_any (ctx: REQUEST_URI_TEMPLATE_HANDLER_CONTEXT; req: WSF_REQUEST; res: WSF_RESPONSE)
 		do
 			execute_hello (req, res, req.request_method, ctx)
 		end
 
-	handle_method_get (ctx: REQUEST_URI_TEMPLATE_HANDLER_CONTEXT; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	handle_method_get (ctx: REQUEST_URI_TEMPLATE_HANDLER_CONTEXT; req: WSF_REQUEST; res: WSF_RESPONSE)
 		do
 			execute_hello (req, res, "GET", ctx)
 		end
 
 
-	handle_method_post (ctx: REQUEST_URI_TEMPLATE_HANDLER_CONTEXT; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	handle_method_post (ctx: REQUEST_URI_TEMPLATE_HANDLER_CONTEXT; req: WSF_REQUEST; res: WSF_RESPONSE)
 		do
 			execute_hello (req, res, "POST", ctx)
 		end
 
-	handle_method_get_or_post (ctx: REQUEST_URI_TEMPLATE_HANDLER_CONTEXT; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	handle_method_get_or_post (ctx: REQUEST_URI_TEMPLATE_HANDLER_CONTEXT; req: WSF_REQUEST; res: WSF_RESPONSE)
 		do
 			execute_hello (req, res, "GET or POST", ctx)
 		end

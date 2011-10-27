@@ -20,6 +20,9 @@ feature -- Test routines
 			testing:  "url-encoded"
 		do
 			test_url_encoded_encoding ("http://domain.tld/foo/bar/script.php?test='toto'&foo=bar&title=il était une fois")
+			test_url_encoded_encoding ("été")
+			test_url_encoded_decoding ("%%E9t%%E9", "été")
+			test_url_encoded_decoding ("%%C3%%A9t%%C3%%A9", "été")
 		end
 
 	test_url_encoded_encoding (s: STRING_32)
@@ -31,11 +34,22 @@ feature -- Test routines
 			create b
 			e := b.encoded_string (s)
 			u := b.decoded_string (e)
-			assert ("decoded encoded string is same", u ~ s)
+			assert ("decoded encoded string is same for string %"" + u + "%"", u ~ s)
 		end
 
+	test_url_encoded_decoding (s: STRING_8; e: STRING_32)
+		local
+			u: STRING_32
+			b: URL_ENCODER
+		do
+			create b
+			u := b.decoded_string (s)
+			assert ("decoded encoded string is same for %"" + s + "%"", u ~ e)
+		end
+
+
 note
-	copyright: "Copyright (c) 1984-2011, Eiffel Software and others"
+	copyright: "2011-2011, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

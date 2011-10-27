@@ -14,7 +14,7 @@ inherit
 
 	ROUTED_APPLICATION_HELPER
 
-	DEFAULT_WGI_APPLICATION
+	DEFAULT_APPLICATION
 
 create
 	make
@@ -43,12 +43,12 @@ feature {NONE} -- Initialization
 
 feature -- Execution
 
-	execute_default (req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	execute_default (req: WSF_REQUEST; res: WSF_RESPONSE)
 			-- I'm using this method to handle the method not allowed response
 			-- in the case that the given uri does not have a corresponding http method
 			-- to handle it.
 		local
-			h : EWF_HEADER
+			h : WSF_HEADER
 			l_description : STRING
 			l_api_doc : STRING
 		do

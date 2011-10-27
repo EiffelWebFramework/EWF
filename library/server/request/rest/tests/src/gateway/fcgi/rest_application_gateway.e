@@ -2,13 +2,13 @@ deferred class
 	REST_APPLICATION_GATEWAY
 
 inherit
-	WGI_APPLICATION
+	WSF_APPLICATION
 
 feature -- Access
 
 	build_gateway_and_launch
 		local
-			libfcgi: EWF_LIBFCGI_CONNECTOR
+			libfcgi: WGI_LIBFCGI_CONNECTOR
 		do
 			create libfcgi.make (Current)
 			libfcgi.launch

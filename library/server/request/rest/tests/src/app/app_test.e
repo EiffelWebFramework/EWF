@@ -32,17 +32,17 @@ feature {NONE} -- Initialization
 
 feature -- Access
 
-	authentication_required (req: WGI_REQUEST): BOOLEAN
+	authentication_required (req: WSF_REQUEST): BOOLEAN
 		do
 		end
 
 feature -- Execution
 
-	execute_application (ctx: APP_REQUEST_HANDLER_CONTEXT; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	execute_application (ctx: APP_REQUEST_HANDLER_CONTEXT; req: WSF_REQUEST; res: WSF_RESPONSE)
 			-- Execute request handler
 		local
 			s: STRING
-			h: EWF_HEADER
+			h: WSF_HEADER
 		do
 			create h.make
 			h.put_content_type_text_plain

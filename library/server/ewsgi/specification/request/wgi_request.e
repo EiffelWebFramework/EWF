@@ -80,23 +80,16 @@ feature -- Access: Input
 		deferred
 		end
 
-feature -- Access: extra values
-
-	request_time: detachable DATE_TIME
-			-- Request time (UTC)
-		deferred
-		end
-
 feature -- Access: CGI meta variables		
 
-	meta_variable (a_name: READABLE_STRING_GENERAL): detachable WGI_STRING_VALUE
+	meta_variable (a_name: READABLE_STRING_8): detachable READABLE_STRING_8
 			-- Environment variable related to `a_name'
 		require
 			a_name_valid: a_name /= Void and then not a_name.is_empty
 		deferred
 		end
 
-	meta_string_variable (a_name: READABLE_STRING_GENERAL): detachable READABLE_STRING_32
+	meta_string_variable (a_name: READABLE_STRING_8): detachable READABLE_STRING_8
 			-- Environment variable related to `a_name'
 		require
 			a_name_valid: a_name /= Void and then not a_name.is_empty
@@ -106,7 +99,7 @@ feature -- Access: CGI meta variables
 			end
 		end
 
-	meta_variables: ITERABLE [WGI_STRING_VALUE]
+	meta_variables: HASH_TABLE [READABLE_STRING_8, READABLE_STRING_8]
 			-- These variables are specific to requests made with HTTP.
 			-- Interpretation of these variables may depend on the value of
 			-- SERVER_PROTOCOL.
@@ -138,7 +131,7 @@ feature -- Access: CGI meta variables
 
 feature -- Common Gateway Interface - 1.1       8 January 1996
 
-	auth_type: detachable READABLE_STRING_32
+	auth_type: detachable READABLE_STRING_8
 			-- This variable is specific to requests made via the "http"
 			-- scheme.
 			--
@@ -160,7 +153,7 @@ feature -- Common Gateway Interface - 1.1       8 January 1996
 		deferred
 		end
 
-	content_length: detachable READABLE_STRING_32
+	content_length: detachable READABLE_STRING_8
 			-- This metavariable is set to the size of the message-body
 			-- entity attached to the request, if any, in decimal number of
 			-- octets. If no data are attached, then this metavariable is
@@ -175,12 +168,7 @@ feature -- Common Gateway Interface - 1.1       8 January 1996
 		deferred
 		end
 
-	content_length_value: NATURAL_64
-			-- Integer value related to `content_length"
-		deferred
-		end
-
-	content_type: detachable READABLE_STRING_32
+	content_type: detachable READABLE_STRING_8
 			-- If the request includes a message-body, CONTENT_TYPE is set to
 			-- the Internet Media Type [9] of the attached entity if the type
 			-- was provided via a "Content-type" field in the request header,
@@ -223,7 +211,7 @@ feature -- Common Gateway Interface - 1.1       8 January 1996
 		deferred
 		end
 
-	gateway_interface: READABLE_STRING_32
+	gateway_interface: READABLE_STRING_8
 			-- This metavariable is set to the dialect of CGI being used by
 			-- the server to communicate with the script. Syntax:
 			--
@@ -256,7 +244,7 @@ feature -- Common Gateway Interface - 1.1       8 January 1996
 		deferred
 		end
 
-	path_info: READABLE_STRING_32
+	path_info: READABLE_STRING_8
 			-- The PATH_INFO metavariable specifies a path to be interpreted
 			-- by the CGI script. It identifies the resource or sub-resource
 			-- to be returned by the CGI script, and it is derived from the
@@ -287,7 +275,7 @@ feature -- Common Gateway Interface - 1.1       8 January 1996
 		deferred
 		end
 
-	path_translated: detachable READABLE_STRING_32
+	path_translated: detachable READABLE_STRING_8
 			-- PATH_TRANSLATED is derived by taking any path-info component
 			-- of the request URI (see section 6.1.6), decoding it (see
 			-- section 3.1), parsing it as a URI in its own right, and
@@ -333,7 +321,7 @@ feature -- Common Gateway Interface - 1.1       8 January 1996
 		deferred
 		end
 
-	query_string: READABLE_STRING_32
+	query_string: READABLE_STRING_8
 			-- A URL-encoded string; the <query> part of the Script-URI. (See
 			-- section 3.2.)
 			--
@@ -350,7 +338,7 @@ feature -- Common Gateway Interface - 1.1       8 January 1996
 		deferred
 		end
 
-	remote_addr: READABLE_STRING_32
+	remote_addr: READABLE_STRING_8
 			-- The IP address of the client sending the request to the
 			-- server. This is not necessarily that of the user agent (such
 			-- as if the request came through a proxy).
@@ -365,7 +353,7 @@ feature -- Common Gateway Interface - 1.1       8 January 1996
 		deferred
 		end
 
-	remote_host: detachable READABLE_STRING_32
+	remote_host: detachable READABLE_STRING_8
 			-- The fully qualified domain name of the client sending the
 			-- request to the server, if available, otherwise NULL. (See
 			-- section 6.1.9.) Fully qualified domain names take the form as
@@ -376,7 +364,7 @@ feature -- Common Gateway Interface - 1.1       8 January 1996
 		deferred
 		end
 
-	remote_ident: detachable READABLE_STRING_32
+	remote_ident: detachable READABLE_STRING_8
 			-- The identity information reported about the connection by a
 			-- RFC 1413 [11] request to the remote agent, if available.
 			-- Servers MAY choose not to support this feature, or not to
@@ -392,7 +380,7 @@ feature -- Common Gateway Interface - 1.1       8 January 1996
 		deferred
 		end
 
-	remote_user: detachable READABLE_STRING_32
+	remote_user: detachable READABLE_STRING_8
 			-- If the request required authentication using the "Basic"
 			-- mechanism (i.e., the AUTH_TYPE metavariable is set to
 			-- "Basic"), then the value of the REMOTE_USER metavariable is
@@ -408,7 +396,7 @@ feature -- Common Gateway Interface - 1.1       8 January 1996
 		deferred
 		end
 
-	request_method: READABLE_STRING_32
+	request_method: READABLE_STRING_8
 			-- The REQUEST_METHOD metavariable is set to the method with
 			-- which the request was made, as described in section 5.1.1 of
 			-- the HTTP/1.0 specification [3] and section 5.1.1 of the
@@ -429,7 +417,7 @@ feature -- Common Gateway Interface - 1.1       8 January 1996
 		deferred
 		end
 
-	script_name: READABLE_STRING_32
+	script_name: READABLE_STRING_8
 			-- The SCRIPT_NAME metavariable is set to a URL path that could
 			-- identify the CGI script (rather than the script's output). The
 			-- syntax and semantics are identical to a decoded HTTP URL
@@ -447,7 +435,7 @@ feature -- Common Gateway Interface - 1.1       8 January 1996
 		deferred
 		end
 
-	server_name: READABLE_STRING_32
+	server_name: READABLE_STRING_8
 			-- The SERVER_NAME metavariable is set to the name of the server,
 			-- as derived from the <host> part of the Script-URI (see section
 			-- 3.2).
@@ -473,7 +461,7 @@ feature -- Common Gateway Interface - 1.1       8 January 1996
 		deferred
 		end
 
-	server_protocol: READABLE_STRING_32
+	server_protocol: READABLE_STRING_8
 			-- The SERVER_PROTOCOL metavariable is set to the name and
 			-- revision of the information protocol with which the request
 			-- arrived. This is not necessarily the same as the protocol
@@ -501,7 +489,7 @@ feature -- Common Gateway Interface - 1.1       8 January 1996
 		deferred
 		end
 
-	server_software: READABLE_STRING_32
+	server_software: READABLE_STRING_8
 			-- The SERVER_SOFTWARE metavariable is set to the name and
 			-- version of the information server software answering the
 			-- request (and running the gateway).
@@ -516,42 +504,42 @@ feature -- Common Gateway Interface - 1.1       8 January 1996
 
 feature -- HTTP_*
 
-	http_accept: detachable READABLE_STRING_32
+	http_accept: detachable READABLE_STRING_8
 			-- Contents of the Accept: header from the current request, if there is one.
 			-- Example: 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
 		deferred
 		end
 
-	http_accept_charset: detachable READABLE_STRING_32
+	http_accept_charset: detachable READABLE_STRING_8
 			-- Contents of the Accept-Charset: header from the current request, if there is one.
 			-- Example: 'iso-8859-1,*,utf-8'.
 		deferred
 		end
 
-	http_accept_encoding: detachable READABLE_STRING_32
+	http_accept_encoding: detachable READABLE_STRING_8
 			-- Contents of the Accept-Encoding: header from the current request, if there is one.
 			-- Example: 'gzip'.
 		deferred
 		end
 
-	http_accept_language: detachable READABLE_STRING_32
+	http_accept_language: detachable READABLE_STRING_8
 			-- Contents of the Accept-Language: header from the current request, if there is one.
 			-- Example: 'en'.
 		deferred
 		end
 
-	http_connection: detachable READABLE_STRING_32
+	http_connection: detachable READABLE_STRING_8
 			-- Contents of the Connection: header from the current request, if there is one.
 			-- Example: 'Keep-Alive'.
 		deferred
 		end
 
-	http_host: detachable READABLE_STRING_32
+	http_host: detachable READABLE_STRING_8
 			-- Contents of the Host: header from the current request, if there is one.
 		deferred
 		end
 
-	http_referer: detachable READABLE_STRING_32
+	http_referer: detachable READABLE_STRING_8
 			-- The address of the page (if any) which referred the user agent to the current page.
 			-- This is set by the user agent.
 			-- Not all user agents will set this, and some provide the ability to modify HTTP_REFERER as a feature.
@@ -559,7 +547,7 @@ feature -- HTTP_*
 		deferred
 		end
 
-	http_user_agent: detachable READABLE_STRING_32
+	http_user_agent: detachable READABLE_STRING_8
 			-- Contents of the User-Agent: header from the current request, if there is one.
 			-- This is a string denoting the user agent being which is accessing the page.
 			-- A typical example is: Mozilla/4.5 [en] (X11; U; Linux 2.2.9 i586).
@@ -568,124 +556,20 @@ feature -- HTTP_*
 		deferred
 		end
 
-	http_authorization: detachable READABLE_STRING_32
+	http_authorization: detachable READABLE_STRING_8
 			-- Contents of the Authorization: header from the current request, if there is one.
 		deferred
 		end
 
 feature -- Extra CGI environment variables
 
-	request_uri: READABLE_STRING_32
+	request_uri: READABLE_STRING_8
 			-- The URI which was given in order to access this page; for instance, '/index.html'.
 		deferred
 		end
 
-	orig_path_info: detachable READABLE_STRING_32
+	orig_path_info: detachable READABLE_STRING_8
 			-- Original version of `path_info' before processed by Current environment
-		deferred
-		end
-
-feature -- Query string Parameters
-
-	query_parameters: ITERABLE [WGI_VALUE]
-			-- Variables extracted from QUERY_STRING
-		deferred
-		end
-
-	query_parameter (a_name: READABLE_STRING_GENERAL): detachable WGI_VALUE
-			-- Parameter for name `n'.
-		require
-			a_name_valid: a_name /= Void and then not a_name.is_empty
-		deferred
-		end
-
-feature -- Form fields and related
-
-	form_data_parameters: ITERABLE [WGI_VALUE]
-			-- Variables sent by POST request
-		deferred
-		end
-
-	form_data_parameter (a_name: READABLE_STRING_GENERAL): detachable WGI_VALUE
-			-- Field for name `a_name'.
-		require
-			a_name_valid: a_name /= Void and then not a_name.is_empty
-		deferred
-		end
-
-	uploaded_files: HASH_TABLE [WGI_UPLOADED_FILE_DATA, READABLE_STRING_GENERAL]
-			-- Table of uploaded files information
-			--| name: original path from the user
-			--| type: content type
-			--| tmp_name: path to temp file that resides on server
-			--| tmp_base_name: basename of `tmp_name'
-			--| error: if /= 0 , there was an error : TODO ...
-			--| size: size of the file given by the http request
-		deferred
-		end
-
-feature -- Cookies	
-
-	cookies: ITERABLE [WGI_VALUE]
-			-- Expanded cookies variable
-		deferred
-		end
-
-	cookie (a_name: READABLE_STRING_GENERAL): detachable WGI_VALUE
-			-- Field for name `a_name'.
-		require
-			a_name_valid: a_name /= Void and then not a_name.is_empty
-		deferred
-		end
-
-feature -- Access: all variables
-
-	parameters: like items
-		obsolete "use items"
-		do
-			Result := items
-		end
-
-	parameter (a_name: READABLE_STRING_GENERAL): like item
-		obsolete "use item"
-		do
-			Result := item (a_name)
-		end
-
-	items: ITERABLE [WGI_VALUE]
-			-- Table containing all the various variables
-			-- Warning: this is computed each time, if you change the content of other containers
-			-- this won't update this Result's content, unless you query it again
-		deferred
-		end
-
-	item (a_name: READABLE_STRING_GENERAL): detachable WGI_VALUE
-			-- Variable named `a_name' from any of the variables container
-			-- and following a specific order
-			-- execution, environment, get, post, cookies
-		require
-			a_name_valid: a_name /= Void and then not a_name.is_empty
-		deferred
-		end
-
-feature -- Uploaded File Handling
-
-	is_uploaded_file (a_filename: READABLE_STRING_GENERAL): BOOLEAN
-			-- Is `a_filename' a file uploaded via HTTP POST
-		deferred
-		end
-
-feature -- URL Utility
-
-	absolute_script_url (a_path: STRING): STRING
-			-- Absolute Url for the script if any, extended by `a_path'
-		deferred
-		end
-
-	script_url (a_path: STRING): STRING
-			-- Url relative to script name if any, extended by `a_path'
-		require
-			a_path_attached: a_path /= Void
 		deferred
 		end
 

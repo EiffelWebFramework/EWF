@@ -30,13 +30,13 @@ feature {NONE} -- Access: Implementation
 
 feature -- Access
 
-	authentication_required (req: WGI_REQUEST): BOOLEAN
+	authentication_required (req: WSF_REQUEST): BOOLEAN
 		do
 		end
 
 feature -- Execution
 
-	execute_application (ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	execute_application (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
 		local
 			rep: like new_html_page
 			s: STRING
@@ -50,7 +50,7 @@ feature -- Execution
 			create s.make_empty
 
 			if
-				attached {WGI_STRING_VALUE} ctx.path_parameter ("resource") as l_resource_value and then
+				attached {WSF_STRING_VALUE} ctx.path_parameter ("resource") as l_resource_value and then
 				attached l_resource_value.string as l_resource
 			then
 				from
@@ -114,7 +114,7 @@ feature -- Execution
 			rep.recycle
 		end
 
-	process_request_handler_doc (rq: REST_REQUEST_HANDLER [C]; a_resource: STRING; buf: STRING; ctx: C; req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER; a_dft_format: detachable STRING)
+	process_request_handler_doc (rq: REST_REQUEST_HANDLER [C]; a_resource: STRING; buf: STRING; ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE; a_dft_format: detachable STRING)
 		local
 			l_dft_format_name: detachable STRING
 			s: STRING

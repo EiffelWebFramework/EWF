@@ -5,12 +5,12 @@ note
 	date: "$Date$"
 	revision: "$Revision$"
 
-deferred class 
+deferred class
 	ENCODER [U -> READABLE_STRING_GENERAL, E -> READABLE_STRING_GENERAL] --| U:unencoded type, E:encoded type
 
 feature -- Access
 
-	name: STRING
+	name: READABLE_STRING_8
 			-- Encoding name.
 		deferred
 		end
@@ -61,7 +61,7 @@ feature -- Decoder
 		end
 
 note
-	copyright: "Copyright (c) 1984-2011, Eiffel Software and others"
+	copyright: "2011-2011, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

@@ -144,6 +144,17 @@ feature -- Content related header
 			add_header_key_value ({HTTP_HEADER_NAMES}.header_content_type, t)
 		end
 
+	put_content_type_with_charset (t: READABLE_STRING_8; c: READABLE_STRING_8)
+		do
+			put_header_key_value ({HTTP_HEADER_NAMES}.header_content_type, t + "; charset=" + c + "")
+		end
+
+	add_content_type_with_charset (t: READABLE_STRING_8; c: READABLE_STRING_8)
+			-- same as `put_content_type_with_charset', but allow multiple definition of "Content-Type"	
+		do
+			add_header_key_value ({HTTP_HEADER_NAMES}.header_content_type, t + "; charset=" + c + "")
+		end
+
 	put_content_type_with_name (t: READABLE_STRING_8; n: READABLE_STRING_8)
 		do
 			put_header_key_value ({HTTP_HEADER_NAMES}.header_content_type, t + "; name=%"" + n + "%"")
