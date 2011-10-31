@@ -45,6 +45,7 @@ feature -- Execution
 			curl: CURL_EXTERNALS
 			curl_easy: CURL_EASY_EXTERNALS
 			curl_handle: POINTER
+			l_response : HTTP_CLIENT_RESPONSE
 		do
 			curl := session.curl
 			curl_easy := session.curl_easy
@@ -68,6 +69,9 @@ feature -- Execution
 
 			--| URL
 			curl_easy.setopt_string (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_url, l_url)
+
+			--| RESPONSE HEADERS
+			curl_easy.setopt_integer (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_header, 1)
 
 			--| Timeout
 			if timeout > 0 then
@@ -193,7 +197,10 @@ feature -- Execution
 				else
 					Result.status := 0
 				end
-				Result.body := l_curl_string.string
+				l_response := populate_response ( l_curl_string.string)
+				Result.headers.copy (l_response.headers)
+				Result.body := l_response.body
+
 			else
 				Result.set_error_occurred (True)
 			end
@@ -201,4 +208,42 @@ feature -- Execution
 			curl_easy.cleanup (curl_handle)
 		end
 
+
+	populate_response ( curl_response: STRING) : HTTP_CLIENT_RESPONSE
+		-- parse curl_response
+		-- if the header exist, extract header fields
+		-- and body and return an HTTP_CLIENT_RESPONSE
+		local
+			l_response : LIST[detachable STRING]
+			l_b: BOOLEAN
+			pos : INTEGER
+		do
+			create Result.make
+			if curl_response.has_substring ("%R%N%R%N") then -- has header
+				l_response := curl_response.split ('%R')
+				from
+					l_response.start
+				until
+					l_response.after or l_b
+				loop
+					if attached {STRING} l_response.item as l_item then
+						if l_item.has (':') then
+							pos := l_item.index_of (':', 1)
+							Result.headers.put (l_item.substring (pos+1, l_item.count), l_item.substring (2, pos-1))
+						elseif l_item.starts_with ("%N") and then l_item.count = 1 then
+							l_b := true
+						end
+					end
+					l_response.forth
+					if l_b then
+						if attached {STRING} l_response.item as l_item then
+							l_item.remove_head (1)
+							Result.body := l_item
+						end
+					end
+				end
+			else
+				Result.body := curl_response
+			end
+		end
 end
