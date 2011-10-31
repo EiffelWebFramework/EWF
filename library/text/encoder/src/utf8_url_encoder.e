@@ -21,7 +21,7 @@ inherit
 			decoded_string
 		end
 
-	UTF8_URL_ENCODER_I
+	UTF8_ENCODER_HELPER
 		redefine
 			default_create
 		end
@@ -30,7 +30,7 @@ feature {NONE} -- Initialization
 
 	default_create
 		do
-			Precursor {UTF8_URL_ENCODER_I}
+			Precursor {UTF8_ENCODER_HELPER}
 		end
 
 feature -- Access

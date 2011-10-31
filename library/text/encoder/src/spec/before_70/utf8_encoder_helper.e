@@ -5,7 +5,7 @@ note
 	revision    : "$Revision$"
 
 deferred class
-	UTF8_URL_ENCODER_I
+	UTF8_ENCODER_HELPER
 
 inherit
 	ANY

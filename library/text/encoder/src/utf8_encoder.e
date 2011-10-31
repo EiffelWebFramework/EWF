@@ -15,13 +15,7 @@ class
 inherit
 	ENCODER [STRING_32, STRING_8]
 
-	UNICODE_CONVERSION
-		export
-			{NONE} all
-			{ANY} is_valid_utf8
-		undefine
-			is_little_endian
-		end
+	UTF8_ENCODER_HELPER
 
 	PLATFORM
 		export
