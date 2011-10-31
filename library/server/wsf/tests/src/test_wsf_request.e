@@ -8,7 +8,7 @@ note
 	testing: "type/manual"
 
 class
-	TEST_EWSGI_REQUEST
+	TEST_WSF_REQUEST
 
 inherit
 	EQA_TEST_SET
@@ -91,7 +91,7 @@ feature {NONE} -- Events
 
 
 					across
-						req.form_data_parameters as fcur
+						req.form_parameters as fcur
 					loop
 						if not q.is_empty then
 							q.append_character ('&')
@@ -198,7 +198,7 @@ feature -- Test routines
 			get_http_session
 			if attached http_session as sess then
 				create ctx.make
-				ctx.add_form_data_parameter ("id", "123")
+				ctx.add_form_parameter ("id", "123")
 				test_post_request ("post/01", ctx, "post-01 : id=123")
 				test_post_request ("post/01/?foo=bar", ctx, "post-01(foo=bar) : id=123")
 				test_post_request ("post/01/?foo=bar&abc=def", ctx, "post-01(foo=bar&abc=def) : id=123")
