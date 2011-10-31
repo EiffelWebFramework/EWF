@@ -10,12 +10,12 @@
 		<option warning="true" full_class_checking="true" void_safety="none" syntax="provisional">
 		</option>
 		<library name="base" location="$ISE_LIBRARY/library/base/base.ecf"/>
-		<library name="curl" location="$ISE_LIBRARY\library\cURL\curl.ecf">
+		<library name="curl" location="$ISE_LIBRARY\library\cURL\cURL.ecf">
 			<condition>
 				<version type="compiler" min="7.0.8.7340"/>
 			</condition>
 		</library>
-		<library name="curl_local" location="..\..\..\ext\ise_library\curl.ecf">
+		<library name="curl_local" location="..\..\..\ext\ise_library\cURL.ecf">
 			<condition>
 				<version type="compiler" max="7.0.8.7339"/>
 			</condition>
