@@ -45,7 +45,6 @@ feature -- Execution
 			curl: CURL_EXTERNALS
 			curl_easy: CURL_EASY_EXTERNALS
 			curl_handle: POINTER
-			l_response : HTTP_CLIENT_RESPONSE
 		do
 			curl := session.curl
 			curl_easy := session.curl_easy
@@ -166,7 +165,6 @@ feature -- Execution
 					l_headers as curs
 				loop
 					p := curl.slist_append (p, curs.key + ": " + curs.item)
---					curl_easy.setopt_slist (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_httpheader, p)
 				end
 			end
 
@@ -197,10 +195,8 @@ feature -- Execution
 				else
 					Result.status := 0
 				end
-				l_response := populate_response ( l_curl_string.string)
-				Result.headers.copy (l_response.headers)
-				Result.body := l_response.body
 
+				set_header_and_body_to (l_curl_string.string, Result)
 			else
 				Result.set_error_occurred (True)
 			end
@@ -209,41 +205,28 @@ feature -- Execution
 		end
 
 
-	populate_response ( curl_response: STRING) : HTTP_CLIENT_RESPONSE
-		-- parse curl_response
-		-- if the header exist, extract header fields
-		-- and body and return an HTTP_CLIENT_RESPONSE
+	set_header_and_body_to (a_source: READABLE_STRING_8; res: HTTP_CLIENT_RESPONSE)
+			-- Parse `a_source' response
+			-- and set `header' and `body' from HTTP_CLIENT_RESPONSE `res'
 		local
-			l_response : LIST[detachable STRING]
-			l_b: BOOLEAN
-			pos : INTEGER
+			pos, l_start : INTEGER
 		do
-			create Result.make
-			if curl_response.has_substring ("%R%N%R%N") then -- has header
-				l_response := curl_response.split ('%R')
-				from
-					l_response.start
-				until
-					l_response.after or l_b
-				loop
-					if attached {STRING} l_response.item as l_item then
-						if l_item.has (':') then
-							pos := l_item.index_of (':', 1)
-							Result.headers.put (l_item.substring (pos+1, l_item.count), l_item.substring (2, pos-1))
-						elseif l_item.starts_with ("%N") and then l_item.count = 1 then
-							l_b := true
-						end
-					end
-					l_response.forth
-					if l_b then
-						if attached {STRING} l_response.item as l_item then
-							l_item.remove_head (1)
-							Result.body := l_item
-						end
-					end
-				end
+			l_start := a_source.substring_index ("%R%N", 1)
+			if l_start > 0 then
+					--| Skip first line which is the status line
+					--| ex: HTTP/1.1 200 OK%R%N
+				l_start := l_start + 2
+			end
+			if l_start < a_source.count and then a_source[l_start] = '%R' and a_source[l_start + 1] = '%N' then
+				res.set_body (a_source)
 			else
-				Result.body := curl_response
+				pos := a_source.substring_index ("%R%N%R%N", l_start)
+				if pos > 0 then
+					res.set_raw_header (a_source.substring (l_start, pos + 1)) --| Keep the last %R%N
+					res.set_body (a_source.substring (pos + 4, a_source.count))
+				else
+					res.set_body (a_source)
+				end
 			end
 		end
 end
