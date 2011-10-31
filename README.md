@@ -10,8 +10,7 @@ How to get the source code?
 * git clone https://github.com/Eiffel-World/Eiffel-Web-Framework.git
 * cd Eiffel-Web-Framework
 * git submodule update --init
-* git submodule foreach git pull origin master
-* git submodule foreach git checkout master
+* git submodule foreach --recursive git checkout master
 
 * And to build the required and related Clibs
 ** cd ext/ise_library/curl
