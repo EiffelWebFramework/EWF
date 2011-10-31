@@ -1204,7 +1204,7 @@ feature {NONE} -- Temporary File handling
 	safe_filename (fn: STRING): STRING
 		local
 			c: CHARACTER
-			i, n, p: INTEGER
+			i, n: INTEGER
 		do
 				--| Compute safe filename, to avoid creating impossible filename, or dangerous one
 			from
