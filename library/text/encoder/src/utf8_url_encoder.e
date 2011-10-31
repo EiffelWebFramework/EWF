@@ -21,12 +21,7 @@ inherit
 			decoded_string
 		end
 
-	UNICODE_CONVERSION
-		export
-			{NONE} all
-			{ANY} is_valid_utf8
-		undefine
-			is_little_endian
+	UTF8_URL_ENCODER_I
 		redefine
 			default_create
 		end
@@ -35,7 +30,7 @@ feature {NONE} -- Initialization
 
 	default_create
 		do
-			Precursor {UNICODE_CONVERSION}
+			Precursor {UTF8_URL_ENCODER_I}
 		end
 
 feature -- Access
