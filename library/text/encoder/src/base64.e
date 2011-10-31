@@ -97,6 +97,13 @@ feature -- Decoder
 
 	decoded_string (v: STRING): STRING
 			-- base64 decoded value of `s'.	
+		do
+			create Result.make (v.count)
+			decode_string_to_buffer (v, Result)
+		end
+
+	decode_string_to_buffer (v: STRING; a_buffer: STRING)
+			-- Write base64 decoded value of `s' into `a_buffer'
 		local
 			byte_count: INTEGER
 			pos, n: INTEGER
@@ -108,7 +115,82 @@ feature -- Decoder
 			has_error := False
 			base64chars := character_map
 			n := v.count
-			create Result.make (n)
+			from
+				pos := 0
+			invariant
+				n = v.count
+			until
+				(pos >= n) or done
+			loop
+				byte_count := 0
+
+				pos := next_encoded_character_position (v, pos)
+				if pos <= n then
+					byte1 := base64chars.index_of (v[pos], 1) - 1
+					byte_count := byte_count + 1
+
+					pos := next_encoded_character_position (v, pos)
+					if pos <= n then
+						byte2 := base64chars.index_of (v[pos], 1) - 1
+						byte_count := byte_count + 1
+
+						pos := next_encoded_character_position (v, pos)
+						if pos <= n then
+							c := v[pos]
+							if c /= '=' then
+								byte3 := base64chars.index_of (c, 1) - 1
+								byte_count := byte_count + 1
+							end
+
+							pos := next_encoded_character_position (v, pos)
+							if pos <= n then
+								c := v[pos]
+								if c /= '=' then
+									byte4 := base64chars.index_of (c, 1) - 1
+									byte_count := byte_count + 1
+								end
+							end
+						end
+					end
+				end
+--				pos := pos + byte_count
+
+				done := byte_count < 4
+
+				if byte_count > 1 then
+					tmp1 := byte1.bit_shift_left (2) & 0xff
+					tmp2 := byte2.bit_shift_right (4) & 0x03
+					a_buffer.extend ((tmp1 | tmp2).to_character_8)
+					if byte_count > 2 then
+						tmp1 := byte2.bit_shift_left (4) & 0xff
+						tmp2 := byte3.bit_shift_right (2) & 0x0f
+						a_buffer.extend ((tmp1 | tmp2).to_character_8)
+						if byte_count > 3 then
+							a_buffer.extend(
+								((byte4 | byte3.bit_shift_left(6))& 0xff).to_character_8)
+						end
+					end
+				end
+			end
+		end
+
+	decode_string_to_output_medium (v: STRING; a_output: IO_MEDIUM)
+			-- Write base64 decoded value of `s' into `a_output' medium
+		require
+			a_output_writable: a_output.is_open_write
+		local
+			byte_count: INTEGER
+			pos, n: INTEGER
+			byte1, byte2, byte3, byte4, tmp1, tmp2: INTEGER
+			done: BOOLEAN
+			base64chars: STRING_8
+			c: CHARACTER
+			buf: STRING
+		do
+			has_error := False
+			base64chars := character_map
+			n := v.count
+			create buf.make (10)
 
 			from
 				pos := 0
@@ -155,16 +237,18 @@ feature -- Decoder
 				if byte_count > 1 then
 					tmp1 := byte1.bit_shift_left (2) & 0xff
 					tmp2 := byte2.bit_shift_right (4) & 0x03
-					Result.extend ((tmp1 | tmp2).to_character_8)
+					buf.extend ((tmp1 | tmp2).to_character_8)
 					if byte_count > 2 then
 						tmp1 := byte2.bit_shift_left (4) & 0xff
 						tmp2 := byte3.bit_shift_right (2) & 0x0f
-						Result.extend ((tmp1 | tmp2).to_character_8)
+						buf.extend ((tmp1 | tmp2).to_character_8)
 						if byte_count > 3 then
-							Result.extend(
+							buf.extend(
 								((byte4 | byte3.bit_shift_left(6))& 0xff).to_character_8)
 						end
 					end
+					a_output.put_string (buf)
+					buf.wipe_out
 				end
 			end
 		end
