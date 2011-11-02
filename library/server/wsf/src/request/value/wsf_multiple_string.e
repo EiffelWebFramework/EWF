@@ -9,6 +9,9 @@ class
 
 inherit
 	WSF_VALUE
+		redefine
+			as_string
+		end
 
 	ITERABLE [WSF_STRING]
 
@@ -62,6 +65,25 @@ feature -- Access
 			Result := string_values.first
 		end
 
+feature -- Status report
+
+	is_string: BOOLEAN
+			-- Is Current as a WSF_STRING representation?
+		do
+			Result := string_values.count = 1
+		end
+
+feature -- Conversion
+
+	as_string: WSF_STRING
+		do
+			if string_values.count = 1 then
+				Result := first_string_value
+			else
+				Result := Precursor
+			end
+		end
+
 feature -- Traversing
 
 	new_cursor: ITERATION_CURSOR [WSF_STRING]
@@ -71,23 +93,7 @@ feature -- Traversing
 
 feature -- Helper
 
-	same_string (a_other: READABLE_STRING_GENERAL): BOOLEAN
-			-- Does `a_other' represent the same string as `Current'?	
-		do
-			if string_values.count = 1 then
-				Result := first_string_value.same_string (a_other)
-			end
-		end
-
-	is_case_insensitive_equal (a_other: READABLE_STRING_8): BOOLEAN
-			-- Does `a_other' represent the same case insensitive string as `Current'?	
-		do
-			if string_values.count = 1 then
-				Result := first_string_value.is_case_insensitive_equal (a_other)
-			end
-		end
-
-	as_string: STRING_32
+	string_representation: STRING_32
 		do
 			if string_values.count = 1 then
 				create Result.make_from_string (first_string_value)

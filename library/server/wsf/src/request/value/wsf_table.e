@@ -10,6 +10,9 @@ class
 
 inherit
 	WSF_VALUE
+		redefine
+			as_string
+		end
 
 	ITERABLE [WSF_VALUE]
 
@@ -27,6 +30,7 @@ feature {NONE} -- Initialization
 feature -- Access
 
 	name: READABLE_STRING_32
+			-- Parameter name	
 
 	first_value: detachable WSF_VALUE
 			-- First value if any.
@@ -63,6 +67,27 @@ feature -- Access
 			Result := values.count
 		end
 
+feature -- Status report
+
+	is_string: BOOLEAN
+			-- Is Current as a WSF_STRING representation?
+		do
+			if values.count = 1 and then attached first_value as fv then
+				Result := fv.is_string
+			end
+		end
+
+feature -- Conversion
+
+	as_string: WSF_STRING
+		do
+			if values.count = 1 and then attached first_value as fv then
+				Result := fv.as_string
+			else
+				Result := Precursor
+			end
+		end
+
 feature -- Element change
 
 	add_value (a_value: WSF_VALUE; k: READABLE_STRING_32)
@@ -81,29 +106,13 @@ feature -- Traversing
 
 feature -- Helper
 
-	same_string (a_other: READABLE_STRING_GENERAL): BOOLEAN
-			-- Does `a_other' represent the same string as `Current'?
-		do
-			if values.count = 1 and then attached first_value as f then
-				Result := f.same_string (a_other)
-			end
-		end
-
-	is_case_insensitive_equal (a_other: READABLE_STRING_8): BOOLEAN
-			-- Does `a_other' represent the same case insensitive string as `Current'?	
-		do
-			if values.count = 1 and then attached first_value as f then
-				Result := f.is_case_insensitive_equal (a_other)
-			end
-		end
-
-	as_string: STRING_32
+	string_representation: STRING_32
 		do
 			create Result.make_from_string ("{")
 			if values.count = 1 and then attached first_key as fk then
 				Result.append (fk + ": ")
 				if attached value (fk) as fv then
-					Result.append (fv.as_string)
+					Result.append (fv.string_representation)
 				else
 					Result.append ("???")
 				end
@@ -115,7 +124,7 @@ feature -- Helper
 						Result.append_character (',')
 					end
 					Result.append (c.key + ": ")
-					Result.append (c.item.as_string)
+					Result.append (c.item.string_representation)
 				end
 			end
 			Result.append_character ('}')

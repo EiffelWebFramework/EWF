@@ -52,8 +52,8 @@ feature -- Execution
 			s: STRING
 			uri: STRING
 		do
-			if attached ctx.path_parameter ("path") as l_path then
-				uri := l_path.as_string
+			if attached {WSF_STRING} ctx.path_parameter ("path") as l_path then
+				uri := l_path.string
 				process_uri (uri, ctx, req, res)
 			else
 				create h.make

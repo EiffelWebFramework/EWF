@@ -9,9 +9,6 @@ deferred class
 inherit
 	DEBUG_OUTPUT
 
-convert
-	as_string: {READABLE_STRING_32, STRING_32}
-
 feature -- Access
 
 	name: READABLE_STRING_32
@@ -19,16 +16,54 @@ feature -- Access
 		deferred
 		end
 
+feature -- Status report
+
+	is_string: BOOLEAN
+			-- Is Current as a WSF_STRING representation?
+		deferred
+		end
+
+feature -- Query
+
+	as_string: WSF_STRING
+			-- String value
+		require
+			is_string: is_string
+		do
+			if attached {WSF_STRING} Current as str then
+				Result := str
+			else
+				check is_string: is_string end
+				create Result.make (name, string_representation)
+			end
+		end
+
+	string_representation: STRING_32
+			-- String representation of Current
+			-- if possible
+		deferred
+		end
+
 feature -- Helper
 
 	same_string (a_other: READABLE_STRING_GENERAL): BOOLEAN
-			-- Does `a_other' represent the same string as `Current'?	
-		deferred
+			-- Does `a_other' represent the same string as `Current'?
+		do
+			if is_string then
+				Result:= as_string.same_string (a_other)
+			end
+		ensure
+			result_true_only_for_string: Result implies is_string
 		end
 
 	is_case_insensitive_equal (a_other: READABLE_STRING_8): BOOLEAN
 			-- Does `a_other' represent the same case insensitive string as `Current'?
-		deferred
+		do
+			if is_string then
+				Result:= as_string.is_case_insensitive_equal (a_other)
+			end
+		ensure
+			result_true_only_for_string: Result implies is_string
 		end
 
 feature -- Status report
@@ -36,13 +71,7 @@ feature -- Status report
 	debug_output: STRING
 			-- String that should be displayed in debugger to represent `Current'.
 		do
-			create Result.make_from_string (name.as_string_8 + "=" + as_string.as_string_8)
-		end
-
-feature -- Query
-
-	as_string: STRING_32
-		deferred
+			create Result.make_from_string (name.as_string_8 + "=" + string_representation.as_string_8)
 		end
 
 feature {NONE} -- Implementation

@@ -9,12 +9,16 @@ class
 
 inherit
 	WSF_VALUE
+		redefine
+			same_string,
+			is_case_insensitive_equal
+		end
 
 create
 	make
 
 convert
-	as_string: {READABLE_STRING_32, STRING_32}
+	string_representation: {READABLE_STRING_32, STRING_32}
 
 feature {NONE} -- Initialization
 
@@ -36,6 +40,11 @@ feature -- Access
 	url_encoded_name: READABLE_STRING_32
 
 	url_encoded_string: READABLE_STRING_32
+
+feature -- Status report
+
+	is_string: BOOLEAN = True
+			-- Is Current as a WSF_STRING representation?
 
 feature -- Helper
 
@@ -60,7 +69,7 @@ feature -- Helper
 
 feature -- Conversion
 
-	as_string: STRING_32
+	string_representation: STRING_32
 		do
 			create Result.make_from_string (string)
 		end
