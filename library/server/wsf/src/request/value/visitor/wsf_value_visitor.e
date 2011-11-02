@@ -10,26 +10,26 @@ deferred class
 
 feature -- Visitor
 
-	safe_process_value (v: detachable WSF_TABLE_VALUE)
+	safe_process_value (v: detachable WSF_TABLE)
 		do
 			if v /= Void then
 				v.process (Current)
 			end
 		end
 
-	process_table (v: WSF_TABLE_VALUE)
+	process_table (v: WSF_TABLE)
 		require
 			v_attached: v /= Void
 		deferred
 		end
 
-	process_string (v: WSF_STRING_VALUE)
+	process_string (v: WSF_STRING)
 		require
 			v_attached: v /= Void
 		deferred
 		end
 
-	process_multiple_string (v: WSF_MULTIPLE_STRING_VALUE)
+	process_multiple_string (v: WSF_MULTIPLE_STRING)
 		require
 			v_attached: v /= Void
 		deferred

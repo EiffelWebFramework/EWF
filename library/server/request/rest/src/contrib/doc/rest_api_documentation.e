@@ -50,7 +50,7 @@ feature -- Execution
 			create s.make_empty
 
 			if
-				attached {WSF_STRING_VALUE} ctx.path_parameter ("resource") as l_resource_value and then
+				attached {WSF_STRING} ctx.path_parameter ("resource") as l_resource_value and then
 				attached l_resource_value.string as l_resource
 			then
 				from

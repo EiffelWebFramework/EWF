@@ -30,26 +30,26 @@ feature {NONE} -- Initialization
 
 feature -- Actions
 
-	on_table_actions: ACTION_SEQUENCE [TUPLE [WSF_TABLE_VALUE]]
+	on_table_actions: ACTION_SEQUENCE [TUPLE [WSF_TABLE]]
 
-	on_string_actions: ACTION_SEQUENCE [TUPLE [WSF_STRING_VALUE]]
+	on_string_actions: ACTION_SEQUENCE [TUPLE [WSF_STRING]]
 
-	on_multiple_string_actions: ACTION_SEQUENCE [TUPLE [WSF_MULTIPLE_STRING_VALUE]]
+	on_multiple_string_actions: ACTION_SEQUENCE [TUPLE [WSF_MULTIPLE_STRING]]
 
 feature -- Visitor
 
-	process_table (v: WSF_TABLE_VALUE)
+	process_table (v: WSF_TABLE)
 		do
 			on_table_actions.call ([v])
 			process_iterable_of_value (v)
 		end
 
-	process_string (v: WSF_STRING_VALUE)
+	process_string (v: WSF_STRING)
 		do
 			on_string_actions.call ([v])
 		end
 
-	process_multiple_string (v: WSF_MULTIPLE_STRING_VALUE)
+	process_multiple_string (v: WSF_MULTIPLE_STRING)
 		do
 			on_multiple_string_actions.call ([v])
 			process_iterable_of_value (v)

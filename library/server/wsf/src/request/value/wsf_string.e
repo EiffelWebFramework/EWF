@@ -1,11 +1,11 @@
 note
-	description: "Summary description for {WSF_STRING_VALUE}."
+	description: "Summary description for {WSF_STRING}."
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
 class
-	WSF_STRING_VALUE
+	WSF_STRING
 
 inherit
 	WSF_VALUE

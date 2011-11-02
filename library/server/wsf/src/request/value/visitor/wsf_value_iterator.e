@@ -24,16 +24,16 @@ feature -- Helper
 
 feature -- Visitor
 
-	process_table (v: WSF_TABLE_VALUE)
+	process_table (v: WSF_TABLE)
 		do
 			process_iterable_of_value (v)
 		end
 
-	process_string (v: WSF_STRING_VALUE)
+	process_string (v: WSF_STRING)
 		do
 		end
 
-	process_multiple_string (v: WSF_MULTIPLE_STRING_VALUE)
+	process_multiple_string (v: WSF_MULTIPLE_STRING)
 		do
 			process_iterable_of_value (v)
 		end

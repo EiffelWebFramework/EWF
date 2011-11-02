@@ -137,7 +137,7 @@ feature -- String query
 
 	string_from (a_value: detachable WSF_VALUE): detachable READABLE_STRING_32
 		do
-			if attached {WSF_STRING_VALUE} a_value as val then
+			if attached {WSF_STRING} a_value as val then
 				Result := val.string
 			end
 		end

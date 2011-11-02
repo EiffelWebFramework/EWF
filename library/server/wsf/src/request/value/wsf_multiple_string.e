@@ -1,16 +1,16 @@
 note
-	description: "Summary description for {WSF_MULTIPLE_STRING_VALUE}."
+	description: "Summary description for {WSF_MULTIPLE_STRING}."
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
 class
-	WSF_MULTIPLE_STRING_VALUE
+	WSF_MULTIPLE_STRING
 
 inherit
 	WSF_VALUE
 
-	ITERABLE [WSF_STRING_VALUE]
+	ITERABLE [WSF_STRING]
 
 create
 	make_with_value,
@@ -22,7 +22,7 @@ feature {NONE} -- Initialization
 	make_with_value (a_value: WSF_VALUE)
 		do
 			name := a_value.name
-			create {LINKED_LIST [WSF_STRING_VALUE]} string_values.make
+			create {LINKED_LIST [WSF_STRING]} string_values.make
 			add_value (a_value)
 		end
 
@@ -48,23 +48,23 @@ feature {NONE} -- Initialization
 
 	make_with_string (a_name: like name; a_string: READABLE_STRING_32)
 		do
-			make_with_value (create {WSF_STRING_VALUE}.make (a_name, a_string))
+			make_with_value (create {WSF_STRING}.make (a_name, a_string))
 		end
 
 feature -- Access
 
 	name: READABLE_STRING_32
 
-	string_values: LIST [WSF_STRING_VALUE]
+	string_values: LIST [WSF_STRING]
 
-	first_string_value: WSF_STRING_VALUE
+	first_string_value: WSF_STRING
 		do
 			Result := string_values.first
 		end
 
 feature -- Traversing
 
-	new_cursor: ITERATION_CURSOR [WSF_STRING_VALUE]
+	new_cursor: ITERATION_CURSOR [WSF_STRING]
 		do
 			Result := string_values.new_cursor
 		end
@@ -111,9 +111,9 @@ feature -- Element change
 		require
 			same_name: a_value.name.same_string (name)
 		do
-			if attached {WSF_STRING_VALUE} a_value as sval then
+			if attached {WSF_STRING} a_value as sval then
 				add_string_value (sval)
-			elseif attached {WSF_MULTIPLE_STRING_VALUE} a_value as slst then
+			elseif attached {WSF_MULTIPLE_STRING} a_value as slst then
 				across
 					slst as cur
 				loop
@@ -122,7 +122,7 @@ feature -- Element change
 			end
 		end
 
-	add_string_value (s: WSF_STRING_VALUE)
+	add_string_value (s: WSF_STRING)
 		do
 			string_values.extend (s)
 		end

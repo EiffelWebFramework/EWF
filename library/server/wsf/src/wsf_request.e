@@ -173,7 +173,7 @@ feature -- Access: global variable
 
 	string_item (a_name: READABLE_STRING_8): detachable READABLE_STRING_32
 		do
-			if attached {WSF_STRING_VALUE} item (a_name) as val then
+			if attached {WSF_STRING} item (a_name) as val then
 				Result := val.string
 			else
 				check is_string_value: False end
@@ -182,7 +182,7 @@ feature -- Access: global variable
 
 feature -- Access: CGI Meta variables
 
-	meta_variable (a_name: READABLE_STRING_8): detachable WSF_STRING_VALUE
+	meta_variable (a_name: READABLE_STRING_8): detachable WSF_STRING
 			-- CGI Meta variable related to `a_name'
 		require
 			a_name_valid: a_name /= Void and then not a_name.is_empty
@@ -200,7 +200,7 @@ feature -- Access: CGI Meta variables
 			end
 		end
 
-	meta_variables: ITERABLE [WSF_STRING_VALUE]
+	meta_variables: ITERABLE [WSF_STRING]
 			-- CGI meta variables values
 
 	meta_string_variable_or_default (a_name: READABLE_STRING_8; a_default: READABLE_STRING_32; use_default_when_empty: BOOLEAN): READABLE_STRING_32
@@ -223,7 +223,7 @@ feature -- Access: CGI Meta variables
 		do
 			meta_variables_table.force (new_string_value (a_name, a_value), a_name)
 		ensure
-			param_set: attached {WSF_STRING_VALUE} meta_variable (a_name) as val and then val ~ a_value
+			param_set: attached {WSF_STRING} meta_variable (a_name) as val and then val ~ a_value
 		end
 
 	unset_meta_variable (a_name: READABLE_STRING_8)
@@ -235,7 +235,7 @@ feature -- Access: CGI Meta variables
 
 feature {NONE} -- Access: CGI meta parameters
 
-	meta_variables_table: HASH_TABLE [WSF_STRING_VALUE, READABLE_STRING_8]
+	meta_variables_table: HASH_TABLE [WSF_STRING, READABLE_STRING_8]
 			-- CGI Environment parameters		
 
 feature -- Access: CGI meta parameters - 1.1			
@@ -711,7 +711,7 @@ feature -- Extra CGI environment variables
 			-- Request time (UTC)
 		do
 			if
-				attached {WSF_STRING_VALUE} meta_variable ({CGI_META_NAMES}.request_time) as t and then
+				attached {WSF_STRING} meta_variable ({CGI_META_NAMES}.request_time) as t and then
 				t.string.is_integer_64
 			then
 				Result := date_time_utilities.unix_time_stamp_to_date_time (t.string.to_integer_64)
@@ -742,7 +742,7 @@ feature {NONE} -- Cookies
 		do
 			l_cookies := internal_cookies_table
 			if l_cookies = Void then
-				if attached {WSF_STRING_VALUE} meta_variable ({CGI_META_NAMES}.http_cookie) as val then
+				if attached {WSF_STRING} meta_variable ({CGI_META_NAMES}.http_cookie) as val then
 					s := val.string
 					create l_cookies.make (5)
 					l_cookies.compare_objects
@@ -873,7 +873,7 @@ feature {NONE} -- Query parameters: implementation
 			n,k,r: STRING_8
 			k32: STRING_32
 			p,q: INTEGER
-			tb,ptb: detachable WSF_TABLE_VALUE
+			tb,ptb: detachable WSF_TABLE
 		do
 			--| Check if this is a list format such as   choice[]  or choice[a] or even choice[a][] or choice[a][b][c]...
 			p := a_name.index_of ('[', 1)
@@ -885,7 +885,7 @@ feature {NONE} -- Query parameters: implementation
 					r.left_adjust; r.right_adjust
 
 					create tb.make (n)
-					if a_table.has_key (tb.name) and then attached {WSF_TABLE_VALUE} a_table.found_item as l_existing_table then
+					if a_table.has_key (tb.name) and then attached {WSF_TABLE} a_table.found_item as l_existing_table then
 						tb := l_existing_table
 					end
 
@@ -909,7 +909,7 @@ feature {NONE} -- Query parameters: implementation
 							q := r.index_of ({CHARACTER_8} ']', p + 1)
 							if q > p then
 								k32 := url_encoder.decoded_string (k)
-								if attached {WSF_TABLE_VALUE} ptb.value (k32) as l_tb_value then
+								if attached {WSF_TABLE} ptb.value (k32) as l_tb_value then
 									tb := l_tb_value
 								else
 									create tb.make (n)
@@ -942,10 +942,10 @@ feature {NONE} -- Query parameters: implementation
 			if a_table.has_key (v.name) and then attached a_table.found_item as l_existing_value then
 				if tb /= Void then
 					--| Already done in previous part
-				elseif attached {WSF_MULTIPLE_STRING_VALUE} l_existing_value as l_multi then
+				elseif attached {WSF_MULTIPLE_STRING} l_existing_value as l_multi then
 					l_multi.add_value (v)
 				else
-					a_table.force (create {WSF_MULTIPLE_STRING_VALUE}.make_with_array (<<l_existing_value, v>>), v.name)
+					a_table.force (create {WSF_MULTIPLE_STRING}.make_with_array (<<l_existing_value, v>>), v.name)
 					check replaced: a_table.found and then a_table.found_item ~ l_existing_value end
 				end
 			else
@@ -1605,7 +1605,7 @@ feature {NONE} -- Implementation: utilities
 			one_starting_slash: Result[1] = '/' and (Result.count = 1 or else Result[2] /= '/')
 		end
 
-	new_string_value (a_name: READABLE_STRING_8; a_value: READABLE_STRING_8): WSF_STRING_VALUE
+	new_string_value (a_name: READABLE_STRING_8; a_value: READABLE_STRING_8): WSF_STRING
 		do
 			create Result.make (a_name, a_value)
 		end

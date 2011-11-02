@@ -1,12 +1,12 @@
 note
 	description: "[
-			Table value which can contain value indexed by a key
+			Table which can contain value indexed by a key
 		]"
 	date: "$Date$"
 	revision: "$Revision$"
 
 class
-	WSF_TABLE_VALUE
+	WSF_TABLE
 
 inherit
 	WSF_VALUE

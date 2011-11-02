@@ -14,7 +14,7 @@ feature {NONE} -- Events
 
 	test_table
 		local
-			tb: WSF_TABLE_VALUE
+			tb: WSF_TABLE
 		do
 			create tb.make ("table")
 			assert ("Ok", True)
