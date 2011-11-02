@@ -32,7 +32,7 @@ feature {NONE} -- Implementation
 			across
 				 v as cur
 			loop
-				Result.append_string (cur.item.name.as_string_8 + " = " + cur.item.as_string.as_string_8 + "%N")
+				Result.append_string (cur.item.name.as_string_8 + " = " + cur.item.string_representation.as_string_8 + "%N")
 			end
 			if using_pre then
 				Result.append ("</pre>")

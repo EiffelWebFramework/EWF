@@ -49,8 +49,8 @@ feature -- Execution
 
 			create s.make_empty
 			s.append_string ("test")
-			if attached req.meta_variable ("REQUEST_COUNT") as l_request_count_val then
-				s.append_string ("(request_count="+ l_request_count_val.as_string +")%N")
+			if attached {WSF_STRING} req.meta_variable ("REQUEST_COUNT") as l_request_count_val then
+				s.append_string ("(request_count="+ l_request_count_val.string +")%N")
 			end
 
 --			ctx.request_format_id ("format", Void)
