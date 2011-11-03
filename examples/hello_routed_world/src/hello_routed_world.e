@@ -160,7 +160,7 @@ feature -- Execution
 			l_body.append ("<li><a href=%""+ req.script_url ("/hello/Joce") + "%">/hello/Joce</a></li>%N")
 			l_body.append ("</ul>%N")
 			if attached req.item ("REQUEST_COUNT") as rqc then
-				l_body.append ("request #"+ rqc.as_string + "%N")
+				l_body.append ("request #"+ rqc.as_string.string + "%N")
 			end
 			l_body.append ("</body></html>%N")
 

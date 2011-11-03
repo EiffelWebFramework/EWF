@@ -69,7 +69,7 @@ feature -- Server
 			l_http_handler : HTTP_HANDLER
 		do
 			create {WGI_NINO_HANDLER} l_http_handler.make_with_callback (server, "NINO_HANDLER", Current)
-			debug ("nino")
+			if configuration.is_verbose then
 				if attached base as l_base then
 					print ("Base=" + l_base + "%N")
 				end

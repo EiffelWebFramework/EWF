@@ -45,6 +45,12 @@ feature -- Status settings
 			configuration.force_single_threaded := True
 		end
 
+	set_is_verbose (b: BOOLEAN)
+			-- Set verbose message behavior to `b'
+		do
+			configuration.set_is_verbose (b)
+		end
+
 feature -- Server
 
 	listen (a_port: INTEGER)
