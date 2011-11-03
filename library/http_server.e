@@ -21,7 +21,7 @@ feature -- Initialization
 			set_server_configuration (configuration)
 		end
 
-	setup (a_http_handler : HTTP_HANDLER)
+	setup (a_http_handler: HTTP_HANDLER)
 		require
 			a_http_handler_valid: a_http_handler /= Void
 		do
