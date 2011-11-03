@@ -23,7 +23,7 @@ feature {NONE} -- Initialization
 
 feature -- Access
 
-	Server_details : STRING = "Server : NANO Eiffel Server"
+	Server_details : STRING = "Server : NINO Eiffel Server"
 
 	document_root: STRING assign set_document_root
 	http_server_port: INTEGER assign set_http_server_port
@@ -31,6 +31,9 @@ feature -- Access
 	socket_accept_timeout: INTEGER assign set_socket_accept_timeout
 	socket_connect_timeout: INTEGER assign set_socket_connect_timeout
 	force_single_threaded: BOOLEAN assign set_force_single_threaded
+
+	is_verbose: BOOLEAN assign set_is_verbose
+			-- Display verbose message to the output?
 
 feature -- Element change
 
@@ -64,6 +67,11 @@ feature -- Element change
 			force_single_threaded := v
 		end
 
+	set_is_verbose (b: BOOLEAN)
+			-- Set `is_verbose' to `b'
+		do
+			is_verbose := b
+		end
 
 note
 	copyright: "2011-2011, Javier Velilla and others"

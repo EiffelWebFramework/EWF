@@ -38,21 +38,32 @@ feature -- Inherited Features
 			l_http_socket: detachable TCP_STREAM_SOCKET
 			l_http_port: INTEGER
 		do
+			launched := False
+			port := 0
 			is_stop_requested := False
 			l_http_port := main_server_configuration.http_server_port
 			create l_http_socket.make_server_by_port (l_http_port)
 			if not l_http_socket.is_bound then
-				print ("Socket could not be bound on port " + l_http_port.out )
+				if is_verbose then
+					print ("Socket could not be bound on port " + l_http_port.out )
+				end
 			else
+				l_http_port := l_http_socket.port
+				port := l_http_port
 				from
 					l_http_socket.listen (main_server_configuration.max_tcp_clients)
-					print ("%NHTTP Connection Server ready on port " + l_http_port.out +"%N")
+					if is_verbose then
+						print ("%NHTTP Connection Server ready on port " + l_http_port.out +" : http://localhost:" + l_http_port.out + "/%N")
+					end
+					launched := True
 				until
 					is_stop_requested
 				loop
 					l_http_socket.accept
 					if not is_stop_requested then
 						if attached l_http_socket.accepted as l_thread_http_socket then
+								--| FIXME jfiat [2011/11/03] : should launch a new thread to handle this connection
+								--| also handle permanent connection...?
 							receive_message_and_send_reply (l_thread_http_socket)
 							l_thread_http_socket.cleanup
 							check
@@ -67,7 +78,10 @@ feature -- Inherited Features
 					socket_is_closed: l_http_socket.is_closed
 				end
 			end
-			print ("HTTP Connection Server ends.")
+			launched := False
+			if is_verbose then
+				print ("HTTP Connection Server ends.")
+			end
 		rescue
 			print ("HTTP Connection Server shutdown due to exception. Please relaunch manually.")
 
@@ -77,14 +91,28 @@ feature -- Inherited Features
 					socket_is_closed: ll_http_socket.is_closed
 				end
 			end
+			launched := False
 			is_stop_requested := True
 			retry
 		end
 
 feature -- Access
+	
+	is_verbose: BOOLEAN
+			-- Is verbose for output messages.
+		do
+			Result := main_server_configuration.is_verbose
+		end
 
 	is_stop_requested: BOOLEAN
 			-- Set true to stop accept loop
+
+	launched: BOOLEAN
+			-- Server launched and listening on `port'
+
+	port: INTEGER
+			-- Listening port.
+			--| 0: not launched
 
 feature {NONE} -- Access
 
@@ -96,9 +124,6 @@ feature {NONE} -- Access
 		do
 			Result := main_server.configuration
 		end
-
-	Max_fragments: INTEGER = 1000
-			-- Defines the maximum number of fragments that can be received
 
 feature -- Status setting
 
@@ -114,7 +139,7 @@ feature -- Execution
 		require
 			socket_attached: client_socket /= Void
 --			socket_valid: client_socket.is_open_read and then client_socket.is_open_write
-			a_http_socket:client_socket /= Void and then not client_socket.is_closed
+			a_http_socket: not client_socket.is_closed
 		deferred
 		end
 
