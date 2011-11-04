@@ -26,7 +26,7 @@ feature {NONE} -- Initialization
 			l_cfg.document_root := default_document_root
 
 			create l_server.make (l_cfg)
-			create {APPLICATION_CONNECTION_HANDLER} l_http_handler.make (l_server, "HTTP_HANDLER")
+			create {APPLICATION_CONNECTION_HANDLER} l_http_handler.make (l_server)
 			l_server.setup (l_http_handler)
 		end
 
