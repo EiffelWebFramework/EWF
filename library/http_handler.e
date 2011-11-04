@@ -49,13 +49,12 @@ feature -- Inherited Features
 				end
 			else
 				l_http_port := l_http_socket.port
-				port := l_http_port
 				from
 					l_http_socket.listen (main_server_configuration.max_tcp_clients)
 					if is_verbose then
 						print ("%NHTTP Connection Server ready on port " + l_http_port.out +" : http://localhost:" + l_http_port.out + "/%N")
 					end
-					launched := True
+					on_launched (l_http_port)
 				until
 					is_stop_requested
 				loop
@@ -78,7 +77,9 @@ feature -- Inherited Features
 					socket_is_closed: l_http_socket.is_closed
 				end
 			end
-			launched := False
+			if launched then
+				on_stopped
+			end
 			if is_verbose then
 				print ("HTTP Connection Server ends.")
 			end
@@ -91,9 +92,34 @@ feature -- Inherited Features
 					socket_is_closed: ll_http_socket.is_closed
 				end
 			end
-			launched := False
+			if launched then
+				on_stopped
+			end
 			is_stop_requested := True
 			retry
+		end
+
+feature -- Event
+
+	on_launched (a_port: INTEGER)
+			-- Server launched using port `a_port'
+		require
+			not_launched: not launched
+		do
+			launched := False
+			port := a_port
+		ensure
+			launched: launched
+		end
+
+	on_stopped
+			-- Server stopped
+		require
+			launched: launched
+		do
+			launched := False
+		ensure
+			stopped: not launched
 		end
 
 feature -- Access
