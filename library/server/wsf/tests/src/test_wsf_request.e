@@ -36,7 +36,7 @@ feature {NONE} -- Events
 			wt: WORKER_THREAD
 			e: EXECUTION_ENVIRONMENT
 		do
-			port_number := 8087
+			port_number := 0
 			base_url := "test/"
 			create app.make_custom (agent wgi_execute, base_url)
 			web_app := app
@@ -46,6 +46,8 @@ feature {NONE} -- Events
 
 			create e
 			e.sleep (1_000_000_000 * 5)
+
+			port_number := app.port
 		end
 
 	execute (req: WSF_REQUEST; res: WSF_RESPONSE)

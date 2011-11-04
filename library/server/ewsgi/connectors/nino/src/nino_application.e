@@ -32,6 +32,20 @@ feature {NONE} -- Implementation
 	connector: WGI_NINO_CONNECTOR
 			-- Web server connector
 
+feature -- Status report
+
+	launched: BOOLEAN
+			-- Server launched?
+		do
+			Result := connector.launched
+		end
+
+	port: INTEGER
+			-- Port listened
+		do
+			Result := connector.port
+		end
+
 feature -- Status settings
 
 	configuration: HTTP_SERVER_CONFIGURATION

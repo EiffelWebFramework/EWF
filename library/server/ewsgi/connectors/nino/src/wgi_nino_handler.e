@@ -9,6 +9,10 @@ class
 
 inherit
 	HTTP_CONNECTION_HANDLER
+		redefine
+			on_launched,
+			on_stopped
+		end
 
 create
 	make_with_callback
@@ -29,6 +33,20 @@ feature -- Access
 
 	base: detachable STRING
 			-- Root url base
+
+feature -- Element change
+
+	on_launched (a_port: INTEGER)
+		do
+			Precursor (a_port)
+			callback.on_launched (a_port)
+		end
+
+	on_stopped
+		do
+			Precursor
+			callback.on_stopped
+		end
 
 feature -- Element change
 

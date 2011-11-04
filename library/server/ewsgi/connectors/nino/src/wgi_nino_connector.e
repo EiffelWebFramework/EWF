@@ -51,6 +51,31 @@ feature -- Access
 	base: detachable STRING
 			-- Root url base
 
+feature -- Status report
+
+	launched: BOOLEAN
+			-- Server launched and listening on `port'
+
+	port: INTEGER
+			-- Listening port.
+			--| 0: not launched			
+
+feature -- Element change
+
+	on_launched (a_port: INTEGER)
+			-- Server launched
+		do
+			launched := True
+			port := a_port
+		end
+
+	on_stopped
+			-- Server stopped
+		do
+			launched := False
+			port := 0
+		end
+
 feature -- Element change
 
 	set_base (b: like base)
@@ -68,6 +93,8 @@ feature -- Server
 		local
 			l_http_handler : HTTP_HANDLER
 		do
+			launched := False
+			port := 0
 			create {WGI_NINO_HANDLER} l_http_handler.make_with_callback (server, "NINO_HANDLER", Current)
 			if configuration.is_verbose then
 				if attached base as l_base then
