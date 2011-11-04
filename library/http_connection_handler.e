@@ -15,13 +15,12 @@ inherit
 
 feature {NONE} -- Initialization
 
-	make (a_main_server: like main_server; a_name: STRING)
+	make (a_main_server: like main_server)
 			-- Creates a {HTTP_CONNECTION_HANDLER}, assigns the main_server and sets the current_request_message to empty.
 			--
 			-- `a_main_server': The main server object
-			-- `a_name': The name of this module
 		do
-			Precursor (a_main_server, a_name)
+			Precursor (a_main_server)
 			reset
 		end
 

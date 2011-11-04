@@ -14,14 +14,12 @@ inherit
 
 feature {NONE} -- Initialization
 
-	make (a_main_server: like main_server; a_name: STRING)
+	make (a_main_server: like main_server)
 			-- Creates a {HTTP_HANDLER}, assigns the main_server and initialize various values
 			--
 			-- `a_main_server': The main server object
-			-- `a_name': The name of this module
 		require
 			a_main_server_attached: a_main_server /= Void
-			a_name_attached: a_name /= Void
 		do
 			main_server := a_main_server
 			is_stop_requested := False
@@ -106,7 +104,7 @@ feature -- Event
 		require
 			not_launched: not launched
 		do
-			launched := False
+			launched := True
 			port := a_port
 		ensure
 			launched: launched
