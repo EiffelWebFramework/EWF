@@ -95,7 +95,7 @@ feature -- Server
 		do
 			launched := False
 			port := 0
-			create {WGI_NINO_HANDLER} l_http_handler.make_with_callback (server, "NINO_HANDLER", Current)
+			create {WGI_NINO_HANDLER} l_http_handler.make_with_callback (server, Current)
 			if configuration.is_verbose then
 				if attached base as l_base then
 					print ("Base=" + l_base + "%N")
