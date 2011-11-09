@@ -111,6 +111,14 @@ feature -- Access: Input
 			Result := wgi_request.input
 		end
 
+feature -- Helper
+
+	is_request_method (m: READABLE_STRING_8): BOOLEAN
+			-- Is `m' the Current request_method?
+		do
+			Result := request_method.is_case_insensitive_equal (m)
+		end
+
 feature {NONE} -- Access: global variable
 
 	items_table: HASH_TABLE [WSF_VALUE, READABLE_STRING_8]
