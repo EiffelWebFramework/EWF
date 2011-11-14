@@ -15,17 +15,17 @@ create
 
 feature -- Request processing
 
-	process_request (a_handler: HTTP_CONNECTION_HANDLER; a_input: HTTP_INPUT_STREAM; a_output: HTTP_OUTPUT_STREAM)
+	process_request (a_handler: HTTP_CONNECTION_HANDLER; a_socket: TCP_STREAM_SOCKET)
 			-- Process request ...
 		local
 			a_method: STRING
 		do
 			a_method := a_handler.method
-			
+
 			if a_method.is_equal (Get) then
-				execute_get_request (a_handler.uri, a_handler.request_header_map, a_handler.request_header, a_input, a_output)
+				execute_get_request (a_handler.uri, a_handler.request_header_map, a_handler.request_header, a_socket)
 			elseif a_method.is_equal (Post) then
-				execute_post_request (a_handler.uri, a_handler.request_header_map, a_handler.request_header, a_input, a_output)
+				execute_post_request (a_handler.uri, a_handler.request_header_map, a_handler.request_header, a_socket)
 			elseif a_method.is_equal (Put) then
 			elseif a_method.is_equal (Options) then
 			elseif a_method.is_equal (Head) then
@@ -39,21 +39,21 @@ feature -- Request processing
 			end
 		end
 
-	execute_get_request (a_uri: STRING; a_headers_map: HASH_TABLE [STRING, STRING]; a_headers_text: STRING; a_input: HTTP_INPUT_STREAM; a_output: HTTP_OUTPUT_STREAM)
+	execute_get_request (a_uri: STRING; a_headers_map: HASH_TABLE [STRING, STRING]; a_headers_text: STRING; a_socket: TCP_STREAM_SOCKET)
 		local
 			l_http_request : HTTP_REQUEST_HANDLER
 		do
-			create {GET_REQUEST_HANDLER} l_http_request.make (a_input, a_output)
+			create {GET_REQUEST_HANDLER} l_http_request.make (a_socket)
 			l_http_request.set_uri (a_uri)
 			l_http_request.process
 		end
 
-	execute_post_request (a_uri: STRING; a_headers_map: HASH_TABLE [STRING, STRING]; a_headers_text: STRING; a_input: HTTP_INPUT_STREAM; a_output: HTTP_OUTPUT_STREAM)
+	execute_post_request (a_uri: STRING; a_headers_map: HASH_TABLE [STRING, STRING]; a_headers_text: STRING; a_socket: TCP_STREAM_SOCKET)
 		local
 			l_http_request : HTTP_REQUEST_HANDLER
 		do
 			check not_yet_implemented: False end
-			create {POST_REQUEST_HANDLER} l_http_request.make (a_input, a_output)
+			create {POST_REQUEST_HANDLER} l_http_request.make (a_socket)
 			l_http_request.set_uri (a_uri)
 			l_http_request.process
 		end

@@ -24,18 +24,15 @@ create
 
 feature {NONE} -- Initialization
 
-	make (a_input: like input; a_output: like output)
+	make (a_socket: TCP_STREAM_SOCKET)
 		do
 			default_create
-			input := a_input
-			output := a_output
+			socket := a_socket
 		end
 
 feature -- Access
 
-	input: HTTP_INPUT_STREAM
-
-	output: HTTP_OUTPUT_STREAM
+	socket: TCP_STREAM_SOCKET
 
 feature -- Execution
 
@@ -88,7 +85,7 @@ feature -- Execution
 			end
 
 				--| Output the result
-			output.put_string (answer.reply_header + answer.reply_text)
+			socket.put_string (answer.reply_header + answer.reply_text)
 		end
 
 	process_default

@@ -24,6 +24,9 @@ feature {NONE} -- Initialization
 			create l_cfg.make
 			l_cfg.http_server_port := 9_000
 			l_cfg.document_root := default_document_root
+			debug ("nino")
+				l_cfg.set_is_verbose (True)
+			end
 
 			create l_server.make (l_cfg)
 			create {APPLICATION_CONNECTION_HANDLER} l_http_handler.make (l_server)

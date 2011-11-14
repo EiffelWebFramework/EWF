@@ -22,19 +22,30 @@ feature -- Execution
 			-- process the request and create an answer
 		local
 			l_data: STRING
-			s: STRING
+			s: detachable STRING
 			n: INTEGER
+			sock: like socket
 		do
 			from
 				n := 1_024
-				input.read_stream (n)
-				s := input.last_string
+				sock := socket
+				if sock.socket_ok then
+					sock.read_stream_thread_aware (n)
+					s := sock.last_string
+				else
+					s := Void
+				end
 				create l_data.make_empty
 			until
-				s.count < n
+				s = Void or else s.count < n
 			loop
 				l_data.append_string (s)
-				input.read_stream (n)
+				if sock.socket_ok then
+					sock.read_stream_thread_aware (n)
+					s := sock.last_string
+				else
+					s := Void
+				end
 			end
 			Precursor
 		end
