@@ -55,12 +55,6 @@ feature -- FCGI output
 			io.put_string (a_str)
 		end
 
---	fcgi_printf (fmt: STRING; args: FINITE[ANY])
---			-- Put args, formatted per 'fmt' on the FastCGI stdout.
---		do
---			apf.printf (fmt, args)
---		end
-
 feature -- FCGI Input
 
 	read_from_stdin (n: INTEGER)
