@@ -28,6 +28,14 @@ feature {NONE} -- Initialization
 			fcgi := a_fcgi
 		end
 
+feature -- Status report
+
+	is_open_write: BOOLEAN
+			-- Can items be written to output stream?
+		do
+			Result := True
+		end
+
 feature -- Status writing
 
 	put_status_line (a_code: INTEGER)
@@ -54,6 +62,13 @@ feature -- Basic operation
 			-- Send `s' to http client
 		do
 			fcgi.put_string (s)
+		end
+
+feature -- Basic operations
+
+	flush
+			-- Flush buffered data to disk.
+		do
 		end
 
 feature {NONE} -- Implementation

@@ -28,6 +28,11 @@ feature -- Access
 			Result := fcgi.environ
 		end
 
+	fcgi_end_of_input: BOOLEAN
+		do
+			Result := fcgi.feof (fcgi.stdin) = 0
+		end
+
 --	updated_environ_variables: HASH_TABLE [STRING, STRING]
 --		local
 ----			n, l_size,

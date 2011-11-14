@@ -16,36 +16,71 @@ create
 
 feature {NONE} -- Initialization
 
-	make (a_nino_input: like nino_input)
+	make (a_source: like source)
 		do
 			create last_string.make_empty
-			set_nino_input (a_nino_input)
+			set_source (a_source)
 		end
 
 feature {WGI_NINO_CONNECTOR, WGI_APPLICATION} -- Nino
 
-	set_nino_input (i: like nino_input)
+	set_source (i: like source)
 		do
-			nino_input := i
+			source := i
 		end
 
-	nino_input: HTTP_INPUT_STREAM
+	source: TCP_STREAM_SOCKET
 
-feature -- Basic operation
+feature -- Input
 
-	read_stream (nb_char: INTEGER)
-			-- Read a string of at most `nb_char' bound characters
-			-- or until end of file.
-			-- Make result available in `last_string'.	
+	read_character
+			-- Read the next character in input stream.
+			-- Make the result available in `last_character'.
+		local
+			s: detachable STRING
 		do
-			nino_input.read_stream (nb_char)
-			last_string := nino_input.last_string
+			if source.socket_ok then
+				source.read_character
+				last_character := source.last_character
+			else
+				last_character := '%U'
+			end
 		end
 
-feature -- Access		
+	read_string (nb: INTEGER)
+		do
+			last_string.wipe_out
+			if source.socket_ok then
+				source.read_stream_thread_aware (nb)
+				last_string.append_string (source.last_string)
+			end
+		end
 
-	last_string: STRING
-			-- Last string read	
+feature -- Access
+
+	last_string: STRING_8
+			-- Last string read
+			-- (Note: this query always return the same object.
+			-- Therefore a clone should be used if the result
+			-- is to be kept beyond the next call to this feature.
+			-- However `last_string' is not shared between input objects.)
+
+	last_character: CHARACTER_8
+			-- Last item read
+
+feature -- Status report
+
+	is_open_read: BOOLEAN
+			-- Can items be read from input stream?
+		do
+			Result := source.is_open_read
+		end
+
+	end_of_input: BOOLEAN
+			-- Has the end of input stream been reached?
+		do
+			Result := source.ready_for_reading
+		end
 
 ;note
 	copyright: "2011-2011, Eiffel Software and others"

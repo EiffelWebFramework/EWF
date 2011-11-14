@@ -53,7 +53,7 @@ feature -- Execution
 			l_api_doc : STRING
 		do
 			if req.content_length_value > 0 then
-				req.input.read_stream (req.content_length_value.as_integer_32)
+				req.input.read_string (req.content_length_value.as_integer_32)
 			end
 			create h.make
 			h.put_status ({HTTP_STATUS_CODE}.method_not_allowed)

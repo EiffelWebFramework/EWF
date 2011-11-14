@@ -32,9 +32,38 @@ feature {NONE} -- Initialization
 			create last_string.make_empty
 		end
 
-feature -- Basic operation
+feature -- Status report
 
-	read_stream (nb_char: INTEGER)
+	is_open_read: BOOLEAN
+			-- Can items be read from input stream?
+		do
+			Result := True
+		end
+
+	end_of_input: BOOLEAN
+			-- Has the end of input stream been reached?
+		do
+			Result := fcgi.fcgi_end_of_input
+		end
+
+feature -- Input
+
+	read_character
+			-- Read the next character in input stream.
+			-- Make the result available in `last_character'.
+		local
+			s: STRING
+		do
+			create s.make (1)
+			fcgi.fill_string_from_stdin (s, 1)
+			if s.count >= 1 then
+				last_character := s.item (1)
+			else
+				last_character := '%U'
+			end
+		end
+
+	read_string (nb_char: INTEGER)
 			-- Read a string of at most `nb_char' bound characters
 			-- or until end of file.
 			-- Make result available in `last_string'.	
@@ -46,6 +75,9 @@ feature -- Access
 
 	last_string: STRING
 			-- Last string read	
+
+	last_character: CHARACTER_8
+			-- Last item read
 
 feature {NONE} -- Implementation
 

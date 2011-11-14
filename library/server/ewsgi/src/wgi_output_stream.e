@@ -11,18 +11,70 @@ note
 deferred class
 	WGI_OUTPUT_STREAM
 
-feature -- Core operation
+feature -- Output
 
-	put_string (s: STRING_8)
-			-- Write `s' into the output stream
+	put_string (a_string: STRING_8)
+			-- Write `a_string' to output stream.
 		require
-			s_not_empty: s /= Void and then not s.is_empty
+			is_open_write: is_open_write
+			a_string_not_void: a_string /= Void
 		deferred
 		end
 
-	flush
-			-- Flush the output stream	
+	put_substring (a_string: STRING; s, e: INTEGER)
+			-- Write substring of `a_string' between indexes
+			-- `s' and `e' to output stream.
+			--| Could be redefined for optimization			
+		require
+			is_open_write: is_open_write
+			a_string_not_void: a_string /= Void
+			s_large_enough: s >= 1
+			e_small_enough: e <= a_string.count
+			valid_interval: s <= e + 1
 		do
+			if s <= e then
+				put_string (a_string.substring (s, e))
+			end
+		end
+
+	put_character_8 (c: CHARACTER_8)
+			-- Write `c' to output stream.
+			--| Could be redefined for optimization			
+		require
+			is_open_write: is_open_write
+		do
+			put_string (c.out)
+		end
+
+	put_file_content (fn: STRING)
+			-- Send the content of file `fn'
+		require
+			string_not_empty: not fn.is_empty
+			is_readable: (create {RAW_FILE}.make (fn)).is_readable
+		local
+			f: RAW_FILE
+		do
+			create f.make (fn)
+			check f.exists and then f.is_readable end
+
+			f.open_read
+			from
+			until
+				f.exhausted
+			loop
+				f.read_stream (4096)
+				put_string (f.last_string)
+			end
+			f.close
+		end
+
+feature -- Specific output
+
+	put_header_line (s: STRING)
+			-- Send `s' to http client as header line
+		do
+			put_string (s)
+			put_string ("%R%N")
 		end
 
 feature -- Status writing
@@ -34,41 +86,20 @@ feature -- Status writing
 		deferred
 		end
 
-feature -- Basic operation
+feature -- Status report
 
-	put_substring (s: STRING; start_index, end_index: INTEGER)
-			-- Write `s[start_index:end_index]' into the output stream
-			--| Could be redefined for optimization
+	is_open_write: BOOLEAN
+			-- Can items be written to output stream?
+		deferred
+		end
+
+feature -- Basic operations
+
+	flush
+			-- Flush buffered data to disk.
 		require
-			s_not_empty: s /= Void and then not s.is_empty
-		do
-			put_string (s.substring (start_index, end_index))
-		end
-
-	put_file_content (fn: STRING)
-			-- Send the content of file `fn'
-		local
-			f: RAW_FILE
-		do
-			create f.make (fn)
-			if f.exists and then f.is_readable then
-				f.open_read
-				from
-				until
-					f.exhausted
-				loop
-					f.read_stream (4096)
-					put_string (f.last_string)
-				end
-				f.close
-			end
-		end
-
-	put_header_line (s: STRING)
-			-- Send `s' to http client as header line
-		do
-			put_string (s)
-			put_string ("%R%N")
+			is_open_write: is_open_write
+		deferred
 		end
 
 note

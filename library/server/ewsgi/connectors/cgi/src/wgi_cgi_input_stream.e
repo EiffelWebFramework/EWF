@@ -10,10 +10,15 @@ class
 
 inherit
 	WGI_INPUT_STREAM
+		undefine
+			read_to_string
+		end
 
 	CONSOLE
 		rename
-			make as console_make
+			make as console_make,
+			read_stream as read_string,
+			end_of_file as end_of_input
 		end
 
 create

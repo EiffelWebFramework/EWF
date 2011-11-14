@@ -58,7 +58,7 @@ feature -- Element change
 
 feature -- Request processing
 
-	process_request (a_handler: HTTP_CONNECTION_HANDLER; a_input: HTTP_INPUT_STREAM; a_output: HTTP_OUTPUT_STREAM)
+	process_request (a_handler: HTTP_CONNECTION_HANDLER; a_socket: TCP_STREAM_SOCKET)
 			-- Process request ...
 		local
 			env, vars: HASH_TABLE [STRING, STRING]
@@ -161,14 +161,20 @@ feature -- Request processing
 				end
 			end
 
-			callback.process_request (env, a_handler.request_header, a_input, a_output)
+			callback.process_request (env, a_handler.request_header, a_socket)
 		end
 
 	add_environment_variable (a_value: detachable STRING; a_var_name: STRING; env: HASH_TABLE [STRING, STRING])
 			-- Add variable `a_var_name => a_value' to `env'
 		do
 			if a_value /= Void then
-				env.force (a_value, a_var_name)
+				if env.has_key (a_var_name) and then attached env.found_item as l_existing_value then
+						--| Check http://www.ietf.org/rfc/rfc3875 4.1.18
+					check find_proper_rewrite_for_same_header: False end
+					env.force (l_existing_value + " " + a_value, a_var_name)
+				else
+					env.force (a_value, a_var_name)
+				end
 			end
 		end
 

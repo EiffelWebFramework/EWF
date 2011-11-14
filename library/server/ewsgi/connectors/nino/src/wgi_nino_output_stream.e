@@ -10,6 +10,9 @@ class
 
 inherit
 	WGI_OUTPUT_STREAM
+		redefine
+			put_character_8
+		end
 
 	HTTP_STATUS_CODE_MESSAGES
 		export
@@ -21,19 +24,19 @@ create
 
 feature {NONE} -- Initialization
 
-	make (a_nino_output: like nino_output)
+	make (a_target: like target)
 		do
-			set_nino_output (a_nino_output)
+			set_target (a_target)
 		end
 
 feature {WGI_NINO_CONNECTOR, WGI_APPLICATION} -- Nino
 
-	set_nino_output (o: like nino_output)
+	set_target (o: like target)
 		do
-			nino_output := o
+			target := o
 		end
 
-	nino_output: HTTP_OUTPUT_STREAM
+	target: TCP_STREAM_SOCKET
 
 feature -- Status writing
 
@@ -55,15 +58,31 @@ feature -- Status writing
 			put_header_line (s)
 		end
 
-feature -- Basic operation
+feature -- Output
 
 	put_string (s: STRING_8)
 			-- Send `s' to http client
 		do
-			debug ("nino")
-				print (s)
-			end
-			nino_output.put_string (s)
+			target.put_string (s)
+		end
+
+	put_character_8 (c: CHARACTER_8)
+		do
+			target.put_character (c)
+		end
+
+feature -- Status report
+
+	is_open_write: BOOLEAN
+			-- Can items be written to output stream?
+		do
+			Result := target.is_open_write
+		end
+
+feature -- Basic operations
+
+	flush
+		do
 		end
 
 note

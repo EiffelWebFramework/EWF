@@ -336,7 +336,7 @@ feature {NONE} -- I/O: implementation
 	read_input (nb: INTEGER)
 			-- Read `nb' bytes from `input'
 		do
-			input.read_stream (nb)
+			input.read_string (nb)
 		end
 
 	last_input_string: STRING

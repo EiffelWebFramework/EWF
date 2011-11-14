@@ -1495,8 +1495,8 @@ feature {NONE} -- Internal value
 			until
 				n <= 0
 			loop
-				read_input (n)
-				t := last_input_string
+				input.read_string (n)
+				t := input.last_string
 				Result.append_string (t)
 				if t.count < n then
 					n := 0
@@ -1513,20 +1513,6 @@ feature {NONE} -- Internal value
 
 	internal_cookies_table: detachable like cookies_table
 			-- cached value for `cookies'
-
-feature {NONE} -- I/O: implementation
-
-	read_input (nb: INTEGER)
-			-- Read `nb' bytes from `input'
-		do
-			input.read_stream (nb)
-		end
-
-	last_input_string: STRING
-			-- Last string read from `input'
-		do
-			Result := input.last_string
-		end
 
 feature {NONE} -- Implementation
 

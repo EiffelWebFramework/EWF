@@ -104,15 +104,15 @@ feature -- Server
 			server.setup (l_http_handler)
 		end
 
-	process_request (env: HASH_TABLE [STRING, STRING]; a_headers_text: STRING; a_input: HTTP_INPUT_STREAM; a_output: HTTP_OUTPUT_STREAM)
+	process_request (env: HASH_TABLE [STRING, STRING]; a_headers_text: STRING; a_socket: TCP_STREAM_SOCKET)
 		local
 			req: WGI_REQUEST_FROM_TABLE
 			res: detachable WGI_RESPONSE_STREAM_BUFFER
 			rescued: BOOLEAN
 		do
 			if not rescued then
-				create req.make (env, create {WGI_NINO_INPUT_STREAM}.make (a_input))
-				create res.make (create {WGI_NINO_OUTPUT_STREAM}.make (a_output))
+				create req.make (env, create {WGI_NINO_INPUT_STREAM}.make (a_socket))
+				create res.make (create {WGI_NINO_OUTPUT_STREAM}.make (a_socket))
 				req.set_meta_string_variable ("RAW_HEADER_DATA", a_headers_text)
 				application.execute (req, res)
 			else

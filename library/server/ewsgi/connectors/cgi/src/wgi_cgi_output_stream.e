@@ -10,9 +10,6 @@ class
 
 inherit
 	WGI_OUTPUT_STREAM
-		undefine
-			flush
-		end
 
 	CONSOLE
 		rename

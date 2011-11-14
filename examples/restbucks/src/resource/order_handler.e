@@ -111,7 +111,7 @@ feature -- HTTP Methods
 			l_post: STRING
 			l_order : detachable ORDER
 		do
-			req.input.read_stream (req.content_length_value.as_integer_32)
+			req.input.read_string (req.content_length_value.as_integer_32)
 			l_post := req.input.last_string
 			l_order := extract_order_request(l_post)
 			if  l_order /= Void and then db_access.orders.has_key (l_order.id) then
@@ -229,7 +229,7 @@ feature -- HTTP Methods
 		local
 			l_post: STRING
 		do
-			req.input.read_stream (req.content_length_value.as_integer_32)
+			req.input.read_string (req.content_length_value.as_integer_32)
 			l_post := req.input.last_string
 			if attached extract_order_request (l_post) as l_order then
 				save_order (l_order)
