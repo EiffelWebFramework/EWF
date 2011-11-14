@@ -64,6 +64,18 @@ feature -- Input
 			]"
 		end
 
+feature {FCGI_IMP} -- Internal
+
+	feof (v: POINTER): INTEGER
+			-- FCGI_feof()
+		external
+			"C inline use %"fcgi_stdio.h%""
+		alias
+			"FCGI_feof"
+		end
+
+feature {NONE} -- Input
+
 	gets (s: POINTER): POINTER
 			-- gets() reads a line from stdin into the buffer pointed to
 			-- by s until either a terminating newline or EOF, which it
@@ -82,6 +94,24 @@ feature -- Output
 			"C inline use %"fcgi_stdio.h%""
 		alias
 			"FCGI_fwrite($v, 1, $n, FCGI_stdout);"
+		end
+
+feature -- Access
+
+	stdout: POINTER
+			-- FCGI_stdout() return pointer on output FCGI_FILE
+		external
+			"C inline use %"fcgi_stdio.h%""
+		alias
+			"FCGI_stdout"
+		end
+
+	stdin: POINTER
+			-- FCGI_stdin() return pointer on input FCGI_FILE
+		external
+			"C inline use %"fcgi_stdio.h%""
+		alias
+			"FCGI_stdin"
 		end
 
 note

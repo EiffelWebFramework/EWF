@@ -30,6 +30,11 @@ feature -- Access
 			Result := fcgi.environ
 		end
 
+	fcgi_end_of_input: BOOLEAN
+		do
+			Result := fcgi.feof (fcgi.stdin) = 0
+		end
+
 feature -- FCGI Connection
 
 	fcgi_listen: INTEGER
@@ -72,15 +77,6 @@ feature -- FCGI output
 			{FCGI_C_API}.put_string (l_c_str.item, l_c_str.count)
 		end
 
---	fcgi_printf (fmt: STRING; args: FINITE[ANY])
---			-- Put args, formatted per 'fmt' on the FastCGI stdout.
---		local
---			l_c_str: C_STRING
---		do
---			create l_c_str.make (apf.aprintf (fmt, args))
---			{FCGI_C_API}.put_string (l_c_str.item, l_c_str.count)
---		end
-
 feature -- FCGI Input
 
 	copy_from_stdin (n: INTEGER; tf: FILE)
@@ -90,15 +86,12 @@ feature -- FCGI Input
 			num, readsize, writecount: INTEGER
 			done: BOOLEAN
 		do
-			--put_trace ("copy_from_stdin, n=" +n.out)
 			readsize := n.min (K_input_bufsize)
-			--put_trace ("copy_from_stdin, readsize=" +readsize.out)
 			l_c_str := c_buffer
 			from
 			until done or writecount >= n
 			loop
 				num := {FCGI_C_API}.read_content_into (l_c_str.item, readsize)
-				--put_trace ("copy_from_stdin, num=" +num.out)
 				if num  = 0 then
 					-- EOF
 					done := True

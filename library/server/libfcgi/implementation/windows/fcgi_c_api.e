@@ -46,22 +46,6 @@ feature -- Connections
 
 feature -- Input
 
-	fread (v: POINTER; a_size: INTEGER; n: INTEGER; fp: POINTER): INTEGER
-			-- FCGI_fread() read from input `fp' and put into `v'
-		external
-			"dll libfcgi.dll signature (EIF_POINTER, EIF_INTEGER, EIF_INTEGER, EIF_POINTER): EIF_INTEGER use fcgi_stdio.h "
-		alias
-			"FCGI_fread"
-		end
-
-	feof (v: POINTER): INTEGER
-			-- FCGI_feof()
-		external
-			"dll libfcgi.dll signature (EIF_POINTER): EIF_INTEGER use fcgi_stdio.h "
-		alias
-			"FCGI_feof"
-		end
-
 	read_content_into (a_buffer: POINTER; a_length: INTEGER): INTEGER
 			-- Read content stream into `a_buffer' but no more than `a_length' character.
 		local
@@ -75,6 +59,26 @@ feature -- Input
 			else
 				Result := fread(a_buffer, 1, a_length, l_stdin)
 			end
+		end
+
+feature {FCGI_IMP} -- Internal
+
+	feof (v: POINTER): INTEGER
+			-- FCGI_feof()
+		external
+			"dll libfcgi.dll signature (EIF_POINTER): EIF_INTEGER use fcgi_stdio.h "
+		alias
+			"FCGI_feof"
+		end
+
+feature {NONE} -- Input
+
+	fread (v: POINTER; a_size: INTEGER; n: INTEGER; fp: POINTER): INTEGER
+			-- FCGI_fread() read from input `fp' and put into `v'
+		external
+			"dll libfcgi.dll signature (EIF_POINTER, EIF_INTEGER, EIF_INTEGER, EIF_POINTER): EIF_INTEGER use fcgi_stdio.h "
+		alias
+			"FCGI_fread"
 		end
 
 	gets (s: POINTER): POINTER
@@ -96,6 +100,8 @@ feature -- Output
 		do
 			i := fwrite (v, 1, n, stdout)
 		end
+
+feature {NONE} -- Output
 
 	fwrite (v: POINTER; a_size: INTEGER; n: INTEGER; fp: POINTER): INTEGER
 			-- FCGI_fwrite() ouput `v' to `fp'
