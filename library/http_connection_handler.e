@@ -112,7 +112,7 @@ feature -- Parsing
 					line = Void or end_of_stream
 				loop
 					n := line.count
-					debug ("nino")
+					if is_verbose then
 						print ("%N" + line)
 					end
 					pos := line.index_of (':',1)
@@ -144,7 +144,7 @@ feature -- Parsing
 		local
 			pos, next_pos: INTEGER
 		do
-			debug ("nino")
+			if is_verbose then
 				print ("%N## Parse HTTP request line ##")
 				print ("%N")
 				print (line)
