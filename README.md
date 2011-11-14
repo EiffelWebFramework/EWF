@@ -41,14 +41,14 @@ Or using git version >= 1.6.5
 ### client
 * __http_client__: simple HTTP client based on cURL [read more](library/client/http_client)
 
-## text
+### text
 * __encoder__: Various simpler encoders: base64, url-encoder, xml entities, html entities [read more](library/text/encoder)
 
-## crypto
+### crypto
 * eel
 * eapml
 
-## Others
+### Others
 * error: very simple/basic library to handle error
 
 ## External libraries under 'ext'
