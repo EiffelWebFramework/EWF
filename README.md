@@ -25,25 +25,35 @@ Or using git version >= 1.6.5
 
 ## Libraries under 'library'
 
-* server
-  * __ewsgi__: Eiffel Web Server Gateway Interface [read more](library/server/ewsgi/README.md)
-    * connectors: various web server connectors for EWSGI
-  * libfcgi: Wrapper for libfcgi SDK 
-  * __wsf__: Web Server Framework [read more](library/server/wsf/README.md)
-  * request
-    * __router__: URL dispatching/routing based on uri, uri_template, or custom [read more](library/server/request/router/README.md)
-    * rest: experimental: RESTful library to help building RESTful services
-* protocol
-  * __http__: HTTP related classes, constants for status code, content types, ... [read more](library/protocol/http/README.md)
-  * __uri_template__: URI Template library (parsing and expander) [read more](library/protocol/uri_template/README.md)
-* client
-  * __http_client__: simple HTTP client based on cURL [read more](library/client/http_client/README.md)
-* crypto
-  * eel
-  * eapml
-* text
-  * __encoder__: Various simpler encoders: base64, url-encoder, xml entities, html entities [read more](library/text/encoder/README.md)
+### server
+* __ewsgi__: Eiffel Web Server Gateway Interface [read more](library/server/ewsgi)
+  * connectors: various web server connectors for EWSGI
+* libfcgi: Wrapper for libfcgi SDK 
+* __wsf__: Web Server Framework [read more](library/server/wsf)
+* request
+  *  __router__: URL dispatching/routing based on uri, uri_template, or custom [read more](library/server/request/router)
+  *  rest: experimental: RESTful library to help building RESTful services
+
+### protocol
+* __http__: HTTP related classes, constants for status code, content types, ... [read more](library/protocol/http)
+* __uri_template__: URI Template library (parsing and expander) [read more](library/protocol/uri_template)
+
+### client
+* __http_client__: simple HTTP client based on cURL [read more](library/client/http_client)
+
+## text
+* __encoder__: Various simpler encoders: base64, url-encoder, xml entities, html entities [read more](library/text/encoder)
+
+## crypto
+* eel
+* eapml
+
+## Others
 * error: very simple/basic library to handle error
+
+## External libraries under 'ext'
+* [Eiffel Web Nino](ext/server/nino)
+* ..
 
 ## Examples
 ..
