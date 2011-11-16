@@ -51,10 +51,19 @@ def runTestForProject(where):
   os.chdir(where)
   # First we have to remove old compilation
   rm_dir("EIFGENs")
-  
+
   # compile the library
   cmd = "ecb -config %s -target restbucks -batch -c_compile" % (os.path.join ("examples", "restbucks", "restbucks-safe.ecf"))
   res = eval_cmd(cmd)
+
+  sleep(1)
+
+  if sys.platform == 'win32':
+	  cmd = "tests\\check_compilations.bat"
+	  res = eval_cmd(cmd)
+  else:
+	  cmd = "tests//check_compilations.sh"
+	  res = eval_cmd(cmd)
 
   sleep(1)
 
