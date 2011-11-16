@@ -77,12 +77,12 @@ def runTestForProject(where):
 	non_failures = [];
 	for line in lines:
 		p_res = p.search(line.strip(), 0)
-	if p_res:
-		# name, target, ecf, result
-		if p_res.group(5) == "Failed":
-			failures.append ({"name": p_res.group(2), "target": p_res.group(3), "ecf": p_res.group(4), "result": p_res.group(5)})
-		else:
-			non_failures.append ({"name": p_res.group(2), "target": p_res.group(3), "ecf": p_res.group(4), "result": p_res.group(5)})
+		if p_res:
+			# name, target, ecf, result
+			if p_res.group(5) == "Failed":
+				failures.append ({"name": p_res.group(2), "target": p_res.group(3), "ecf": p_res.group(4), "result": p_res.group(5)})
+			else:
+				non_failures.append ({"name": p_res.group(2), "target": p_res.group(3), "ecf": p_res.group(4), "result": p_res.group(5)})
 	for non_fails in non_failures:
 		print "[%s] %s : %s @ %s" % (non_fails["result"], non_fails["name"], non_fails["ecf"], non_fails["target"])
 	for fails in failures:
