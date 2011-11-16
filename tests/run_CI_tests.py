@@ -26,7 +26,7 @@ def eval_cmd(cmd):
 	res = subprocess.call (cmd, shell=True)
 	if res < 0:
 		print "Failed running: %s" % (cmd)
-	sys.exit(2)
+		sys.exit(2)
 	return res
 
 def eval_cmd_output(cmd):
@@ -36,17 +36,16 @@ def eval_cmd_output(cmd):
 		return p.communicate()[0]
 	else:
 		print "Failed running: %s" % (cmd)
-	sys.exit(2)
+		sys.exit(2)
 
 def rm_dir(d):
 	if os.path.isdir(d):
 		shutil.rmtree(d)
 
-
 def runTestForProject(where):
 	if not os.path.isdir(where):
 		print "Directory %s does not exist" % (where)
-	sys.exit(2)
+		sys.exit(2)
 
 	os.chdir(where)
 	# First we have to remove old compilation
