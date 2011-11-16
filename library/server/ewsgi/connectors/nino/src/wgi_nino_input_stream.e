@@ -36,8 +36,6 @@ feature -- Input
 	read_character
 			-- Read the next character in input stream.
 			-- Make the result available in `last_character'.
-		local
-			s: detachable STRING
 		do
 			if source.socket_ok then
 				source.read_character
