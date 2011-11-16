@@ -53,12 +53,14 @@ def runTestForProject(where):
 	if clobber:
 		rm_dir("EIFGENs")
 
-	# compile the library
+	# compile the restbucks
+	print "# Compiling restbucks example"
 	cmd = "ecb -config %s -target restbucks -batch -c_compile -project_path . " % (os.path.join ("examples", "restbucks", "restbucks-safe.ecf"))
 	res = eval_cmd(cmd)
 
 	sleep(1)
 
+	print "# Launch check_compilations"
 	if sys.platform == 'win32':
 		cmd = "tests\\check_compilations.bat"
 	else:
@@ -67,6 +69,7 @@ def runTestForProject(where):
 		cmd = "%s -clean" % (cmd)
 	res_output = eval_cmd_output(cmd)
 
+	print "# Analyze check_compilations results"
 	lines = re.split ("\n", res_output)
 	regexp = "^(\S+)\s+(\S+)\s+from\s+(\S+)\s+\(([^\)]+)\)\.\.\.(\S+)$"
 	p = re.compile (regexp);
@@ -87,6 +90,8 @@ def runTestForProject(where):
 	sleep(1)
 	if len(failures) > 0:
 		sys.exit(2)
+
+	print "# End..."
 
 if __name__ == '__main__':
 	runTestForProject(os.path.join (os.getcwd(), '..'))
