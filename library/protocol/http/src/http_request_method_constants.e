@@ -27,6 +27,8 @@ feature -- Id
 
 	connect: INTEGER = 0x80
 
+	patch: INTEGER = 0x100
+
 feature -- Name
 
 	method_empty: STRING = ""
@@ -44,6 +46,8 @@ feature -- Query
 				Result := post
 			elseif s.same_string (method_put) then
 				Result := put
+			elseif s.same_string (method_patch) then
+				Result := patch
 			elseif s.same_string (method_delete) then
 				Result := delete
 			elseif s.same_string (method_head) then
@@ -66,6 +70,7 @@ feature -- Query
 			when options then Result := method_options
 			when post then Result := method_post
 			when put then Result := method_put
+			when patch then Result := method_patch
 			when delete then Result := method_delete
 			when connect then Result := method_connect
 			else

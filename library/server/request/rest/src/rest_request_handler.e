@@ -241,6 +241,9 @@ feature -- Status report
 			if method_put_supported then
 				Result.extend (request_method_constants.method_put)
 			end
+			if method_patch_supported then
+				Result.extend (request_method_constants.method_patch)
+			end
 			if method_delete_supported then
 				Result.extend (request_method_constants.method_delete)
 			end
@@ -262,6 +265,11 @@ feature -- Status report
 	method_put_supported: BOOLEAN
 		do
 			Result := request_method_id_supported ({HTTP_REQUEST_METHOD_CONSTANTS}.put)
+		end
+
+	method_patch_supported: BOOLEAN
+		do
+			Result := request_method_id_supported ({HTTP_REQUEST_METHOD_CONSTANTS}.patch)
 		end
 
 	method_delete_supported: BOOLEAN
@@ -294,6 +302,11 @@ feature -- Element change: request methods
 	enable_request_method_put
 		do
 			enable_request_method ({HTTP_REQUEST_METHOD_CONSTANTS}.put)
+		end
+
+	enable_request_method_patch
+		do
+			enable_request_method ({HTTP_REQUEST_METHOD_CONSTANTS}.patch)
 		end
 
 	enable_request_method_delete
