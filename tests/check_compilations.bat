@@ -1,3 +1,4 @@
+echo off
 setlocal
 cd /d %~dp0..
 set COMPILE_ALL_BASEDIR=%CD%
@@ -7,3 +8,4 @@ mkdir tests\temp
 cd %~dp0
 
 endlocal
+echo on
