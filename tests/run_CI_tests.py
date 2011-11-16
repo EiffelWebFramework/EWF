@@ -50,22 +50,44 @@ def runTestForProject(where):
 
   os.chdir(where)
   # First we have to remove old compilation
-  rm_dir("EIFGENs")
+  clobber = len(sys.argv) >= 2 and sys.argv[1] == "-clobber"
+  if clobber:
+    rm_dir("EIFGENs")
 
   # compile the library
-  cmd = "ecb -config %s -target restbucks -batch -c_compile" % (os.path.join ("examples", "restbucks", "restbucks-safe.ecf"))
+  cmd = "ecb -config %s -target restbucks -batch -c_compile -project_path . " % (os.path.join ("examples", "restbucks", "restbucks-safe.ecf"))
   res = eval_cmd(cmd)
 
   sleep(1)
 
   if sys.platform == 'win32':
 	  cmd = "tests\\check_compilations.bat"
-	  res = eval_cmd(cmd)
   else:
 	  cmd = "tests//check_compilations.sh"
-	  res = eval_cmd(cmd)
+  if clobber:
+	  cmd = "%s -clean" % (cmd)
+  res_output = eval_cmd_output(cmd)
 
+  lines = re.split ("\n", res_output)
+  regexp = "^(\S+)\s+(\S+)\s+from\s+(\S+)\s+\(([^\)]+)\)\.\.\.(\S+)$"
+  p = re.compile (regexp);
+  failures = [];
+  non_failures = [];
+  for line in lines:
+	p_res = p.search(line.strip(), 0)
+	if p_res:
+		# name, target, ecf, result
+		if p_res.group(5) == "Failed":
+			failures.append ({"name": p_res.group(2), "target": p_res.group(3), "ecf": p_res.group(4), "result": p_res.group(5)})
+		else:
+			non_failures.append ({"name": p_res.group(2), "target": p_res.group(3), "ecf": p_res.group(4), "result": p_res.group(5)})
+  for non_fails in non_failures:
+	  print "[%s] %s : %s @ %s" % (non_fails["result"], non_fails["name"], non_fails["ecf"], non_fails["target"])
+  for fails in failures:
+	  print "[FAILURE] %s : %s @ %s" % (fails["name"], fails["ecf"], fails["target"])
   sleep(1)
+  if len(failures) > 0:
+	  sys.exit(2)
 
 if __name__ == '__main__':
 	runTestForProject(os.path.join (os.getcwd(), '..'))
