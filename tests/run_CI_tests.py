@@ -19,14 +19,32 @@ import re;
 import subprocess;
 from time import sleep;
 
+def last_build_had_failure():
+	return os.path.exists (".last_run_CI_tests_failed")
+
+def reset_last_run_CI_tests_failed():
+	fn = ".last_run_CI_tests_failed"
+	if os.path.exists (fn):
+		os.remove(fn)
+
+def set_last_run_CI_tests_failed(m):
+	fn = ".last_run_CI_tests_failed"
+	f = open(".last_run_CI_tests_failed", 'w')
+	f.write(m)
+	f.close()
+
+def report_failure(msg, a_code=2):
+	print msg
+	set_last_run_CI_tests_failed(msg)
+	sys.exit(a_code)
+
 # Override system command.
 # run command. if not successful, complain and exit with error
 def eval_cmd(cmd):
 	#  print cmd
 	res = subprocess.call (cmd, shell=True)
 	if res < 0:
-		print "Failed running: %s" % (cmd)
-		sys.exit(2)
+		report_failure ("Failed running: %s" % (cmd), 2)
 	return res
 
 def eval_cmd_output(cmd):
@@ -35,8 +53,7 @@ def eval_cmd_output(cmd):
 	if p:
 		return p.communicate()[0]
 	else:
-		print "Failed running: %s" % (cmd)
-		sys.exit(2)
+		report_failure ("Failed running: %s" % (cmd), 2)
 
 def rm_dir(d):
 	if os.path.isdir(d):
@@ -44,13 +61,14 @@ def rm_dir(d):
 
 def runTestForProject(where):
 	if not os.path.isdir(where):
-		print "Directory %s does not exist" % (where)
-		sys.exit(2)
+		report_failure ("Directory %s does not exist" % (where), 2)
 
 	os.chdir(where)
 	# First we have to remove old compilation
-	clobber = len(sys.argv) >= 2 and sys.argv[1] == "-clobber"
+	clobber = (len(sys.argv) >= 2 and sys.argv[1] == "-clobber") or (last_build_had_failure())
 	if clobber:
+		reset_last_run_CI_tests_failed()
+		print "## Cleaning previous tests"
 		rm_dir("EIFGENs")
 
 	# compile the restbucks
@@ -89,7 +107,7 @@ def runTestForProject(where):
 		print "[FAILURE] %s : %s @ %s" % (fails["name"], fails["ecf"], fails["target"])
 	sleep(1)
 	if len(failures) > 0:
-		sys.exit(2)
+		report_failure ("Failure(s) occurred", 2)
 
 	print "# End..."
 
