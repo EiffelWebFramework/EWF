@@ -1,16 +1,19 @@
+note
+	description: "Summary description for {DEFAULT_SERVICE}."
+	date: "$Date$"
+	revision: "$Revision$"
+
 deferred class
-	REST_APPLICATION_GATEWAY
+	DEFAULT_SERVICE
 
 inherit
-	WSF_APPLICATION
+	WSF_SERVICE
 
-feature -- Access
+feature {NONE} -- Initialization
 
-	build_gateway_and_launch
+	make_and_launch
 		local
-			app: NINO_APPLICATION
-			port_number: INTEGER
-			base_url: STRING
+			app: NINO_SERVICE
 		do
 			port_number := 8080
 			base_url := ""
@@ -19,20 +22,17 @@ feature -- Access
 					 ", %Nand reply Hello World for any request such as http://localhost:" + port_number.out + "/" + base_url + "%N")
 			end
 			create app.make_custom (agent wgi_execute, base_url)
-			app.force_single_threaded
-
 			app.listen (port_number)
 		end
 
-	gateway_name: STRING = "NINO"
+	port_number: INTEGER
 
-	exit_with_code (a_code: INTEGER)
-		do
-			(create {EXCEPTIONS}).die (a_code)
-		end
+	base_url: STRING
 
+invariant
+	port_number_valid: port_number > 0
 note
-	copyright: "Copyright (c) 1984-2011, Eiffel Software and others"
+	copyright: "2011-2011, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

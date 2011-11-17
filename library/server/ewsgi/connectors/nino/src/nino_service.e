@@ -1,10 +1,10 @@
 note
-	description: "Summary description for {NINO_APPLICATION}."
+	description: "Summary description for {NINO_SERVICE}."
 	date: "$Date$"
 	revision: "$Revision$"
 
 class
-	NINO_APPLICATION
+	NINO_SERVICE
 
 create
 	make,
@@ -12,18 +12,18 @@ create
 
 feature {NONE} -- Implementation
 
-	make (a_callback: like {WGI_AGENT_APPLICATION}.callback)
+	make (a_callback: like {WGI_AGENT_SERVICE}.callback)
 			-- Initialize `Current'.
 		do
 			make_custom (a_callback, Void)
 		end
 
-	make_custom (a_callback: like {WGI_AGENT_APPLICATION}.callback;	a_base_url: detachable STRING)
+	make_custom (a_callback: like {WGI_AGENT_SERVICE}.callback;	a_base_url: detachable STRING)
 			-- Initialize `Current'.
 		require
 			base_url_starts_with_slash: (a_base_url /= Void and then not a_base_url.is_empty) implies a_base_url.starts_with ("/")
 		local
-			app: WGI_AGENT_APPLICATION
+			app: WGI_AGENT_SERVICE
 		do
 			create app.make (a_callback)
 			create connector.make_with_base (app, a_base_url)

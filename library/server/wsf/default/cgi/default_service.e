@@ -1,13 +1,13 @@
 note
-	description: "Summary description for {DEFAULT_APPLICATION}."
+	description: "Summary description for {DEFAULT_SERVICE}."
 	date: "$Date$"
 	revision: "$Revision$"
 
 deferred class
-	DEFAULT_APPLICATION
+	DEFAULT_SERVICE
 
 inherit
-	WSF_APPLICATION
+	WSF_SERVICE
 
 feature {NONE} -- Initialization
 

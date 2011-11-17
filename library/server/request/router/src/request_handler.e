@@ -10,7 +10,7 @@ deferred class
 inherit
 	ANY
 
-	ROUTED_APPLICATION_HELPER
+	ROUTED_SERVICE_HELPER
 		export
 			{NONE} all
 		end

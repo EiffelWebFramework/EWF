@@ -1,12 +1,12 @@
 note
-	description: "Summary description for {WGI_APPLICATION}."
+	description: "Summary description for {WGI_SERVICE}."
 	legal: "See notice at end of class."
 	status: "See notice at end of class."
 	date: "$Date$"
 	revision: "$Revision$"
 
 deferred class
-	WGI_APPLICATION
+	WGI_SERVICE
 
 feature {NONE} -- Execution
 

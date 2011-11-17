@@ -17,14 +17,14 @@ inherit
 			on_clean
 		end
 
-	WSF_APPLICATION
+	WSF_SERVICE
 		undefine
 			default_create
 		end
 
 feature {NONE} -- Events
 
-	web_app: detachable NINO_APPLICATION
+	web_app: detachable NINO_SERVICE
 
 	port_number: INTEGER
 	base_url: detachable STRING
@@ -32,7 +32,7 @@ feature {NONE} -- Events
 	on_prepare
 			-- <Precursor>
 		local
-			app: NINO_APPLICATION
+			app: NINO_SERVICE
 			wt: WORKER_THREAD
 			e: EXECUTION_ENVIRONMENT
 		do

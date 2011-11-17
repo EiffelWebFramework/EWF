@@ -1,17 +1,25 @@
 note
-	description: "Summary description for {DEFAULT_ROUTED_APPLICATION}."
+	description: "Summary description for {REST_SERVICE}."
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
 deferred class
-	ROUTED_APPLICATION
+	REST_SERVICE_I [H -> REST_REQUEST_HANDLER [C], C -> REST_REQUEST_HANDLER_CONTEXT]
 
 inherit
-	ROUTED_APPLICATION_I [REQUEST_HANDLER [REQUEST_HANDLER_CONTEXT], REQUEST_HANDLER_CONTEXT]
+	ROUTED_SERVICE_I [H, C]
+		redefine
+			router
+		end
 
-note
-	copyright: "2011-2011, Eiffel Software and others"
+feature -- Setup	
+
+	router: REST_REQUEST_ROUTER [H, C]
+			-- Request router
+
+;note
+	copyright: "Copyright (c) 1984-2011, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

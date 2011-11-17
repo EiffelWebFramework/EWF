@@ -1,14 +1,14 @@
 note
-	description: "Summary description for {WGI_AGENT_APPLICATION}."
+	description: "Summary description for {WGI_AGENT_SERVICE}."
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
 class
-	WGI_AGENT_APPLICATION
+	WGI_AGENT_SERVICE
 
 inherit
-	WGI_APPLICATION
+	WGI_SERVICE
 
 create
 	make

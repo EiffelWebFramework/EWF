@@ -1,13 +1,17 @@
 note
-	description: "Objects that ..."
+	description: "[
+		Inherit from this class to implement the main entry of your web service
+		You just need to implement `execute', get data from the request `req'
+		and write the response in `res'
+	]"
 	date: "$Date$"
 	revision: "$Revision$"
 
 deferred class
-	WSF_APPLICATION
+	WSF_SERVICE
 
 inherit
-	WGI_APPLICATION
+	WGI_SERVICE
 		rename
 			execute as wgi_execute
 		end

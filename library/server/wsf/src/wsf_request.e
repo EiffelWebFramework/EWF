@@ -5,7 +5,7 @@ note
 			It includes CGI interface and a few extra values that are usually valuable
 			In addition it provides
 				query_parameter(s)
-				form_data_parameter(s)
+				form_parameter(s)
 				...
 			]"
 	date: "$Date$"
@@ -17,7 +17,7 @@ class
 inherit
 	DEBUG_OUTPUT
 
-create {WSF_APPLICATION}
+create {WSF_SERVICE}
 	make_from_wgi
 
 convert
@@ -1001,7 +1001,7 @@ feature {NONE} -- Form fields and related
 			-- Variables sent by POST request	
 		local
 			vars: like internal_form_data_parameters_table
-			s: STRING
+			s: READABLE_STRING_8
 			n: NATURAL_64
 			l_type: like content_type
 		do
@@ -1017,10 +1017,10 @@ feature {NONE} -- Form fields and related
 						create vars.make (5)
 						vars.compare_objects
 						--| FIXME: optimization ... fetch the input data progressively, otherwise we might run out of memory ...
-						s := form_input_data (n.to_integer_32) --| FIXME truncated from NAT64 to INT32
+						s := form_input_data (n)
 						analyze_multipart_form (l_type, s, vars)
 					else
-						s := form_input_data (n.to_integer_32) --| FIXME truncated from NAT64 to INT32
+						s := form_input_data (n)
 						vars := urlencoded_parameters (s)
 					end
 					if raw_post_data_recorded then
@@ -1480,15 +1480,19 @@ feature {NONE} -- Internal value
 	default_content_type: STRING = "text/plain"
 			-- Default content type
 
-	form_input_data (nb: INTEGER): STRING
+	form_input_data (nb: NATURAL_64): READABLE_STRING_8
 			-- data from input form
 		local
+			nb32: INTEGER
 			n: INTEGER
 			t: STRING
+			s: STRING_8
 		do
 			from
-				n := nb
-				create Result.make (n)
+				nb32 := nb.to_integer_32
+				n := nb32
+				create s.make (n)
+				Result := s
 				if n > 1_024 then
 					n := 1_024
 				end
@@ -1497,11 +1501,11 @@ feature {NONE} -- Internal value
 			loop
 				input.read_string (n)
 				t := input.last_string
-				Result.append_string (t)
+				s.append_string (t)
 				if t.count < n then
 					n := 0
 				end
-				n := nb - t.count
+				n := nb32 - t.count
 			end
 		end
 

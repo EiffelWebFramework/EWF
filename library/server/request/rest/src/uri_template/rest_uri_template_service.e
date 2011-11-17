@@ -1,24 +1,24 @@
 note
-	description: "Summary description for {DEFAULT_URI_ROUTED_APPLICATION}."
+	description: "Summary description for {DEFAULT_URI_TEMPLATE_REST_SERVICE}."
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
 deferred class
-	URI_ROUTED_APPLICATION
+	REST_URI_TEMPLATE_SERVICE
 
 inherit
-	ROUTED_APPLICATION_I [REQUEST_HANDLER [REQUEST_URI_HANDLER_CONTEXT], REQUEST_URI_HANDLER_CONTEXT]
+	REST_SERVICE_I [REST_REQUEST_HANDLER [REST_REQUEST_URI_TEMPLATE_HANDLER_CONTEXT], REST_REQUEST_URI_TEMPLATE_HANDLER_CONTEXT]
 		redefine
 			router
 		end
 
 feature -- Router
 
-	router: REQUEST_URI_ROUTER
+	router: REST_REQUEST_URI_TEMPLATE_ROUTER
 
 ;note
-	copyright: "2011-2011, Eiffel Software and others"
+	copyright: "Copyright (c) 1984-2011, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

@@ -60,18 +60,18 @@ feature -- HTTP Methods
 		end
 
 	is_conditional_get (req : WSF_REQUEST; l_order : ORDER) : BOOLEAN
-		-- Check if If-None-Match is present and then if there is a representation that has that etag
-		-- if the representation hasn't changed, we return TRUE
-		-- then the response is a 304 with no entity body returned.
+			-- Check if If-None-Match is present and then if there is a representation that has that etag
+			-- if the representation hasn't changed, we return TRUE
+			-- then the response is a 304 with no entity body returned.
 		local
 			etag_util : ETAG_UTILS
 		do
-				if attached req.meta_variable ("HTTP_IF_NONE_MATCH") as if_none_match then
-						create etag_util
-						if if_none_match.as_string.same_string (etag_util.md5_digest (l_order.out).as_string_32) then
-							Result := True
-						end
+			if attached req.meta_variable ("HTTP_IF_NONE_MATCH") as if_none_match then
+				create etag_util
+				if if_none_match.as_string.same_string (etag_util.md5_digest (l_order.out).as_string_32) then
+					Result := True
 				end
+			end
 		end
 
 	compute_response_get (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE; l_order : ORDER)

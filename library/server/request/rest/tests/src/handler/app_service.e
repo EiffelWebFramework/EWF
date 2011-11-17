@@ -1,28 +1,23 @@
+note
+	description: "Summary description for {APP_SERVICE}."
+	author: ""
+	date: "$Date$"
+	revision: "$Revision$"
+
 deferred class
-	REST_APPLICATION_GATEWAY
+	APP_SERVICE
 
 inherit
-	WSF_APPLICATION
-
-feature -- Access
-
-	build_gateway_and_launch
-		local
-			libfcgi: WGI_LIBFCGI_CONNECTOR
-		do
-			create libfcgi.make (Current)
-			libfcgi.launch
-		end	
-
-	gateway_name: STRING = "libFCGI"
-
-	exit_with_code (a_code: INTEGER)
-		do
-			(create {EXCEPTIONS}).die (a_code)
+	REST_SERVICE_I [APP_REQUEST_HANDLER, APP_REQUEST_HANDLER_CONTEXT]
+		redefine
+			router
 		end
-	
 
-note
+feature {NONE} -- Router
+
+	router: APP_REQUEST_ROUTER
+
+;note
 	copyright: "Copyright (c) 1984-2011, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[

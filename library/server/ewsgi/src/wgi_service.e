@@ -1,6 +1,6 @@
 note
 	description: "[
-				WGI_APPLICATION
+				WGI_SERVICE
 			]"
 	specification: "EWSGI specification https://github.com/Eiffel-World/Eiffel-Web-Framework/wiki/EWSGI-specification"
 	legal: "See notice at end of class."
@@ -9,7 +9,7 @@ note
 	revision: "$Revision$"
 
 deferred class
-	WGI_APPLICATION
+	WGI_SERVICE
 
 feature -- Execution
 

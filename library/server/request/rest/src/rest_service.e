@@ -1,14 +1,14 @@
 note
-	description: "Summary description for {DEFAULT_REST_APPLICATION}."
+	description: "Summary description for {DEFAULT_REST_SERVICE}."
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
 deferred class
-	REST_APPLICATION
+	REST_SERVICE
 
 inherit
-	REST_APPLICATION_I [REST_REQUEST_HANDLER [REST_REQUEST_HANDLER_CONTEXT], REST_REQUEST_HANDLER_CONTEXT]
+	REST_SERVICE_I [REST_REQUEST_HANDLER [REST_REQUEST_HANDLER_CONTEXT], REST_REQUEST_HANDLER_CONTEXT]
 
 note
 	copyright: "Copyright (c) 1984-2011, Eiffel Software and others"

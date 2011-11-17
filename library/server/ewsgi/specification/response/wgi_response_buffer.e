@@ -7,7 +7,7 @@ note
 deferred class
 	WGI_RESPONSE_BUFFER
 
-feature {WGI_APPLICATION} -- Commit
+feature {WGI_SERVICE} -- Commit
 
 	commit
 			-- Commit the current response

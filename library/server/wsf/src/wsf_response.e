@@ -1,6 +1,6 @@
 note
 	description: "[
-				Summary description for {WSF_RESPONSE}.
+				Main interface to send message back to the client
 			]"
 	date: "$Date$"
 	revision: "$Revision$"
@@ -8,7 +8,7 @@ note
 class
 	WSF_RESPONSE
 
-create {WSF_APPLICATION}
+create {WSF_SERVICE}
 	make_from_wgi
 
 convert
@@ -22,18 +22,6 @@ feature {NONE} -- Initialization
 		end
 
 	wgi_response: WGI_RESPONSE_BUFFER
-
---feature {WSF_APPLICATION} -- Commit
-
---	commit
---			-- Commit the current response
---		do
---			wgi_response.commit
---		ensure
---			status_is_set: status_is_set
---			header_committed: header_committed
---			message_committed: message_committed
---		end
 
 feature -- Status report
 
@@ -54,15 +42,6 @@ feature -- Status report
 		do
 			Result := wgi_response.message_writable
 		end
-
---feature {WGI_RESPONSE_BUFFER} -- Core output operation
-
---	write (s: READABLE_STRING_8)
---			-- Send the string `s'
---			-- this can be used for header and body
---		do
---			wgi_response.write (s)
---		end
 
 feature -- Status setting
 

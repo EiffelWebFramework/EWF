@@ -15,7 +15,7 @@ feature {NONE} -- Initialization
 	make
 		do
 			print ("Example: start a Nino web server on port " + port_number.out + ", %Nand reply Hello World for any request such as http://localhost:8123/%N")
-			(create {NINO_APPLICATION}.make_custom (agent execute, "")).listen (port_number)
+			(create {NINO_SERVICE}.make_custom (agent execute, "")).listen (port_number)
 		end
 
 	execute (req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)

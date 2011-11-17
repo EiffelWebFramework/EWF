@@ -22,8 +22,8 @@ feature {NONE} -- Initialization
 
 feature {NONE} -- Access
 
-	application: WGI_APPLICATION
-			-- Gateway Application
+	application: WGI_SERVICE
+			-- Gateway Service
 
 feature -- Server
 

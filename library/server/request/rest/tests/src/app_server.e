@@ -8,12 +8,12 @@ class
 	APP_SERVER
 
 inherit
-	APP_APPLICATION
+	APP_SERVICE
 		redefine
 			execute
 		end
 
-	REST_APPLICATION_GATEWAY
+	REST_SERVICE_GATEWAY
 
 create
 	make

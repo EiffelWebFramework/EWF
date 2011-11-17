@@ -23,7 +23,7 @@ feature {NONE} -- Initialization
 			output := a_output
 		end
 
-feature {WGI_APPLICATION} -- Commit
+feature {WGI_SERVICE} -- Commit
 
 	commit
 			-- Commit the current response

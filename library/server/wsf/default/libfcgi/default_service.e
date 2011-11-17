@@ -1,24 +1,26 @@
 note
-	description: "Summary description for {DEFAULT_REST_URI_APPLICATION}."
-	author: ""
+	description: "Summary description for {DEFAULT_SERVICE}."
 	date: "$Date$"
 	revision: "$Revision$"
 
 deferred class
-	REST_URI_APPLICATION
+	DEFAULT_SERVICE
 
 inherit
-	REST_APPLICATION_I [REST_REQUEST_HANDLER [REST_REQUEST_URI_HANDLER_CONTEXT], REST_REQUEST_URI_HANDLER_CONTEXT]
-		redefine
-			router
+	WSF_SERVICE
+
+feature {NONE} -- Initialization
+
+	make_and_launch
+		local
+			conn: WGI_LIBFCGI_CONNECTOR
+		do
+			create conn.make (Current)
+			conn.launch
 		end
 
-feature -- Router
-
-	router: REST_REQUEST_URI_ROUTER
-
-;note
-	copyright: "Copyright (c) 1984-2011, Eiffel Software and others"
+note
+	copyright: "2011-2011, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

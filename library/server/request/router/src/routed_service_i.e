@@ -1,11 +1,11 @@
 note
-	description: "Summary description for {ROUTED_APPLICATION}."
+	description: "Summary description for {ROUTED_SERVICE}."
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
 deferred class
-	ROUTED_APPLICATION_I [H -> REQUEST_HANDLER [C], C -> REQUEST_HANDLER_CONTEXT]
+	ROUTED_SERVICE_I [H -> REQUEST_HANDLER [C], C -> REQUEST_HANDLER_CONTEXT]
 
 feature -- Setup
 

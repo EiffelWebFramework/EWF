@@ -15,7 +15,7 @@
 				<version type="compiler" min="7.0.8.7340"/>
 			</condition>
 		</library>
-		<library name="curl_local" location="..\..\..\ext\ise_library\cURL.ecf">
+		<library name="curl_local" location="..\..\..\contrib\ise_library\cURL.ecf">
 			<condition>
 				<version type="compiler" max="7.0.8.7339"/>
 			</condition>

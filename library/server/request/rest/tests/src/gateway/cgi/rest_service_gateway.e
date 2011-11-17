@@ -1,8 +1,8 @@
 deferred class
-	REST_APPLICATION_GATEWAY
+	REST_SERVICE_GATEWAY
 
 inherit
-	WSF_APPLICATION
+	WSF_SERVICE
 
 feature -- Access
 

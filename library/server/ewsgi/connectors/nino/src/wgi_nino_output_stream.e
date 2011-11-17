@@ -29,7 +29,7 @@ feature {NONE} -- Initialization
 			set_target (a_target)
 		end
 
-feature {WGI_NINO_CONNECTOR, WGI_APPLICATION} -- Nino
+feature {WGI_NINO_CONNECTOR, WGI_SERVICE} -- Nino
 
 	set_target (o: like target)
 		do

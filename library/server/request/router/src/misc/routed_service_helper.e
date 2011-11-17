@@ -1,11 +1,11 @@
 note
-	description: "Summary description for {ROUTED_APPLICATION_HELPER}."
+	description: "Summary description for {ROUTED_SERVICE_HELPER}."
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
 class
-	ROUTED_APPLICATION_HELPER
+	ROUTED_SERVICE_HELPER
 
 inherit
 	ANY
