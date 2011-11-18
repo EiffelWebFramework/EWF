@@ -1,6 +1,6 @@
 note
 	description: "[
-				Request instanciated from a hash_table of meta variables
+				Request created from a hash_table of meta variables
 		]"
 	specification: "EWSGI specification https://github.com/Eiffel-World/Eiffel-Web-Framework/wiki/EWSGI-specification"
 	legal: "See notice at end of class."
