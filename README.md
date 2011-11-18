@@ -9,6 +9,12 @@ Official project site for Eiffel Web Framework:
 For more information please have a look at the related wiki:
 * https://github.com/Eiffel-World/Eiffel-Web-Framework/wiki
 
+## Requirements
+
+* Developped using EiffelStudio 7.0 (on Windows, Linux)
+* Tested using EiffelStudio 7.0 with "jenkins" CI server (and v6.8 for time to time)
+* The code have to allow __void-safe__ compilation and non void-safe system (see [more about void-safety](http://docs.eiffel.com/book/method/void-safe-programming-eiffel) )
+
 ## How to get the source code?
 
 * git clone https://github.com/Eiffel-World/Eiffel-Web-Framework.git
