@@ -14,7 +14,7 @@ create
 feature {NONE} -- Initialization
 
 	make
-			-- Instanciate Current object
+			-- Instantiate Current object
 		do
 			check not_yet_implemented: False end
 		end
