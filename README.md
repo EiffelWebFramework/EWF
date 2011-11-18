@@ -37,6 +37,7 @@ Or using git version >= 1.6.5
 ### protocol
 * __http__: HTTP related classes, constants for status code, content types, ... [read more](library/protocol/http)
 * __uri_template__: URI Template library (parsing and expander) [read more](library/protocol/uri_template)
+* __CONNEG__: CONNEG library (Content-type Negociation) [read more](library/protocol/CONNEG)
 
 ### client
 * __http_client__: simple HTTP client based on cURL [read more](library/client/http_client)
