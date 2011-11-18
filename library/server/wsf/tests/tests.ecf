@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<system xmlns="http://www.eiffel.com/developers/xml/configuration-1-8-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eiffel.com/developers/xml/configuration-1-8-0 http://www.eiffel.com/developers/xml/configuration-1-8-0.xsd" name="tests" uuid="CA72F5B3-E608-4FA5-8F05-A812441DB961">
+<system xmlns="http://www.eiffel.com/developers/xml/configuration-1-8-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eiffel.com/developers/xml/configuration-1-8-0 http://www.eiffel.com/developers/xml/configuration-1-8-0.xsd" name="wsf_tests" uuid="CA72F5B3-E608-4FA5-8F05-A812441DB961">
 	<target name="tests">
 		<root class="ANY" feature="default_create"/>
 		<file_rule>
@@ -9,13 +9,14 @@
 		</file_rule>
 		<option warning="true" full_class_checking="true" void_safety="none" syntax="provisional">
 		</option>
-		<setting name="concurrency" value="none"/>
-		<library name="base" location="$ISE_LIBRARY/library/base/base.ecf"/>
+		<setting name="concurrency" value="thread"/>
+		<library name="base" location="$ISE_LIBRARY\library\base\base.ecf"/>
+		<library name="connector_nino" location="..\..\ewsgi\connectors\nino\nino.ecf" readonly="false"/>
 		<library name="dft_nino" location="..\default\nino.ecf"/>
-		<library name="wsf" location="..\wsf.ecf"/>
 		<library name="http_client" location="..\..\..\client\http_client\http_client.ecf"/>
-		<library name="testing" location="$ISE_LIBRARY/library/testing/testing.ecf"/>
-		<library name="thread" location="$ISE_LIBRARY\library\thread\thread-safe.ecf"/>
-		<tests name="src" location="./src" recursive="true"/>
+		<library name="testing" location="$ISE_LIBRARY\library\testing\testing.ecf"/>
+		<library name="thread" location="$ISE_LIBRARY\library\thread\thread.ecf"/>
+		<library name="wsf" location="..\wsf.ecf"/>
+		<tests name="src" location=".\src\" recursive="true"/>
 	</target>
 </system>
