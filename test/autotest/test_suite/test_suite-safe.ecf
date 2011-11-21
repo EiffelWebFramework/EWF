@@ -15,7 +15,4 @@
 		<library name="testing" location="$ISE_LIBRARY\library\testing\testing-safe.ecf"/>
 		<cluster name="test_suite" location=".\" recursive="true"/>
 	</target>
-	<target name="test_suite_dotnet" extends="test_suite">
-		<setting name="msil_generation" value="true"/>
-	</target>
 </system>
