@@ -5,3 +5,6 @@ To compile and run the test program do as follows:
 2. In this dircetory, run the command:
 
    $ getest --verbose ejson_test.cfg
+
+
+Note: on Windows, you should use  ejson_test-win.cfg
