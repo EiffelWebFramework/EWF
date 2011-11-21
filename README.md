@@ -26,7 +26,7 @@ Or using git version >= 1.6.5
 * git clone --recursive https://github.com/Eiffel-World/Eiffel-Web-Framework.git
 
 * And to build the required and related Clibs
-** cd ext/ise_library/curl
+** cd contrib/ise_library/curl
 ** geant compile
 
 ## Libraries under 'library'
@@ -58,8 +58,8 @@ Or using git version >= 1.6.5
 ### Others
 * error: very simple/basic library to handle error
 
-## External libraries under 'ext'
-* [Eiffel Web Nino](ext/server/nino)
+## External libraries under 'contrib'
+* [Eiffel Web Nino](contrib/library/server/nino)
 * ..
 
 ## Examples
