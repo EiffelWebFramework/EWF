@@ -97,12 +97,13 @@ def runTestForProject(where):
 	cmd = "compile_all -ecb -melt -eifgen %s -ignore %s " % (os.path.join ("tests", "temp"), os.path.join ("tests", "compile_all.ini"))
 	if keep_all:
 		res_output = eval_cmd_output("compile_all -l NoWhereJustToTestUsage -keep", True)
-		if res_output.find("Unreconized switch '-keep'") == -1:
+		if res_output.find("switch '-keep'") == -1:
 			cmd = "%s -keep passed" % (cmd) # forget about failed one .. we'll try again next time
-
 	if clobber:
 		cmd = "%s -clean" % (cmd)
+	print "command: %s" % (cmd)
 	res_output = eval_cmd_output(cmd)
+	print "# check compile_all tests"
 
 	print "# Analyze check_compilations results"
 	lines = re.split ("\n", res_output)
