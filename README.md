@@ -38,7 +38,6 @@ Or using git version >= 1.6.5
 * __wsf__: Web Server Framework [read more](library/server/wsf)
 * request
   *  __router__: URL dispatching/routing based on uri, uri_template, or custom [read more](library/server/request/router)
-  *  rest: experimental: RESTful library to help building RESTful services
 
 ### protocol
 * __http__: HTTP related classes, constants for status code, content types, ... [read more](library/protocol/http)
@@ -61,6 +60,11 @@ Or using git version >= 1.6.5
 ## External libraries under 'contrib'
 * [Eiffel Web Nino](contrib/library/server/nino)
 * ..
+
+## Draft folder = call for contribution ##
+### library/server/request ###
+* request
+  *  rest: (experimental) "a" RESTful library to help building RESTful services
 
 ## Examples
 ..
