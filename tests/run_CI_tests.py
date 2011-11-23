@@ -43,17 +43,18 @@ def report_failure(msg, a_code=2):
 def eval_cmd(cmd):
 	#  print cmd
 	res = subprocess.call (cmd, shell=True)
-	if res < 0:
-		report_failure ("Failed running: %s" % (cmd), 2)
+	if res != 0:
+		report_failure ("Failed running: %s (returncode=%s)" % (cmd, res), 2)
 	return res
 
-def eval_cmd_output(cmd):
+def eval_cmd_output(cmd, ignore_error=False):
 	#  print cmd
 	p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 	if p:
 		return p.communicate()[0]
 	else:
-		report_failure ("Failed running: %s" % (cmd), 2)
+		if not ignore_error:
+			report_failure ("Failed running: %s" % (cmd), 2)
 
 def rm_dir(d):
 	if os.path.isdir(d):
@@ -65,7 +66,17 @@ def runTestForProject(where):
 
 	os.chdir(where)
 	# First we have to remove old compilation
-	clobber = (len(sys.argv) >= 2 and sys.argv[1] == "-clobber") or (last_build_had_failure())
+	clobber = last_build_had_failure()
+	keep_all = True
+	for a in sys.argv:
+		if a == "-clobber":
+			clobber = True
+		if a == "-keep":
+			keep_all = True
+		if a == "-forget":
+			keep_all = False
+
+#	clobber = (len(sys.argv) >= 2 and sys.argv[1] == "-clobber") or (last_build_had_failure())
 	if clobber:
 		reset_last_run_CI_tests_failed()
 		print "## Cleaning previous tests"
@@ -78,11 +89,17 @@ def runTestForProject(where):
 
 	sleep(1)
 
-	print "# Launch check_compilations"
-	if sys.platform == 'win32':
-		cmd = "tests\\check_compilations.bat"
-	else:
-		cmd = "tests//check_compilations.sh"
+	print "# check compile_all tests"
+	if not os.path.exists(os.path.join ("tests", "temp")):
+		os.makedirs (os.path.join ("tests", "temp"))
+
+
+	cmd = "compile_all -ecb -melt -eifgen %s -ignore %s " % (os.path.join ("tests", "temp"), os.path.join ("tests", "compile_all.ini"))
+	if keep_all:
+		res_output = eval_cmd_output("compile_all -l NoWhereJustToTestUsage -keep", True)
+		if res_output.find("Unreconized switch '-keep'") == -1:
+			cmd = "%s -keep passed" % (cmd) # forget about failed one .. we'll try again next time
+
 	if clobber:
 		cmd = "%s -clean" % (cmd)
 	res_output = eval_cmd_output(cmd)
