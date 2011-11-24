@@ -1,5 +1,5 @@
 # HTTP Library Features
-The following list of features are taken form the book RESTful Web Services
+The following list of features are taken form the book [RESTful Web Services](http://www.amazon.com/Restful-Web-Services-Leonard-Richardson/dp/0596529260/ref=sr_1_1?ie=UTF8&qid=1322155984&sr=8-1)
 
 * **HTTPS**: _It must support HTTPS and SSL certificate validation_
 
