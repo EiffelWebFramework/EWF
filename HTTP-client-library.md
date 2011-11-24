@@ -10,9 +10,12 @@ PUT or POST request._
 * **Custom headers**  : _It must allow the programmer to customize a request’s HTTP headers_
 * **Response Codes** :  _It must give the programmer access to the response code and headers of an HTTP
 response; not just access to the entity-body._
-* **Proxies**:
-* **Compression**:
-* **Caching**:
-* **Auth methods** : 
+* **Proxies**: _It must be able to communicate through an HTTP proxy_
+
+* **Compression**:_it should automatically request data in compressed form to save
+bandwidth, and transparently decompress the data it receives._
+* **Caching**:_It should automatically cache the responses to your requests._
+* **Auth methods** : _It should transparently support the most common forms of HTTP authentication:
+Basic, Digest, and WSSE._
 * **Cookies** :
 * **Redirects**:
