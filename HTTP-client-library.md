@@ -17,5 +17,5 @@ bandwidth, and transparently decompress the data it receives._
 * **Caching**:_It should automatically cache the responses to your requests._
 * **Auth methods** : _It should transparently support the most common forms of HTTP authentication:
 Basic, Digest, and WSSE._
-* **Cookies** :
-* **Redirects**:
+* **Cookies** :_It should be able to parse and create HTTP cookie strings_
+* **Redirects**:_It should be able to transparently follow HTTP redirects_
