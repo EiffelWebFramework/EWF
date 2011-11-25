@@ -80,7 +80,7 @@ feature -- Access: Input
 		deferred
 		end
 
-feature -- Access: CGI meta variables		
+feature -- Access: CGI meta variables
 
 	meta_variable (a_name: READABLE_STRING_8): detachable READABLE_STRING_8
 			-- Environment variable related to `a_name'
@@ -129,7 +129,7 @@ feature -- Access: CGI meta variables
 		deferred
 		end
 
-feature -- EWSGI access
+feature -- Eiffel WGI access
 
 	wgi_version: READABLE_STRING_8
 			-- Eiffel WGI version

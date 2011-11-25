@@ -119,6 +119,28 @@ feature -- Helper
 			Result := request_method.is_case_insensitive_equal (m)
 		end
 
+feature -- Eiffel WGI access
+
+	wgi_version: READABLE_STRING_8
+			-- Eiffel WGI version
+			--| example: "1.0"
+		do
+			Result := wgi_request.wgi_version
+		end
+
+	wgi_implementation: READABLE_STRING_8
+			-- Information about Eiffel WGI implementation
+			--| example: "Eiffel Web Framework 1.0"
+		do
+			Result := wgi_request.wgi_implementation
+		end
+
+	wgi_connector: WGI_CONNECTOR
+			-- Associated Eiffel WGI connector
+		do
+			Result := wgi_request.wgi_connector
+		end
+
 feature {NONE} -- Access: global variable
 
 	items_table: HASH_TABLE [WSF_VALUE, READABLE_STRING_8]
