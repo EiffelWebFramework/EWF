@@ -146,6 +146,33 @@ feature -- Output operation
 			wgi_response.flush
 		end
 
+feature -- Helper
+
+	redirect_now_with_custom_status_code (a_url: READABLE_STRING_8; a_status_code: INTEGER)
+			-- Redirect to the given url `a_url' and precise custom `a_status_code'
+			-- Please see http://www.faqs.org/rfcs/rfc2616 to use proper status code.
+		require
+			header_not_committed: not header_committed
+		local
+			h: HTTP_HEADER
+		do
+			if header_committed then
+				write_string ("Headers already sent.%NCannot redirect, for now please follow this <a %"href=%"" + a_url + "%">link</a> instead%N")
+			else
+				create h.make_with_count (1)
+				h.put_location (a_url)
+				set_status_code (a_status_code)
+			end
+		end
+
+	redirect_now (a_url: READABLE_STRING_8)
+			-- Redirect to the given url `a_url'
+		require
+			header_not_committed: not header_committed
+		do
+			redirect_now_with_custom_status_code (a_url, {HTTP_STATUS_CODE}.moved_permanently)
+		end
+
 note
 	copyright: "2011-2011, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
