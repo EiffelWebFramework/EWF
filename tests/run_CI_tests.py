@@ -51,7 +51,8 @@ def eval_cmd_output(cmd, ignore_error=False):
 	#  print cmd
 	p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 	if p:
-		return p.communicate()[0]
+		o = p.communicate()[0]
+		return [p.returncode, o]
 	else:
 		if not ignore_error:
 			report_failure ("Failed running: %s" % (cmd), 2)
@@ -96,14 +97,15 @@ def runTestForProject(where):
 
 	cmd = "compile_all -ecb -melt -eifgen %s -ignore %s " % (os.path.join ("tests", "temp"), os.path.join ("tests", "compile_all.ini"))
 	if keep_all:
-		res_output = eval_cmd_output("compile_all -l NoWhereJustToTestUsage -keep", True)
-		if res_output.find("switch '-keep'") == -1:
+		(res, res_output) = eval_cmd_output("compile_all -l NoWhereJustToTestUsage -keep", True)
+		if res and res_output.find("switch '-keep'") == -1:
 			cmd = "%s -keep passed" % (cmd) # forget about failed one .. we'll try again next time
 	if clobber:
 		cmd = "%s -clean" % (cmd)
 	print "command: %s" % (cmd)
-	res_output = eval_cmd_output(cmd)
-	print "# check compile_all tests"
+	(res, res_output) = eval_cmd_output(cmd)
+	if res != 0:
+		report_failure("compile_all failed", 2)
 
 	print "# Analyze check_compilations results"
 	lines = re.split ("\n", res_output)
