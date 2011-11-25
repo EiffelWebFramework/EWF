@@ -13,7 +13,7 @@ deferred class
 
 feature -- Execution
 
-	execute (req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	execute (req: WGI_REQUEST; res: WGI_RESPONSE)
 			-- Execute the request
 			-- See `req.input' for input stream
     		--     `req.meta_variables' for the CGI meta variable

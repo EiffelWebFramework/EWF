@@ -17,5 +17,6 @@
 		<cluster name="interface" location="src\" recursive="true"/>
 		<cluster name="specification_request" location="specification\request" recursive="true"/>
 		<cluster name="specification_response" location="specification\response" recursive="true"/>
+		<cluster name="specification_connector" location="specification\connector" recursive="true"/>
 	</target>
 </system>

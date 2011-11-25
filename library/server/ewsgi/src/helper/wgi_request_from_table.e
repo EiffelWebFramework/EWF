@@ -19,10 +19,11 @@ create
 
 feature {NONE} -- Initialization
 
-	make (a_vars: HASH_TABLE [READABLE_STRING_8, READABLE_STRING_8]; a_input: like input)
+	make (a_vars: HASH_TABLE [READABLE_STRING_8, READABLE_STRING_8]; a_input: like input; a_wgi_connector: like wgi_connector)
 		require
 			vars_attached: a_vars /= Void
 		do
+			wgi_connector := a_wgi_connector
 			input := a_input
 			set_meta_variables (a_vars)
 
@@ -33,6 +34,14 @@ feature -- Access: Input
 
 	input: WGI_INPUT_STREAM
 			-- Server input channel
+
+feature -- EWSGI access
+
+	wgi_version: STRING = "0.1"
+
+	wgi_implementation: STRING = "Eiffel Web Framework 0.1"
+
+	wgi_connector: WGI_CONNECTOR
 
 feature -- Access: CGI meta parameters
 

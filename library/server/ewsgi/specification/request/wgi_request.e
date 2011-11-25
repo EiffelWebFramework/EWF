@@ -129,6 +129,25 @@ feature -- Access: CGI meta variables
 		deferred
 		end
 
+feature -- EWSGI access
+
+	wgi_version: READABLE_STRING_8
+			-- Eiffel WGI version
+			--| example: "1.0"
+		deferred
+		end
+
+	wgi_implementation: READABLE_STRING_8
+			-- Information about Eiffel WGI implementation
+			--| example: "Eiffel Web Framework 1.0"
+		deferred
+		end
+
+	wgi_connector: WGI_CONNECTOR
+			-- Associated Eiffel WGI connector
+		deferred
+		end
+
 feature -- Common Gateway Interface - 1.1       8 January 1996
 
 	auth_type: detachable READABLE_STRING_8

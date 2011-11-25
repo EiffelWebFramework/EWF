@@ -12,16 +12,17 @@ create {WSF_SERVICE}
 	make_from_wgi
 
 convert
-	make_from_wgi ({WGI_RESPONSE_BUFFER})
+	make_from_wgi ({WGI_RESPONSE})
 
 feature {NONE} -- Initialization
 
-	make_from_wgi (r: WGI_RESPONSE_BUFFER)
+	make_from_wgi (r: WGI_RESPONSE)
 		do
 			wgi_response := r
 		end
 
-	wgi_response: WGI_RESPONSE_BUFFER
+	wgi_response: WGI_RESPONSE
+			-- Associated WGI_RESPONSE
 
 feature -- Status report
 
@@ -77,7 +78,7 @@ feature -- Header output operation
 			status_set: status_is_set
 			header_not_committed: not header_committed
 		do
-			wgi_response.write_headers_string (a_headers)
+			wgi_response.write_headers (a_headers)
 		ensure
 			status_set: status_is_set
 			header_committed: header_committed
@@ -89,8 +90,24 @@ feature -- Header output operation
 		require
 			status_not_set: not status_is_set
 			header_not_committed: not header_committed
+		local
+			h: WSF_HEADER
+			i,n: INTEGER
 		do
-			wgi_response.write_header (a_status_code, a_headers)
+			set_status_code (a_status_code)
+			create h.make
+			if a_headers /= Void then
+				from
+					i := a_headers.lower
+					n := a_headers.upper
+				until
+					i > n
+				loop
+					h.put_header_key_value (a_headers[i].key, a_headers[i].value)
+					i := i + 1
+				end
+			end
+			wgi_response.write_headers (h.string)
 		ensure
 			header_committed: header_committed
 			status_set: status_is_set

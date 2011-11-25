@@ -9,15 +9,22 @@ class
 
 inherit
 	WGI_CONNECTOR
-		redefine
-			initialize
-		end
 
 create
 	make,
 	make_with_base
 
 feature {NONE} -- Initialization
+
+	make (a_app: like application)
+		local
+			cfg: HTTP_SERVER_CONFIGURATION
+		do
+			application := a_app
+
+			create cfg.make
+			create server.make (cfg)
+		end
 
 	make_with_base (a_app: like application; a_base: like base)
 		require
@@ -27,15 +34,18 @@ feature {NONE} -- Initialization
 			set_base (a_base)
 		end
 
-feature {NONE} -- Initialization
+feature -- Access
 
-	initialize
-		local
-			cfg: HTTP_SERVER_CONFIGURATION
-		do
-			create cfg.make
-			create server.make (cfg)
-		end
+	name: STRING_8 = "Nino"
+			-- Name of Current connector
+
+	version: STRING_8 = "0.1"
+			-- Version of Current connector
+
+feature {NONE} -- Access
+
+	application: WGI_SERVICE
+			-- Gateway Service		
 
 feature -- Access
 
@@ -107,11 +117,11 @@ feature -- Server
 	process_request (env: HASH_TABLE [STRING, STRING]; a_headers_text: STRING; a_socket: TCP_STREAM_SOCKET)
 		local
 			req: WGI_REQUEST_FROM_TABLE
-			res: detachable WGI_RESPONSE_STREAM_BUFFER
+			res: detachable WGI_RESPONSE_STREAM
 			rescued: BOOLEAN
 		do
 			if not rescued then
-				create req.make (env, create {WGI_NINO_INPUT_STREAM}.make (a_socket))
+				create req.make (env, create {WGI_NINO_INPUT_STREAM}.make (a_socket), Current)
 				create res.make (create {WGI_NINO_OUTPUT_STREAM}.make (a_socket))
 				req.set_meta_string_variable ("RAW_HEADER_DATA", a_headers_text)
 				application.execute (req, res)
@@ -119,7 +129,7 @@ feature -- Server
 				if attached (create {EXCEPTION_MANAGER}).last_exception as e and then attached e.exception_trace as l_trace then
 					if res /= Void then
 						if not res.status_is_set then
-							res.write_header ({HTTP_STATUS_CODE}.internal_server_error, Void)
+							res.set_status_code ({HTTP_STATUS_CODE}.internal_server_error)
 						end
 						if res.message_writable then
 							res.write_string ("<pre>" + l_trace + "</pre>")

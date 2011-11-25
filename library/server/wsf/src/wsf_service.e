@@ -28,7 +28,7 @@ feature -- Execution
 
 feature -- WGI Execution
 
-	wgi_execute (req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	wgi_execute (req: WGI_REQUEST; res: WGI_RESPONSE)
 		do
 			execute (create {WSF_REQUEST}.make_from_wgi (req), create {WSF_RESPONSE}.make_from_wgi (res))
 		end

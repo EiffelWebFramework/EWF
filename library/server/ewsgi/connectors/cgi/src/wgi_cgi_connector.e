@@ -1,6 +1,5 @@
 note
 	description: "Summary description for {WGI_CGI_CONNECTOR}."
-	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -13,23 +12,43 @@ inherit
 create
 	make
 
+feature {NONE} -- Initialization
+
+	make (a_app: like application)
+		do
+			application := a_app
+		end
+
+feature -- Access
+
+	Name: STRING_8 = "CGI"
+			-- Name of Current connector
+
+	Version: STRING_8 = "0.1"
+			-- Version of Current connector	
+
+feature {NONE} -- Access
+
+	application: WGI_SERVICE
+			-- Gateway Service			
+
 feature -- Execution
 
 	launch
 		local
 			req: WGI_REQUEST_FROM_TABLE
-			res: detachable WGI_RESPONSE_STREAM_BUFFER
+			res: detachable WGI_RESPONSE_STREAM
 			rescued: BOOLEAN
 		do
 			if not rescued then
-				create req.make ((create {EXECUTION_ENVIRONMENT}).starting_environment_variables, create {WGI_CGI_INPUT_STREAM}.make)
+				create req.make ((create {EXECUTION_ENVIRONMENT}).starting_environment_variables, create {WGI_CGI_INPUT_STREAM}.make, Current)
 				create res.make (create {WGI_CGI_OUTPUT_STREAM}.make)
 				application.execute (req, res)
 			else
 				if attached (create {EXCEPTION_MANAGER}).last_exception as e and then attached e.exception_trace as l_trace then
 					if res /= Void then
 						if not res.status_is_set then
-							res.write_header ({HTTP_STATUS_CODE}.internal_server_error, Void)
+							res.set_status_code ({HTTP_STATUS_CODE}.internal_server_error)
 						end
 						if res.message_writable then
 							res.write_string ("<pre>" + l_trace + "</pre>")
@@ -41,7 +60,7 @@ feature -- Execution
 			rescued := True
 			retry
 		end
-		
+
 note
 	copyright: "2011-2011, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"

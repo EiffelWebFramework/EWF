@@ -1,11 +1,10 @@
 note
-	description: "Summary description for {WGI_RESPONSE_BUFFER}."
-	author: ""
+	description: "Summary description for {WGI_RESPONSE}."
 	date: "$Date$"
 	revision: "$Revision$"
 
 deferred class
-	WGI_RESPONSE_BUFFER
+	WGI_RESPONSE
 
 feature {WGI_SERVICE} -- Commit
 
@@ -69,7 +68,7 @@ feature -- Status setting
 
 feature -- Header output operation
 
-	write_headers_string (a_headers: READABLE_STRING_8)
+	write_headers (a_headers: READABLE_STRING_8)
 		require
 			status_set: status_is_set
 			header_not_committed: not header_committed
@@ -77,18 +76,6 @@ feature -- Header output operation
 		ensure
 			status_set: status_is_set
 			header_committed: header_committed
-			message_writable: message_writable
-		end
-
-	write_header (a_status_code: INTEGER; a_headers: detachable ARRAY [TUPLE [key: READABLE_STRING_8; value: READABLE_STRING_8]])
-			-- Send headers with status `a_status', and headers from `a_headers'
-		require
-			status_not_set: not status_is_set
-			header_not_committed: not header_committed
-		deferred
-		ensure
-			header_committed: header_committed
-			status_set: status_is_set
 			message_writable: message_writable
 		end
 

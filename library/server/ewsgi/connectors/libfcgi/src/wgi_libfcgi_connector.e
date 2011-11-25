@@ -10,21 +10,32 @@ class
 
 inherit
 	WGI_CONNECTOR
-		redefine
-			initialize
-		end
 
 create
 	make
 
 feature {NONE} -- Initialization
 
-	initialize
+	make (a_app: like application)
 		do
+			application := a_app
 			create fcgi.make
 			create {WGI_LIBFCGI_INPUT_STREAM} input.make (fcgi)
 			create {WGI_LIBFCGI_OUTPUT_STREAM} output.make (fcgi)
 		end
+
+feature -- Access
+
+	Name: STRING_8 = "libFCGI"
+			-- Name of Current connector
+
+	Version: STRING_8 = "0.1"
+			-- Version of Current connector		
+
+feature {NONE} -- Access
+
+	application: WGI_SERVICE
+			-- Gateway Service			
 
 feature -- Server
 
@@ -47,18 +58,18 @@ feature -- Execution
 	process_fcgi_request (vars: HASH_TABLE [STRING, STRING]; a_input: like input; a_output: like output)
 		local
 			req: WGI_REQUEST_FROM_TABLE
-			res: detachable WGI_RESPONSE_STREAM_BUFFER
+			res: detachable WGI_RESPONSE_STREAM
 			rescued: BOOLEAN
 		do
 			if not rescued then
-				create req.make (vars, a_input)
+				create req.make (vars, a_input, Current)
 				create res.make (a_output)
 				application.execute (req, res)
 			else
 				if attached (create {EXCEPTION_MANAGER}).last_exception as e and then attached e.exception_trace as l_trace then
 					if res /= Void then
 						if not res.status_is_set then
-							res.write_header ({HTTP_STATUS_CODE}.internal_server_error, Void)
+							res.set_status_code ({HTTP_STATUS_CODE}.internal_server_error)
 						end
 						if res.message_writable then
 							res.write_string ("<pre>" + l_trace + "</pre>")

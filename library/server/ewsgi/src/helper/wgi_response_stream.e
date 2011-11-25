@@ -1,17 +1,16 @@
 note
 	description: "[
-			Response buffer
+			WGI Response implemented using stream buffer
 
 		]"
-	specification: "EWSGI specification https://github.com/Eiffel-World/Eiffel-Web-Framework/wiki/EWSGI-specification"
 	date: "$Date$"
 	revision: "$Revision$"
 
 class
-	WGI_RESPONSE_STREAM_BUFFER
+	WGI_RESPONSE_STREAM
 
 inherit
-	WGI_RESPONSE_BUFFER
+	WGI_RESPONSE
 
 create
 	make
@@ -76,32 +75,10 @@ feature -- Status setting
 
 feature -- Header output operation		
 
-	write_headers_string (a_headers: READABLE_STRING_8)
+	write_headers (a_headers: READABLE_STRING_8)
 		do
 			write (a_headers)
 			header_committed := True
-		end
-
-	write_header (a_status_code: INTEGER; a_headers: detachable ARRAY [TUPLE [key: READABLE_STRING_8; value: READABLE_STRING_8]])
-			-- Send headers with status `a_status', and headers from `a_headers'
-		local
-			h: EWF_HEADER
-			i,n: INTEGER
-		do
-			set_status_code (a_status_code)
-			create h.make
-			if a_headers /= Void then
-				from
-					i := a_headers.lower
-					n := a_headers.upper
-				until
-					i > n
-				loop
-					h.put_header_key_value (a_headers[i].key, a_headers[i].value)
-					i := i + 1
-				end
-			end
-			write_headers_string (h.string)
 		end
 
 feature -- Output operation

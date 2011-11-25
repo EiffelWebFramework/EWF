@@ -23,10 +23,10 @@ feature {NONE} -- Implementation
 
 feature {NONE} -- Implementation
 
-	callback: PROCEDURE [ANY, TUPLE [req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER]]
+	callback: PROCEDURE [ANY, TUPLE [req: WGI_REQUEST; res: WGI_RESPONSE]]
 			-- Procedure called on `execute'
 
-	execute (req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	execute (req: WGI_REQUEST; res: WGI_RESPONSE)
 			-- Execute the request
 		do
 			callback.call ([req, res])

@@ -10,7 +10,6 @@
 		<option warning="true" full_class_checking="true">
 		</option>
 		<library name="base" location="$ISE_LIBRARY\library\base\base.ecf"/>
-		<library name="connector" location="..\connector.ecf" readonly="false"/>
 		<library name="ewsgi" location="..\..\ewsgi.ecf" readonly="false"/>
 		<library name="http" location="..\..\..\..\protocol\http\http.ecf"/>
 		<library name="nino" location="..\..\..\..\..\contrib\library\server\nino\nino.ecf" readonly="false">
