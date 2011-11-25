@@ -92,7 +92,7 @@ feature -- Execution
 			s.append ("You are being redirected to <a href=%"" + l_redir_url + "%">/doc</a> in 2 seconds ...%N")
 			h.put_content_length (s.count)
 			res.set_status_code ({HTTP_STATUS_CODE}.temp_redirect)
-			res.write_headers_string (h.string)
+			res.write_header_text (h.string)
 			res.write_string (s)
 		end
 

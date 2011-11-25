@@ -133,7 +133,7 @@ feature -- Output
 		do
 			compute
 			res.set_status_code (200)
-			res.write_headers_string (headers_string)
+			res.write_header_text (headers_string)
 			if attached message as m then
 				res.write_string (m)
 			end

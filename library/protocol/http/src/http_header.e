@@ -66,11 +66,9 @@ feature -- Access
 		local
 			l_headers: like headers
 		do
-			create Result.make (32)
 			l_headers := headers
-			if l_headers.is_empty then
-				put_content_type_text_html -- See if this make sense to define a default content-type
-			else
+			if not l_headers.is_empty then
+				create Result.make (32)
 				from
 					l_headers.start
 				until
@@ -79,8 +77,12 @@ feature -- Access
 					append_line_to (l_headers.item, Result)
 					l_headers.forth
 				end
+			else
+				create Result.make_empty
 			end
-			append_end_of_line_to (Result)
+		ensure
+			result_has_ending_cr_lf: Result.count >= 2 implies Result.substring (Result.count - 2, Result.count).same_string ("%R%N")
+			result_has_single_ending_cr_lf: Result.count >= 4 implies not Result.substring (Result.count - 4, Result.count).same_string ("%R%N%R%N")
 		end
 
 feature -- Header change: general

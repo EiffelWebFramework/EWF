@@ -158,7 +158,7 @@ feature -- Output
 	send (buf: WSF_RESPONSE)
 		do
 			buf.set_status_code (200)
-			buf.write_headers_string (header_string)
+			buf.write_header_text (header_string)
 			buf.write_string (message_string)
 		end
 

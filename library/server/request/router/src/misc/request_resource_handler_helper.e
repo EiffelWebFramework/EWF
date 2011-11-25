@@ -177,7 +177,7 @@ feature -- Handle responses
 			h.put_content_length (a_description.count)
 			h.put_current_date
 			res.set_status_code ({HTTP_STATUS_CODE}.bad_request)
-			res.write_headers_string (h.string)
+			res.write_header_text (h.string)
 			res.write_string (a_description)
 		end
 
@@ -192,7 +192,7 @@ feature -- Handle responses
 			h.put_content_length (a_description.count)
 			h.put_current_date
 			res.set_status_code ({HTTP_STATUS_CODE}.precondition_failed)
-			res.write_headers_string (h.string)
+			res.write_header_text (h.string)
 			res.write_string (a_description)
 		end
 
@@ -206,7 +206,7 @@ feature -- Handle responses
 			h.put_content_length (a_description.count)
 			h.put_current_date
 			res.set_status_code ({HTTP_STATUS_CODE}.internal_server_error)
-			res.write_headers_string (h.string)
+			res.write_header_text (h.string)
 			res.write_string (a_description)
 		end
 
@@ -220,7 +220,7 @@ feature -- Handle responses
 			h.put_content_length (a_description.count)
 			h.put_current_date
 			res.set_status_code ({HTTP_STATUS_CODE}.not_implemented)
-			res.write_headers_string (h.string)
+			res.write_header_text (h.string)
 			res.write_string (a_description)
 		end
 
@@ -234,7 +234,7 @@ feature -- Handle responses
 			h.put_content_length (a_description.count)
 			h.put_current_date
 			res.set_status_code ({HTTP_STATUS_CODE}.method_not_allowed)
-			res.write_headers_string (h.string)
+			res.write_header_text (h.string)
 			res.write_string (a_description)
 		end
 
@@ -248,7 +248,7 @@ feature -- Handle responses
 			h.put_content_length (a_description.count)
 			h.put_current_date
 			res.set_status_code ({HTTP_STATUS_CODE}.not_found)
-			res.write_headers_string (h.string)
+			res.write_header_text (h.string)
 			res.write_string (a_description)
 		end
 
@@ -264,7 +264,7 @@ feature -- Handle responses
 			h.put_content_length (a_description.count)
 			h.put_current_date
 			res.set_status_code ({HTTP_STATUS_CODE}.not_modified)
-			res.write_headers_string (h.string)
+			res.write_header_text (h.string)
 			res.write_string (a_description)
 		end
 
@@ -279,7 +279,7 @@ feature -- Handle responses
 			h.put_content_length (a_description.count)
 			h.put_current_date
 			res.set_status_code ({HTTP_STATUS_CODE}.conflict)
-			res.write_headers_string (h.string)
+			res.write_header_text (h.string)
 			res.write_string (a_description)
 		end
 

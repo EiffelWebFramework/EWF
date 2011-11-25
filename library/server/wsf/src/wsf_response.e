@@ -73,12 +73,12 @@ feature -- Status setting
 
 feature -- Header output operation
 
-	write_headers_string (a_headers: READABLE_STRING_8)
+	write_header_text (a_headers: READABLE_STRING_8)
 		require
 			status_set: status_is_set
 			header_not_committed: not header_committed
 		do
-			wgi_response.write_headers (a_headers)
+			wgi_response.write_header_text (a_headers)
 		ensure
 			status_set: status_is_set
 			header_committed: header_committed
@@ -107,7 +107,7 @@ feature -- Header output operation
 					i := i + 1
 				end
 			end
-			wgi_response.write_headers (h.string)
+			wgi_response.write_header_text (h.string)
 		ensure
 			header_committed: header_committed
 			status_set: status_is_set

@@ -63,7 +63,7 @@ feature -- Execution
 			h.put_content_length (l_description.count)
 			h.put_current_date
 			res.set_status_code ({HTTP_STATUS_CODE}.method_not_allowed)
-			res.write_headers_string (h.string)
+			res.write_header_text (h.string)
 			res.write_string (l_description)
 		end
 

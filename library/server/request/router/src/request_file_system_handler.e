@@ -63,7 +63,7 @@ feature -- Execution
 
 				h.put_content_length (s.count)
 				res.set_status_code ({HTTP_STATUS_CODE}.ok)
-				res.write_headers_string (h.string)
+				res.write_header_text (h.string)
 				res.write_string (s)
 			end
 		end
@@ -136,7 +136,7 @@ feature -- Execution
 				h.put_content_type_text_html
 				res.set_status_code ({HTTP_STATUS_CODE}.ok)
 				h.put_content_length (s.count)
-				res.write_headers_string (h.string)
+				res.write_header_text (h.string)
 				if not req.request_method.same_string ({HTTP_REQUEST_METHODS}.method_head) then
 					res.write_string (s)
 				end
@@ -161,13 +161,13 @@ feature -- Execution
 				h.put_content_type (ct)
 				h.put_content_length (f.count)
 				res.set_status_code ({HTTP_STATUS_CODE}.ok)
-				res.write_headers_string (h.string)
+				res.write_header_text (h.string)
 			else
 				create h.make
 				h.put_content_type ({HTTP_MIME_TYPES}.application_force_download)
 				h.put_content_length (f.count)
 				res.set_status_code ({HTTP_STATUS_CODE}.ok)
-				res.write_headers_string (h.string)
+				res.write_header_text (h.string)
 			end
 			if not req.request_method.same_string ({HTTP_REQUEST_METHODS}.method_head) then
 				res.write_file_content (fn)
@@ -186,7 +186,7 @@ feature -- Execution
 			s.append ("Resource %"" + uri + "%" not found%N")
 			res.set_status_code ({HTTP_STATUS_CODE}.not_found)
 			h.put_content_length (s.count)
-			res.write_headers_string (h.string)
+			res.write_header_text (h.string)
 			res.write_string (s)
 			res.flush
 		end
@@ -202,7 +202,7 @@ feature -- Execution
 			s.append ("Resource %"" + uri + "%": Access denied%N")
 			res.set_status_code ({HTTP_STATUS_CODE}.forbidden)
 			h.put_content_length (s.count)
-			res.write_headers_string (h.string)
+			res.write_header_text (h.string)
 			res.write_string (s)
 			res.flush
 		end

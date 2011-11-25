@@ -75,10 +75,29 @@ feature -- Status setting
 
 feature -- Header output operation		
 
-	write_headers (a_headers: READABLE_STRING_8)
+	write_header_text (a_text: READABLE_STRING_8)
 		do
-			write (a_headers)
+			write (a_text)
+			write (crlf)
 			header_committed := True
+		end
+
+	write_header_lines (a_lines: ITERABLE [TUPLE [name: READABLE_STRING_8; value: READABLE_STRING_8]])
+		local
+			h: STRING_8
+		do
+			create h.make (256)
+			across
+				a_lines as c
+			loop
+				h.append (c.item.name)
+				h.append_character (':')
+				h.append_character (' ')
+				h.append (c.item.value)
+				h.append_character ('%R')
+				h.append_character ('%N')
+			end
+			write_header_text (h)
 		end
 
 feature -- Output operation
@@ -108,6 +127,9 @@ feature -- Output operation
 		end
 
 feature {NONE} -- Implementation: Access
+
+	crlf: STRING = "%R%N"
+			-- End of header
 
 	output: WGI_OUTPUT_STREAM
 			-- Server output channel

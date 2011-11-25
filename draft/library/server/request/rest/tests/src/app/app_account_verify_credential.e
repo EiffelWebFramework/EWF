@@ -88,7 +88,7 @@ feature -- Execution
 					end
 					if not s.is_empty then
 						res.set_status_code ({HTTP_STATUS_CODE}.ok)
-						res.write_headers_string (h.string)
+						res.write_header_text (h.string)
 						res.write_string (s)
 					end
 				else

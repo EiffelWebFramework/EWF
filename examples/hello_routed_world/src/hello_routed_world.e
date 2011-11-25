@@ -99,7 +99,7 @@ feature -- Execution
 			h.put_transfer_encoding_chunked
 --			h.put_content_length (0)
 			res.set_status_code ({HTTP_STATUS_CODE}.moved_permanently)
-			res.write_headers_string (h.string)
+			res.write_header_text (h.string)
 
 			from
 				create e
@@ -202,7 +202,7 @@ feature -- Execution
 				h.put_content_type (l_response_content_type)
 				h.put_content_length (l_body.count)
 				res.set_status_code ({HTTP_STATUS_CODE}.ok)
-				res.write_headers_string (h.string)
+				res.write_header_text (h.string)
 				res.write_string (l_body)
 			end
 		end

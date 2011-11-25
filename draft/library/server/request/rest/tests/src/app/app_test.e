@@ -80,7 +80,7 @@ feature -- Execution
 			end
 
 			res.set_status_code (200)
-			res.write_headers_string (h.string)
+			res.write_header_text (h.string)
 			res.write_string (s)
 		end
 
