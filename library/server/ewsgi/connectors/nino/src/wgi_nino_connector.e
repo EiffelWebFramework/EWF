@@ -16,21 +16,21 @@ create
 
 feature {NONE} -- Initialization
 
-	make (a_app: like application)
+	make (a_service: like service)
 		local
 			cfg: HTTP_SERVER_CONFIGURATION
 		do
-			application := a_app
+			service := a_service
 
 			create cfg.make
 			create server.make (cfg)
 		end
 
-	make_with_base (a_app: like application; a_base: like base)
+	make_with_base (a_service: like service; a_base: like base)
 		require
 			a_base_starts_with_slash: (a_base /= Void and then not a_base.is_empty) implies a_base.starts_with ("/")
 		do
-			make (a_app)
+			make (a_service)
 			set_base (a_base)
 		end
 
@@ -44,7 +44,7 @@ feature -- Access
 
 feature {NONE} -- Access
 
-	application: WGI_SERVICE
+	service: WGI_SERVICE
 			-- Gateway Service		
 
 feature -- Access
@@ -124,7 +124,7 @@ feature -- Server
 				create req.make (env, create {WGI_NINO_INPUT_STREAM}.make (a_socket), Current)
 				create res.make (create {WGI_NINO_OUTPUT_STREAM}.make (a_socket))
 				req.set_meta_string_variable ("RAW_HEADER_DATA", a_headers_text)
-				application.execute (req, res)
+				service.execute (req, res)
 			else
 				if attached (create {EXCEPTION_MANAGER}).last_exception as e and then attached e.exception_trace as l_trace then
 					if res /= Void then

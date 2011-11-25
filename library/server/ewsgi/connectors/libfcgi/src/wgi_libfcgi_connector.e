@@ -16,9 +16,9 @@ create
 
 feature {NONE} -- Initialization
 
-	make (a_app: like application)
+	make (a_service: like service)
 		do
-			application := a_app
+			service := a_service
 			create fcgi.make
 			create {WGI_LIBFCGI_INPUT_STREAM} input.make (fcgi)
 			create {WGI_LIBFCGI_OUTPUT_STREAM} output.make (fcgi)
@@ -34,7 +34,7 @@ feature -- Access
 
 feature {NONE} -- Access
 
-	application: WGI_SERVICE
+	service: WGI_SERVICE
 			-- Gateway Service			
 
 feature -- Server
@@ -64,7 +64,7 @@ feature -- Execution
 			if not rescued then
 				create req.make (vars, a_input, Current)
 				create res.make (a_output)
-				application.execute (req, res)
+				service.execute (req, res)
 			else
 				if attached (create {EXCEPTION_MANAGER}).last_exception as e and then attached e.exception_trace as l_trace then
 					if res /= Void then
