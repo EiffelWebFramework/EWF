@@ -34,7 +34,7 @@ feature -- Status report
 		deferred
 		end
 
-feature {WGI_RESPONSE_BUFFER} -- Core output operation
+feature {WGI_RESPONSE} -- Core output operation
 
 	write (s: READABLE_STRING_8)
 			-- Send the string `s'

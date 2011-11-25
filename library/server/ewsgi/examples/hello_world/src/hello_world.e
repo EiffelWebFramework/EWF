@@ -18,7 +18,7 @@ feature {NONE} -- Initialization
 			(create {NINO_SERVICE}.make_custom (agent execute, "")).listen (port_number)
 		end
 
-	execute (req: WGI_REQUEST; res: WGI_RESPONSE_BUFFER)
+	execute (req: WGI_REQUEST; res: WGI_RESPONSE)
 		do
 			res.write_header (200, <<["Content-Type", "text/plain"]>>)
 			res.write_string ("Hello World!%N")
