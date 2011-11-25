@@ -22,6 +22,8 @@ note
 class
 	WSF_HEADER
 
+obsolete "Use HTTP_HEADER [2011-nov-25]"
+
 inherit
 	HTTP_HEADER
 

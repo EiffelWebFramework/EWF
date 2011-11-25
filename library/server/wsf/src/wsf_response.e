@@ -91,7 +91,7 @@ feature -- Header output operation
 			status_not_set: not status_is_set
 			header_not_committed: not header_committed
 		local
-			h: WSF_HEADER
+			h: HTTP_HEADER
 			i,n: INTEGER
 		do
 			set_status_code (a_status_code)

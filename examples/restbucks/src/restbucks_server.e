@@ -48,7 +48,7 @@ feature -- Execution
 			-- in the case that the given uri does not have a corresponding http method
 			-- to handle it.
 		local
-			h : WSF_HEADER
+			h : HTTP_HEADER
 			l_description : STRING
 			l_api_doc : STRING
 		do

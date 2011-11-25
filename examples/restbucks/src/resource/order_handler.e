@@ -76,7 +76,7 @@ feature -- HTTP Methods
 
 	compute_response_get (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE; l_order : ORDER)
 		local
-			h: WSF_HEADER
+			h: HTTP_HEADER
 			l_msg : STRING
 			etag_utils : ETAG_UTILS
 		do
@@ -152,7 +152,7 @@ feature -- HTTP Methods
 
 	compute_response_put (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE; l_order : ORDER)
 		local
-			h: WSF_HEADER
+			h: HTTP_HEADER
 			joc : JSON_ORDER_CONVERTER
 			etag_utils : ETAG_UTILS
 		do
@@ -205,7 +205,7 @@ feature -- HTTP Methods
 
 	compute_response_delete (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
 		local
-			h : WSF_HEADER
+			h : HTTP_HEADER
 		do
 			create h.make
 			h.put_status ({HTTP_STATUS_CODE}.no_content)
@@ -241,7 +241,7 @@ feature -- HTTP Methods
 
 	compute_response_post (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE; l_order : ORDER)
 		local
-			h: WSF_HEADER
+			h: HTTP_HEADER
 			l_msg : STRING
 			l_location :  STRING
 			joc : JSON_ORDER_CONVERTER

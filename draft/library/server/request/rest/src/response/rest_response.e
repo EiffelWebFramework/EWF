@@ -32,7 +32,7 @@ feature -- Recycle
 
 feature -- Access
 
-	headers: WSF_HEADER
+	headers: HTTP_HEADER
 
 	api: STRING
 			-- Associated api query string.

@@ -84,7 +84,7 @@ feature -- Execution
 
 	execute_default (req: WSF_REQUEST; res: WSF_RESPONSE)
 		local
-			h: WSF_HEADER
+			h: HTTP_HEADER
 			l_url: STRING
 			e: EXECUTION_ENVIRONMENT
 			n: INTEGER
@@ -171,7 +171,7 @@ feature -- Execution
 	execute_hello (req: WSF_REQUEST; res: WSF_RESPONSE; a_name: detachable READABLE_STRING_32; ctx: REQUEST_HANDLER_CONTEXT)
 		local
 			l_response_content_type: detachable STRING
-			h: WSF_HEADER
+			h: HTTP_HEADER
 			content_type_supported: ARRAY [STRING]
 			l_body: STRING_8
 		do

@@ -55,7 +55,7 @@ feature -- Execution
 	execute_application (ctx: APP_REQUEST_HANDLER_CONTEXT; req: WSF_REQUEST; res: WSF_RESPONSE)
 		local
 			l_full: BOOLEAN
-			h: WSF_HEADER
+			h: HTTP_HEADER
 			l_login: STRING_8
 			s: STRING
 			content_type_supported: ARRAY [STRING]

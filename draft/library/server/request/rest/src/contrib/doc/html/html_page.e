@@ -31,7 +31,7 @@ feature {NONE} -- Initialization
 
 feature -- Access
 
-	headers: WSF_HEADER
+	headers: HTTP_HEADER
 
 feature -- Recycle
 

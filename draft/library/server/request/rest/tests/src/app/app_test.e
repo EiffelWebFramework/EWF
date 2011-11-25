@@ -42,7 +42,7 @@ feature -- Execution
 			-- Execute request handler
 		local
 			s: STRING
-			h: WSF_HEADER
+			h: HTTP_HEADER
 		do
 			create h.make
 			h.put_content_type_text_plain

@@ -169,7 +169,7 @@ feature -- Handle responses
 
 	handle_bad_request_response (a_description: STRING; ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE )
 		local
-			h : WSF_HEADER
+			h : HTTP_HEADER
 		do
 			create h.make
 			h.put_status ({HTTP_STATUS_CODE}.bad_request)
@@ -184,7 +184,7 @@ feature -- Handle responses
 
 	handle_precondition_fail_response (a_description: STRING; ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE )
 		local
-			h : WSF_HEADER
+			h : HTTP_HEADER
 		do
 			create h.make
 			h.put_status ({HTTP_STATUS_CODE}.precondition_failed)
@@ -198,7 +198,7 @@ feature -- Handle responses
 
 	handle_internal_server_error (a_description: STRING; ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE )
 		local
-			h : WSF_HEADER
+			h : HTTP_HEADER
 		do
 			create h.make
 			h.put_status ({HTTP_STATUS_CODE}.internal_server_error)
@@ -212,7 +212,7 @@ feature -- Handle responses
 
 	handle_not_implemented (a_description: STRING; ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE )
 		local
-			h : WSF_HEADER
+			h : HTTP_HEADER
 		do
 			create h.make
 			h.put_status ({HTTP_STATUS_CODE}.not_implemented)
@@ -226,7 +226,7 @@ feature -- Handle responses
 
 	handle_method_not_allowed_response (a_description: STRING; ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
 		local
-			h : WSF_HEADER
+			h : HTTP_HEADER
 		do
 			create h.make
 			h.put_status ({HTTP_STATUS_CODE}.method_not_allowed)
@@ -240,7 +240,7 @@ feature -- Handle responses
 
 	handle_resource_not_found_response (a_description: STRING; ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
 		local
-			h : WSF_HEADER
+			h : HTTP_HEADER
 		do
 			create h.make
 			h.put_status ({HTTP_STATUS_CODE}.not_found)
@@ -255,7 +255,7 @@ feature -- Handle responses
 
 	handle_resource_not_modified_response (a_description: STRING; ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
 		local
-			h : WSF_HEADER
+			h : HTTP_HEADER
 		do
 			res.flush
 			create h.make
@@ -271,7 +271,7 @@ feature -- Handle responses
 
 	handle_resource_conflict_response (a_description: STRING; ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
 		local
-			h : WSF_HEADER
+			h : HTTP_HEADER
 		do
 			create h.make
 			h.put_status ({HTTP_STATUS_CODE}.conflict)

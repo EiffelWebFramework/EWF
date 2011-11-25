@@ -48,7 +48,7 @@ feature -- Execution
 	execute (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
 			-- Execute request handler	
 		local
-			h: WSF_HEADER
+			h: HTTP_HEADER
 			s: STRING
 			uri: STRING
 		do
@@ -92,7 +92,7 @@ feature -- Execution
 
 	respond_index (a_uri: READABLE_STRING_8; dn: READABLE_STRING_8; ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
 		local
-			h: WSF_HEADER
+			h: HTTP_HEADER
 			uri, s: STRING_8
 			d: DIRECTORY
 			l_files: LIST [STRING_8]
@@ -148,7 +148,7 @@ feature -- Execution
 	respond_file (f: FILE; ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
 		local
 			fn: READABLE_STRING_8
-			h: WSF_HEADER
+			h: HTTP_HEADER
 			ext: READABLE_STRING_8
 			ct: detachable READABLE_STRING_8
 		do
@@ -177,7 +177,7 @@ feature -- Execution
 
 	respond_not_found (uri: READABLE_STRING_8; ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
 		local
-			h: WSF_HEADER
+			h: HTTP_HEADER
 			s: STRING_8
 		do
 			create h.make
@@ -193,7 +193,7 @@ feature -- Execution
 
 	respond_access_denied (uri: READABLE_STRING_8; ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
 		local
-			h: WSF_HEADER
+			h: HTTP_HEADER
 			s: STRING_8
 		do
 			create h.make

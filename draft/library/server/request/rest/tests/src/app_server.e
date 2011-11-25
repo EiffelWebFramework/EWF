@@ -78,7 +78,7 @@ feature -- Execution
 		local
 			rqst_uri: detachable STRING
 			l_path_info: detachable STRING
-			h: WSF_HEADER
+			h: HTTP_HEADER
 			s: STRING
 			l_redir_url: STRING
 		do
@@ -108,7 +108,7 @@ feature -- Implementation
 
 --	execute_exception_trace (ctx: like new_request_context)
 --		local
---			h: WSF_HEADER
+--			h: HTTP_HEADER
 --			s: STRING
 --		do
 --			create h.make
