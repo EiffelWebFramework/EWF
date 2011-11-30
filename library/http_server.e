@@ -7,9 +7,6 @@ note
 class
 	HTTP_SERVER
 
-inherit
-	HTTP_SERVER_SHARED_CONFIGURATION
-
 create
 	make
 
@@ -18,7 +15,6 @@ feature -- Initialization
 	make (cfg: like configuration)
 		do
 			configuration := cfg
-			set_server_configuration (configuration)
 		end
 
 	setup (a_http_handler: HTTP_HANDLER)
@@ -30,12 +26,7 @@ feature -- Initialization
 				print ("Starting Web Application Server (port="+ configuration.http_server_port.out +"):%N")
 			end
 			stop_requested := False
-			if configuration.force_single_threaded then
-				a_http_handler.execute
-			else
-				a_http_handler.launch
-				a_http_handler.join
-			end
+			a_http_handler.execute
 		end
 
 	shutdown_server

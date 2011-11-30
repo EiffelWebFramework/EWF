@@ -9,6 +9,8 @@ class
 inherit
 	ARGUMENTS
 
+	HTTP_SERVER_SHARED_CONFIGURATION
+
 create
 	make
 
@@ -24,6 +26,7 @@ feature {NONE} -- Initialization
 			create l_cfg.make
 			l_cfg.http_server_port := 9_000
 			l_cfg.document_root := default_document_root
+			set_server_configuration (l_cfg)
 			debug ("nino")
 				l_cfg.set_is_verbose (True)
 			end

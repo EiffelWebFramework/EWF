@@ -8,7 +8,7 @@ deferred class
 	HTTP_HANDLER
 
 inherit
-	THREAD
+	ANY
 
 	HTTP_CONSTANTS
 
@@ -27,6 +27,13 @@ feature {NONE} -- Initialization
 			main_server_set: a_main_server ~ main_server
 		end
 
+feature -- Output
+
+	log (a_message: READABLE_STRING_8)
+		do
+			io.put_string (a_message)
+		end
+
 feature -- Inherited Features
 
 	execute
@@ -43,14 +50,14 @@ feature -- Inherited Features
 			create l_http_socket.make_server_by_port (l_http_port)
 			if not l_http_socket.is_bound then
 				if is_verbose then
-					print ("Socket could not be bound on port " + l_http_port.out )
+					log ("Socket could not be bound on port " + l_http_port.out )
 				end
 			else
 				l_http_port := l_http_socket.port
 				from
 					l_http_socket.listen (main_server_configuration.max_tcp_clients)
 					if is_verbose then
-						print ("%NHTTP Connection Server ready on port " + l_http_port.out +" : http://localhost:" + l_http_port.out + "/%N")
+						log ("%NHTTP Connection Server ready on port " + l_http_port.out +" : http://localhost:" + l_http_port.out + "/%N")
 					end
 					on_launched (l_http_port)
 				until
@@ -59,13 +66,7 @@ feature -- Inherited Features
 					l_http_socket.accept
 					if not is_stop_requested then
 						if attached l_http_socket.accepted as l_thread_http_socket then
-								--| FIXME jfiat [2011/11/03] : should launch a new thread to handle this connection
-								--| also handle permanent connection...?
-							receive_message_and_send_reply (l_thread_http_socket)
-							l_thread_http_socket.cleanup
-							check
-								socket_closed: l_thread_http_socket.is_closed
-							end
+							process_connection (l_thread_http_socket)
 						end
 					end
 					is_stop_requested := main_server.stop_requested
@@ -79,10 +80,10 @@ feature -- Inherited Features
 				on_stopped
 			end
 			if is_verbose then
-				print ("HTTP Connection Server ends.")
+				log ("HTTP Connection Server ends.")
 			end
 		rescue
-			print ("HTTP Connection Server shutdown due to exception. Please relaunch manually.")
+			log ("HTTP Connection Server shutdown due to exception. Please relaunch manually.")
 
 			if attached l_http_socket as ll_http_socket then
 				ll_http_socket.cleanup
@@ -95,6 +96,18 @@ feature -- Inherited Features
 			end
 			is_stop_requested := True
 			retry
+		end
+
+	process_connection (a_socket: TCP_STREAM_SOCKET)
+			-- Process incoming connection
+		do
+			log ("Incoming connection...%N")
+				--| FIXME jfiat [2011/11/03] : should use a Pool of Threads/Handler to process this connection
+				--| also handle permanent connection...?
+			receive_message_and_send_reply (a_socket)
+			a_socket.cleanup
+		ensure
+			socket_closed: a_socket.is_closed
 		end
 
 feature -- Event
@@ -121,7 +134,7 @@ feature -- Event
 		end
 
 feature -- Access
-	
+
 	is_verbose: BOOLEAN
 			-- Is verbose for output messages.
 		do
