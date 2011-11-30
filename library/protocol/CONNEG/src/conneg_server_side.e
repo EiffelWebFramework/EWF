@@ -147,7 +147,7 @@ feature -- Language Negotiation
 			if header.is_empty then
 				-- the request has no Accept header, ie the header is empty, in this case we use the default format
 				Result.set_acceptable (TRUE)
-				Result.set_language_type (mime_default)
+				Result.set_language_type (language_default)
 			else
 		        -- select the best match, server support, client preferences	
 				language_match := language.best_match (server_language_supported, header)
