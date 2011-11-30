@@ -1,5 +1,5 @@
 note
-	description: "Summary description for {VARIANTS}. Utility class to support Server Side Content Negotiation "
+	description: "Summary description for {CONNEG_SERVER_SIDE}. Utility class to support Server Side Content Negotiation "
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
@@ -13,21 +13,97 @@ note
 		In order to improve the server's guess, the user agent MAY include request header fields (Accept, Accept-Language, Accept-Encoding, etc.) which describe its preferences for such a response.
 ]"
 class
-	VARIANTS
+	CONNEG_SERVER_SIDE
 
 inherit
 	SHARED_CONNEG
 	REFACTORING_HELPER
+create
+	make
+
+feature -- Initialization
+	make ( a_mime: STRING; a_language : STRING; a_charset :STRING; an_encoding: STRING)
+		do
+			set_mime_default (a_mime)
+			set_language_default (a_language)
+			set_charset_default (a_charset)
+			set_encoding_defautl (an_encoding)
+		end
+feature -- Server Side Defaults Formats
+	mime_default :  STRING
+
+	set_mime_default ( a_mime: STRING)
+		-- set the mime_default with `a_mime'
+		do
+			mime_default := a_mime
+		ensure
+			set_mime_default: a_mime ~ mime_default
+		end
+
+
+	language_default : STRING
+
+	set_language_default (a_language : STRING)
+			-- set the language_default with `a_language'
+		do
+			language_default := a_language
+		ensure
+			set_language : a_language ~ language_default
+		end
+
+
+	charset_default : STRING
+
+	set_charset_default (a_charset : STRING)
+			-- set the charset_default with `a_charset'
+		do
+			charset_default := a_charset
+		ensure
+			set_charset : a_charset ~ charset_default
+		end
+
+
+	encoding_default : STRING
+
+	set_encoding_defautl (an_encoding : STRING)
+		do
+			encoding_default := an_encoding
+		ensure
+			set_encoding : an_encoding ~ encoding_default
+		end
+
+
+
 feature -- Media Type Negotiation
 
-	media_type_preference ( mime_types_supported : LIST[STRING]; header : STRING) : STRING
+	media_type_preference ( mime_types_supported : LIST[STRING]; header : STRING) : MEDIA_TYPE_VARIANT_RESULTS
 			-- mime_types_supported represent media types supported by the server.
 			-- header represent the Accept header, ie, the client preferences.
 			-- Return which media type to use for representaion in a response, if the server support
 			-- one media type, or empty in other case.
 			-- Reference : http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.1
+		local
+			mime_match: STRING
 		do
-			Result := mime.best_match (mime_types_supported, header)
+			create Result
+			if header.is_empty then
+				-- the request has no Accept header, ie the header is empty, in this case we use the default format
+				Result.set_acceptable (TRUE)
+				Result.set_media_type (mime_default)
+			else
+		        -- select the best match, server support, client preferences	
+				mime_match := mime.best_match (mime_types_supported, header)
+				if mime_match.is_empty then
+					-- The server does not support any of the media types prefered by the client
+					Result.set_acceptable (False)
+					Result.set_supported_variants (mime_types_supported)
+				else
+					-- Set the best match
+					Result.set_media_type(mime_match)
+					Result.set_acceptable (True)
+					Result.set_variant_header
+				end
+			end
 		end
 
 
@@ -58,14 +134,34 @@ feature -- Compression Negotiation
 
 feature -- Language Negotiation
 
-	language_preference (server_language_supported : LIST[STRING]; header: STRING) : STRING
+	language_preference (server_language_supported : LIST[STRING]; header: STRING) : LANGUAGE_VARIANT_RESULTS
 			-- server_language_supported represent a list of languages supported by the server.
 			-- header represent the Accept-Language header, ie, the client preferences.
 			-- Return which Language to use in a response, if the server support
 			-- one Language, or empty in other case.
 			-- Reference: http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.4
+		local
+			language_match: STRING
 		do
-			Result := language.best_match (server_language_supported, header)
+			create Result
+			if header.is_empty then
+				-- the request has no Accept header, ie the header is empty, in this case we use the default format
+				Result.set_acceptable (TRUE)
+				Result.set_language_type (mime_default)
+			else
+		        -- select the best match, server support, client preferences	
+				language_match := language.best_match (server_language_supported, header)
+				if language_match.is_empty then
+					-- The server does not support any of the media types prefered by the client
+					Result.set_acceptable (False)
+					Result.set_supported_variants (server_language_supported)
+				else
+					-- Set the best match
+					Result.set_language_type(language_match)
+					Result.set_acceptable (True)
+					Result.set_variant_header
+				end
+			end
 		end
 
 note
