@@ -4,7 +4,7 @@ where there are multiple representations available.
 Using this labrary you can retrieve the best Variant for media type, language preference, enconding and compression.
 The library is based on eMIME Eiffel MIME library based on Joe Gregorio code
 
-Take into account that the library is under development so is expected that the API chanherge.
+Take into account that the library is under development so is expected that the API change.
 
 The library contains utilities that deal with content negotiation (server driven negotiation).This utility class
 is based on ideas taken from the Book Restful WebServices Cookbook
@@ -25,7 +25,7 @@ So for each of the following questions, you will have a corresponding method to 
 -  How to implement Compression Negotiation?
 	Hint: Use CONNEG_SERVER_SIDE.encoding_preference
 
-There is also a test case where you can check how to use this class.
+There is also a  [test case](https://github.com/jvelilla/Eiffel-Web-Framework/blob/master/library/protocol/CONNEG/test/conneg_server_side_test.e "conneg_server_side_test") where you can check how to use this class.
 
 	note
 		description: "Summary description for CONNEG_SERVER_SIDE. Utility class to support Server Side Content Negotiation "
