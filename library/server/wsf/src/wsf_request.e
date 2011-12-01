@@ -53,6 +53,8 @@ feature {NONE} -- Initialization
 		local
 			s8: detachable READABLE_STRING_8
 		do
+			init_mime_handlers
+
 			--| Content-Length
 			if attached content_length as s and then s.is_natural_64 then
 				content_length_value := s.to_natural_64
@@ -1017,40 +1019,112 @@ feature -- Form fields and related
 			--| error: if /= 0 , there was an error : TODO ...
 			--| size: size of the file given by the http request
 
+feature -- Access: MIME handler
+
+	has_mime_handler (a_content_type: READABLE_STRING_8): BOOLEAN
+			-- Has a MIME handler registered for `a_content_type'?
+		do
+			if attached mime_handlers as hdls then
+				from
+					hdls.start
+				until
+					hdls.after or Result
+				loop
+					Result := hdls.item_for_iteration.valid_content_type (a_content_type)
+					hdls.forth
+				end
+			end
+		end
+
+	register_mime_handler (a_handler: WSF_MIME_HANDLER)
+			-- Register `a_handler' for `a_content_type'
+		local
+			hdls: like mime_handlers
+		do
+			hdls := mime_handlers
+			if hdls = Void then
+				create hdls.make (3)
+				hdls.compare_objects
+				mime_handlers := hdls
+			end
+			hdls.force (a_handler)
+		end
+
+	mime_handler (a_content_type: READABLE_STRING_8): detachable WSF_MIME_HANDLER
+			-- Mime handler associated with `a_content_type'
+		do
+			if attached mime_handlers as hdls then
+				from
+					hdls.start
+				until
+					hdls.after or Result /= Void
+				loop
+					Result := hdls.item_for_iteration
+					if not Result.valid_content_type (a_content_type) then
+						Result := Void
+					end
+					hdls.forth
+				end
+			end
+		ensure
+			has_mime_handler_implies_attached: has_mime_handler (a_content_type) implies Result /= Void
+		end
+
+feature {NONE} -- Implementation: MIME handler
+
+	init_mime_handlers
+		do
+			register_mime_handler (create {WSF_MULTIPART_FORM_DATA_HANDLER}.make (error_handler))
+			register_mime_handler (create {WSF_APPLICATION_X_WWW_FORM_URLENCODED_HANDLER})
+		end
+
+	mime_handlers: detachable ARRAYED_LIST [WSF_MIME_HANDLER]
+			-- Table of mime handles
+
 feature {NONE} -- Form fields and related
 
 	form_parameters_table: HASH_TABLE [WSF_VALUE, READABLE_STRING_32]
 			-- Variables sent by POST request	
 		local
 			vars: like internal_form_data_parameters_table
-			s: READABLE_STRING_8
+			l_raw_data_cell: detachable CELL [detachable STRING_8]
 			n: NATURAL_64
 			l_type: like content_type
 		do
 			vars := internal_form_data_parameters_table
 			if vars = Void then
 				n := content_length_value
-				if n > 0 then
-					l_type := content_type
-					if
-						l_type /= Void and then
-						l_type.starts_with ({HTTP_MIME_TYPES}.multipart_form_data)
-					then
-						create vars.make (5)
-						vars.compare_objects
-						--| FIXME: optimization ... fetch the input data progressively, otherwise we might run out of memory ...
-						s := form_input_data (n)
-						analyze_multipart_form (l_type, s, vars)
-					else
-						s := form_input_data (n)
-						vars := urlencoded_parameters (s)
-					end
-					if raw_post_data_recorded then
-						set_meta_string_variable ("RAW_POST_DATA", s)
-					end
-				else
+				if n = 0 then
 					create vars.make (0)
 					vars.compare_objects
+				else
+					if raw_post_data_recorded then
+						create l_raw_data_cell.put (Void)
+					end
+					create vars.make (5)
+					vars.compare_objects
+
+					l_type := content_type
+					if l_type /= Void and then attached mime_handler (l_type) as hdl then
+						hdl.handle (l_type, n, Current, vars, l_raw_data_cell)
+					end
+					if l_raw_data_cell /= Void and then attached l_raw_data_cell.item as l_raw_data then
+						set_meta_string_variable ("RAW_POST_DATA", l_raw_data)
+					end
+
+--					if
+--						l_type /= Void and then
+--						l_type.starts_with ({HTTP_MIME_TYPES}.multipart_form_data)
+--					then
+--						create vars.make (5)
+--						vars.compare_objects
+--						--| FIXME: optimization ... fetch the input data progressively, otherwise we might run out of memory ...
+--						s := form_input_data (n)
+--						analyze_multipart_form (l_type, s, vars)
+--					else
+--						s := form_input_data (n)
+--						vars := urlencoded_parameters (s)
+--					end
 				end
 				internal_form_data_parameters_table := vars
 			end
@@ -1130,7 +1204,8 @@ feature -- URL Utility
 				end
 				internal_url_base := l_base_url
 			end
-			Result := l_base_url + a_path
+			create Result.make_from_string (l_base_url)
+			Result.append (a_path)
 		end
 
 feature {NONE} -- Implementation: URL Utility
@@ -1152,7 +1227,7 @@ feature -- Element change
 			error_handler := ehdl
 		end
 
-feature {NONE} -- Temporary File handling		
+feature {WSF_MIME_HANDLER} -- Temporary File handling		
 
 	delete_uploaded_file (uf: WGI_UPLOADED_FILE_DATA)
 			-- Delete file `a_filename'
@@ -1312,224 +1387,41 @@ feature {NONE} -- Temporary File handling
 			end
 		end
 
-feature {NONE} -- Implementation: Form analyzer
-
-	analyze_multipart_form (t: STRING; s: STRING; vars: like form_parameters_table)
-			-- Analyze multipart form content
-			--| FIXME[2011-06-21]: integrate eMIME parser library
-		require
-			t_attached: t /= Void
-			s_attached: s /= Void
-			vars_attached: vars /= Void
-		local
-			p,i,next_b: INTEGER
-			l_boundary_prefix: STRING
-			l_boundary: STRING
-			l_boundary_len: INTEGER
-			m: STRING
-			is_crlf: BOOLEAN
-		do
-			p := t.substring_index ("boundary=", 1)
-			if p > 0 then
-				l_boundary := t.substring (p + 9, t.count)
-				p := s.substring_index (l_boundary, 1)
-				if p > 1 then
-					l_boundary_prefix := s.substring (1, p - 1)
-					l_boundary := l_boundary_prefix + l_boundary
-				else
-					create l_boundary_prefix.make_empty
-				end
-				l_boundary_len := l_boundary.count
-					--| Let's support either %R%N and %N ... 
-					--| Since both cases might occurs (for instance, our implementation of CGI does not have %R%N)
-					--| then let's be as flexible as possible on this.
-				is_crlf := s[l_boundary_len + 1] = '%R'
-				from
-					i := 1 + l_boundary_len + 1
-					if is_crlf then
-						i := i + 1 --| +1 = CR = %R
-					end
-					next_b := i
-				until
-					i = 0
-				loop
-					next_b := s.substring_index (l_boundary, i)
-					if next_b > 0 then
-						if is_crlf then
-							m := s.substring (i, next_b - 1 - 2) --| 2 = CR LF = %R %N							
-						else
-							m := s.substring (i, next_b - 1 - 1) --| 1 = LF = %N														
-						end
-						analyze_multipart_form_input (m, vars)
-						i := next_b + l_boundary_len + 1
-						if is_crlf then
-							i := i + 1 --| +1 = CR = %R
-						end
-					else
-						if is_crlf then
-							i := i + 1
-						end
-						m := s.substring (i - 1, s.count)
-						m.right_adjust
-						if not l_boundary_prefix.same_string (m) then
-							error_handler.add_custom_error (0, "Invalid form data", "Invalid ending for form data from input")
-						end
-						i := next_b
-					end
-				end
-			end
-		end
-
-	analyze_multipart_form_input (s: STRING; vars_post: like form_parameters_table)
-			-- Analyze multipart entry
-		require
-			s_not_empty: s /= Void and then not s.is_empty
-		local
-			n, i,p, b,e: INTEGER
-			l_name, l_filename, l_content_type: detachable STRING_8
-			l_header: detachable STRING_8
-			l_content: detachable STRING_8
-			l_line: detachable STRING_8
-			l_up_file_info: WGI_UPLOADED_FILE_DATA
-		do
-			from
-				p := 1
-				n := s.count
-			until
-				p > n or l_header /= Void
-			loop
-				inspect s[p]
-				when '%R' then -- CR
-					if
-						n >= p + 3 and then
-						s[p+1] = '%N' and then -- LF
-						s[p+2] = '%R' and then -- CR
-						s[p+3] = '%N'		   -- LF
-					then
-						l_header := s.substring (1, p + 1)
-						l_content := s.substring (p + 4, n)
-					end
-				when '%N' then
-					if
-						n >= p + 1 and then
-						s[p+1] = '%N'
-					then
-						l_header := s.substring (1, p)
-						l_content := s.substring (p + 2, n)
-					end
-				else
-				end
-				p := p + 1
-			end
-			if l_header /= Void and l_content /= Void then
-				from
-					i := 1
-					n := l_header.count
-				until
-					i = 0 or i > n
-				loop
-					l_line := Void
-					b := i
-					p := l_header.index_of ('%N', b)
-					if p > 0 then
-						if l_header[p - 1] = '%R' then
-							p := p - 1
-							i := p + 2
-						else
-							i := p + 1
-						end
-					end
-					if p > 0 then
-						l_line := l_header.substring (b, p - 1)
-						if l_line.starts_with ("Content-Disposition: form-data") then
-							p := l_line.substring_index ("name=", 1)
-							if p > 0 then
-								p := p + 4 --| 4 = ("name=").count - 1
-								if l_line.valid_index (p+1) and then l_line[p+1] = '%"' then
-									p := p + 1
-									e := l_line.index_of ('"', p + 1)
-								else
-									e := l_line.index_of (';', p + 1)
-									if e = 0 then
-										e := l_line.count
-									end
-								end
-								l_name := l_header.substring (p + 1, e - 1)
-							end
-
-							p := l_line.substring_index ("filename=", 1)
-							if p > 0 then
-								p := p + 8 --| 8 = ("filename=").count - 1
-								if l_line.valid_index (p+1) and then l_line[p+1] = '%"' then
-									p := p + 1
-									e := l_line.index_of ('"', p + 1)
-								else
-									e := l_line.index_of (';', p + 1)
-									if e = 0 then
-										e := l_line.count
-									end
-								end
-								l_filename := l_header.substring (p + 1, e - 1)
-							end
-						elseif l_line.starts_with ("Content-Type: ") then
-							l_content_type := l_line.substring (15, l_line.count)
-						end
-					else
-						i := 0
-					end
-				end
-				if l_name /= Void then
-					if l_filename /= Void then
-						if l_content_type = Void then
-							l_content_type := default_content_type
-						end
-						create l_up_file_info.make (l_filename, l_content_type, l_content.count)
-						save_uploaded_file (l_content, l_up_file_info)
-						uploaded_files.force (l_up_file_info, l_name)
-					else
-						add_value_to_table (l_name, l_content, vars_post)
-					end
-				else
-					error_handler.add_custom_error (0, "unamed multipart entry", Void)
-				end
-			else
-				error_handler.add_custom_error (0, "missformed multipart entry", Void)
-			end
-		end
-
-feature {NONE} -- Internal value
-
-	default_content_type: STRING = "text/plain"
-			-- Default content type
+feature {WSF_MIME_HANDLER} -- Input data access
 
 	form_input_data (nb: NATURAL_64): READABLE_STRING_8
-			-- data from input form
+			-- All data from input form
 		local
 			nb32: INTEGER
+			n64: NATURAL_64
 			n: INTEGER
 			t: STRING
 			s: STRING_8
 		do
 			from
-				nb32 := nb.to_integer_32
-				n := nb32
-				create s.make (n)
+				n64 := nb
+				nb32 := n64.to_integer_32
+				create s.make (nb32)
 				Result := s
+				n := nb32
 				if n > 1_024 then
 					n := 1_024
 				end
 			until
-				n <= 0
+				n64 <= 0
 			loop
 				input.read_string (n)
 				t := input.last_string
 				s.append_string (t)
 				if t.count < n then
-					n := 0
+					n64 := 0
+				else
+					n64 := n64 - t.count.as_natural_64
 				end
-				n := nb32 - t.count
 			end
 		end
+
+feature {NONE} -- Internal value
 
 	internal_query_parameters_table: detachable like query_parameters_table
 			-- cached value for `query_parameters'
