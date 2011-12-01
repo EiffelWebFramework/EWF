@@ -15,12 +15,12 @@ inherit
 
 feature {NONE} -- Initialization
 
-	make (a_main_server: like main_server)
+	make (a_server: like server)
 			-- Creates a {HTTP_CONNECTION_HANDLER}, assigns the main_server and sets the current_request_message to empty.
 			--
-			-- `a_main_server': The main server object
+			-- `a_server': The main server object
 		do
-			Precursor (a_main_server)
+			Precursor (a_server)
 			reset
 		end
 
