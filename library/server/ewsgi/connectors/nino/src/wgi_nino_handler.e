@@ -19,11 +19,11 @@ create
 
 feature {NONE} -- Initialization
 
-	make_with_callback (a_main_server: like main_server; a_callback: like callback)
+	make_with_callback (a_server: like server; a_callback: like callback)
 			-- Initialize `Current'.
 		do
 			base := a_callback.base
-			make (a_main_server)
+			make (a_server)
 			callback := a_callback
 		end
 
