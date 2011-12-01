@@ -29,6 +29,17 @@ feature -- Basic operation
 			send (a_package, 1)
 		end
 
+feature -- Output
+
+	put_readable_string_8 (s: READABLE_STRING_8)
+			-- Write readable string `s' to socket.
+		local
+			ext: C_STRING
+		do
+			create ext.make (s)
+			put_managed_pointer (ext.managed_data, 0, s.count)
+		end
+
 note
 	copyright: "2011-2011, Javier Velilla and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
