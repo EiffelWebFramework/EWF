@@ -92,7 +92,7 @@ feature -- Request processing
 				else
 					vn.prepend ("HTTP_")
 				end
-				add_environment_variable (a_headers_map.item_for_iteration, vn, env)
+				set_environment_variable (a_headers_map.item_for_iteration, vn, env)
 				a_headers_map.forth
 			end
 
@@ -107,7 +107,7 @@ feature -- Request processing
 				l_query_string := ""
 			end
 			if attached a_headers_map.item ("Host") as l_host then
-				add_environment_variable (l_host, "HTTP_HOST", env)
+				set_environment_variable (l_host, "HTTP_HOST", env)
 				p := l_host.index_of (':', 1)
 				if p > 0 then
 					l_server_name := l_host.substring (1, p - 1)
@@ -121,32 +121,32 @@ feature -- Request processing
 			end
 
 			if attached a_headers_map.item ("Authorization") as l_authorization then
-				add_environment_variable (l_authorization, "HTTP_AUTHORIZATION", env)
+				set_environment_variable (l_authorization, "HTTP_AUTHORIZATION", env)
 				p := l_authorization.index_of (' ', 1)
 				if p > 0 then
-					add_environment_variable (l_authorization.substring (1, p - 1), "AUTH_TYPE", env)
+					set_environment_variable (l_authorization.substring (1, p - 1), "AUTH_TYPE", env)
 				end
 			end
 
-			add_environment_variable ("CGI/1.1", "GATEWAY_INTERFACE", env)
-			add_environment_variable (l_query_string, "QUERY_STRING", env)
+			set_environment_variable ("CGI/1.1", "GATEWAY_INTERFACE", env)
+			set_environment_variable (l_query_string, "QUERY_STRING", env)
 
 			if attached a_handler.remote_info as l_remote_info then
-				add_environment_variable (l_remote_info.addr, "REMOTE_ADDR", env)
-				add_environment_variable (l_remote_info.hostname, "REMOTE_HOST", env)
-				add_environment_variable (l_remote_info.port.out, "REMOTE_PORT", env)
---				add_environment_variable (Void, "REMOTE_IDENT", env)
---				add_environment_variable (Void, "REMOTE_USER", env)			
+				set_environment_variable (l_remote_info.addr, "REMOTE_ADDR", env)
+				set_environment_variable (l_remote_info.hostname, "REMOTE_HOST", env)
+				set_environment_variable (l_remote_info.port.out, "REMOTE_PORT", env)
+--				set_environment_variable (Void, "REMOTE_IDENT", env)
+--				set_environment_variable (Void, "REMOTE_USER", env)			
 			end
 
-			add_environment_variable (l_request_uri, "REQUEST_URI", env)
-			add_environment_variable (a_handler.method, "REQUEST_METHOD", env)
+			set_environment_variable (l_request_uri, "REQUEST_URI", env)
+			set_environment_variable (a_handler.method, "REQUEST_METHOD", env)
 
-			add_environment_variable (l_script_name, "SCRIPT_NAME", env)
-			add_environment_variable (l_server_name, "SERVER_NAME", env)
-			add_environment_variable (l_server_port, "SERVER_PORT", env)
-			add_environment_variable (a_handler.version, "SERVER_PROTOCOL", env)
-			add_environment_variable ({HTTP_SERVER_CONFIGURATION}.Server_details, "SERVER_SOFTWARE", env)
+			set_environment_variable (l_script_name, "SCRIPT_NAME", env)
+			set_environment_variable (l_server_name, "SERVER_NAME", env)
+			set_environment_variable (l_server_port, "SERVER_PORT", env)
+			set_environment_variable (a_handler.version, "SERVER_PROTOCOL", env)
+			set_environment_variable ({HTTP_SERVER_CONFIGURATION}.Server_details, "SERVER_SOFTWARE", env)
 
 				--| Apply `base' value
 			if attached base as l_base and then l_request_uri /= Void then
@@ -175,6 +175,14 @@ feature -- Request processing
 				else
 					env.force (a_value, a_var_name)
 				end
+			end
+		end
+
+	set_environment_variable (a_value: detachable STRING; a_var_name: STRING; env: HASH_TABLE [STRING, STRING])
+			-- Add variable `a_var_name => a_value' to `env'
+		do
+			if a_value /= Void then
+				env.force (a_value, a_var_name)
 			end
 		end
 
