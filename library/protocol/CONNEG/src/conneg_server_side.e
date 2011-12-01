@@ -109,28 +109,70 @@ feature -- Media Type Negotiation
 
 feature -- Encoding Negotiation
 
-	charset_preference (server_charset_supported : LIST[STRING]; header: STRING) : STRING
+	charset_preference (server_charset_supported : LIST[STRING]; header: STRING) : CHARACTER_ENCODING_VARIANT_RESULTS
 			-- server_charset_supported represent a list of charset supported by the server.
 			-- header represent the Accept-Charset header, ie, the client preferences.
 			-- Return which Charset to use in a response, if the server support
 			-- one Charset, or empty in other case.
 			-- Reference: http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.2
+		local
+			charset_match : STRING
 		do
-			Result := common.best_match (server_charset_supported, header)
+			create Result
+			if header.is_empty then
+				-- the request has no Accept-Charset header, ie the header is empty, in this case use default charset encoding
+				-- (UTF-8)
+				Result.set_acceptable (TRUE)
+				Result.set_character_type (charset_default)
+			else
+		        -- select the best match, server support, client preferences	
+				charset_match := common.best_match (server_charset_supported, header)
+				if charset_match.is_empty then
+					-- The server does not support any of the compression types prefered by the client
+					Result.set_acceptable (False)
+					Result.set_supported_variants (server_charset_supported)
+				else
+					-- Set the best match
+					Result.set_character_type(charset_match)
+					Result.set_acceptable (True)
+					Result.set_variant_header
+				end
+			end
 		end
-
 
 feature -- Compression Negotiation
 
-	encoding_preference (server_encoding_supported : LIST[STRING]; header: STRING) : STRING
+	encoding_preference (server_encoding_supported : LIST[STRING]; header: STRING) : COMPRESSION_VARIANT_RESULTS
 			-- server_encoding_supported represent a list of encoding supported by the server.
 			-- header represent the Accept-Encoding header, ie, the client preferences.
 			-- Return which Encoding to use in a response, if the server support
 			-- one Encoding, or empty in other case.
 			-- Representation: http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.3
+		local
+			compression_match : STRING
 		do
-			Result := common.best_match (server_encoding_supported, header)
+			create Result
+			if header.is_empty then
+				-- the request has no Accept-Encoding header, ie the header is empty, in this case do not compress representations
+				Result.set_acceptable (TRUE)
+				Result.set_compression_type (encoding_default)
+			else
+		        -- select the best match, server support, client preferences	
+				compression_match := common.best_match (server_encoding_supported, header)
+				if compression_match.is_empty then
+					-- The server does not support any of the compression types prefered by the client
+					Result.set_acceptable (False)
+					Result.set_supported_variants (server_encoding_supported)
+				else
+					-- Set the best match
+					Result.set_compression_type(compression_match)
+					Result.set_acceptable (True)
+					Result.set_variant_header
+				end
+			end
+
 		end
+
 
 feature -- Language Negotiation
 
@@ -163,6 +205,8 @@ feature -- Language Negotiation
 				end
 			end
 		end
+
+feature -- Apache Conneg Algorithm
 
 note
 	copyright: "2011-2011, Javier Velilla, Jocelyn Fiat and others"
