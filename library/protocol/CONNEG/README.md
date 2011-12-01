@@ -25,7 +25,7 @@ So for each of the following questions, you will have a corresponding method to 
 -  How to implement Compression Negotiation?
 	Hint: Use CONNEG_SERVER_SIDE.encoding_preference
 
-There is also a  [test case](https://github.com/jvelilla/Eiffel-Web-Framework/blob/master/library/protocol/CONNEG/test/conneg_server_side_test.e "conneg_server_side_test") where you can check how to use this class.
+There is also a  [test case](test/conneg_server_side_test.e "conneg_server_side_test") where you can check how to use this class.
 
 	note
 		description: "Summary description for CONNEG_SERVER_SIDE. Utility class to support Server Side Content Negotiation "
