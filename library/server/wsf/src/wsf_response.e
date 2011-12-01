@@ -162,6 +162,7 @@ feature -- Helper
 				create h.make_with_count (1)
 				h.put_location (a_url)
 				set_status_code (a_status_code)
+				write_header_text (h.string)
 			end
 		end
 
