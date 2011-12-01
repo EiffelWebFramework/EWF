@@ -92,7 +92,7 @@ feature -- Request processing
 				else
 					vn.prepend ("HTTP_")
 				end
-				set_environment_variable (a_headers_map.item_for_iteration, vn, env)
+				add_environment_variable (a_headers_map.item_for_iteration, vn, env)
 				a_headers_map.forth
 			end
 
@@ -107,7 +107,8 @@ feature -- Request processing
 				l_query_string := ""
 			end
 			if attached a_headers_map.item ("Host") as l_host then
-				set_environment_variable (l_host, "HTTP_HOST", env)
+				check has_host: env.has ("HTTP_HOST") end
+--				set_environment_variable (l_host, "HTTP_HOST", env)
 				p := l_host.index_of (':', 1)
 				if p > 0 then
 					l_server_name := l_host.substring (1, p - 1)
@@ -121,7 +122,8 @@ feature -- Request processing
 			end
 
 			if attached a_headers_map.item ("Authorization") as l_authorization then
-				set_environment_variable (l_authorization, "HTTP_AUTHORIZATION", env)
+				check has_authorization: env.has ("HTTP_AUTHORIZATION") end
+--				set_environment_variable (l_authorization, "HTTP_AUTHORIZATION", env)
 				p := l_authorization.index_of (' ', 1)
 				if p > 0 then
 					set_environment_variable (l_authorization.substring (1, p - 1), "AUTH_TYPE", env)
