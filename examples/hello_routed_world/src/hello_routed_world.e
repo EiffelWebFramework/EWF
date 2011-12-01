@@ -92,6 +92,7 @@ feature -- Execution
 			s: STRING_8
 		do
 			l_url := req.script_url ("/home")
+
 			n := 3
 			create h.make
 			h.put_refresh (l_url, 5)
@@ -112,7 +113,7 @@ feature -- Execution
 				else
 					s.append ("%NRedirected to " + l_url + " in 1 second :%N")
 				end
-				write_chunk (s, res); s.wipe_out
+				res.write_chunk (s); s.wipe_out
 				from
 					i := 1
 				until
@@ -122,26 +123,15 @@ feature -- Execution
 					if i \\ 100 = 0 then
 						s.append_character ('%N')
 					end
-					write_chunk (s, res); s.wipe_out
+					res.write_chunk (s); s.wipe_out
 					e.sleep (1_000_000)
 					i := i + 1
 				end
 				n := n - 1
 			end
 			s.append ("%NYou are now being redirected...%N")
-			write_chunk (s, res); s.wipe_out
-			write_chunk (Void, res)
-		end
-
-	write_chunk (s: detachable READABLE_STRING_8; res: WSF_RESPONSE)
-		do
-			if s /= Void then
-				res.write_string (s.count.to_hex_string + {HTTP_CONSTANTS}.crlf)
-				res.write_string (s)
-			else
-				res.write_string ("0" + {HTTP_CONSTANTS}.crlf)
-			end
-			res.flush
+			res.write_chunk (s); s.wipe_out
+			res.write_chunk (Void)
 		end
 
 	execute_home (ctx: REQUEST_URI_TEMPLATE_HANDLER_CONTEXT; req: WSF_REQUEST; res: WSF_RESPONSE)

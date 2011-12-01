@@ -132,6 +132,37 @@ feature -- Output operation
 			wgi_response.write_substring (s, a_begin_index, a_end_index)
 		end
 
+	write_chunk (s: detachable READABLE_STRING_8)
+			-- Write chunk `s'
+			-- If s is Void, this means this was the final chunk
+			-- Note: that you should have header
+			-- "Transfer-Encoding: chunked"
+		local
+			hex: STRING
+			i: INTEGER
+		do
+			if s /= Void then
+					--| Remove all left '0'
+				hex := s.count.to_hex_string
+				from
+					i := 1
+				until
+					hex[i] /= '0'
+				loop
+					i := i + 1
+				end
+				if i > 1 then
+					hex := hex.substring (i, hex.count)
+				end
+				write_string (hex + {HTTP_CONSTANTS}.crlf)
+				write_string (s)
+				write_string ({HTTP_CONSTANTS}.crlf)
+			else
+				write_string ("0" + {HTTP_CONSTANTS}.crlf)
+			end
+			flush
+		end
+
 	write_file_content (fn: READABLE_STRING_8)
 			-- Send the content of file `fn'
 		require
