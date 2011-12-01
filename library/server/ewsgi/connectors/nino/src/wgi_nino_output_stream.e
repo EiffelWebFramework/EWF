@@ -60,10 +60,10 @@ feature -- Status writing
 
 feature -- Output
 
-	put_string (s: STRING_8)
+	put_string (s: READABLE_STRING_8)
 			-- Send `s' to http client
 		do
-			target.put_string (s)
+			target.put_readable_string_8 (s)
 		end
 
 	put_character_8 (c: CHARACTER_8)

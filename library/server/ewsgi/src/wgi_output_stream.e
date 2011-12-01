@@ -13,7 +13,7 @@ deferred class
 
 feature -- Output
 
-	put_string (a_string: STRING_8)
+	put_string (a_string: READABLE_STRING_8)
 			-- Write `a_string' to output stream.
 		require
 			is_open_write: is_open_write
@@ -21,7 +21,7 @@ feature -- Output
 		deferred
 		end
 
-	put_substring (a_string: STRING; s, e: INTEGER)
+	put_substring (a_string: READABLE_STRING_8; s, e: INTEGER)
 			-- Write substring of `a_string' between indexes
 			-- `s' and `e' to output stream.
 			--| Could be redefined for optimization			
@@ -46,7 +46,7 @@ feature -- Output
 			put_string (c.out)
 		end
 
-	put_file_content (fn: STRING)
+	put_file_content (fn: READABLE_STRING_8)
 			-- Send the content of file `fn'
 		require
 			string_not_empty: not fn.is_empty
@@ -70,7 +70,7 @@ feature -- Output
 
 feature -- Specific output
 
-	put_header_line (s: STRING)
+	put_header_line (s: READABLE_STRING_8)
 			-- Send `s' to http client as header line
 		do
 			put_string (s)
