@@ -58,7 +58,7 @@ feature -- Status writing
 
 feature -- Basic operation
 
-	put_string (s: STRING)
+	put_string (s: READABLE_STRING_8)
 			-- Send `s' to http client
 		do
 			fcgi.put_string (s)

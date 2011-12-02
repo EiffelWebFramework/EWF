@@ -10,6 +10,9 @@ class
 
 inherit
 	WGI_OUTPUT_STREAM
+		rename
+			put_string as put_readable_string_8
+		end
 
 	CONSOLE
 		rename
@@ -49,6 +52,17 @@ feature -- Status writing
 				s.append_string (l_status_message)
 			end
 			put_header_line (s)
+		end
+
+	put_readable_string_8 (s: READABLE_STRING_8)
+			-- Write `s' at end of default output.
+		local
+			ext: C_STRING
+		do
+			if s.count > 0 then
+				create ext.make (s)
+				console_ps (file_pointer, ext.managed_data.item, s.count)
+			end
 		end
 
 note

@@ -49,7 +49,7 @@ feature -- FCGI connection
 
 feature -- FCGI output
 
-	put_string (a_str: STRING)
+	put_string (a_str: READABLE_STRING_8)
 			-- Put `a_str' on the FastCGI stdout.
 		do
 			io.put_string (a_str)

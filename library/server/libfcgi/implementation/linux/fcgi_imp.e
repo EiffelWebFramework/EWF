@@ -67,7 +67,7 @@ feature -- FCGI Connection
 
 feature -- FCGI output
 
-	put_string (a_str: STRING)
+	put_string (a_str: READABLE_STRING_8)
 			-- Put `a_str' on the FastCGI stdout.
 		local
 			l_c_str: C_STRING
