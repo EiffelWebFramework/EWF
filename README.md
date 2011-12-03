@@ -4,9 +4,11 @@
 ## Overview
 
 Official project site for Eiffel Web Framework:
+
 * http://eiffel-world.github.com/Eiffel-Web-Framework/
 
 For more information please have a look at the related wiki:
+
 * https://github.com/Eiffel-World/Eiffel-Web-Framework/wiki
 
 ## Requirements
@@ -26,8 +28,8 @@ Or using git version >= 1.6.5
 * git clone --recursive https://github.com/Eiffel-World/Eiffel-Web-Framework.git
 
 * And to build the required and related Clibs
-** cd contrib/ise_library/curl
-** geant compile
+  * cd contrib/ise_library/curl
+  * geant compile
 
 ## Libraries under 'library'
 
