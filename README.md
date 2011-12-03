@@ -25,6 +25,7 @@ For more information please have a look at the related wiki:
 * git submodule foreach --recursive git checkout master
 
 Or using git version >= 1.6.5
+
 * git clone --recursive https://github.com/Eiffel-World/Eiffel-Web-Framework.git
 
 * And to build the required and related Clibs
