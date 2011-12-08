@@ -1,13 +1,13 @@
 Restbuck Eiffel Implementation based on the book of REST in Practice
-
-This is an implementation of CRUD web services as is presented in the book
-
-Verb         URI or template     Use
-POST         /order              Create a new order, and upon success, receive a Locationheader specifying the new order’s URI.
-GET          /order/{orderId}    Request the current state of the order specified by the URI.
-PUT          /order/{orderId}    Update an order at the given URI with new information, providing the full representation.
-DELETE       /order/{orderId}    Logically remove the order identified by the given URI.
-
+====================================================================
+This is an implementation of CRUD pattern for manipulate resources
+<table>
+<TR><TH>Verb</TH>         <TH>URI or template</TH>     <TH>Use</TH></TR>
+<TR><TD>POST</TD>         <TD>/order</TD>              <TD>Create a new order, and upon success, receive a Locationheader specifying the new order's URI.</TD></TR>
+<TR><TD>GET</TD>          <TD>/order/{orderId}</TD>    <TD>Request the current state of the order specified by the URI.</TD></TR>
+<TR><TD>PUT</TD>          <TD>/order/{orderId}</TD>    <TD>Update an order at the given URI with new information, providing the full representation.</TD></TR>
+<TR><TD>DELETE</TD>       <TD>/order/{orderId}</TD>    <TD>Logically remove the order identified by the given URI.</TD></TR>
+</table>
 
 How to Create an order
 
