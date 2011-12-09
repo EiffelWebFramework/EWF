@@ -205,7 +205,6 @@ But we change our decision and we want to stay in the shop.
 	Content-Type: application/json; charset=UTF-8
 	Host: localhost:8080
 	Connection: Keep-Alive
-	User-Agent: Apache-HttpClient/4.0-beta2 (java 1.5)
 	Expect: 100-Continue
 
 	{
@@ -245,11 +244,40 @@ Response success
 How to Delete an order with DELETE
 ----------------------------------
 Here we use DELETE to cancel an order, if that order is in state where it can still be canceled.
-200 if is ok
+204 if is ok
 404 Resource not found
 405 if consumer and service's view of the resouce state is inconsisent
 500 if we have an internal server error
 
+
+	DELETE /order/1 HTTP/1.1
+	Host: localhost:8080
+	Connection: Keep-Alive
+
+Response success
+
+	HTTP/1.1 204 No Content
+
+	Status	204 No Content
+	Content-Type	application/json
+	Date	FRI,09 DEC 2011 21:10:51.00 GMT
+	
+If we want to check that the resource does not exist anymore we can try to retrieve a GET /order/1 and we will receive a
+404 No Found
+
+	GET /order/1 HTTP/1.1
+	Host: localhost:8080
+	Connection: Keep-Alive
+
+Response
+	HTTP/1.1 404 Not Found
+	
+	Status	404 Not Found
+	Content-Type	application/json
+	Content-Length	44
+	Date	FRI,09 DEC 2011 21:14:17.79 GMT
+
+	The following resource/order/1 is not found 
 
 
 References
