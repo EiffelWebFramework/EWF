@@ -11,7 +11,13 @@ the HTTP protocol as an application protocol instead of a transport protocol.
 </table>
 
 RESTBUCKS_SERVER
----------------
+----------------
+This class implement the main entry of our REST CRUD service, we are using a default connector (Nino Connector, 
+using a WebServer written in Eiffel).
+We are inheriting from URI_TEMPLATE_ROUTED_SERVICE, this allows us to map our service contrat, as is shown in the previous
+table, the mapping is defined in the feature setup_router, this also show that the class ORDER_HANDLER will be encharge
+of to handle different type of request to the ORDER resource.
+
 
 	class
 		RESTBUCKS_SERVER
