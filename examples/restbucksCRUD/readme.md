@@ -157,8 +157,8 @@ Response success
 	}
 
 
-How to Read an order
---------------------
+How to Read an order with GET
+-----------------------------
 Using GET to retrieve resource information.
 If the GET request is SUCCESS, we response with 200 OK, and a representation of the order
 If the GET request is not SUCCESS, we response with 404 Resource not found
@@ -186,19 +186,64 @@ If is a Conditional GET and the resource does not change we send a 304, Resource
 
 
 
-How to Update an order
-----------------------
-Updating a resource with PUT.
+How to Update an order with PUT
+-------------------------------
 A successful PUT request will not create a new resource, instead it will change the state of the resource identified by the current uri.
 If success we response with 200 and the updated order.
 404 if the order is not found
 400 in case of a bad request
 500 internal server error
 If the request is a Conditional PUT, and it does not mat we response 415, precondition failed.
- 
 
-How to Delete an order
-----------------------
+Suposse that we had created an Order with the values shown in the _How to create an order with POST_
+But we change our decision and we want to stay in the shop.
+
+
+
+	PUT /order/1 HTTP/1.1
+	Content-Length: 122
+	Content-Type: application/json; charset=UTF-8
+	Host: localhost:8080
+	Connection: Keep-Alive
+	User-Agent: Apache-HttpClient/4.0-beta2 (java 1.5)
+	Expect: 100-Continue
+
+	{
+	  "id" : "1",
+	  "location" : "in shop",
+	  "status" : "submitted",
+	  "items" : [ {
+	    "name" : "late",
+	    "size" : "small",
+	    "quantity" : 1,
+	    "option" : "skim"
+	  } ]
+	}
+
+
+Response success
+
+	HTTP/1.1 200 OK
+	Status	200 OK
+	Content-Type	application/json
+	Date	FRI,09 DEC 2011 21:06:26.00 GMT
+	etag	8767F900674B843E1F3F70BCF3E62403
+	Content-Length	122
+	
+	{
+  	"id" : "1",
+  	"location" : "in shop",
+  	"status" : "submitted",
+  	"items" : [ {
+    		"name" : "late",
+    		"size" : "small",
+    		"quantity" : 1,
+    		"option" : "skim"
+  	} ]
+	}
+
+How to Delete an order with DELETE
+----------------------------------
 Here we use DELETE to cancel an order, if that order is in state where it can still be canceled.
 200 if is ok
 404 Resource not found
