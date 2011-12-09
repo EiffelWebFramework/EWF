@@ -1,7 +1,11 @@
 Restbuck Eiffel Implementation based on the book of REST in Practice
 ====================================================================
-This is an implementation of CRUD pattern for manipulate resources, this is the first step to use
+This is an ihmplementation of CRUD pattern for manipulate resources, this is the first step to use
 the HTTP protocol as an application protocol instead of a transport protocol.
+
+Restbuck Protocol
+-----------------
+
 <table>
 <TR><TH>Verb</TH>         <TH>URI or template</TH>     <TH>Use</TH></TR>
 <TR><TD>POST</TD>         <TD>/order</TD>              <TD>Create a new order, and upon success, receive a Locationheader specifying the new order's URI.</TD></TR>
@@ -9,6 +13,14 @@ the HTTP protocol as an application protocol instead of a transport protocol.
 <TR><TD>PUT</TD>          <TD>/order/{orderId}</TD>    <TD>Update an order at the given URI with new information, providing the full representation.</TD></TR>
 <TR><TD>DELETE</TD>       <TD>/order/{orderId}</TD>    <TD>Logically remove the order identified by the given URI.</TD></TR>
 </table>
+
+Resource Represenation
+----------------------
+The previous tables shows a contrat, the URI or URI template, allows us to indentify resources, now we will chose a 
+representacion, for this particular case we will use JSON.
+
+Note: _A resource can have multiple URIs_
+      _A resource can have multuple Representations_
 
 RESTBUCKS_SERVER
 ----------------
