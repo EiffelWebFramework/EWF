@@ -101,8 +101,8 @@ of to handle different type of request to the ORDER resource.
 
 
 
-How to Create an order
-----------------------
+How to Create an order with POST
+--------------------------------
 
 Here is the convention that we are using: 
 POST is used for creation and the server determines the URI of the created resource.
@@ -112,27 +112,49 @@ if the request POST is not SUCCESS, the server will response with
 400 BAD REQUEST, the client send a bad request or
 500 INTERNAL_SERVER_ERROR, when the server can deliver the request.
 
-    * Uri: http://localhost:8080/order
-    * Method: POST
-    * Note: you will get in the response the "location" of the new your order.
-    * HEADERS:
-
-      Content-Type: application/json
-
-    * Example CONTENT
+POST /order HTTP/1.1
+Host: 127.0.0.1:8080
+Connection: keep-alive
+Content-Length: 196
+Origin: chrome-extension://fhjcajmcbmldlhcimfajhfbgofnpcjmb
+Content-Type: application/json
+Accept: */*
+Accept-Encoding: gzip,deflate,sdch
+Accept-Language: es-419,es;q=0.8,en;q=0.6
+Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.3
 	     
-  	      {
-		"location":"takeAway",
-		"items":[
-		        {
-		        "name":"Late",
-		        "option":"skim",
-		        "size":"Small",
-		        "quantity":1
-		        }
-		    ]
-		}
+{
+ "location":"takeAway",
+ "items":[
+          {
+           "name":"Late",
+	   "option":"skim",
+	   "size":"Small",
+	   "quantity":1
+	   }
+    ]
+}
 
+Response success
+
+HTTP/1.1 201 Created
+Status	201 Created
+Content-Type	application/json
+Content-Length	123
+Location	http://localhost:8080/order/1
+Date	FRI,09 DEC 2011 20:34:20.00 GMT
+
+{
+  "id" : "1",
+  "location" : "takeAway",
+  "status" : "submitted",
+  "items" : [ {
+    "name" : "late",
+    "size" : "small",
+    "quantity" : 1,
+    "option" : "skim"
+  } ]
+}
 
 
 How to Read an order
