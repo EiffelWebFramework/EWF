@@ -130,3 +130,8 @@ How to Delete an order
     * Uri: http://localhost:8080/order/{order_id}
     * Method: DELETE
 
+
+References
+----------
+1. [How to get a cup of coffe](http://www.infoq.com/articles/webber-rest-workflow) 
+2. [Rest in Practice] (http://restinpractice.com/default.aspx)
