@@ -19,9 +19,9 @@ Resource Represenation
 The previous tables shows a contrat, the URI or URI template, allows us to indentify resources, now we will chose a 
 representacion, for this particular case we will use JSON.
 
-Note: 
-	* _A resource can have multiple URIs_
-        * _A resource can have multuple Representations_
+Note: <br/>
+1. *A resource can have multiple URIs*.<br/>
+2. *A resource can have multiple Representations*.<br/>
 
 RESTBUCKS_SERVER
 ----------------
@@ -128,6 +128,7 @@ How to Create an order
 
 
 How to Read an order
+--------------------
     * Uri: http://localhost:8080/order/{order_id}
     * Method: GET
 
@@ -135,11 +136,13 @@ How to Read an order
 
 
 How to Update an order
+----------------------
     * Uri: http://localhost:8080/order/{order_id}
     * Method: PUT
 
 
 How to Delete an order
+----------------------
     * Uri: http://localhost:8080/order/{order_id}
     * Method: DELETE
 
