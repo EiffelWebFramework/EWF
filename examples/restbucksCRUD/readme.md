@@ -19,8 +19,9 @@ Resource Represenation
 The previous tables shows a contrat, the URI or URI template, allows us to indentify resources, now we will chose a 
 representacion, for this particular case we will use JSON.
 
-Note: _A resource can have multiple URIs_
-      _A resource can have multuple Representations_
+Note: 
+	* _A resource can have multiple URIs_
+        * _A resource can have multuple Representations_
 
 RESTBUCKS_SERVER
 ----------------
