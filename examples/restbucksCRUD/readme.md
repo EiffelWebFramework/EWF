@@ -104,7 +104,7 @@ of to handle different type of request to the ORDER resource.
 How to Create an order
 ----------------------
 
-Here is the convention that we are using 
+Here is the convention that we are using: 
 POST is used for creation and the server determines the URI of the created resource.
 If the request post is SUCCESS, the server will create the order and will response with
 HTTP_RESPONSE 201 CREATED, the Location header will contains the newly created order's URI
