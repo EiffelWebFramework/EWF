@@ -199,8 +199,12 @@ If the request is a Conditional PUT, and it does not mat we response 415, precon
 
 How to Delete an order
 ----------------------
-    * Uri: http://localhost:8080/order/{order_id}
-    * Method: DELETE
+Here we use DELETE to cancel an order, if that order is in state where it can still be canceled.
+200 if is ok
+404 Resource not found
+405 if consumer and service's view of the resouce state is inconsisent
+500 if we have an internal server error
+
 
 
 References
