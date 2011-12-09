@@ -106,11 +106,11 @@ How to Create an order
 
 Here is the convention that we are using: 
 POST is used for creation and the server determines the URI of the created resource.
-If the request post is SUCCESS, the server will create the order and will response with
-HTTP_RESPONSE 201 CREATED, the Location header will contains the newly created order's URI
-if the request post is not SUCCESS, the server will response with
-HTTP_RESPONSE 400 BAD REQUEST, the client send a bad request or
-HTTP_RESPONSE 500 INTERNAL_SERVER_ERROR, when the server can deliver the request.
+If the request POST is SUCCESS, the server will create the order and will response with
+201 CREATED, the Location header will contains the newly created order's URI,
+if the request POST is not SUCCESS, the server will response with
+400 BAD REQUEST, the client send a bad request or
+500 INTERNAL_SERVER_ERROR, when the server can deliver the request.
 
     * Uri: http://localhost:8080/order
     * Method: POST
