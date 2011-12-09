@@ -270,6 +270,7 @@ If we want to check that the resource does not exist anymore we can try to retri
 	Connection: Keep-Alive
 
 Response
+
 	HTTP/1.1 404 Not Found
 	
 	Status	404 Not Found
