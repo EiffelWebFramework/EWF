@@ -159,9 +159,30 @@ Response success
 
 How to Read an order
 --------------------
-    * Uri: http://localhost:8080/order/{order_id}
-    * Method: GET
+Using GET to retrieve resource information.
+If the GET request is SUCCESS, we response with 200 OK, and a representation of the order
+If the GET request is not SUCCESS, we response with 404 Resource not found
+If is a Conditional GET and the resource does not change we send a 304, Resource not modifed
 
+	HTTP/1.1 200 OK
+	
+	Status	200 OK
+	Content-Type	application/json
+	Content-Length	123
+	Date	FRI,09 DEC 2011 20:53:46.00 GMT
+	etag	2ED3A40954A95D766FC155682DC8BB52
+	
+	{
+	  "id" : "1",
+	  "location" : "takeAway",
+	  "status" : "submitted",
+	  "items" : [ {
+	    "name" : "late",
+	    "size" : "small",
+	    "quantity" : 1,
+	    "option" : "skim"
+	  } ]
+	}
 
 
 
