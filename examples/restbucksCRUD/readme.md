@@ -188,9 +188,14 @@ If is a Conditional GET and the resource does not change we send a 304, Resource
 
 How to Update an order
 ----------------------
-    * Uri: http://localhost:8080/order/{order_id}
-    * Method: PUT
-
+Updating a resource with PUT.
+A successful PUT request will not create a new resource, instead it will change the state of the resource identified by the current uri.
+If success we response with 200 and the updated order.
+404 if the order is not found
+400 in case of a bad request
+500 internal server error
+If the request is a Conditional PUT, and it does not mat we response 415, precondition failed.
+ 
 
 How to Delete an order
 ----------------------
