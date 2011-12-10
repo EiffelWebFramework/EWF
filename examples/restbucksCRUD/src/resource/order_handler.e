@@ -66,9 +66,9 @@ feature -- HTTP Methods
 		local
 			etag_util : ETAG_UTILS
 		do
-			if attached req.meta_variable ("HTTP_IF_NONE_MATCH") as if_none_match then
+			if attached req.meta_string_variable ("HTTP_IF_NONE_MATCH") as if_none_match then
 				create etag_util
-				if if_none_match.as_string.same_string (etag_util.md5_digest (l_order.out).as_string_32) then
+				if if_none_match.same_string (etag_util.md5_digest (l_order.out).as_string_32) then
 					Result := True
 				end
 			end
@@ -108,26 +108,31 @@ feature -- HTTP Methods
 		-- If the request is a Conditional PUT, and it does not mat we response
 		-- 415, precondition failed.
 		local
-			l_post: STRING
+			l_put: STRING
 			l_order : detachable ORDER
+			id :  STRING
 		do
-			req.input.read_string (req.content_length_value.as_integer_32)
-			l_post := req.input.last_string
-			l_order := extract_order_request(l_post)
-			if  l_order /= Void and then db_access.orders.has_key (l_order.id) then
-				if is_valid_to_update(l_order) then
-					if is_conditional_put (req, l_order) then
-						update_order( l_order)
-						compute_response_put (ctx, req, res, l_order)
+			if attached req.orig_path_info as orig_path then
+				id := get_order_id_from_path (orig_path)
+				req.input.read_string (req.content_length_value.as_integer_32)
+				l_put := req.input.last_string
+				l_order := extract_order_request(l_put)
+				if  l_order /= Void and then db_access.orders.has_key (id) then
+					l_order.set_id (id)
+					if is_valid_to_update(l_order) then
+						if is_conditional_put (req, l_order) then
+							update_order( l_order)
+							compute_response_put (ctx, req, res, l_order)
+						else
+							handle_precondition_fail_response ("", ctx, req, res)
+						end
 					else
-						handle_precondition_fail_response ("", ctx, req, res)
+						--| FIXME: Here we need to define the Allow methods
+						handle_resource_conflict_response (l_put +"%N There is conflict while trying to update the order, the order could not be update in the current state", ctx, req, res)
 					end
 				else
-					--| FIXME: Here we need to define the Allow methods
-					handle_resource_conflict_response (l_post +"%N There is conflict while trying to update the order, the order could not be update in the current state", ctx, req, res)
+					handle_bad_request_response (l_put +"%N is not a valid ORDER, maybe the order does not exist in the system", ctx, req, res)
 				end
-			else
-				handle_bad_request_response (l_post +"%N is not a valid ORDER, maybe the order does not exist in the system", ctx, req, res)
 			end
 		end
 
@@ -138,9 +143,9 @@ feature -- HTTP Methods
 			etag_util : ETAG_UTILS
 		do
 			if attached retrieve_order (order.id) as l_order then
-				if attached req.meta_variable ("HTTP_IF_MATCH") as if_match then
+				if attached req.meta_string_variable ("HTTP_IF_MATCH") as if_match then
 						create etag_util
-						if if_match.as_string.same_string (etag_util.md5_digest (l_order.out).as_string_32) then
+						if if_match.same_string (etag_util.md5_digest (l_order.out).as_string_32) then
 							Result := True
 						end
 				else

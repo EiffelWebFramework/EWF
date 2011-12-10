@@ -38,7 +38,7 @@ feature -- Conversion
             s_location ?= json.object (j.item (location_key), Void)
             s_status ?= json.object (j.item (status_key), Void)
 
-         	create o.make (s_id, s_location, s_status)
+         	create o.make ("", s_location, s_status)
 
 			if attached {JSON_ARRAY} j.item (items_key) as l_val then
 				l_array := l_val.array_representation
@@ -87,7 +87,7 @@ feature -- Conversion
         	jv: JSON_OBJECT
         do
         	create Result.make
-            Result.put (json.value (o.id), id_key)
+--            Result.put (json.value (o.id), id_key)
             Result.put (json.value (o.location), location_key)
 			Result.put (json.value (o.status), status_key)
             from

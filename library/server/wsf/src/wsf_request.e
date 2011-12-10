@@ -33,7 +33,7 @@ feature {NONE} -- Initialization
 				across
 					l_vars as c
 				loop
-					meta_variables_table.force (new_string_value (c.key, c.item), c.item)
+					meta_variables_table.force (new_string_value (c.key, c.item), c.key)
 				end
 			else
 				create meta_variables_table.make (0)

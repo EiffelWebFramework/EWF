@@ -41,7 +41,7 @@ feature -- Access
 	raw_header: READABLE_STRING_8
 			-- Raw http header of the response.	
 
-	headers: LIST [TUPLE [key: READABLE_STRING_8; value: READABLE_STRING_8]]
+	headers: HASH_TABLE[READABLE_STRING_8,READABLE_STRING_8]
 			-- Computed table of http headers of the response.
 		local
 			tb: like internal_headers
@@ -86,7 +86,7 @@ feature -- Access
 							from until c <= n and not h[c].is_space loop
 								c := c + 1
 							end
-							tb.force ([k, h.substring (c, l_end)])
+							tb.put (h.substring (c, l_end), k)
 						else
 							check header_has_colon: c > 0 end
 						end
@@ -125,7 +125,9 @@ feature -- Change
 
 feature {NONE} -- Implementation
 
-	internal_headers: detachable ARRAYED_LIST [TUPLE [key: READABLE_STRING_8; value: READABLE_STRING_8]]
+--	internal_headers: detachable ARRAYED_LIST [TUPLE [key: READABLE_STRING_8; value: READABLE_STRING_8]]
 			-- Internal cached value for the headers
 
+	internal_headers: detachable HASH_TABLE[READABLE_STRING_8,READABLE_STRING_8]
+		-- Internal cached value for the headers
 end
