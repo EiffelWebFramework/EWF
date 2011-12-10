@@ -27,7 +27,7 @@ feature -- Input
 	read_string (nb: INTEGER)
 		require
 			is_open_read: is_open_read
-			not_end_of_input: not end_of_input
+--			not_end_of_input: not end_of_input
 			nb_large_enough: nb > 0
 		deferred
 		ensure

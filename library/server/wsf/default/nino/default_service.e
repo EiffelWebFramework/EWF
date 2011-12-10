@@ -17,11 +17,13 @@ feature {NONE} -- Initialization
 		do
 			port_number := 8080
 			base_url := ""
+
 			debug ("nino")
 				print ("Example: start a Nino web server on port " + port_number.out +
 					 ", %Nand reply Hello World for any request such as http://localhost:" + port_number.out + "/" + base_url + "%N")
 			end
 			create app.make_custom (agent wgi_execute, base_url)
+			app.configuration.set_is_verbose (True)
 			app.listen (port_number)
 		end
 
