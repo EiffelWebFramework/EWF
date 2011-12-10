@@ -145,7 +145,6 @@ Response success
 	Date	FRI,09 DEC 2011 20:34:20.00 GMT
 	
 	{
-	  "id" : "1",
 	  "location" : "takeAway",
 	  "status" : "submitted",
 	  "items" : [ {
@@ -164,6 +163,16 @@ If the GET request is SUCCESS, we response with 200 OK, and a representation of 
 If the GET request is not SUCCESS, we response with 404 Resource not found
 If is a Conditional GET and the resource does not change we send a 304, Resource not modifed
 
+	GET /order/1 HTTP/1.1
+	Host: 127.0.0.1:8080
+	Connection: keep-alive
+	Accept: */*
+	Accept-Encoding: gzip,deflate,sdch
+	Accept-Language: es-419,es;q=0.8,en;q=0.6
+	Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.3
+	If-None-Match: 6542EF270D91D3EAF39CFB382E4CEBA7
+
+Response
 	HTTP/1.1 200 OK
 	
 	Status	200 OK
@@ -173,7 +182,6 @@ If is a Conditional GET and the resource does not change we send a 304, Resource
 	etag	2ED3A40954A95D766FC155682DC8BB52
 	
 	{
-	  "id" : "1",
 	  "location" : "takeAway",
 	  "status" : "submitted",
 	  "items" : [ {
@@ -208,7 +216,6 @@ But we change our decision and we want to stay in the shop.
 	Expect: 100-Continue
 
 	{
-	  "id" : "1",
 	  "location" : "in shop",
 	  "status" : "submitted",
 	  "items" : [ {
@@ -230,7 +237,6 @@ Response success
 	Content-Length	122
 	
 	{
-  	"id" : "1",
   	"location" : "in shop",
   	"status" : "submitted",
   	"items" : [ {
