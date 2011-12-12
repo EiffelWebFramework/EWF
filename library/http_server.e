@@ -22,8 +22,8 @@ feature -- Initialization
 			a_http_handler_valid: a_http_handler /= Void
 		do
 			if configuration.is_verbose then
-				print("%N%N%N")
-				print ("Starting Web Application Server (port="+ configuration.http_server_port.out +"):%N")
+				log ("%N%N%N")
+				log ("Starting Web Application Server (port="+ configuration.http_server_port.out +"):%N")
 			end
 			stop_requested := False
 			a_http_handler.execute
@@ -41,6 +41,14 @@ feature	-- Access
 
 	stop_requested: BOOLEAN
 			-- Stops the server
+
+feature -- Output
+
+	log (a_message: READABLE_STRING_8)
+			-- Log `a_message'
+		do
+			io.put_string (a_message)
+		end
 
 ;note
 	copyright: "2011-2011, Javier Velilla and others"

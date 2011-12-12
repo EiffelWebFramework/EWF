@@ -32,6 +32,7 @@ feature -- Output
 			-- Log `a_message'
 		do
 			io.put_string (a_message)
+			io.put_new_line
 		end
 
 feature -- Inherited Features
@@ -50,14 +51,14 @@ feature -- Inherited Features
 			create l_listening_socket.make_server_by_port (l_http_port)
 			if not l_listening_socket.is_bound then
 				if is_verbose then
-					log ("Socket could not be bound on port " + l_http_port.out )
+					log ("Socket could not be bound on port " + l_http_port.out)
 				end
 			else
 				l_http_port := l_listening_socket.port
 				from
 					l_listening_socket.listen (max_tcp_clients)
 					if is_verbose then
-						log ("%NHTTP Connection Server ready on port " + l_http_port.out +" : http://localhost:" + l_http_port.out + "/%N")
+						log ("%NHTTP Connection Server ready on port " + l_http_port.out +" : http://localhost:" + l_http_port.out + "/")
 					end
 					on_launched (l_http_port)
 				until
@@ -102,12 +103,15 @@ feature -- Inherited Features
 			-- Process incoming connection
 		do
 			if is_verbose then
-				log ("Incoming connection...%N")
+				log ("Incoming connection...(socket:" + a_socket.descriptor.out + ")")
 			end
 				--| FIXME jfiat [2011/11/03] : should use a Pool of Threads/Handler to process this connection
 				--| also handle permanent connection...?
 			receive_message_and_send_reply (a_socket)
 			a_socket.cleanup
+			if is_verbose then
+				log ("connection completed...")
+			end
 		ensure
 			socket_closed: a_socket.is_closed
 		end
