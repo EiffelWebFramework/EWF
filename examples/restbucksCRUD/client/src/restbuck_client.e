@@ -29,9 +29,8 @@ feature {NONE} -- Initialization
 
 			-- Read the Order
 			print ("%N Read Order %N")
-			l_location := resp.headers.at ("Location")
+			l_location := resp.header ("Location")
 			resp := read_order (sess, l_location)
-
 
 			-- Update the Order
 
@@ -44,63 +43,47 @@ feature {NONE} -- Initialization
 		end
 
 	update_order ( sess: HTTP_CLIENT_SESSION; uri : detachable READABLE_STRING_8; a_body : STRING) : HTTP_CLIENT_RESPONSE
-		local
-			l_headers: HASH_TABLE [READABLE_STRING_8,READABLE_STRING_8]
 		do
 			create Result.make
 			if attached uri as l_uri then
 				sess.set_base_url (l_uri)
 				Result := sess.put ("", Void, a_body )
-				if attached Result as r then
-					-- Show headers
-					l_headers := r.headers
-					from
-						l_headers.start
-					until
-						l_headers.after
-					loop
-						print (l_headers.key_for_iteration)
-						print (":")
-						print (l_headers.item_for_iteration)
-						l_headers.forth
-						io.put_new_line
-					end
-
-					-- Show body
-					print (r.body)
+				-- Show headers
+				across
+ 					Result.headers as l_headers
+				loop
+					print (l_headers.item.name)
+					print (":")
+					print (l_headers.item.value)
 					io.put_new_line
 				end
+
+				-- Show body
+				print (Result.body)
+				io.put_new_line
 			end
 		end
 
 
 	read_order ( sess: HTTP_CLIENT_SESSION; uri : detachable READABLE_STRING_8) : HTTP_CLIENT_RESPONSE
-		local
-			l_headers: HASH_TABLE [READABLE_STRING_8,READABLE_STRING_8]
 		do
 			create Result.make
 			if attached uri as l_uri then
 				sess.set_base_url (l_uri)
 				Result := sess.get ("", Void)
-				if attached Result as r then
 					-- Show headers
-					l_headers := r.headers
-					from
-						l_headers.start
-					until
-						l_headers.after
-					loop
-						print (l_headers.key_for_iteration)
-						print (":")
-						print (l_headers.item_for_iteration)
-						l_headers.forth
-						io.put_new_line
-					end
-
-					-- Show body
-					print (r.body)
+				across
+					Result.headers as l_headers
+				loop
+					print (l_headers.item.name)
+					print (":")
+					print (l_headers.item.value)
 					io.put_new_line
 				end
+
+				-- Show body
+				print (Result.body)
+				io.put_new_line
 			end
 		end
 
@@ -112,7 +95,6 @@ feature {NONE} -- Initialization
 			j: JSON_PARSER
 			id: detachable STRING
 			context : HTTP_CLIENT_REQUEST_CONTEXT
-			l_headers: HASH_TABLE [READABLE_STRING_8,READABLE_STRING_8]
 		do
 			s := "[
 			  	      {
@@ -131,32 +113,26 @@ feature {NONE} -- Initialization
 			create context.make
 			context.headers.put ("application/json", "Content-Type")
 			Result := sess.post ("/order", context, s)
-			if attached Result as r then
-				-- Show the Headers
-				l_headers := r.headers
-				from
-					l_headers.start
-				until
-					l_headers.after
-				loop
-					print (l_headers.key_for_iteration)
-					print (":")
-					print (l_headers.item_for_iteration)
-					l_headers.forth
-					io.put_new_line
-				end
+			-- Show the Headers
+			across
+				Result.headers as l_headers
+			loop
+				print (l_headers.item.name)
+				print (":")
+				print (l_headers.item.value)
+				io.put_new_line
+			end
 
 
-				-- Show the Response body
-				if attached r.body as m then
-					create j.make_parser (m)
-					if j.is_parsed and attached j.parse_object as j_o then
-						if attached {JSON_STRING} j_o.item ("id") as l_id then
-							id := l_id.item
-						end
-						print (m)
-						io.put_new_line
+			-- Show the Response body
+			if attached Result.body as m then
+				create j.make_parser (m)
+				if j.is_parsed and attached j.parse_object as j_o then
+					if attached {JSON_STRING} j_o.item ("id") as l_id then
+						id := l_id.item
 					end
+					print (m)
+					io.put_new_line
 				end
 			end
 		end

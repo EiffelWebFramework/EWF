@@ -1,6 +1,7 @@
 note
-	description : "Objects that ..."
-	author      : "$Author$"
+	description : "[
+			Response retrieved by the client
+		]"
 	date        : "$Date$"
 	revision    : "$Revision$"
 
@@ -59,7 +60,7 @@ feature -- Access
 			across
 				headers as hds
 			loop
-				k := hds.item.key
+				k := hds.item.name
 				if k.same_string (a_name) then
 					v := hds.item.value
 					if s = Void then
@@ -73,7 +74,7 @@ feature -- Access
 			Result := s
 		end
 
-	headers: LIST [TUPLE [key: READABLE_STRING_8; value: READABLE_STRING_8]]
+	headers: LIST [TUPLE [name: READABLE_STRING_8; value: READABLE_STRING_8]]
 			-- Computed table of http headers of the response.
 			--| We use a LIST since one might have multiple message-header fields with the same field-name
 			--| Then the user can handle those case using default or custom concatenation
