@@ -28,7 +28,7 @@ feature -- Test routines
 					across
 						hds as c
 					loop
-						h.append (c.item.key + ": " + c.item.value + "%R%N")
+						h.append (c.item.name + ": " + c.item.value + "%R%N")
 					end
 				end
 				if attached res.body as l_body then
@@ -64,7 +64,7 @@ feature -- Test routines
 				across
 					hds as c
 				loop
-					h.append (c.item.key + ": " + c.item.value + "%N")
+					h.append (c.item.name + ": " + c.item.value + "%N")
 				end
 			end
 			assert ("Expected headers map", h.same_string ("[
