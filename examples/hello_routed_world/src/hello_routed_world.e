@@ -8,24 +8,21 @@ class
 	HELLO_ROUTED_WORLD
 
 inherit
-	ANY
-
 	URI_TEMPLATE_ROUTED_SERVICE
 
 	ROUTED_SERVICE_HELPER
-
-	DEFAULT_SERVICE
 
 create
 	make
 
 feature {NONE} -- Initialization
 
-
 	make
+		local
+			s: DEFAULT_SERVICE
 		do
 			initialize_router
-			make_and_launch
+			create s.make_and_launch (agent execute)
 		end
 
 	create_router
@@ -90,7 +87,11 @@ feature -- Execution
 			n: INTEGER
 			i: INTEGER
 			s: STRING_8
+			df: WSF_FILE_RESPONSE
 		do
+			create df.make_html ("index.html")
+			df.set_no_cache
+
 			l_url := req.script_url ("/home")
 
 			n := 3
@@ -199,7 +200,7 @@ feature -- Execution
 
 	handle_hello (ctx: REQUEST_URI_TEMPLATE_HANDLER_CONTEXT; req: WSF_REQUEST; res: WSF_RESPONSE)
 		do
-			execute_hello (req, res, Void, ctx)
+			execute_hello (req, res, ctx.string_parameter ("name"), ctx)
 		end
 
 	handle_anonymous_hello (ctx: REQUEST_URI_TEMPLATE_HANDLER_CONTEXT; req: WSF_REQUEST; res: WSF_RESPONSE)

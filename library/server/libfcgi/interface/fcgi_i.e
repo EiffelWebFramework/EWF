@@ -120,7 +120,7 @@ feature -- Input
 
 feature -- Output
 
-	put_string (a_str: STRING)
+	put_string (a_str: READABLE_STRING_8)
 			-- Put `a_str' on the FastCGI stdout.
 		require
 			a_str_not_void: a_str /= Void

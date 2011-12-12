@@ -14,17 +14,17 @@ inherit
 
 	ROUTED_SERVICE_HELPER
 
-	DEFAULT_SERVICE
-
 create
 	make
 
 feature {NONE} -- Initialization
 
 	make
+		local
+			s: DEFAULT_SERVICE
 		do
 			initialize_router
-			make_and_launch
+			create s.make_and_launch (agent execute)
 		end
 
 	create_router

@@ -43,25 +43,6 @@ feature -- Basic operation
 			put_string (s.substring (start_index, end_index))
 		end
 
-	put_file_content (fn: STRING)
-			-- Send the content of file `fn'
-		local
-			f: RAW_FILE
-		do
-			create f.make (fn)
-			if f.exists and then f.is_readable then
-				f.open_read
-				from
-				until
-					f.exhausted
-				loop
-					f.read_stream (4096)
-					put_string (f.last_string)
-				end
-				f.close
-			end
-		end
-
 	put_header_line (s: STRING)
 			-- Send `s' to http client as header line
 		do

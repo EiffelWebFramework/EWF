@@ -6,7 +6,7 @@ note
 deferred class
 	WGI_RESPONSE
 
-feature {WGI_SERVICE} -- Commit
+feature {WGI_RESPONSE, WGI_SERVICE} -- Commit
 
 	commit
 			-- Commit the current response
@@ -105,13 +105,6 @@ feature -- Output operation
 
 	write_substring (s: READABLE_STRING_8; a_begin_index, a_end_index: INTEGER)
 			-- Send the substring `s[a_begin_index:a_end_index]'
-		require
-			message_writable: message_writable
-		deferred
-		end
-
-	write_file_content (fn: READABLE_STRING_8)
-			-- Send the content of file `fn'
 		require
 			message_writable: message_writable
 		deferred

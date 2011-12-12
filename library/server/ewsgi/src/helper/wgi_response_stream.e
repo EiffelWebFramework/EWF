@@ -115,12 +115,6 @@ feature -- Output operation
 			output.put_substring (s, start_index, end_index)
 		end
 
-	write_file_content (fn: READABLE_STRING_8)
-			-- Send the content of file `fn'
-		do
-			output.put_file_content (fn)
-		end
-
 	flush
 		do
 			output.flush

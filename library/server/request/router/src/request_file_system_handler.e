@@ -147,32 +147,21 @@ feature -- Execution
 
 	respond_file (f: FILE; ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
 		local
-			fn: READABLE_STRING_8
 			h: HTTP_HEADER
 			ext: READABLE_STRING_8
 			ct: detachable READABLE_STRING_8
+			fres: WSF_FILE_RESPONSE
 		do
-			fn := f.name
-			ext := extension (fn)
+			ext := extension (f.name)
 			ct := extension_mime_mapping.mime_type (ext)
-			create h.make
+			if ct = Void then
+				ct := {HTTP_MIME_TYPES}.application_force_download
+			end
+			create fres.make_with_content_type (ct, f.name)
+			fres.set_status_code ({HTTP_STATUS_CODE}.ok)
+			fres.set_answer_head_request_method (req.request_method.same_string ({HTTP_REQUEST_METHODS}.method_head))
 
-			if ct /= Void then
-				h.put_content_type (ct)
-				h.put_content_length (f.count)
-				res.set_status_code ({HTTP_STATUS_CODE}.ok)
-				res.write_header_text (h.string)
-			else
-				create h.make
-				h.put_content_type ({HTTP_MIME_TYPES}.application_force_download)
-				h.put_content_length (f.count)
-				res.set_status_code ({HTTP_STATUS_CODE}.ok)
-				res.write_header_text (h.string)
-			end
-			if not req.request_method.same_string ({HTTP_REQUEST_METHODS}.method_head) then
-				res.write_file_content (fn)
-			end
-			res.flush
+			res.put_response (fres)
 		end
 
 	respond_not_found (uri: READABLE_STRING_8; ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)

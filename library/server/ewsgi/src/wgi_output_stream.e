@@ -46,28 +46,6 @@ feature -- Output
 			put_string (c.out)
 		end
 
-	put_file_content (fn: READABLE_STRING_8)
-			-- Send the content of file `fn'
-		require
-			string_not_empty: not fn.is_empty
-			is_readable: (create {RAW_FILE}.make (fn)).is_readable
-		local
-			f: RAW_FILE
-		do
-			create f.make (fn)
-			check f.exists and then f.is_readable end
-
-			f.open_read
-			from
-			until
-				f.exhausted
-			loop
-				f.read_stream (4096)
-				put_string (f.last_string)
-			end
-			f.close
-		end
-
 feature -- Specific output
 
 	put_header_line (s: READABLE_STRING_8)

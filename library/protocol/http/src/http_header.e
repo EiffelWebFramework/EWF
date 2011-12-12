@@ -193,6 +193,12 @@ feature -- Content related header
 			put_header_key_value ({HTTP_HEADER_NAMES}.header_transfer_encoding, a_enc)
 		end
 
+	put_transfer_encoding_binary
+			-- Put "Transfer-Encoding: binary" header
+		do
+			put_transfer_encoding ("binary")
+		end
+
 	put_transfer_encoding_chunked
 			-- Put "Transfer-Encoding: chunked" header
 		do

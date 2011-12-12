@@ -3,20 +3,35 @@ note
 	date: "$Date$"
 	revision: "$Revision$"
 
-deferred class
+class
 	DEFAULT_SERVICE
 
 inherit
 	WSF_SERVICE
 
+create
+	make_and_launch
+
 feature {NONE} -- Initialization
 
-	make_and_launch
+	make_and_launch (a_action: like action)
 		local
 			conn: WGI_LIBFCGI_CONNECTOR
 		do
+			action := a_action
 			create conn.make (Current)
 			conn.launch
+		end
+
+feature -- Execution
+
+	action: PROCEDURE [ANY, TUPLE [WSF_REQUEST, WSF_RESPONSE]]
+			-- Action to be executed on request incoming
+
+	execute (req: WSF_REQUEST; res: WSF_RESPONSE)
+			-- <Precursor>
+		do
+			action.call ([req, res])
 		end
 
 note
