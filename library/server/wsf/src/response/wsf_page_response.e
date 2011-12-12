@@ -11,7 +11,11 @@ inherit
 	WSF_RESPONSE_MESSAGE
 
 create
-	make
+	make,
+	make_with_body
+
+convert
+	make_with_body ({READABLE_STRING_8, STRING_8, IMMUTABLE_STRING_8})
 
 feature {NONE} -- Initialization
 
@@ -19,6 +23,12 @@ feature {NONE} -- Initialization
 		do
 			status_code := {HTTP_STATUS_CODE}.ok
 			create header.make
+		end
+
+	make_with_body (a_body: READABLE_STRING_8)
+		do
+			make
+			body := a_body
 		end
 
 feature -- Status
@@ -34,10 +44,24 @@ feature -- Header
 feature -- Output
 
 	send_to (res: WSF_RESPONSE)
+		local
+			b: like body
+			h: like header
 		do
+			h := header
+			b := body
 			res.set_status_code (status_code)
-			res.write_header_text (header.string)
-			if attached body as b then
+
+			if b /= Void then
+				if not h.has_content_length then
+					h.put_content_length (b.count)
+				end
+				if not h.has_content_type then
+					h.put_content_type_text_plain
+				end
+			end
+			res.write_header_text (h.string)
+			if b /= Void then
 				res.write_string (b)
 			end
 		end

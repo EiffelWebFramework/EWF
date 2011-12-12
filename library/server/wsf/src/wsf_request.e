@@ -26,19 +26,22 @@ convert
 feature {NONE} -- Initialization
 
 	make_from_wgi (r: WGI_REQUEST)
+		local
+			tb: like meta_variables_table
 		do
 			wgi_request := r
 			if attached r.meta_variables as l_vars then
-				create meta_variables_table.make (l_vars.count)
+				create tb.make (l_vars.count)
 				across
 					l_vars as c
 				loop
-					meta_variables_table.force (new_string_value (c.key, c.item), c.item)
+					tb.force (new_string_value (c.key, c.item), c.key)
 				end
 			else
-				create meta_variables_table.make (0)
+				create tb.make (0)
 			end
-			meta_variables := meta_variables_table
+			meta_variables_table := tb
+			meta_variables := tb
 			create error_handler.make
 			create uploaded_files.make (0)
 			raw_post_data_recorded := True

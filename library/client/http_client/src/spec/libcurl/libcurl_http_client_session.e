@@ -27,16 +27,16 @@ feature -- Basic operation
 		local
 			req: HTTP_CLIENT_REQUEST
 		do
-			create {LIBCURL_HTTP_CLIENT_REQUEST} req.make (base_url + a_path, "GET", Current)
-			Result := execute_request (req, ctx)
+			create {LIBCURL_HTTP_CLIENT_REQUEST} req.make (base_url + a_path, "GET", Current, ctx)
+			Result := req.execute
 		end
 
 	head (a_path: READABLE_STRING_8; ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT): HTTP_CLIENT_RESPONSE
 		local
 			req: HTTP_CLIENT_REQUEST
 		do
-			create {LIBCURL_HTTP_CLIENT_REQUEST} req.make (base_url + a_path, "HEAD", Current)
-			Result := execute_request (req, ctx)
+			create {LIBCURL_HTTP_CLIENT_REQUEST} req.make (base_url + a_path, "HEAD", Current, ctx)
+			Result := req.execute
 		end
 
 	post (a_path: READABLE_STRING_8; a_ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT; data: detachable READABLE_STRING_8): HTTP_CLIENT_RESPONSE
@@ -54,7 +54,6 @@ feature -- Basic operation
 			req: HTTP_CLIENT_REQUEST
 			ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT
 		do
-			create {LIBCURL_HTTP_CLIENT_REQUEST} req.make (base_url + a_path, "POST", Current)
 			ctx := a_ctx
 			if data /= Void then
 				if ctx = Void then
@@ -68,7 +67,8 @@ feature -- Basic operation
 				end
 				ctx.set_upload_filename (fn)
 			end
-			Result := execute_request (req, ctx)
+			create {LIBCURL_HTTP_CLIENT_REQUEST} req.make (base_url + a_path, "POST", Current, ctx)
+			Result := req.execute
 		end
 
 	put (a_path: READABLE_STRING_8; a_ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT; data: detachable READABLE_STRING_8): HTTP_CLIENT_RESPONSE
@@ -76,7 +76,6 @@ feature -- Basic operation
 			req: HTTP_CLIENT_REQUEST
 			ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT
 		do
-			create {LIBCURL_HTTP_CLIENT_REQUEST} req.make (base_url + a_path, "PUT", Current)
 			ctx := a_ctx
 			if data /= Void then
 				if ctx = Void then
@@ -84,7 +83,8 @@ feature -- Basic operation
 				end
 				ctx.set_upload_data (data)
 			end
-			Result := execute_request (req, ctx)
+			create {LIBCURL_HTTP_CLIENT_REQUEST} req.make (base_url + a_path, "PUT", Current, ctx)
+			Result := req.execute
 		end
 
 	put_file (a_path: READABLE_STRING_8; a_ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT; fn: detachable READABLE_STRING_8): HTTP_CLIENT_RESPONSE
@@ -92,7 +92,6 @@ feature -- Basic operation
 			req: HTTP_CLIENT_REQUEST
 			ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT
 		do
-			create {LIBCURL_HTTP_CLIENT_REQUEST} req.make (base_url + a_path, "PUT", Current)
 			ctx := a_ctx
 			if fn /= Void then
 				if ctx = Void then
@@ -100,25 +99,16 @@ feature -- Basic operation
 				end
 				ctx.set_upload_filename (fn)
 			end
-			Result := execute_request (req, ctx)
+			create {LIBCURL_HTTP_CLIENT_REQUEST} req.make (base_url + a_path, "PUT", Current, ctx)
+			Result := req.execute
 		end
 
 	delete (a_path: READABLE_STRING_8; ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT): HTTP_CLIENT_RESPONSE
 		local
 			req: HTTP_CLIENT_REQUEST
 		do
-			create {LIBCURL_HTTP_CLIENT_REQUEST} req.make (base_url + a_path, "DELETE", Current)
-			Result := execute_request (req, ctx)
-		end
-
-feature {NONE} -- Implementation
-
-	execute_request (req: HTTP_CLIENT_REQUEST; ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT): HTTP_CLIENT_RESPONSE
-		do
-			if ctx /= Void then
-				req.import (ctx)
-			end
-			Result := req.execute (ctx)
+			create {LIBCURL_HTTP_CLIENT_REQUEST} req.make (base_url + a_path, "DELETE", Current, ctx)
+			Result := req.execute
 		end
 
 feature {LIBCURL_HTTP_CLIENT_REQUEST} -- Curl implementation

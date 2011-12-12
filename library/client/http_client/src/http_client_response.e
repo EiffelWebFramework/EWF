@@ -41,8 +41,43 @@ feature -- Access
 	raw_header: READABLE_STRING_8
 			-- Raw http header of the response.	
 
+	header (a_name: READABLE_STRING_8): detachable READABLE_STRING_8
+			-- Header entry value related to `a_name'
+			-- if multiple entries, just concatenate them using comma character
+			--| See: http://www.w3.org/Protocols/rfc2616/rfc2616-sec4.html
+			--| Multiple message-header fields with the same field-name MAY be present in a message
+			--| if and only if the entire field-value for that header field is defined as a comma-separated list [i.e., #(values)].
+			--| It MUST be possible to combine the multiple header fields into one "field-name: field-value" pair,
+			--| without changing the semantics of the message, by appending each subsequent field-value to the first, each separated by a comma.
+			--| The order in which header fields with the same field-name are received is therefore significant
+			--| to the interpretation of the combined field value, and thus a proxy MUST NOT change the order of
+			--| these field values when a message is forwarded.			
+		local
+			s: detachable STRING_8
+			k,v: READABLE_STRING_8
+		do
+			across
+				headers as hds
+			loop
+				k := hds.item.key
+				if k.same_string (a_name) then
+					v := hds.item.value
+					if s = Void then
+						create s.make_from_string (v)
+					else
+						s.append_character (',')
+						s.append (v)
+					end
+				end
+			end
+			Result := s
+		end
+
 	headers: LIST [TUPLE [key: READABLE_STRING_8; value: READABLE_STRING_8]]
 			-- Computed table of http headers of the response.
+			--| We use a LIST since one might have multiple message-header fields with the same field-name
+			--| Then the user can handle those case using default or custom concatenation
+			--| (note: `header' is concatenating using comma)
 		local
 			tb: like internal_headers
 			pos, l_start, l_end, n, c: INTEGER
@@ -126,6 +161,6 @@ feature -- Change
 feature {NONE} -- Implementation
 
 	internal_headers: detachable ARRAYED_LIST [TUPLE [key: READABLE_STRING_8; value: READABLE_STRING_8]]
-			-- Internal cached value for the headers
+			-- Internal cached value for the headers			
 
 end

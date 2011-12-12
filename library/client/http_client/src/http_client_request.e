@@ -12,15 +12,24 @@ inherit
 
 feature {NONE} -- Initialization
 
-	make (a_url: READABLE_STRING_8; a_session: like session)
+	make (a_url: READABLE_STRING_8; a_session: like session; ctx: like context)
 			-- Initialize `Current'.
 		do
 			session := a_session
 			url := a_url
 			headers := session.headers.twin
+			if ctx /= Void then
+				context := ctx
+				import (ctx)
+			end
+		ensure
+			context_set: context = ctx
+			ctx_header_set: ctx /= Void implies across ctx.headers as ctx_h all attached headers.item (ctx_h.key) as v and then v.same_string (ctx_h.item) end
 		end
 
 	session: HTTP_CLIENT_SESSION
+
+	context: detachable HTTP_CLIENT_REQUEST_CONTEXT
 
 feature -- Access
 
@@ -32,14 +41,23 @@ feature -- Access
 
 	headers: HASH_TABLE [READABLE_STRING_8, READABLE_STRING_8]
 
-feature -- Execution
+feature {HTTP_CLIENT_SESSION} -- Execution
 
 	import (ctx: HTTP_CLIENT_REQUEST_CONTEXT)
+		local
+			l_headers: like headers
 		do
-			headers.fill (ctx.headers)
+			l_headers := headers
+			across
+				ctx.headers as ctx_headers
+			loop
+					--| fill header from `ctx'
+					--| and use `force' to overwrite the "session" value if any
+				l_headers.force (ctx_headers.item, ctx_headers.key)
+			end
 		end
 
-	execute (ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT): HTTP_CLIENT_RESPONSE
+	execute: HTTP_CLIENT_RESPONSE
 		deferred
 		end
 

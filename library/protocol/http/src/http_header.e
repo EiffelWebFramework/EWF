@@ -196,13 +196,13 @@ feature -- Content related header
 	put_transfer_encoding_binary
 			-- Put "Transfer-Encoding: binary" header
 		do
-			put_transfer_encoding ("binary")
+			put_transfer_encoding (str_binary)
 		end
 
 	put_transfer_encoding_chunked
 			-- Put "Transfer-Encoding: chunked" header
 		do
-			put_transfer_encoding ("chunked")
+			put_transfer_encoding (str_chunked)
 		end
 
 	put_content_disposition (a_type: READABLE_STRING_8; a_params: detachable READABLE_STRING_8)
@@ -354,6 +354,35 @@ feature -- Cookie
 
 feature -- Status report
 
+	header_named_value (a_name: READABLE_STRING_8): detachable STRING_8
+			-- Has header item for `n'?
+		require
+			has_header: has_header_named (a_name)
+		local
+			c: like headers.new_cursor
+			n: INTEGER
+			l_line: READABLE_STRING_8
+		do
+			from
+				n := a_name.count
+				c := headers.new_cursor
+			until
+				c.after or Result /= Void
+			loop
+				l_line := c.item
+				if l_line.starts_with (a_name) then
+					if l_line.valid_index (n + 1) then
+						if l_line [n + 1] = ':' then
+							Result := l_line.substring (n + 2, l_line.count)
+							Result.left_adjust
+							Result.right_adjust
+						end
+					end
+				end
+				c.forth
+			end
+		end
+
 	has_header_named (a_name: READABLE_STRING_8): BOOLEAN
 			-- Has header item for `n'?
 		local
@@ -378,10 +407,25 @@ feature -- Status report
 		end
 
 	has_content_length: BOOLEAN
-			-- Has header "content_length"
+			-- Has header "Content-Length"
 		do
 			Result := has_header_named ({HTTP_HEADER_NAMES}.header_content_length)
 		end
+
+	has_content_type: BOOLEAN
+			-- Has header "Content-Type"
+		do
+			Result := has_header_named ({HTTP_HEADER_NAMES}.header_content_type)
+		end
+
+	has_transfer_encoding_chunked: BOOLEAN
+			-- Has "Transfer-Encoding: chunked" header
+		do
+			if has_header_named ({HTTP_HEADER_NAMES}.header_transfer_encoding) then
+				Result := attached header_named_value ({HTTP_HEADER_NAMES}.header_transfer_encoding) as v and then v.same_string (str_chunked)
+			end
+		end
+
 
 feature {NONE} -- Implementation: Header
 
@@ -455,6 +499,9 @@ feature {NONE} -- Implementation
 		end
 
 feature {NONE} -- Constants
+
+	str_binary: STRING = "binary"
+	str_chunked: STRING = "chunked"
 
 	colon_space: STRING = ": "
 	semi_colon_space: STRING = "; "

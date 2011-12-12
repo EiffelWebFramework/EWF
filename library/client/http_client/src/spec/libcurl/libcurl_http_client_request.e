@@ -20,9 +20,9 @@ create
 
 feature {NONE} -- Initialization
 
-	make (a_url: READABLE_STRING_8; a_request_method: like request_method; a_session: like session)
+	make (a_url: READABLE_STRING_8; a_request_method: like request_method; a_session: like session; ctx: like context)
 		do
-			make_request (a_url, a_session)
+			make_request (a_url, a_session, ctx)
 			request_method := a_request_method
 		end
 
@@ -34,7 +34,7 @@ feature -- Access
 
 feature -- Execution
 
-	execute (ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT): HTTP_CLIENT_RESPONSE
+	execute: HTTP_CLIENT_RESPONSE
 		local
 			l_result: INTEGER
 			l_curl_string: CURL_STRING
@@ -45,7 +45,9 @@ feature -- Execution
 			curl: CURL_EXTERNALS
 			curl_easy: CURL_EASY_EXTERNALS
 			curl_handle: POINTER
+			ctx: like context
 		do
+			ctx := context
 			curl := session.curl
 			curl_easy := session.curl_easy
 
@@ -167,7 +169,15 @@ feature -- Execution
 					p := curl.slist_append (p, curs.key + ": " + curs.item)
 				end
 			end
-
+			if ctx /= Void then
+				if attached ctx.headers as l_headers_2 then
+					across
+						l_headers_2 as curs_2
+					loop
+						p := curl.slist_append (p, curs_2.key + ": " + curs_2.item)
+					end
+				end
+			end
 			p := curl.slist_append (p, "Expect:")
 			curl_easy.setopt_slist (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_httpheader, p)
 
