@@ -118,14 +118,14 @@ feature -- Server
 		local
 			req: WGI_REQUEST_FROM_TABLE
 			res: detachable WGI_RESPONSE_STREAM
-			rescued: BOOLEAN
+			rescued: INTEGER
 		do
-			if not rescued then
+			if rescued = 0 then
 				create req.make (env, create {WGI_NINO_INPUT_STREAM}.make (a_socket), Current)
 				create res.make (create {WGI_NINO_OUTPUT_STREAM}.make (a_socket))
 				req.set_meta_string_variable ("RAW_HEADER_DATA", a_headers_text)
 				service.execute (req, res)
-			else
+			elseif rescued = 1 then
 				if attached (create {EXCEPTION_MANAGER}).last_exception as e and then attached e.exception_trace as l_trace then
 					if res /= Void then
 						if not res.status_is_set then
@@ -138,7 +138,7 @@ feature -- Server
 				end
 			end
 		rescue
-			rescued := True
+			rescued := rescued + 1
 			retry
 		end
 
