@@ -19,7 +19,7 @@ feature {NONE} -- Initialization
 
 	make
 		local
-			s: DEFAULT_SERVICE
+			s: DEFAULT_SERVICE_LAUNCHER
 		do
 			initialize_router
 			create s.make_and_launch (agent execute)

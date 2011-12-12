@@ -1,10 +1,24 @@
 note
-	description: "Summary description for {DEFAULT_SERVICE}."
+	description: "[
+			Component to launch the service using the default connector
+
+			which is libFCGI for this class
+
+			How-to:
+
+				s: DEFAULT_SERVICE_LAUNCHER
+				create s.make_and_launch (agent execute)
+
+				execute (req: WSF_REQUEST; res: WSF_RESPONSE)
+					do
+						-- ...
+					end
+		]"
 	date: "$Date$"
 	revision: "$Revision$"
 
 class
-	DEFAULT_SERVICE
+	DEFAULT_SERVICE_LAUNCHER
 
 inherit
 	WSF_SERVICE

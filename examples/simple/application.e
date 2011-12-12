@@ -14,7 +14,7 @@ feature {NONE} -- Initialization
 	make
 			-- Run application.
 		local
-			s: DEFAULT_SERVICE
+			s: DEFAULT_SERVICE_LAUNCHER
 		do
 			create s.make_and_launch (agent execute)
 		end

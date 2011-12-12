@@ -1,10 +1,24 @@
 note
-	description: "Summary description for {DEFAULT_SERVICE}."
+	description: "[
+			Component to launch the service using the default connector
+
+			which is Eiffel Web Nino for this class
+
+			How-to:
+
+				s: DEFAULT_SERVICE_LAUNCHER
+				create s.make_and_launch (agent execute)
+
+				execute (req: WSF_REQUEST; res: WSF_RESPONSE)
+					do
+						-- ...
+					end
+		]"
 	date: "$Date$"
 	revision: "$Revision$"
 
 class
-	DEFAULT_SERVICE
+	DEFAULT_SERVICE_LAUNCHER
 
 inherit
 	WSF_SERVICE
@@ -21,7 +35,7 @@ feature {NONE} -- Initialization
 			base_url: STRING
 		do
 			action := a_action
-			port_number := 80 --| Default, but quite often, this port is already used ...
+			port_number := 8087 --| Default, but quite often, this port is already used ...
 			base_url := ""
 			debug ("nino")
 				print ("Example: start a Nino web server on port " + port_number.out +
