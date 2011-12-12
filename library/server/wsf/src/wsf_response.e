@@ -8,9 +8,6 @@ note
 class
 	WSF_RESPONSE
 
-inherit
-	WGI_RESPONSE
-
 create {WSF_SERVICE}
 	make_from_wgi
 
@@ -58,8 +55,14 @@ feature -- Status setting
 	set_status_code (a_code: INTEGER)
 			-- Set response status code
 			-- Should be done before sending any data back to the client
+		require
+			status_not_set: not status_is_set
+			header_not_committed: not header_committed
 		do
 			wgi_response.set_status_code (a_code)
+		ensure
+			status_code_set: status_code = a_code
+			status_set: status_is_set
 		end
 
 	status_code: INTEGER
@@ -68,20 +71,27 @@ feature -- Status setting
 			Result := wgi_response.status_code
 		end
 
-feature {WGI_RESPONSE} -- Core output operation
-
-	write (s: READABLE_STRING_8)
-			-- Send the string `s'
-			-- this can be used for header and body
-		do
-			wgi_response.write (s)
-		end
+--feature {WGI_RESPONSE} -- Core output operation
+--
+--	write (s: READABLE_STRING_8)
+--			-- Send the string `s'
+--			-- this can be used for header and body
+--		do
+--			wgi_response.write (s)
+--		end
 
 feature -- Header output operation
 
 	write_header_text (a_headers: READABLE_STRING_8)
+		require
+			status_set: status_is_set
+			header_not_committed: not header_committed
 		do
 			wgi_response.write_header_text (a_headers)
+		ensure
+			status_set: status_is_set
+			header_committed: header_committed
+			message_writable: message_writable
 		end
 
 	write_header (a_status_code: INTEGER; a_headers: detachable ARRAY [TUPLE [key: READABLE_STRING_8; value: READABLE_STRING_8]])
@@ -122,12 +132,16 @@ feature -- Output operation
 
 	write_string (s: READABLE_STRING_8)
 			-- Send the string `s'
+		require
+			message_writable: message_writable
 		do
 			wgi_response.write_string (s)
 		end
 
 	write_substring (s: READABLE_STRING_8; a_begin_index, a_end_index: INTEGER)
 			-- Send the substring `s[a_begin_index:a_end_index]'
+		require
+			message_writable: message_writable
 		do
 			wgi_response.write_substring (s, a_begin_index, a_end_index)
 		end
@@ -137,6 +151,8 @@ feature -- Output operation
 			-- If s is Void, this means this was the final chunk
 			-- Note: that you should have header
 			-- "Transfer-Encoding: chunked"
+		require
+			message_writable: message_writable
 		local
 			hex: STRING
 			i: INTEGER
@@ -206,14 +222,6 @@ feature -- Redirect
 			header_not_committed: not header_committed
 		do
 			redirect_now_with_custom_status_code (a_url, {HTTP_STATUS_CODE}.moved_permanently)
-		end
-
-feature {WGI_RESPONSE, WGI_SERVICE} -- Commit
-
-	commit
-			-- Commit the current response
-		do
-			wgi_response.commit
 		end
 
 note
