@@ -20,7 +20,6 @@ feature {NONE} -- Initialization
 	make (a_file_name: READABLE_STRING_8)
 		do
 			file_name := a_file_name
-			base_name := basename (a_file_name)
 			get_content_type
 			initialize
 		end
@@ -29,7 +28,6 @@ feature {NONE} -- Initialization
 			-- Initialize `Current'.
 		do
 			file_name := a_filename
-			base_name := basename (a_filename)
 			content_type := a_content_type
 			initialize
 		end
@@ -47,9 +45,7 @@ feature {NONE} -- Initialization
 			create h.make
 			header := h
 			h.put_content_type (content_type)
-			h.put_transfer_encoding_binary
 			h.put_content_length (filesize (file_name))
-			h.put_content_disposition ("attachment", "filename=%""+ base_name +"%"")
 		end
 
 feature -- Element change
@@ -76,8 +72,6 @@ feature -- Access
 	status_code: INTEGER assign set_status_code
 
 	file_name: READABLE_STRING_8
-
-	base_name: READABLE_STRING_8
 
 	content_type: READABLE_STRING_8
 
@@ -136,32 +130,6 @@ feature {NONE} -- Implementation: file system helper
 			p := fn.last_index_of ('.', fn.count)
 			if p > 0 then
 				Result := fn.substring (p + 1, fn.count)
-			else
-				create Result.make_empty
-			end
-		end
-
-	basename (fn: STRING): STRING
-			-- Basename of `fn'.
-		local
-			p: INTEGER
-		do
-			p := fn.last_index_of ((create {OPERATING_ENVIRONMENT}).Directory_separator, fn.count)
-			if p > 0 then
-				Result := fn.substring (p + 1, fn.count)
-			else
-				Result := fn
-			end
-		end
-
-	dirname (fn: STRING): STRING
-			-- Dirname of `fn'.	
-		local
-			p: INTEGER
-		do
-			p := fn.last_index_of ((create {OPERATING_ENVIRONMENT}).Directory_separator, fn.count)
-			if p > 0 then
-				Result := fn.substring (1, p - 1)
 			else
 				create Result.make_empty
 			end
