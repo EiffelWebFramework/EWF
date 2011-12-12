@@ -18,7 +18,4 @@
 			</file_rule>
 		</cluster>
 	</target>
-	<target name="service_file_dotnet" extends="service_file">
-		<setting name="msil_generation" value="true"/>
-	</target>
 </system>
