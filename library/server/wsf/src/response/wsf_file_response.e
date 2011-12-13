@@ -44,8 +44,25 @@ feature {NONE} -- Initialization
 		do
 			create h.make
 			header := h
+
 			h.put_content_type (content_type)
-			h.put_content_length (filesize (file_name))
+			get_file_size
+			update_content_length
+		end
+
+	update_content_length
+		local
+			n: INTEGER
+		do
+			n := file_size
+			if attached head as h then
+				n := n + h.count
+			end
+			if attached bottom as b then
+				n := n + b.count
+			end
+			content_length := n
+			header.put_content_length (n)
 		end
 
 feature -- Element change
@@ -67,13 +84,24 @@ feature -- Element change
 
 feature -- Access
 
+	status_code: INTEGER assign set_status_code
+
 	header: HTTP_HEADER
 
-	status_code: INTEGER assign set_status_code
+	content_length: INTEGER
+			-- Content-Length of the response
+
+	content_type: READABLE_STRING_8
+			-- Content-Type of the response
 
 	file_name: READABLE_STRING_8
 
-	content_type: READABLE_STRING_8
+	file_size: INTEGER
+			-- Size of file named `file_name'
+
+	head, bottom: detachable READABLE_STRING_8
+			-- Eventual head and bottom part
+			-- before and after the file content.
 
 feature -- Settings
 
@@ -98,27 +126,53 @@ feature -- Element change
 			answer_head_request_method := b
 		end
 
+	set_head (s: like head)
+			-- Set `head' to `s'
+			-- it also change the `content_length' and associated value in `header'
+		do
+			head := s
+			update_content_length
+		end
+
+	set_bottom (s: like bottom)
+			-- Set `bottom' to `s'	
+			-- it also change the `content_length' and associated value in `header'
+		do
+			bottom := s
+			update_content_length
+		end
+
 feature -- Basic operations
 
 	send_to (res: WSF_RESPONSE)
+		local
+			s: detachable READABLE_STRING_8
 		do
 			res.set_status_code (status_code)
 			res.write_header_text (header.string)
+			s := head
+			if s /= Void then
+				res.write_string (s)
+			end
 			if not answer_head_request_method then
 				send_file_content_to (file_name, res)
+			end
+			s := bottom
+			if s /= Void then
+				res.write_string (s)
 			end
 		end
 
 feature {NONE} -- Implementation: file system helper
 
-	filesize (fn: STRING): INTEGER
-			-- Size of the file `fn'.
+	get_file_size
+			-- Get `file_size' from file named `file_name'
 		local
 			f: RAW_FILE
 		do
-			create f.make (fn)
+			create f.make (file_name)
 			if f.exists then
-				Result := f.count
+				file_size := f.count
 			end
 		end
 
