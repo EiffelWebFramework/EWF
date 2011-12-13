@@ -19,22 +19,21 @@ For more information please have a look at the related wiki:
 
 ## How to get the source code?
 
+Using git version >= 1.6.5
+* git clone --recursive https://github.com/Eiffel-World/Eiffel-Web-Framework.git
+
+Otherwise, try
 * git clone https://github.com/Eiffel-World/Eiffel-Web-Framework.git
 * cd Eiffel-Web-Framework
 * git submodule update --init
 * git submodule foreach --recursive git checkout master
 
 An alternative to the last 2 instructions is to use the script from tools folder:
-
 * cd tools
 * update_git_working_copy
 
-Or using git version >= 1.6.5
-
-* git clone --recursive https://github.com/Eiffel-World/Eiffel-Web-Framework.git
-
 * And to build the required and related Clibs
-  * cd contrib/ise_library/curl
+  * cd contrib/ise_library/cURL
   * geant compile
 
 ## Libraries under 'library'
