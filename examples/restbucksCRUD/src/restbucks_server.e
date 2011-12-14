@@ -24,7 +24,7 @@ feature {NONE} -- Initialization
 			s: DEFAULT_SERVICE_LAUNCHER
 		do
 			initialize_router
-			create s.make_and_launch (agent execute)
+			create s.make_and_launch_with_options (agent execute, <<["port", 9090]>>)
 		end
 
 	create_router

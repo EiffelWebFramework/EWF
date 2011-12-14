@@ -22,7 +22,7 @@ feature {NONE} -- Initialization
 			body : STRING
 		do
 			create h.make
-			sess := h.new_session ("http://127.0.0.1:8080")
+			sess := h.new_session ("http://127.0.0.1:9090")
 			-- Create Order
 			print ("%N Create Order %N")
 			resp := create_order (sess)
