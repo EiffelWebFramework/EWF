@@ -22,7 +22,7 @@ feature {NONE} -- Initialization
 			s: DEFAULT_SERVICE_LAUNCHER
 		do
 			initialize_router
-			create s.make_and_launch (agent execute)
+			create s.make_and_launch_with_options (agent execute, <<["port", 8099]>>)
 		end
 
 	create_router
@@ -36,6 +36,7 @@ feature {NONE} -- Initialization
 			hello: REQUEST_URI_TEMPLATE_ROUTING_HANDLER
 			www: REQUEST_FILE_SYSTEM_HANDLER [REQUEST_URI_TEMPLATE_HANDLER_CONTEXT]
 		do
+			router.map_agent ("/refresh", agent execute_refresh)
 			router.map_agent ("/home", agent execute_home)
 			create www.make (document_root)
 			www.set_directory_index (<<"index.html">>)
@@ -79,7 +80,16 @@ feature {NONE} -- Initialization
 
 feature -- Execution
 
+
 	execute_default (req: WSF_REQUEST; res: WSF_RESPONSE)
+		local
+			l_url: STRING
+		do
+			l_url := req.absolute_script_url ("/home")
+			res.redirect_now_with_content (l_url, "You are now being redirected to " + l_url, {HTTP_MIME_TYPES}.text_html)
+		end
+
+	execute_refresh	(ctx: REQUEST_URI_TEMPLATE_HANDLER_CONTEXT; req: WSF_REQUEST; res: WSF_RESPONSE)
 		local
 			h: HTTP_HEADER
 			l_url: STRING
@@ -87,20 +97,20 @@ feature -- Execution
 			n: INTEGER
 			i: INTEGER
 			s: STRING_8
-			df: WSF_FILE_RESPONSE
 		do
-			create df.make_html ("index.html")
-			df.set_no_cache
+			l_url := req.absolute_script_url ("/home")
 
-			l_url := req.script_url ("/home")
+
 
 			n := 3
 			create h.make
 			h.put_refresh (l_url, 5)
+			h.put_location (l_url)
 			h.put_content_type_text_plain
 			h.put_transfer_encoding_chunked
 --			h.put_content_length (0)
-			res.set_status_code ({HTTP_STATUS_CODE}.moved_permanently)
+--			res.set_status_code ({HTTP_STATUS_CODE}.moved_permanently)
+			res.set_status_code ({HTTP_STATUS_CODE}.ok)
 			res.write_header_text (h.string)
 
 			from
@@ -143,6 +153,7 @@ feature -- Execution
 			l_body.append ("<html><body>Hello World ?!%N")
 			l_body.append ("<h3>Please try the following links</h3><ul>%N")
 			l_body.append ("<li><a href=%""+ req.script_url ("/") + "%">default</a></li>%N")
+			l_body.append ("<li><a href=%""+ req.script_url ("/refresh") + "%">redirect using refresh and chunked encoding</a></li>%N")
 			l_body.append ("<li><a href=%""+ req.script_url ("/hello") + "%">/hello</a></li>%N")
 			l_body.append ("<li><a href=%""+ req.script_url ("/hello.html/Joce") + "%">/hello.html/Joce</a></li>%N")
 			l_body.append ("<li><a href=%""+ req.script_url ("/hello.json/Joce") + "%">/hello.json/Joce</a></li>%N")

@@ -207,6 +207,7 @@ feature -- Redirect
 			h: HTTP_HEADER
 		do
 			if header_committed then
+				-- This might be a trouble about content-length				
 				write_string ("Headers already sent.%NCannot redirect, for now please follow this <a %"href=%"" + a_url + "%">link</a> instead%N")
 			else
 				create h.make_with_count (1)
@@ -222,6 +223,25 @@ feature -- Redirect
 			header_not_committed: not header_committed
 		do
 			redirect_now_with_custom_status_code (a_url, {HTTP_STATUS_CODE}.moved_permanently)
+		end
+
+	redirect_now_with_content (a_url: READABLE_STRING_8; a_content: READABLE_STRING_8; a_content_type: READABLE_STRING_8)
+			-- Redirect to the given url `a_url'
+		local
+			h: HTTP_HEADER
+		do
+			if header_committed then
+				-- This might be a trouble about content-length
+				write_string ("Headers already sent.%NCannot redirect, for now please follow this <a %"href=%"" + a_url + "%">link</a> instead%N")
+			else
+				create h.make_with_count (1)
+				h.put_location (a_url)
+				h.put_content_length (a_content.count)
+				h.put_content_type (a_content_type)
+				set_status_code ({HTTP_STATUS_CODE}.moved_permanently)
+				write_header_text (h.string)
+				write_string (a_content)
+			end
 		end
 
 note

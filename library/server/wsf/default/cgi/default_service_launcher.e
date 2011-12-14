@@ -37,6 +37,11 @@ feature {NONE} -- Initialization
 			cgi.launch
 		end
 
+	make_and_launch_with_options (a_action: like action; a_options: ARRAY [detachable TUPLE [name: READABLE_STRING_GENERAL; value: detachable ANY]])
+		do
+			make_and_launch (a_action)
+		end
+
 feature -- Execution
 
 	action: PROCEDURE [ANY, TUPLE [WSF_REQUEST, WSF_RESPONSE]]
