@@ -24,7 +24,8 @@ inherit
 	WSF_SERVICE
 
 create
-	make_and_launch
+	make_and_launch,
+	make_and_launch_with_options
 
 feature {NONE} -- Initialization
 
