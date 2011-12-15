@@ -43,8 +43,7 @@ An alternative to the last 2 instructions is to use the script from tools folder
   * connectors: various web server connectors for EWSGI
 * libfcgi: Wrapper for libfcgi SDK 
 * __wsf__: Web Server Framework [read more](library/server/wsf)
-* request
-  *  __router__: URL dispatching/routing based on uri, uri_template, or custom [read more](library/server/request/router)
+  *  __router__: URL dispatching/routing based on uri, uri_template, or custom [read more](library/server/wsf/router)
 
 ### protocol
 * __http__: HTTP related classes, constants for status code, content types, ... [read more](library/protocol/http)

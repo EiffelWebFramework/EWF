@@ -6,6 +6,11 @@ It is built on top of [EWSGI](../ewsgi/) to benefit from the various EWSGI conne
 ## Requirements
 * [EWSGI](../ewsgi)
 * [HTTP](../../protocol/http)
+* [URI template](../../protocol/uri_template)
+
+## Content
+* Core classes for the Web Server Framework
+* [Router](router) library
 
 ## Overview
 

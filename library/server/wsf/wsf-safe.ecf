@@ -10,11 +10,14 @@
 		<option warning="true" full_class_checking="true" is_attached_by_default="true" void_safety="all" syntax="provisional">
 		</option>
 		<library name="base" location="$ISE_LIBRARY\library\base\base-safe.ecf"/>
+		<library name="base_extension" location="$ISE_LIBRARY\library\base_extension\base_extension-safe.ecf"/>
 		<library name="ewsgi" location="..\ewsgi\ewsgi-safe.ecf"/>
 		<library name="time" location="$ISE_LIBRARY\library\time\time-safe.ecf"/>
 		<library name="error" location="..\..\error\error-safe.ecf"/>
 		<library name="http" location="..\..\protocol\http\http-safe.ecf"/>
+		<library name="uri_template" location="..\..\protocol\uri_template\uri_template-safe.ecf"/>
 		<library name="encoder" location="..\..\text\encoder\encoder-safe.ecf"/>
 		<cluster name="src" location=".\src" recursive="true"/>
+		<cluster name="router" location=".\router" recursive="true"/>
 	</target>
 </system>

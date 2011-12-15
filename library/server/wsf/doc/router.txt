@@ -1,4 +1,4 @@
-This library introduce the notion of router and handler
+This library introduce the notion of router and handler in the folder "router"
 The Router manages the association between URI,URI template and Handler
 The Router is in charge to route/dispatch a request to one of the Handler according to the URI and how the Handler is mapped in the Router.
 
