@@ -124,17 +124,19 @@ feature {NONE} -- Parser
 
 	read_trailer
 		do
-			print (" Reading trailer ")
-			from
-				input.read_character
-			until
-				input.last_character.is_equal ('%R')
-			loop
-				print (input.last_character)
+			if not input.end_of_input then
+				print (" Reading trailer ")
+				from
+					input.read_character
+				until
+					input.last_character.is_equal ('%R')
+				loop
+					print (input.last_character)
+					input.read_character
+				end
+				-- read the LF
 				input.read_character
 			end
-			-- read the LF
-			input.read_character
 		end
 feature {NONE} -- Access
 
