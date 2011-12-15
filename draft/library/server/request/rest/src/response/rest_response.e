@@ -133,9 +133,9 @@ feature -- Output
 		do
 			compute
 			res.set_status_code (200)
-			res.write_header_text (headers_string)
+			res.put_header_text (headers_string)
 			if attached message as m then
-				res.write_string (m)
+				res.put_string (m)
 			end
 		end
 

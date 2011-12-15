@@ -149,17 +149,17 @@ feature -- Basic operations
 			s: detachable READABLE_STRING_8
 		do
 			res.set_status_code (status_code)
-			res.write_header_text (header.string)
+			res.put_header_text (header.string)
 			s := head
 			if s /= Void then
-				res.write_string (s)
+				res.put_string (s)
 			end
 			if not answer_head_request_method then
 				send_file_content_to (file_name, res)
 			end
 			s := bottom
 			if s /= Void then
-				res.write_string (s)
+				res.put_string (s)
 			end
 		end
 
@@ -224,7 +224,7 @@ feature {NONE} -- Implementation: output
 				f.exhausted
 			loop
 				f.read_stream (4_096)
-				res.write_string (f.last_string)
+				res.put_string (f.last_string)
 			end
 			f.close
 		end

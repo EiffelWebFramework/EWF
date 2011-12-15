@@ -63,8 +63,8 @@ feature -- Execution
 
 				h.put_content_length (s.count)
 				res.set_status_code ({HTTP_STATUS_CODE}.ok)
-				res.write_header_text (h.string)
-				res.write_string (s)
+				res.put_header_text (h.string)
+				res.put_string (s)
 			end
 		end
 
@@ -136,9 +136,9 @@ feature -- Execution
 				h.put_content_type_text_html
 				res.set_status_code ({HTTP_STATUS_CODE}.ok)
 				h.put_content_length (s.count)
-				res.write_header_text (h.string)
+				res.put_header_text (h.string)
 				if not req.request_method.same_string ({HTTP_REQUEST_METHODS}.method_head) then
-					res.write_string (s)
+					res.put_string (s)
 				end
 				res.flush
 			end
@@ -174,8 +174,8 @@ feature -- Execution
 			s.append ("Resource %"" + uri + "%" not found%N")
 			res.set_status_code ({HTTP_STATUS_CODE}.not_found)
 			h.put_content_length (s.count)
-			res.write_header_text (h.string)
-			res.write_string (s)
+			res.put_header_text (h.string)
+			res.put_string (s)
 			res.flush
 		end
 
@@ -190,8 +190,8 @@ feature -- Execution
 			s.append ("Resource %"" + uri + "%": Access denied%N")
 			res.set_status_code ({HTTP_STATUS_CODE}.forbidden)
 			h.put_content_length (s.count)
-			res.write_header_text (h.string)
-			res.write_string (s)
+			res.put_header_text (h.string)
+			res.put_string (s)
 			res.flush
 		end
 

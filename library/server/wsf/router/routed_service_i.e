@@ -57,7 +57,7 @@ feature -- Execution
 	execute_rescue (req: WSF_REQUEST; res: WSF_RESPONSE)
 		do
 			if not res.header_committed then
-				res.write_header ({HTTP_STATUS_CODE}.internal_server_error, Void)
+				res.put_header ({HTTP_STATUS_CODE}.internal_server_error, Void)
 			end
 			res.flush
 		end

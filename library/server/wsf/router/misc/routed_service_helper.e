@@ -53,12 +53,12 @@ feature -- Helper
 				end
 			end
 			res.set_status_code ({HTTP_STATUS_CODE}.unsupported_media_type)
-			res.write_header ({HTTP_STATUS_CODE}.unsupported_media_type, << ["Content-Type", "text/plain"], ["Accept", accept_s]>>)
+			res.put_header ({HTTP_STATUS_CODE}.unsupported_media_type, << ["Content-Type", "text/plain"], ["Accept", accept_s]>>)
 			if accept_s /= Void then
-				res.write_string ("Unsupported request content-type, Accept: " + accept_s + "%N")
+				res.put_string ("Unsupported request content-type, Accept: " + accept_s + "%N")
 			end
 			if uri_s /= Void then
-				res.write_string ("Unsupported request format from the URI: " + uri_s + "%N")
+				res.put_string ("Unsupported request format from the URI: " + uri_s + "%N")
 			end
 		end
 
@@ -78,11 +78,11 @@ feature -- Helper
 				s.append_string (c.item)
 			end
 			res.set_status_code ({HTTP_STATUS_CODE}.method_not_allowed)
-			res.write_header ({HTTP_STATUS_CODE}.method_not_allowed, <<
+			res.put_header ({HTTP_STATUS_CODE}.method_not_allowed, <<
 						["Content-Type", {HTTP_MIME_TYPES}.text_plain],
 						["Allow", s]
 					>>)
-			res.write_string ("Unsupported request method, Allow: " + s + "%N")
+			res.put_string ("Unsupported request method, Allow: " + s + "%N")
 		end
 
 note
