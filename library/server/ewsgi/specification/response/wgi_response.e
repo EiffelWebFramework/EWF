@@ -68,10 +68,10 @@ feature -- Status setting
 
 feature -- Header output operation
 
-	write_header_text (a_text: READABLE_STRING_8)
+	put_header_text (a_text: READABLE_STRING_8)
 			-- Write http header string `a_text'
 			-- It should not contain the ending CR LF CR LF
-			-- since it is the duty of `write_header_text' to write it.
+			-- since it is the duty of `put_header_text' to write it.
 		require
 			a_text_does_not_has_ending_crlf_crlf: a_text.count > 4 implies not a_text.substring (a_text.count - 4, a_text.count).same_string ("%R%N%R%N")
 			status_set: status_is_set
@@ -83,7 +83,7 @@ feature -- Header output operation
 			message_writable: message_writable
 		end
 
-	write_header_lines (a_lines: ITERABLE [TUPLE [name: READABLE_STRING_8; value: READABLE_STRING_8]])
+	put_header_lines (a_lines: ITERABLE [TUPLE [name: READABLE_STRING_8; value: READABLE_STRING_8]])
 		require
 			status_set: status_is_set
 			header_not_committed: not header_committed
@@ -96,14 +96,14 @@ feature -- Header output operation
 
 feature -- Output operation
 
-	write_string (s: READABLE_STRING_8)
+	put_string (s: READABLE_STRING_8)
 			-- Send the string `s'
 		require
 			message_writable: message_writable
 		deferred
 		end
 
-	write_substring (s: READABLE_STRING_8; a_begin_index, a_end_index: INTEGER)
+	put_substring (s: READABLE_STRING_8; a_begin_index, a_end_index: INTEGER)
 			-- Send the substring `s[a_begin_index:a_end_index]'
 		require
 			message_writable: message_writable

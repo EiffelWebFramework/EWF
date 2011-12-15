@@ -75,14 +75,14 @@ feature -- Status setting
 
 feature -- Header output operation		
 
-	write_header_text (a_text: READABLE_STRING_8)
+	put_header_text (a_text: READABLE_STRING_8)
 		do
 			write (a_text)
 			write (crlf)
 			header_committed := True
 		end
 
-	write_header_lines (a_lines: ITERABLE [TUPLE [name: READABLE_STRING_8; value: READABLE_STRING_8]])
+	put_header_lines (a_lines: ITERABLE [TUPLE [name: READABLE_STRING_8; value: READABLE_STRING_8]])
 		local
 			h: STRING_8
 		do
@@ -97,18 +97,18 @@ feature -- Header output operation
 				h.append_character ('%R')
 				h.append_character ('%N')
 			end
-			write_header_text (h)
+			put_header_text (h)
 		end
 
 feature -- Output operation
 
-	write_string (s: READABLE_STRING_8)
+	put_string (s: READABLE_STRING_8)
 			-- Send the string `s'
 		do
 			write (s)
 		end
 
-	write_substring (s: READABLE_STRING_8; start_index, end_index: INTEGER)
+	put_substring (s: READABLE_STRING_8; start_index, end_index: INTEGER)
 			-- Send the substring `start_index:end_index]'
 			--| Could be optimized according to the target output
 		do

@@ -72,7 +72,7 @@ feature -- Execution
 							res.set_status_code ({HTTP_STATUS_CODE}.internal_server_error)
 						end
 						if res.message_writable then
-							res.write_string ("<pre>" + l_trace + "</pre>")
+							res.put_string ("<pre>" + l_trace + "</pre>")
 						end
 					end
 				end
