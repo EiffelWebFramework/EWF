@@ -25,7 +25,7 @@
 				<platform value="windows"/>
 			</condition>
 		</external_library>
-		<external_library location="/usr/local/lib/libfcgi.so">
+		<external_library location="/usr/lib/libfcgi.so">
 			<condition>
 				<platform excluded_value="windows"/>
 			</condition>
