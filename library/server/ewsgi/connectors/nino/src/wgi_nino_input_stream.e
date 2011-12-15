@@ -77,7 +77,7 @@ feature -- Status report
 	end_of_input: BOOLEAN
 			-- Has the end of input stream been reached?
 		do
-			Result := source.ready_for_reading
+			Result := not source.ready_for_reading
 		end
 
 ;note
