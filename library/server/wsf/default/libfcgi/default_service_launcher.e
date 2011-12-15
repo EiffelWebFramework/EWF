@@ -34,7 +34,7 @@ feature {NONE} -- Initialization
 		do
 			create connector.make (Current)
 		end
-	
+
 feature -- Execution
 
 	launch
@@ -46,7 +46,7 @@ feature -- Execution
 
 feature -- Status report
 
-	connector: detachable WGI_LIBCGI_CONNECTOR
+	connector: detachable WGI_LIBFCGI_CONNECTOR
 			-- Default service name
 
 ;note

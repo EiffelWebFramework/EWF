@@ -147,7 +147,6 @@ feature -- Execution
 
 	respond_file (f: FILE; ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
 		local
-			h: HTTP_HEADER
 			ext: READABLE_STRING_8
 			ct: detachable READABLE_STRING_8
 			fres: WSF_FILE_RESPONSE

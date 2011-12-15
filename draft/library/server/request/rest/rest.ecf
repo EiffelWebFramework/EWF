@@ -11,6 +11,7 @@
 		<library name="base" location="$ISE_LIBRARY\library\base\base.ecf"/>
 		<library name="wsf" location="..\..\..\..\..\library\server\wsf\wsf.ecf"/>
 		<library name="http" location="..\..\..\..\..\library\protocol\http\http.ecf"/>
+		<library name="uri_template" location="..\..\..\..\..\library\protocol\uri_template\uri_template.ecf"/>
 		<cluster name="contrib" location=".\src\contrib\" recursive="true">
 			<file_rule>
 				<exclude>/html$</exclude>
