@@ -74,6 +74,13 @@ feature {NONE} -- Initialization
 				end
 			end
 			create connector.make (Current)
+			if attached connector as conn then
+				conn.set_base (base_url)
+				if single_threaded then
+					conn.configuration.set_force_single_threaded (True)
+				end
+				conn.configuration.set_is_verbose (verbose)
+			end
 		end
 
 feature -- Execution

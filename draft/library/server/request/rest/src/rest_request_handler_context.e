@@ -35,7 +35,7 @@ feature -- Status report
 			s := args
 			if s /= Void and then s.count > 0 then
 				create t.make_from_string (path)
-				if s[1] /= '/' then
+				if s[1] /= '/' and t[t.count] /= '/' then
 					t.append_character ('/')
 					t.append (s)
 				else
