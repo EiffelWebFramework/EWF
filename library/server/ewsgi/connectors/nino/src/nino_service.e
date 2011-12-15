@@ -29,6 +29,8 @@ feature {NONE} -- Implementation
 			create connector.make_with_base (app, a_base_url)
 		end
 
+feature -- Access
+
 	connector: WGI_NINO_CONNECTOR
 			-- Web server connector
 
@@ -63,6 +65,12 @@ feature -- Status settings
 			-- Set verbose message behavior to `b'
 		do
 			configuration.set_is_verbose (b)
+		end
+
+	set_base_url (s: detachable READABLE_STRING_8)
+			-- Set base_url to `s'
+		do
+			connector.set_base (s)
 		end
 
 feature -- Server

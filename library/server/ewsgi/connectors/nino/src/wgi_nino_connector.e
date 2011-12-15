@@ -58,7 +58,7 @@ feature -- Access
 
 feature -- Access
 
-	base: detachable STRING
+	base: detachable READABLE_STRING_8
 			-- Root url base
 
 feature -- Status report
