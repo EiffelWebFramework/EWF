@@ -35,6 +35,12 @@ feature -- Visitor
 		deferred
 		end
 
+	process_any (v: WSF_ANY)
+		require
+			v_attached: v /= Void
+		deferred
+		end
+
 ;note
 	copyright: "2011-2011, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"

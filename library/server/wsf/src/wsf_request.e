@@ -47,6 +47,10 @@ feature {NONE} -- Initialization
 			raw_post_data_recorded := True
 			create {STRING_32} empty_string.make_empty
 
+			create execution_variables_table.make (0)
+			execution_variables_table.compare_objects
+			execution_variables := execution_variables_table
+
 			initialize
 			analyze
 		end
@@ -214,6 +218,39 @@ feature -- Access: global variable
 				check is_string_value: False end
 			end
 		end
+
+feature -- Execution variables
+
+	execution_variable (a_name: READABLE_STRING_8): detachable ANY
+			-- Execution variable related to `a_name'
+		require
+			a_name_valid: a_name /= Void and then not a_name.is_empty
+		do
+			if attached execution_variables_table.item (a_name) as v then
+				Result := v.item
+			end
+		end
+
+	execution_variables: ITERABLE [WSF_ANY]
+			-- Execution variables values	
+
+	set_execution_variable (a_name: READABLE_STRING_32; a_value: detachable ANY)
+		do
+			execution_variables_table.force (create {WSF_ANY}.make (a_name, a_value), a_name)
+		ensure
+			param_set: attached {WSF_ANY} execution_variable (a_name) as val and then val ~ a_value
+		end
+
+	unset_execution_variable (a_name: READABLE_STRING_32)
+		do
+			execution_variables_table.remove (a_name)
+		ensure
+			param_unset: execution_variable (a_name) = Void
+		end
+
+feature {NONE} -- Execution variables: implementation
+
+	execution_variables_table: HASH_TABLE [WSF_ANY, READABLE_STRING_32]
 
 feature -- Access: CGI Meta variables
 
@@ -802,6 +839,8 @@ feature {NONE} -- Cookies
 								v := s.substring (i + 1, j - 1)
 								p := j + 1
 							end
+							k.left_adjust
+							k.right_adjust
 							add_value_to_table (k, v, l_cookies)
 						end
 					end

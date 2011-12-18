@@ -25,6 +25,10 @@ feature -- Visitor
 		do
 		end
 
+	process_any (v: WSF_ANY)
+		do
+		end
+
 ;note
 	copyright: "2011-2011, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
