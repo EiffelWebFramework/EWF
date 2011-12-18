@@ -92,8 +92,8 @@ feature -- HTTP Methods
 				end
 				h.add_header ("etag:" + etag_utils.md5_digest (l_order.out))
 				res.set_status_code ({HTTP_STATUS_CODE}.ok)
-				res.write_header_text (h.string)
-				res.write_string (l_msg)
+				res.put_header_text (h.string)
+				res.put_string (l_msg)
 			end
 		end
 
@@ -176,8 +176,8 @@ feature -- HTTP Methods
 			if attached {JSON_VALUE} json.value (l_order) as jv then
 				h.put_content_length (jv.representation.count)
 				res.set_status_code ({HTTP_STATUS_CODE}.ok)
-				res.write_header_text (h.string)
-				res.write_string (jv.representation)
+				res.put_header_text (h.string)
+				res.put_string (jv.representation)
 			end
 		end
 
@@ -219,7 +219,7 @@ feature -- HTTP Methods
 					h.put_utc_date (time)
 			end
 			res.set_status_code ({HTTP_STATUS_CODE}.no_content)
-			res.write_header_text (h.string)
+			res.put_header_text (h.string)
 		end
 
 	do_post (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
@@ -269,8 +269,8 @@ feature -- HTTP Methods
 					h.put_utc_date (time)
 				end
 				res.set_status_code ({HTTP_STATUS_CODE}.created)
-				res.write_header_text (h.string)
-				res.write_string (l_msg)
+				res.put_header_text (h.string)
+				res.put_string (l_msg)
 			end
 		end
 
