@@ -3,10 +3,19 @@ note
 			Server request context of the httpd request
 			
 			It includes CGI interface and a few extra values that are usually valuable
+			    meta_variable (a_name: READABLE_STRING_8): detachable WSF_STRING
+			    meta_string_variable (a_name: READABLE_STRING_8): detachable READABLE_STRING_32
+			    
 			In addition it provides
-				query_parameter(s)
-				form_parameter(s)
+				
+				query_parameter (a_name: READABLE_STRING_32): detachable WSF_VALUE
+				form_parameter (a_name: READABLE_STRING_32): detachable WSF_VALUE
+				cookie (a_name: READABLE_STRING_8): detachable WSF_VALUE
 				...
+				
+			And also has
+				execution_variable (a_name: READABLE_STRING_32): detachable ANY
+					--| to keep value attached to the request
 			]"
 	date: "$Date$"
 	revision: "$Revision$"
@@ -49,7 +58,6 @@ feature {NONE} -- Initialization
 
 			create execution_variables_table.make (0)
 			execution_variables_table.compare_objects
-			execution_variables := execution_variables_table
 
 			initialize
 			analyze
@@ -226,19 +234,14 @@ feature -- Execution variables
 		require
 			a_name_valid: a_name /= Void and then not a_name.is_empty
 		do
-			if attached execution_variables_table.item (a_name) as v then
-				Result := v.item
-			end
+			Result := execution_variables_table.item (a_name)
 		end
-
-	execution_variables: ITERABLE [WSF_ANY]
-			-- Execution variables values	
 
 	set_execution_variable (a_name: READABLE_STRING_32; a_value: detachable ANY)
 		do
-			execution_variables_table.force (create {WSF_ANY}.make (a_name, a_value), a_name)
+			execution_variables_table.force (a_value, a_name)
 		ensure
-			param_set: attached {WSF_ANY} execution_variable (a_name) as val and then val ~ a_value
+			param_set: execution_variable (a_name) = a_value
 		end
 
 	unset_execution_variable (a_name: READABLE_STRING_32)
@@ -250,7 +253,7 @@ feature -- Execution variables
 
 feature {NONE} -- Execution variables: implementation
 
-	execution_variables_table: HASH_TABLE [WSF_ANY, READABLE_STRING_32]
+	execution_variables_table: HASH_TABLE [detachable ANY, READABLE_STRING_32]
 
 feature -- Access: CGI Meta variables
 
@@ -1153,20 +1156,6 @@ feature {NONE} -- Form fields and related
 					if l_raw_data_cell /= Void and then attached l_raw_data_cell.item as l_raw_data then
 						set_meta_string_variable ("RAW_POST_DATA", l_raw_data)
 					end
-
---					if
---						l_type /= Void and then
---						l_type.starts_with ({HTTP_MIME_TYPES}.multipart_form_data)
---					then
---						create vars.make (5)
---						vars.compare_objects
---						--| FIXME: optimization ... fetch the input data progressively, otherwise we might run out of memory ...
---						s := form_input_data (n)
---						analyze_multipart_form (l_type, s, vars)
---					else
---						s := form_input_data (n)
---						vars := urlencoded_parameters (s)
---					end
 				end
 				internal_form_data_parameters_table := vars
 			end

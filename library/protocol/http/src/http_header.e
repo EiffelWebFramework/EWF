@@ -282,7 +282,13 @@ feature -- Date
 	put_utc_date (dt: DATE_TIME)
 			-- Put UTC date time `dt' with "Date" header
 		do
-			put_date (dt.formatted_out ("ddd,[0]dd mmm yyyy [0]hh:[0]mi:[0]ss.ff2") + " GMT")
+			put_date (date_to_rfc1123_http_date_format (dt))
+		end
+
+	put_last_modified (dt: DATE_TIME)
+			-- Put UTC date time `dt' with "Date" header
+		do
+			put_header_key_value ({HTTP_HEADER_NAMES}.header_last_modified, date_to_rfc1123_http_date_format (dt))
 		end
 
 feature -- Others		
@@ -350,6 +356,15 @@ feature -- Cookie
 				s.append ("; secure=" + secure)
 			end
 			add_header (s)
+		end
+
+	put_cookie_with_expiration_date (key, value: READABLE_STRING_8; expiration: DATE_TIME; path, domain, secure: detachable READABLE_STRING_8)
+			-- Set a cookie on the client's machine
+			-- with key 'key' and value 'value'.
+		require
+			make_sense: (key /= Void and value /= Void) and then (not key.is_empty and not value.is_empty)
+		do
+			put_cookie (key, value, date_to_rfc1123_http_date_format (expiration), path, domain, secure)
 		end
 
 feature -- Status report
@@ -498,6 +513,12 @@ feature {NONE} -- Implementation
 			h.append_character ('%N')
 		end
 
+	date_to_rfc1123_http_date_format (dt: DATE_TIME): READABLE_STRING_8
+			-- String representation of `dt' using the RFC 1123
+		do
+			Result := dt.formatted_out ("ddd,[0]dd mmm yyyy [0]hh:[0]mi:[0]ss.ff2") + " GMT"
+		end
+
 feature {NONE} -- Constants
 
 	str_binary: STRING = "binary"
@@ -507,7 +528,7 @@ feature {NONE} -- Constants
 	semi_colon_space: STRING = "; "
 
 note
-	copyright: "2011-2011, Eiffel Software and others"
+	copyright: "2011-2012, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software
