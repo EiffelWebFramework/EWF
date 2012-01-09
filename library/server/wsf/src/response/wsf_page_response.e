@@ -60,9 +60,9 @@ feature -- Output
 					h.put_content_type_text_plain
 				end
 			end
-			res.write_header_text (h.string)
+			res.put_header_text (h.string)
 			if b /= Void then
-				res.write_string (b)
+				res.put_string (b)
 			end
 		end
 

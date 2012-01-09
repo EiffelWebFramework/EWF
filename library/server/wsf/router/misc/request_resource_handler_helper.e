@@ -159,7 +159,7 @@ feature -- Handle responses
 	-- TODO Handle Content negotiation.
 	-- The option : Server-driven negotiation: uses request headers to select a variant
 	-- More info : http://www.w3.org/Protocols/rfc2616/rfc2616-sec12.html#sec12
-	
+
 	supported_content_types: detachable ARRAY [READABLE_STRING_8]
 			-- Supported content types
 			-- Can be redefined
@@ -177,8 +177,8 @@ feature -- Handle responses
 			h.put_content_length (a_description.count)
 			h.put_current_date
 			res.set_status_code ({HTTP_STATUS_CODE}.bad_request)
-			res.write_header_text (h.string)
-			res.write_string (a_description)
+			res.put_header_text (h.string)
+			res.put_string (a_description)
 		end
 
 
@@ -192,8 +192,8 @@ feature -- Handle responses
 			h.put_content_length (a_description.count)
 			h.put_current_date
 			res.set_status_code ({HTTP_STATUS_CODE}.precondition_failed)
-			res.write_header_text (h.string)
-			res.write_string (a_description)
+			res.put_header_text (h.string)
+			res.put_string (a_description)
 		end
 
 	handle_internal_server_error (a_description: STRING; ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE )
@@ -206,8 +206,8 @@ feature -- Handle responses
 			h.put_content_length (a_description.count)
 			h.put_current_date
 			res.set_status_code ({HTTP_STATUS_CODE}.internal_server_error)
-			res.write_header_text (h.string)
-			res.write_string (a_description)
+			res.put_header_text (h.string)
+			res.put_string (a_description)
 		end
 
 	handle_not_implemented (a_description: STRING; ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE )
@@ -220,8 +220,8 @@ feature -- Handle responses
 			h.put_content_length (a_description.count)
 			h.put_current_date
 			res.set_status_code ({HTTP_STATUS_CODE}.not_implemented)
-			res.write_header_text (h.string)
-			res.write_string (a_description)
+			res.put_header_text (h.string)
+			res.put_string (a_description)
 		end
 
 	handle_method_not_allowed_response (a_description: STRING; ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
@@ -234,8 +234,8 @@ feature -- Handle responses
 			h.put_content_length (a_description.count)
 			h.put_current_date
 			res.set_status_code ({HTTP_STATUS_CODE}.method_not_allowed)
-			res.write_header_text (h.string)
-			res.write_string (a_description)
+			res.put_header_text (h.string)
+			res.put_string (a_description)
 		end
 
 	handle_resource_not_found_response (a_description: STRING; ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
@@ -248,8 +248,8 @@ feature -- Handle responses
 			h.put_content_length (a_description.count)
 			h.put_current_date
 			res.set_status_code ({HTTP_STATUS_CODE}.not_found)
-			res.write_header_text (h.string)
-			res.write_string (a_description)
+			res.put_header_text (h.string)
+			res.put_string (a_description)
 		end
 
 
@@ -264,8 +264,8 @@ feature -- Handle responses
 			h.put_content_length (a_description.count)
 			h.put_current_date
 			res.set_status_code ({HTTP_STATUS_CODE}.not_modified)
-			res.write_header_text (h.string)
-			res.write_string (a_description)
+			res.put_header_text (h.string)
+			res.put_string (a_description)
 		end
 
 
@@ -279,8 +279,8 @@ feature -- Handle responses
 			h.put_content_length (a_description.count)
 			h.put_current_date
 			res.set_status_code ({HTTP_STATUS_CODE}.conflict)
-			res.write_header_text (h.string)
-			res.write_string (a_description)
+			res.put_header_text (h.string)
+			res.put_string (a_description)
 		end
 
 note
