@@ -2,7 +2,6 @@ note
 	description: "[
 				Summary description for {JSON_ENCODER}.
 				
-				see: http://en.wikipedia.org/wiki/List_of_XML_and_HTML_character_entity_references
 		]"
 	legal: "See notice at end of class."
 	status: "See notice at end of class."
@@ -42,8 +41,8 @@ feature -- Encoder
 			h: STRING_8
 		do
 			has_error := False
-			create Result.make (s.count + s.count // 10)
 			n := s.count
+			create Result.make (n + n // 10)
 			from i := 1 until i > n loop
 				uc := s.item (i)
 				if uc.is_character_8 then
@@ -59,10 +58,11 @@ feature -- Encoder
 				else
 					Result.append ("\u")
 					h := uc.code.to_hex_string
+					-- Remove first 0 and keep 4 hexa digit
 					from
 						j := 1
 					until
-						j <= h.count and then h.item (j) /= '0'
+						h.count = 4 or (j <= h.count and then h.item (j) /= '0')
 					loop
 						j := j + 1
 					end
@@ -83,18 +83,15 @@ feature -- Encoder
 feature -- Decoder
 
 	decoded_string (v: STRING_8): STRING_32
-			-- The XML-encoded equivalent of the given string
+			-- The JSON-encoded equivalent of the given string
 		local
 			i, n: INTEGER
 			c: CHARACTER
-			cl_i: CELL [INTEGER]
 			hex: STRING
-			hexconv: detachable HEXADECIMAL_STRING_TO_INTEGER_CONVERTER
 		do
 			has_error := False
 			n := v.count
 			create Result.make (n)
-			create cl_i.put (0)
 			from i := 1 until i > n loop
 				c := v.item (i)
 				if c = '\' then
@@ -115,8 +112,7 @@ feature -- Decoder
 						when 'u' then
 							hex := v.substring (i+2, i+2+4 - 1)
 							if hex.count = 4 then
-								Result.append_code (hex_to_natural_32 (hex))
---								Result.append_string ("\u" + hex) --hex.to_integer_32)
+								Result.append_code (hexadecimal_to_natural_32 (hex))
 							end
 							i := i + 2 + 4
 						else
@@ -136,10 +132,16 @@ feature -- Decoder
 
 feature {NONE} -- Implementation
 
-	hex_to_natural_32 (s: STRING): NATURAL_32
+	is_hexadecimal (s: READABLE_STRING_8): BOOLEAN
+		do
+			Result := across s as scur all scur.item.is_hexa_digit end
+		end
+
+	hexadecimal_to_natural_32 (s: READABLE_STRING_8): NATURAL_32
 			-- Hexadecimal string `s' converted to NATURAL_32 value
 		require
 			s_not_void: s /= Void
+			is_hexadecimal: is_hexadecimal (s)
 		local
 			i, nb: INTEGER
 			char: CHARACTER
