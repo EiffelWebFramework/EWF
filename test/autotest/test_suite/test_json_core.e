@@ -632,7 +632,7 @@ feature -- Test
             jrep := "%"foo\\bar%""
 			create parser.make_parser (jrep)
 			if attached {JSON_STRING} parser.parse as jstring then
-				assert ("unescaped string %"foo\\bar%" to %"foo\bar%"", jstring.unescaped_string.same_string ("foo\bar"))
+				assert ("unescaped string %"foo\\bar%" to %"foo\bar%"", jstring.unescaped_string_8.same_string ("foo\bar"))
 			end
 
             create js.make_json_from_string_32 ({STRING_32}"%/20320/%/22909/")
