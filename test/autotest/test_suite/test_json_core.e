@@ -510,7 +510,6 @@ feature -- Test
         local
             c: CHARACTER
             js: detachable JSON_STRING
-            ucs: detachable STRING_32
             jrep: STRING
             parser: JSON_PARSER
         do
@@ -532,9 +531,8 @@ feature -- Test
             js := Void
             js ?= parser.parse
             assert ("js /= Void", js /= Void)
-            ucs ?= json.object (js, Void)
-            if attached ucs as l_ucs then
-				assert ("ucs.string.is_equal (%"a%")", l_ucs.string.is_equal ("a"))
+            if attached {STRING_32} json.object (js, Void) as ucs then
+				assert ("ucs.string.is_equal (%"a%")", ucs.string.is_equal ("a"))
             end
 
         end
@@ -543,7 +541,6 @@ feature -- Test
         local
             s: STRING
             js: detachable JSON_STRING
-            ucs: detachable STRING_32
             jrep: STRING
             parser: JSON_PARSER
         do
@@ -565,11 +562,9 @@ feature -- Test
             js := Void
             js ?= parser.parse
             assert ("js /= Void", js /= Void)
-            ucs ?= json.object (js, Void)
-            if attached ucs as l_ucs then
-            	assert ("ucs.string.is_equal (%"foobar%")", ucs.string.is_equal ("foobar"))
+            if attached {STRING_32} json.object (js, Void) as l_ucs then
+            	assert ("ucs.string.is_equal (%"foobar%")", l_ucs.string.is_equal ("foobar"))
             end
-
         end
 
     test_json_string_and_uc_string
@@ -602,7 +597,52 @@ feature -- Test
             if attached ucs as l_ucs then
 				assert ("ucs.string.is_equal (%"foobar%")", l_ucs.string.is_equal ("foobar"))
             end
+        end
 
+    test_json_string_and_special_characters
+        local
+            js: detachable JSON_STRING
+            s: detachable STRING_8
+            ucs: detachable STRING_32
+            jrep: STRING
+            parser: JSON_PARSER
+        do
+            create s.make_from_string ("foo\bar")
+            create js.make_json (s)
+
+            assert ("js.representation.same_string (%"%"foo\\bar%"%")", js.representation.same_string ("%"foo\\bar%""))
+
+            -- Eiffel value -> JSON value -> JSON representation with factory
+            js ?= json.value (s)
+            assert ("js /= Void", js /= Void)
+            if js /= Void then
+	            assert ("js.representation.is_equal (%"%"foobar%"%")", js.representation.same_string ("%"foo\\bar%""))
+            end
+
+            -- JSON representation -> JSON value -> Eiffel value
+            jrep := "%"foo\\bar%""
+            create parser.make_parser (jrep)
+            js ?= parser.parse
+            assert ("js /= Void", js /= Void)
+            ucs ?= json.object (js, Void)
+            if ucs /= Void then
+				assert ("ucs.same_string (%"foo\bar%")", ucs.same_string ("foo\bar"))
+            end
+
+            jrep := "%"foo\\bar%""
+			create parser.make_parser (jrep)
+			if attached {JSON_STRING} parser.parse as jstring then
+				assert ("unescaped string %"foo\\bar%" to %"foo\bar%"", jstring.unescaped_string.same_string ("foo\bar"))
+			end
+
+            create js.make_json_from_string_32 ({STRING_32}"%/20320/%/22909/")
+            assert ("escaping unicode string32 %"%%/20320/%%/22909/%" %"\u4F60\u597D%"", js.item.same_string ("\u4F60\u597D"))
+
+            jrep := "%"\u4F60\u597D%""  --| Ni hao
+			create parser.make_parser (jrep)
+			if attached {JSON_STRING} parser.parse as jstring then
+				assert ("same unicode string32 %"%%/20320/%%/22909/%"", jstring.unescaped_string_32.same_string ({STRING_32}"%/20320/%/22909/"))
+			end
         end
 
     test_json_array

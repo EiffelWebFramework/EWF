@@ -212,8 +212,8 @@ feature -- Commands
 							is_parsed := False
 							report_error ("Input String is not well formed JSON, found [" + c.out + " ]")
 						else
-							l_json_string.append ("\")
-							l_json_string.append (c.out)
+							l_json_string.append_character ('\')
+							l_json_string.append_character (c)
 						end
 					else
 						if is_special_character (c) and c /= '/' then
@@ -225,7 +225,7 @@ feature -- Commands
 						end
 					end
 				end
-				create Result.make_json (l_json_string)
+				create Result.make_with_escaped_json (l_json_string)
 			else
 				Result := Void
 			end
@@ -444,10 +444,7 @@ feature {NONE} -- Implementation
 				from until i > n or not c.is_space loop
 					s.extend (c); i := i + 1; c := a_number[i]
 				end
-				Result := i > n
-				if Result then
-					Result := s.same_string (a_number)
-				end
+				Result := i > n and then s.same_string (a_number)
 			end
 		end
 
@@ -459,20 +456,19 @@ feature {NONE} -- Implementation
 		do
 			if
 				a_unicode.count = 6 and then
-				a_unicode.item (1) = '\' and then
-				a_unicode.item (2) = 'u'
+				a_unicode[1] = '\' and then
+				a_unicode[2] = 'u'
 			then
 				from
 					Result := True
 					i := 3
 				until
-					i > 6
+					i > 6 or Result = False
 				loop
-					inspect a_unicode.item (i)
+					inspect a_unicode[i]
 					when '0'..'9', 'a'..'f', 'A'..'F'  then
 					else
 						Result := False
-						i := 6
 					end
 					i := i + 1
 				end
@@ -498,9 +494,11 @@ feature {NONE} -- Implementation
 		end
 
 	is_valid_start_symbol : BOOLEAN
-		-- expecting `{' or `[' as start symbol
+			-- expecting `{' or `[' as start symbol
 		do
-			Result := representation.starts_with ("{") or representation.starts_with ("[")
+			if attached representation as s and then s.count > 0 then
+				Result := s[1] = '{' or s[1] = '['
+			end
 		end
 
 feature {NONE} -- Constants

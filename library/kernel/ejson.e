@@ -117,7 +117,7 @@ feature -- Access
 	                        Result := jn.item.to_double
 	                    end
 	                elseif attached {JSON_STRING} a_value as js then
-	                    create {STRING_32} Result.make_from_string (js.item)
+	                    create {STRING_32} Result.make_from_string (js.unescaped_string_32)
 	                elseif attached {JSON_ARRAY} a_value as ja then
 	                    from
 	                        create ll.make
