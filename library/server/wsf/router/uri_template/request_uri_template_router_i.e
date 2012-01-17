@@ -94,7 +94,7 @@ feature {NONE} -- Access: Implementation
 
 feature {NONE} -- Context factory
 
-	handler_context (p: detachable STRING; req: WSF_REQUEST; tpl: URI_TEMPLATE; tpl_res: URI_TEMPLATE_MATCH_RESULT): C
+	handler_context (p: detachable READABLE_STRING_8; req: WSF_REQUEST; tpl: URI_TEMPLATE; tpl_res: URI_TEMPLATE_MATCH_RESULT): C
 		do
 			if p /= Void then
 				create Result.make (req, tpl, tpl_res, p)

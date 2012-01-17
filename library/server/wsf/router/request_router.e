@@ -7,6 +7,9 @@ note
 deferred class
 	REQUEST_ROUTER [H -> REQUEST_HANDLER [C], C -> REQUEST_HANDLER_CONTEXT]
 
+inherit
+	ITERABLE [TUPLE [handler: H; resource: READABLE_STRING_8; request_methods: detachable ARRAY [READABLE_STRING_8]]]
+
 feature -- Mapping
 
 	map_default (h: like default_handler)
@@ -102,8 +105,6 @@ feature -- Traversing
 	new_cursor: ITERATION_CURSOR [TUPLE [handler: H; resource: READABLE_STRING_8; request_methods: detachable ARRAY [READABLE_STRING_8]]]
 			-- Fresh cursor associated with current structure
 		deferred
-		ensure
-			result_attached: Result /= Void
 		end
 
 feature {NONE} -- Access: Implementation
