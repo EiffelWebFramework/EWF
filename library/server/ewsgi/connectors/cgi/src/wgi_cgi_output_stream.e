@@ -43,15 +43,17 @@ feature -- Status writing
 		local
 			s: STRING
 		do
-			create s.make (16)
-			s.append ({HTTP_CONSTANTS}.http_version_1_1)
-			s.append_character (' ')
-			s.append_integer (a_code)
-			if attached http_status_code_message (a_code) as l_status_message then
+			if a_code /= 200 then
+				create s.make (16)
+				s.append ("Status:")
 				s.append_character (' ')
-				s.append_string (l_status_message)
+				s.append_integer (a_code)
+				if attached http_status_code_message (a_code) as l_status_message then
+					s.append_character (' ')
+					s.append_string (l_status_message)
+				end
+				put_header_line (s)
 			end
-			put_header_line (s)
 		end
 
 	put_readable_string_8 (s: READABLE_STRING_8)
