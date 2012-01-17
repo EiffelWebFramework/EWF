@@ -242,6 +242,7 @@ feature -- Redirect
 			else
 				create h.make_with_count (1)
 				h.put_location (a_url)
+				h.put_content_length (0)
 				set_status_code (a_status_code)
 				put_header_text (h.string)
 			end
