@@ -178,7 +178,7 @@ feature -- Builder
 
 feature -- Match
 
-	match (a_uri: STRING): detachable URI_TEMPLATE_MATCH_RESULT
+	match (a_uri: READABLE_STRING_8): detachable URI_TEMPLATE_MATCH_RESULT
 		require
 			is_valid: is_valid
 		local
