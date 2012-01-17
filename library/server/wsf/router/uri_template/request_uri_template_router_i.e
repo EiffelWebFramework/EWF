@@ -52,7 +52,7 @@ feature -- Registration
 			map_with_uri_template_and_request_methods (create {URI_TEMPLATE}.make (tpl), h, rqst_methods)
 		end
 
-feature {NONE} -- Access: Implementation
+feature {ROUTED_SERVICE_I} -- Hanlder
 
 	handler (req: WSF_REQUEST): detachable TUPLE [handler: attached like default_handler; context: like default_handler_context]
 		local

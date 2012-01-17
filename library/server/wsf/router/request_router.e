@@ -107,7 +107,7 @@ feature -- Traversing
 		deferred
 		end
 
-feature {NONE} -- Access: Implementation
+feature {ROUTED_SERVICE_I} -- Handler
 
 	source_uri (req: WSF_REQUEST): READABLE_STRING_32
 			-- URI to use to find handler.
@@ -123,6 +123,8 @@ feature {NONE} -- Access: Implementation
 		ensure
 			source_uri_unchanged: source_uri (req).same_string (old source_uri (req))
 		end
+
+feature {NONE} -- Access: Implementation
 
 	is_matching_request_methods (a_request_method: READABLE_STRING_GENERAL; rqst_methods: like formatted_request_methods): BOOLEAN
 			-- `a_request_method' is matching `rqst_methods' contents
