@@ -1202,7 +1202,7 @@ feature -- URL Utility
 			-- Url relative to script name if any, extended by `a_path'
 		local
 			l_base_url: like internal_url_base
-			i,m,n: INTEGER
+			i,m,n,spos: INTEGER
 			l_rq_uri: like request_uri
 		do
 			l_base_url := internal_url_base
@@ -1220,13 +1220,23 @@ feature -- URL Utility
 						until
 							i > m or i > n or l_rq_uri[i] /= l_script_name[i]
 						loop
+							if l_rq_uri[i] = '/' then
+								spos := i
+							end
 							i := i + 1
 						end
 						if i > 1 then
 							if l_rq_uri[i-1] = '/' then
 								i := i -1
+							elseif spos > 0 then
+								i := spos
 							end
-							l_base_url := l_rq_uri.substring (1, i - 1)
+							spos := l_rq_uri.substring_index (path_info, i)
+							if spos > 0 then
+								l_base_url := l_rq_uri.substring (1, spos - 1)
+							else
+								l_base_url := l_rq_uri.substring (1, i - 1)
+							end
 						end
 					end
 				end
