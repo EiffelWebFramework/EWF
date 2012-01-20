@@ -60,10 +60,19 @@ feature -- Base url
 	base_url: detachable READABLE_STRING_8
 			-- Common start of any route url
 
+feature -- Element change
+
 	set_base_url (a_base_url: like base_url)
 			-- Set `base_url' to `a_base_url'
+			-- make sure no map is already added (i.e: count = 0)
+		require
+			no_handler_set: count = 0
 		do
-			base_url := a_base_url
+			if a_base_url = Void or else a_base_url.is_empty then
+				base_url := Void
+			else
+				base_url := a_base_url
+			end
 		end
 
 feature -- Execution
@@ -98,6 +107,22 @@ feature -- Execution
 			end
 		ensure
 			result_void_implie_no_default: Result = Void implies default_handler = Void
+		end
+
+feature -- status report
+
+	count: INTEGER
+			-- Count of maps handled by current	
+		do
+			across
+				Current as curs
+			loop
+				if attached {REQUEST_ROUTING_HANDLER [H, C]} curs.item.handler as rh then
+					Result := Result + rh.count + 1 --| +1 for the handler itself
+				else
+					Result := Result + 1
+				end
+			end
 		end
 
 feature -- Traversing

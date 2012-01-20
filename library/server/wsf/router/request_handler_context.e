@@ -66,82 +66,32 @@ feature -- Url Query
 			result_attached: Result /= Void
 		end
 
-feature {NONE} -- Constants
-
-	Format_constants: HTTP_FORMAT_CONSTANTS
-		once
-			create Result
-		end
-
 feature -- Query
 
-	request_format (a_format_variable_name: detachable READABLE_STRING_8; content_type_supported: detachable ARRAY [READABLE_STRING_8]): detachable READABLE_STRING_8
-			-- Format id for the request based on {HTTP_FORMAT_CONSTANTS}
-		do
-			if a_format_variable_name /= Void and then attached string_parameter (a_format_variable_name) as ctx_format then
-				Result := ctx_format.as_string_8
-			else
-				Result := content_type_to_request_format (request_content_type (content_type_supported))
-			end
-		end
-
-	request_format_id (a_format_variable_name: detachable READABLE_STRING_8; content_type_supported: detachable ARRAY [READABLE_STRING_8]): INTEGER
-			-- Format id for the request based on {HTTP_FORMAT_CONSTANTS}
-		do
-			if attached request_format (a_format_variable_name, content_type_supported) as l_format then
-				Result := Format_constants.format_id (l_format)
-			else
-				Result := 0
-			end
-		end
-
-	content_type_to_request_format (a_content_type: detachable READABLE_STRING_8): detachable READABLE_STRING_8
-			-- `a_content_type' converted into a request format name
-		do
-			if a_content_type /= Void then
-				if a_content_type.same_string ({HTTP_MIME_TYPES}.text_json) then
-					Result := {HTTP_FORMAT_CONSTANTS}.json_name
-				elseif a_content_type.same_string ({HTTP_MIME_TYPES}.application_json) then
-					Result := {HTTP_FORMAT_CONSTANTS}.json_name
-				elseif a_content_type.same_string ({HTTP_MIME_TYPES}.text_xml) then
-					Result := {HTTP_FORMAT_CONSTANTS}.xml_name
-				elseif a_content_type.same_string ({HTTP_MIME_TYPES}.text_html) then
-					Result := {HTTP_FORMAT_CONSTANTS}.html_name
-				elseif a_content_type.same_string ({HTTP_MIME_TYPES}.text_plain) then
-					Result := {HTTP_FORMAT_CONSTANTS}.text_name
-				end
-			end
-		end
-
-	request_content_type (content_type_supported: detachable ARRAY [READABLE_STRING_8]): detachable READABLE_STRING_8
+	request_accepted_content_type (a_supported_content_types: detachable ARRAY [READABLE_STRING_8]): detachable READABLE_STRING_8
+			-- Accepted content-type for the request, among the supported content types `a_supported_content_types'
 		local
 			s: detachable READABLE_STRING_8
 			i,n: INTEGER
-			l_accept_lst: detachable ARRAYED_LIST [READABLE_STRING_8]
 		do
-			l_accept_lst := accepted_content_types (request)
-			if attached request.content_type as ct then
-				if l_accept_lst /= Void then
-					l_accept_lst.put_front (ct)
-				else
-					Result := ct
-				end
-			end
-			if Result = Void and l_accept_lst /= Void then
+			if
+				attached accepted_content_types (request) as l_accept_lst and then
+				not l_accept_lst.is_empty
+			then
 				from
 					l_accept_lst.start
 				until
 					l_accept_lst.after or Result /= Void
 				loop
 					s := l_accept_lst.item
-					if content_type_supported /= Void then
+					if a_supported_content_types /= Void then
 						from
-							i := content_type_supported.lower
-							n := content_type_supported.upper
+							i := a_supported_content_types.lower
+							n := a_supported_content_types.upper
 						until
 							i > n or Result /= Void
 						loop
-							if content_type_supported[i].same_string (s) then
+							if a_supported_content_types [i].same_string (s) then
 								Result := s
 							end
 							i := i + 1

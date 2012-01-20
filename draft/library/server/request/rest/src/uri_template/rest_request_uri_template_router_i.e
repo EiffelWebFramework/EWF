@@ -13,10 +13,11 @@ inherit
 	REST_REQUEST_ROUTER [H, C]
 
 create
-	make
+	make,
+	make_with_base_url
 
 note
-	copyright: "Copyright (c) 1984-2011, Eiffel Software and others"
+	copyright: "Copyright (c) 1984-2012, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

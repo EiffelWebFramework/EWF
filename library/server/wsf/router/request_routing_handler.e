@@ -11,6 +11,30 @@ deferred class
 inherit
 	REQUEST_HANDLER [C]
 
+feature -- Access
+
+	count: INTEGER
+			-- Count of maps handled by current
+		do
+			Result := router.count
+		end
+
+	base_url: detachable READABLE_STRING_8
+		do
+			Result := router.base_url
+		end
+
+feature -- Element change
+
+	set_base_url (a_base_url: like base_url)
+			-- Set `base_url' to `a_base_url'
+			-- make sure no map is already added (i.e: count = 0)
+		require
+			no_handler_set: count = 0
+		do
+			router.set_base_url (a_base_url)
+		end
+
 feature -- Execution
 
 	execute (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)

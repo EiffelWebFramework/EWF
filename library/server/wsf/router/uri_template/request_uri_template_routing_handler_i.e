@@ -12,13 +12,21 @@ inherit
 	REQUEST_ROUTING_HANDLER [H, C]
 
 create
-	make
+	make,
+	make_with_base_url
 
 feature {NONE} -- Initialization
 
 	make (n: INTEGER)
 		do
 			create router.make (n)
+		end
+
+	make_with_base_url (n: INTEGER; a_base_url: like base_url)
+			-- Make allocated for at least `n' maps,
+			-- and use `a_base_url' as base_url
+		do
+			create router.make_with_base_url (n, a_base_url)
 		end
 
 feature {NONE} -- Routing

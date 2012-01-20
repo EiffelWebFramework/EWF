@@ -14,7 +14,8 @@ inherit
 		end
 
 create
-	make
+	make,
+	make_with_base_url
 
 feature -- Mapping
 

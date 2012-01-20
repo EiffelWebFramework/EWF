@@ -11,7 +11,8 @@ inherit
 	REQUEST_ROUTER [H, C]
 
 create
-	make
+	make,
+	make_with_base_url
 
 feature -- Initialization
 
@@ -19,6 +20,14 @@ feature -- Initialization
 		do
 			create handlers.make (n)
 			handlers.compare_objects
+		end
+
+	make_with_base_url (n: INTEGER; a_base_url: like base_url)
+			-- Make router allocated for at least `n' maps,
+			-- and use `a_base_url' as base_url
+		do
+			make (n)
+			set_base_url (a_base_url)
 		end
 
 feature -- Registration
