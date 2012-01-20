@@ -11,7 +11,8 @@ inherit
 	REST_REQUEST_URI_TEMPLATE_ROUTER_I [APP_REQUEST_HANDLER, APP_REQUEST_HANDLER_CONTEXT]
 
 create
-	make
+	make,
+	make_with_base_url
 
 note
 	copyright: "Copyright (c) 1984-2011, Eiffel Software and others"

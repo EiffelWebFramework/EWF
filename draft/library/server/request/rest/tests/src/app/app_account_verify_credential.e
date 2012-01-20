@@ -62,7 +62,7 @@ feature -- Execution
 			l_format_id: INTEGER
 		do
 			content_type_supported := <<{HTTP_CONSTANTS}.application_json, {HTTP_CONSTANTS}.text_xml, {HTTP_CONSTANTS}.text_plain>>
-			l_format_id := ctx.request_format_id ("format", content_type_supported)
+			l_format_id := ctx.request_accepted_format_id ("format", content_type_supported)
 			if authenticated (ctx) then
 				l_full := attached ctx.query_parameter ("details") as v and then v.is_case_insensitive_equal ("true")
 				if attached authenticated_identifier (ctx) as log then

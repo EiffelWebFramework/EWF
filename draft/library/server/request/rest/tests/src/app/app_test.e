@@ -55,7 +55,7 @@ feature -- Execution
 
 --			ctx.request_format_id ("format", Void)
 
-			if attached ctx.request_format ("format", Void) as l_format then
+			if attached ctx.request_accepted_format ("format", Void) as l_format then
 				s.append_string (" format=" + l_format + "%N")
 			end
 

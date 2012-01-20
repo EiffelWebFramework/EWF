@@ -20,7 +20,7 @@ feature -- Helpers
 			rep_data.headers.put_content_type_text_plain
 
 			create s.make_empty
-			inspect ctx.format_id
+			inspect ctx.accepted_format_id
 			when {HTTP_FORMAT_CONSTANTS}.json then
 				rep_data.headers.put_content_type_text_plain
 				s := "{%"application%": %"" + a_path + "%""
