@@ -169,18 +169,8 @@ feature -- Execution
 					p := curl.slist_append (p, curs.key + ": " + curs.item)
 				end
 			end
-			if ctx /= Void then
-				if attached ctx.headers as l_headers_2 then
-					across
-						l_headers_2 as curs_2
-					loop
-						p := curl.slist_append (p, curs_2.key + ": " + curs_2.item)
-					end
-				end
-			end
 			p := curl.slist_append (p, "Expect:")
 			curl_easy.setopt_slist (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_httpheader, p)
-
 
 			curl.global_cleanup
 
