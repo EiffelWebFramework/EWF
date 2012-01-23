@@ -314,7 +314,7 @@ feature {NONE} -- Element change: CGI meta parameter related to PATH_INFO
 			orig_path_info := Void
 			unset_meta_variable ({WGI_META_NAMES}.orig_path_info)
 		ensure
-			unset: attached meta_variable ({WGI_META_NAMES}.orig_path_info)
+			unset: meta_variable ({WGI_META_NAMES}.orig_path_info) = Void
 		end
 
 	update_path_info
@@ -409,7 +409,7 @@ invariant
 	empty_string_unchanged: empty_string.is_empty
 
 note
-	copyright: "2011-2011, Eiffel Software and others"
+	copyright: "2011-2012, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software
