@@ -32,7 +32,12 @@ inherit
 
 create
 	make,
-	make_with_count
+	make_with_count,
+	make_from_array
+
+convert
+	make_from_array ({ARRAY [TUPLE [key: READABLE_STRING_8; value: READABLE_STRING_8]]}),
+	string: {READABLE_STRING_8, STRING_8}
 
 feature {NONE} -- Initialization
 
@@ -48,6 +53,20 @@ feature {NONE} -- Initialization
 			create {ARRAYED_LIST [READABLE_STRING_8]} headers.make (n)
 		end
 
+	make_from_array (a_headers: ARRAY [TUPLE [key: READABLE_STRING_8; value: READABLE_STRING_8]])
+		do
+			if a_headers.is_empty then
+				make_with_count (0)
+			else
+				make_with_count (a_headers.count)
+				across
+					a_headers as c
+				loop
+					put_header_key_value (c.item.key, c.item.value)
+				end
+			end
+		end
+
 feature -- Recycle
 
 	recycle
@@ -61,7 +80,7 @@ feature -- Access
 	headers: LIST [READABLE_STRING_8]
 			-- Header's lines
 
-	string: STRING
+	string: STRING_8
 			-- String representation of the headers
 		local
 			l_headers: like headers
@@ -334,37 +353,45 @@ feature -- Redirection
 
 feature -- Cookie
 
-	put_cookie (key, value: READABLE_STRING_8; expiration, path, domain, secure: detachable READABLE_STRING_8)
+	put_cookie (key, value: READABLE_STRING_8; expiration, path, domain: detachable READABLE_STRING_8; secure, http_only: BOOLEAN)
 			-- Set a cookie on the client's machine
 			-- with key 'key' and value 'value'.
+			-- Note: you should avoid using "localhost" as `domain' for local cookies
+			--       since they are not always handled by browser (for instance Chrome)
 		require
 			make_sense: (key /= Void and value /= Void) and then (not key.is_empty and not value.is_empty)
+			domain_without_port_info: domain /= Void implies domain.index_of (':', 1) = 0
 		local
 			s: STRING
 		do
 			s := {HTTP_HEADER_NAMES}.header_set_cookie + colon_space + key + "=" + value
-			if expiration /= Void then
-				s.append ("; expires=" + expiration)
+			if
+				domain /= Void and then not domain.same_string ("localhost")
+			then
+				s.append ("; Domain=" + domain)
 			end
 			if path /= Void then
-				s.append ("; path=" + path)
+				s.append ("; Path=" + path)
 			end
-			if domain /= Void then
-				s.append ("; domain=" + domain)
+			if expiration /= Void then
+				s.append ("; Expires=" + expiration)
 			end
-			if secure /= Void then
-				s.append ("; secure=" + secure)
+			if secure then
+				s.append ("; Secure")
+			end
+			if http_only then
+				s.append ("; HttpOnly")
 			end
 			add_header (s)
 		end
 
-	put_cookie_with_expiration_date (key, value: READABLE_STRING_8; expiration: DATE_TIME; path, domain, secure: detachable READABLE_STRING_8)
+	put_cookie_with_expiration_date (key, value: READABLE_STRING_8; expiration: DATE_TIME; path, domain: detachable READABLE_STRING_8; secure, http_only: BOOLEAN)
 			-- Set a cookie on the client's machine
 			-- with key 'key' and value 'value'.
 		require
 			make_sense: (key /= Void and value /= Void) and then (not key.is_empty and not value.is_empty)
 		do
-			put_cookie (key, value, date_to_rfc1123_http_date_format (expiration), path, domain, secure)
+			put_cookie (key, value, date_to_rfc1123_http_date_format (expiration), path, domain, secure, http_only)
 		end
 
 feature -- Status report
@@ -501,13 +528,13 @@ feature {NONE} -- Implementation: Header
 
 feature {NONE} -- Implementation
 
-	append_line_to (s: READABLE_STRING_8; h: like string)
+	append_line_to (s: READABLE_STRING_8; h: STRING_8)
 		do
 			h.append_string (s)
 			append_end_of_line_to (h)
 		end
 
-	append_end_of_line_to (h: like string)
+	append_end_of_line_to (h: STRING_8)
 		do
 			h.append_character ('%R')
 			h.append_character ('%N')
