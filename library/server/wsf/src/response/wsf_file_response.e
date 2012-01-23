@@ -46,7 +46,15 @@ feature {NONE} -- Initialization
 			header := h
 
 			h.put_content_type (content_type)
+			if attached file_last_modified as dt then
+				h.put_last_modified (dt)
+			end
 			get_file_size
+			if file_size = 0 then
+				set_status_code ({HTTP_STATUS_CODE}.not_found)
+			else
+				set_status_code ({HTTP_STATUS_CODE}.ok)
+			end
 			update_content_length
 		end
 
@@ -113,7 +121,7 @@ feature -- Element change
 	set_status_code (c: like status_code)
 			-- Set `status_code' to `c'.
 		require
-			valid_status_code: status_code > 0
+			valid_status_code: c > 0
 		do
 			status_code := c
 		ensure
@@ -173,6 +181,17 @@ feature {NONE} -- Implementation: file system helper
 			create f.make (file_name)
 			if f.exists then
 				file_size := f.count
+			end
+		end
+
+	file_last_modified: detachable DATE_TIME
+			-- Get `file_size' from file named `file_name'
+		local
+			f: RAW_FILE
+		do
+			create f.make (file_name)
+			if f.exists then
+				create Result.make_from_epoch (f.change_date)
 			end
 		end
 
