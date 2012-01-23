@@ -26,6 +26,12 @@ feature {NONE} -- Initialization
 
 feature -- Status report
 
+	status_committed: BOOLEAN
+			-- Status line committed?
+		do
+			Result := wgi_response.status_committed
+		end
+
 	header_committed: BOOLEAN
 			-- Header committed?
 		do
@@ -56,7 +62,7 @@ feature -- Status setting
 			-- Set response status code
 			-- Should be done before sending any data back to the client
 		require
-			status_not_set: not status_is_set
+			status_not_set: not status_committed
 			header_not_committed: not header_committed
 		do
 			wgi_response.set_status_code (a_code)

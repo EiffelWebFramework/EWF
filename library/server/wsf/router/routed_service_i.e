@@ -38,28 +38,15 @@ feature -- Execution
 	execute (req: WSF_REQUEST; res: WSF_RESPONSE)
 		local
 			l_handled: BOOLEAN
-			rescued: BOOLEAN
 		do
-			if not rescued then
-				l_handled := router.dispatch (req, res)
-				if not l_handled then
-					execute_default (req, res)
-				end
-			else
-				execute_rescue (req, res)
+			l_handled := router.dispatch (req, res)
+			if not l_handled then
+				execute_default (req, res)
 			end
 		end
 
 	execute_default (req: WSF_REQUEST; res: WSF_RESPONSE)
 		deferred
-		end
-
-	execute_rescue (req: WSF_REQUEST; res: WSF_RESPONSE)
-		do
-			if not res.header_committed then
-				res.put_header ({HTTP_STATUS_CODE}.internal_server_error, Void)
-			end
-			res.flush
 		end
 
 note

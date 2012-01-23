@@ -34,27 +34,20 @@ feature -- Execution
 
 	execute (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
 			-- Execute request handler	
-		local
-			rescued: BOOLEAN
 		do
-			if not rescued then
-				if request_method_name_supported (req.request_method) then
-					if authentication_required (req) and then not authenticated (ctx) then
-						execute_unauthorized (ctx, req, res)
-					else
-						pre_execute (ctx, req, res)
-						execute_application (ctx, req, res)
-						post_execute (ctx, req, res)
-					end
+			if request_method_name_supported (req.request_method) then
+				if authentication_required (req) and then not authenticated (ctx) then
+					execute_unauthorized (ctx, req, res)
 				else
-					execute_request_method_not_allowed (req, res, supported_request_method_names)
+					pre_execute (ctx, req, res)
+					execute_application (ctx, req, res)
+					post_execute (ctx, req, res)
 				end
 			else
-				rescue_execute (ctx, req, res)
+				execute_request_method_not_allowed (req, res, supported_request_method_names)
 			end
 		rescue
-			rescued := True
-			retry
+			execute_rescue (ctx, req, res)
 		end
 
 	execute_application (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
@@ -69,9 +62,11 @@ feature -- Execution
 		do
 		end
 
-	rescue_execute (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
+	execute_rescue (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
 		do
 			post_execute (ctx, req, res)
+		rescue
+			--| Just in case, the rescue is raising other exceptions ...
 		end
 
 	execute_unauthorized (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)

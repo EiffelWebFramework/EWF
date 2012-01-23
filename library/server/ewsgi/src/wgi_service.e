@@ -11,7 +11,7 @@ note
 deferred class
 	WGI_SERVICE
 
-feature -- Execution
+feature {WGI_CONNECTOR} -- Execution
 
 	execute (req: WGI_REQUEST; res: WGI_RESPONSE)
 			-- Execute the request
@@ -26,7 +26,7 @@ feature -- Execution
 		end
 
 note
-	copyright: "2011-2011, Eiffel Software and others"
+	copyright: "2011-2012, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

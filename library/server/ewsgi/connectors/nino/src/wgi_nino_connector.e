@@ -118,32 +118,16 @@ feature -- Server
 		local
 			req: WGI_REQUEST_FROM_TABLE
 			res: detachable WGI_RESPONSE_STREAM
-			rescued: INTEGER
 		do
-			if rescued = 0 then
-				create req.make (env, create {WGI_NINO_INPUT_STREAM}.make (a_socket), Current)
-				create res.make (create {WGI_NINO_OUTPUT_STREAM}.make (a_socket))
-				req.set_meta_string_variable ("RAW_HEADER_DATA", a_headers_text)
-				service.execute (req, res)
-			elseif rescued = 1 then
-				if attached (create {EXCEPTION_MANAGER}).last_exception as e and then attached e.exception_trace as l_trace then
-					if res /= Void then
-						if not res.status_is_set then
-							res.set_status_code ({HTTP_STATUS_CODE}.internal_server_error)
-						end
-						if res.message_writable then
-							res.put_string ("<pre>" + l_trace + "</pre>")
-						end
-					end
-				end
-			end
-		rescue
-			rescued := rescued + 1
-			retry
+			create req.make (env, create {WGI_NINO_INPUT_STREAM}.make (a_socket), Current)
+			create res.make (create {WGI_NINO_OUTPUT_STREAM}.make (a_socket))
+			req.set_meta_string_variable ("RAW_HEADER_DATA", a_headers_text)
+			service.execute (req, res)
+			res.commit
 		end
 
 note
-	copyright: "2011-2011, Eiffel Software and others"
+	copyright: "2011-2012, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

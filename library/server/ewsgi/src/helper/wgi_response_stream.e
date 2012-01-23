@@ -22,7 +22,7 @@ feature {NONE} -- Initialization
 			output := a_output
 		end
 
-feature {WGI_SERVICE} -- Commit
+feature {WGI_CONNECTOR, WGI_SERVICE} -- Commit
 
 	commit
 			-- Commit the current response
@@ -32,6 +32,9 @@ feature {WGI_SERVICE} -- Commit
 		end
 
 feature -- Status report
+
+	status_committed: BOOLEAN
+			-- Status code set and committed?
 
 	header_committed: BOOLEAN
 			-- Header committed?
@@ -68,6 +71,7 @@ feature -- Status setting
 		do
 			status_code := a_code
 			output.put_status_line (a_code)
+			status_committed := True
 		end
 
 	status_code: INTEGER
@@ -129,7 +133,7 @@ feature {NONE} -- Implementation: Access
 			-- Server output channel
 
 ;note
-	copyright: "2011-2011, Eiffel Software and others"
+	copyright: "2011-2012, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

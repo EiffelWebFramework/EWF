@@ -6,7 +6,7 @@ note
 deferred class
 	WGI_RESPONSE
 
-feature {WGI_RESPONSE, WGI_SERVICE} -- Commit
+feature {WGI_CONNECTOR, WGI_SERVICE} -- Commit
 
 	commit
 			-- Commit the current response
@@ -47,6 +47,14 @@ feature -- Status setting
 	status_is_set: BOOLEAN
 			-- Is status set?
 		deferred
+		end
+
+	status_committed: BOOLEAN
+			-- Is status code set and committed?
+			-- i.e: sent to the client and could not be changed anymore
+		deferred
+		ensure
+			committed_implies_set: Result implies status_is_set
 		end
 
 	set_status_code (a_code: INTEGER)
@@ -116,7 +124,7 @@ feature -- Output operation
 		end
 
 note
-	copyright: "2011-2011, Eiffel Software and others"
+	copyright: "2011-2012, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

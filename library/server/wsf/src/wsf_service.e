@@ -26,11 +26,18 @@ feature -- Execution
 		deferred
 		end
 
-feature -- WGI Execution
+feature {WGI_CONNECTOR} -- WGI Execution
 
 	wgi_execute (req: WGI_REQUEST; res: WGI_RESPONSE)
+		local
+			w_res: detachable WSF_RESPONSE
 		do
-			execute (create {WSF_REQUEST}.make_from_wgi (req), create {WSF_RESPONSE}.make_from_wgi (res))
+			create w_res.make_from_wgi (res)
+			execute (create {WSF_REQUEST}.make_from_wgi (req), w_res)
+		rescue
+			if w_res /= Void then
+				w_res.flush
+			end
 		end
 
 end
