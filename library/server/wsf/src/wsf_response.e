@@ -94,7 +94,7 @@ feature -- Header output operation
 	put_header (a_status_code: INTEGER; a_headers: detachable ARRAY [TUPLE [key: READABLE_STRING_8; value: READABLE_STRING_8]])
 			-- Send headers with status `a_status', and headers from `a_headers'
 		require
-			status_not_set: not status_is_set
+			status_not_committed: not status_committed
 			header_not_committed: not header_committed
 		local
 			h: HTTP_HEADER

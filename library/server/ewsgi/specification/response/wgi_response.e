@@ -19,6 +19,14 @@ feature {WGI_CONNECTOR, WGI_SERVICE} -- Commit
 
 feature -- Status report
 
+	status_committed: BOOLEAN
+			-- Is status code set and committed?
+			-- i.e: sent to the client and could not be changed anymore
+		deferred
+		ensure
+			committed_implies_set: Result implies status_is_set
+		end
+
 	header_committed: BOOLEAN
 			-- Header committed?
 		deferred
@@ -49,19 +57,11 @@ feature -- Status setting
 		deferred
 		end
 
-	status_committed: BOOLEAN
-			-- Is status code set and committed?
-			-- i.e: sent to the client and could not be changed anymore
-		deferred
-		ensure
-			committed_implies_set: Result implies status_is_set
-		end
-
 	set_status_code (a_code: INTEGER)
 			-- Set response status code
 			-- Should be done before sending any data back to the client
 		require
-			status_not_set: not status_is_set
+			status_not_set: not status_committed
 			header_not_committed: not header_committed
 		deferred
 		ensure
