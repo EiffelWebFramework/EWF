@@ -39,6 +39,8 @@ feature -- Registration
 		end
 
 	map_with_uri_template_and_request_methods (uri: URI_TEMPLATE; h: H; rqst_methods: detachable ARRAY [READABLE_STRING_8])
+		require
+			uri_is_valid: uri.is_valid
 		local
 			l_tpl: like {URI_TEMPLATE}.template
 			l_uri: URI_TEMPLATE

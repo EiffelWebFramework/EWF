@@ -43,6 +43,9 @@ feature -- Execution
 			hdl: detachable H
 		do
 			hdl := router.dispatch_and_return_handler (req, res)
+			if hdl = Void then
+				res.put_header ({HTTP_STATUS_CODE}.not_found, <<[{HTTP_HEADER_NAMES}.header_content_length, "0"]>>)
+			end
 		end
 
 feature {NONE} -- Routing
