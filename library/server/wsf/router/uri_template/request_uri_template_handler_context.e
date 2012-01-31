@@ -29,7 +29,7 @@ feature -- Access
 
 	uri_template_match: URI_TEMPLATE_MATCH_RESULT
 
-feature -- Query	
+feature -- Query
 
 	path_parameter (a_name: READABLE_STRING_8): detachable WSF_VALUE
 		do

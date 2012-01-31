@@ -298,7 +298,7 @@ feature -- Access: CGI Meta variables
 		do
 			meta_variables_table.force (new_string_value (a_name, a_value), a_name)
 		ensure
-			param_set: attached {WSF_STRING} meta_variable (a_name) as val and then val ~ a_value
+			param_set: attached {WSF_STRING} meta_variable (a_name) as val and then val.url_encoded_string.same_string (a_value)
 		end
 
 	unset_meta_variable (a_name: READABLE_STRING_8)

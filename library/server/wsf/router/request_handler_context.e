@@ -141,6 +141,29 @@ feature -- String query
 			Result := string_from (path_parameter (a_name))
 		end
 
+	string_array_path_parameter (a_name: READABLE_STRING_8): detachable ARRAY [READABLE_STRING_32]
+		local
+			i: INTEGER
+			n: INTEGER
+		do
+			from
+				i := 1
+				n := 1
+				create Result.make_filled ("", 1, 5)
+			until
+				i = 0
+			loop
+				if attached string_path_parameter (a_name + "[" + i.out + "]") as v then
+					Result.force (v, n)
+					n := n + 1
+					i := i + 1
+				else
+					i := 0 -- Exit
+				end
+			end
+			Result.keep_head (n)
+		end
+
 	string_query_parameter (a_name: READABLE_STRING_8): detachable READABLE_STRING_32
 		do
 			Result := string_from (query_parameter (a_name))
