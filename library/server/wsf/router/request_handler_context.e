@@ -161,7 +161,7 @@ feature -- String query
 					i := 0 -- Exit
 				end
 			end
-			Result.keep_head (n)
+			Result.keep_head (n - 1)
 		end
 
 	string_query_parameter (a_name: READABLE_STRING_8): detachable READABLE_STRING_32

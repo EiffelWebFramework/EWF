@@ -92,7 +92,7 @@ feature -- Element change
 
 	add_value (a_value: WSF_VALUE; k: READABLE_STRING_32)
 		require
-			same_name: a_value.name.same_string (name)
+			same_name: a_value.name.same_string (name) or else (a_value.name.starts_with (name) and then a_value.name.item (name.count + 1) = '[')
 		do
 			values.force (a_value, k)
 		end

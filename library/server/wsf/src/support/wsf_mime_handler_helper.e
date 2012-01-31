@@ -43,20 +43,21 @@ feature {NONE} -- Implementation
 
 	add_value_to_table (a_name: READABLE_STRING_8; a_value: READABLE_STRING_8; a_table: HASH_TABLE [WSF_VALUE, READABLE_STRING_32])
 		local
-
+			l_decoded_name: STRING_32
 			v: detachable WSF_VALUE
-			n,k,r: STRING_8
-			k32: STRING_32
+			n,k,r: STRING_32
+--			k32: STRING_32
 			p,q: INTEGER
 			tb,ptb: detachable WSF_TABLE
 		do
 			--| Check if this is a list format such as   choice[]  or choice[a] or even choice[a][] or choice[a][b][c]...
-			p := a_name.index_of ('[', 1)
+			l_decoded_name := url_encoder.decoded_string (a_name)
+			p := l_decoded_name.index_of ({CHARACTER_32}'[', 1)
 			if p > 0 then
-				q := a_name.index_of (']', p + 1)
+				q := l_decoded_name.index_of ({CHARACTER_32}']', p + 1)
 				if q > p then
-					n := a_name.substring (1, p - 1)
-					r := a_name.substring (q + 1, a_name.count)
+					n := l_decoded_name.substring (1, p - 1)
+					r := l_decoded_name.substring (q + 1, l_decoded_name.count)
 					r.left_adjust; r.right_adjust
 
 					create tb.make (n)
@@ -64,31 +65,31 @@ feature {NONE} -- Implementation
 						tb := l_existing_table
 					end
 
-					k := a_name.substring (p + 1, q - 1)
+					k := l_decoded_name.substring (p + 1, q - 1)
 					k.left_adjust; k.right_adjust
 					if k.is_empty then
 						k.append_integer (tb.count + 1)
 					end
 					v := tb
-					n.append_character ('[')
+					n.append_character ({CHARACTER_32}'[')
 					n.append (k)
-					n.append_character (']')
+					n.append_character ({CHARACTER_32}']')
 
 					from
 					until
 						r.is_empty
 					loop
 						ptb := tb
-						p := r.index_of ({CHARACTER_8} '[', 1)
+						p := r.index_of ({CHARACTER_32} '[', 1)
 						if p > 0 then
-							q := r.index_of ({CHARACTER_8} ']', p + 1)
+							q := r.index_of ({CHARACTER_32} ']', p + 1)
 							if q > p then
-								k32 := url_encoder.decoded_string (k)
-								if attached {WSF_TABLE} ptb.value (k32) as l_tb_value then
+--								k32 := url_encoder.decoded_string (k)
+								if attached {WSF_TABLE} ptb.value (k) as l_tb_value then
 									tb := l_tb_value
 								else
 									create tb.make (n)
-									ptb.add_value (tb, k32)
+									ptb.add_value (tb, k)
 								end
 
 								k := r.substring (p + 1, q - 1)
