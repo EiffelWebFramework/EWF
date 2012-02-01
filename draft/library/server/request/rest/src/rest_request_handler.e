@@ -71,7 +71,6 @@ feature -- Execution
 
 	execute_unauthorized (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
 		do
-			res.set_status_code ({HTTP_STATUS_CODE}.unauthorized)
 			res.put_header ({HTTP_STATUS_CODE}.unauthorized, Void)
 			res.put_string ("Unauthorized")
 		end

@@ -52,7 +52,6 @@ feature -- Helper
 					i := i + 1
 				end
 			end
-			res.set_status_code ({HTTP_STATUS_CODE}.unsupported_media_type)
 			res.put_header ({HTTP_STATUS_CODE}.unsupported_media_type, << ["Content-Type", "text/plain"], ["Accept", accept_s]>>)
 			if accept_s /= Void then
 				res.put_string ("Unsupported request content-type, Accept: " + accept_s + "%N")
@@ -66,7 +65,6 @@ feature -- Helper
 		local
 			s: STRING
 		do
-			res.set_status_code ({HTTP_STATUS_CODE}.method_not_allowed)
 			create s.make (25)
 			across
 				a_methods as c
@@ -77,7 +75,6 @@ feature -- Helper
 				end
 				s.append_string (c.item)
 			end
-			res.set_status_code ({HTTP_STATUS_CODE}.method_not_allowed)
 			res.put_header ({HTTP_STATUS_CODE}.method_not_allowed, <<
 						["Content-Type", {HTTP_MIME_TYPES}.text_plain],
 						["Allow", s]
