@@ -116,8 +116,8 @@ feature -- Access
 				create Result.make_empty
 			end
 		ensure
-			result_has_ending_cr_lf: Result.count >= 2 implies Result.substring (Result.count - 2, Result.count).same_string ("%R%N")
-			result_has_single_ending_cr_lf: Result.count >= 4 implies not Result.substring (Result.count - 4, Result.count).same_string ("%R%N%R%N")
+			result_has_ending_cr_lf: Result.count >= 2 implies Result.substring (Result.count - 1, Result.count).same_string ("%R%N")
+			result_has_single_ending_cr_lf: Result.count >= 4 implies not Result.substring (Result.count - 3, Result.count).same_string ("%R%N%R%N")
 		end
 
 feature -- Header change: general
