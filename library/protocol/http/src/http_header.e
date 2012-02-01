@@ -33,7 +33,8 @@ inherit
 create
 	make,
 	make_with_count,
-	make_from_array
+	make_from_array,
+	make_from_header
 
 convert
 	make_from_array ({ARRAY [TUPLE [key: READABLE_STRING_8; value: READABLE_STRING_8]]}),
@@ -54,6 +55,7 @@ feature {NONE} -- Initialization
 		end
 
 	make_from_array (a_headers: ARRAY [TUPLE [key: READABLE_STRING_8; value: READABLE_STRING_8]])
+			-- Create HEADER from array of pair (key,value)
 		do
 			if a_headers.is_empty then
 				make_with_count (0)
@@ -64,6 +66,20 @@ feature {NONE} -- Initialization
 				loop
 					put_header_key_value (c.item.key, c.item.value)
 				end
+			end
+		end
+
+	make_from_header (a_header: HTTP_HEADER)
+			-- Create Current from existing HEADER `a_header'
+		local
+			lst: like headers
+		do
+			lst := a_header.headers
+			make_with_count (lst.count)
+			across
+				lst as c
+			loop
+				add_header (c.item.string)
 			end
 		end
 

@@ -234,9 +234,10 @@ feature -- Helper
 
 feature -- Redirect
 
-	redirect_now_with_custom_status_code (a_url: READABLE_STRING_8; a_status_code: INTEGER)
-			-- Redirect to the given url `a_url' and precise custom `a_status_code'
+	redirect_now_custom (a_url: READABLE_STRING_8; a_status_code: INTEGER; a_header: detachable HTTP_HEADER; a_content: detachable TUPLE [body: READABLE_STRING_8; type: READABLE_STRING_8])
+			-- Redirect to the given url `a_url' and precise custom `a_status_code', custom header and content
 			-- Please see http://www.faqs.org/rfcs/rfc2616 to use proper status code.
+			-- if `a_status_code' is 0, use the default {HTTP_STATUS_CODE}.moved_permanently
 		require
 			header_not_committed: not header_committed
 		local
@@ -246,11 +247,26 @@ feature -- Redirect
 				-- This might be a trouble about content-length				
 				put_string ("Headers already sent.%NCannot redirect, for now please follow this <a %"href=%"" + a_url + "%">link</a> instead%N")
 			else
-				create h.make_with_count (1)
+				if a_header /= Void then
+					create h.make_from_header (a_header)
+				else
+					create h.make_with_count (1)
+				end
 				h.put_location (a_url)
-				h.put_content_length (0)
-				set_status_code (a_status_code)
-				put_header_text (h.string)
+				if a_status_code = 0 then
+					set_status_code ({HTTP_STATUS_CODE}.moved_permanently)
+				else
+					set_status_code (a_status_code)
+				end
+				if a_content /= Void then
+					h.put_content_length (a_content.body.count)
+					h.put_content_type (a_content.type)
+					put_header_text (h.string)
+					put_string (a_content.body)
+				else
+					h.put_content_length (0)
+					put_header_text (h.string)
+				end
 			end
 		end
 
@@ -259,26 +275,13 @@ feature -- Redirect
 		require
 			header_not_committed: not header_committed
 		do
-			redirect_now_with_custom_status_code (a_url, {HTTP_STATUS_CODE}.moved_permanently)
+			redirect_now_custom (a_url, {HTTP_STATUS_CODE}.moved_permanently, Void, Void)
 		end
 
 	redirect_now_with_content (a_url: READABLE_STRING_8; a_content: READABLE_STRING_8; a_content_type: READABLE_STRING_8)
 			-- Redirect to the given url `a_url'
-		local
-			h: HTTP_HEADER
 		do
-			if header_committed then
-				-- This might be a trouble about content-length
-				put_string ("Headers already sent.%NCannot redirect, for now please follow this <a %"href=%"" + a_url + "%">link</a> instead%N")
-			else
-				create h.make_with_count (1)
-				h.put_location (a_url)
-				h.put_content_length (a_content.count)
-				h.put_content_type (a_content_type)
-				set_status_code ({HTTP_STATUS_CODE}.moved_permanently)
-				put_header_text (h.string)
-				put_string (a_content)
-			end
+			redirect_now_custom (a_url, {HTTP_STATUS_CODE}.moved_permanently, Void, [a_content, a_content_type])
 		end
 
 note
