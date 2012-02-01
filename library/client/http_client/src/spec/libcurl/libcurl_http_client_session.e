@@ -19,6 +19,7 @@ feature {NONE} -- Initialization
 		do
 			create curl -- cURL externals
 			create curl_easy -- cURL easy externals
+			curl_easy.set_curl_function (create {LIBCURL_DEFAULT_FUNCTION}.make)
 		end
 
 feature -- Basic operation
