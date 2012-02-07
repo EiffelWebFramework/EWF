@@ -1,6 +1,6 @@
 Restbuck Eiffel Implementation based on the book of REST in Practice
 ====================================================================
-This is an ihmplementation of CRUD pattern for manipulate resources, this is the first step to use
+This is an implementation of CRUD pattern for manipulate resources, this is the first step to use
 the HTTP protocol as an application protocol instead of a transport protocol.
 
 Restbuck Protocol
