@@ -61,26 +61,15 @@ feature {NONE} -- Initialization
 				make_with_count (0)
 			else
 				make_with_count (a_headers.count)
-				across
-					a_headers as c
-				loop
-					put_header_key_value (c.item.key, c.item.value)
-				end
+				append_array (a_headers)
 			end
 		end
 
 	make_from_header (a_header: HTTP_HEADER)
 			-- Create Current from existing HEADER `a_header'
-		local
-			lst: like headers
 		do
-			lst := a_header.headers
-			make_with_count (lst.count)
-			across
-				lst as c
-			loop
-				add_header (c.item.string)
-			end
+			make_with_count (a_header.headers.count)
+			append_header_object (a_header)
 		end
 
 feature -- Recycle
@@ -93,7 +82,7 @@ feature -- Recycle
 
 feature -- Access
 
-	headers: LIST [READABLE_STRING_8]
+	headers: ARRAYED_LIST [READABLE_STRING_8]
 			-- Header's lines
 
 	string: STRING_8
@@ -103,14 +92,11 @@ feature -- Access
 		do
 			l_headers := headers
 			if not l_headers.is_empty then
-				create Result.make (32)
-				from
-					l_headers.start
-				until
-					l_headers.after
+				create Result.make (l_headers.count * 32)
+				across
+					l_headers as c
 				loop
-					append_line_to (l_headers.item, Result)
-					l_headers.forth
+					append_line_to (c.item, Result)
 				end
 			else
 				create Result.make_empty
@@ -119,6 +105,30 @@ feature -- Access
 			result_has_ending_cr_lf: Result.count >= 2 implies Result.substring (Result.count - 1, Result.count).same_string ("%R%N")
 			result_has_single_ending_cr_lf: Result.count >= 4 implies not Result.substring (Result.count - 3, Result.count).same_string ("%R%N%R%N")
 		end
+
+feature -- Header: filling
+
+	append_array (a_headers: ARRAY [TUPLE [key: READABLE_STRING_8; value: READABLE_STRING_8]])
+			-- Append array of key,value headers
+		do
+			headers.grow (headers.count + a_headers.count)
+			across
+				a_headers as c
+			loop
+				put_header_key_value (c.item.key, c.item.value)
+			end
+		end
+
+	append_header_object (h: HTTP_HEADER)
+			-- Append headers from `h'
+		do
+			headers.grow (headers.count + h.headers.count)
+			across
+				h.headers as c
+			loop
+				add_header (c.item.string)
+			end
+		end	
 
 feature -- Header change: general
 
