@@ -42,6 +42,8 @@ feature -- Access
 
 	upload_filename: detachable READABLE_STRING_8
 
+	proxy: detachable TUPLE [host: READABLE_STRING_8; port: INTEGER]
+
 feature -- Status report
 
 	has_form_data: BOOLEAN
@@ -88,6 +90,15 @@ feature -- Element change
 			has_no_upload_filename: not has_upload_filename
 		do
 			upload_filename := a_fn
+		end
+
+	set_proxy (a_host: detachable READABLE_STRING_8; a_port: INTEGER)
+		do
+			if a_host = Void then
+				proxy := Void
+			else
+				proxy := [a_host, a_port]
+			end
 		end
 
 end

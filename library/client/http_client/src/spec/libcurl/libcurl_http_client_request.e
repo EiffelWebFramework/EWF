@@ -74,6 +74,12 @@ feature -- Execution
 			--| RESPONSE HEADERS
 			curl_easy.setopt_integer (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_header, 1)
 
+			--| PROXY ...
+			if ctx /= Void and then attached ctx.proxy as l_proxy then
+				curl_easy.setopt_integer (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_proxyport, l_proxy.port)
+				curl_easy.setopt_string (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_proxy, l_proxy.host)
+			end
+
 			--| Timeout
 			if timeout > 0 then
 				curl_easy.setopt_integer (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_timeout, timeout)
