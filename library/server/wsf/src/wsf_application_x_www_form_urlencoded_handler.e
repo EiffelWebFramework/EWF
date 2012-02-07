@@ -21,7 +21,7 @@ feature -- Status report
 
 feature -- Execution
 
-	handle (a_content_type: READABLE_STRING_8; a_content_length: NATURAL_64; req: WSF_REQUEST;
+	handle (a_content_type: READABLE_STRING_8; req: WSF_REQUEST;
 			a_vars: HASH_TABLE [WSF_VALUE, READABLE_STRING_32]; a_raw_data: detachable CELL [detachable STRING_8])
 		local
 			l_content: READABLE_STRING_8
@@ -29,12 +29,12 @@ feature -- Execution
 			s: READABLE_STRING_8
 			l_name, l_value: READABLE_STRING_8
 		do
-			l_content := read_input_data (req.input, a_content_length)
+			l_content := full_input_data (req)
 			if a_raw_data /= Void then
 				a_raw_data.replace (l_content)
 			end
+			check content_count_same_as_content_length_if_not_chunked: (not req.is_chunked_input) implies (l_content.count = req.content_length_value.to_integer_32) end  --| FIXME: truncated value
 			n := l_content.count
-			check n_same_as_content_length: n = a_content_length.to_integer_32 end  --| FIXME: truncated value
 			if n > 0 then
 				from
 					p := 1

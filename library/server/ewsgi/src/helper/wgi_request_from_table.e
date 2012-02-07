@@ -26,14 +26,23 @@ feature {NONE} -- Initialization
 			wgi_connector := a_wgi_connector
 			input := a_input
 			set_meta_variables (a_vars)
-
 			update_path_info
+			if attached http_transfer_encoding as l_transfer_encoding and then l_transfer_encoding.same_string ("chunked") then
+				is_chunked_input := True
+				create chunked_input.make (a_input)
+			end
 		end
 
 feature -- Access: Input
 
+	is_chunked_input: BOOLEAN
+			-- Is request using chunked transfer-encoding?
+
 	input: WGI_INPUT_STREAM
 			-- Server input channel
+
+	chunked_input: detachable WGI_CHUNKED_INPUT_STREAM
+			-- Chunked server input channel	
 
 feature -- EWSGI access
 
@@ -211,6 +220,13 @@ feature -- Access: HTTP_* CGI meta parameters - 1.1
 			Result := meta_string_variable ({WGI_META_NAMES}.http_authorization)
 		end
 
+	http_transfer_encoding: detachable READABLE_STRING_8
+			-- Transfer-Encoding
+			-- for instance chunked
+		do
+			Result := meta_string_variable ({WGI_META_NAMES}.http_transfer_encoding)
+		end
+
 feature -- Access: Extension to CGI meta parameters - 1.1
 
 	request_uri: READABLE_STRING_8
@@ -338,20 +354,6 @@ feature {NONE} -- Element change: CGI meta parameter related to PATH_INFO
 					end
 				end
 			end
-		end
-
-feature {NONE} -- I/O: implementation
-
-	read_input (nb: INTEGER)
-			-- Read `nb' bytes from `input'
-		do
-			input.read_string (nb)
-		end
-
-	last_input_string: STRING
-			-- Last string read from `input'
-		do
-			Result := input.last_string
 		end
 
 feature {NONE} -- Implementation: utilities	

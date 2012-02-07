@@ -46,6 +46,8 @@ feature -- Access
 
 	http_referer: STRING = "HTTP_REFERER"
 
+	http_transfer_encoding: STRING = "HTTP_TRANSFER_ENCODING"
+
 	gateway_interface: STRING = "GATEWAY_INTERFACE"
 
 	auth_type: STRING = "AUTH_TYPE"
@@ -77,7 +79,7 @@ feature -- Extra names
 	orig_path_info: STRING = "ORIG_PATH_INFO"
 
 note
-	copyright: "2011-2011, Eiffel Software and others"
+	copyright: "2011-2012, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

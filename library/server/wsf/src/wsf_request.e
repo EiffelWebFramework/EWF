@@ -124,8 +124,24 @@ feature -- Access: Input
 
 	input: WGI_INPUT_STREAM
 			-- Server input channel
+		require
+			is_not_chunked_input: not is_chunked_input
 		do
 			Result := wgi_request.input
+		end
+
+	is_chunked_input: BOOLEAN
+			-- Is request using chunked transfer-encoding?	
+		do
+			Result := wgi_request.is_chunked_input
+		end
+
+	chunked_input: detachable WGI_CHUNKED_INPUT_STREAM
+			-- Server input channel
+		require
+			is_chunked_input: is_chunked_input
+		do
+			Result := wgi_request.chunked_input
 		end
 
 feature -- Helper
@@ -768,6 +784,13 @@ feature -- HTTP_*
 			Result := wgi_request.http_authorization
 		end
 
+	http_transfer_encoding: detachable READABLE_STRING_8
+			-- Transfer-Encoding
+			-- for instance chunked
+		do
+			Result := wgi_request.http_transfer_encoding
+		end
+
 feature -- Extra CGI environment variables
 
 	request_uri: READABLE_STRING_8
@@ -1133,13 +1156,11 @@ feature {NONE} -- Form fields and related
 		local
 			vars: like internal_form_data_parameters_table
 			l_raw_data_cell: detachable CELL [detachable STRING_8]
-			n: NATURAL_64
 			l_type: like content_type
 		do
 			vars := internal_form_data_parameters_table
 			if vars = Void then
-				n := content_length_value
-				if n = 0 then
+				if not is_chunked_input and content_length_value = 0 then
 					create vars.make (0)
 					vars.compare_objects
 				else
@@ -1151,9 +1172,10 @@ feature {NONE} -- Form fields and related
 
 					l_type := content_type
 					if l_type /= Void and then attached mime_handler (l_type) as hdl then
-						hdl.handle (l_type, n, Current, vars, l_raw_data_cell)
+						hdl.handle (l_type, Current, vars, l_raw_data_cell)
 					end
 					if l_raw_data_cell /= Void and then attached l_raw_data_cell.item as l_raw_data then
+						-- What if no mime handler is associated to `l_type' ?
 						set_meta_string_variable ("RAW_POST_DATA", l_raw_data)
 					end
 				end

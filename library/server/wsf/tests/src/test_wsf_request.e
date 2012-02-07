@@ -53,11 +53,14 @@ feature {NONE} -- Events
 	execute (req: WSF_REQUEST; res: WSF_RESPONSE)
 		local
 			q: detachable STRING_32
+			page: WSF_PAGE_RESPONSE
 		do
+			create page.make
 			if attached req.request_uri as l_uri then
 				if l_uri.starts_with (test_url ("get/01")) then
-					res.write_header (200, <<["Content-Type", "text/plain"]>>)
-					res.write_string ("get-01")
+					page.set_status_code (200)
+					page.header.put_content_type_text_plain
+					page.put_string ("get-01")
 					create q.make_empty
 
 					across
@@ -69,11 +72,11 @@ feature {NONE} -- Events
 						q.append (qcur.item.name.as_string_32 + "=" + qcur.item.as_string)
 					end
 					if not q.is_empty then
-						res.write_string ("(" + q + ")")
+						page.put_string ("(" + q + ")")
 					end
 				elseif l_uri.starts_with (test_url ("post/01")) then
-					res.write_header (200, <<["Content-Type", "text/plain"]>>)
-					res.write_string ("post-01")
+					page.put_header (200, <<["Content-Type", "text/plain"]>>)
+					page.put_string ("post-01")
 					create q.make_empty
 
 					across
@@ -86,7 +89,7 @@ feature {NONE} -- Events
 					end
 
 					if not q.is_empty then
-						res.write_string ("(" + q + ")")
+						page.put_string ("(" + q + ")")
 					end
 
 					create q.make_empty
@@ -102,16 +105,18 @@ feature {NONE} -- Events
 					end
 
 					if not q.is_empty then
-						res.write_string (" : " + q )
+						page.put_string (" : " + q )
 					end
 				else
-					res.write_header (200, <<["Content-Type", "text/plain"]>>)
-					res.write_string ("Hello")
+					page.put_header (200, <<["Content-Type", "text/plain"]>>)
+					page.put_string ("Hello")
 				end
 			else
-				res.write_header (200, <<["Content-Type", "text/plain"]>>)
-				res.write_string ("Bye")
+				page.put_header (200, <<["Content-Type", "text/plain"]>>)
+				page.put_string ("Bye")
 			end
+
+			page.send_to (res)
 		end
 
 	test_url (a_query_url: READABLE_STRING_8): READABLE_STRING_8

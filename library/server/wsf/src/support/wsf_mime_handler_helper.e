@@ -9,6 +9,20 @@ deferred class
 
 feature {NONE} -- Implementation
 
+	full_input_data (req: WSF_REQUEST): READABLE_STRING_8
+		do
+			if req.is_chunked_input then
+				if attached req.chunked_input as l_chunked_input then
+					Result := l_chunked_input.data
+				else
+					check has_chunked_input: False end
+					Result := ""
+				end
+			else
+				Result := read_input_data (req.input, req.content_length_value)
+			end
+		end
+
 	read_input_data (a_input: WGI_INPUT_STREAM; nb: NATURAL_64): READABLE_STRING_8
 			-- All data from input form
 		local

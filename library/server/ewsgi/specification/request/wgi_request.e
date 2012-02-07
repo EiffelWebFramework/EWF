@@ -77,6 +77,20 @@ feature -- Access: Input
 
 	input: WGI_INPUT_STREAM
 			-- Server input channel
+		require
+			is_not_chunked_input: not is_chunked_input
+		deferred
+		end
+
+	is_chunked_input: BOOLEAN
+			-- Is request using chunked transfer-encoding?
+		deferred
+		end
+
+	chunked_input: detachable WGI_CHUNKED_INPUT_STREAM
+			-- Chunked server input channel
+		require
+			is_chunked_input: is_chunked_input
 		deferred
 		end
 
@@ -580,6 +594,12 @@ feature -- HTTP_*
 		deferred
 		end
 
+	http_transfer_encoding: detachable READABLE_STRING_8
+			-- Transfer-Encoding
+			-- for instance chunked
+		deferred
+		end
+
 feature -- Extra CGI environment variables
 
 	request_uri: READABLE_STRING_8
@@ -606,7 +626,7 @@ invariant
 	path_info_identical: path_info ~ meta_string_variable ({WGI_META_NAMES}.path_info)
 
 note
-	copyright: "2011-2011, Eiffel Software and others"
+	copyright: "2011-2012, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

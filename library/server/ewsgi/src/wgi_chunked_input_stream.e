@@ -6,118 +6,167 @@ note
 
 class
 	WGI_CHUNKED_INPUT_STREAM
+
 create
 	make
+
 feature {NONE} -- Implementation
-	make ( an_input : like input)
+
+	make (an_input: like input)
 		do
-			create last_chunked.make_empty
-			create last_chunk_size.make_empty
+			create tmp_hex_chunk_size.make_empty
 			input := an_input
 		end
 
-feature --Input
-	read
-		-- Read all the data in a chunked stream.
-		-- Make the result available in `last_chunked'.
-		--	   Chunked-Body   = *chunk
-		--                        last-chunk
-		--                        trailer
-		--                        CRLF
-		--       chunk          = chunk-size [ chunk-extension ] CRLF
-		--                        chunk-data CRLF
-		--       chunk-size     = 1*HEX
-		--       last-chunk     = 1*("0") [ chunk-extension ] CRLF
-		--       chunk-extension= *( ";" chunk-ext-name [ "=" chunk-ext-val ] )
-		--       chunk-ext-name = token
-		--       chunk-ext-val  = token | quoted-string
-		--       chunk-data     = chunk-size(OCTET)
-		--       trailer        = *(entity-header CRLF)
+feature -- Input
+
+	data: READABLE_STRING_8
+		local
+			d: like internal_data
+		do
+			d := internal_data
+			if d = Void then
+				d := fetched_data
+				internal_data := d
+			end
+			Result := d
+		end
+
+feature {NONE} -- Parser
+
+	internal_data: detachable READABLE_STRING_8
+
+	tmp_hex_chunk_size: STRING_8
+	last_chunk_size: INTEGER
+	last_chunk: detachable STRING_8
+
+	fetched_data: READABLE_STRING_8
+			-- Read all the data in a chunked stream.
+			-- Make the result available in `last_chunked'.
+			--	   Chunked-Body   = *chunk
+			--                        last-chunk
+			--                        trailer
+			--                        CRLF
+			--       chunk          = chunk-size [ chunk-extension ] CRLF
+			--                        chunk-data CRLF
+			--       chunk-size     = 1*HEX
+			--       last-chunk     = 1*("0") [ chunk-extension ] CRLF
+			--       chunk-extension= *( ";" chunk-ext-name [ "=" chunk-ext-val ] )
+			--       chunk-ext-name = token
+			--       chunk-ext-val  = token | quoted-string
+			--       chunk-data     = chunk-size(OCTET)
+			--       trailer        = *(entity-header CRLF)
 		local
 			eoc : BOOLEAN
+			s: STRING_8
 		do
 			from
-				read_chunk
-				last_chunked.append (input.last_string)
-				if last_chunk_size.is_equal ("0") then
-					eoc := true
-				end
+				create s.make (1024)
 			until
 				eoc
 			loop
 				read_chunk
-				last_chunked.append (input.last_string)
-				if last_chunk_size.is_equal ("0") then
+				if attached last_chunk as l_last_chunk then
+					s.append (l_last_chunk)
+				else
 					eoc := true
+				end
+				if last_chunk_size = 0 then
+					eoc := True
 				end
 			end
 
 			read_trailer
 
+			Result := s
 		end
 
-feature {NONE} -- Parser
-	last_chunk_size : STRING
+	reset_chunk
+		do
+			last_chunk := Void
+			last_chunk_size := 0
+		end
 
 	read_chunk
 		do
-			-- clear last results
-			last_chunk_size.wipe_out
-
-			-- new read
+			reset_chunk
 			read_chunk_size
-			read_chunk_data
+			if last_chunk_size > 0 then
+				read_chunk_data
+			end
 		end
 
 	read_chunk_data
-		local
-			hex : HEXADECIMAL_STRING_TO_INTEGER_CONVERTER
+		require
+			last_chunk_size > 0
 		do
-			create hex.make
-			hex.parse_string_with_type (last_chunk_size, hex.type_integer)
-			if hex.parse_successful then
-				input.read_string (hex.parsed_integer)
-			end
+			input.read_string (last_chunk_size)
+			last_chunk := input.last_string
+
 			-- read CRLF
 			input.read_character
-			if input.last_character.is_equal ('%R') then
+			if input.last_character = '%R' then
 				input.read_character
 			end
+		ensure
+			last_chunk_attached: attached last_chunk as el_last_chunk
+			last_chunk_size_ok: el_last_chunk.count = last_chunk_size
 		end
 
 	read_chunk_size
+		require
+			tmp_hex_chunk_size_is_empty: tmp_hex_chunk_size.is_empty
 		local
 			eol : BOOLEAN
+			c: CHARACTER
+			hex : HEXADECIMAL_STRING_TO_INTEGER_CONVERTER
 		do
 			from
 				input.read_character
 			until
 				eol
 			loop
-
-				if input.last_character.is_equal ('%R') then
+				c := input.last_character
+				inspect c
+				when '%R' then
 					-- We are in the end of the line, we need to read the next character to start the next line.
+					eol := True
 					input.read_character
-					eol := true
-				elseif input.last_character.is_equal (';') then
+				when ';' then
 					-- We are in an extension chunk data
 					read_extension_chunk
 				else
-					last_chunk_size.append_character (input.last_character)
+					tmp_hex_chunk_size.append_character (c)
 					input.read_character
 				end
 			end
+			if tmp_hex_chunk_size.same_string ("0") then
+				last_chunk_size := 0
+			else
+				create hex.make
+				hex.parse_string_with_type (tmp_hex_chunk_size, hex.type_integer)
+				if hex.parse_successful then
+					last_chunk_size := hex.parsed_integer
+				else
+					last_chunk_size := 0 -- ERROR ...
+				end
+			end
+			tmp_hex_chunk_size.wipe_out
 		end
 
 	read_extension_chunk
 		do
-			print (" Reading extension chunk ")
+			debug
+				print (" Reading extension chunk ")
+			end
 			from
 				input.read_character
 			until
-				input.last_character.is_equal ('%R')
+				input.last_character = '%R'
 			loop
-				print (input.last_character)
+				debug
+					print (input.last_character)
+				end
 				input.read_character
 			end
 		end
@@ -125,29 +174,31 @@ feature {NONE} -- Parser
 	read_trailer
 		do
 			if not input.end_of_input then
-				print (" Reading trailer ")
+				debug
+					print (" Reading trailer ")
+				end
 				from
 					input.read_character
 				until
-					input.last_character.is_equal ('%R')
+					input.last_character = '%R'
 				loop
-					print (input.last_character)
+					debug
+						print (input.last_character)
+					end
 					input.read_character
 				end
 				-- read the LF
 				input.read_character
 			end
 		end
-feature {NONE} -- Access
+
+feature {NONE} -- Implementation
 
 	input: WGI_INPUT_STREAM
 		-- Input Stream
 
-feature -- Access		
-	last_chunked: STRING_8
-
 ;note
-	copyright: "2011-2011, Eiffel Software and others"
+	copyright: "2011-2012, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software
