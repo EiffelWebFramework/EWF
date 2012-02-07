@@ -98,22 +98,12 @@ feature -- Header output operation
 			header_not_committed: not header_committed
 		local
 			h: HTTP_HEADER
-			i,n: INTEGER
 		do
 			set_status_code (a_status_code)
-			create h.make
 			if a_headers /= Void then
-				from
-					i := a_headers.lower
-					n := a_headers.upper
-				until
-					i > n
-				loop
-					h.put_header_key_value (a_headers[i].key, a_headers[i].value)
-					i := i + 1
-				end
+				create h.make_from_array (a_headers)
+				wgi_response.put_header_text (h.string)
 			end
-			wgi_response.put_header_text (h.string)
 		ensure
 			header_committed: header_committed
 			status_set: status_is_set

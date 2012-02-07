@@ -41,6 +41,40 @@ feature -- Header
 
 	body: detachable STRING_8
 
+feature -- Element change
+
+	put_header (a_status_code: INTEGER; a_headers: detachable ARRAY [TUPLE [key: READABLE_STRING_8; value: READABLE_STRING_8]])
+			-- Send headers with status `a_status', and headers from `a_headers'
+		do
+			set_status_code (a_status_code)
+			if a_headers /= Void then
+				header.append_array (a_headers)
+			end
+		end
+
+	set_status_code (c: like status_code)
+		do
+			status_code := c
+		end
+
+	set_body (a_body: like body)
+		do
+			body := a_body
+		end
+
+	put_string (a_string: READABLE_STRING_8)
+			-- Append `a_string' to `body'
+		local
+			l_body: like body
+		do
+			l_body := body
+			if l_body = Void then
+				create l_body.make (a_string.count)
+				set_body (l_body)
+			end
+			l_body.append (a_string)
+		end
+
 feature -- Output
 
 	send_to (res: WSF_RESPONSE)
