@@ -10,6 +10,7 @@
 		<option warning="true" full_class_checking="true" is_attached_by_default="true" void_safety="all" syntax="provisional">
 		</option>
 		<library name="base" location="$ISE_LIBRARY\library\base\base-safe.ecf"/>
+		<library name="net" location="$ISE_LIBRARY\library\net\net-safe.ecf"/>
 		<library name="curl" location="$ISE_LIBRARY\library\cURL\cURL-safe.ecf">
 			<condition>
 				<version type="compiler" min="7.0.8.7340"/>
@@ -22,18 +23,5 @@
 		</library>
 		<library name="encoder" location="..\..\text\encoder\encoder-safe.ecf"/>
 		<cluster name="src" location=".\src\" recursive="true"/>
-	</target>
-	<target name="tests" extends="http_client">
-		<root class="ANY" feature="default_create"/>
-		<file_rule>
-			<exclude>/.git$</exclude>
-			<exclude>/EIFGENs$</exclude>
-			<exclude>/.svn$</exclude>
-		</file_rule>
-		<option warning="true" full_class_checking="true" is_attached_by_default="true" void_safety="all" syntax="provisional">
-			<assertions precondition="true"/>
-		</option>
-		<library name="testing" location="$ISE_LIBRARY\library\testing\testing-safe.ecf"/>
-		<tests name="tests" location=".\tests\"/>
 	</target>
 </system>

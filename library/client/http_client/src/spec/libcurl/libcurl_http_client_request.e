@@ -24,6 +24,15 @@ feature {NONE} -- Initialization
 		do
 			make_request (a_url, a_session, ctx)
 			request_method := a_request_method
+			apply_workaround
+		end
+
+	apply_workaround
+			-- Due to issue with Eiffel cURL on Windows 32bits
+			-- we need to do the following workaround
+		once
+			if attached (create {INET_ADDRESS_FACTORY}).create_localhost then
+			end
 		end
 
 	session: LIBCURL_HTTP_CLIENT_SESSION

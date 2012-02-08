@@ -10,6 +10,7 @@
 		<option warning="true" full_class_checking="true" void_safety="none" syntax="provisional">
 		</option>
 		<library name="base" location="$ISE_LIBRARY/library/base/base.ecf"/>
+		<library name="net" location="$ISE_LIBRARY\library\net\net.ecf"/>
 		<library name="curl" location="$ISE_LIBRARY\library\cURL\cURL.ecf">
 			<condition>
 				<version type="compiler" min="7.0.8.7340"/>

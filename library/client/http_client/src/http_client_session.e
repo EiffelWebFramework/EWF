@@ -1,11 +1,28 @@
 note
-	description : "Objects that ..."
-	author      : "$Author$"
-	date        : "$Date$"
-	revision    : "$Revision$"
+	description : "[
+				HTTP_CLIENT_SESSION represent a session
+				and is used to call get, post, .... request
+				with predefined settings such as 
+					base_url
+					specific common headers
+					timeout and so on ...
+			]"
+	author: "$Author$"
+	date: "$Date$"
+	revision: "$Revision$"
 
 deferred class
 	HTTP_CLIENT_SESSION
+
+inherit
+	ANY
+
+	HTTP_CLIENT_CONSTANTS
+		rename
+			auth_type_id as auth_type_id_from_string
+		export
+			{NONE} all
+		end
 
 feature {NONE} -- Initialization
 
@@ -154,37 +171,36 @@ feature -- Change
 	set_auth_type (s: READABLE_STRING_8)
 		do
 			auth_type := s
-			auth_type_id := http_client_constants.auth_type_id (s)
+			auth_type_id := auth_type_id_from_string (s)
 		end
 
 	set_basic_auth_type
 		do
 			auth_type := "basic"
-			auth_type_id := {HTTP_CLIENT_CONSTANTS}.auth_type_basic
+			auth_type_id := Auth_type_basic
 		end
 
 	set_digest_auth_type
 		do
 			auth_type := "digest"
-			auth_type_id := {HTTP_CLIENT_CONSTANTS}.auth_type_digest
+			auth_type_id := Auth_type_digest
 		end
 
 	set_any_auth_type
 		do
 			auth_type := "any"
-			auth_type_id := {HTTP_CLIENT_CONSTANTS}.auth_type_any
+			auth_type_id := Auth_type_any
 		end
 
 	set_anysafe_auth_type
 		do
 			auth_type := "anysafe"
-			auth_type_id := {HTTP_CLIENT_CONSTANTS}.auth_type_anysafe
+			auth_type_id := Auth_type_anysafe
 		end
 
-feature {NONE} -- Implementation
-
-	http_client_constants: HTTP_CLIENT_CONSTANTS
-		once
-			create Result
+	set_max_redirects (n: like max_redirects)
+		do
+			max_redirects := n
 		end
+
 end
