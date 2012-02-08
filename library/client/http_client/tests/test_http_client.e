@@ -79,7 +79,7 @@ feature -- Test routines
 				value3: VALUE
 				value4: VALUE
 				foo: BAR
-
+				
 			]"))
 		end
 
