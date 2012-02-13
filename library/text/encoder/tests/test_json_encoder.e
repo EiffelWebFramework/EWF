@@ -20,7 +20,7 @@ feature -- Test routines
 			testing:  "json-encoded"
 		do
 			test_json_encoded_encoding ({STRING_32}"il était une fois %"Ni & Hao%" (你好) \a\b\c")
-			test_json_encoded_encoding ({STRING_32}" `abc’ ")
+			test_json_encoded_encoding ({STRING_32}" it's `abc’ ")
 		end
 
 	test_json_encoded_encoding (s: STRING_32)
