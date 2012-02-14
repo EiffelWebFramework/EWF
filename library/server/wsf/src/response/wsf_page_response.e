@@ -60,6 +60,8 @@ feature -- Element change
 	set_body (a_body: like body)
 		do
 			body := a_body
+		ensure
+			body_set: a_body /= Void implies body = a_body
 		end
 
 	put_string (a_string: READABLE_STRING_8)
