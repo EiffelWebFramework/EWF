@@ -42,7 +42,7 @@ feature -- Access
 
 feature -- Encoder
 
-	encoded_string (s: READABLE_STRING_32): READABLE_STRING_8
+	encoded_string (s: READABLE_STRING_32): STRING_8
 			-- URL-encoded value of `s'.
 		do
 			Result := Precursor (s)
@@ -64,7 +64,7 @@ feature -- Encoder
 
 feature -- Decoder
 
-	decoded_string (v: READABLE_STRING_8): READABLE_STRING_32
+	decoded_string (v: READABLE_STRING_8): STRING_32
 			-- The URL-encoded equivalent of the given string
 		do
 			Result := Precursor (v)
@@ -77,7 +77,7 @@ feature -- Decoder
 		end
 
 note
-	copyright: "2011-2011, Eiffel Software and others"
+	copyright: "2011-2012, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

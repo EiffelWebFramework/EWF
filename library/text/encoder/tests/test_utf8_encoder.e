@@ -19,8 +19,7 @@ feature -- Test routines
 		note
 			testing:  "url-encoded"
 		do
---			test_utf8_decoding ("summer=été&weird=à", "summer=été&weird=à")
-			test_utf8_decoding ("%%C3%%A9t%%C3%%A9", "été")
+			test_utf8_decoding ("%%C3%%A9t%%C3%%A9", {STRING_32}"été")
 		end
 
 	test_utf8_decoding (s: STRING_8; e: STRING_32)

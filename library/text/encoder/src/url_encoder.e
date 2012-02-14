@@ -33,17 +33,15 @@ feature -- Status report
 
 feature -- Encoder
 
-	encoded_string (s: READABLE_STRING_32): READABLE_STRING_8
+	encoded_string (s: READABLE_STRING_32): STRING_8
 			-- URL-encoded value of `s'.
 		local
 			i, n: INTEGER
 			uc: CHARACTER_32
 			c: CHARACTER_8
-			s8: STRING_8
 		do
 			has_error := False
-			create s8.make (s.count + s.count // 10)
-			Result := s8
+			create Result.make (s.count + s.count // 10)
 			n := s.count
 			from i := 1 until i > n loop
 				uc := s.item (i)
@@ -55,14 +53,14 @@ feature -- Encoder
 						'a' .. 'z', '0' .. '9',
 						'.', '-', '~', '_'
 					then
-						s8.extend (c)
+						Result.extend (c)
 					when ' ' then
-						s8.extend ('+')
+						Result.extend ('+')
 					else
-						s8.append (url_encoded_char (uc))
+						Result.append (url_encoded_char (uc))
 					end
 				else
-					s8.append (url_encoded_char (uc))
+					Result.append (url_encoded_char (uc))
 				end
 				i := i + 1
 			end
@@ -134,19 +132,17 @@ feature {NONE} -- encoder character
 
 feature -- Decoder
 
-	decoded_string (v: READABLE_STRING_8): READABLE_STRING_32
+	decoded_string (v: READABLE_STRING_8): STRING_32
 			-- The URL-encoded equivalent of the given string
 		local
 			i, n: INTEGER
 			c: CHARACTER
 			pr: CELL [INTEGER]
-			s32: STRING_32
 			changed: BOOLEAN
 		do
 			has_error := False
 			n := v.count
-			create s32.make (n)
-			Result := s32
+			create Result.make (n)
 			from i := 1
 			until i > n
 			loop
@@ -154,19 +150,19 @@ feature -- Decoder
 				inspect c
 				when '+' then
 					changed := True
-					s32.append_character ({CHARACTER_32}' ')
+					Result.append_character ({CHARACTER_32}' ')
 				when '%%' then
 					-- An escaped character ?
 					if i = n then
-						s32.append_character (c.to_character_32)
+						Result.append_character (c.to_character_32)
 					else
 						changed := True
 						create pr.put (i)
-						s32.append (url_decoded_char (v, pr))
+						Result.append (url_decoded_char (v, pr))
 						i := pr.item
 					end
 				else
-					s32.append_character (c.to_character_32)
+					Result.append_character (c.to_character_32)
 				end
 				i := i + 1
 			end
@@ -367,7 +363,7 @@ feature {NONE} -- Hexadecimal and strings
 		end
 
 note
-	copyright: "2011-2011, Eiffel Software and others"
+	copyright: "2011-2012, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

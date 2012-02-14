@@ -13,7 +13,7 @@ class
 	XML_ENCODER
 
 inherit
-	ENCODER [STRING_32, STRING_8]
+	ENCODER [READABLE_STRING_32, READABLE_STRING_8]
 
 	PLATFORM
 		export
@@ -33,7 +33,7 @@ feature -- Status report
 
 feature -- Encoder
 
-	encoded_string (s: STRING_32): STRING_8
+	encoded_string (s: READABLE_STRING_32): STRING_8
 			-- XML-encoded value of `s'.
 		local
 			i, n: INTEGER
@@ -67,7 +67,7 @@ feature -- Encoder
 
 feature -- Decoder
 
-	decoded_string (v: STRING_8): STRING_32
+	decoded_string (v: READABLE_STRING_8): STRING_32
 			-- The XML-encoded equivalent of the given string
 		local
 			i, n: INTEGER
@@ -259,7 +259,7 @@ feature {NONE} -- Implementation: decoder
 		end
 
 note
-	copyright: "2011-2011, Eiffel Software and others"
+	copyright: "2011-2012, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

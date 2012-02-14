@@ -1,7 +1,7 @@
 note
 	description: "[
 				Summary description for {JSON_ENCODER}.
-				
+
 		]"
 	legal: "See notice at end of class."
 	status: "See notice at end of class."
@@ -12,7 +12,7 @@ class
 	JSON_ENCODER
 
 inherit
-	ENCODER [STRING_32, STRING_8]
+	ENCODER [READABLE_STRING_32, READABLE_STRING_8]
 
 	PLATFORM
 		export
@@ -32,7 +32,7 @@ feature -- Status report
 
 feature -- Encoder
 
-	encoded_string (s: STRING_32): STRING_8
+	encoded_string (s: READABLE_STRING_32): STRING_8
 			-- JSON-encoded value of `s'.
 		local
 			i, j, n: INTEGER
@@ -82,7 +82,7 @@ feature -- Encoder
 
 feature -- Decoder
 
-	decoded_string (v: STRING_8): STRING_32
+	decoded_string (v: READABLE_STRING_8): STRING_32
 			-- The JSON-encoded equivalent of the given string
 		local
 			i, n: INTEGER

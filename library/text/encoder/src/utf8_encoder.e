@@ -13,7 +13,7 @@ class
 	UTF8_ENCODER
 
 inherit
-	ENCODER [STRING_32, STRING_8]
+	ENCODER [READABLE_STRING_32, READABLE_STRING_8]
 
 	UTF8_ENCODER_HELPER
 
@@ -35,7 +35,7 @@ feature -- Status report
 
 feature -- Encoder
 
-	encoded_string (s: STRING_32): STRING_8
+	encoded_string (s: READABLE_STRING_32): STRING_8
 			-- UTF8-encoded value of `s'.
 		do
 			Result := utf32_to_utf8 (s)
@@ -44,7 +44,7 @@ feature -- Encoder
 
 feature -- Decoder
 
-	decoded_string (v: STRING_8): STRING_32
+	decoded_string (v: READABLE_STRING_8): STRING_32
 			-- The UTF8-encoded equivalent of the given string
 		do
 			Result := utf8_to_utf32 (v)
@@ -52,7 +52,7 @@ feature -- Decoder
 		end
 
 note
-	copyright: "2011-2011, Eiffel Software and others"
+	copyright: "2011-2012, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software
