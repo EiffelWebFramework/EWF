@@ -21,7 +21,7 @@ feature {NONE} -- Initialization
 	make
 			-- Initialize `Current'.
 		do
-			create {ARRAYED_LIST [ERROR]} errors.make (3)
+			create {ARRAYED_LIST [like errors.item]} errors.make (3)
 			create error_added_actions
 		end
 
@@ -60,12 +60,139 @@ feature -- Events
 	error_added_actions: ACTION_SEQUENCE [TUPLE [ERROR]]
 			-- Actions triggered when a new error is added
 
+feature -- Synchronization
+
+	add_synchronized_handler (h: ERROR_HANDLER)
+			--| the same handler can be added more than once
+			--| it will be synchronized only once
+		require
+			no_cycle: not has_synchronized_handler_in_cycle (h)
+		local
+			lst: like synchronized_handlers
+		do
+			lst := synchronized_handlers
+			if lst = Void then
+				create {ARRAYED_LIST [like synchronized_handlers.item]} lst.make (0)
+				lst.compare_references
+				synchronized_handlers := lst
+			end
+			if lst.has (h) then
+				check attached h.synchronized_handlers as h_lst and then h_lst.has (Current) end
+			else
+				lst.extend (h)
+				h.add_synchronized_handler (Current)
+			end
+		end
+
+	has_synchronized_handler_in_cycle (h: ERROR_HANDLER): BOOLEAN
+		do
+			Result := False
+		end
+
+feature {ERROR_HANDLER} -- Synchronization implementation
+
+	synchronized_handlers: detachable LIST [ERROR_HANDLER]
+			-- Synchronized handlers
+
+	synchronize_error_from (e: ERROR; h_lst: LIST [ERROR_HANDLER])
+			-- Called by error_handler during synchronization process
+			-- if `synchronized_handlers' is Void, this means Current is synchronizing
+			-- this is to prevent infinite cycle iteration
+		require
+			not h_lst.has (Current)
+		do
+			h_lst.extend (Current)
+
+			if attached synchronized_handlers as lst then
+				synchronized_handlers := Void
+				add_error (e)
+				across
+					lst as c
+				loop
+					if not h_lst.has (c.item) then
+						c.item.synchronize_error_from (e, h_lst)
+					end
+				end
+				synchronized_handlers := lst
+			else
+				-- In synchronization
+			end
+		end
+
+	synchronize_reset_from (h_lst: LIST [ERROR_HANDLER])
+			-- Called by error_handler during synchronization process
+			-- if `synchronized_handlers' is Void, this means Current is synchronizing
+			-- this is to prevent infinite cycle iteration
+		require
+			not h_lst.has (Current)
+		do
+			h_lst.extend (Current)
+			if attached synchronized_handlers as lst then
+				synchronized_handlers := Void
+				reset
+				across
+					lst as c
+				loop
+					if not h_lst.has (c.item) then
+						c.item.synchronize_reset_from (h_lst)
+					end
+				end
+				synchronized_handlers := lst
+			else
+				-- In synchronization				
+			end
+		end
+
+	remove_synchronized_handler (h: ERROR_HANDLER)
+		do
+			if attached synchronized_handlers as lst then
+				lst.prune_all (h)
+				if lst.is_empty then
+					synchronized_handlers := Void
+				end
+			end
+		end
+
 feature {NONE} -- Event: implementation
 
 	on_error_added (e: ERROR)
 			-- Error `e' was just added
+		local
+			sync_list: LINKED_LIST [ERROR_HANDLER]
 		do
 			error_added_actions.call ([e])
+			if attached synchronized_handlers as lst then
+				synchronized_handlers := Void
+				create sync_list.make
+				sync_list.extend (Current)
+				across
+					lst as c
+				loop
+					if not sync_list.has (c.item) then
+						c.item.synchronize_error_from (e, sync_list)
+					end
+				end
+				synchronized_handlers := lst
+			end
+		end
+
+	on_reset
+		local
+			sync_list: LINKED_LIST [ERROR_HANDLER]
+		do
+			if attached synchronized_handlers as lst then
+				synchronized_handlers := Void
+				create sync_list.make
+				sync_list.extend (Current)
+				across
+					lst as c
+				loop
+					if not sync_list.has (c.item) then
+						c.item.synchronize_reset_from (sync_list)
+					end
+				end
+				synchronized_handlers := lst
+			end
 		end
 
 feature -- Basic operation
@@ -138,18 +265,30 @@ feature -- Element changes
 			-- Concatenate into a single error if any
 		do
 			if count > 1 and then attached as_single_error as e then
-				wipe_out
-				errors.force (e)
+				reset
+				add_error (e)
 			end
 		end
 
-	reset, wipe_out
+	reset
 		do
-			errors.wipe_out
+			if errors.count > 0 then
+				errors.wipe_out
+				on_reset
+			end
+		end
+
+	destroy
+		do
+			error_added_actions.wipe_out
+			if attached synchronized_handlers as lst then
+				lst.item.remove_synchronized_handler (Current)
+			end
+			synchronized_handlers := Void
 		end
 
 note
-	copyright: "Copyright (c) 1984-2011, Eiffel Software and others"
+	copyright: "2011-2012, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software
