@@ -8,6 +8,11 @@ note
 deferred class
 	ERROR
 
+inherit
+	ANY
+
+	DEBUG_OUTPUT
+
 feature -- Access
 
 	code: INTEGER
@@ -45,6 +50,13 @@ feature -- String representation
 				Result.append_character (' ')
 				Result.append_string (m)
 			end
+		end
+
+feature -- Status report
+
+	debug_output: STRING
+		do
+			Result := string_representation.as_string_8
 		end
 
 feature -- Change
