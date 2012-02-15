@@ -47,7 +47,7 @@ feature -- Test routines
 		do
 			create h1.make
 			create h2.make
-			h1.add_synchronized_handler (h2)
+			h1.add_synchronization (h2)
 
 			h1.add_custom_error (123, "abc", "abc error occurred")
 			h1.add_custom_error (456, "abc", "abc error occurred")
@@ -70,8 +70,8 @@ feature -- Test routines
 			create h2.make
 			create h3.make
 
-			h1.add_synchronized_handler (h2)
-			h2.add_synchronized_handler (h3)
+			h1.add_synchronization (h2)
+			h2.add_synchronization (h3)
 
 			h1.add_custom_error (123, "abc", "abc error occurred")
 			h1.add_custom_error (456, "abc", "abc error occurred")
@@ -94,9 +94,9 @@ feature -- Test routines
 			create h2.make
 			create h3.make
 
-			h1.add_synchronized_handler (h2)
-			h2.add_synchronized_handler (h3)
-			h3.add_synchronized_handler (h1)
+			h1.add_synchronization (h2)
+			h2.add_synchronization (h3)
+			h3.add_synchronization (h1)
 
 			h1.add_custom_error (123, "abc", "abc error occurred")
 			h1.add_custom_error (456, "abc", "abc error occurred")
@@ -119,17 +119,17 @@ feature -- Test routines
 			create h2.make
 			create h3.make
 
-			h1.add_synchronized_handler (h2)
-			h2.add_synchronized_handler (h3)
-			h3.add_synchronized_handler (h1)
+			h1.add_synchronization (h2)
+			h2.add_synchronization (h3)
+			h3.add_synchronization (h1)
 
 			h1.add_custom_error (123, "abc", "abc error occurred")
 			h1.add_custom_error (456, "def", "def error occurred")
 
 			assert ("has 2 errors", h1.count = 2 and h2.count = h1.count and h3.count = h2.count)
 
-			h2.remove_synchronized_handler (h3)
-			h2.remove_synchronized_handler (h1)
+			h2.remove_synchronization (h3)
+			h2.remove_synchronization (h1)
 
 			h1.add_custom_error (789, "ghi", "ghi error occurred")
 			assert ("correct count of errors", h1.count = 3 and h2.count = 2 and h3.count = h1.count)
@@ -149,9 +149,9 @@ feature -- Test routines
 			create h2.make
 			create h3.make
 
-			h1.add_synchronized_handler (h2)
-			h2.add_synchronized_handler (h3)
-			h3.add_synchronized_handler (h1)
+			h1.add_synchronization (h2)
+			h2.add_synchronization (h3)
+			h3.add_synchronization (h1)
 
 			h1.add_custom_error (123, "abc", "abc error occurred")
 			h1.add_custom_error (456, "def", "def error occurred")

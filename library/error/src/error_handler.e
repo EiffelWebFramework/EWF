@@ -63,7 +63,7 @@ feature -- Events
 
 feature -- Synchronization
 
-	add_synchronized_handler (h: ERROR_HANDLER)
+	add_synchronization (h: ERROR_HANDLER)
 			-- Add synchronization between `h' and `Current'	
 			--| the same handler can be added more than once
 			--| it will be synchronized only once
@@ -80,18 +80,18 @@ feature -- Synchronization
 				check attached h.synchronized_handlers as h_lst and then h_lst.has (Current) end
 			else
 				lst.extend (h)
-				h.add_synchronized_handler (Current)
+				h.add_synchronization (Current)
 			end
 		end
 
-	remove_synchronized_handler (h: ERROR_HANDLER)
+	remove_synchronization (h: ERROR_HANDLER)
 			-- Remove synchronization between `h' and `Current'
 		do
 			if attached synchronized_handlers as lst and then not lst.is_empty then
 				synchronized_handlers := Void
 				lst.prune_all (h)
 
-				h.remove_synchronized_handler (Current)
+				h.remove_synchronization (Current)
 
 				synchronized_handlers := lst
 				if lst.is_empty then
@@ -294,7 +294,7 @@ feature -- Element changes
 				across
 					lst as c
 				loop
-					c.item.remove_synchronized_handler (Current)
+					c.item.remove_synchronization (Current)
 				end
 			end
 			synchronized_handlers := Void
