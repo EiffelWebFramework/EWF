@@ -21,13 +21,13 @@ feature -- Access
 			result_not_zero: Result /= 0
 		end
 
-	name: STRING
+	name: READABLE_STRING_8
 		deferred
 		ensure
 			result_attached: Result /= Void
 		end
 
-	message: detachable STRING_32
+	message: detachable READABLE_STRING_32
 			-- Potential error message
 		deferred
 		end
@@ -80,7 +80,7 @@ invariant
 	name_attached: name /= Void
 
 note
-	copyright: "Copyright (c) 1984-2011, Eiffel Software and others"
+	copyright: "2011-2012, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

@@ -108,6 +108,64 @@ feature -- Test routines
 
 		end
 
+	test_remove_sync
+		note
+			testing:  "error"
+		local
+			h1, h2, h3: ERROR_HANDLER
+--			cl: CELL [INTEGER]
+		do
+			create h1.make
+			create h2.make
+			create h3.make
+
+			h1.add_synchronized_handler (h2)
+			h2.add_synchronized_handler (h3)
+			h3.add_synchronized_handler (h1)
+
+			h1.add_custom_error (123, "abc", "abc error occurred")
+			h1.add_custom_error (456, "def", "def error occurred")
+
+			assert ("has 2 errors", h1.count = 2 and h2.count = h1.count and h3.count = h2.count)
+
+			h2.remove_synchronized_handler (h3)
+			h2.remove_synchronized_handler (h1)
+
+			h1.add_custom_error (789, "ghi", "ghi error occurred")
+			assert ("correct count of errors", h1.count = 3 and h2.count = 2 and h3.count = h1.count)
+
+			h1.reset
+			assert ("reset then no error", h1.count = 0 and h2.count = 2 and h3.count = h1.count)
+		end
+
+	test_destroy
+		note
+			testing:  "error"
+		local
+			h1, h2, h3: ERROR_HANDLER
+--			cl: CELL [INTEGER]
+		do
+			create h1.make
+			create h2.make
+			create h3.make
+
+			h1.add_synchronized_handler (h2)
+			h2.add_synchronized_handler (h3)
+			h3.add_synchronized_handler (h1)
+
+			h1.add_custom_error (123, "abc", "abc error occurred")
+			h1.add_custom_error (456, "def", "def error occurred")
+
+			assert ("has 2 errors", h1.count = 2 and h2.count = h1.count and h3.count = h2.count)
+
+			h2.destroy
+
+			h1.add_custom_error (789, "ghi", "ghi error occurred")
+			assert ("correct count of errors", h1.count = 3 and h2.count = 0 and h3.count = h1.count)
+
+			h1.reset
+			assert ("reset then no error", h1.count = 0 and h2.count = h1.count and h3.count = h1.count)
+		end
 
 note
 	copyright: "Copyright (c) 1984-2011, Eiffel Software and others"

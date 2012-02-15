@@ -34,6 +34,7 @@ feature -- Status
 		end
 
 	count: INTEGER
+			-- Number of error
 		do
 			Result := errors.count
 		end
@@ -63,10 +64,9 @@ feature -- Events
 feature -- Synchronization
 
 	add_synchronized_handler (h: ERROR_HANDLER)
+			-- Add synchronization between `h' and `Current'	
 			--| the same handler can be added more than once
 			--| it will be synchronized only once
-		require
-			no_cycle: not has_synchronized_handler_in_cycle (h)
 		local
 			lst: like synchronized_handlers
 		do
@@ -84,9 +84,20 @@ feature -- Synchronization
 			end
 		end
 
-	has_synchronized_handler_in_cycle (h: ERROR_HANDLER): BOOLEAN
+	remove_synchronized_handler (h: ERROR_HANDLER)
+			-- Remove synchronization between `h' and `Current'
 		do
-			Result := False
+			if attached synchronized_handlers as lst and then not lst.is_empty then
+				synchronized_handlers := Void
+				lst.prune_all (h)
+
+				h.remove_synchronized_handler (Current)
+
+				synchronized_handlers := lst
+				if lst.is_empty then
+					synchronized_handlers := Void
+				end
+			end
 		end
 
 feature {ERROR_HANDLER} -- Synchronization implementation
@@ -143,16 +154,6 @@ feature {ERROR_HANDLER} -- Synchronization implementation
 			end
 		end
 
-	remove_synchronized_handler (h: ERROR_HANDLER)
-		do
-			if attached synchronized_handlers as lst then
-				lst.prune_all (h)
-				if lst.is_empty then
-					synchronized_handlers := Void
-				end
-			end
-		end
-
 feature {NONE} -- Event: implementation
 
 	on_error_added (e: ERROR)
@@ -177,6 +178,7 @@ feature {NONE} -- Event: implementation
 		end
 
 	on_reset
+			-- `reset' was just called
 		local
 			sync_list: LINKED_LIST [ERROR_HANDLER]
 		do
@@ -237,6 +239,7 @@ feature -- Basic operation
 feature -- Access
 
 	as_single_error: detachable ERROR
+			-- All error(s) concatenated into one single error.
 		do
 			if count > 1 then
 				create {ERROR_GROUP} Result.make (errors)
@@ -248,6 +251,7 @@ feature -- Access
 		end
 
 	as_string_representation: STRING
+			-- String representation of all error(s).
 		require
 			has_error
 		do
@@ -271,20 +275,30 @@ feature -- Element changes
 		end
 
 	reset
+			-- Reset error handler
 		do
 			if errors.count > 0 then
 				errors.wipe_out
 				on_reset
 			end
+		ensure
+			has_no_error: not has_error
+			count = 0
 		end
 
 	destroy
+			-- Destroy Current, and remove any synchronization
 		do
 			error_added_actions.wipe_out
 			if attached synchronized_handlers as lst then
-				lst.item.remove_synchronized_handler (Current)
+				across
+					lst as c
+				loop
+					c.item.remove_synchronized_handler (Current)
+				end
 			end
 			synchronized_handlers := Void
+			reset
 		end
 
 note
