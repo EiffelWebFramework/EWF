@@ -13,7 +13,7 @@ inherit
 
 feature -- Output
 
-	output_string (a_str: detachable STRING_GENERAL)
+	output_string (a_str: detachable READABLE_STRING_GENERAL)
 			-- Output Unicode string
 		deferred
 		end
@@ -21,7 +21,7 @@ feature -- Output
 	output_any (obj: detachable ANY)
 			-- Output Unicode string
 		do
-			if attached {STRING_GENERAL} obj as l_str then
+			if attached {READABLE_STRING_GENERAL} obj as l_str then
 				to_implement ("Convert into UTF-8 or console encoding before output")
 				output_string (l_str)
 			elseif obj /= Void then

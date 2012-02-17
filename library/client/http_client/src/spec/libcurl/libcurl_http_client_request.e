@@ -24,6 +24,15 @@ feature {NONE} -- Initialization
 		do
 			make_request (a_url, a_session, ctx)
 			request_method := a_request_method
+			apply_workaround
+		end
+
+	apply_workaround
+			-- Due to issue with Eiffel cURL on Windows 32bits
+			-- we need to do the following workaround
+		once
+			if attached (create {INET_ADDRESS_FACTORY}).create_localhost then
+			end
 		end
 
 	session: LIBCURL_HTTP_CLIENT_SESSION
@@ -40,7 +49,6 @@ feature -- Execution
 			l_curl_string: CURL_STRING
 			l_url: READABLE_STRING_8
 			p: POINTER
-			a_data: CELL [detachable ANY]
 			l_form, l_last: CURL_FORM
 			curl: CURL_EXTERNALS
 			curl_easy: CURL_EASY_EXTERNALS
@@ -194,20 +202,30 @@ feature -- Execution
 			l_result := curl_easy.perform (curl_handle)
 
 			if l_result = {CURL_CODES}.curle_ok then
-				create a_data.put (Void)
-				l_result := curl_easy.getinfo (curl_handle, {CURL_INFO_CONSTANTS}.curlinfo_response_code, a_data)
-				if l_result = 0 and then attached {INTEGER} a_data.item as l_http_status then
-					Result.status := l_http_status
-				else
-					Result.status := 0
-				end
-
+				Result.status := response_status_code (curl_easy, curl_handle)
 				set_header_and_body_to (l_curl_string.string, Result)
 			else
 				Result.set_error_occurred (True)
+				Result.status := response_status_code (curl_easy, curl_handle)
 			end
 
 			curl_easy.cleanup (curl_handle)
+		end
+
+feature {NONE} -- Implementation		
+
+	response_status_code (curl_easy: CURL_EASY_EXTERNALS; curl_handle: POINTER): INTEGER
+		local
+			l_result: INTEGER
+			a_data: CELL [detachable ANY]
+		do
+			create a_data.put (Void)
+			l_result := curl_easy.getinfo (curl_handle, {CURL_INFO_CONSTANTS}.curlinfo_response_code, a_data)
+			if l_result = 0 and then attached {INTEGER} a_data.item as l_http_status then
+				Result := l_http_status
+			else
+				Result := 0
+			end
 		end
 
 

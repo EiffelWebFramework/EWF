@@ -16,12 +16,12 @@ create
 
 feature {NONE} -- Initialization
 
-	make (a_code: INTEGER; a_name: STRING; a_message: detachable like message)
+	make (a_code: INTEGER; a_name: like name; a_message: detachable like message)
 			-- Initialize `Current'.
 		do
 			code := a_code
 			name := a_name
-			if attached a_message then
+			if a_message /= Void then
 				message := a_message
 			else
 				message := "Error: " + a_name + " (code=" + a_code.out + ")"
@@ -32,9 +32,9 @@ feature -- Access
 
 	code: INTEGER
 
-	name: STRING
+	name: READABLE_STRING_8
 
-	message: STRING_32
+	message: detachable READABLE_STRING_32
 
 feature -- Visitor
 
@@ -45,7 +45,7 @@ feature -- Visitor
 		end
 
 note
-	copyright: "Copyright (c) 1984-2011, Eiffel Software and others"
+	copyright: "2011-2012, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

@@ -23,6 +23,7 @@ feature -- Test routines
 		do
 			create sess.make ("http://www.google.com")
 			if attached sess.get ("/search?q=eiffel", Void) as res then
+				assert ("Get returned without error", not res.error_occurred)
 				create h.make_empty
 				if attached res.headers as hds then
 					across
@@ -32,7 +33,9 @@ feature -- Test routines
 					end
 				end
 				if attached res.body as l_body then
-
+					assert ("body not empty", not l_body.is_empty)
+				else
+					assert ("missing body", False)
 				end
 				assert ("same headers", h.same_string (res.raw_header))
 			else
@@ -67,20 +70,21 @@ feature -- Test routines
 					h.append (c.item.name + ": " + c.item.value + "%N")
 				end
 			end
-			assert ("Expected headers map", h.same_string ("[
-				normal: NORMAL
-				concat: ABC
-				concat: DEF
-				key1: KEY
-				key2: KEY
-				key3: KEY
-				value1: VALUE
-				value2: VALUE
-				value3: VALUE
-				value4: VALUE
-				foo: BAR
+			assert ("Expected headers map", h.same_string (
+"[
+normal: NORMAL
+concat: ABC
+concat: DEF
+key1: KEY
+key2: KEY
+key3: KEY
+value1: VALUE
+value2: VALUE
+value3: VALUE
+value4: VALUE
+foo: BAR
 
-			]"))
+]"))
 		end
 
 end
