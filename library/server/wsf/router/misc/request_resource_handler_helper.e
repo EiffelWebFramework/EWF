@@ -43,10 +43,14 @@ feature -- Method Post
 
 	execute_post (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
 		do
-			if req.content_length_value > 0 then
+			if req.is_chunked_input then
 				do_post (ctx, req, res)
 			else
-				handle_bad_request_response ("Bad request, content_length empty", ctx, req, res)
+				if req.content_length_value > 0 then
+					do_post (ctx, req, res)
+				else
+					handle_bad_request_response ("Bad request, content_length empty", ctx, req, res)
+				end
 			end
 		end
 
@@ -59,10 +63,14 @@ feature-- Method Put
 
 	execute_put (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
 		do
-			if req.content_length_value > 0 then
+			if req.is_chunked_input then
 				do_put (ctx, req, res)
 			else
-				handle_bad_request_response ("Bad request, content_length empty", ctx, req, res)
+				if req.content_length_value > 0 then
+					do_put (ctx, req, res)
+				else
+					handle_bad_request_response ("Bad request, content_length empty", ctx, req, res)
+				end
 			end
 		end
 
@@ -153,6 +161,23 @@ feature -- Method Extension Method
 	do_extension_method (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
 		do
 			handle_not_implemented ("Method extension-method not implemented", ctx, req, res)
+		end
+
+feature -- Retrieve content from WGI_INPUT_STREAM
+
+	retrieve_data  ( req : WSF_REQUEST) : STRING
+			-- retrieve the content from the input stream
+			-- handle differents transfers
+		do
+			Result := ""
+			if req.is_chunked_input then
+				if attached req.chunked_input as l_chunked_input then
+					Result := l_chunked_input.data.as_string_8
+				end
+			else
+				req.input.read_string (req.content_length_value.as_integer_32)
+				Result := req.input.last_string
+			end
 		end
 
 feature -- Handle responses

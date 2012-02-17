@@ -114,8 +114,7 @@ feature -- HTTP Methods
 		do
 			if attached req.orig_path_info as orig_path then
 				id := get_order_id_from_path (orig_path)
-				req.input.read_string (req.content_length_value.as_integer_32)
-				l_put := req.input.last_string
+				l_put := retrieve_data (req)
 				l_order := extract_order_request(l_put)
 				if  l_order /= Void and then db_access.orders.has_key (id) then
 					l_order.set_id (id)
@@ -234,8 +233,7 @@ feature -- HTTP Methods
 		local
 			l_post: STRING
 		do
-			req.input.read_string (req.content_length_value.as_integer_32)
-			l_post := req.input.last_string
+			l_post := retrieve_data (req)
 			if attached extract_order_request (l_post) as l_order then
 				save_order (l_order)
 				compute_response_post (ctx, req, res, l_order)
@@ -358,6 +356,6 @@ feature {NONE} -- Implementation Repository Layer
 		end
 
 note
-	copyright: "2011-2011, Javier Velilla and others"
+	copyright: "2011-2012, Javier Velilla and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 end
