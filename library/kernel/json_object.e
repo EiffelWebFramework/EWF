@@ -98,6 +98,14 @@ feature -- Access
             Result.append_character ('}')
         end
 
+feature -- Status report
+	
+	is_empty: BOOLEAN
+			-- Is empty object?
+		do
+			Result := object.is_empty
+		end
+
 feature -- Visitor pattern
 
     accept (a_visitor: JSON_VISITOR)
