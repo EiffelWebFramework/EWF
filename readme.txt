@@ -7,17 +7,14 @@ The code is based on Xebra and Emu Web Server.
 
 Goal
 ========
-HTTPD server for development.
+HTTPD server for development, support for HTTP 1.1.
 
-
-
-Features
-=======
 
 
 
 Testing
 =======
+To test the HTTPD server, you could run the [example https://github.com/jvelilla/EiffelWebNino/tree/master/example/SimpleWebServer] 
 The server work fine in Windows and Linux.
 
 Run the server and point your browser to one of the following URIs
