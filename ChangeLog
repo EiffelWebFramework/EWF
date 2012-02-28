@@ -1,0 +1,1218 @@
+2012-02-16  Jocelyn Fiat
+
+  Minor correction, to avoid returning 200 as status code, when the client can
+  not connect
+
+2012-02-15  Jocelyn Fiat
+
+  fixed compilation
+
+  sync with cURL library
+
+  Fixed error visitor due to recent signature changes
+
+  renamed (add|remove)_synchronized_handler as (add|remove)_synchronization
+
+  Removed tests target from encoder(-safe).ecf (now there is a tests-safe.ecf
+  in folder tests)
+
+  Fixed ERROR_HANDLER.destroy Fixed and export
+  ERROR_HANDLER.remove_synchronized_handler Added comments Added associated
+  autotests
+
+2012-02-14  Jocelyn Fiat
+
+  Better signature for encoders Split library .ecf and the autotest .ecf
+
+  added postcondition to ensure the body string set to the response, is the
+  same reference this is important, since sometime we just do rep.set_body (s)
+  s.append_string ("..")
+
+  Added DEBUG_OUTPUT to ERROR, since this is convenient during debugging
+
+  Added notion of synchronization between error handler this is convenient to
+  integrate two components using their own ERROR_HANDLER (not sharing the same
+  object)
+
+  use WSF_PAGE_RESPONSE, instead of reimplementing it ourself
+
+2012-02-13  Jocelyn Fiat
+
+  added a JSON encoder test case
+
+2012-02-10  Olivier Ligot
+
+  [FIX] libfcgi.so location  On Ubuntu 10.04 LTS, libfcgi.so is in /usr/lib
+  instead of /usr/local/lib
+
+2012-02-08  Jocelyn Fiat
+
+  added a case in test_json_encoder
+
+2012-02-08  unknown
+
+  libcurl: Applied a workaround to avoid issue on Win32 (see
+  LIBCURL_HTTP_CLIENT_REQUEST.apply_workaround) Separated the
+  http_client-safe.ecf and test-safe.ecf Added
+  HTTP_CLIENT_SESSION.set_max_redirects Fixed broken test due to formatting
+  trouble.
+
+2012-02-08  Jocelyn Fiat
+
+  fixed http_client tests
+
+2012-02-07  Jocelyn Fiat
+
+  Better code to test similar functions but with chunked input
+
+  Improved the WSF_PAGE_RESPONSE to be more flexible and allow to change some
+  values as expected.
+
+  Added support for chunked input data  (see Transfer-Encoding: chunked)
+
+  Added HTTP_HEADER.append_header_object and append_array. This is helpful to
+  "merge" two HTTP_HEADER and provide user friendly features
+
+  Added proxy, at least to make it is possible to use http://fiddler2.com/ to
+  inspect the traffic.
+
+2012-02-01  Jocelyn Fiat
+
+  Fixed wrong code for postcondition on HTTP_HEADER.string  Patch provided by
+  Paul-G.Crismer
+
+  removed unwanted set_status_code, since we already use put_header to set the
+  status code.
+
+  Eventually fixing trouble with c_strlen being over capacity (added this for
+  testing, and while waiting a fix from EiffelcURL)
+
+  Improved redirect_now_custom to allow custom status code, custom header, and
+  custom content
+
+2012-01-31  Jocelyn Fiat
+
+  Fixed usage of lst[] in web form, now we are url-decoding the name because
+  the [] could escaped... Fixed bad code for assertion related to variable
+  url-encoded name
+
+  added REQUEST_HANDLER_CONTEXT.string_array_path_parameter (...) to help user
+  handling list/array parameters fixed postcondition
+  WSF_REQUEST.set_meta_string_variable ...
+
+2012-01-25  Jocelyn Fiat
+
+  Make sure to return a response Added precondition to check URI_TEMPLATE is
+  valid
+
+2012-01-23  Jocelyn Fiat
+
+  Fixed issue with WSF_FILE_RESPONSE not setting the status code Added
+  Last-Modified
+
+  Fixed wrong code for postcondition in unset_orig_path_info
+
+  added "conversion" to ease the use of HTTP_HEADER
+
+2012-01-20  Jocelyn Fiat
+
+  fixed compilation (was not up to date with tests.ecf)
+
+  Corrected remaining issue related to recent addition of
+  REQUEST_ROUTER.make_with_base_url And applied removal of format_name and
+  format_id, and replaced by accepted_format_name, ...
+
+  Do not add again ctx.headers, since it is already "imported" during the
+  creation of Current request (see HTTP_CLIENT_REQUEST.make)
+
+  Removed any "format" related query from router lib, this is too application
+  specific to be there. Better handling of base_url for REQUEST_ROUTER
+
+2012-01-19  Jocelyn Fiat
+
+  separate library .ecf and tests .ecf merged tests .ecf for draft 05 and
+  current implementation
+
+  Fixed WSF_REQUEST.script_url (..) for clean path Added related autotests
+
+2012-01-17  Jocelyn Fiat
+
+  Don't forget to put Content-Length: 0  for redirect without any content
+
+  export handler from REQUEST_ROUTER
+
+  REQUEST_ROUTER now inherit from ITERABLE [..]
+
+  Send the Status code, as an header line  Status: code reason
+
+  use READABLE_STRING_8 instead of STRING_8
+
+  According to http://www.fastcgi.com/docs/faq.html#httpstatus send the Status
+  code, as an header line  Status: code reason
+
+2012-01-16  Jocelyn Fiat
+
+  Do not send any Status line back to the FastCGI client
+
+2012-01-13  Jocelyn Fiat
+
+  Synchronized with ejson library Cleaned JSON_ENCODER
+
+2012-01-12  Jocelyn Fiat
+
+  Added JSON_ENCODER
+
+2012-01-09  Jocelyn Fiat
+
+  removed obsolete call on `WSF_RESPONSE.write_..' by using the up-to-date
+  `WSF_RESPONSE.put_..'
+
+2012-01-06  Jocelyn Fiat
+
+  HTTP_HEADER: - added put_last_modified - added RFC1123 http date format
+  helper - added put_cookie_with_expiration_date as DATE_TIME REQUEST: added
+  `execution_variable' to provide a way to keep object attached to the request
+  and indexed by a string. A typical usage is a SESSION object
+
+2011-12-21  jvelilla
+
+  Update examples/restbucksCRUD/readme.md
+
+2011-12-18  Jocelyn Fiat
+
+  added REQUEST.execution_variables ... to provide a solution to store data
+  during request execution could be used for SESSION, or any "shared" data
+  inside the same Request
+
+  applied write_ as put_ renaming to examples
+
+2011-12-15  Jocelyn Fiat
+
+  Use put_ instead of write_
+
+  various minor changes
+
+  use /usr/lib/libfcgi.so instead of /usr/local/lib/libfcgi.so
+
+  Applied renaming from write_ to put_
+
+  Renamed write_ feature as put_
+
+  Fixed stupid mistake in {WGI_NINO_INPUT_SREEAM}.end_of_input
+
+  Fixed typo and missing uri_template reference for draft rest library
+
+  Now the 'router' library is part of 'wsf' Move hello_routed_world under
+  tests/dev since it was not really an example, but more a dev workspace/test
+
+  Made DEFAULT_SERVICE_LAUNCHER more flexible for the user.
+
+2011-12-15  jvelilla
+
+  Update read_trailer feature.
+
+  Initial implementation of wgi_chunked_input_stream as a wrapper of
+  wgi_input_stream
+
+2011-12-14  Jocelyn Fiat
+
+  Use port 9090 for restbuck server mainly to avoid using 80 or 8080 which are
+  often already used (by current webserver, or even skype, or jenkins, or ...)
+
+  Forgot to add make_and_launch_with_options to the creation procedures
+
+  Added DEFAULT_SERVICE_LAUNCHER.make_and_launch_with_options Added
+  WSF_RESPONSE.redirect_now_with_content (...) Updated hello_routed_world ..
+  mainly example use to test/develop... not really a nice example
+
+2011-12-13  Jocelyn Fiat
+
+  Updated readme on how to get source code
+
+  added head and bottom value in WSF_FILE_RESPONSE, to enable the user to set a
+  head and bottom part easily
+
+2011-12-12  Jocelyn Fiat
+
+  avoid infinite rescue due to internal error or user code not dealing well
+  with socket disconnection
+
+  Removed dotnet target for now
+
+  Fixed http_client autotest code
+
+  Break inheritance from WGI_RESPONSE, since it is not flexible for future
+  improvement.
+
+  Fixed HTTP client callers
+
+  Renamed DEFAULT_SERVICE as DEFAULT_SERVICE_LAUNCHER
+
+  Fixed WSF_FILE_RESPONSE and added WSF_FORCE_DOWNLOAD_RESPONSE
+
+  Removed any (put|write)_file_content from the WSF_ or WGI_ OUTPUT classes Now
+  DEFAULT_SERVICE has to be created instead of inherited. - This seems to be
+  better for new user, and this avoid potential conflict and difference when
+  inheriting between the various DEFAULT_SERVICE implementation. - remember
+  that DEFAULT_SERVICE, is mainly to help the user to build its very first
+  service. Use READABLE_STRING_8 as argument whenever it is possible. Added
+  WSF_RESPONSE_MESSAGE, and WSF_RESPONSE.put_response (a_response_message) Now
+  WSF_RESPONSE inherit from WGI_RESPONSE
+
+2011-12-10  jvelilla
+
+  Update restbuck client, create and read an order. Update JSON converter, the
+  id is not important, applied the DRY principle. Update the ORDER_HANDLER to
+  use the meta_string_variable instead of meta_variable from req. Fix, the key
+  in meta_variable_table, use c.key instead of c.item
+
+  Update examples/restbucksCRUD/readme.md
+
+2011-12-09  jvelilla
+
+  Update the restbuck_client, still work in progress. Update restbuck_server,
+  remove unused class in inherit. Update libcurl_http_client_request, to parse
+  context headers before the execution. Update wgi_input_stream, commented
+  precondition.
+
+  Update examples/restbucksCRUD/readme.md
+
+  Update examples/restbucksCRUD/readme.md
+
+  Update examples/restbucksCRUD/readme.md
+
+  Update examples/restbucksCRUD/readme.md
+
+  Update examples/restbucksCRUD/readme.md
+
+  Update examples/restbucksCRUD/readme.md
+
+  Update examples/restbucksCRUD/readme.md
+
+  Update examples/restbucksCRUD/readme.md
+
+  Update examples/restbucksCRUD/readme.md
+
+  Update examples/restbucksCRUD/readme.md
+
+  Update examples/restbucksCRUD/readme.md
+
+  Update examples/restbucksCRUD/readme.md
+
+  Update examples/restbucksCRUD/readme.md
+
+  Update examples/restbucksCRUD/readme.md
+
+  Update examples/restbucksCRUD/readme.md
+
+  Update examples/restbucksCRUD/readme.md
+
+2011-12-08  jvelilla
+
+  Update examples/restbucksCRUD/readme.md
+
+  Updated documentation
+
+  Updated restbucksCRUD documentation
+
+  Added basic two basic examples, refactor rename restbucks to restbucksCRUD
+
+2011-12-07  jvelilla
+
+  Sync Jocelyn repo
+
+2011-12-03  Jocelyn Fiat
+
+  Update README.md
+
+  Update README.md
+
+  Update README.md
+
+  fixed markdown syntax
+
+2011-12-02  Jocelyn Fiat
+
+  Remove any useless library include from this .ecf we just need
+  default_"connector", router, wsf and http
+
+  Fixed compilation issue for CGI and libFCGI connector due to recent changes
+  in interface  (use READABLE_STRING_8)
+
+2011-12-01  Jocelyn Fiat
+
+  Integrated new system to handle form_parameter, input_data in relation with
+  MIME handling This is not yet clear how to let the user precise its own MIME
+  handler but it is in progress
+
+  fixed remaining issue or useless code to set http environment variable
+
+  Fixed stupid error where we were concatenating ... value by error
+
+  Added WSF_RESPONSE.write_chunk (s: ?READABLE_STRING_8) to help user sending
+  chunk with "Transfer-Encoding: chunked"
+
+  Synchronized with Nino
+
+  Fixed WSF_RESPONSE.redirect* features
+
+  sync with Nino, call to put_readable_string_8
+
+  Synchronized with EiffelWebNino
+
+  relative path for README link
+
+2011-12-01  jvelilla
+
+  Update library/protocol/CONNEG/README.md
+
+  Update library/protocol/CONNEG/README.md
+
+  Updated Conneg library, added test cases
+
+2011-11-30  jvelilla
+
+  Fixed minor issue, added test cases to check language negotiation.
+
+  Update conneg library and test cases
+
+2011-11-25  Jocelyn Fiat
+
+  Fixed example due to recent interface changes
+
+  - (WGI|WSF)_RESPONSE(*) renamed write_headers_string as write_header_text -
+  HTTP_HEADER.string does not have the ending CRLFCRLF .. but just CRLF -
+  WGI_RESPONSE.write_header_text has the responsibility to handle the last
+  blank line CRLF (separating the header from the message) - HTTP_HEADER.string
+  does not set anymore a default content type as text/html - added
+  WGI_RESPONSE.write_header_lines (ITERABLE [TUPLE [name,value:
+  READABLE_STRING_8]] mainly as an helper method, this way the WGI user does
+  not have to know about the CRLF end of line
+
+  Applied recent renaming from WGI_RESPONSE_BUFFER as WGI_RESPONSE
+
+  updated WGI specification
+
+  Added missing wgi_connector
+
+  added "redirect" helper feature to WSF_RESPONSE
+
+  Added `{WGI_REQUEST}.wgi_*' function to WSF_REQUEST
+
+  rename `application' as `service'
+
+  Use HTTP_HEADER instead of WSF_HEADER (WSF_HEADER is kept for convenience and
+  existing code)
+
+  better script to check compilation and tests
+
+  Moved implementation of WSF_HEADER to HTTP_HEADER in the http library
+
+  Simplified EWSGI interfaces Renamed WGI_RESPONSE_BUFFER as WGI_RESPONSE to
+  avoid confusion Removed EWF_HEADER and removed related caller from WGI
+  implementation, now this is only part of WSF library Added wgi_version,
+  wgi_implementation and wgi_connector to the WGI_REQUEST interface to give
+  more information to the user Added back WGI_CONNECTOR to WGI specification,
+  mainly because of `{WGI_REQUEST}.wgi_connector' simplified WGI_CONNECTOR to
+  contain for now only `name' and `version' if the implementation of connector
+  inherit from WGI_CONNECTOR (recommended) this might gives more access to the
+  user using a reverse assignment for specific needs (but this usage is not
+  recommended due to portability issue on other connector) Removed useless
+  connector.ecf since now EWF/WGI library provides the helper classes
+
+2011-11-23  Jocelyn Fiat
+
+  Fixed sample example config file after recent location change for "rest" lib
+
+  Improved run_CI_tests.py and include the compile_all call directly in the
+  python script. If compile_all tool supports  -keep ... let's use it. (recent
+  addition)
+
+  fixed rest(-safe).ecf due to recent location change
+
+  Updated README.md in relation with "rest" lib relocation
+
+  Move "rest" library under "draft/..." since it is more an experiment rather
+  than a real REST library
+
+2011-11-21  Jocelyn Fiat
+
+  Update draft/README.md
+
+  updated Eiffel libfcgi README file
+
+  Added scripts to help building the libfcgi.dll and .lib from modified source
+  of libfcgi Extracted into "libfcgi" only the files needed to compile the
+  Windows .dll and .lib
+
+  Added scripts to help building the libfcgi.dll and .lib from modified source
+  of libfcgi
+
+  updated README to apply 'ext' renamed as 'contrib'
+
+2011-11-18  Jocelyn Fiat
+
+  fixed compilation for tests.ecf
+
+  fixed typo
+
+  Updated "draft" folder which contain potential future addition to EWF
+
+  Added "draft" folder to contain potential future addition to EWF
+
+  restructured CONNEG library fixed various issue in .ecf files
+
+2011-11-17  jvelilla
+
+  Initial import CONNEG library, support server side content negotiation.
+
+2011-11-17  Jocelyn Fiat
+
+  Rename "ext" as "contrib" in compile_all.ini as well no need to test the code
+  coming from other projects.
+
+  Renamed "ext" folder as "contrib" folder and reorganized a little bit Renamed
+  any *_APPLICATION as *_SERVICE mainly because those components such as
+  WSF_APPLICATION, renamed as WSF_SERVICE are not always the main application
+  entry, and "service" describe them better Minor implementation change in
+  WSF_REQUEST Cosmetics
+
+2011-11-16  Jocelyn Fiat
+
+  handle last run failure
+
+  Added request method PATCH even if not really used for now, it might in the
+  future
+
+  Do not print command during script execution
+
+  fixed indentation in python script
+
+  Added information output to run_CI_tests.py
+
+  updated run_CI_tests.py
+
+  updated run_CI_tests.py
+
+  updated run_CI_tests.py
+
+  updated run_CI_tests.py
+
+  removed unused local variables
+
+  added a python script to be use inside jenkins CI server (experimental for
+  now)
+
+2011-11-14  Jocelyn Fiat
+
+  cosmetic
+
+  cosmetics
+
+  Added various README.md  (using the markdown syntax)
+
+  updated README with links to sub READM.md
+
+  sync with Eiffel Web Nino
+
+  Added default WSF_APPLICATION for libfcgi connector
+
+  code removal
+
+  Updated libfcgi source code for Windows AND Linux. Cleaning some code and
+  feature clauses.
+
+  Changed the WGI_INPUT_STREAM and WGI_OUTPUT_STREAM interfaces main changes
+  for existing code  `read_stream' is renamed `read_string'
+
+2011-11-09  Jocelyn Fiat
+
+  Added is_request_method (STRING): BOOLEAN to help users
+
+2011-11-07  Jocelyn Fiat
+
+  updated readme with better way to get the source code recursively
+
+  added script to build archive for download area
+
+2011-11-04  Jocelyn Fiat
+
+  sync with Eiffel Web Nino
+
+  sync with nino and applied changes to connector
+
+  Use recent changes from Nino, to get access to the launched and port
+  information. Quite useful when launching using port=0 to use a random free
+  port. This is great for testing, this way we can run many tests in the same
+  time without any port blocking.
+
+2011-11-03  Jocelyn Fiat
+
+  applied recent changes from Nino
+
+2011-11-02  Jocelyn Fiat
+
+  removed compliance on ewsgi, since now we target WSF applied recent changes
+  related to WSF_VALUE
+
+  Safer interface for WSF_VALUE, when related to STRING value
+
+  sync with submodules
+
+  renamed WSF_(.*)_VALUE as WSF_$1
+
+2011-10-31  Jocelyn Fiat
+
+  Fixed obsolete calls, and compilation error.
+
+  fixed path to cURL.ecf file, using the correct uppercase
+
+  Fixed missing syntax="provisional" , this was preventing compiling with
+  "across" statements
+
+  Better implementation to get http header for http_client, and to get list of
+  header entries by key,value
+
+  updated instructions related to submodules
+
+  Fixed remaining 6.8 vs 7.0 compilation issue related to UTF8_(URL_)ENCODER
+
+  removed unused local variable
+
+  Added convenient features to BASE64 - decode_string_to_buffer (v: STRING;
+  a_buffer: STRING) - decode_string_to_output_medium (v: STRING; a_output:
+  IO_MEDIUM)
+
+  removed unused local variable
+
+  Fixed code to be compilable with EiffelStudio 6.8 and 7.0 (due to recent
+  change in UNICODE_CONVERSION) UNICODE_CONVERSION
+
+2011-10-28  jvelilla
+
+  Added headers to response in HTTP_CLIENT_RESPONSE
+
+2011-10-27  Jocelyn Fiat
+
+  use '%/123/' syntax, to make sure no editor replace the accentued characters
+
+  removed unwanted .rc
+
+  Fixed a previously character changes in WSF_REQUEST (related to
+  safe_filename), and modified the implementation to use inspect Fixed the
+  request_content_type computation Cosmetic in REQUEST_RESOURCE_HANDLER_HELPER
+
+  added script to update current git working copy and submodules recursively
+
+  cosmetic, or minor changes
+
+2011-10-27  jvelilla
+
+  Added eel and eapml in EWF libraries. Removed them from gitmodule
+
+2011-10-26  jvelilla
+
+  Updated  request resource handler. TODO: implement Content-Negotiation
+
+2011-10-24  Jocelyn Fiat
+
+  Start index for list[]=a&list[]=b ... from 1  instead of 0 Stick to Eiffel
+  spirit
+
+  Added visitor patterns to WSF_VALUE Handling UTF-8 unencoding for WSF_VALUE
+  ... Added WSF_TABLE_VALUE to handle list[]=a&list[]=b ...  Library encoder:
+  added UTF8 facilities
+
+  missing implementation (forgot to uncomment)
+
+2011-10-23  jvelilla
+
+  Added eel and eapml modules
+
+  Update delete method to hanlde method not allowed. Added method not allowed
+  to request resource handler helper class. Update gitmodules
+
+2011-10-21  Jocelyn Fiat
+
+  Applied recent changes on WGI_ and WSF_ Moved classes away from ewsgi,
+  restructured, cleaned
+
+  Continued reducing WGI and move implementation to WSF  (Web Server Framework)
+  Removed many usage of READABLE_STRING_GENERAL in favor to READABLE_STRING_8
+  to avoid potential nasty issues in user's code URI-template is working only
+  with STRING_8, then changed any _GENERAL or _STRING_32 to _STRING_8
+
+2011-10-19  Jocelyn Fiat
+
+  First try to get a limited WGI_  and use WSF_ as default framework
+
+2011-10-21  jvelilla
+
+  Update Restbucks example: Conditional GET, PUT. Added a response method to
+  support resource not modified. Added a ETAG_UTILS class to calcule
+  md5_digest. Added ext libs eel and eapml.
+
+2011-10-19  Jocelyn Fiat
+
+  Used object test
+
+  removed useless local variable
+
+2011-10-14  Jocelyn Fiat
+
+  fixed cgi and libfcgi connectors due to recent changes from WGI_APPLICATION
+
+  Removed handling of internal error from WGI_APPLICATION And for now added it
+  into nino connector
+
+  Fixed issue with index in uri template matcher
+
+  Added HTTP_FILE_EXTENSION_MIME_MAPPING Added REQUEST_FILE_SYSTEM_HANDLER to
+  the router library Added file system handler in "hello_routed_world" example
+
+2011-10-13  jvelilla
+
+  Added handle_resource_conflict_response feature to handle 409 reponse,
+  Cosmetic.
+
+2011-10-12  Jocelyn Fiat
+
+  Added data and file for post and put request methods
+
+  Using Transfer-Encoding: chunked in example to send response progressively
+
+  sync with submodules
+
+  removed unwanted code
+
+  applied recent changes on HTTP_REQUEST_METHOD_CONSTANTS
+
+  cosmetic
+
+  Addition to "http" library, separated constants into - HTTP_MIME_TYPES -
+  HTTP_HEADER_NAMES - HTTP_REQUEST_METHODS - HTTP_STATUS_CODE   (already
+  exists)  Do not set the "Status" header when using
+  WGI_RESPONSE_BUFFER.write_header (...) Cosmetic
+
+2011-10-11  Jocelyn Fiat
+
+  Fixed errors recently introduced
+
+  sync with latest JSON
+
+2011-10-11  jvelilla
+
+  Update order_handler, fix json_order_converter
+
+2011-10-11  Jocelyn Fiat
+
+  Use local curl if compiler is < 7.0.8.7340 otherwise, use ISE_LIBRARY cURL
+
+  Temporary fixed issue of using modified cURL (which is cURL provided with
+  EiffelStudio 7.0) This changes will be reverted in the future
+
+2011-10-10  Jocelyn Fiat
+
+  Updated readme related to mirrored Eiffel cURL library
+
+  added submodule ext/ise_library/curl  to use the updated Eiffel cURL from
+  ISE.
+
+  cosmetic
+
+2011-10-07  Jocelyn Fiat
+
+  added http diagrams found on the web
+
+  Added the possibility to specify the supported content types Added FIXME
+
+  Cosmetic
+
+  Added "Date:" helper feature in EWF_HEADER Added license.lic to restbuck
+  example, and mainly copyright to Javier Use HTTP_STATUS_CODES Minor
+  improvements using object tests Cosmetic (indentation, ..)
+
+2011-10-06  Jocelyn Fiat
+
+  Added a first simple test client to test the restbuck client
+
+  added support for data in POST request
+
+2011-10-06  jvelilla
+
+  Added REQUEST_RESOURCE_HANDLER_HELPER class to contain common http method
+  behavior. Updated ORDER_HANLDER to use this new class.
+
+2011-10-05  Jocelyn Fiat
+
+  Added `base_url' for REQUEST_ROUTER  (and descendants) Fixed implementation
+  of REST_REQUEST_AGENT_HANDLER to avoid wrong path in inherited routine. Allow
+  to build a URI_TEMPLATE from another URI TEMPLATE, this way, if later we have
+  more attribute (status or settings) to URI_TEMPLATE, we'll be able to change
+  the `template' without breaking the settings
+
+  added missing call to pre_execute and post_execute
+
+  Fixed missing http:// in absolute URL
+
+  remove pre_execute, and post_execute, and make process_request frozen this
+  way, the user won't be tempted to redefine feature not being part of pure
+  EWSGI interface.
+
+  better argument name, to precise the timeout is in second also in comment.
+
+2011-10-04  Jocelyn Fiat
+
+  Fixed agent handler for rest library
+
+  fixed inheritance and precursor bad usage.
+
+2011-10-03  jvelilla
+
+  Updated support for PUT. Now the example support GET, POST, PUT, DELETE.
+
+2011-09-28  Jocelyn Fiat
+
+  fixed compilation for ewsgi/tests/tests.ecf file
+
+  Made WGI_VALUE.name as READABLE_STRING_32 .. otherwise it is a pain to
+  manipulate. Changed return type of meta_variable to be WGI_STRING_VALUE ...
+  since the meta variable can not be anything else. Made sure REQUEST_URI
+  starts with one and only one slash Internal implementation: the _table now
+  compares object Removed SELF variable ... at least for now Be sure to provide
+  a REQUEST_URI even if the underlying connector does not.
+
+  cleaned http_client configuration files
+
+  Added library/library.index
+
+  restructured ewsgi to avoid too many sub cluster
+
+2011-09-28  jvelilla
+
+  Updated Restbucks examples, handle not method allowed in a better way, added
+  the readme file.
+
+2011-09-26  Jocelyn Fiat
+
+  fixed compilation of rest example
+
+  fixed typo
+
+  Changed ITERATION_CURSOR [WGI_VALUE] into ITERABLE [WGI_VALUE] for
+  WGI_REQUEST.*parameters* and similar Applied recent changes on EWF_HEADER
+
+2011-09-23  Jocelyn Fiat
+
+  Updated changelogs.txt sync with nino and doc
+
+  Added AutoTest simple cases for ewsgi using Nino web server
+
+  Fixing issue with experimental WGI_MULTIPLE_STRING_VALUE Fixed issue with
+  RAW_POST_DATA
+
+  Removed `put_redirection' and replaced by `put_location' Removed useless code
+  in some features
+
+  Use READABLE_STRING(_*) instead of just STRING(_*)
+
+  Added feature to shutdown the Nino http server
+
+  Added error reporting in HTTP_CLIENT_RESPONSE Added missing
+  set_connect_timeout
+
+2011-09-23  jvelilla
+
+  Added validations.
+
+2011-09-22  Jocelyn Fiat
+
+  Added code to create an HTTP_AUTHORIZATION from the client side as well. So
+  now we can either interpret an HTTP_AUTHORIZATION  or build one
+  HTTP_AUTHORIZATION  So far , only Basic auth is supported.
+
+  Made all libraries compilable in any mode (voidsafe or not) Fixed related
+  examples
+
+2011-09-22  jvelilla
+
+  Initial import, work in progress restbuck example. Only support create a
+  resource
+
+2011-09-21  Jocelyn Fiat
+
+  Fixed issue where Content-Type and Content-Length were translated into
+  HTTP_CONTENT_TYPE and HTTP_CONTENT_LENGTH instead of just CONTENT_TYPE and
+  CONTENT_LENGTH
+
+  better assertion to ensure `base' is a valid base url
+
+  synch with Nino
+
+  better return type for http client functions added helper features
+
+2011-09-20  Jocelyn Fiat
+
+  fixed case sensitive path
+
+  missing -safe.ecf config file for http_client
+
+  Now using READABLE_STRING_... type
+
+  Added simple HTTP client. For now the implementation is using Eiffel cURL
+  library. It requires Eiffel cURL coming with next EiffelStudio 7.0 (or from
+  eiffelstudio's repo from rev#87244 )
+
+2011-09-16  Jocelyn Fiat
+
+  Fixed issues in WGI_REQUEST's invariant Fixed issues with guessing the
+  default format for REST handling Fixed issue with .._ROUTING_.. component.
+
+  Fixed issue with uri template router .. it was applying on request_uri
+  instead of path_info now it match on PATH_INFO
+
+  more flexible authenticated query .. on handler, and not anymore on context
+  object
+
+  fixed wrong order in parameter for callers of set_meta_string_variable
+
+  added debug_output to WGI_VALUE
+
+  first version of http authorization .. for now, only basic digest
+
+  added request_handler_routes_recorder to provide an implementation for
+  `REQUEST_HANDLER.on_handler_mapped'
+
+  Added "on_handler_mapped" callback to allow any REQUEST_HANDLER to record the
+  existing routes.
+
+  typo
+
+2011-09-15  Jocelyn Fiat
+
+  minor enhancement of error lib
+
+  Added WGI_MULTIPLE_STRING_VALUE Renamed value as WGI_STRING_VALUE.string
+  Renamed a few classes .._CONTEXT_I  as .._CONTEXT updated example.
+
+  cosmetic
+
+  updated README.md
+
+2011-09-14  Jocelyn Fiat
+
+  Simplified interface of "router" library classes
+
+  applied renaming for rest and router lib
+
+  Reorganized library "server/request/rest"
+
+  some renaming to use _I for the generic classes, and removed the DEFAULT_
+  prefix for default implementation this should makes things easier for new
+  users
+
+  reorganized router library
+
+  - Adopted deferred WGI_VALUE design for Result type of *_parameter and
+  similar functions - Adopted the ITERATION_CURSOR [WGI_VALUE] design for
+  *_parameters and similar functions - renamed parameter as item - provided
+  helper function to handle "string" value parameters  Experimental for now.
+
+  better result type  (using READABLE_..)
+
+  sync with nino
+
+2011-09-13  Jocelyn Fiat
+
+  updated changelogs
+
+  Added first draft for RESTful library note: the interfaces are likely to
+  change in the future
+
+  updated config file and examples
+
+  adding routing handler few renaming
+
+2011-09-09  Jocelyn Fiat
+
+  changing design to use generic instead of anchor types
+
+  make router more easy to inherit from and specialized
+
+  Added support during match for  {/vars} and also handle cases such as  
+  /foo.{format}{/vars}  or /foo.{format}{?vars} where no literal exists between
+  the uri template expressions
+
+  better type for argument and result (using READABLE_...)
+
+  change to standard default values
+
+2011-09-08  jvelilla
+
+  Sync to jocelyn EWF master
+
+  Update
+
+2011-09-07  Jocelyn Fiat
+
+  sync doc/wiki
+
+  use `resource' as generic name for uri or uri_template
+
+  added changelogs.txt
+
+  Added request methods criteria for the router component. Now one can decide 
+  map_agent_with_request_methods ("/foo/bar/{bar_id}", agent handle_foo_bar,
+  <<"GET">>) (and similar for non agent way) This might be useful in pure
+  RESTful environment.
+
+  fixed example .. where we forgot to set the status, and send the header (DbC
+  helped here)
+
+  renamed (un)set_meta_parameter as (un)set_meta_variable
+
+  Missing HTTP_  prefix for header meta variable in REQUEST
+
+2011-08-30  Jocelyn Fiat
+
+  Changed prefix from EWSGI_ to WGI_ Changed meta variable type to
+  READABLE_STRING_32
+
+2011-08-29  Jocelyn Fiat
+
+  naming:  meta_variable(s) changed some string type to READABLE_STRING_32 or
+  READABLE_STRING_8 for now regarding Meta variables (need decision here..)
+
+2011-08-25  Jocelyn Fiat
+
+  changed prefix GW_ into EWF_  for EiffelWebFramework use
+  READABLE_STRING_GENERAL instead of just STRING
+
+  sync wiki doc
+
+  Merged REQUEST and ENVIRONMENT  into REQUEST renamed ENVIRONMENT_NAMES into
+  META_NAMES better usage of READABLE_STRING_GENERAL, and other strings
+  abstract RESPONSE_BUFFER in implementation of EWSGI for the implementation,
+  inheriting from deferred specification (more to come later)
+
+  Merged REQUEST and ENVIRONMENT  into REQUEST renamed ENVIRONMENT_NAMES into
+  META_NAMES better usage of READABLE_STRING_GENERAL, and other strings for the
+  implementation, inheriting from deferred specification (more to come later)
+
+2011-08-24  Jocelyn Fiat
+
+  fixing wrong feature usage
+
+2011-08-18  Jocelyn Fiat
+
+  code cleaning, and prepare for internal review
+
+2011-08-04  Jocelyn Fiat
+
+  enhanced the ERROR_HANDLER
+
+2011-08-02  Jocelyn Fiat
+
+  minor improvements on response_as_result code
+
+  cosmetic in config file .ecf
+
+  add "write_headers_string" to RESPONSE_BUFFER
+
+2011-08-01  Jocelyn Fiat
+
+  sync wiki
+
+  moved ewsgi-full config file under tests (this is mainly for dev purpose, to
+  be able to compile and edit all classes related to ewsgi)
+
+  Tried to reduce gap between both EWSGI proposals Re-adapt the Spec-compliant
+  solution (instead of Lib-compliant solution). Thus no more 100% deferred
+  interface. Rename EWSGI_RESPONSE into EWSGI_RESPONSE_BUFFER Added in
+  extra/response-as-result/  an copy/paste from the implementation of Paul's
+  proposal (not up to date with Paul's spec). But this is mainly for
+  information and tests. Removed part of the ewsgi/specification interfaces ...
+  to be able to test EWSGI compliant library against the pure specification
+  (experimental). Renamed most of the GW_... into EWSGI_...
+
+2011-07-29  Jocelyn Fiat
+
+  added http_accept feature to represent "Accept:" HTTP header
+
+  added hello_routed_world example few changes on new `router' library (still
+  in-progress)
+
+  Added first draft for a URI and/or URI-template base request router.
+
+  cosmetic
+
+  Added "flush" to the EWSGI_RESPONSE_STREAM
+
+  added missing non-void-safe .ecf
+
+  added missing non-void-safe .ecf
+
+2011-07-28  Jocelyn Fiat
+
+  Fixed various issue with URI template, added corresponding tests
+
+  It seems good convention to also add the "Status:" header
+
+  fix hello world example
+
+  ignore tests/temp
+
+2011-07-27  Jocelyn Fiat
+
+  added script to test compilations of .ecf in EWF
+
+  Added the possibility to set the "Status" header (different from the status
+  line) in GW_HEADER Renamed EWSGI_RESPONSE as EWSGI_RESPONSE_STREAM to avoid
+  confusion with EWSGI_RESPONSE as stated in Paul's proposal Added default
+  "configuration" (for nino and cgi) to be independant of the connector (at
+  compilation time) Added example implementing Paul's proposal on top of EWSGI
+
+  Added an implementation folder in ewsgi_spec, mainly to provide default
+  implementation just to save the developer of connector some time. changed
+  structured
+
+  added non void-safe configuration files
+
+  restructured specification folders
+
+  Apply prefix renaming from the specification Reduced the number of EWSGI
+  classes
+
+  now use prefix EWSGI_ instead of GW_ for ewsgi specification
+
+  First step to extract the interface of the EWSGI specification into its own
+  library Applied the changes
+
+  removed implementation from APPLICATION , RESPONSE and REQUEST classes
+
+  removed the notion of status from GW_HEADER, since it should not be part of
+  the HTTP header added status setting in GW_RESPONSE added a default
+  implementation for write_status in OUTPUT_STREAM (it should be moved away in
+  the future) removed any implementation from GW_REQUEST, and put it in
+  GW_REQUEST_IMP
+
+2011-07-26  Jocelyn Fiat
+
+  replace write_string by write in RESPONSE
+
+2011-07-25  Jocelyn Fiat
+
+  various alternative implementation for response
+
+  Redesigned the RESPONSE to remove the output stream from the deferred
+  interface Redesigned the uploaded file part to be more object oriented Move
+  some implementation from REQUEST to REQUEST_IMP
+
+2011-07-22  Jocelyn Fiat
+
+  added doc/spec for uri template
+
+  Fixed issue with matcher
+
+  fixed typo
+
+  Improvement and revert back to support draft 04 (but using custom variable,
+  allow the user to follow draft 05 spec)
+
+  fixing issue with URI TEMPLATE matcher
+
+  added URI_TEMPLATE_MATCH_RESULT
+
+2011-07-21  Jocelyn Fiat
+
+  sync
+
+  updated README
+
+  updated README
+
+2011-07-20  Jocelyn Fiat
+
+  added use of URL-encoder to unencode the URL values (to fill the parameters)
+  review design of GW_RESPONSE to hide the output, and remove the header
+  attribute added script_url in REQUEST to help the user build url relative to
+  script_name  + cosmetic
+
+  First version of URI Template library as specified by
+  http://tools.ietf.org/html/draft-gregorio-uritemplate-05 (it seems to
+  contains some error in the spec .. or minor incoherences, to double check)
+  The matcher is basic, it does not handle all the details of the string
+  builder, but that seems ok for now.
+
+2011-07-18  Jocelyn Fiat
+
+  added format and request method constants classes + license file
+
+  added default rescue code on exception rescue
+
+  nicer Eiffel code, let's not try to achieve everything-in-one-line style ...
+
+  restrict creation only by GW_APPLICATION and descendant
+
+  add output helper feature to RESPONSE
+
+  Fixed issue with nino handler and base url
+
+  sync nino and json
+
+2011-07-14  Jocelyn Fiat
+
+  rename new_request_context by new_request
+
+2011-07-13  Jocelyn Fiat
+
+  cosmetic
+
+  renamed GW_REQUEST_CONTEXT as GW_REQUEST
+
+  Design change, now we have `req' REQUEST and `res' RESPONSE instead of just
+  `ctx'
+
+  enhanced comment for `execute'
+
+  Make a simple hello world based on nino
+
+2011-07-12  Jocelyn Fiat
+
+  Added GW_HEADER Added pre_, post_ and rescue_execute for GW_APPLICATION Fixed
+  an unknown class in export clause cosmetic + copyright
+
+  fixed submodule path ... Windows path separator issue..
+
+  added instruction to get the source code
+
+  First integration of the new GW_ design more centralized on connector, and
+  does not require specific feature on GW_APPLICATION depending on the
+  connector. So this is really more flexible this way, and much easier to write
+  application supporting CGI, FCGI, Nino and so on .. as demonstrated in
+  hello_world  This is a first version, more will come later, mainly migrating
+  from Eiffel Web Reloaded to this Eiffel Web Framework project.
+
+2011-07-08  Jocelyn Fiat
+
+  focus on GW_APPLICATION
+
+2011-07-07  Jocelyn Fiat
+
+  a few renaming better GW_ENVIRONMENT interface
+
+2011-07-06  Jocelyn Fiat
+
+  updated doc
+
+2011-07-05  Jocelyn Fiat
+
+  cosmetic, license, copyright
+
+  added doc/wiki (wiki from github)
+
+  First draft for the ewsgi spec
+
+2011-06-29  Jocelyn
+
+  Let's start the Eiffel Web Framework
