@@ -23,17 +23,19 @@ feature {NONE} -- Initialization
 		do
 			create h.make
 			sess := h.new_session ("http://127.0.0.1:9090")
+
 			-- Create Order
 			print ("%N Create Order %N")
 			resp := create_order (sess)
+
 
 			-- Read the Order
 			print ("%N Read Order %N")
 			l_location := resp.header ("Location")
 			resp := read_order (sess, l_location)
 
-			-- Update the Order
 
+			-- Update the Order
 			if attached resp.body as l_body then
 				body := l_body.as_string_8
 				body.replace_substring_all ("takeAway", "in Shop")
@@ -43,11 +45,15 @@ feature {NONE} -- Initialization
 		end
 
 	update_order ( sess: HTTP_CLIENT_SESSION; uri : detachable READABLE_STRING_8; a_body : STRING) : HTTP_CLIENT_RESPONSE
+		local
+			context : HTTP_CLIENT_REQUEST_CONTEXT
 		do
 			create Result.make
 			if attached uri as l_uri then
 				sess.set_base_url (l_uri)
-				Result := sess.put ("", Void, a_body )
+				create context.make
+				context.headers.put ("application/json", "Content-Type")
+				Result := sess.put ("", context, a_body )
 				-- Show headers
 				across
  					Result.headers as l_headers
