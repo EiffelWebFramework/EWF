@@ -3,10 +3,10 @@
 	url = https://github.com/Eiffel-World/Eiffel-Web-Framework.wiki.git
 [submodule "contrib/library/server/nino"]
 	path = contrib/library/server/nino
-	url = http://github.com/Eiffel-World/EiffelWebNino.git
+	url = https://github.com/Eiffel-World/EiffelWebNino.git
 [submodule "contrib/library/text/parser/json"]
 	path = contrib/library/text/parser/json
-	url = http://github.com/Eiffel-World/ejson-svn.git
+	url = https://github.com/Eiffel-World/ejson-svn.git
 [submodule "contrib/ise_library/cURL"]
 	path = contrib/ise_library/cURL
-	url = http://github.com/EiffelSoftware/mirror-Eiffel-cURL.git
+	url = https://github.com/EiffelSoftware/mirror-Eiffel-cURL.git
