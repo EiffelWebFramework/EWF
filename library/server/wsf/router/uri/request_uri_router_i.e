@@ -30,6 +30,30 @@ feature -- Initialization
 			set_base_url (a_base_url)
 		end
 
+feature -- Status report
+
+	handlers_matching_map (a_resource: READABLE_STRING_8; rqst_methods: detachable ARRAY [READABLE_STRING_8]): detachable LIST [H]
+		local
+			l_res: READABLE_STRING_8
+		do
+			l_res := based_resource (a_resource)
+			across
+				handlers as c
+			loop
+				if c.item.resource.same_string (l_res) then
+					if
+						rqst_methods = Void or else
+						across rqst_methods as rq some is_matching_request_methods (rq.item, c.item.request_methods) end
+					then
+						if Result = Void then
+							create {ARRAYED_LIST [H]} Result.make (1)
+						end
+						Result.extend (c.item.handler)
+					end
+				end
+			end
+		end
+
 feature -- Registration
 
 	map_with_request_methods (p: READABLE_STRING_8; h: H; rqst_methods: detachable ARRAY [READABLE_STRING_8])
@@ -43,6 +67,17 @@ feature -- Registration
 			end
 			handlers.force ([h, l_uri, formatted_request_methods (rqst_methods)])
 			h.on_handler_mapped (l_uri, rqst_methods)
+		end
+
+feature {NONE} -- Implementation
+
+	based_resource (a_resource: READABLE_STRING_8): READABLE_STRING_8
+		do
+			if attached base_url as l_base_url then
+				Result := l_base_url + a_resource
+			else
+				Result := a_resource
+			end
 		end
 
 feature {NONE} -- Access: Implementation

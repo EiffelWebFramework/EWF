@@ -31,9 +31,35 @@ feature -- Initialization
 			set_base_url (a_base_url)
 		end
 
+feature -- Status report		
+
+	handlers_matching_map (a_resource: READABLE_STRING_8; rqst_methods: detachable ARRAY [READABLE_STRING_8]): detachable LIST [H]
+		local
+			l_res: READABLE_STRING_8
+		do
+			l_res := based_resource (a_resource)
+			across
+				handlers as c
+			loop
+				if c.item.resource.same_string (l_res) then
+					if
+						rqst_methods = Void or else
+						across rqst_methods as rq some is_matching_request_methods (rq.item, c.item.request_methods) end
+					then
+						if Result = Void then
+							create {ARRAYED_LIST [H]} Result.make (1)
+						end
+						Result.extend (c.item.handler)
+					end
+				end
+			end
+		end
+
 feature -- Registration
 
 	map_with_uri_template (uri: URI_TEMPLATE; h: H)
+		require
+			has_not_such_map: not has_map (uri.template, Void, h)
 		do
 			map_with_uri_template_and_request_methods (uri, h, Void)
 		end
@@ -41,17 +67,13 @@ feature -- Registration
 	map_with_uri_template_and_request_methods (uri: URI_TEMPLATE; h: H; rqst_methods: detachable ARRAY [READABLE_STRING_8])
 		require
 			uri_is_valid: uri.is_valid
+			has_not_such_map: not has_map (uri.template, rqst_methods, h)
 		local
 			l_tpl: like {URI_TEMPLATE}.template
 			l_uri: URI_TEMPLATE
 		do
-			l_uri := uri
+			l_uri := based_uri (uri)
 			l_tpl := l_uri.template
-			if attached base_url as l_base_url then
-				l_uri := l_uri.duplicate
-				l_uri.set_template (l_base_url + l_tpl)
-				l_tpl := l_uri.template
-			end
 
 			handlers.force ([h, l_tpl, formatted_request_methods (rqst_methods)])
 			templates.force (l_uri, l_tpl)
@@ -63,7 +85,28 @@ feature -- Registration
 			map_with_uri_template_and_request_methods (create {URI_TEMPLATE}.make (tpl), h, rqst_methods)
 		end
 
-feature {ROUTED_SERVICE_I} -- Hanlder
+feature {NONE} -- Implementation
+
+	based_uri (uri: URI_TEMPLATE): URI_TEMPLATE
+		do
+			if attached base_url as l_base_url then
+				Result := uri.duplicate
+				Result.set_template (l_base_url + uri.template)
+			else
+				Result := uri
+			end
+		end
+
+	based_resource (a_resource: READABLE_STRING_8): READABLE_STRING_8
+		do
+			if attached base_url as l_base_url then
+				Result := l_base_url + a_resource
+			else
+				Result := a_resource
+			end
+		end
+
+feature {ROUTED_SERVICE_I} -- Handler
 
 	handler (req: WSF_REQUEST): detachable TUPLE [handler: attached like default_handler; context: like default_handler_context]
 		local

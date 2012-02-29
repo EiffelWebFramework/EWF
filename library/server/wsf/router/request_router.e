@@ -10,6 +10,21 @@ deferred class
 inherit
 	ITERABLE [TUPLE [handler: H; resource: READABLE_STRING_8; request_methods: detachable ARRAY [READABLE_STRING_8]]]
 
+feature -- Status report
+
+	has_map (a_resource: READABLE_STRING_8; rqst_methods: detachable ARRAY [READABLE_STRING_8]; a_handler: detachable H): BOOLEAN
+			-- Has a map corresponding to `a_resource' and `rqst_methods' other than `a_handler'?
+		do
+			if attached handlers_matching_map (a_resource, rqst_methods) as lst then
+				Result := a_handler = Void or else not lst.has (a_handler)
+			end
+		end
+
+	handlers_matching_map (a_resource: READABLE_STRING_8; rqst_methods: detachable ARRAY [READABLE_STRING_8]): detachable LIST [H]
+			-- Existing handlers matching map with `a_resource' and `rqst_methods'
+		deferred
+		end
+
 feature -- Mapping
 
 	map_default (h: like default_handler)
@@ -22,18 +37,24 @@ feature -- Mapping
 
 	map (a_resource: READABLE_STRING_8; h: H)
 			-- Map handler `h' with `a_resource'
+		require
+			has_not_such_map: not has_map (a_resource, Void, h)
 		do
 			map_with_request_methods (a_resource, h, Void)
 		end
 
 	map_routing (a_resource: READABLE_STRING_8; h: H)
 			-- Map handler `h' with `a_resource'
+		require
+			has_not_such_map: not has_map (a_resource, Void, h)
 		do
 			map (a_resource, h)
 		end
 
 	map_with_request_methods (a_resource: READABLE_STRING_8; h: H; rqst_methods: detachable ARRAY [READABLE_STRING_8])
 			-- Map handler `h' with `a_resource' and `rqst_methods'
+		require
+			has_not_such_map: not has_map (a_resource, rqst_methods, h)
 		deferred
 		end
 
