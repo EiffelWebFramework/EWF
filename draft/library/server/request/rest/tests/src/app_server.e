@@ -92,8 +92,8 @@ feature -- Execution
 			s.append ("You are being redirected to <a href=%"" + l_redir_url + "%">/doc</a> in 2 seconds ...%N")
 			h.put_content_length (s.count)
 			res.set_status_code ({HTTP_STATUS_CODE}.temp_redirect)
-			res.write_header_text (h.string)
-			res.write_string (s)
+			res.put_header_text (h.string)
+			res.put_string (s)
 		end
 
 	request_count: INTEGER
@@ -128,12 +128,12 @@ feature -- Implementation
 			s: STRING
 		do
 			res.set_status_code (200)
-			res.write_header (200, <<["Content-Type", "text/html"]>>)
+			res.put_header (200, <<["Content-Type", "text/html"]>>)
 
 			create s.make_empty
 			s.append_string ("Exited")
 			s.append_string (" <a href=%"" + ctx.script_url ("/") + "%">start again</a>%N")
-			res.write_string (s)
+			res.put_string (s)
 			exit_with_code (0)
 		end
 

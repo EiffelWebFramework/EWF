@@ -48,8 +48,8 @@ feature -- Execution
 			lst: LIST [STRING]
 		do
 			res.set_status_code ({HTTP_STATUS_CODE}.unauthorized)
-			res.write_header ({HTTP_STATUS_CODE}.unauthorized, <<["WWW-Authenticate", "Basic realm=%"My Silly demo auth, password must be the same as login such as foo:foo%""]>>)
-			res.write_string ("Unauthorized")
+			res.put_header ({HTTP_STATUS_CODE}.unauthorized, <<["WWW-Authenticate", "Basic realm=%"My Silly demo auth, password must be the same as login such as foo:foo%""]>>)
+			res.put_string ("Unauthorized")
 		end
 
 	execute_application (ctx: APP_REQUEST_HANDLER_CONTEXT; req: WSF_REQUEST; res: WSF_RESPONSE)
@@ -88,8 +88,8 @@ feature -- Execution
 					end
 					if not s.is_empty then
 						res.set_status_code ({HTTP_STATUS_CODE}.ok)
-						res.write_header_text (h.string)
-						res.write_string (s)
+						res.put_header_text (h.string)
+						res.put_string (s)
 					end
 				else
 					send_error (ctx.path, 0, "User/password unknown", Void, ctx, req, res)
