@@ -54,7 +54,7 @@ feature -- Execution
 						if j > 0 then
 							l_name := s.substring (1, j - 1)
 							l_value := s.substring (j + 1, s.count)
-							add_value_to_table (l_name, l_value, a_vars)
+							add_string_value_to_table (l_name, l_value, a_vars)
 						end
 					end
 				end

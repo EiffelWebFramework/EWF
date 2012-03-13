@@ -52,8 +52,8 @@ feature {NONE} -- Initialization
 			meta_variables_table := tb
 			meta_variables := tb
 			create error_handler.make
-			create uploaded_files.make (0)
-			raw_post_data_recorded := True
+			create uploaded_files_table.make (0)
+			set_raw_input_data_recorded (False)
 			create {STRING_32} empty_string.make_empty
 
 			create execution_variables_table.make (0)
@@ -94,6 +94,21 @@ feature {NONE} -- Initialization
 
 	wgi_request: WGI_REQUEST
 
+feature -- Destroy
+
+	destroy
+			-- Destroy the object when request is completed
+		do
+				-- Removed uploaded files
+			across
+				-- Do not use `uploaded_files' directly
+				-- just to avoid processing input data if not yet done
+				uploaded_files_table as c
+			loop
+				delete_uploaded_file (c.item)
+			end
+		end
+
 feature -- Status report
 
 	debug_output: STRING_8
@@ -101,13 +116,23 @@ feature -- Status report
 			create Result.make_from_string (request_method + " " + request_uri)
 		end
 
-feature -- Status
+feature -- Setting
 
-	raw_post_data_recorded: BOOLEAN assign set_raw_post_data_recorded
-			-- Record RAW POST DATA in meta parameters
+	raw_input_data_recorded: BOOLEAN assign set_raw_input_data_recorded
+			-- Record RAW Input datas into `raw_input_data'
 			-- otherwise just forget about it
-			-- Default: true
+			-- Default: False
 			--| warning: you might keep in memory big amount of memory ...
+
+feature -- Raw input data
+
+	raw_input_data: detachable READABLE_STRING_8
+			-- Raw input data is `raw_input_data_recorded' is True
+
+	set_raw_input_data (d: READABLE_STRING_8)
+		do
+			raw_input_data := d
+		end
 
 feature -- Error handling
 
@@ -1055,18 +1080,6 @@ feature {NONE} -- Query parameters: implementation
 
 feature -- Form fields and related
 
-	form_data_parameters: like form_parameters
-		obsolete "[2011-oct-24] Use form_parameters"
-		do
-			Result := form_parameters
-		end
-
-	form_data_parameter (a_name: READABLE_STRING_8): like form_parameter
-		obsolete "[2011-oct-24] Use form_parameter (a_name:...)"
-		do
-			Result := form_parameter (a_name)
-		end
-
 	form_parameters: ITERABLE [WSF_VALUE]
 		do
 			Result := form_parameters_table
@@ -1078,14 +1091,30 @@ feature -- Form fields and related
 			Result := form_parameters_table.item (a_name)
 		end
 
-	uploaded_files: HASH_TABLE [WGI_UPLOADED_FILE_DATA, STRING]
-			-- Table of uploaded files information
-			--| name: original path from the user
+	has_uploaded_file: BOOLEAN
+			-- Has any uploaded file?
+		do
+				-- Be sure, the `form_parameters' are already processed
+			get_form_parameters
+
+			Result := not uploaded_files_table.is_empty
+		end
+
+	uploaded_files: ITERABLE [WSF_UPLOADED_FILE]
+			-- uploaded files values
+			--| filename: original path from the user
 			--| type: content type
 			--| tmp_name: path to temp file that resides on server
 			--| tmp_base_name: basename of `tmp_name'
 			--| error: if /= 0 , there was an error : TODO ...
 			--| size: size of the file given by the http request
+		do
+				-- Be sure, the `form_parameters' are already processed
+			get_form_parameters
+
+				-- return uploaded files table
+			Result := uploaded_files_table
+		end
 
 feature -- Access: MIME handler
 
@@ -1151,8 +1180,10 @@ feature {NONE} -- Implementation: MIME handler
 
 feature {NONE} -- Form fields and related
 
-	form_parameters_table: HASH_TABLE [WSF_VALUE, READABLE_STRING_32]
-			-- Variables sent by POST request	
+	uploaded_files_table: HASH_TABLE [WSF_UPLOADED_FILE, READABLE_STRING_32]
+
+	get_form_parameters
+			-- Variables sent by POST, ... request	
 		local
 			vars: like internal_form_data_parameters_table
 			l_raw_data_cell: detachable CELL [detachable STRING_8]
@@ -1164,7 +1195,7 @@ feature {NONE} -- Form fields and related
 					create vars.make (0)
 					vars.compare_objects
 				else
-					if raw_post_data_recorded then
+					if raw_input_data_recorded then
 						create l_raw_data_cell.put (Void)
 					end
 					create vars.make (5)
@@ -1176,10 +1207,25 @@ feature {NONE} -- Form fields and related
 					end
 					if l_raw_data_cell /= Void and then attached l_raw_data_cell.item as l_raw_data then
 						-- What if no mime handler is associated to `l_type' ?
-						set_meta_string_variable ("RAW_POST_DATA", l_raw_data)
+						set_raw_input_data (l_raw_data)
 					end
 				end
 				internal_form_data_parameters_table := vars
+			end
+		ensure
+			internal_form_data_parameters_table /= Void
+		end
+
+	form_parameters_table: HASH_TABLE [WSF_VALUE, READABLE_STRING_32]
+			-- Variables sent by POST request	
+		local
+			vars: like internal_form_data_parameters_table
+		do
+			get_form_parameters
+			vars := internal_form_data_parameters_table
+			if vars = Void then
+				check form_parameters_already_retrieved: False end
+				create vars.make (0)
 			end
 			Result := vars
 		end
@@ -1189,9 +1235,9 @@ feature -- Uploaded File Handling
 	is_uploaded_file (a_filename: STRING): BOOLEAN
 			-- Is `a_filename' a file uploaded via HTTP Form
 		local
-			l_files: like uploaded_files
+			l_files: like uploaded_files_table
 		do
-			l_files := uploaded_files
+			l_files := uploaded_files_table
 			if not l_files.is_empty then
 				from
 					l_files.start
@@ -1278,10 +1324,10 @@ feature {NONE} -- Implementation: URL Utility
 
 feature -- Element change
 
-	set_raw_post_data_recorded (b: BOOLEAN)
-			-- Set `raw_post_data_recorded' to `b'
+	set_raw_input_data_recorded (b: BOOLEAN)
+			-- Set `raw_input_data_recorded' to `b'
 		do
-			raw_post_data_recorded := b
+			raw_input_data_recorded := b
 		end
 
 	set_error_handler (ehdl: like error_handler)
@@ -1292,14 +1338,14 @@ feature -- Element change
 
 feature {WSF_MIME_HANDLER} -- Temporary File handling		
 
-	delete_uploaded_file (uf: WGI_UPLOADED_FILE_DATA)
+	delete_uploaded_file (uf: WSF_UPLOADED_FILE)
 			-- Delete file `a_filename'
 		require
 			uf_valid: uf /= Void
 		local
 			f: RAW_FILE
 		do
-			if uploaded_files.has_item (uf) then
+			if uploaded_files_table.has_item (uf) then
 				if attached uf.tmp_name as fn then
 					create f.make (fn)
 					if f.exists and then f.is_writable then
@@ -1315,7 +1361,7 @@ feature {WSF_MIME_HANDLER} -- Temporary File handling
 			end
 		end
 
-	save_uploaded_file (a_content: STRING; a_up_fn_info: WGI_UPLOADED_FILE_DATA)
+	save_uploaded_file (a_up_file: WSF_UPLOADED_FILE; a_content: STRING)
 			-- Save uploaded file content to `a_filename'
 		local
 			bn: STRING
@@ -1328,10 +1374,11 @@ feature {WSF_MIME_HANDLER} -- Temporary File handling
 			rescued: BOOLEAN
 		do
 			if not rescued then
+				-- FIXME: should it be configured somewhere?
 				dn := (create {EXECUTION_ENVIRONMENT}).current_working_directory
 				create d.make (dn)
 				if d.exists and then d.is_writable then
-					l_safe_name := safe_filename (a_up_fn_info.name)
+					l_safe_name := a_up_file.safe_filename
 					from
 						create fn.make_from_string (dn)
 						bn := "tmp-" + l_safe_name
@@ -1350,104 +1397,24 @@ feature {WSF_MIME_HANDLER} -- Temporary File handling
 					end
 
 					if not f.exists or else f.is_writable then
-						a_up_fn_info.set_tmp_name (f.name)
-						a_up_fn_info.set_tmp_basename (bn)
+						a_up_file.set_tmp_name (f.name)
+						a_up_file.set_tmp_basename (bn)
 						f.open_write
 						f.put_string (a_content)
 						f.close
 					else
-						a_up_fn_info.set_error (-1)
+						a_up_file.set_error (-1)
 					end
 				else
 					error_handler.add_custom_error (0, "Directory not writable", "Can not create file in directory %""+ dn +"%"")
 				end
+				uploaded_files_table.force (a_up_file, a_up_file.name)
 			else
-				a_up_fn_info.set_error (-1)
+				a_up_file.set_error (-1)
 			end
 		rescue
 			rescued := True
 			retry
-		end
-
-	safe_filename (fn: STRING): STRING
-		local
-			c: CHARACTER
-			i, n: INTEGER
-		do
-				--| Compute safe filename, to avoid creating impossible filename, or dangerous one
-			from
-				i := 1
-				n := fn.count
-				create Result.make (n)
-			until
-				i > n
-			loop
-				c := fn[i]
-				inspect c
-				when '.', '-', '_' then
-					Result.extend (c)
-				when 'A' .. 'Z', 'a' .. 'z', '0' .. '9' then
-					Result.extend (c)
-				else
-					inspect c
-					when '%/192/' then Result.extend ('A') -- À
-					when '%/193/' then Result.extend ('A') -- Á
-					when '%/194/' then Result.extend ('A') -- Â
-					when '%/195/' then Result.extend ('A') -- Ã
-					when '%/196/' then Result.extend ('A') -- Ä
-					when '%/197/' then Result.extend ('A') -- Å
-					when '%/199/' then Result.extend ('C') -- Ç
-					when '%/200/' then Result.extend ('E') -- È
-					when '%/201/' then Result.extend ('E') -- É
-					when '%/202/' then Result.extend ('E') -- Ê
-					when '%/203/' then Result.extend ('E') -- Ë
-					when '%/204/' then Result.extend ('I') -- Ì
-					when '%/205/' then Result.extend ('I') -- Í
-					when '%/206/' then Result.extend ('I') -- Î
-					when '%/207/' then Result.extend ('I') -- Ï
-					when '%/210/' then Result.extend ('O') -- Ò
-					when '%/211/' then Result.extend ('O') -- Ó
-					when '%/212/' then Result.extend ('O') -- Ô
-					when '%/213/' then Result.extend ('O') -- Õ
-					when '%/214/' then Result.extend ('O') -- Ö
-					when '%/217/' then Result.extend ('U') -- Ù
-					when '%/218/' then Result.extend ('U') -- Ú
-					when '%/219/' then Result.extend ('U') -- Û
-					when '%/220/' then Result.extend ('U') -- Ü
-					when '%/221/' then Result.extend ('Y') -- Ý
-					when '%/224/' then Result.extend ('a') -- à
-					when '%/225/' then Result.extend ('a') -- á
-					when '%/226/' then Result.extend ('a') -- â
-					when '%/227/' then Result.extend ('a') -- ã
-					when '%/228/' then Result.extend ('a') -- ä
-					when '%/229/' then Result.extend ('a') -- å
-					when '%/231/' then Result.extend ('c') -- ç
-					when '%/232/' then Result.extend ('e') -- è
-					when '%/233/' then Result.extend ('e') -- é
-					when '%/234/' then Result.extend ('e') -- ê
-					when '%/235/' then Result.extend ('e') -- ë
-					when '%/236/' then Result.extend ('i') -- ì
-					when '%/237/' then Result.extend ('i') -- í
-					when '%/238/' then Result.extend ('i') -- î
-					when '%/239/' then Result.extend ('i') -- ï
-					when '%/240/' then Result.extend ('o') -- ð
-					when '%/242/' then Result.extend ('o') -- ò
-					when '%/243/' then Result.extend ('o') -- ó
-					when '%/244/' then Result.extend ('o') -- ô
-					when '%/245/' then Result.extend ('o') -- õ
-					when '%/246/' then Result.extend ('o') -- ö
-					when '%/249/' then Result.extend ('u') -- ù
-					when '%/250/' then Result.extend ('u') -- ú
-					when '%/251/' then Result.extend ('u') -- û
-					when '%/252/' then Result.extend ('u') -- ü
-					when '%/253/' then Result.extend ('y') -- ý
-					when '%/255/' then Result.extend ('y') -- ÿ
-					else
-						Result.extend ('-')
-					end
-				end
-				i := i + 1
-			end
 		end
 
 feature {WSF_MIME_HANDLER} -- Input data access

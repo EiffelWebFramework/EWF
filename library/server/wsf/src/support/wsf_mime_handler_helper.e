@@ -23,20 +23,18 @@ feature {NONE} -- Implementation
 			end
 		end
 
-	read_input_data (a_input: WGI_INPUT_STREAM; nb: NATURAL_64): READABLE_STRING_8
+	read_input_data (a_input: WGI_INPUT_STREAM; nb: NATURAL_64): STRING_8
 			-- All data from input form
 		local
 			nb32: INTEGER
 			n64: NATURAL_64
 			n: INTEGER
 			t: STRING
-			s: STRING_8
 		do
 			from
 				n64 := nb
 				nb32 := n64.to_integer_32
-				create s.make (nb32)
-				Result := s
+				create Result.make (nb32)
 				n := nb32
 				if n > 1_024 then
 					n := 1_024
@@ -46,7 +44,7 @@ feature {NONE} -- Implementation
 			loop
 				a_input.read_string (n)
 				t := a_input.last_string
-				s.append_string (t)
+				Result.append_string (t)
 				if t.count < n then
 					n64 := 0
 				else
@@ -55,7 +53,12 @@ feature {NONE} -- Implementation
 			end
 		end
 
-	add_value_to_table (a_name: READABLE_STRING_8; a_value: READABLE_STRING_8; a_table: HASH_TABLE [WSF_VALUE, READABLE_STRING_32])
+	add_string_value_to_table (a_name: READABLE_STRING_8; a_value: READABLE_STRING_8; a_table: HASH_TABLE [WSF_VALUE, READABLE_STRING_32])
+		do
+			add_value_to_table (a_name, new_string_value (a_name, a_value), a_table)
+		end
+
+	add_value_to_table (a_name: READABLE_STRING_8; a_value: WSF_VALUE; a_table: HASH_TABLE [WSF_VALUE, READABLE_STRING_32])
 		local
 			l_decoded_name: STRING_32
 			v: detachable WSF_VALUE
@@ -121,13 +124,15 @@ feature {NONE} -- Implementation
 							--| Ignore bad value
 						end
 					end
-					tb.add_value (new_string_value (n, a_value), k)
+					a_value.change_name (n)
+					tb.add_value (a_value, k)
 				else
 					--| Missing end bracket
 				end
 			end
 			if v = Void then
-				v := new_string_value (a_name, a_value)
+				a_value.change_name (a_name)
+				v := a_value
 			end
 			if a_table.has_key (v.name) and then attached a_table.found_item as l_existing_value then
 				if tb /= Void then

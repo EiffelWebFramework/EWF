@@ -18,6 +18,7 @@ feature {NONE} -- Initialization
 	make (a_name: READABLE_STRING_8; a_value: like item)
 		do
 			name := url_decoded_string (a_name)
+			url_encoded_name := a_name
 			item := a_value
 		end
 
@@ -25,7 +26,18 @@ feature -- Access
 
 	name: READABLE_STRING_32
 
+	url_encoded_name: READABLE_STRING_8
+
 	item: detachable ANY
+
+feature -- Element change
+
+	change_name (a_name: like name)
+		do
+			name := url_decoded_string (a_name)
+		ensure then
+			a_name.same_string (url_encoded_name)
+		end
 
 feature -- Status report
 
@@ -43,7 +55,7 @@ feature -- Query
 			else
 				Result := "Void"
 			end
-		end			
+		end
 
 feature -- Visitor
 

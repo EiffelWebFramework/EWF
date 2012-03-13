@@ -37,9 +37,19 @@ feature -- Access
 
 	string: READABLE_STRING_32
 
-	url_encoded_name: READABLE_STRING_32
+	url_encoded_name: READABLE_STRING_8
 
-	url_encoded_string: READABLE_STRING_32
+	url_encoded_string: READABLE_STRING_8
+
+feature -- Element change
+
+	change_name (a_name: like name)
+		do
+			name := url_decoded_string (a_name)
+			url_encoded_name := a_name
+		ensure then
+			a_name.same_string (url_encoded_name)
+		end
 
 feature -- Status report
 

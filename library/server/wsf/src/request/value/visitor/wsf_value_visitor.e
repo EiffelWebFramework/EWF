@@ -41,6 +41,12 @@ feature -- Visitor
 		deferred
 		end
 
+	process_uploaded_file (v: WSF_UPLOADED_FILE)
+		require
+			v_attached: v /= Void
+		deferred
+		end
+
 ;note
 	copyright: "2011-2011, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"

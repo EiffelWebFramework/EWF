@@ -20,7 +20,7 @@ feature {NONE} -- Implementation
 
 feature -- Input
 
-	data: READABLE_STRING_8
+	data: STRING_8
 		local
 			d: like internal_data
 		do
@@ -34,13 +34,13 @@ feature -- Input
 
 feature {NONE} -- Parser
 
-	internal_data: detachable READABLE_STRING_8
+	internal_data: detachable STRING_8
 
 	tmp_hex_chunk_size: STRING_8
 	last_chunk_size: INTEGER
 	last_chunk: detachable STRING_8
 
-	fetched_data: READABLE_STRING_8
+	fetched_data: STRING_8
 			-- Read all the data in a chunked stream.
 			-- Make the result available in `last_chunked'.
 			--	   Chunked-Body   = *chunk
@@ -57,7 +57,7 @@ feature {NONE} -- Parser
 			--       chunk-data     = chunk-size(OCTET)
 			--       trailer        = *(entity-header CRLF)
 		local
-			eoc : BOOLEAN
+			eoc: BOOLEAN
 			s: STRING_8
 		do
 			from
@@ -69,7 +69,7 @@ feature {NONE} -- Parser
 				if attached last_chunk as l_last_chunk then
 					s.append (l_last_chunk)
 				else
-					eoc := true
+					eoc := True
 				end
 				if last_chunk_size = 0 then
 					eoc := True

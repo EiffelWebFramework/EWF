@@ -65,6 +65,15 @@ feature -- Access
 			Result := string_values.first
 		end
 
+feature -- Element change
+
+	change_name (a_name: like name)
+		do
+			name := a_name
+		ensure then
+			a_name.same_string (name)
+		end
+
 feature -- Status report
 
 	is_string: BOOLEAN

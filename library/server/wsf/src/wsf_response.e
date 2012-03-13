@@ -115,39 +115,7 @@ feature -- Header output operation
 			wgi_response.put_header_lines (a_lines)
 		end
 
-feature -- Obsolete: Header output operation
-
-	write_header_text (a_headers: READABLE_STRING_8)
-		obsolete "[2011-dec-15] use put_header_text"
-		do
-			put_header_text (a_headers)
-		end
-
-	write_header (a_status_code: INTEGER; a_headers: detachable ARRAY [TUPLE [key: READABLE_STRING_8; value: READABLE_STRING_8]])
-		obsolete "[2011-dec-15] use put_header"
-		do
-			put_header (a_status_code, a_headers)
-		end
-
-	write_header_lines (a_lines: ITERABLE [TUPLE [name: READABLE_STRING_8; value: READABLE_STRING_8]])
-		obsolete "[2011-dec-15] use put_header_lines"
-		do
-			put_header_lines (a_lines)
-		end
-
 feature -- Output operation
-
-	write_string (s: READABLE_STRING_8)
-		obsolete "[2011-dec-15] use put_string"
-		do
-			put_string (s)
-		end
-
-	write_substring (s: READABLE_STRING_8; a_begin_index, a_end_index: INTEGER)
-		obsolete "[2011-dec-15] use put_substring"
-		do
-			put_substring (s, a_begin_index, a_end_index)
-		end
 
 	put_string (s: READABLE_STRING_8)
 			-- Send the string `s'
@@ -205,6 +173,12 @@ feature -- Output operation
 			flush
 		end
 
+	put_chunk_end
+			-- Put end of chunked content
+		do
+			put_chunk (Void, Void)
+		end
+
 	flush
 			-- Flush if it makes sense
 		do
@@ -244,7 +218,7 @@ feature -- Redirect
 				end
 				h.put_location (a_url)
 				if a_status_code = 0 then
-					set_status_code ({HTTP_STATUS_CODE}.moved_permanently)
+					set_status_code ({HTTP_STATUS_CODE}.temp_redirect)
 				else
 					set_status_code (a_status_code)
 				end
@@ -265,13 +239,13 @@ feature -- Redirect
 		require
 			header_not_committed: not header_committed
 		do
-			redirect_now_custom (a_url, {HTTP_STATUS_CODE}.moved_permanently, Void, Void)
+			redirect_now_custom (a_url, {HTTP_STATUS_CODE}.temp_redirect, Void, Void)
 		end
 
 	redirect_now_with_content (a_url: READABLE_STRING_8; a_content: READABLE_STRING_8; a_content_type: READABLE_STRING_8)
 			-- Redirect to the given url `a_url'
 		do
-			redirect_now_custom (a_url, {HTTP_STATUS_CODE}.moved_permanently, Void, [a_content, a_content_type])
+			redirect_now_custom (a_url, {HTTP_STATUS_CODE}.temp_redirect, Void, [a_content, a_content_type])
 		end
 
 note

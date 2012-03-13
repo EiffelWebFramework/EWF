@@ -127,21 +127,50 @@ feature -- Query
 			end
 		end
 
-feature -- String query
+feature -- Convertion
 
 	string_from (a_value: detachable WSF_VALUE): detachable READABLE_STRING_32
+			-- String value from `a_value' if relevant.
 		do
 			if attached {WSF_STRING} a_value as val then
 				Result := val.string
 			end
 		end
 
+	integer_from (a_value: detachable WSF_VALUE): INTEGER
+			-- String value from `a_value' if relevant.	
+		do
+			if attached string_from (a_value) as val then
+				if val.is_integer then
+					Result := val.to_integer
+				end
+			end
+		end
+
+feature -- Path parameter
+
+	is_integer_path_parameter (a_name: READABLE_STRING_8): BOOLEAN
+			-- Is path parameter related to `a_name' an integer value?
+		do
+			Result := attached string_path_parameter (a_name) as s and then s.is_integer
+		end
+
+	integer_path_parameter (a_name: READABLE_STRING_8): INTEGER
+			-- Integer value for path parameter  `a_name' if relevant.
+		require
+			is_integer_path_parameter: is_integer_path_parameter (a_name)
+		do
+			Result := integer_from (path_parameter (a_name))
+		end
+
 	string_path_parameter (a_name: READABLE_STRING_8): detachable READABLE_STRING_32
+			-- String value for path parameter  `a_name' if relevant.
 		do
 			Result := string_from (path_parameter (a_name))
 		end
 
 	string_array_path_parameter (a_name: READABLE_STRING_8): detachable ARRAY [READABLE_STRING_32]
+			-- Array of string values for path parameter `a_name' if relevant.
 		local
 			i: INTEGER
 			n: INTEGER
@@ -164,12 +193,56 @@ feature -- String query
 			Result.keep_head (n - 1)
 		end
 
+feature -- String parameter	
+
+	is_integer_query_parameter (a_name: READABLE_STRING_8): BOOLEAN
+			-- Is query parameter related to `a_name' an integer value?
+		do
+			Result := attached string_query_parameter (a_name) as s and then s.is_integer
+		end
+
+	integer_query_parameter (a_name: READABLE_STRING_8): INTEGER
+			-- Integer value for query parameter  `a_name' if relevant.
+		require
+			is_integer_query_parameter: is_integer_query_parameter (a_name)
+		do
+			Result := integer_from (query_parameter (a_name))
+		end
+
 	string_query_parameter (a_name: READABLE_STRING_8): detachable READABLE_STRING_32
+			-- String value for query parameter `a_name' if relevant.	
 		do
 			Result := string_from (query_parameter (a_name))
 		end
 
+	string_array_query_parameter (a_name: READABLE_STRING_8): detachable ARRAY [READABLE_STRING_32]
+			-- Array of string values for query parameter `a_name' if relevant.
+		local
+			i: INTEGER
+			n: INTEGER
+		do
+			from
+				i := 1
+				n := 1
+				create Result.make_filled ("", 1, 5)
+			until
+				i = 0
+			loop
+				if attached string_query_parameter (a_name + "[" + i.out + "]") as v then
+					Result.force (v, n)
+					n := n + 1
+					i := i + 1
+				else
+					i := 0 -- Exit
+				end
+			end
+			Result.keep_head (n - 1)
+		end
+
+feature -- Parameter
+
 	string_parameter (a_name: READABLE_STRING_8): detachable READABLE_STRING_32
+			-- String value for path or query parameter `a_name' if relevant.	
 		do
 			Result := string_from (parameter (a_name))
 		end

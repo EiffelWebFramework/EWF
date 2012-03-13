@@ -46,7 +46,7 @@ feature -- Execution
 	handle (a_content_type: READABLE_STRING_8; req: WSF_REQUEST;
 				a_vars: HASH_TABLE [WSF_VALUE, READABLE_STRING_32]; a_raw_data: detachable CELL [detachable STRING_8])
 		local
-			s: READABLE_STRING_8
+			s: like full_input_data
 		do
 			s := full_input_data (req)
 			if a_raw_data /= Void then
@@ -134,7 +134,7 @@ feature {NONE} -- Implementation: Form analyzer
 			l_header: detachable STRING_8
 			l_content: detachable STRING_8
 			l_line: detachable STRING_8
-			l_up_file_info: WGI_UPLOADED_FILE_DATA
+			l_up_file: WSF_UPLOADED_FILE
 		do
 			from
 				p := 1
@@ -223,15 +223,16 @@ feature {NONE} -- Implementation: Form analyzer
 					end
 				end
 				if l_name /= Void then
-					if l_filename /= Void then
+					if l_filename /= Void and then not l_filename.is_empty then
 						if l_content_type = Void then
 							l_content_type := default_content_type
 						end
-						create l_up_file_info.make (l_filename, l_content_type, l_content.count)
-						req.save_uploaded_file (l_content, l_up_file_info)
-						req.uploaded_files.force (l_up_file_info, l_name)
+						create l_up_file.make (l_name, l_filename, l_content_type, l_content.count)
+						add_value_to_table (l_name, l_up_file, vars)
+						--| `l_up_file' might have a new name
+						req.save_uploaded_file (l_up_file, l_content)
 					else
-						add_value_to_table (l_name, l_content, vars)
+						add_string_value_to_table (l_name, l_content, vars)
 					end
 				else
 					error_handler.add_custom_error (0, "unamed multipart entry", Void)

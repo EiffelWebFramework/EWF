@@ -16,6 +16,13 @@ feature -- Access
 		deferred
 		end
 
+feature -- Element change
+
+	change_name (a_name: like name)
+			-- Change parameter name
+		deferred
+		end
+
 feature -- Status report
 
 	is_string: BOOLEAN

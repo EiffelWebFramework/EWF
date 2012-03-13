@@ -117,7 +117,7 @@ feature -- Server
 	process_request (env: HASH_TABLE [STRING, STRING]; a_headers_text: STRING; a_socket: TCP_STREAM_SOCKET)
 		local
 			req: WGI_REQUEST_FROM_TABLE
-			res: detachable WGI_RESPONSE_STREAM
+			res: detachable WGI_NINO_RESPONSE_STREAM
 		do
 			create req.make (env, create {WGI_NINO_INPUT_STREAM}.make (a_socket), Current)
 			create res.make (create {WGI_NINO_OUTPUT_STREAM}.make (a_socket))

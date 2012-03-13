@@ -31,12 +31,18 @@ feature {WGI_CONNECTOR} -- WGI Execution
 	wgi_execute (req: WGI_REQUEST; res: WGI_RESPONSE)
 		local
 			w_res: detachable WSF_RESPONSE
+			w_req: detachable WSF_REQUEST
 		do
 			create w_res.make_from_wgi (res)
-			execute (create {WSF_REQUEST}.make_from_wgi (req), w_res)
+			create w_req.make_from_wgi (req)
+			execute (w_req, w_res)
+			w_req.destroy
 		rescue
 			if w_res /= Void then
 				w_res.flush
+			end
+			if w_req /= Void then
+				w_req.destroy
 			end
 		end
 

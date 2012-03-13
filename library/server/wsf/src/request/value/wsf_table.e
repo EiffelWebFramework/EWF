@@ -24,13 +24,16 @@ feature {NONE} -- Initialization
 	make (a_name: READABLE_STRING_8)
 		do
 			name := url_decoded_string (a_name)
+			url_encoded_name := a_name
 			create values.make (5)
 		end
 
 feature -- Access
 
 	name: READABLE_STRING_32
-			-- Parameter name	
+			-- Parameter name
+
+	url_encoded_name: READABLE_STRING_8
 
 	first_value: detachable WSF_VALUE
 			-- First value if any.
@@ -65,6 +68,16 @@ feature -- Access
 	count: INTEGER
 		do
 			Result := values.count
+		end
+
+feature -- Element change
+
+	change_name (a_name: like name)
+		do
+			name := url_decoded_string (a_name)
+			url_encoded_name := a_name
+		ensure then
+			a_name.same_string (url_encoded_name)
 		end
 
 feature -- Status report

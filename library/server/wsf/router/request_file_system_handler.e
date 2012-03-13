@@ -31,6 +31,11 @@ feature -- Access
 	directory_index: detachable ARRAY [READABLE_STRING_8]
 			-- File serve if a directory index is requested
 
+	not_found_handler: detachable PROCEDURE [ANY, TUPLE [uri: READABLE_STRING_8; ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE]]
+
+	access_denied_handler: detachable PROCEDURE [ANY, TUPLE [uri: READABLE_STRING_8; ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE]]
+
+
 feature -- Element change
 
 	set_directory_index (idx: like directory_index)
@@ -41,6 +46,18 @@ feature -- Element change
 			else
 				directory_index := idx
 			end
+		end
+
+	set_not_found_handler (h: like not_found_handler)
+			-- Set `not_found_handler' to `h'
+		do
+			not_found_handler := h
+		end
+
+	set_access_denied_handler (h: like access_denied_handler)
+			-- Set `access_denied_handler' to `h'	
+		do
+			access_denied_handler := h
 		end
 
 feature -- Execution
@@ -168,15 +185,19 @@ feature -- Execution
 			h: HTTP_HEADER
 			s: STRING_8
 		do
-			create h.make
-			h.put_content_type_text_plain
-			create s.make_empty
-			s.append ("Resource %"" + uri + "%" not found%N")
-			res.set_status_code ({HTTP_STATUS_CODE}.not_found)
-			h.put_content_length (s.count)
-			res.put_header_text (h.string)
-			res.put_string (s)
-			res.flush
+			if attached not_found_handler as hdl then
+				hdl.call ([uri, ctx, req, res])
+			else
+				create h.make
+				h.put_content_type_text_plain
+				create s.make_empty
+				s.append ("Resource %"" + uri + "%" not found%N")
+				res.set_status_code ({HTTP_STATUS_CODE}.not_found)
+				h.put_content_length (s.count)
+				res.put_header_text (h.string)
+				res.put_string (s)
+				res.flush
+			end
 		end
 
 	respond_access_denied (uri: READABLE_STRING_8; ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
@@ -184,15 +205,19 @@ feature -- Execution
 			h: HTTP_HEADER
 			s: STRING_8
 		do
-			create h.make
-			h.put_content_type_text_plain
-			create s.make_empty
-			s.append ("Resource %"" + uri + "%": Access denied%N")
-			res.set_status_code ({HTTP_STATUS_CODE}.forbidden)
-			h.put_content_length (s.count)
-			res.put_header_text (h.string)
-			res.put_string (s)
-			res.flush
+			if attached access_denied_handler as hdl then
+				hdl.call ([uri, ctx, req, res])
+			else
+				create h.make
+				h.put_content_type_text_plain
+				create s.make_empty
+				s.append ("Resource %"" + uri + "%": Access denied%N")
+				res.set_status_code ({HTTP_STATUS_CODE}.forbidden)
+				h.put_content_length (s.count)
+				res.put_header_text (h.string)
+				res.put_string (s)
+				res.flush
+			end
 		end
 
 feature {NONE} -- Implementation
