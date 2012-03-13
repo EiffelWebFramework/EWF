@@ -40,6 +40,19 @@ feature -- Output
 			put_managed_pointer (ext.managed_data, 0, s.count)
 		end
 
+feature -- Status report
+
+	try_ready_for_reading: BOOLEAN
+			-- Is data available for reading from the socket right now?
+		require
+			socket_exists: exists
+		local
+			retval: INTEGER
+		do
+			retval := c_select_poll_with_timeout (descriptor, True, 0)
+			Result := (retval > 0)
+		end
+	
 note
 	copyright: "2011-2011, Javier Velilla and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
