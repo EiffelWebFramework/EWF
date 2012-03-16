@@ -12,7 +12,6 @@ note
 			(or HTTP_CONSTANTS which groups them for convenience)
 			
 			Note the return status code is not part of the HTTP header
-			However you can set the "Status: " header line if you want
 		]"
 	legal: "See notice at end of class."
 	status: "See notice at end of class."
@@ -24,11 +23,6 @@ class
 
 inherit
 	ANY
-
-	HTTP_STATUS_CODE_MESSAGES --| useful for `put_status'
-		export
-			{NONE} all
-		end
 
 create
 	make,
@@ -128,7 +122,7 @@ feature -- Header: filling
 			loop
 				add_header (c.item.string)
 			end
-		end	
+		end
 
 feature -- Header change: general
 
@@ -160,22 +154,6 @@ feature -- Header change: general
 			-- Add header `k:v', or replace existing header of same header name/key
 		do
 			put_header (k + colon_space + v)
-		end
-
-feature -- Status related
-
-	put_status (c: INTEGER)
-			-- Put "Status: " header
-			-- Rarely used
-		local
-			s: STRING
-		do
-			create s.make_from_string (c.out)
-			if attached http_status_code_message (c) as msg then
-				s.append_character (' ')
-				s.append (msg)
-			end
-			put_header_key_value ("Status", s)
 		end
 
 feature -- Content related header
@@ -581,7 +559,7 @@ feature {NONE} -- Constants
 	semi_colon_space: STRING = "; "
 
 note
-	copyright: "2011-2012, Eiffel Software and others"
+	copyright: "2011-2012, Jocelyn Fiat, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software
