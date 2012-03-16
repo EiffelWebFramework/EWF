@@ -12,8 +12,6 @@ inherit
 
 	WSF_URI_TEMPLATE_ROUTED_SERVICE
 
-	WSF_HANDLER_HELPER
-
 create
 	make
 

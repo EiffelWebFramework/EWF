@@ -10,6 +10,8 @@ deferred class
 inherit
 	WSF_HANDLER [C]
 
+	WSF_HANDLER_HELPER
+
 feature -- Access
 
 	authentication_required (req: WSF_REQUEST): BOOLEAN
