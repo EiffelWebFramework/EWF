@@ -5,10 +5,10 @@ note
 	revision: "$Revision$"
 
 class
-	ORDER_HANDLER [C -> REQUEST_HANDLER_CONTEXT]
+	ORDER_HANDLER [C -> WSF_HANDLER_CONTEXT]
 inherit
-	REQUEST_HANDLER [C]
-	REQUEST_RESOURCE_HANDLER_HELPER [C]
+	WSF_HANDLER [C]
+	WSF_RESOURCE_HANDLER_HELPER [C]
 		redefine
 			do_get,
 			do_post,

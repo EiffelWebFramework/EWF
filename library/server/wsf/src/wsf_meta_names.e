@@ -1,17 +1,16 @@
 note
-	description: "Summary description for {DEFAULT_ROUTED_SERVICE}."
-	author: ""
+	description: "Summary description for {WSF_META_NAMES}."
 	date: "$Date$"
 	revision: "$Revision$"
 
-deferred class
-	ROUTED_SERVICE
+class
+	WSF_META_NAMES
 
 inherit
-	ROUTED_SERVICE_I [REQUEST_HANDLER [REQUEST_HANDLER_CONTEXT], REQUEST_HANDLER_CONTEXT]
+	WGI_META_NAMES
 
 note
-	copyright: "2011-2011, Eiffel Software and others"
+	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

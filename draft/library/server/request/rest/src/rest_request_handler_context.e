@@ -8,7 +8,7 @@ deferred class
 	REST_REQUEST_HANDLER_CONTEXT
 
 inherit
-	REQUEST_HANDLER_CONTEXT
+	WSF_HANDLER_CONTEXT
 
 feature -- Accept: Content-Type
 

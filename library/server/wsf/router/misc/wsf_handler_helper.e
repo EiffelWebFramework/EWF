@@ -1,11 +1,12 @@
 note
-	description: "Summary description for {ROUTED_SERVICE_HELPER}."
-	author: ""
+	description: "[
+				Provides a few helpful feature to respond predefined message to the client
+		]"
 	date: "$Date$"
 	revision: "$Revision$"
 
 class
-	ROUTED_SERVICE_HELPER
+	WSF_HANDLER_HELPER
 
 inherit
 	ANY
@@ -83,7 +84,7 @@ feature -- Helper
 		end
 
 note
-	copyright: "2011-2011, Eiffel Software and others"
+	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

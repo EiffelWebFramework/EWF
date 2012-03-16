@@ -18,7 +18,7 @@ feature {NONE} -- Initialization
 	make
 			-- Initialize `Current'.
 		local
-			launcher: DEFAULT_SERVICE_LAUNCHER
+			launcher: WSF_DEFAULT_SERVICE_LAUNCHER
 		do
 			create launcher.make_and_launch_with_options (agent execute, <<["port", 9091]>>)
 		end

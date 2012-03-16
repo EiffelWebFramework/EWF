@@ -8,7 +8,7 @@ class
 	REST_REQUEST_AGENT_HANDLER [C -> REST_REQUEST_HANDLER_CONTEXT]
 
 inherit
-	REQUEST_AGENT_HANDLER [C]
+	WSF_AGENT_HANDLER [C]
 		rename
 			execute as execute_application
 		end

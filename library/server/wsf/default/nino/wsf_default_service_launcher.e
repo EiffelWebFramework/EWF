@@ -11,16 +11,16 @@ note
 					verbose: to display verbose output, useful for Nino
 					force_single_threaded: use only one thread, useful for Nino
 
-			check DEFAULT_SERVICE_LAUNCHER_I for more documentation
+			check WSF_DEFAULT_SERVICE_LAUNCHER_I for more documentation
 		]"
 	date: "$Date$"
 	revision: "$Revision$"
 
 class
-	DEFAULT_SERVICE_LAUNCHER
+	WSF_DEFAULT_SERVICE_LAUNCHER
 
 inherit
-	DEFAULT_SERVICE_LAUNCHER_I
+	WSF_DEFAULT_SERVICE_LAUNCHER_I
 		redefine
 			launchable
 		end

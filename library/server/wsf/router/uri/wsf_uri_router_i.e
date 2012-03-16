@@ -1,14 +1,14 @@
 note
-	description: "Summary description for {REQUEST_URI_ROUTER}."
+	description: "Summary description for {WSF_URI_ROUTER}."
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
 class
-	REQUEST_URI_ROUTER_I [H -> REQUEST_HANDLER [C], C -> REQUEST_URI_HANDLER_CONTEXT create make end]
+	WSF_URI_ROUTER_I [H -> WSF_HANDLER [C], C -> WSF_URI_HANDLER_CONTEXT create make end]
 
 inherit
-	REQUEST_ROUTER [H, C]
+	WSF_ROUTER [H, C]
 
 create
 	make,
@@ -234,7 +234,7 @@ feature {NONE} -- Default: implementation
 		end
 
 note
-	copyright: "2011-2011, Eiffel Software and others"
+	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

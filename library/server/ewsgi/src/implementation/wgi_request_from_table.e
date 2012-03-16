@@ -411,7 +411,7 @@ invariant
 	empty_string_unchanged: empty_string.is_empty
 
 note
-	copyright: "2011-2012, Eiffel Software and others"
+	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

@@ -8,7 +8,7 @@ deferred class
 	REST_REQUEST_HANDLER [C -> REST_REQUEST_HANDLER_CONTEXT]
 
 inherit
-	REQUEST_HANDLER [C]
+	WSF_HANDLER [C]
 
 feature -- Access
 

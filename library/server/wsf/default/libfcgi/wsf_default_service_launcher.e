@@ -2,11 +2,11 @@ note
 	description: "[
 			Component to launch the service using the default connector
 
-					CGI for this class
+					libFCGI for this class
 
 			How-to:
 
-				s: DEFAULT_SERVICE_LAUNCHER
+				s: WSF_DEFAULT_SERVICE_LAUNCHER
 				create s.make_and_launch (agent execute)
 
 				execute (req: WSF_REQUEST; res: WSF_RESPONSE)
@@ -18,10 +18,10 @@ note
 	revision: "$Revision$"
 
 class
-	DEFAULT_SERVICE_LAUNCHER
+	WSF_DEFAULT_SERVICE_LAUNCHER
 
 inherit
-	DEFAULT_SERVICE_LAUNCHER_I
+	WSF_DEFAULT_SERVICE_LAUNCHER_I
 
 create
 	make,
@@ -46,7 +46,7 @@ feature -- Execution
 
 feature -- Status report
 
-	connector: detachable WGI_CGI_CONNECTOR
+	connector: detachable WGI_LIBFCGI_CONNECTOR
 			-- Default service name
 
 ;note

@@ -1,16 +1,22 @@
 note
-	description: "Summary description for {REQUEST_HANDLER}."
-	author: ""
+	description: "[
+				Request handler object which is called by a WSF_ROUTER
+				An handler should implement the method
+				
+					execute (ctx, req, res)
+					
+				The class is generic, this way one can use a custom WSF_HANDLER_CONTEXT if needed
+		]"
 	date: "$Date$"
 	revision: "$Revision$"
 
 deferred class
-	REQUEST_HANDLER [C -> REQUEST_HANDLER_CONTEXT]
+	WSF_HANDLER [C -> WSF_HANDLER_CONTEXT]
 
 inherit
 	ANY
 
-	ROUTED_SERVICE_HELPER
+	WSF_HANDLER_HELPER
 		export
 			{NONE} all
 		end
@@ -65,7 +71,7 @@ feature -- Execution: report
 			result_attached: Result /= Void
 		end
 
-feature {REQUEST_ROUTER} -- Routes change
+feature {WSF_ROUTER} -- Routes change
 
 	on_handler_mapped (a_resource: READABLE_STRING_8; a_rqst_methods: detachable ARRAY [READABLE_STRING_8])
 			-- Callback called when a router map a route to Current handler
@@ -73,7 +79,7 @@ feature {REQUEST_ROUTER} -- Routes change
 		end
 
 note
-	copyright: "2011-2011, Eiffel Software and others"
+	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

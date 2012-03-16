@@ -1,15 +1,15 @@
 note
-	description: "Summary description for {REQUEST_ROUTING_HANDLER}."
+	description: "Summary description for {WSF_ROUTING_HANDLER }."
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
 deferred class
-	REQUEST_ROUTING_HANDLER [H -> REQUEST_HANDLER [C],
-							 C -> REQUEST_HANDLER_CONTEXT]
+	WSF_ROUTING_HANDLER  [H -> WSF_HANDLER [C],
+							 C -> WSF_HANDLER_CONTEXT]
 
 inherit
-	REQUEST_HANDLER [C]
+	WSF_HANDLER [C]
 
 feature -- Access
 
@@ -50,7 +50,7 @@ feature -- Execution
 
 feature {NONE} -- Routing
 
-	router: REQUEST_ROUTER [H, C]
+	router: WSF_ROUTER [H, C]
 		deferred
 		end
 
@@ -88,7 +88,7 @@ feature -- Mapping
 		end
 
 note
-	copyright: "2011-2011, Eiffel Software and others"
+	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

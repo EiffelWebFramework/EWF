@@ -1,5 +1,5 @@
 note
-	description: "Summary description for {REQUEST_URI_HANDLER_CONTEXT}."
+	description: "Summary description for {WSF_URI_HANDLER_CONTEXT}."
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
@@ -8,7 +8,7 @@ class
 	REST_REQUEST_URI_HANDLER_CONTEXT
 
 inherit
-	REQUEST_URI_HANDLER_CONTEXT
+	WSF_URI_HANDLER_CONTEXT
 
 	REST_REQUEST_HANDLER_CONTEXT
 

@@ -1,5 +1,5 @@
 note
-	description: "Summary description for {REQUEST_ROUTING_HANDLER}."
+	description: "Summary description for {WSF_ROUTING_HANDLER }."
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
@@ -9,7 +9,7 @@ class
 							 C -> REST_REQUEST_URI_HANDLER_CONTEXT create make end]
 
 inherit
-	REQUEST_URI_ROUTING_HANDLER_I [H, C]
+	WSF_URI_ROUTING_HANDLER_I [H, C]
 		redefine
 			router,
 			execute
@@ -38,7 +38,7 @@ feature -- Execution
 
 	execute (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
 		do
-			Precursor {REQUEST_URI_ROUTING_HANDLER_I} (ctx, req, res)
+			Precursor {WSF_URI_ROUTING_HANDLER_I} (ctx, req, res)
 		end
 
 	execute_application (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)

@@ -8,7 +8,7 @@ deferred class
 	REST_REQUEST_ROUTER [H -> REST_REQUEST_HANDLER [C], C -> REST_REQUEST_HANDLER_CONTEXT]
 
 inherit
-	REQUEST_ROUTER [H, C]
+	WSF_ROUTER [H, C]
 
 ;note
 	copyright: "Copyright (c) 1984-2011, Eiffel Software and others"

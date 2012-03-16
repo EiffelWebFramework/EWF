@@ -1,11 +1,11 @@
 note
-	description: "Summary description for {ROUTED_SERVICE}."
+	description: "Summary description for {WSF_ROUTED_SERVICE}."
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
 deferred class
-	ROUTED_SERVICE_I [H -> REQUEST_HANDLER [C], C -> REQUEST_HANDLER_CONTEXT]
+	WSF_ROUTED_SERVICE_I [H -> WSF_HANDLER [C], C -> WSF_HANDLER_CONTEXT]
 
 feature -- Setup
 
@@ -30,7 +30,7 @@ feature -- Setup
 		deferred
 		end
 
-	router: REQUEST_ROUTER [H, C]
+	router: WSF_ROUTER [H, C]
 			-- Request router
 
 feature -- Execution
@@ -50,7 +50,7 @@ feature -- Execution
 		end
 
 note
-	copyright: "2011-2011, Eiffel Software and others"
+	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

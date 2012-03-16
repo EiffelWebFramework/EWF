@@ -15,16 +15,16 @@ feature -- Input
 
 	read_character
 			-- Read the next character in input stream.
-			-- Make the result available in `last_character'.
+			-- Make the result available in `last_character'
 		require
 			is_open_read: is_open_read
 			not_end_of_input: not end_of_input
 		deferred
-		ensure
-			same_last_string_reference: last_string = old last_string
 		end
 
 	read_string (nb: INTEGER)
+			-- Read the next `nb' characters and 
+			-- make the string result available in `last_string'
 		require
 			is_open_read: is_open_read
 			not_end_of_input: not end_of_input
@@ -33,7 +33,6 @@ feature -- Input
 		ensure
 			last_string_count_small_enough: not end_of_input implies last_string.count <= nb
 			character_read: not end_of_input implies last_string.count > 0
-			same_last_string_reference: last_string = old last_string
 		end
 
 	read_to_string (a_string: STRING; pos, nb: INTEGER): INTEGER
@@ -74,14 +73,14 @@ feature -- Input
 			nb_char_read_large_enough: Result >= 0
 			nb_char_read_small_enough: Result <= nb
 			character_read: not end_of_input implies Result > 0
-			same_last_string_reference: last_string = old last_string
 		end
 
 feature -- Access
 
 	last_string: STRING_8
-			-- Last string read
-			-- (Note: this query always return the same object.
+			-- Last string read.
+			--
+			-- Note: this query *might* return the same object.
 			-- Therefore a clone should be used if the result
 			-- is to be kept beyond the next call to this feature.
 			-- However `last_string' is not shared between file objects.)
@@ -94,7 +93,7 @@ feature -- Access
 		end
 
 	last_character: CHARACTER_8
-			-- Last item read
+			-- Last item read.
 		require
 			is_open_read: is_open_read
 			not_end_of_input: not end_of_input
@@ -116,7 +115,7 @@ feature -- Status report
 		end
 
 note
-	copyright: "2011-2011, Eiffel Software and others"
+	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

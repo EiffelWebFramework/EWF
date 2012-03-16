@@ -8,7 +8,7 @@ deferred class
 	REST_SERVICE_I [H -> REST_REQUEST_HANDLER [C], C -> REST_REQUEST_HANDLER_CONTEXT]
 
 inherit
-	ROUTED_SERVICE_I [H, C]
+	WSF_ROUTED_SERVICE_I [H, C]
 		redefine
 			router
 		end

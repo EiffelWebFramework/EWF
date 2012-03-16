@@ -1,14 +1,14 @@
 note
-	description: "Summary description for {REQUEST_URI_TEMPLATE_ROUTER}."
+	description: "Summary description for {WSF_URI_TEMPLATE_ROUTER}."
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
 class
-	REQUEST_URI_TEMPLATE_ROUTER_I [H -> REQUEST_HANDLER [C], C -> REQUEST_URI_TEMPLATE_HANDLER_CONTEXT create make end]
+	WSF_URI_TEMPLATE_ROUTER_I [H -> WSF_HANDLER [C], C -> WSF_URI_TEMPLATE_HANDLER_CONTEXT create make end]
 
 inherit
-	REQUEST_ROUTER [H, C]
+	WSF_ROUTER [H, C]
 
 create
 	make,
@@ -106,7 +106,7 @@ feature {NONE} -- Implementation
 			end
 		end
 
-feature {ROUTED_SERVICE_I} -- Handler
+feature {WSF_ROUTED_SERVICE_I} -- Handler
 
 	handler (req: WSF_REQUEST): detachable TUPLE [handler: attached like default_handler; context: like default_handler_context]
 		local
@@ -128,7 +128,7 @@ feature {ROUTED_SERVICE_I} -- Handler
 					if is_matching_request_methods (l_req_method, l_info.request_methods) then
 						t := l_info.resource
 						if
-							attached {REQUEST_ROUTING_HANDLER [H, C]} l_info.handler as rah and then
+							attached {WSF_ROUTING_HANDLER  [H, C]} l_info.handler as rah and then
 							p.starts_with (t)
 						then
 							create l_res.make_empty
@@ -211,7 +211,7 @@ feature {NONE} -- Default: implementation
 		end
 
 ;note
-	copyright: "2011-2011, Eiffel Software and others"
+	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

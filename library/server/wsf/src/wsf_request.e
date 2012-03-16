@@ -87,8 +87,8 @@ feature {NONE} -- Initialization
 			end
 
 				--| Here one can set its own environment entries if needed
-			if meta_variable ({CGI_META_NAMES}.request_time) = Void then
-				set_meta_string_variable ({CGI_META_NAMES}.request_time, date_time_utilities.unix_time_stamp (Void).out)
+			if meta_variable ({WSF_META_NAMES}.request_time) = Void then
+				set_meta_string_variable ({WSF_META_NAMES}.request_time, date_time_utilities.unix_time_stamp (Void).out)
 			end
 		end
 
@@ -834,7 +834,7 @@ feature -- Extra CGI environment variables
 			-- Request time (UTC)
 		do
 			if
-				attached {WSF_STRING} meta_variable ({CGI_META_NAMES}.request_time) as t and then
+				attached {WSF_STRING} meta_variable ({WSF_META_NAMES}.request_time) as t and then
 				t.string.is_integer_64
 			then
 				Result := date_time_utilities.unix_time_stamp_to_date_time (t.string.to_integer_64)
@@ -865,7 +865,7 @@ feature {NONE} -- Cookies
 		do
 			l_cookies := internal_cookies_table
 			if l_cookies = Void then
-				if attached {WSF_STRING} meta_variable ({CGI_META_NAMES}.http_cookie) as val then
+				if attached {WSF_STRING} meta_variable ({WSF_META_NAMES}.http_cookie) as val then
 					s := val.string
 					create l_cookies.make (5)
 					l_cookies.compare_objects
@@ -1570,4 +1570,14 @@ invariant
 	empty_string_unchanged: empty_string.is_empty
 
 
+note
+	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
+	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
+	source: "[
+			Eiffel Software
+			5949 Hollister Ave., Goleta, CA 93117 USA
+			Telephone 805-685-1006, Fax 805-685-6869
+			Website http://www.eiffel.com
+			Customer support http://support.eiffel.com
+		]"
 end

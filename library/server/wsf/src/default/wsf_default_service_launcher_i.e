@@ -4,7 +4,7 @@ note
 
 			How-to:
 
-				s: DEFAULT_SERVICE_LAUNCHER
+				s: WSF_DEFAULT_SERVICE_LAUNCHER
 				create s.make_and_launch (agent execute)
 
 				execute (req: WSF_REQUEST; res: WSF_RESPONSE)
@@ -29,7 +29,7 @@ note
 	revision: "$Revision$"
 
 deferred class
-	DEFAULT_SERVICE_LAUNCHER_I
+	WSF_DEFAULT_SERVICE_LAUNCHER_I
 
 inherit
 	WSF_SERVICE
@@ -126,7 +126,7 @@ invariant
 	connector_attached: connector /= Void
 
 note
-	copyright: "2011-2011, Eiffel Software and others"
+	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

@@ -1,15 +1,17 @@
 note
-	description: "Summary description for {REQUEST_HANDLER_CONTEXT}."
+	description: "[
+			
+			]"
 	date: "$Date$"
 	revision: "$Revision$"
 
 deferred class
-	REQUEST_HANDLER_CONTEXT
+	WSF_HANDLER_CONTEXT
 
 inherit
 	ANY
 
-	REQUEST_FORMAT_UTILITY
+	WSF_FORMAT_UTILITY
 		export
 			{NONE} all
 		end
@@ -248,7 +250,7 @@ feature -- Parameter
 		end
 
 ;note
-	copyright: "2011-2011, Eiffel Software and others"
+	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

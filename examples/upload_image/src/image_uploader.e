@@ -10,9 +10,9 @@ class
 inherit
 	ANY
 
-	URI_TEMPLATE_ROUTED_SERVICE
+	WSF_URI_TEMPLATE_ROUTED_SERVICE
 
-	ROUTED_SERVICE_HELPER
+	WSF_HANDLER_HELPER
 
 create
 	make
@@ -22,7 +22,7 @@ feature {NONE} -- Initialization
 	make
 			-- Initialize Current
 		local
-			s: DEFAULT_SERVICE_LAUNCHER
+			s: WSF_DEFAULT_SERVICE_LAUNCHER
 		do
 			initialize_router
 			create s.make_and_launch (agent execute)
@@ -39,7 +39,7 @@ feature {NONE} -- Initialization
 	setup_router
 			-- Setup router
 		local
-			www: REQUEST_FILE_SYSTEM_HANDLER [REQUEST_URI_TEMPLATE_HANDLER_CONTEXT]
+			www: WSF_FILE_SYSTEM_HANDLER [WSF_URI_TEMPLATE_HANDLER_CONTEXT]
 		do
 			router.map_agent ("/upload{?nb}", agent execute_upload)
 
@@ -84,13 +84,13 @@ feature -- Execution
 			res.redirect_now_with_content (req.script_url ("/"), "Redirection to " + req.script_url ("/"), "text/html")
 		end
 
-	execute_not_found (uri: READABLE_STRING_8; ctx: REQUEST_URI_TEMPLATE_HANDLER_CONTEXT; req: WSF_REQUEST; res: WSF_RESPONSE)
+	execute_not_found (uri: READABLE_STRING_8; ctx: WSF_URI_TEMPLATE_HANDLER_CONTEXT; req: WSF_REQUEST; res: WSF_RESPONSE)
 			-- `uri' is not found, redirect to default page
 		do
 			res.redirect_now_with_content (req.script_url ("/"), uri + ": not found.%NRedirection to " + req.script_url ("/"), "text/html")
 		end
 
-	execute_upload (ctx: REQUEST_URI_TEMPLATE_HANDLER_CONTEXT; req: WSF_REQUEST; res: WSF_RESPONSE)
+	execute_upload (ctx: WSF_URI_TEMPLATE_HANDLER_CONTEXT; req: WSF_REQUEST; res: WSF_RESPONSE)
 			-- Upload page is requested, either GET or POST
 			-- On GET display the web form to upload file, by passing ?nb=5 you can upload 5 images
 			-- On POST display the uploaded files

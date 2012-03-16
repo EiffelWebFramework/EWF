@@ -1,14 +1,14 @@
 note
-	description: "Summary description for REQUEST_AGENT_HANDLER."
+	description: "Summary description for WSF_AGENT_HANDLER."
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
 class
-	REQUEST_AGENT_HANDLER [C -> REQUEST_HANDLER_CONTEXT]
+	WSF_AGENT_HANDLER [C -> WSF_HANDLER_CONTEXT]
 
 inherit
-	REQUEST_HANDLER [C]
+	WSF_HANDLER [C]
 
 create
 	make
@@ -32,7 +32,7 @@ feature -- Execution
 		end
 
 note
-	copyright: "2011-2011, Eiffel Software and others"
+	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

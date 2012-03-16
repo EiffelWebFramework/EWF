@@ -5,7 +5,7 @@ note
 	revision: "$Revision$"
 
 class
-	REQUEST_RESOURCE_HANDLER_HELPER [C -> REQUEST_HANDLER_CONTEXT]
+	WSF_RESOURCE_HANDLER_HELPER [C -> WSF_HANDLER_CONTEXT]
 
 feature -- Execute template
 
@@ -309,7 +309,7 @@ feature -- Handle responses
 		end
 
 note
-	copyright: "2011-2011, Eiffel Software and others"
+	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

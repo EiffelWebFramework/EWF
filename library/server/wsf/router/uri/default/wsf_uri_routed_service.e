@@ -1,24 +1,24 @@
 note
-	description: "Summary description for {DEFAULT_URI_TEMPLATE_ROUTED_SERVICE}."
+	description: "Summary description for WSF_URI_ROUTED_SERVICE."
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
 deferred class
-	URI_TEMPLATE_ROUTED_SERVICE
+	WSF_URI_ROUTED_SERVICE
 
 inherit
-	ROUTED_SERVICE_I [REQUEST_HANDLER [REQUEST_URI_TEMPLATE_HANDLER_CONTEXT], REQUEST_URI_TEMPLATE_HANDLER_CONTEXT]
+	WSF_ROUTED_SERVICE_I [WSF_HANDLER [WSF_URI_HANDLER_CONTEXT], WSF_URI_HANDLER_CONTEXT]
 		redefine
 			router
 		end
 
 feature -- Router
 
-	router: REQUEST_URI_TEMPLATE_ROUTER
+	router: WSF_URI_ROUTER
 
 ;note
-	copyright: "2011-2011, Eiffel Software and others"
+	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

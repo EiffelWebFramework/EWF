@@ -1,8 +1,8 @@
 note
 	description: "[
-			Summary description for REQUEST_HANDLER_ROUTES_RECORDER.
+			Summary description for WSF_HANDLER_ROUTES_RECORDER.
 			
-			You can inherit from this class from any REQUEST_HANDLER and redefine `on_handler_mapped'
+			You can inherit from this class from any WSF_HANDLER and redefine `on_handler_mapped'
 			to record the available routes if your handler needs it.
 		]"
 	author: ""
@@ -10,14 +10,14 @@ note
 	revision: "$Revision$"
 
 deferred class
-	REQUEST_HANDLER_ROUTES_RECORDER
+	WSF_HANDLER_ROUTES_RECORDER
 
-feature {REQUEST_HANDLER} -- Routes access
+feature {WSF_HANDLER} -- Routes access
 
 	available_routes: detachable LIST [TUPLE [resource: READABLE_STRING_8; rqst_methods: detachable ARRAY [READABLE_STRING_8]]]
 			-- Available routes
 
-feature {REQUEST_ROUTER} -- Routes change
+feature {WSF_ROUTER} -- Routes change
 
 	on_handler_mapped (a_resource: READABLE_STRING_8; a_rqst_methods: detachable ARRAY [READABLE_STRING_8])
 		local
@@ -32,7 +32,7 @@ feature {REQUEST_ROUTER} -- Routes change
 		end
 
 note
-	copyright: "2011-2011, Eiffel Software and others"
+	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

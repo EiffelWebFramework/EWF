@@ -36,21 +36,27 @@ feature -- Input
 	read_character
 			-- Read the next character in input stream.
 			-- Make the result available in `last_character'.
+		local
+			src: like source
 		do
-			if source.socket_ok then
-				source.read_character
-				last_character := source.last_character
+			src := source
+			if src.socket_ok then
+				src.read_character
+				last_character := src.last_character
 			else
 				last_character := '%U'
 			end
 		end
 
 	read_string (nb: INTEGER)
+		local
+			src: like source
 		do
+			src := source
 			last_string.wipe_out
-			if source.socket_ok then
-				source.read_stream_thread_aware (nb)
-				last_string.append_string (source.last_string)
+			if src.socket_ok then
+				src.read_stream_thread_aware (nb)
+				last_string.append_string (src.last_string)
 			end
 		end
 
@@ -58,7 +64,7 @@ feature -- Access
 
 	last_string: STRING_8
 			-- Last string read
-			-- (Note: this query always return the same object.
+			-- (Note: this query *might* return the same object.
 			-- Therefore a clone should be used if the result
 			-- is to be kept beyond the next call to this feature.
 			-- However `last_string' is not shared between input objects.)
@@ -81,7 +87,7 @@ feature -- Status report
 		end
 
 ;note
-	copyright: "2011-2012, Eiffel Software and others"
+	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

@@ -176,6 +176,13 @@ feature -- Builder
 			end
 		end
 
+	expanded_string_with_base_url (a_base_url: READABLE_STRING_8; a_ht: HASH_TABLE [detachable ANY, STRING]): STRING
+			-- Expanded template using variable from `a_ht'
+			-- with based url
+		do
+			Result := a_base_url + expanded_string (a_ht)
+		end
+
 feature -- Match
 
 	match (a_uri: READABLE_STRING_8): detachable URI_TEMPLATE_MATCH_RESULT
@@ -506,7 +513,7 @@ feature {NONE} -- Implementation
 		end
 
 note
-	copyright: "2011-2011, Eiffel Software and others"
+	copyright: "2011-2012, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

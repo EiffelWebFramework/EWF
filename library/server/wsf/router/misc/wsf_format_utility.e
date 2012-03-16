@@ -1,11 +1,11 @@
 note
-	description: "Summary description for {REQUEST_FORMAT_UTILITY}."
+	description: "Summary description for {WSF_FORMAT_UTILITY }."
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
 class
-	REQUEST_FORMAT_UTILITY
+	WSF_FORMAT_UTILITY
 
 feature -- Access
 
@@ -75,7 +75,7 @@ feature {NONE} -- Implementation
 		end
 
 note
-	copyright: "2011-2011, Eiffel Software and others"
+	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

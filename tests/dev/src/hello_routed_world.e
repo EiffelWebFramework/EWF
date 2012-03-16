@@ -8,9 +8,9 @@ class
 	HELLO_ROUTED_WORLD
 
 inherit
-	URI_TEMPLATE_ROUTED_SERVICE
+	WSF_URI_TEMPLATE_ROUTED_SERVICE
 
-	ROUTED_SERVICE_HELPER
+	WSF_HANDLER_HELPER
 
 create
 	make
@@ -19,7 +19,7 @@ feature {NONE} -- Initialization
 
 	make
 		local
-			s: DEFAULT_SERVICE_LAUNCHER
+			s: WSF_DEFAULT_SERVICE_LAUNCHER
 		do
 			initialize_router
 			create s.make_and_launch_with_options (agent execute, <<["port", 8099]>>)
@@ -32,9 +32,9 @@ feature {NONE} -- Initialization
 
 	setup_router
 		local
-			ra: REQUEST_AGENT_HANDLER [REQUEST_URI_TEMPLATE_HANDLER_CONTEXT]
-			hello: REQUEST_URI_TEMPLATE_ROUTING_HANDLER
-			www: REQUEST_FILE_SYSTEM_HANDLER [REQUEST_URI_TEMPLATE_HANDLER_CONTEXT]
+			ra: WSF_AGENT_HANDLER [WSF_URI_TEMPLATE_HANDLER_CONTEXT]
+			hello: WSF_URI_TEMPLATE_ROUTING_HANDLER
+			www: WSF_FILE_SYSTEM_HANDLER [WSF_URI_TEMPLATE_HANDLER_CONTEXT]
 		do
 			router.map_agent ("/refresh", agent execute_refresh)
 			router.map_agent ("/home", agent execute_home)
@@ -89,7 +89,7 @@ feature -- Execution
 			res.redirect_now_with_content (l_url, "You are now being redirected to " + l_url, {HTTP_MIME_TYPES}.text_html)
 		end
 
-	execute_refresh	(ctx: REQUEST_URI_TEMPLATE_HANDLER_CONTEXT; req: WSF_REQUEST; res: WSF_RESPONSE)
+	execute_refresh	(ctx: WSF_URI_TEMPLATE_HANDLER_CONTEXT; req: WSF_REQUEST; res: WSF_RESPONSE)
 		local
 			h: HTTP_HEADER
 			l_url: STRING
@@ -145,7 +145,7 @@ feature -- Execution
 			res.write_chunk (Void)
 		end
 
-	execute_home (ctx: REQUEST_URI_TEMPLATE_HANDLER_CONTEXT; req: WSF_REQUEST; res: WSF_RESPONSE)
+	execute_home (ctx: WSF_URI_TEMPLATE_HANDLER_CONTEXT; req: WSF_REQUEST; res: WSF_RESPONSE)
 		local
 			l_body: STRING_8
 		do
@@ -170,7 +170,7 @@ feature -- Execution
 			res.write_string (l_body)
 		end
 
-	execute_hello (req: WSF_REQUEST; res: WSF_RESPONSE; a_name: detachable READABLE_STRING_32; ctx: REQUEST_HANDLER_CONTEXT)
+	execute_hello (req: WSF_REQUEST; res: WSF_RESPONSE; a_name: detachable READABLE_STRING_32; ctx: WSF_HANDLER_CONTEXT)
 		local
 			l_response_content_type: detachable STRING
 			h: HTTP_HEADER
@@ -209,33 +209,33 @@ feature -- Execution
 			end
 		end
 
-	handle_hello (ctx: REQUEST_URI_TEMPLATE_HANDLER_CONTEXT; req: WSF_REQUEST; res: WSF_RESPONSE)
+	handle_hello (ctx: WSF_URI_TEMPLATE_HANDLER_CONTEXT; req: WSF_REQUEST; res: WSF_RESPONSE)
 		do
 			execute_hello (req, res, ctx.string_parameter ("name"), ctx)
 		end
 
-	handle_anonymous_hello (ctx: REQUEST_URI_TEMPLATE_HANDLER_CONTEXT; req: WSF_REQUEST; res: WSF_RESPONSE)
+	handle_anonymous_hello (ctx: WSF_URI_TEMPLATE_HANDLER_CONTEXT; req: WSF_REQUEST; res: WSF_RESPONSE)
 		do
 			execute_hello (req, res, ctx.string_parameter ("name"), ctx)
 		end
 
-	handle_method_any (ctx: REQUEST_URI_TEMPLATE_HANDLER_CONTEXT; req: WSF_REQUEST; res: WSF_RESPONSE)
+	handle_method_any (ctx: WSF_URI_TEMPLATE_HANDLER_CONTEXT; req: WSF_REQUEST; res: WSF_RESPONSE)
 		do
 			execute_hello (req, res, req.request_method, ctx)
 		end
 
-	handle_method_get (ctx: REQUEST_URI_TEMPLATE_HANDLER_CONTEXT; req: WSF_REQUEST; res: WSF_RESPONSE)
+	handle_method_get (ctx: WSF_URI_TEMPLATE_HANDLER_CONTEXT; req: WSF_REQUEST; res: WSF_RESPONSE)
 		do
 			execute_hello (req, res, "GET", ctx)
 		end
 
 
-	handle_method_post (ctx: REQUEST_URI_TEMPLATE_HANDLER_CONTEXT; req: WSF_REQUEST; res: WSF_RESPONSE)
+	handle_method_post (ctx: WSF_URI_TEMPLATE_HANDLER_CONTEXT; req: WSF_REQUEST; res: WSF_RESPONSE)
 		do
 			execute_hello (req, res, "POST", ctx)
 		end
 
-	handle_method_get_or_post (ctx: REQUEST_URI_TEMPLATE_HANDLER_CONTEXT; req: WSF_REQUEST; res: WSF_RESPONSE)
+	handle_method_get_or_post (ctx: WSF_URI_TEMPLATE_HANDLER_CONTEXT; req: WSF_REQUEST; res: WSF_RESPONSE)
 		do
 			execute_hello (req, res, "GET or POST", ctx)
 		end

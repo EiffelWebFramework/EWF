@@ -10,9 +10,9 @@ class
 inherit
 	ANY
 
-	URI_TEMPLATE_ROUTED_SERVICE
+	WSF_URI_TEMPLATE_ROUTED_SERVICE
 
-	ROUTED_SERVICE_HELPER
+	WSF_HANDLER_HELPER
 
 create
 	make
@@ -21,7 +21,7 @@ feature {NONE} -- Initialization
 
 	make
 		local
-			s: DEFAULT_SERVICE_LAUNCHER
+			s: WSF_DEFAULT_SERVICE_LAUNCHER
 		do
 			initialize_router
 			create s.make_and_launch_with_options (agent execute, <<["port", 9090]>>)
@@ -34,7 +34,7 @@ feature {NONE} -- Initialization
 
 	setup_router
 		local
-			order_handler: ORDER_HANDLER [REQUEST_URI_TEMPLATE_HANDLER_CONTEXT]
+			order_handler: ORDER_HANDLER [WSF_URI_TEMPLATE_HANDLER_CONTEXT]
 		do
 			create order_handler
 			router.map_with_request_methods ("/order", order_handler, <<"POST">>)

@@ -1,11 +1,11 @@
 note
-	description: "Summary description for {REQUEST_ROUTER}."
+	description: "Summary description for {WSF_ROUTER}."
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
 deferred class
-	REQUEST_ROUTER [H -> REQUEST_HANDLER [C], C -> REQUEST_HANDLER_CONTEXT]
+	WSF_ROUTER [H -> WSF_HANDLER [C], C -> WSF_HANDLER_CONTEXT]
 
 inherit
 	ITERABLE [TUPLE [handler: H; resource: READABLE_STRING_8; request_methods: detachable ARRAY [READABLE_STRING_8]]]
@@ -66,7 +66,7 @@ feature -- Mapping
 	map_agent_with_request_methods (a_resource: READABLE_STRING_8; a_action: PROCEDURE [ANY, TUPLE [ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE]];
 			 rqst_methods: detachable ARRAY [READABLE_STRING_8])
 		local
-			rah: REQUEST_AGENT_HANDLER [C]
+			rah: WSF_AGENT_HANDLER [C]
 		do
 			create rah.make (a_action)
 			if attached {H} rah as h then
@@ -138,7 +138,7 @@ feature -- status report
 			across
 				Current as curs
 			loop
-				if attached {REQUEST_ROUTING_HANDLER [H, C]} curs.item.handler as rh then
+				if attached {WSF_ROUTING_HANDLER  [H, C]} curs.item.handler as rh then
 					Result := Result + rh.count + 1 --| +1 for the handler itself
 				else
 					Result := Result + 1
@@ -153,7 +153,7 @@ feature -- Traversing
 		deferred
 		end
 
-feature {ROUTED_SERVICE_I} -- Handler
+feature {WSF_ROUTED_SERVICE_I} -- Handler
 
 	source_uri (req: WSF_REQUEST): READABLE_STRING_32
 			-- URI to use to find handler.
@@ -236,7 +236,7 @@ feature {NONE} -- Implementation
 		end
 
 ;note
-	copyright: "2011-2011, Eiffel Software and others"
+	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

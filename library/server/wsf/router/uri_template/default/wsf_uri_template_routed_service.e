@@ -1,25 +1,23 @@
 note
-	description: "Summary description for {WGI_CONNECTOR}."
-	specification: "Eiffel WGI/connector specification https://github.com/Eiffel-World/Eiffel-Web-Framework/wiki/WGI-specification"
+	description: "Summary description for {DEFAULT_URI_TEMPLATE_ROUTED_SERVICE}."
+	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
 deferred class
-	WGI_CONNECTOR
+	WSF_URI_TEMPLATE_ROUTED_SERVICE
 
-feature -- Access
-
-	name: READABLE_STRING_8
-			-- Name of Current connector
-		deferred
+inherit
+	WSF_ROUTED_SERVICE_I [WSF_HANDLER [WSF_URI_TEMPLATE_HANDLER_CONTEXT], WSF_URI_TEMPLATE_HANDLER_CONTEXT]
+		redefine
+			router
 		end
 
-	version: READABLE_STRING_8
-			-- Version of Current connector
-		deferred
-		end
+feature -- Router
 
-note
+	router: WSF_URI_TEMPLATE_ROUTER
+
+;note
 	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[

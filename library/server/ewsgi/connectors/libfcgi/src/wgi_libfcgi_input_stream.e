@@ -75,6 +75,7 @@ feature -- Access
 
 	last_string: STRING
 			-- Last string read	
+			-- <Precursor>
 
 	last_character: CHARACTER_8
 			-- Last item read
