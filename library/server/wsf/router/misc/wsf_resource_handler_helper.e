@@ -197,7 +197,6 @@ feature -- Handle responses
 			h : HTTP_HEADER
 		do
 			create h.make
-			h.put_status ({HTTP_STATUS_CODE}.bad_request)
 			h.put_content_type_application_json
 			h.put_content_length (a_description.count)
 			h.put_current_date
@@ -212,7 +211,6 @@ feature -- Handle responses
 			h : HTTP_HEADER
 		do
 			create h.make
-			h.put_status ({HTTP_STATUS_CODE}.precondition_failed)
 			h.put_content_type_application_json
 			h.put_content_length (a_description.count)
 			h.put_current_date
@@ -226,7 +224,6 @@ feature -- Handle responses
 			h : HTTP_HEADER
 		do
 			create h.make
-			h.put_status ({HTTP_STATUS_CODE}.internal_server_error)
 			h.put_content_type_application_json
 			h.put_content_length (a_description.count)
 			h.put_current_date
@@ -240,7 +237,6 @@ feature -- Handle responses
 			h : HTTP_HEADER
 		do
 			create h.make
-			h.put_status ({HTTP_STATUS_CODE}.not_implemented)
 			h.put_content_type_application_json
 			h.put_content_length (a_description.count)
 			h.put_current_date
@@ -254,7 +250,6 @@ feature -- Handle responses
 			h : HTTP_HEADER
 		do
 			create h.make
-			h.put_status ({HTTP_STATUS_CODE}.method_not_allowed)
 			h.put_content_type_application_json
 			h.put_content_length (a_description.count)
 			h.put_current_date
@@ -268,7 +263,6 @@ feature -- Handle responses
 			h : HTTP_HEADER
 		do
 			create h.make
-			h.put_status ({HTTP_STATUS_CODE}.not_found)
 			h.put_content_type_application_json
 			h.put_content_length (a_description.count)
 			h.put_current_date
@@ -284,7 +278,6 @@ feature -- Handle responses
 		do
 			res.flush
 			create h.make
-			h.put_status ({HTTP_STATUS_CODE}.not_modified)
 			h.put_content_type_application_json
 			h.put_content_length (a_description.count)
 			h.put_current_date
@@ -299,7 +292,6 @@ feature -- Handle responses
 			h : HTTP_HEADER
 		do
 			create h.make
-			h.put_status ({HTTP_STATUS_CODE}.conflict)
 			h.put_content_type_application_json
 			h.put_content_length (a_description.count)
 			h.put_current_date
