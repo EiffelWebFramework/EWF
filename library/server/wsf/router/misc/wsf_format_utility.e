@@ -60,6 +60,8 @@ feature -- Access
 feature {NONE} -- Implementation
 
 	string_in_array (arr: ARRAY [STRING]; s: STRING): BOOLEAN
+			-- Is `s' in array `arr' ?
+			--| using `{STRING}.same_string (..)'
 		local
 			i,n: INTEGER
 		do

@@ -16,11 +16,6 @@ deferred class
 inherit
 	ANY
 
-	WSF_HANDLER_HELPER
-		export
-			{NONE} all
-		end
-
 feature -- Status report
 
 	is_valid_context (req: WSF_REQUEST): BOOLEAN

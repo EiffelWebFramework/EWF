@@ -82,7 +82,6 @@ feature -- HTTP Methods
 		do
 			create h.make
 			create etag_utils
-			h.put_status ({HTTP_STATUS_CODE}.ok)
 			h.put_content_type_application_json
 			if attached {JSON_VALUE} json.value (l_order) as jv then
 				l_msg := jv.representation
@@ -166,7 +165,6 @@ feature -- HTTP Methods
 			json.add_converter(joc)
 
 			create h.make
-			h.put_status ({HTTP_STATUS_CODE}.ok)
 			h.put_content_type_application_json
 			if attached req.request_time as time then
 				h.add_header ("Date:" +time.formatted_out ("ddd,[0]dd mmm yyyy [0]hh:[0]mi:[0]ss.ff2") + " GMT")
@@ -212,10 +210,9 @@ feature -- HTTP Methods
 			h : HTTP_HEADER
 		do
 			create h.make
-			h.put_status ({HTTP_STATUS_CODE}.no_content)
 			h.put_content_type_application_json
 			if attached req.request_time as time then
-					h.put_utc_date (time)
+				h.put_utc_date (time)
 			end
 			res.set_status_code ({HTTP_STATUS_CODE}.no_content)
 			res.put_header_text (h.string)
@@ -254,7 +251,6 @@ feature -- HTTP Methods
 			create joc.make
 			json.add_converter(joc)
 
-			h.put_status ({HTTP_STATUS_CODE}.created)
 			h.put_content_type_application_json
 			if attached {JSON_VALUE} json.value (l_order) as jv then
 				l_msg := jv.representation

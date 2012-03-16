@@ -56,7 +56,6 @@ feature -- Execution
 				req.input.read_string (req.content_length_value.as_integer_32)
 			end
 			create h.make
-			h.put_status ({HTTP_STATUS_CODE}.method_not_allowed)
 			h.put_content_type_text_plain
 			l_api_doc := "%NPlease check the API%NURI:/order METHOD: POST%NURI:/order/{orderid} METHOD: GET, PUT, DELETE%N"
 			l_description := req.request_method + req.request_uri + " is not allowed" + "%N" + l_api_doc
