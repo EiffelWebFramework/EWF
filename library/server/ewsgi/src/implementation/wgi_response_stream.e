@@ -52,7 +52,7 @@ feature {NONE} -- Core output operation
 
 	write (s: READABLE_STRING_8)
 			-- Send the content of `s'
-			-- this can be used for header and body			
+			-- this can be used for header and body
 		do
 			output.put_string (s)
 		end
@@ -60,7 +60,7 @@ feature {NONE} -- Core output operation
 feature -- Status setting
 
 	status_is_set: BOOLEAN
-			-- Is status set?	
+			-- Is status set?
 		do
 			Result := status_code /= 0
 		end
@@ -70,14 +70,12 @@ feature -- Status setting
 			-- Should be done before sending any data back to the client
 		do
 			status_code := a_code
-			output.put_status_line (a_code)
-			status_committed := True
 		end
 
 	status_code: INTEGER
 			-- Response status
 
-feature -- Header output operation		
+feature -- Header output operation
 
 	put_header_text (a_text: READABLE_STRING_8)
 		do
