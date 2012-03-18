@@ -2,9 +2,9 @@ note
 	description: "[
 				Request handler object which is called by a WSF_ROUTER
 				An handler should implement the method
-				
+
 					execute (ctx, req, res)
-					
+
 				The class is generic, this way one can use a custom WSF_HANDLER_CONTEXT if needed
 		]"
 	date: "$Date$"
@@ -28,6 +28,7 @@ feature -- Execution
 
 	execute (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
 			-- Execute request handler
+			--
 			-- `ctx': contains advanced data related to request_uri
 			--	      in the case of URI_TEMPLATE, it add support for "path_parameter"
 			-- `req': request data
@@ -36,6 +37,8 @@ feature -- Execution
 		require
 			is_valid_context: is_valid_context (req)
 		deferred
+		ensure
+			response_status_set: res.status_is_set
 		end
 
 feature -- Execution: report
