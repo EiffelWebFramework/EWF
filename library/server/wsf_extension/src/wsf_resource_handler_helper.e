@@ -35,8 +35,8 @@ feature -- Execute template
 					--| Eventually handle other methods...
 				execute_extension_method (ctx, req, res)
 			end
-		rescue
-			handle_internal_server_error ("Internal Server Error", ctx, req, res)
+		-- rescue
+		-- 	handle_internal_server_error ("Internal Server Error", ctx, req, res)
 		end
 
 feature -- Method Post
@@ -88,7 +88,7 @@ feature -- Method Get
 
 	do_get (ctx: C;req: WSF_REQUEST; res: WSF_RESPONSE)
 		do
-			handle_not_implemented ("Method HEAD not implemented", ctx, req, res)
+			handle_not_implemented ("Method GET not implemented", ctx, req, res)
 		end
 
 feature -- Method DELETE
@@ -100,7 +100,7 @@ feature -- Method DELETE
 
 	do_delete (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
 		do
-			handle_not_implemented ("Method DELETE  not implemented", ctx, req, res)
+			handle_not_implemented ("Method DELETE not implemented", ctx, req, res)
 		end
 
 feature -- Method CONNECT
@@ -112,7 +112,7 @@ feature -- Method CONNECT
 
 	do_connect (ctx: C;req: WSF_REQUEST; res: WSF_RESPONSE)
 		do
-			handle_not_implemented ("Method CONNECT  not implemented", ctx, req, res)
+			handle_not_implemented ("Method CONNECT not implemented", ctx, req, res)
 		end
 
 feature -- Method HEAD
