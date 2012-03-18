@@ -109,7 +109,7 @@ feature -- Output operation
 	put_string (s: READABLE_STRING_8)
 			-- Send the string `s'
 		do
-			write (s)
+			output.put_string (s)
 		end
 
 	put_substring (s: READABLE_STRING_8; start_index, end_index: INTEGER)
