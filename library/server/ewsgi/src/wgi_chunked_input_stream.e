@@ -99,14 +99,17 @@ feature {NONE} -- Parser
 	read_chunk_data
 		require
 			last_chunk_size > 0
+		local
+			l_input: like input
 		do
-			input.read_string (last_chunk_size)
-			last_chunk := input.last_string
+			l_input := input
+			l_input.read_string (last_chunk_size)
+			last_chunk := l_input.last_string
 
 			-- read CRLF
-			input.read_character
-			if input.last_character = '%R' then
-				input.read_character
+			l_input.read_character
+			if l_input.last_character = '%R' then
+				l_input.read_character
 			end
 		ensure
 			last_chunk_attached: attached last_chunk as el_last_chunk
@@ -120,24 +123,26 @@ feature {NONE} -- Parser
 			eol : BOOLEAN
 			c: CHARACTER
 			hex : HEXADECIMAL_STRING_TO_INTEGER_CONVERTER
+			l_input: like input
 		do
+			l_input := input
 			from
-				input.read_character
+				l_input.read_character
 			until
 				eol
 			loop
-				c := input.last_character
+				c := l_input.last_character
 				inspect c
 				when '%R' then
 					-- We are in the end of the line, we need to read the next character to start the next line.
 					eol := True
-					input.read_character
+					l_input.read_character
 				when ';' then
 					-- We are in an extension chunk data
 					read_extension_chunk
 				else
 					tmp_hex_chunk_size.append_character (c)
-					input.read_character
+					l_input.read_character
 				end
 			end
 			if tmp_hex_chunk_size.same_string ("0") then
@@ -155,40 +160,46 @@ feature {NONE} -- Parser
 		end
 
 	read_extension_chunk
+		local
+			l_input: like input
 		do
+			l_input := input
 			debug
 				print (" Reading extension chunk ")
 			end
 			from
-				input.read_character
+				l_input.read_character
 			until
-				input.last_character = '%R'
+				l_input.last_character = '%R'
 			loop
 				debug
-					print (input.last_character)
+					print (l_input.last_character)
 				end
-				input.read_character
+				l_input.read_character
 			end
 		end
 
 	read_trailer
+		local
+			l_input: like input
 		do
-			if not input.end_of_input then
+			l_input := input
+			if not l_input.end_of_input then
 				debug
 					print (" Reading trailer ")
 				end
 				from
-					input.read_character
+					l_input.read_character
 				until
-					input.last_character = '%R'
+					l_input.last_character = '%R'
 				loop
 					debug
-						print (input.last_character)
+						print (l_input.last_character)
 					end
-					input.read_character
+					l_input.read_character
 				end
 				-- read the LF
-				input.read_character
+				l_input.read_character
 			end
 		end
 
