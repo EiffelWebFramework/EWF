@@ -58,6 +58,8 @@ feature -- Mapping
 		deferred
 		end
 
+feature -- Mapping agent		
+
 	map_agent (a_resource: READABLE_STRING_8; a_action: PROCEDURE [ANY, TUPLE [ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE]])
 		do
 			map_agent_with_request_methods (a_resource, a_action, Void)
@@ -67,6 +69,26 @@ feature -- Mapping
 			 rqst_methods: detachable ARRAY [READABLE_STRING_8])
 		local
 			rah: WSF_AGENT_HANDLER [C]
+		do
+			create rah.make (a_action)
+			if attached {H} rah as h then
+				map_with_request_methods (a_resource, h, rqst_methods)
+			else
+				check valid_agent_handler: False end
+			end
+		end
+
+feature -- Mapping response agent		
+
+	map_agent_response (a_resource: READABLE_STRING_8; a_action: FUNCTION [ANY, TUPLE [ctx: C; req: WSF_REQUEST], WSF_RESPONSE_MESSAGE])
+		do
+			map_agent_response_with_request_methods (a_resource, a_action, Void)
+		end
+
+	map_agent_response_with_request_methods (a_resource: READABLE_STRING_8; a_action: FUNCTION [ANY, TUPLE [ctx: C; req: WSF_REQUEST], WSF_RESPONSE_MESSAGE];
+			 rqst_methods: detachable ARRAY [READABLE_STRING_8])
+		local
+			rah: WSF_AGENT_RESPONSE_HANDLER [C]
 		do
 			create rah.make (a_action)
 			if attached {H} rah as h then

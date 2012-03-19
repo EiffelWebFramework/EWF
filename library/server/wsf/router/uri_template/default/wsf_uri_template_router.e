@@ -10,19 +10,29 @@ class
 inherit
 	WSF_URI_TEMPLATE_ROUTER_I [WSF_HANDLER [WSF_URI_TEMPLATE_HANDLER_CONTEXT], WSF_URI_TEMPLATE_HANDLER_CONTEXT]
 		redefine
-			map_agent_with_request_methods
+			map_agent_with_request_methods,
+			map_agent_response_with_request_methods
 		end
 
 create
 	make,
 	make_with_base_url
 
-feature -- Mapping
+feature -- Mapping agent
 
 	map_agent_with_request_methods (a_id: READABLE_STRING_8; a_action: PROCEDURE [ANY, TUPLE [ctx: WSF_URI_TEMPLATE_HANDLER_CONTEXT; req: WSF_REQUEST; res: WSF_RESPONSE]];
 			 rqst_methods: detachable ARRAY [READABLE_STRING_8])
 		local
 			h: WSF_AGENT_HANDLER [WSF_URI_TEMPLATE_HANDLER_CONTEXT]
+		do
+			create h.make (a_action)
+			map_with_request_methods (a_id, h, rqst_methods)
+		end
+
+	map_agent_response_with_request_methods (a_id: READABLE_STRING_8; a_action: FUNCTION [ANY, TUPLE [ctx: WSF_URI_TEMPLATE_HANDLER_CONTEXT; req: WSF_REQUEST], WSF_RESPONSE_MESSAGE];
+			 rqst_methods: detachable ARRAY [READABLE_STRING_8])
+		local
+			h: WSF_AGENT_RESPONSE_HANDLER [WSF_URI_TEMPLATE_HANDLER_CONTEXT]
 		do
 			create h.make (a_action)
 			map_with_request_methods (a_id, h, rqst_methods)
