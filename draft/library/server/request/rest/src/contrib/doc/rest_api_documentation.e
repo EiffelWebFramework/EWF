@@ -34,6 +34,13 @@ feature -- Access
 		do
 		end
 
+	resource_value (ctx: C): detachable READABLE_STRING_32
+		do
+			if attached {WSF_STRING} ctx.item ("resource") as s then
+				Result := s.string
+			end
+		end
+
 feature -- Execution
 
 	execute_application (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
@@ -50,8 +57,7 @@ feature -- Execution
 			create s.make_empty
 
 			if
-				attached {WSF_STRING} ctx.path_parameter ("resource") as l_resource_value and then
-				attached l_resource_value.string as l_resource
+				attached resource_value (ctx) as l_resource
 			then
 				from
 					hdl_cursor := router.new_cursor
@@ -309,7 +315,7 @@ feature -- Access
 		end
 
 note
-	copyright: "Copyright (c) 1984-2011, Eiffel Software and others"
+	copyright: "Copyright (c) 1984-2012, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

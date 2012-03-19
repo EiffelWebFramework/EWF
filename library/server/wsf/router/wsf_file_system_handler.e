@@ -62,23 +62,31 @@ feature -- Element change
 
 feature -- Execution
 
+	requested_path (ctx: C): detachable READABLE_STRING_8
+			-- Path associated with the request
+			-- i.e: path of the file system resource if any
+		do
+			if attached {WSF_STRING} ctx.item ("path") as v_path then
+				Result := v_path.string.as_string_8
+			end
+		end
+
 	execute (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
 			-- Execute request handler	
 		local
 			h: HTTP_HEADER
 			s: STRING
-			uri: STRING
 		do
-			if attached {WSF_STRING} ctx.path_parameter ("path") as l_path then
-				uri := l_path.string
+			if attached requested_path (ctx) as uri then
 				process_uri (uri, ctx, req, res)
 			else
-				create h.make
-				h.put_content_type_text_html
 				s := "Hello " + ctx.path + "%N"
 				s.append ("root=" + document_root)
 
+				create h.make
+				h.put_content_type_text_html
 				h.put_content_length (s.count)
+
 				res.set_status_code ({HTTP_STATUS_CODE}.ok)
 				res.put_header_text (h.string)
 				res.put_string (s)

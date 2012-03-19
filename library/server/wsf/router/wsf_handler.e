@@ -27,7 +27,12 @@ feature -- Status report
 feature -- Execution
 
 	execute (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
-			-- Execute request handler	
+			-- Execute request handler
+			-- `ctx': contains advanced data related to request_uri
+			--	      in the case of URI_TEMPLATE, it add support for "path_parameter"
+			-- `req': request data
+			-- `res': reponse stream
+			--| note `ctx' can also provide data coming from `req'
 		require
 			is_valid_context: is_valid_context (req)
 		deferred
