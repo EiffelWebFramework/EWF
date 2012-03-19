@@ -196,15 +196,20 @@ feature -- Output operation
 			wgi_response.flush
 		end
 
-feature -- Helper
+feature -- Response object
 
 	put_response (obj: WSF_RESPONSE_MESSAGE)
+			-- Set `obj' as the whole response to the client
+			--| `obj' is responsible to sent the status code, the header and the content
 		require
-			not header_committed
-			not status_is_set
-			not message_committed
+			header_not_committed: not header_committed
+			status_not_committed: not status_committed
+			no_message_committed: not message_committed
 		do
 			obj.send_to (Current)
+		ensure
+			status_committed: status_committed
+			header_committed: header_committed
 		end
 
 feature -- Redirect
@@ -212,7 +217,7 @@ feature -- Redirect
 	redirect_now_custom (a_url: READABLE_STRING_8; a_status_code: INTEGER; a_header: detachable HTTP_HEADER; a_content: detachable TUPLE [body: READABLE_STRING_8; type: READABLE_STRING_8])
 			-- Redirect to the given url `a_url' and precise custom `a_status_code', custom header and content
 			-- Please see http://www.faqs.org/rfcs/rfc2616 to use proper status code.
-			-- if `a_status_code' is 0, use the default {HTTP_STATUS_CODE}.moved_permanently
+			-- if `a_status_code' is 0, use the default {HTTP_STATUS_CODE}.temp_redirect
 		require
 			header_not_committed: not header_committed
 		local
