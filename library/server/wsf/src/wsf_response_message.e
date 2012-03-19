@@ -7,10 +7,17 @@ note
 deferred class
 	WSF_RESPONSE_MESSAGE
 
-feature -- Output
+feature {WSF_RESPONSE} -- Output
 
 	send_to (res: WSF_RESPONSE)
+		require
+			header_not_committed: not res.header_committed
+			status_not_committed: not res.status_committed
+			no_message_committed: not res.message_committed
 		deferred
+		ensure
+			res_status_set: res.status_is_set
+			res_header_committed: res.header_committed
 		end
 
 note

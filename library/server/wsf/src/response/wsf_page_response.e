@@ -1,5 +1,7 @@
 note
-	description: "Summary description for {WSF_PAGE_RESPONSE}."
+	description: "[
+		
+		]"
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
@@ -77,7 +79,7 @@ feature -- Element change
 			l_body.append (a_string)
 		end
 
-feature -- Output
+feature {WSF_RESPONSE} -- Output
 
 	send_to (res: WSF_RESPONSE)
 		local

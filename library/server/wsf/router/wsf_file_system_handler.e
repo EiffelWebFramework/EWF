@@ -185,7 +185,7 @@ feature -- Execution
 			fres.set_status_code ({HTTP_STATUS_CODE}.ok)
 			fres.set_answer_head_request_method (req.request_method.same_string ({HTTP_REQUEST_METHODS}.method_head))
 
-			res.put_response (fres)
+			res.send (fres)
 		end
 
 	respond_not_found (uri: READABLE_STRING_8; ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)

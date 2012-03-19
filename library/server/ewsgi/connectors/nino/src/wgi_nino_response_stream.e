@@ -21,19 +21,24 @@ create
 feature -- Header output operation		
 
 	put_header_text (a_text: READABLE_STRING_8)
+		local
+			o: like output
 		do
-			write (a_text)
+			o := output
+			o.put_string (a_text)
+
 			-- Nino does not support persistent connection for now
-			write ("Connection: close")
-			write (crlf)
+			o.put_string ("Connection: close")
+			o.put_crlf
 
 			-- end of headers
-			write (crlf)
+			o.put_crlf
+
 			header_committed := True
 		end
 
 ;note
-	copyright: "2011-2012, Eiffel Software and others"
+	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

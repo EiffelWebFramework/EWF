@@ -32,7 +32,7 @@ feature -- Implementation
 	execute (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
 			-- Execute request handler	
 		do
-			response (ctx, req).send_to (res)
+			res.send (response (ctx, req))
 		end
 
 note

@@ -42,14 +42,6 @@ feature -- Status report
 		deferred
 		end
 
-feature {WGI_RESPONSE} -- Core output operation
-
-	write (s: READABLE_STRING_8)
-			-- Send the string `s'
-			-- this can be used for header and body
-		deferred
-		end
-
 feature -- Status setting
 
 	status_is_set: BOOLEAN

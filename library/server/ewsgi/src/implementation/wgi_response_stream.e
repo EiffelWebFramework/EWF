@@ -48,15 +48,6 @@ feature -- Status report
 			Result := status_is_set and header_committed
 		end
 
-feature {NONE} -- Core output operation
-
-	write (s: READABLE_STRING_8)
-			-- Send the content of `s'
-			-- this can be used for header and body			
-		do
-			output.put_string (s)
-		end
-
 feature -- Status setting
 
 	status_is_set: BOOLEAN
@@ -81,8 +72,8 @@ feature -- Header output operation
 
 	put_header_text (a_text: READABLE_STRING_8)
 		do
-			write (a_text)
-			write (crlf)
+			output.put_string (a_text)
+			output.put_crlf
 			header_committed := True
 		end
 
@@ -125,9 +116,6 @@ feature -- Output operation
 		end
 
 feature {NONE} -- Implementation: Access
-
-	crlf: STRING = "%R%N"
-			-- End of header
 
 	output: WGI_OUTPUT_STREAM
 			-- Server output channel

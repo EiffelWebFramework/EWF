@@ -52,7 +52,13 @@ feature -- Specific output
 			-- Send `s' to http client as header line
 		do
 			put_string (s)
-			put_string ("%R%N")
+			put_crlf
+		end
+
+	put_crlf
+			-- Send "%R%N" string
+		do
+			put_string (crlf)
 		end
 
 feature -- Status writing
@@ -79,6 +85,10 @@ feature -- Basic operations
 			is_open_write: is_open_write
 		deferred
 		end
+
+feature -- Constant
+
+	crlf: STRING = "%R%N"
 
 note
 	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
