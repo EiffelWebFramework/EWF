@@ -2,6 +2,7 @@ note
 	description : "[
 			Objects that represents the output stream
 		]"
+	specification: "EWSGI/connector specification https://github.com/Eiffel-World/Eiffel-Web-Framework/wiki/EWSGI-specification"
 	legal: "See notice at end of class."
 	status: "See notice at end of class."
 	date: "$Date$"
@@ -10,18 +11,54 @@ note
 deferred class
 	WGI_OUTPUT_STREAM
 
-feature -- Core operation
+feature -- Output
 
-	put_string (s: STRING_8)
-			-- Write `s' into the output stream
+	put_string (a_string: READABLE_STRING_8)
+			-- Write `a_string' to output stream.
 		require
-			s_not_empty: s /= Void and then not s.is_empty
+			is_open_write: is_open_write
+			a_string_not_void: a_string /= Void
 		deferred
 		end
 
-	flush
-			-- Flush the output stream	
+	put_substring (a_string: READABLE_STRING_8; s, e: INTEGER)
+			-- Write substring of `a_string' between indexes
+			-- `s' and `e' to output stream.
+			--| Could be redefined for optimization			
+		require
+			is_open_write: is_open_write
+			a_string_not_void: a_string /= Void
+			s_large_enough: s >= 1
+			e_small_enough: e <= a_string.count
+			valid_interval: s <= e + 1
 		do
+			if s <= e then
+				put_string (a_string.substring (s, e))
+			end
+		end
+
+	put_character_8 (c: CHARACTER_8)
+			-- Write `c' to output stream.
+			--| Could be redefined for optimization			
+		require
+			is_open_write: is_open_write
+		do
+			put_string (c.out)
+		end
+
+feature -- Specific output
+
+	put_header_line (s: READABLE_STRING_8)
+			-- Send `s' to http client as header line
+		do
+			put_string (s)
+			put_crlf
+		end
+
+	put_crlf
+			-- Send "%R%N" string
+		do
+			put_string (crlf)
 		end
 
 feature -- Status writing
@@ -33,25 +70,28 @@ feature -- Status writing
 		deferred
 		end
 
-feature -- Basic operation
+feature -- Status report
 
-	put_substring (s: STRING; start_index, end_index: INTEGER)
-			-- Write `s[start_index:end_index]' into the output stream
+	is_open_write: BOOLEAN
+			-- Can items be written to output stream?
+		deferred
+		end
+
+feature -- Basic operations
+
+	flush
+			-- Flush buffered data to disk.
 		require
-			s_not_empty: s /= Void and then not s.is_empty
-		do
-			put_string (s.substring (start_index, end_index))
+			is_open_write: is_open_write
+		deferred
 		end
 
-	put_header_line (s: STRING)
-			-- Send `s' to http client as header line
-		do
-			put_string (s)
-			put_string ("%R%N")
-		end
+feature -- Constant
+
+	crlf: STRING = "%R%N"
 
 note
-	copyright: "2011-2011, Eiffel Software and others"
+	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software
