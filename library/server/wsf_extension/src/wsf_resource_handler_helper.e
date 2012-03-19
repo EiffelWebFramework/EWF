@@ -35,8 +35,6 @@ feature -- Execute template
 					--| Eventually handle other methods...
 				execute_extension_method (ctx, req, res)
 			end
-		-- rescue
-		-- 	handle_internal_server_error ("Internal Server Error", ctx, req, res)
 		end
 
 feature -- Method Post
