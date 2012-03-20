@@ -26,7 +26,7 @@ class
 inherit
 	DEBUG_OUTPUT
 
-create {WSF_SERVICE}
+create {WSF_TO_WGI_SERVICE}
 	make_from_wgi
 
 convert

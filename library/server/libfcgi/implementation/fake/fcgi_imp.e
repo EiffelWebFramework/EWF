@@ -55,6 +55,14 @@ feature -- FCGI output
 			io.put_string (a_str)
 		end
 
+feature -- Error
+
+	put_error (a_str: READABLE_STRING_8)
+			-- Put `a_str' on the FastCGI stdout.
+		do
+			io.error.put_string (a_str)
+		end
+
 feature -- FCGI Input
 
 	read_from_stdin (n: INTEGER)

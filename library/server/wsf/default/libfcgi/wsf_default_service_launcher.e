@@ -1,19 +1,6 @@
 note
-	description: "[
-			Component to launch the service using the default connector
-
-					libFCGI for this class
-
-			How-to:
-
-				s: WSF_DEFAULT_SERVICE_LAUNCHER
-				create s.make_and_launch (agent execute)
-
-				execute (req: WSF_REQUEST; res: WSF_RESPONSE)
-					do
-						-- ...
-					end
-		]"
+	description: "Summary description for {WSF_DEFAULT_SERVICE_LAUNCHER}."
+	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -21,36 +8,17 @@ class
 	WSF_DEFAULT_SERVICE_LAUNCHER
 
 inherit
-	WSF_DEFAULT_SERVICE_LAUNCHER_I
+	WSF_LIBFCGI_SERVICE_LAUNCHER
 
 create
 	make,
 	make_and_launch,
-	make_and_launch_with_options
+	make_callback,
+	make_callback_and_launch,
+	make_and_launch_with_options -- obsolete
 
-feature {NONE} -- Initialization
-
-	initialize
-		do
-			create connector.make (Current)
-		end
-
-feature -- Execution
-
-	launch
-		do
-			if attached connector as conn then
-				conn.launch
-			end
-		end
-
-feature -- Status report
-
-	connector: detachable WGI_LIBFCGI_CONNECTOR
-			-- Default service name
-
-;note
-	copyright: "2011-2011, Eiffel Software and others"
+note
+	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software
@@ -59,4 +27,5 @@ feature -- Status report
 			Website http://www.eiffel.com
 			Customer support http://support.eiffel.com
 		]"
+
 end

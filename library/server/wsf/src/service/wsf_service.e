@@ -10,11 +10,11 @@ note
 deferred class
 	WSF_SERVICE
 
-inherit
-	WGI_SERVICE
-		rename
-			execute as wgi_execute
-		end
+--inherit
+--	WGI_SERVICE
+--		rename
+--			execute as wgi_execute
+--		end
 
 feature -- Execution
 
@@ -26,25 +26,25 @@ feature -- Execution
 		deferred
 		end
 
-feature {WGI_CONNECTOR} -- WGI Execution
+--feature {WGI_CONNECTOR} -- WGI Execution
 
-	wgi_execute (req: WGI_REQUEST; res: WGI_RESPONSE)
-		local
-			w_res: detachable WSF_RESPONSE
-			w_req: detachable WSF_REQUEST
-		do
-			create w_res.make_from_wgi (res)
-			create w_req.make_from_wgi (req)
-			execute (w_req, w_res)
-			w_req.destroy
-		rescue
-			if w_res /= Void then
-				w_res.flush
-			end
-			if w_req /= Void then
-				w_req.destroy
-			end
-		end
+--	wgi_execute (req: WGI_REQUEST; res: WGI_RESPONSE)
+--		local
+--			w_res: detachable WSF_RESPONSE
+--			w_req: detachable WSF_REQUEST
+--		do
+--			create w_res.make_from_wgi (res)
+--			create w_req.make_from_wgi (req)
+--			execute (w_req, w_res)
+--			w_req.destroy
+--		rescue
+--			if w_res /= Void then
+--				w_res.flush
+--			end
+--			if w_req /= Void then
+--				w_req.destroy
+--			end
+--		end
 
 note
 	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"

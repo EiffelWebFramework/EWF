@@ -17,9 +17,10 @@ create
 
 feature {NONE} -- Initialization
 
-	make (a_output: like output)
+	make (a_output: like output; a_error: like error)
 		do
 			output := a_output
+			error := a_error
 		end
 
 feature {WGI_CONNECTOR, WGI_SERVICE} -- Commit
@@ -97,6 +98,12 @@ feature -- Header output operation
 
 feature -- Output operation
 
+	put_character (c: CHARACTER_8)
+			-- Send the character `c'
+		do
+			output.put_character (c)
+		end
+
 	put_string (s: READABLE_STRING_8)
 			-- Send the string `s'
 		do
@@ -115,9 +122,23 @@ feature -- Output operation
 			output.flush
 		end
 
+feature -- Error reporting
+
+	put_error (a_message: READABLE_STRING_8)
+			-- Report error described by `a_message'
+			-- This might be used by the underlying connector
+		do
+			if attached error as err then
+				err.put_error (a_message)
+			end
+		end
+
 feature {NONE} -- Implementation: Access
 
 	output: WGI_OUTPUT_STREAM
+			-- Server output channel
+
+	error: detachable WGI_ERROR_STREAM
 			-- Server output channel
 
 ;note

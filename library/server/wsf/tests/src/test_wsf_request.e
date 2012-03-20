@@ -35,10 +35,12 @@ feature {NONE} -- Events
 			app: NINO_SERVICE
 			wt: WORKER_THREAD
 			e: EXECUTION_ENVIRONMENT
+			w2w: WSF_TO_WGI_SERVICE
 		do
 			port_number := 0
 			base_url := "test/"
-			create app.make_custom (agent wgi_execute, base_url)
+			create w2w.make_from_service (Current)
+			create app.make_custom (w2w, base_url)
 			web_app := app
 
 			create wt.make (agent app.listen (port_number))
@@ -116,7 +118,7 @@ feature {NONE} -- Events
 				page.put_string ("Bye")
 			end
 
-			page.send_to (res)
+			res.send (page)
 		end
 
 	test_url (a_query_url: READABLE_STRING_8): READABLE_STRING_8

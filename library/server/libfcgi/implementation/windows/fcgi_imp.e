@@ -136,6 +136,18 @@ feature -- FCGI output
 			fcgi.put_string (l_c_str.item, l_c_str.count)
 		end
 
+feature -- Error		
+
+	put_error (a_message: READABLE_STRING_8)
+			-- Put error message `a_message' on the FastCGI stderr
+		local
+			l_c_str: C_STRING
+		do
+			l_c_str := c_buffer
+			l_c_str.set_string (a_message)
+			fcgi.put_error (l_c_str.item, l_c_str.count)
+		end
+
 feature -- FCGI input
 
 	copy_from_stdin (n: INTEGER; f: FILE)

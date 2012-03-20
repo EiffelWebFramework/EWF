@@ -11,6 +11,8 @@ class
 inherit
 	WGI_OUTPUT_STREAM
 
+	WGI_ERROR_STREAM
+
 	HTTP_STATUS_CODE_MESSAGES
 		export
 			{NONE} all
@@ -68,11 +70,24 @@ feature -- Basic operation
 			fcgi.put_string (s)
 		end
 
+	put_character (c: CHARACTER_8)
+			-- Send `c' to http client
+		do
+			fcgi.put_string (c.out)
+		end
+
 feature -- Basic operations
 
 	flush
 			-- Flush buffered data to disk.
 		do
+		end
+
+feature -- Error
+
+	put_error (a_message: READABLE_STRING_8)
+		do
+			fcgi.put_error (a_message)
 		end
 
 feature {NONE} -- Implementation

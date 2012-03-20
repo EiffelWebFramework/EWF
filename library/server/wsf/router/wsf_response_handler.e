@@ -17,7 +17,7 @@ deferred class
 inherit
 	WSF_HANDLER [C]
 
-feature -- Execution
+feature -- Response
 
 	response (ctx: C; req: WSF_REQUEST): WSF_RESPONSE_MESSAGE
 		require
@@ -27,7 +27,7 @@ feature -- Execution
 			Result_attached: Result /= Void
 		end
 
-feature -- Implementation
+feature -- Execution
 
 	execute (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
 			-- Execute request handler	

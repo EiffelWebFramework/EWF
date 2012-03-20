@@ -4,8 +4,11 @@ note
 
 			How-to:
 
-				s: WSF_DEFAULT_SERVICE_LAUNCHER
-				create s.make_and_launch (agent execute)
+				s: WSF_SERVICE_LAUNCHER
+				create s.make_and_launch (service)
+
+				`service' can be Current if inherit from WSF_SERVICE
+				or also  `create {WSF_CALLBACK_SERVICE}.make (agent execute)'
 
 				execute (req: WSF_REQUEST; res: WSF_RESPONSE)
 					do
@@ -29,43 +32,54 @@ note
 	revision: "$Revision$"
 
 deferred class
-	WSF_DEFAULT_SERVICE_LAUNCHER_I
+	WSF_SERVICE_LAUNCHER
 
 inherit
-	WSF_SERVICE
+	WSF_TO_WGI_SERVICE
 
 feature {NONE} -- Initialization
 
-	frozen make (a_action: like action; a_options: like options)
+	frozen make (a_service: like service; a_options: like options)
 		do
-			action := a_action
+			make_from_service (a_service)
 			options := a_options
 			initialize
 		ensure
-			action_set: action = a_action
+			service_set: service = a_service
 			options_set: options = a_options
 			launchable: launchable
 		end
 
-	frozen make_and_launch (a_action: like action)
-		do
-			make (a_action, Void)
-			launch
-		end
-
-	frozen make_and_launch_with_options (a_action: like action; a_options: attached like options)
+	frozen make_and_launch (a_service: like service; a_options: like options)
 		require
 			a_options_attached: a_options /= Void
 		do
-			make (a_action, a_options)
+			make (a_service, a_options)
 			launch
+		end
+
+	frozen make_callback (a_callback: like {WSF_CALLBACK_SERVICE}.callback; a_options: like options)
+		do
+			make (create {WSF_CALLBACK_SERVICE}.make (a_callback), a_options)
+		end
+
+	frozen make_callback_and_launch (a_callback: like {WSF_CALLBACK_SERVICE}.callback; a_options: like options)
+		do
+			make (create {WSF_CALLBACK_SERVICE}.make (a_callback), a_options)
+		end
+
+	frozen make_and_launch_with_options (a_callback: like {WSF_CALLBACK_SERVICE}.callback; a_options: like options)
+		obsolete
+			"[2012-Mars-20] Use make_callback_and_launch (a_callback, a_options)"
+		do
+			make_callback_and_launch (a_callback, a_options)
 		end
 
 	initialize
 			-- Initialize Current using `options' if attached
 			-- and build the connector
 		require
-			action_set: action /= Void
+			service_set: service /= Void
 		deferred
 		ensure
 			connector_attached: connector /= Void
@@ -108,19 +122,8 @@ feature -- Execution
 
 feature {NONE} -- Implementation
 
-	options: detachable ARRAY [detachable TUPLE [name: READABLE_STRING_GENERAL; value: detachable ANY]]
+	options: detachable WSF_SERVICE_LAUNCHER_OPTIONS
 			-- Custom options which might be support (or not) by the default service
-
-	action: PROCEDURE [ANY, TUPLE [WSF_REQUEST, WSF_RESPONSE]]
-			-- Action to be executed on request incoming
-
-feature {NONE} -- Implementation: Execution
-
-	execute (req: WSF_REQUEST; res: WSF_RESPONSE)
-			-- <Precursor>
-		do
-			action.call ([req, res])
-		end
 
 invariant
 	connector_attached: connector /= Void

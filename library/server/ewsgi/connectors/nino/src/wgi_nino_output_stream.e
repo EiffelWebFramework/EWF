@@ -10,9 +10,6 @@ class
 
 inherit
 	WGI_OUTPUT_STREAM
-		redefine
-			put_character_8
-		end
 
 	HTTP_STATUS_CODE_MESSAGES
 		export
@@ -66,7 +63,7 @@ feature -- Output
 			target.put_readable_string_8 (s)
 		end
 
-	put_character_8 (c: CHARACTER_8)
+	put_character (c: CHARACTER_8)
 		do
 			target.put_character (c)
 		end
@@ -86,7 +83,7 @@ feature -- Basic operations
 		end
 
 note
-	copyright: "2011-2011, Eiffel Software and others"
+	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

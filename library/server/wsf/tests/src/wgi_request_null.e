@@ -18,13 +18,13 @@ create
 
 feature {NONE} -- Initialization
 
-	make (s: WSF_SERVICE; a_meta: ARRAY [TUPLE [name: READABLE_STRING_8; value: READABLE_STRING_8]])
+	make (a_meta: ARRAY [TUPLE [name: READABLE_STRING_8; value: READABLE_STRING_8]])
 		local
 			ht: HASH_TABLE [READABLE_STRING_8, READABLE_STRING_8]
 			i: WGI_NULL_INPUT_STREAM
 			c: WGI_NULL_CONNECTOR
 		do
-			create c.make (s)
+			create c.make
 			create i.make
 			create ht.make (a_meta.count)
 			across

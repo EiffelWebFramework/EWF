@@ -77,11 +77,11 @@ feature -- Tests
 
 feature {NONE} -- Implementation
 
-	new_request (a_meta: ARRAY [TUPLE [name: READABLE_STRING_8; value: READABLE_STRING_8]]): WSF_REQUEST
+	new_request (a_meta: ARRAY [TUPLE [name: READABLE_STRING_8; value: READABLE_STRING_8]]): WSF_REQUEST_NULL
 		local
 			wgi_req: WGI_REQUEST
 		do
-			create {WGI_REQUEST_NULL} wgi_req.make (Current, a_meta)
+			create {WGI_REQUEST_NULL} wgi_req.make (a_meta)
 			create Result.make_from_wgi (wgi_req)
 		end
 

@@ -8,7 +8,7 @@ note
 class
 	WSF_RESPONSE
 
-create {WSF_SERVICE}
+create {WSF_TO_WGI_SERVICE}
 	make_from_wgi
 
 convert
@@ -116,6 +116,14 @@ feature -- Header output operation
 		end
 
 feature -- Output operation
+
+	put_character (c: CHARACTER_8)
+			-- Send the character `c'
+		require
+			message_writable: message_writable
+		do
+			wgi_response.put_character (c)
+		end
 
 	put_string (s: READABLE_STRING_8)
 			-- Send the string `s'
@@ -267,6 +275,15 @@ feature -- Redirect
 			-- Redirect to the given url `a_url'
 		do
 			redirect_now_custom (a_url, {HTTP_STATUS_CODE}.temp_redirect, Void, [a_content, a_content_type])
+		end
+
+feature -- Error reporting
+
+	put_error (a_message: READABLE_STRING_8)
+			-- Report error described by `a_message'
+			-- This might be used by the underlying connector
+		do
+			wgi_response.put_error (a_message)
 		end
 
 note

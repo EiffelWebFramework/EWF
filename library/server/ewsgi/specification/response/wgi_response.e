@@ -96,6 +96,13 @@ feature -- Header output operation
 
 feature -- Output operation
 
+	put_character (c: CHARACTER_8)
+			-- Send the character `c'
+		require
+			message_writable: message_writable
+		deferred
+		end
+
 	put_string (s: READABLE_STRING_8)
 			-- Send the string `s'
 		require
@@ -112,6 +119,14 @@ feature -- Output operation
 
 	flush
 			-- Flush if it makes sense
+		deferred
+		end
+
+feature -- Error reporting
+
+	put_error (a_message: READABLE_STRING_8)
+			-- Report error described by `a_message'
+			-- This might be used by the underlying connector
 		deferred
 		end
 

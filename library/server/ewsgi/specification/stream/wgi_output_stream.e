@@ -37,13 +37,12 @@ feature -- Output
 			end
 		end
 
-	put_character_8 (c: CHARACTER_8)
+	put_character (c: CHARACTER_8)
 			-- Write `c' to output stream.
 			--| Could be redefined for optimization			
 		require
 			is_open_write: is_open_write
-		do
-			put_string (c.out)
+		deferred
 		end
 
 feature -- Specific output

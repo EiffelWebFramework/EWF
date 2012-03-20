@@ -42,7 +42,7 @@ feature -- Execution
 		do
 			if not rescued then
 				create req.make ((create {EXECUTION_ENVIRONMENT}).starting_environment_variables, create {WGI_CGI_INPUT_STREAM}.make, Current)
-				create res.make (create {WGI_CGI_OUTPUT_STREAM}.make)
+				create res.make (create {WGI_CGI_OUTPUT_STREAM}.make, create {WGI_CGI_ERROR_STREAM}.make)
 				service.execute (req, res)
 			else
 				if attached (create {EXCEPTION_MANAGER}).last_exception as e and then attached e.exception_trace as l_trace then

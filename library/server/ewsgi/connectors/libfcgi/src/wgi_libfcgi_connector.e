@@ -20,8 +20,8 @@ feature {NONE} -- Initialization
 		do
 			service := a_service
 			create fcgi.make
-			create {WGI_LIBFCGI_INPUT_STREAM} input.make (fcgi)
-			create {WGI_LIBFCGI_OUTPUT_STREAM} output.make (fcgi)
+			create input.make (fcgi)
+			create output.make (fcgi)
 		end
 
 feature -- Access
@@ -63,7 +63,7 @@ feature -- Execution
 		do
 			if not rescued then
 				create req.make (vars, a_input, Current)
-				create res.make (a_output)
+				create res.make (a_output, a_output)
 				service.execute (req, res)
 			else
 				if attached (create {EXCEPTION_MANAGER}).last_exception as e and then attached e.exception_trace as l_trace then
@@ -84,10 +84,10 @@ feature -- Execution
 
 feature -- Input/Output
 
-	input: WGI_INPUT_STREAM
+	input: WGI_LIBFCGI_INPUT_STREAM
 			-- Input from client (from httpd server via FCGI)
 
-	output: WGI_OUTPUT_STREAM
+	output: WGI_LIBFCGI_OUTPUT_STREAM
 			-- Output to client (via httpd server/fcgi)
 
 feature {NONE} -- Implementation
