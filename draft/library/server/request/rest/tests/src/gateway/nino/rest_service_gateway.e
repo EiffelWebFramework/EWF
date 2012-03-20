@@ -18,7 +18,7 @@ feature -- Access
 				print ("Example: start a Nino web server on port " + port_number.out +
 					 ", %Nand reply Hello World for any request such as http://localhost:" + port_number.out + "/" + base_url + "%N")
 			end
-			create app.make_custom (agent wgi_execute, base_url)
+			create app.make_custom (to_wgi_service), base_url)
 			app.force_single_threaded
 
 			app.listen (port_number)

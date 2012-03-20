@@ -35,12 +35,10 @@ feature {NONE} -- Events
 			app: NINO_SERVICE
 			wt: WORKER_THREAD
 			e: EXECUTION_ENVIRONMENT
-			w2w: WSF_TO_WGI_SERVICE
 		do
 			port_number := 0
 			base_url := "test/"
-			create w2w.make_from_service (Current)
-			create app.make_custom (w2w, base_url)
+			create app.make_custom (to_wgi_service, base_url)
 			web_app := app
 
 			create wt.make (agent app.listen (port_number))
