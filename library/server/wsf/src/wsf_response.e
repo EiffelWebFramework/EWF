@@ -83,8 +83,11 @@ feature -- Header output operation
 		require
 			status_set: status_is_set
 			header_not_committed: not header_committed
+		local
+			status_line: STRING
 		do
-			wgi_response.put_header_text (a_headers)
+			status_line := {HTTP_HEADER_NAMES}.header_status + ": " + status_code.out + {HTTP_CONSTANTS}.crlf
+			wgi_response.put_header_text (status_line + a_headers)
 		ensure
 			status_set: status_is_set
 			header_committed: header_committed
@@ -102,7 +105,7 @@ feature -- Header output operation
 			set_status_code (a_status_code)
 			if a_headers /= Void then
 				create h.make_from_array (a_headers)
-				wgi_response.put_header_text (h.string)
+				put_header_text (h.string)
 			end
 		ensure
 			header_committed: header_committed
