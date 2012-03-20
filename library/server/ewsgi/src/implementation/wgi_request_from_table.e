@@ -241,9 +241,11 @@ feature {NONE} -- Element change: CGI meta parameter related to PATH_INFO
 			-- Fill with variable from `a_vars'
 		local
 			s: like meta_string_variable
+			s8: STRING_8
 			table: HASH_TABLE [READABLE_STRING_8, READABLE_STRING_8]
 			l_query_string: like query_string
 			l_request_uri: detachable STRING_32
+			p: INTEGER
 		do
 			create {STRING_8} empty_string.make_empty
 
@@ -269,6 +271,15 @@ feature {NONE} -- Element change: CGI meta parameter related to PATH_INFO
 				--| CONTENT_TYPE
 			s := meta_string_variable ({WGI_META_NAMES}.content_type)
 			if s /= Void and then not s.is_empty then
+				p := s.index_of (';', 1)
+				if p > 0 then
+					s8 := s.substring (1, p - 1)
+					s8.right_adjust
+					s := s8
+				end
+				check
+					no_white_space: not has_white_space (s)
+				end
 				content_type := s
 			else
 				content_type := Void
@@ -357,6 +368,12 @@ feature {NONE} -- Element change: CGI meta parameter related to PATH_INFO
 		end
 
 feature {NONE} -- Implementation: utilities	
+
+	has_white_space (s: READABLE_STRING_8): BOOLEAN
+			-- `s' has white space?
+		do
+			Result := s.has (' ') or else s.has ('%T')
+		end
 
 	single_slash_starting_string (s: READABLE_STRING_8): STRING_8
 			-- Return the string `s' (or twin) with one and only one starting slash
