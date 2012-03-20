@@ -42,7 +42,7 @@ feature -- Access: Input
 			-- Server input channel
 
 	chunked_input: detachable WGI_CHUNKED_INPUT_STREAM
-			-- Chunked server input channel	
+			-- Chunked server input channel
 
 feature -- EWSGI access
 
@@ -244,6 +244,7 @@ feature {NONE} -- Element change: CGI meta parameter related to PATH_INFO
 			table: HASH_TABLE [READABLE_STRING_8, READABLE_STRING_8]
 			l_query_string: like query_string
 			l_request_uri: detachable STRING_32
+			p: INTEGER
 		do
 			create {STRING_8} empty_string.make_empty
 
@@ -270,6 +271,15 @@ feature {NONE} -- Element change: CGI meta parameter related to PATH_INFO
 			s := meta_string_variable ({WGI_META_NAMES}.content_type)
 			if s /= Void and then not s.is_empty then
 				content_type := s
+				p := s.index_of (';', 1)
+				if p = 0 then
+					content_type := s
+				else
+					content_type := s.substring (1, p - 1)
+				end
+					check
+						no_white_space: not content_type.has (' ')
+					end
 			else
 				content_type := Void
 			end
@@ -356,7 +366,7 @@ feature {NONE} -- Element change: CGI meta parameter related to PATH_INFO
 			end
 		end
 
-feature {NONE} -- Implementation: utilities	
+feature {NONE} -- Implementation: utilities
 
 	single_slash_starting_string (s: READABLE_STRING_8): STRING_8
 			-- Return the string `s' (or twin) with one and only one starting slash
@@ -386,7 +396,7 @@ feature {NONE} -- Implementation: utilities
 					check i >= 2 and i <= n end
 					Result := s.substring (i - 1, s.count)
 				else
-					--| starts with one '/' and only one		
+					--| starts with one '/' and only one
 					Result := s
 				end
 			elseif n = 1 then
