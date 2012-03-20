@@ -22,8 +22,6 @@ create
 feature {NONE} -- Initialization
 
 	make
-		local
-			s: WSF_DEFAULT_SERVICE_LAUNCHER
 		do
 			initialize_router
 			set_service_option ("port", 9090)
