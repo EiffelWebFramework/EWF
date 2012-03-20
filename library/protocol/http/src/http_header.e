@@ -169,26 +169,76 @@ feature -- Content related header
 			add_header_key_value ({HTTP_HEADER_NAMES}.header_content_type, t)
 		end
 
+	put_content_type_with_parameters (t: READABLE_STRING_8; a_params: detachable ARRAY [TUPLE [name: READABLE_STRING_8; value: READABLE_STRING_8]])
+		local
+			s: STRING_8
+		do
+			if a_params /= Void and then not a_params.is_empty then
+				create s.make_from_string (t)
+				across
+					a_params as p
+				loop
+					if attached p.item as nv then
+						s.append_character (';')
+						s.append_character (' ')
+						s.append (nv.name)
+						s.append_character ('=')
+						s.append_character ('%"')
+						s.append (nv.value)
+						s.append_character ('%"')
+					end
+				end
+				put_header_key_value ({HTTP_HEADER_NAMES}.header_content_type, s)
+			else
+				put_content_type (t)
+			end
+		end
+
+	add_content_type_with_parameters (t: READABLE_STRING_8; a_params: detachable ARRAY [TUPLE [name: READABLE_STRING_8; value: READABLE_STRING_8]])
+		local
+			s: STRING_8
+		do
+			if a_params /= Void and then not a_params.is_empty then
+				create s.make_from_string (t)
+				across
+					a_params as p
+				loop
+					if attached p.item as nv then
+						s.append_character (';')
+						s.append_character (' ')
+						s.append (nv.name)
+						s.append_character ('=')
+						s.append_character ('%"')
+						s.append (nv.value)
+						s.append_character ('%"')
+					end
+				end
+				add_header_key_value ({HTTP_HEADER_NAMES}.header_content_type, s)
+			else
+				add_content_type (t)
+			end
+		end
+
 	put_content_type_with_charset (t: READABLE_STRING_8; c: READABLE_STRING_8)
 		do
-			put_header_key_value ({HTTP_HEADER_NAMES}.header_content_type, t + "; charset=" + c + "")
+			put_content_type_with_parameters (t, <<["charset", c]>>)
 		end
 
 	add_content_type_with_charset (t: READABLE_STRING_8; c: READABLE_STRING_8)
 			-- same as `put_content_type_with_charset', but allow multiple definition of "Content-Type"	
 		do
-			add_header_key_value ({HTTP_HEADER_NAMES}.header_content_type, t + "; charset=" + c + "")
+			add_content_type_with_parameters (t, <<["charset", c]>>)
 		end
 
 	put_content_type_with_name (t: READABLE_STRING_8; n: READABLE_STRING_8)
 		do
-			put_header_key_value ({HTTP_HEADER_NAMES}.header_content_type, t + "; name=%"" + n + "%"")
+			put_content_type_with_parameters (t, <<["name", n]>>)
 		end
 
 	add_content_type_with_name (t: READABLE_STRING_8; n: READABLE_STRING_8)
 			-- same as `put_content_type_with_name', but allow multiple definition of "Content-Type"	
 		do
-			add_header_key_value ({HTTP_HEADER_NAMES}.header_content_type, t + "; name=%"" + n + "%"")
+			add_content_type_with_parameters (t, <<["name", n]>>)
 		end
 
 	put_content_length (n: INTEGER)
@@ -287,6 +337,7 @@ feature -- Content-type helpers
 	put_content_type_multipart_form_data	do put_content_type ({HTTP_MIME_TYPES}.multipart_form_data) end
 	put_content_type_multipart_signed		do put_content_type ({HTTP_MIME_TYPES}.multipart_signed) end
 	put_content_type_multipart_encrypted	do put_content_type ({HTTP_MIME_TYPES}.multipart_encrypted) end
+	put_content_type_application_x_www_form_encoded	do put_content_type ({HTTP_MIME_TYPES}.application_x_www_form_encoded) end
 
 feature -- Date
 
