@@ -110,7 +110,7 @@ feature -- Element change
 			body := b
 		end
 
-feature {WSF_RESPONSE} -- Output
+feature -- Output
 
 	send_to (res: WSF_RESPONSE)
 		local

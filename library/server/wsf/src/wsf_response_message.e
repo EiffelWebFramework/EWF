@@ -7,7 +7,7 @@ note
 deferred class
 	WSF_RESPONSE_MESSAGE
 
-feature {WSF_RESPONSE} -- Output
+feature -- Output
 
 	send_to (res: WSF_RESPONSE)
 		require

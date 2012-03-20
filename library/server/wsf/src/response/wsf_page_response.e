@@ -1,6 +1,6 @@
 note
 	description: "[
-		
+
 		]"
 	author: ""
 	date: "$Date$"
@@ -79,7 +79,7 @@ feature -- Element change
 			l_body.append (a_string)
 		end
 
-feature {WSF_RESPONSE} -- Output
+feature -- Output
 
 	send_to (res: WSF_RESPONSE)
 		local
