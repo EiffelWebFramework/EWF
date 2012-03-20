@@ -241,13 +241,13 @@ feature {NONE} -- Element change: CGI meta parameter related to PATH_INFO
 			-- Fill with variable from `a_vars'
 		local
 			s: like meta_string_variable
-			s8: STRING_8
 			table: HASH_TABLE [READABLE_STRING_8, READABLE_STRING_8]
 			l_query_string: like query_string
 			l_request_uri: detachable STRING_32
-			p: INTEGER
+			l_empty_string: like empty_string
 		do
-			create {STRING_8} empty_string.make_empty
+			create {STRING_8} l_empty_string.make_empty
+			empty_string := l_empty_string
 
 			create table.make (a_vars.count)
 			table.compare_objects
@@ -262,24 +262,15 @@ feature {NONE} -- Element change: CGI meta parameter related to PATH_INFO
 			end
 
 				--| QUERY_STRING
-			l_query_string := meta_string_variable_or_default ({WGI_META_NAMES}.query_string, empty_string, False)
+			l_query_string := meta_string_variable_or_default ({WGI_META_NAMES}.query_string, l_empty_string, False)
 			query_string := l_query_string
 
 				--| REQUEST_METHOD
-			request_method := meta_string_variable_or_default ({WGI_META_NAMES}.request_method, empty_string, False)
+			request_method := meta_string_variable_or_default ({WGI_META_NAMES}.request_method, l_empty_string, False)
 
 				--| CONTENT_TYPE
 			s := meta_string_variable ({WGI_META_NAMES}.content_type)
 			if s /= Void and then not s.is_empty then
-				p := s.index_of (';', 1)
-				if p > 0 then
-					s8 := s.substring (1, p - 1)
-					s8.right_adjust
-					s := s8
-				end
-				check
-					no_white_space: not has_white_space (s)
-				end
 				content_type := s
 			else
 				content_type := Void
@@ -289,10 +280,10 @@ feature {NONE} -- Element change: CGI meta parameter related to PATH_INFO
 			content_length := meta_string_variable ({WGI_META_NAMES}.content_length)
 
 				--| PATH_INFO
-			path_info := meta_string_variable_or_default ({WGI_META_NAMES}.path_info, empty_string, False)
+			path_info := meta_string_variable_or_default ({WGI_META_NAMES}.path_info, l_empty_string, False)
 
 				--| SERVER_NAME
-			server_name := meta_string_variable_or_default ({WGI_META_NAMES}.server_name, empty_string, False)
+			server_name := meta_string_variable_or_default ({WGI_META_NAMES}.server_name, l_empty_string, False)
 
 				--| SERVER_PORT
 			s := meta_string_variable ({WGI_META_NAMES}.server_port)
@@ -303,13 +294,13 @@ feature {NONE} -- Element change: CGI meta parameter related to PATH_INFO
 			end
 
 				--| SCRIPT_NAME
-			script_name := meta_string_variable_or_default ({WGI_META_NAMES}.script_name, empty_string, False)
+			script_name := meta_string_variable_or_default ({WGI_META_NAMES}.script_name, l_empty_string, False)
 
 				--| REMOTE_ADDR
-			remote_addr := meta_string_variable_or_default ({WGI_META_NAMES}.remote_addr, empty_string, False)
+			remote_addr := meta_string_variable_or_default ({WGI_META_NAMES}.remote_addr, l_empty_string, False)
 
 				--| REMOTE_HOST
-			remote_host := meta_string_variable_or_default ({WGI_META_NAMES}.remote_host, empty_string, False)
+			remote_host := meta_string_variable_or_default ({WGI_META_NAMES}.remote_host, l_empty_string, False)
 
 				--| REQUEST_URI
 			s := meta_string_variable ({WGI_META_NAMES}.request_uri)
