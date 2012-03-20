@@ -8,7 +8,7 @@ class
 	ECHO_SERVER
 
 inherit
-	WSF_SERVICE
+	WSF_DEFAULT_SERVICE
 
 create
 	make
@@ -17,10 +17,9 @@ feature {NONE} -- Initialization
 
 	make
 			-- Initialize `Current'.
-		local
-			launcher: WSF_DEFAULT_SERVICE_LAUNCHER
 		do
-			create launcher.make_and_launch_with_options (agent execute, <<["port", 9091]>>)
+			set_service_option ("port", 9091)
+			make_and_launch
 		end
 
 feature -- Execution
@@ -60,7 +59,7 @@ feature -- Execution
 				l_body.append ("%T"+ q.item.name + "=" + q.item.string_representation +"%N")
 			end
 
-			res.put_response (page)
+			res.send (page)
 		end
 
 feature -- Access
