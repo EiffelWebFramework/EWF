@@ -73,7 +73,7 @@ feature -- Format
 	request_accepted_format (a_format_variable_name: detachable READABLE_STRING_8; a_supported_content_types: detachable ARRAY [READABLE_STRING_8]): detachable READABLE_STRING_8
 			-- Format id for the request based on {HTTP_FORMAT_CONSTANTS}
 		do
-			if a_format_variable_name /= Void and then attached string_parameter (a_format_variable_name) as ctx_format then
+			if a_format_variable_name /= Void and then attached string_item (a_format_variable_name) as ctx_format then
 				Result := ctx_format.as_string_8
 			else
 				Result := request_format_from_content_type (request_accepted_content_type (a_supported_content_types))
