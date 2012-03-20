@@ -13,6 +13,11 @@ deferred class
 
 feature -- Output
 
+	put_character (c: CHARACTER_8)
+			-- Write `s' into the output stream
+		deferred
+		end
+
 	put_string (a_string: READABLE_STRING_8)
 			-- Write `a_string' to output stream.
 		require
@@ -24,7 +29,7 @@ feature -- Output
 	put_substring (a_string: READABLE_STRING_8; s, e: INTEGER)
 			-- Write substring of `a_string' between indexes
 			-- `s' and `e' to output stream.
-			--| Could be redefined for optimization			
+			--| Could be redefined for optimization
 		require
 			is_open_write: is_open_write
 			a_string_not_void: a_string /= Void
@@ -39,7 +44,7 @@ feature -- Output
 
 	put_character_8 (c: CHARACTER_8)
 			-- Write `c' to output stream.
-			--| Could be redefined for optimization			
+			--| Could be redefined for optimization
 		require
 			is_open_write: is_open_write
 		do

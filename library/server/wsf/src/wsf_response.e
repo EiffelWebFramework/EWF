@@ -117,6 +117,14 @@ feature -- Header output operation
 
 feature -- Output operation
 
+	put_character (c: CHARACTER_8)
+			-- Send the string `s'
+		require
+			message_writable: message_writable
+		do
+			wgi_response.put_character (c)
+		end
+
 	put_string (s: READABLE_STRING_8)
 			-- Send the string `s'
 		require
@@ -208,7 +216,7 @@ feature -- Redirect
 			h: HTTP_HEADER
 		do
 			if header_committed then
-				-- This might be a trouble about content-length				
+				-- This might be a trouble about content-length
 				put_string ("Headers already sent.%NCannot redirect, for now please follow this <a %"href=%"" + a_url + "%">link</a> instead%N")
 			else
 				if a_header /= Void then

@@ -12,6 +12,11 @@ deferred class
 
 feature -- Core operation
 
+	put_character (c: CHARACTER_8)
+			-- Write `s' into the output stream
+		deferred
+		end
+
 	put_string (s: STRING_8)
 			-- Write `s' into the output stream
 		require
@@ -20,7 +25,7 @@ feature -- Core operation
 		end
 
 	flush
-			-- Flush the output stream	
+			-- Flush the output stream
 		do
 		end
 

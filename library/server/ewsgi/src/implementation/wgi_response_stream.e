@@ -104,6 +104,12 @@ feature -- Header output operation
 
 feature -- Output operation
 
+	put_character (c: CHARACTER_8)
+			-- Send the string `s'
+		do
+			output.put_character (c)
+		end
+
 	put_string (s: READABLE_STRING_8)
 			-- Send the string `s'
 		do
