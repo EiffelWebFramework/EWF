@@ -10,9 +10,9 @@ feature -- Access
 		local
 			libfcgi: WGI_LIBFCGI_CONNECTOR
 		do
-			create libfcgi.make (Current)
+			create libfcgi.make (to_wgi_service)
 			libfcgi.launch
-		end	
+		end
 
 	gateway_name: STRING = "libFCGI"
 
@@ -20,7 +20,7 @@ feature -- Access
 		do
 			(create {EXCEPTIONS}).die (a_code)
 		end
-	
+
 
 note
 	copyright: "Copyright (c) 1984-2011, Eiffel Software and others"
