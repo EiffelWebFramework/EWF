@@ -87,6 +87,7 @@ feature -- Header output operation
 			wgi_response.put_header_text (a_headers)
 		ensure
 			status_set: status_is_set
+			status_committed: status_committed
 			header_committed: header_committed
 			message_writable: message_writable
 		end
@@ -102,7 +103,7 @@ feature -- Header output operation
 			set_status_code (a_status_code)
 			if a_headers /= Void then
 				create h.make_from_array (a_headers)
-				wgi_response.put_header_text (h.string)
+				put_header_text (h.string)
 			end
 		ensure
 			header_committed: header_committed

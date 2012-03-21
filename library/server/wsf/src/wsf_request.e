@@ -244,8 +244,6 @@ feature -- Access: global variable
 			-- Variable named `a_name' from any of the variables container
 			-- and following a specific order
 			-- execution, environment, get, post, cookies
-		local
-			v: detachable WSF_VALUE
 		do
 			Result := meta_variable (a_name)
 			if Result = Void then
