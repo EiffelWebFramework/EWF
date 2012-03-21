@@ -247,13 +247,13 @@ feature -- Access: global variable
 		local
 			v: detachable WSF_VALUE
 		do
-			v := meta_variable (a_name)
-			if v = Void then
-				v := query_parameter (a_name)
-				if v = Void then
-					v := form_parameter (a_name)
-					if v = Void then
-						v := cookie (a_name)
+			Result := meta_variable (a_name)
+			if Result = Void then
+				Result := query_parameter (a_name)
+				if Result = Void then
+					Result := form_parameter (a_name)
+					if Result = Void then
+						Result := cookie (a_name)
 					end
 				end
 			end
