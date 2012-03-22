@@ -244,7 +244,6 @@ feature {NONE} -- Element change: CGI meta parameter related to PATH_INFO
 			table: HASH_TABLE [READABLE_STRING_8, READABLE_STRING_8]
 			l_query_string: like query_string
 			l_request_uri: detachable STRING_32
-			p: INTEGER
 		do
 			create {STRING_8} empty_string.make_empty
 
@@ -271,15 +270,6 @@ feature {NONE} -- Element change: CGI meta parameter related to PATH_INFO
 			s := meta_string_variable ({WGI_META_NAMES}.content_type)
 			if s /= Void and then not s.is_empty then
 				content_type := s
-				p := s.index_of (';', 1)
-				if p = 0 then
-					content_type := s
-				else
-					content_type := s.substring (1, p - 1)
-				end
-					check
-						no_white_space: not content_type.has (' ')
-					end
 			else
 				content_type := Void
 			end
