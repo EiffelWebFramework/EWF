@@ -81,7 +81,7 @@ feature {NONE} -- Implementation
 		local
 			wgi_req: WGI_REQUEST
 		do
-			create {WGI_REQUEST_NULL} wgi_req.make (a_meta)
+			create {WGI_REQUEST_NULL} wgi_req.make_with_file (a_meta, io.input)
 			create Result.make_from_wgi (wgi_req)
 		end
 

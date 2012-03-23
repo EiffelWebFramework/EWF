@@ -5,31 +5,12 @@ note
 	date: "$Date$"
 	revision: "$Revision$"
 
-class
+deferred class
 	WGI_NULL_INPUT_STREAM
 
 inherit
 	WGI_INPUT_STREAM
-		undefine
-			read_to_string
-		end
 
-	CONSOLE
-		rename
-			make as console_make,
-			read_stream as read_string,
-			end_of_file as end_of_input
-		end
-
-create
-	make
-
-feature {NONE} -- Initialization
-
-	make
-		do
-			make_open_stdin ("stdin")
-		end
 
 note
 	copyright: "2011-2011, Eiffel Software and others"

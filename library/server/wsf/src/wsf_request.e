@@ -77,6 +77,14 @@ feature {NONE} -- Initialization
 				content_length_value := 0
 			end
 
+			-- Content-Type
+			s8 := wgi_request.content_type
+			if s8 /= Void then
+				content_type := s8
+			else
+				content_type := Void
+			end
+
 			--| PATH_INFO
 			path_info := url_encoder.decoded_string (wgi_request.path_info)
 
@@ -396,7 +404,7 @@ feature -- Access: CGI meta parameters - 1.1
 	content_length_value: NATURAL_64
 			-- Integer value related to `content_length"
 
-	content_type: detachable READABLE_STRING_8
+	content_type: detachable HTTP_CONTENT_TYPE
 			-- If the wgi_request includes a message-body, CONTENT_TYPE is set to
 			-- the Internet Media Type [9] of the attached entity if the type
 			-- was provided via a "Content-type" field in the wgi_request header,
@@ -436,9 +444,6 @@ feature -- Access: CGI meta parameters - 1.1
 			-- determine the correct datatype, or it MAY omit this
 			-- metavariable when communicating the wgi_request information to the
 			-- script.
-		do
-			Result := wgi_request.content_type
-		end
 
 	gateway_interface: READABLE_STRING_8
 			-- This metavariable is set to the dialect of CGI being used by
@@ -1145,7 +1150,7 @@ feature -- Access: MIME handler
 			hdls.force (a_handler)
 		end
 
-	mime_handler (a_content_type: READABLE_STRING_8): detachable WSF_MIME_HANDLER
+	mime_handler (a_content_type: HTTP_CONTENT_TYPE): detachable WSF_MIME_HANDLER
 			-- Mime handler associated with `a_content_type'
 		do
 			if attached mime_handlers as hdls then
@@ -1169,7 +1174,7 @@ feature {NONE} -- Implementation: MIME handler
 
 	init_mime_handlers
 		do
-			register_mime_handler (create {WSF_MULTIPART_FORM_DATA_HANDLER}.make (error_handler))
+			register_mime_handler (create {WSF_MULTIPART_FORM_DATA_HANDLER}.make)
 			register_mime_handler (create {WSF_APPLICATION_X_WWW_FORM_URLENCODED_HANDLER})
 		end
 
@@ -1566,7 +1571,7 @@ feature {NONE} -- Implementation: utilities
 
 invariant
 	empty_string_unchanged: empty_string.is_empty
-
+	wgi_request.content_type /= Void implies content_type /= Void
 
 note
 	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"

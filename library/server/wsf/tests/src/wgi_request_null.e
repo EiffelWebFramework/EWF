@@ -14,19 +14,20 @@ inherit
 		end
 
 create
-	make
+	make_with_file,
+	make_with_body
 
 feature {NONE} -- Initialization
 
-	make (a_meta: ARRAY [TUPLE [name: READABLE_STRING_8; value: READABLE_STRING_8]])
+	make_with_file (a_meta: ITERABLE [TUPLE [name: READABLE_STRING_8; value: READABLE_STRING_8]]; f: FILE)
 		local
 			ht: HASH_TABLE [READABLE_STRING_8, READABLE_STRING_8]
-			i: WGI_NULL_INPUT_STREAM
+			i: WGI_NULL_FILE_INPUT_STREAM
 			c: WGI_NULL_CONNECTOR
 		do
 			create c.make
-			create i.make
-			create ht.make (a_meta.count)
+			create i.make (f)
+			create ht.make (10)
 			across
 				a_meta as curs
 			loop
@@ -35,6 +36,22 @@ feature {NONE} -- Initialization
 			wgi_request_from_table_make (ht, i, c)
 		end
 
+	make_with_body (a_meta: ITERABLE [TUPLE [name: READABLE_STRING_8; value: READABLE_STRING_8]]; s: READABLE_STRING_8)
+		local
+			ht: HASH_TABLE [READABLE_STRING_8, READABLE_STRING_8]
+			i: WGI_NULL_STRING_INPUT_STREAM
+			c: WGI_NULL_CONNECTOR
+		do
+			create c.make
+			create i.make (s)
+			create ht.make (10)
+			across
+				a_meta as curs
+			loop
+				ht.force (curs.item.value, curs.item.name)
+			end
+			wgi_request_from_table_make (ht, i, c)
+		end
 
 note
 	copyright: "2011-2011, Eiffel Software and others"
