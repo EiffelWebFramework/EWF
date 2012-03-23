@@ -115,11 +115,13 @@ feature {NONE} -- Initialization
 			not has_error implies (create {HTTP_CONTENT_TYPE}.make_from_string (string)).same_string (string)
 		end
 
-feature -- Access
+feature -- Status report
 
 	has_error: BOOLEAN
 			-- Current has error?
 			--| Mainly in relation with `make_from_string'
+
+feature -- Access
 
 	type: READABLE_STRING_8
 			-- Main type
@@ -144,6 +146,7 @@ feature -- Access
 		end
 
 	parameters: detachable HASH_TABLE [READABLE_STRING_8, READABLE_STRING_8]
+			-- Parameters
 
 feature -- Conversion
 
@@ -194,15 +197,10 @@ feature -- Conversion
 			Result := res
 		end
 
-feature {NONE} -- Internal
-
-	internal_string: detachable STRING_8
-
-	internal_simple_type: detachable STRING_8
-
 feature -- Status report
 
 	same_as (other: HTTP_CONTENT_TYPE): BOOLEAN
+			-- Current has same type/subtype and parameters as `other'?
 		local
 			plst,oplst: like parameters
 		do
@@ -228,12 +226,14 @@ feature -- Status report
 			end
 		end
 
-	same_media_type (s: READABLE_STRING_8): BOOLEAN
+	same_simple_type (s: READABLE_STRING_8): BOOLEAN
+			-- Current has same type/subtype string representation as `s'?	
 		do
 			Result := simple_type.same_string (s)
 		end
 
 	same_string (s: READABLE_STRING_8): BOOLEAN
+			-- Current has same string representation as `s'?
 		do
 			Result := string.same_string (s)
 		end
@@ -255,7 +255,7 @@ feature -- Element change
 		end
 
 	remove_parameter (a_name: READABLE_STRING_8)
-			-- Remove parameter
+			-- Remove parameter named `a_name'
 		do
 			if attached parameters as plst then
 				plst.prune (a_name)
@@ -269,6 +269,7 @@ feature -- Element change
 feature {NONE} -- Implementation
 
 	add_parameter_from_string (s: READABLE_STRING_8; start_index, end_index: INTEGER)
+			-- Add parameter from string   "  attribute=value  "
 		local
 			pn,pv: STRING_8
 			i: INTEGER
@@ -307,6 +308,12 @@ feature {NONE} -- Implementation
 			end
 			has_error := has_error or err
 		end
+
+feature {NONE} -- Internal
+
+	internal_string: detachable STRING_8
+
+	internal_simple_type: detachable STRING_8
 
 feature -- Status report
 

@@ -26,7 +26,7 @@ feature -- Status report
 
 	valid_content_type (a_content_type: HTTP_CONTENT_TYPE): BOOLEAN
 		do
-			Result := a_content_type.same_media_type ({HTTP_MIME_TYPES}.multipart_form_data)
+			Result := a_content_type.same_simple_type ({HTTP_MIME_TYPES}.multipart_form_data)
 		end
 
 feature -- Execution
