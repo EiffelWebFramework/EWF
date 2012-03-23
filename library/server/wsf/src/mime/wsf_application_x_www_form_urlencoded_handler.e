@@ -16,7 +16,7 @@ feature -- Status report
 
 	valid_content_type (a_content_type: HTTP_CONTENT_TYPE): BOOLEAN
 		do
-			Result := a_content_type.same_type_and_subtype ({HTTP_MIME_TYPES}.application_x_www_form_encoded)
+			Result := a_content_type.same_media_type ({HTTP_MIME_TYPES}.application_x_www_form_encoded)
 		end
 
 feature -- Execution

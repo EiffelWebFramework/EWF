@@ -199,7 +199,7 @@ feature -- Conversion
 		do
 			res := internal_string
 			if res = Void then
-				create res.make_from_string (type_and_subtype_string)
+				create res.make_from_string (media_type)
 				if has_parameter then
 					 res.append_character (';')
 					 res.append_character (' ')
@@ -214,13 +214,13 @@ feature -- Conversion
 			Result := res
 		end
 
-	type_and_subtype_string: READABLE_STRING_8
+	media_type: READABLE_STRING_8
 			-- String representation of type/subtype	
 		local
-			res: like internal_type_and_subtype_string
+			res: like internal_media_type
 			s: like subtype
 		do
-			res := internal_type_and_subtype_string
+			res := internal_media_type
 			if res = Void then
 				create res.make_from_string (type)
 				s := subtype
@@ -230,7 +230,7 @@ feature -- Conversion
 					res.append_character ('/')
 					res.append (s)
 				end
-				internal_type_and_subtype_string := res
+				internal_media_type := res
 			end
 			Result := res
 		end
@@ -239,7 +239,7 @@ feature {NONE} -- Internal
 
 	internal_string: detachable STRING_8
 
-	internal_type_and_subtype_string: detachable STRING_8
+	internal_media_type: detachable STRING_8
 
 feature -- Status report
 
@@ -256,9 +256,9 @@ feature -- Status report
 			end
 		end
 
-	same_type_and_subtype (s: READABLE_STRING_8): BOOLEAN
+	same_media_type (s: READABLE_STRING_8): BOOLEAN
 		do
-			Result := type_and_subtype_string.same_string (s)
+			Result := media_type.same_string (s)
 		end
 
 	same_string (s: READABLE_STRING_8): BOOLEAN
