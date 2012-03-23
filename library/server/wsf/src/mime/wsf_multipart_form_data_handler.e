@@ -62,7 +62,7 @@ feature {NONE} -- Implementation: Form analyzer
 			is_crlf: BOOLEAN
 		do
 			l_boundary := a_content_type.parameter ("boundary")
-			if l_boundary /= Void then
+			if l_boundary /= Void and then not l_boundary.is_empty then
 				p := s.substring_index (l_boundary, 1)
 				if p > 1 then
 					l_boundary_prefix := s.substring (1, p - 1)

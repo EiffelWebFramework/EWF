@@ -48,8 +48,8 @@ feature -- Tests
 						["PATH_INFO", "/foo"]
 					>>
 
-			create ct.make_from_content_type_header ({HTTP_MIME_TYPES}.multipart_form_data)
-			ct.set_parameter ("boundary", "__=_the_boundary_1332296477_1804289383_=__")
+			create ct.make_from_string ({HTTP_MIME_TYPES}.multipart_form_data)
+			ct.add_parameter ("boundary", "__=_the_boundary_1332296477_1804289383_=__")
 			create h.make
 			h.put_content_type (ct)
 
@@ -64,7 +64,7 @@ Content-Disposition: form-data; name="password"
 EWFpassword
 --__=_the_boundary_1332296477_1804289383_=__--
 ]"
-			
+
 			h.put_content_length (b.count)
 
 			--| Case #1
