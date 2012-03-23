@@ -18,6 +18,7 @@
 		<library name="http_client" location="..\..\..\client\http_client\http_client.ecf"/>
 		<library name="testing" location="$ISE_LIBRARY\library\testing\testing.ecf"/>
 		<library name="thread" location="$ISE_LIBRARY\library\thread\thread.ecf"/>
+		<library name="http" location="..\..\..\protocol\http\http.ecf" readonly="false"/>
 		<library name="wsf" location="..\wsf.ecf" readonly="false"/>
 		<tests name="src" location=".\src\" recursive="true"/>
 	</target>
