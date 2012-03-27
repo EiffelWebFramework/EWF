@@ -51,8 +51,6 @@ feature {NONE} -- Initialization
 		end
 
 	frozen make_and_launch (a_service: like service; a_options: like options)
-		require
-			a_options_attached: a_options /= Void
 		do
 			make (a_service, a_options)
 			launch
