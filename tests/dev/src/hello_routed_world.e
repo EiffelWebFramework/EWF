@@ -12,17 +12,18 @@ inherit
 
 	WSF_HANDLER_HELPER
 
+	WSF_DEFAULT_SERVICE
+
 create
 	make
 
 feature {NONE} -- Initialization
 
 	make
-		local
-			s: WSF_DEFAULT_SERVICE_LAUNCHER
 		do
 			initialize_router
-			create s.make_and_launch_with_options (agent execute, <<["port", 8099]>>)
+			set_service_option ("port", 8099)
+			make_and_launch
 		end
 
 	create_router
@@ -111,7 +112,7 @@ feature -- Execution
 --			h.put_content_length (0)
 --			res.set_status_code ({HTTP_STATUS_CODE}.moved_permanently)
 			res.set_status_code ({HTTP_STATUS_CODE}.ok)
-			res.write_header_text (h.string)
+			res.put_header_text (h.string)
 
 			from
 				create e
@@ -124,7 +125,7 @@ feature -- Execution
 				else
 					s.append ("%NRedirected to " + l_url + " in 1 second :%N")
 				end
-				res.write_chunk (s); s.wipe_out
+				res.put_chunk (s, Void); s.wipe_out
 				from
 					i := 1
 				until
@@ -134,15 +135,15 @@ feature -- Execution
 					if i \\ 100 = 0 then
 						s.append_character ('%N')
 					end
-					res.write_chunk (s); s.wipe_out
+					res.put_chunk (s, Void); s.wipe_out
 					e.sleep (1_000_000)
 					i := i + 1
 				end
 				n := n - 1
 			end
 			s.append ("%NYou are now being redirected...%N")
-			res.write_chunk (s); s.wipe_out
-			res.write_chunk (Void)
+			res.put_chunk (s, Void); s.wipe_out
+			res.put_chunk_end
 		end
 
 	execute_home (ctx: WSF_URI_TEMPLATE_HANDLER_CONTEXT; req: WSF_REQUEST; res: WSF_RESPONSE)
@@ -166,8 +167,8 @@ feature -- Execution
 			end
 			l_body.append ("</body></html>%N")
 
-			res.write_header ({HTTP_STATUS_CODE}.ok, <<["Content-Type", "text/html"], ["Content-Length", l_body.count.out]>>)
-			res.write_string (l_body)
+			res.put_header ({HTTP_STATUS_CODE}.ok, <<["Content-Type", "text/html"], ["Content-Length", l_body.count.out]>>)
+			res.put_string (l_body)
 		end
 
 	execute_hello (req: WSF_REQUEST; res: WSF_RESPONSE; a_name: detachable READABLE_STRING_32; ctx: WSF_HANDLER_CONTEXT)
@@ -204,8 +205,8 @@ feature -- Execution
 				h.put_content_type (l_response_content_type)
 				h.put_content_length (l_body.count)
 				res.set_status_code ({HTTP_STATUS_CODE}.ok)
-				res.write_header_text (h.string)
-				res.write_string (l_body)
+				res.put_header_text (h.string)
+				res.put_string (l_body)
 			end
 		end
 
