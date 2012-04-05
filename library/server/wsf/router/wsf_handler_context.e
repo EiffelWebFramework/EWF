@@ -1,7 +1,10 @@
 note
 	description: "[
-
-			]"
+					Context for the handler execution
+					It provides information related to the matching handler at runtime, i.e:
+						- request: WSF_REQUEST -- Associated request
+					- path: READABLE_STRING_8	-- Associated path
+				]"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -114,27 +117,12 @@ feature -- Item
 		deferred
 		end
 
-	parameter (a_name: READABLE_STRING_8): detachable WSF_VALUE
-			-- Variable value for parameter or variable `a_name'
-			-- See `{WSF_REQUEST}.item(s)'
-		obsolete "[2012-Mars-19] Use `item (a_name)' ."
-		do
-			Result := item (a_name)
-		end
-
 feature -- Parameter
 
 	string_item (a_name: READABLE_STRING_8): detachable READABLE_STRING_32
 			-- String value for any variable of parameter `a_name' if relevant.	
 		do
 			Result := string_from (item (a_name))
-		end
-
-	string_parameter (a_name: READABLE_STRING_8): detachable READABLE_STRING_32
-			-- String value for any variable of parameter `a_name' if relevant.	
-		obsolete "[2012-Mars-19] Use `string_item (a_name)' ."
-		do
-			Result := string_item (a_name)
 		end
 
 	string_array_item (a_name: READABLE_STRING_8): detachable ARRAY [READABLE_STRING_32]

@@ -1,6 +1,7 @@
 note
-	description: "Summary description for {DEFAULT_REQUEST_URI_TEMPLATE_ROUTER}."
-	author: ""
+	description: "[
+					Default router based on URI Template map
+				]"
 	date: "$Date$"
 	revision: "$Revision$"
 

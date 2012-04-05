@@ -1,28 +1,38 @@
 note
 	description: "[
-						WSF_URI_ROUTING_HANDLER is a default descendant of WSF_URI_ROUTING_HANDLER_I
-						for WSF_URI_ROUTER
+					a WSF_ROUTE object associates a handler and the associated context at runtime
 				]"
 	date: "$Date$"
 	revision: "$Revision$"
 
 class
-	WSF_URI_ROUTING_HANDLER
-
-inherit
-	WSF_URI_ROUTING_HANDLER_I [WSF_HANDLER [WSF_URI_HANDLER_CONTEXT], WSF_URI_HANDLER_CONTEXT]
-		redefine
-			router
-		end
+	WSF_ROUTE [H -> WSF_HANDLER [C], C -> WSF_HANDLER_CONTEXT]
 
 create
 	make
 
-feature {NONE} -- Routing
+feature {NONE} -- Initialization
 
-	router: WSF_URI_ROUTER
+	make (h: H; c: C)
+			-- Instantiate Current with `h' and `c'
+		do
+			handler := h
+			context := c
+		end
 
-;note
+feature -- Access
+
+	handler: H
+			-- Handler
+
+	context: C
+			-- Context associated to `handler' for execution
+
+invariant
+	handler /= Void
+	context /= Void
+
+note
 	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[

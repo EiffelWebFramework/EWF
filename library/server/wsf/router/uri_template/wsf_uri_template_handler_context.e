@@ -1,6 +1,17 @@
 note
-	description: "Summary description for {WSF_URI_TEMPLATE_HANDLER_CONTEXT}."
-	author: ""
+	description: "[
+				Context for the handler execution
+
+				The associated context {WSF_URI_TEMPLATE_HANDLER_CONTEXT} add information about the matched map
+					- uri_template : the associated URI_TEMPLATE
+					- uri_template_match : the matching result providing path variables
+					- additional path_parameter (..) and related queries
+
+				In addition to what WSF_HANDLER_CONTEXT already provides, i.e:
+				 	- request: WSF_REQUEST -- Associated request
+					- path: READABLE_STRING_8	-- Associated path				
+
+			]"
 	date: "$Date$"
 	revision: "$Revision$"
 

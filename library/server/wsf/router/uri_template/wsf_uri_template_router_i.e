@@ -1,6 +1,16 @@
 note
-	description: "Summary description for {WSF_URI_TEMPLATE_ROUTER}."
-	author: ""
+	description: "[
+				URL dispatcher/router based on URI Template mapping and request methods if precised
+				The associated context {WSF_URI_TEMPLATE_HANDLER_CONTEXT} contains information about the matched map.
+				
+				Examples:
+				
+					map ("/users/", users_handler)
+					map_with_request_methods ("/order/{order-id}", order_handler, <<"GET", "POST">>)
+					map_agent_with_request_methods ("/order/{order-id}", agent do_get_order, <<"GET">>)
+					map_agent_with_request_methods ("/order/{order-id}", agent do_post_order, <<"POST">>)
+
+			]"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -108,7 +118,7 @@ feature {NONE} -- Implementation
 
 feature {WSF_ROUTED_SERVICE_I} -- Handler
 
-	handler (req: WSF_REQUEST): detachable TUPLE [handler: attached like default_handler; context: like default_handler_context]
+	matching_route (req: WSF_REQUEST): detachable WSF_ROUTE [H, C]
 		local
 			l_handlers: like handlers
 			t: READABLE_STRING_8
@@ -134,16 +144,24 @@ feature {WSF_ROUTED_SERVICE_I} -- Handler
 							create l_res.make_empty
 							l_res.path_variables.force (p.substring (t.count + 1, p.count), "path")
 
-							Result := [l_info.handler, handler_context (p, req, create {URI_TEMPLATE}.make (t), l_res)]
+							create Result.make (l_info.handler, handler_context (p, req, create {URI_TEMPLATE}.make (t), l_res))
 						elseif attached templates.item (t) as tpl and then
 							attached tpl.match (p) as res
 						then
-							Result := [l_info.handler, handler_context (p, req, tpl, res)]
+							create Result.make (l_info.handler, handler_context (p, req, tpl, res))
 						end
 					end
 				end
 				l_handlers.forth
 			end
+		end
+
+feature {WSF_ROUTED_SERVICE_I} -- Default: implementation		
+
+	default_handler_context (req: WSF_REQUEST): C
+			-- <Precursor>	
+		do
+			Result := handler_context (Void, req, create {URI_TEMPLATE}.make ("/"), create {URI_TEMPLATE_MATCH_RESULT}.make_empty)
 		end
 
 feature {NONE} -- Context factory
@@ -194,20 +212,6 @@ feature {NONE} -- Implementation
 			end
 		ensure
 			result_not_empty: not Result.is_empty
-		end
-
-feature {NONE} -- Default: implementation		
-
-	default_handler: detachable H
-
-	set_default_handler (h: like default_handler)
-		do
-			default_handler := h
-		end
-
-	default_handler_context (req: WSF_REQUEST): C
-		do
-			Result := handler_context (Void, req, create {URI_TEMPLATE}.make ("/"), create {URI_TEMPLATE_MATCH_RESULT}.make_empty)
 		end
 
 ;note

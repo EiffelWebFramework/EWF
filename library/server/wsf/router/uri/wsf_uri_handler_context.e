@@ -1,6 +1,11 @@
 note
-	description: "Summary description for {WSF_URI_HANDLER_CONTEXT}."
-	author: ""
+	description: "[
+				Context for the handler execution
+	
+				It does not provide additional information compared to {WSF_HANDLER_CONTEXT}
+				 	- request: WSF_REQUEST -- Associated request
+					- path: READABLE_STRING_8	-- Associated path				
+			]"
 	date: "$Date$"
 	revision: "$Revision$"
 
