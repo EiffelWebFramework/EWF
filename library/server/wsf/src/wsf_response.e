@@ -18,6 +18,7 @@ feature {NONE} -- Initialization
 
 	make_from_wgi (r: WGI_RESPONSE)
 		do
+			transfered_content_length := 0
 			wgi_response := r
 		end
 
@@ -116,6 +117,20 @@ feature -- Header output operation
 			wgi_response.put_header_lines (a_lines)
 		end
 
+feature -- Output report
+
+	transfered_content_length: NATURAL_64
+			-- Length of the content transfered via `put_string', `put_character'
+			-- `put_chunk', `put_substring'
+
+feature {NONE} -- Implementation
+
+	increment_transfered_content_length (n: INTEGER)
+			-- Increment `transfered_content_length' by `n'
+		do
+			transfered_content_length := transfered_content_length + n.to_natural_64
+		end
+
 feature -- Output operation
 
 	put_character (c: CHARACTER_8)
@@ -124,6 +139,7 @@ feature -- Output operation
 			message_writable: message_writable
 		do
 			wgi_response.put_character (c)
+			increment_transfered_content_length (1)
 		end
 
 	put_string (s: READABLE_STRING_8)
@@ -132,6 +148,7 @@ feature -- Output operation
 			message_writable: message_writable
 		do
 			wgi_response.put_string (s)
+			increment_transfered_content_length (s.count)
 		end
 
 	put_substring (s: READABLE_STRING_8; a_begin_index, a_end_index: INTEGER)
@@ -140,21 +157,26 @@ feature -- Output operation
 			message_writable: message_writable
 		do
 			wgi_response.put_substring (s, a_begin_index, a_end_index)
+			increment_transfered_content_length (a_end_index - a_begin_index + 1)
 		end
 
-	put_chunk (s: detachable READABLE_STRING_8; a_extension: detachable READABLE_STRING_8)
-			-- Write chunk `s'
-			-- If s is Void, this means this was the final chunk
+	put_chunk (s: READABLE_STRING_8; a_extension: detachable READABLE_STRING_8)
+			-- Write chunk non empty `s'
 			-- Note: that you should have header
 			-- "Transfer-Encoding: chunked"
 		require
+			s_not_empty: s /= Void and then not s.is_empty
 			message_writable: message_writable
 			valid_chunk_extension: a_extension /= Void implies not a_extension.has ('%N') and not not a_extension.has ('%R')
 		local
 			l_chunk_size_line: STRING_8
 			i: INTEGER
 		do
-			if s /= Void then
+			if s.is_empty then
+					-- Should not occur due to precondition,
+					-- but let's handle the case for backward compatibility reason.
+				put_chunk_end
+			else
 					--| Remove all left '0'
 				l_chunk_size_line := s.count.to_hex_string
 				from
@@ -176,16 +198,16 @@ feature -- Output operation
 				put_string (l_chunk_size_line)
 				put_string (s)
 				put_string ({HTTP_CONSTANTS}.crlf)
-			else
-				put_string ("0" + {HTTP_CONSTANTS}.crlf)
+				flush
+				increment_transfered_content_length (s.count)
 			end
-			flush
 		end
 
 	put_chunk_end
 			-- Put end of chunked content
 		do
-			put_chunk (Void, Void)
+			put_string ("0" + {HTTP_CONSTANTS}.crlf)
+			flush
 		end
 
 	flush
