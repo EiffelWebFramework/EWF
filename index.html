@@ -1,14 +1,12 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset='utf-8'>
+<html><head>
+  <meta charset="utf-8">
 
   <title>EiffelWebFramework/EWF @ GitHub</title>
 
   <style type="text/css">
     body {
       margin-top: 1.0em;
-      background-color: #7ffc32;
+      background-color: #ffffff;
       font-family: Helvetica, Arial, FreeSans, san-serif;
       color: #000000;
     }
@@ -16,30 +14,35 @@
       margin: 0 auto;
       width: 700px;
     }
-    h1 { font-size: 3.8em; color: #8003cd; margin-bottom: 3px; }
+    h1 { font-size: 3.8em; color: #000000; margin-bottom: 3px; }
     h1 .small { font-size: 0.4em; }
     h1 a { text-decoration: none }
-    h2 { font-size: 1.5em; color: #8003cd; }
-    h3 { text-align: center; color: #8003cd; }
-    a { color: #8003cd; }
+    h2 { font-size: 1.5em; color: #000000; }
+    h3 { text-align: center; color: #000000; }
+    a { color: #000000; }
     .description { font-size: 1.2em; margin-bottom: 30px; margin-top: 30px; font-style: italic;}
     .download { float: right; }
     pre { background: #000; color: #fff; padding: 15px;}
     hr { border: 0; width: 80%; border-bottom: 1px solid #aaa}
     .footer { text-align:center; padding-top:30px; font-style: italic; }
+  div#announce {
+		float: right;
+		border: solid 2px #99c;
+		padding: 10px;
+		margin: 10px;
+		font-size: 120%;
+	}
   </style>
-</head>
-
-<body>
-  <a href="http://github.com/EiffelWebFramework/EWF"><img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub" /></a>
+  <body>
+  <a href="http://github.com/EiffelWebFramework/EWF"><img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub" class="quimby_search_image"></a>
 
   <div id="container">
 
     <div class="download">
       <a href="http://github.com/EiffelWebFramework/EWF/zipball/master">
-        <img border="0" width="90" src="http://github.com/images/modules/download/zip.png"></a>
+        <img border="0" width="90" src="http://github.com/images/modules/download/zip.png" class="quimby_search_image"></a>
       <a href="http://github.com/EiffelWebFramework/EWF/tarball/master">
-        <img border="0" width="90" src="http://github.com/images/modules/download/tar.png"></a>
+        <img border="0" width="90" src="http://github.com/images/modules/download/tar.png" class="quimby_search_image"></a>
     </div>
 
     <h1><a href="http://github.com/EiffelWebFramework/EWF">EWF</a>
@@ -49,25 +52,36 @@
       Framework to build web server application in Eiffel
 Compliant with EWSGI specification (spec in-progress)
     </div>
+	<div id="announce">
+		Please visit the <a href="https://github.com/EiffelWebFramework/EWF/wiki">wiki</a><br/>
+		And subscribe to the <a href="http://groups.google.com/group/eiffel-web-framework">mailing list <br/><img src="https://a248.e.akamai.net/assets.github.com/img/bafcfb9334b52ba8762b69dd79301a2455751bee/687474703a2f2f67726f7570732e676f6f676c652e636f6d2f696e746c2f656e2f696d616765732f6c6f676f732f67726f7570735f6c6f676f5f736d2e676966"/></a><br/>
+	</div>
 
     <h2>License</h2>
 <p>Eiffel Forum V2</p>
 <h2>Authors</h2>
-<p>Jocelyn Fiat (jfiat@eiffel.com)
-<br/>
-<br/>      </p>
-
-
+Jocelyn Fiat<br/>
+Javier Velilla<br/>
+<h2>Contributors</h2>
+Paul Cohen<br/>
+Berend de Boer<br/>
+Alexander Kogtenkov<br/>
+Daniel Rodriguez<br/>
+other by code reviews, questions, discussion
+<br>
     <h2>Download</h2>
     <p>
       You can download this project in either
       <a href="http://github.com/EiffelWebFramework/EWF/zipball/master">zip</a> or
       <a href="http://github.com/EiffelWebFramework/EWF/tarball/master">tar</a> formats.
     </p>
+	<p>
+	  You can also download archive of the whole project (including submodules) at <a href="https://bitbucket.org/jocelyn/ewf/downloads">archives</a>.
+	</p>
     <p>You can also clone the project with <a href="http://git-scm.com">Git</a>
       by running:
-      <pre>$ git clone git://github.com/EiffelWebFramework/EWF</pre>
-    </p>
+      </p><pre>$ git clone git://github.com/EiffelWebFramework/EWF</pre>
+    <p></p>
 
     <div class="footer">
       get the source code on GitHub : <a href="http://github.com/EiffelWebFramework/EWF">EiffelWebFramework/EWF</a>
@@ -75,6 +89,4 @@ Compliant with EWSGI specification (spec in-progress)
 
   </div>
 
-  
-</body>
-</html>
+</body></html>
