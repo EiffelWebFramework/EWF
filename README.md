@@ -5,11 +5,11 @@
 
 Official project site for Eiffel Web Framework:
 
-* http://eiffel-world.github.com/Eiffel-Web-Framework/
+* http://eiffelwebframework.github.com/EWF/
 
 For more information please have a look at the related wiki:
 
-* https://github.com/Eiffel-World/Eiffel-Web-Framework/wiki
+* https://github.com/EiffelWebFramework/EWF/wiki
 
 ## Requirements
 
@@ -20,10 +20,10 @@ For more information please have a look at the related wiki:
 ## How to get the source code?
 
 Using git version >= 1.6.5
-* git clone --recursive https://github.com/Eiffel-World/Eiffel-Web-Framework.git
+* git clone --recursive https://github.com/EiffelWebFramework/EWF.git
 
 Otherwise, try
-* git clone https://github.com/Eiffel-World/Eiffel-Web-Framework.git
+* git clone https://github.com/EiffelWebFramework/EWF.git
 * cd Eiffel-Web-Framework
 * git submodule update --init
 * git submodule foreach --recursive git checkout master
@@ -77,4 +77,4 @@ An alternative to the last 2 instructions is to use the script from tools folder
 
 
 For more information please have a look at the related wiki:
-* https://github.com/Eiffel-World/Eiffel-Web-Framework/wiki
+* https://github.com/EiffelWebFramework/EWF/wiki
