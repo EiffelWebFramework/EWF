@@ -1,6 +1,6 @@
 ## Eiffel-Web-Framework ##
 
-The official documentation/wiki is located at https://github.com/Eiffel-World/Eiffel-Web-Framework/wiki , if you are visiting a "clone/fork", please always check the [[official wiki|https://github.com/Eiffel-World/Eiffel-Web-Framework/wiki]]. 
+The official documentation/wiki is located at https://github.com/EiffelWebFramework/EWF/wiki , if you are visiting a "clone/fork", please always check the [[official wiki|https://github.com/EiffelWebFramework/EWF/wiki]]. 
 
 
 - Mailing list: please visit and subscribe to the mailing list page [[http://groups.google.com/group/eiffel-web-framework]]  ![logo](http://groups.google.com/intl/en/images/logos/groups_logo_sm.gif)
