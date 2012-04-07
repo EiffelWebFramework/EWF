@@ -28,7 +28,8 @@ create
 	make,
 	make_with_count,
 	make_from_array,
-	make_from_header
+	make_from_header,
+	make_from_raw_header_data
 
 convert
 	make_from_array ({ARRAY [TUPLE [key: READABLE_STRING_8; value: READABLE_STRING_8]]}),
@@ -66,6 +67,27 @@ feature {NONE} -- Initialization
 			append_header_object (a_header)
 		end
 
+	make_from_raw_header_data (h: READABLE_STRING_8)
+			-- Create Current from raw header data
+        local
+        	line : detachable STRING
+			lines: LIST [READABLE_STRING_8]
+        do
+            lines := h.split ('%N')
+            make_with_count (lines.count)
+            across
+            	lines as c
+            loop
+            	line := c.item
+            	if not line.is_empty then
+            		if line[line.count] = '%R' then
+						line.remove_tail (1)
+            		end
+					add_header (line)
+            	end
+			end
+		end
+
 feature -- Recycle
 
 	recycle
@@ -98,6 +120,21 @@ feature -- Access
 		ensure
 			result_has_ending_cr_lf: Result.count >= 2 implies Result.substring (Result.count - 1, Result.count).same_string ("%R%N")
 			result_has_single_ending_cr_lf: Result.count >= 4 implies not Result.substring (Result.count - 3, Result.count).same_string ("%R%N%R%N")
+		end
+
+	to_name_value_iterable: ITERABLE [TUPLE [name: READABLE_STRING_8; value: READABLE_STRING_8]]
+		local
+			res: ARRAYED_LIST [TUPLE [READABLE_STRING_8, READABLE_STRING_8]]
+		do
+			create res.make (headers.count)
+			across
+				headers as c
+			loop
+				if attached header_name_value (c.item) as tu then
+					res.extend (tu)
+				end
+			end
+			Result := res
 		end
 
 feature -- Header: filling
@@ -141,7 +178,7 @@ feature -- Header change: general
 		require
 			h_not_empty: not h.is_empty
 		do
-			force_header_by_name (header_name (h), h)
+			force_header_by_name (header_name_colon (h), h)
 		end
 
 	add_header_key_value (k,v: READABLE_STRING_8)
@@ -529,7 +566,7 @@ feature {NONE} -- Implementation: Header
 	force_header_by_name (n: detachable READABLE_STRING_8; h: READABLE_STRING_8)
 			-- Add header `h' or replace existing header of same header name `n'
 		require
-			h_has_name_n: (n /= Void and attached header_name (h) as hn) implies n.same_string (hn)
+			h_has_name_n: (n /= Void and attached header_name_colon (h) as hn) implies n.same_string (hn)
 		local
 			l_headers: like headers
 		do
@@ -552,7 +589,7 @@ feature {NONE} -- Implementation: Header
 			end
 		end
 
-	header_name (h: READABLE_STRING_8): detachable READABLE_STRING_8
+	header_name_colon (h: READABLE_STRING_8): detachable STRING_8
 			-- If any, header's name with colon
 			--| ex: for "Foo-bar: something", this will return "Foo-bar:"
 		local
@@ -581,6 +618,36 @@ feature {NONE} -- Implementation: Header
 			Result := s
 		end
 
+	header_name_value (h: READABLE_STRING_8): detachable TUPLE [name: READABLE_STRING_8; value: READABLE_STRING_8]
+			-- If any, header's [name,value]
+			--| ex: for "Foo-bar: something", this will return ["Foo-bar", "something"]
+		local
+			s: detachable STRING_8
+			i,n: INTEGER
+			c: CHARACTER
+		do
+			from
+				i := 1
+				n := h.count
+				create s.make (10)
+			until
+				i > n or c = ':' or s = Void
+			loop
+				c := h[i]
+				inspect c
+				when ':' then
+				when '-', 'a' .. 'z', 'A' .. 'Z' then
+					s.extend (c)
+				else
+					s := Void
+				end
+				i := i + 1
+			end
+			if s /= Void then
+				Result := [s, h.substring (i, n)]
+			end
+		end
+
 feature {NONE} -- Implementation
 
 	append_line_to (s: READABLE_STRING_8; h: STRING_8)
@@ -595,7 +662,7 @@ feature {NONE} -- Implementation
 			h.append_character ('%N')
 		end
 
-	date_to_rfc1123_http_date_format (dt: DATE_TIME): READABLE_STRING_8
+	date_to_rfc1123_http_date_format (dt: DATE_TIME): STRING_8
 			-- String representation of `dt' using the RFC 1123
 		do
 			Result := dt.formatted_out ("ddd,[0]dd mmm yyyy [0]hh:[0]mi:[0]ss.ff2") + " GMT"

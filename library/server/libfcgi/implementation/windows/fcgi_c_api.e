@@ -101,6 +101,15 @@ feature -- Output
 			i := fwrite (v, 1, n, stdout)
 		end
 
+feature -- Error
+
+	put_error (v: POINTER; n: INTEGER)
+		local
+			i: INTEGER
+		do
+			i := fwrite (v, 1, n, stderr)
+		end
+
 feature {NONE} -- Output
 
 	fwrite (v: POINTER; a_size: INTEGER; n: INTEGER; fp: POINTER): INTEGER
@@ -128,6 +137,15 @@ feature -- Access
 		alias
 			"FCGI_stdin"
 		end
+
+	stderr: POINTER
+			-- FCGI_stderr() return pointer on error FCGI_FILE
+		external
+			"C inline use %"fcgi_stdio.h%""
+		alias
+			"FCGI_stderr"
+		end
+		
 
 note
 	copyright: "Copyright (c) 1984-2011, Eiffel Software and others"

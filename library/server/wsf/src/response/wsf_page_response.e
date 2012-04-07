@@ -1,5 +1,7 @@
 note
-	description: "Summary description for {WSF_PAGE_RESPONSE}."
+	description: "[
+
+		]"
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"

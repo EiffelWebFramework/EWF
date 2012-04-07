@@ -17,9 +17,10 @@ create
 
 feature {NONE} -- Initialization
 
-	make (a_output: like output)
+	make (a_output: like output; a_error: like error)
 		do
 			output := a_output
+			error := a_error
 		end
 
 feature {WGI_CONNECTOR, WGI_SERVICE} -- Commit
@@ -48,15 +49,6 @@ feature -- Status report
 			Result := status_is_set and header_committed
 		end
 
-feature {NONE} -- Core output operation
-
-	write (s: READABLE_STRING_8)
-			-- Send the content of `s'
-			-- this can be used for header and body
-		do
-			output.put_string (s)
-		end
-
 feature -- Status setting
 
 	status_is_set: BOOLEAN
@@ -79,8 +71,8 @@ feature -- Header output operation
 
 	put_header_text (a_text: READABLE_STRING_8)
 		do
-			write (a_text)
-			write (crlf)
+			output.put_string (a_text)
+			output.put_crlf
 			header_committed := True
 		end
 
@@ -105,7 +97,7 @@ feature -- Header output operation
 feature -- Output operation
 
 	put_character (c: CHARACTER_8)
-			-- Send the string `s'
+			-- Send the character `c'
 		do
 			output.put_character (c)
 		end
@@ -128,12 +120,23 @@ feature -- Output operation
 			output.flush
 		end
 
+feature -- Error reporting
+
+	put_error (a_message: READABLE_STRING_8)
+			-- Report error described by `a_message'
+			-- This might be used by the underlying connector
+		do
+			if attached error as err then
+				err.put_error (a_message)
+			end
+		end
+
 feature {NONE} -- Implementation: Access
 
-	crlf: STRING = "%R%N"
-			-- End of header
-
 	output: WGI_OUTPUT_STREAM
+			-- Server output channel
+
+	error: detachable WGI_ERROR_STREAM
 			-- Server output channel
 
 ;note

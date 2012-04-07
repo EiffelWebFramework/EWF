@@ -14,14 +14,14 @@ inherit
 
 feature -- Status report
 
-	valid_content_type (a_content_type: READABLE_STRING_8): BOOLEAN
+	valid_content_type (a_content_type: HTTP_CONTENT_TYPE): BOOLEAN
 		do
-			Result := a_content_type.same_string ({HTTP_MIME_TYPES}.application_x_www_form_encoded)
+			Result := a_content_type.same_simple_type ({HTTP_MIME_TYPES}.application_x_www_form_encoded)
 		end
 
 feature -- Execution
 
-	handle (a_content_type: READABLE_STRING_8; req: WSF_REQUEST;
+	handle (a_content_type: HTTP_CONTENT_TYPE; req: WSF_REQUEST;
 			a_vars: HASH_TABLE [WSF_VALUE, READABLE_STRING_32]; a_raw_data: detachable CELL [detachable STRING_8])
 		local
 			l_content: READABLE_STRING_8

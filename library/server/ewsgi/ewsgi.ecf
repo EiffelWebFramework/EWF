@@ -18,5 +18,7 @@
 		<cluster name="specification_request" location="specification\request" recursive="true"/>
 		<cluster name="specification_response" location="specification\response" recursive="true"/>
 		<cluster name="specification_connector" location="specification\connector" recursive="true"/>
+		<cluster name="specification_service" location="specification\service" recursive="true"/>
+		<cluster name="specification_stream" location="specification\stream" recursive="true"/>
 	</target>
 </system>

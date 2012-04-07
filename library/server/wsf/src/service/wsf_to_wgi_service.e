@@ -1,41 +1,44 @@
 note
 	description: "[
-		Inherit from this class to implement the main entry of your web service
-		You just need to implement `execute', get data from the request `req'
-		and write the response in `res'
-	]"
+			This class is the link between WGI_SERVICE and WSF_SERVICE
+			It makes a WSF_SERVICE callable from the WGI_ world.
+
+		]"
 	date: "$Date$"
 	revision: "$Revision$"
 
-deferred class
-	WSF_SERVICE
+class
+	WSF_TO_WGI_SERVICE
 
 inherit
 	WGI_SERVICE
-		rename
-			execute as wgi_execute
+
+create
+	make_from_service
+
+feature {NONE}  -- Make
+
+	make_from_service (a_service: like service)
+			-- Make from WSF_SERVICE `a_service'
+		do
+			service := a_service
 		end
 
-feature -- Execution
+	service: WSF_SERVICE
+			-- Associated WSF_SERVICE
 
-	execute (req: WSF_REQUEST; res: WSF_RESPONSE)
-			-- Execute the request
-			-- See `req.input' for input stream
-    		--     `req.meta_variables' for the CGI meta variable
-			-- and `res' for output buffer
-		deferred
-		end
+feature {WGI_CONNECTOR} -- Implementation: Execution
 
-feature {WGI_CONNECTOR} -- WGI Execution
-
-	wgi_execute (req: WGI_REQUEST; res: WGI_RESPONSE)
+	execute (req: WGI_REQUEST; res: WGI_RESPONSE)
+			-- Delegate the WGI processing to the WSF_SERVICE object
+			-- <Precursor>
 		local
 			w_res: detachable WSF_RESPONSE
 			w_req: detachable WSF_REQUEST
 		do
 			create w_res.make_from_wgi (res)
 			create w_req.make_from_wgi (req)
-			execute (w_req, w_res)
+			service.execute (w_req, w_res)
 			w_req.destroy
 		rescue
 			if w_res /= Void then

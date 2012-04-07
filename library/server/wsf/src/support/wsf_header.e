@@ -22,15 +22,15 @@ note
 class
 	WSF_HEADER
 
-obsolete "Use HTTP_HEADER [2011-nov-25]"
-
 inherit
 	HTTP_HEADER
 
 create
 	make,
-	make_with_count
-
+	make_with_count,
+	make_from_array,
+	make_from_header,
+	make_from_raw_header_data
 
 note
 	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"

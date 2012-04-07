@@ -1,6 +1,5 @@
 note
 	description: "Summary description for WSF_AGENT_HANDLER."
-	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 

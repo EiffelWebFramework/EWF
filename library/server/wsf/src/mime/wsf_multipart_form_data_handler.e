@@ -17,33 +17,21 @@ create
 
 feature {NONE} -- Initialization
 
-	make (a_err_handler: like error_handler)
+	make
 			-- Instantiate Current
 		do
-			error_handler := a_err_handler
 		end
-
-feature -- Error handling
-
-	has_error: BOOLEAN
-		do
-			Result := error_handler.has_error
-		end
-
-	error_handler: ERROR_HANDLER
-			-- Error handler
-			-- By default initialized to new handler
 
 feature -- Status report
 
-	valid_content_type (a_content_type: READABLE_STRING_8): BOOLEAN
+	valid_content_type (a_content_type: HTTP_CONTENT_TYPE): BOOLEAN
 		do
-			Result := a_content_type.starts_with ({HTTP_MIME_TYPES}.multipart_form_data)
+			Result := a_content_type.same_simple_type ({HTTP_MIME_TYPES}.multipart_form_data)
 		end
 
 feature -- Execution
 
-	handle (a_content_type: READABLE_STRING_8; req: WSF_REQUEST;
+	handle (a_content_type: HTTP_CONTENT_TYPE; req: WSF_REQUEST;
 				a_vars: HASH_TABLE [WSF_VALUE, READABLE_STRING_32]; a_raw_data: detachable CELL [detachable STRING_8])
 		local
 			s: like full_input_data
@@ -58,24 +46,23 @@ feature -- Execution
 
 feature {NONE} -- Implementation: Form analyzer
 
-	analyze_multipart_form (req: WSF_REQUEST; t: READABLE_STRING_8; s: READABLE_STRING_8; vars: HASH_TABLE [WSF_VALUE, READABLE_STRING_32])
+	analyze_multipart_form (req: WSF_REQUEST; a_content_type: HTTP_CONTENT_TYPE; s: READABLE_STRING_8; vars: HASH_TABLE [WSF_VALUE, READABLE_STRING_32])
 			-- Analyze multipart form content
 			--| FIXME[2011-06-21]: integrate eMIME parser library
 		require
-			t_attached: t /= Void
+			a_content_type_valid: a_content_type /= Void and not a_content_type.has_error
 			s_attached: s /= Void
 			vars_attached: vars /= Void
 		local
 			p,i,next_b: INTEGER
 			l_boundary_prefix: STRING
-			l_boundary: STRING
 			l_boundary_len: INTEGER
+			l_boundary: detachable READABLE_STRING_8
 			m: STRING
 			is_crlf: BOOLEAN
 		do
-			p := t.substring_index ("boundary=", 1)
-			if p > 0 then
-				l_boundary := t.substring (p + 9, t.count)
+			l_boundary := a_content_type.parameter ("boundary")
+			if l_boundary /= Void and then not l_boundary.is_empty then
 				p := s.substring_index (l_boundary, 1)
 				if p > 1 then
 					l_boundary_prefix := s.substring (1, p - 1)
@@ -116,7 +103,7 @@ feature {NONE} -- Implementation: Form analyzer
 						m := s.substring (i - 1, s.count)
 						m.right_adjust
 						if not l_boundary_prefix.same_string (m) then
-							error_handler.add_custom_error (0, "Invalid form data", "Invalid ending for form data from input")
+							req.error_handler.add_custom_error (0, "Invalid form data", "Invalid ending for form data from input")
 						end
 						i := next_b
 					end
@@ -235,10 +222,10 @@ feature {NONE} -- Implementation: Form analyzer
 						add_string_value_to_table (l_name, l_content, vars)
 					end
 				else
-					error_handler.add_custom_error (0, "unamed multipart entry", Void)
+					req.error_handler.add_custom_error (0, "unamed multipart entry", Void)
 				end
 			else
-				error_handler.add_custom_error (0, "missformed multipart entry", Void)
+				req.error_handler.add_custom_error (0, "missformed multipart entry", Void)
 			end
 		end
 

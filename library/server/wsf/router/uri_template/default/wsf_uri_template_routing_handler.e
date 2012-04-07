@@ -1,6 +1,8 @@
 note
-	description: "Summary description for {DEFAULT_REQUEST_URI_TEMPLATE_ROUTING_HANDLER}."
-	author: ""
+	description: "[
+						WSF_URI_TEMPLATE_ROUTING_HANDLER is a default descendant of WSF_URI_ROUTING_HANDLER_I
+						for WSF_URI_TEMPLATE_ROUTER
+				]"
 	date: "$Date$"
 	revision: "$Revision$"
 

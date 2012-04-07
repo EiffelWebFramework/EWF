@@ -1,28 +1,31 @@
 note
 	description: "[
-				WGI_SERVICE
-			]"
-	specification: "EWSGI specification https://github.com/Eiffel-World/Eiffel-Web-Framework/wiki/EWSGI-specification"
-	legal: "See notice at end of class."
-	status: "See notice at end of class."
+		Inherit from this class to implement the main entry of your web service
+		You just need to implement `execute', get data from the request `req'
+		and write the response in `res'
+	]"
 	date: "$Date$"
 	revision: "$Revision$"
 
 deferred class
-	WGI_SERVICE
+	WSF_SERVICE
 
-feature {WGI_CONNECTOR} -- Execution
+feature -- Execution
 
-	execute (req: WGI_REQUEST; res: WGI_RESPONSE)
+	execute (req: WSF_REQUEST; res: WSF_RESPONSE)
 			-- Execute the request
 			-- See `req.input' for input stream
     		--     `req.meta_variables' for the CGI meta variable
 			-- and `res' for output buffer
-		require
-			res_status_unset: not res.status_is_set
 		deferred
-		ensure
-			res_status_set: res.status_is_set
+		end
+
+feature -- Conversion
+
+	to_wgi_service: WGI_SERVICE
+			-- Adapt Current WSF Service to plug into WGI component
+		do
+			create {WSF_TO_WGI_SERVICE} Result.make_from_service (Current)
 		end
 
 note
@@ -35,5 +38,4 @@ note
 			Website http://www.eiffel.com
 			Customer support http://support.eiffel.com
 		]"
-
 end

@@ -55,8 +55,9 @@ feature -- Element change
 			url_location := a_url_location
 		end
 
-	set_content (a_content: attached like content; a_content_type: attached like content_type)
+	set_content (a_content: attached like content; a_content_type: like content_type)
 			-- Set `a_content' of type `a_content_type'
+			-- If `a_content_type' is Void, use value from `header' or default "text/plain"
 		do
 			content := a_content
 			content_type := a_content_type

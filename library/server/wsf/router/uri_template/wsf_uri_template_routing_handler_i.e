@@ -1,6 +1,7 @@
 note
-	description: "Summary description for {WSF_ROUTING_HANDLER }."
-	author: ""
+	description: "[
+						This class helps to build Routing handler based for WSF_URI_TEMPLATE_ROUTER
+				]"
 	date: "$Date$"
 	revision: "$Revision$"
 

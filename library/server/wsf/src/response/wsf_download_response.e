@@ -183,7 +183,7 @@ feature -- Content-type related
 			content_type := m
 		end
 
-feature {NONE} -- Implementation: output
+feature -- Implementation: output
 
 	send_file_content_to (fn: READABLE_STRING_8; res: WSF_RESPONSE)
 			-- Send the content of file `fn'

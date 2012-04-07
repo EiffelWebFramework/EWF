@@ -1,6 +1,20 @@
 note
-	description: "Summary description for {WSF_URI_ROUTER}."
-	author: ""
+	description: "[
+				URL dispatcher/router based on simple URI mapping and request methods if precised
+				The associated context {WSF_URI_HANDLER_CONTEXT} does not contains any additional information.
+				
+				The matching check if the same path is mapped, or if a substring of the path is mapped
+				
+				Examples:
+				
+					map ("/users/", users_handler)
+					map_with_request_methods ("/groups/", read_groups_handler, <<"GET">>)					
+					map_with_request_methods ("/groups/", write_groups_handler, <<"POST", "PUT", "DELETE">>)
+					map_agent_with_request_methods ("/order/", agent do_get_order, <<"GET">>)
+					map_agent_with_request_methods ("/order/", agent do_post_order, <<"POST">>)
+				
+
+			]"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -30,7 +44,7 @@ feature -- Initialization
 			set_base_url (a_base_url)
 		end
 
-feature -- Status report
+feature {WSF_ROUTED_SERVICE_I} -- Status report
 
 	handlers_matching_map (a_resource: READABLE_STRING_8; rqst_methods: detachable ARRAY [READABLE_STRING_8]): detachable LIST [H]
 		local
@@ -52,6 +66,14 @@ feature -- Status report
 					end
 				end
 			end
+		end
+
+feature {WSF_ROUTED_SERVICE_I} -- Default: implementation		
+
+	default_handler_context (req: WSF_REQUEST): C
+			-- <Precursor>
+		do
+			Result := handler_context (Void, req)
 		end
 
 feature -- Registration
@@ -82,10 +104,10 @@ feature {NONE} -- Implementation
 
 feature {NONE} -- Access: Implementation
 
-	handler (req: WSF_REQUEST): detachable TUPLE [handler: H; context: like default_handler_context]
+	handler (req: WSF_REQUEST): detachable WSF_ROUTE [H, C]
 		local
 			h: detachable H
-			ctx: detachable like default_handler_context
+			ctx: detachable C
 		do
 			h := handler_by_path (source_uri (req), req.request_method)
 			if h = Void then
@@ -99,7 +121,7 @@ feature {NONE} -- Access: Implementation
 					if ctx = Void then
 						ctx := handler_context (Void, req)
 					end
-					Result := [h, ctx]
+					create Result.make (h, ctx)
 				else
 					Result := Void
 				end
@@ -217,20 +239,6 @@ feature {NONE} -- Implementation
 			end
 		ensure
 			result_not_empty: not Result.is_empty
-		end
-
-feature {NONE} -- Default: implementation		
-
-	default_handler: detachable H
-
-	set_default_handler (h: like default_handler)
-		do
-			default_handler := h
-		end
-
-	default_handler_context (req: WSF_REQUEST): C
-		do
-			Result := handler_context (Void, req)
 		end
 
 note

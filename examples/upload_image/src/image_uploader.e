@@ -12,6 +12,8 @@ inherit
 
 	WSF_URI_TEMPLATE_ROUTED_SERVICE
 
+	WSF_DEFAULT_SERVICE
+
 create
 	make
 
@@ -19,13 +21,14 @@ feature {NONE} -- Initialization
 
 	make
 			-- Initialize Current
-		local
-			s: WSF_DEFAULT_SERVICE_LAUNCHER
 		do
 			initialize_router
-			create s.make_and_launch (agent execute)
-			-- Use the following line to use particular port number (as 9090) with Nino connector
-			-- create s.make_and_launch_with_options (agent execute, <<["port", 9090]>>)
+
+
+				-- To use particular port number (as 9090) with Nino connector
+				-- Uncomment the following line
+--			set_service_option ("port", 9090)
+			make_and_launch
 		end
 
 	create_router
@@ -126,7 +129,7 @@ feature -- Execution
 					n := n - 1
 				end
 				l_body.append ("	<input type=%"submit%" value=%"Upload%"/>%N</form>")
-				page.send_to (res)
+				res.send (page)
 			else
 				create l_body.make (255)
 				l_body.append ("<h1>EWF: Uploaded files</h1>%N")
@@ -154,7 +157,7 @@ feature -- Execution
 				page.set_title ("EWF: uploaded image")
 				page.add_style ("../style.css", "all")
 				page.set_body (l_body)
-				page.send_to (res)
+				res.send (page)
 			end
 		end
 

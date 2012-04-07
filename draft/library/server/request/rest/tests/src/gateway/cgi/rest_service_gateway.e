@@ -10,7 +10,7 @@ feature -- Access
 		local
 			cgi: WGI_CGI_CONNECTOR
 		do
-			create cgi.make (Current)
+			create cgi.make (to_wgi_service)
 			cgi.launch
 		end
 

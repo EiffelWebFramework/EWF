@@ -14,18 +14,20 @@ inherit
 
 	WSF_HANDLER_HELPER
 
+	WSF_DEFAULT_SERVICE
+
 create
 	make
 
 feature {NONE} -- Initialization
 
 	make
-		local
-			s: WSF_DEFAULT_SERVICE_LAUNCHER
 		do
 			initialize_router
-			create s.make_and_launch_with_options (agent execute, <<["port", 9090]>>)
+			set_service_option ("port", 9090)
+			make_and_launch
 		end
+
 
 	create_router
 		do

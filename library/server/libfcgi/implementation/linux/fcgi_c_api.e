@@ -96,6 +96,15 @@ feature -- Output
 			"FCGI_fwrite($v, 1, $n, FCGI_stdout);"
 		end
 
+feature -- Error
+
+	put_error (v: POINTER; n: INTEGER)
+		external
+			"C inline use %"fcgi_stdio.h%""
+		alias
+			"FCGI_fwrite($v, 1, $n, FCGI_stderr);"
+		end
+
 feature -- Access
 
 	stdout: POINTER
@@ -112,6 +121,14 @@ feature -- Access
 			"C inline use %"fcgi_stdio.h%""
 		alias
 			"FCGI_stdin"
+		end
+
+	stderr: POINTER
+			-- FCGI_stderr() return pointer on error FCGI_FILE
+		external
+			"C inline use %"fcgi_stdio.h%""
+		alias
+			"FCGI_stderr"
 		end
 
 note

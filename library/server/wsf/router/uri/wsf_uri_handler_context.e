@@ -1,6 +1,11 @@
 note
-	description: "Summary description for {WSF_URI_HANDLER_CONTEXT}."
-	author: ""
+	description: "[
+				Context for the handler execution
+	
+				It does not provide additional information compared to {WSF_HANDLER_CONTEXT}
+				 	- request: WSF_REQUEST -- Associated request
+					- path: READABLE_STRING_8	-- Associated path				
+			]"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -21,15 +26,13 @@ feature {NONE} -- Initialization
 			path := p
 		end
 
-feature -- Query	
+feature -- Item		
 
-	path_parameter (a_name: READABLE_STRING_8): detachable WSF_VALUE
+	item (a_name: READABLE_STRING_8): detachable WSF_VALUE
+			-- Variable value for parameter or variable `a_name'
+			-- See `{WSF_REQUEST}.item(s)'
 		do
-		end
-
-	query_parameter (a_name: READABLE_STRING_8): detachable WSF_VALUE
-		do
-			Result := request.query_parameter (a_name)
+			Result := request.item (a_name)
 		end
 
 note

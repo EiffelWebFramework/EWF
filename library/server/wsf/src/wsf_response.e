@@ -8,7 +8,7 @@ note
 class
 	WSF_RESPONSE
 
-create {WSF_SERVICE}
+create {WSF_TO_WGI_SERVICE}
 	make_from_wgi
 
 convert
@@ -18,6 +18,7 @@ feature {NONE} -- Initialization
 
 	make_from_wgi (r: WGI_RESPONSE)
 		do
+			transfered_content_length := 0
 			wgi_response := r
 		end
 
@@ -90,6 +91,7 @@ feature -- Header output operation
 			wgi_response.put_header_text (status_line + a_headers)
 		ensure
 			status_set: status_is_set
+			status_committed: status_committed
 			header_committed: header_committed
 			message_writable: message_writable
 		end
@@ -118,14 +120,29 @@ feature -- Header output operation
 			wgi_response.put_header_lines (a_lines)
 		end
 
+feature -- Output report
+
+	transfered_content_length: NATURAL_64
+			-- Length of the content transfered via `put_string', `put_character'
+			-- `put_chunk', `put_substring'
+
+feature {NONE} -- Implementation
+
+	increment_transfered_content_length (n: INTEGER)
+			-- Increment `transfered_content_length' by `n'
+		do
+			transfered_content_length := transfered_content_length + n.to_natural_64
+		end
+
 feature -- Output operation
 
 	put_character (c: CHARACTER_8)
-			-- Send the string `s'
+			-- Send the character `c'
 		require
 			message_writable: message_writable
 		do
 			wgi_response.put_character (c)
+			increment_transfered_content_length (1)
 		end
 
 	put_string (s: READABLE_STRING_8)
@@ -134,6 +151,7 @@ feature -- Output operation
 			message_writable: message_writable
 		do
 			wgi_response.put_string (s)
+			increment_transfered_content_length (s.count)
 		end
 
 	put_substring (s: READABLE_STRING_8; a_begin_index, a_end_index: INTEGER)
@@ -142,21 +160,26 @@ feature -- Output operation
 			message_writable: message_writable
 		do
 			wgi_response.put_substring (s, a_begin_index, a_end_index)
+			increment_transfered_content_length (a_end_index - a_begin_index + 1)
 		end
 
-	put_chunk (s: detachable READABLE_STRING_8; a_extension: detachable READABLE_STRING_8)
-			-- Write chunk `s'
-			-- If s is Void, this means this was the final chunk
+	put_chunk (s: READABLE_STRING_8; a_extension: detachable READABLE_STRING_8)
+			-- Write chunk non empty `s'
 			-- Note: that you should have header
 			-- "Transfer-Encoding: chunked"
 		require
+			s_not_empty: s /= Void and then not s.is_empty
 			message_writable: message_writable
 			valid_chunk_extension: a_extension /= Void implies not a_extension.has ('%N') and not not a_extension.has ('%R')
 		local
 			l_chunk_size_line: STRING_8
 			i: INTEGER
 		do
-			if s /= Void then
+			if s.is_empty then
+					-- Should not occur due to precondition,
+					-- but let's handle the case for backward compatibility reason.
+				put_chunk_end
+			else
 					--| Remove all left '0'
 				l_chunk_size_line := s.count.to_hex_string
 				from
@@ -178,16 +201,16 @@ feature -- Output operation
 				put_string (l_chunk_size_line)
 				put_string (s)
 				put_string ({HTTP_CONSTANTS}.crlf)
-			else
-				put_string ("0" + {HTTP_CONSTANTS}.crlf)
+				flush
+				increment_transfered_content_length (s.count)
 			end
-			flush
 		end
 
 	put_chunk_end
 			-- Put end of chunked content
 		do
-			put_chunk (Void, Void)
+			put_string ("0" + {HTTP_CONSTANTS}.crlf)
+			flush
 		end
 
 	flush
@@ -198,15 +221,31 @@ feature -- Output operation
 
 feature -- Response object
 
-	put_response (obj: WSF_RESPONSE_MESSAGE)
-			-- Set `obj' as the whole response to the client
-			--| `obj' is responsible to sent the status code, the header and the content
+	put_response (a_message: WSF_RESPONSE_MESSAGE)
+			-- Set `a_message' as the whole response to the client
+			--| `a_message' is responsible to sent the status code, the header and the content
+		obsolete
+			"[2012-Mars-19] Use `send (a_message)' "
 		require
 			header_not_committed: not header_committed
 			status_not_committed: not status_committed
 			no_message_committed: not message_committed
 		do
-			obj.send_to (Current)
+			a_message.send_to (Current)
+		ensure
+			status_committed: status_committed
+			header_committed: header_committed
+		end
+
+	send (a_message: WSF_RESPONSE_MESSAGE)
+			-- Set `a_message' as the whole response to the client
+			--| `a_message' is responsible to sent the status code, the header and the content
+		require
+			header_not_committed: not header_committed
+			status_not_committed: not status_committed
+			no_message_committed: not message_committed
+		do
+			a_message.send_to (Current)
 		ensure
 			status_committed: status_committed
 			header_committed: header_committed
@@ -262,6 +301,15 @@ feature -- Redirect
 			-- Redirect to the given url `a_url'
 		do
 			redirect_now_custom (a_url, {HTTP_STATUS_CODE}.temp_redirect, Void, [a_content, a_content_type])
+		end
+
+feature -- Error reporting
+
+	put_error (a_message: READABLE_STRING_8)
+			-- Report error described by `a_message'
+			-- This might be used by the underlying connector
+		do
+			wgi_response.put_error (a_message)
 		end
 
 note

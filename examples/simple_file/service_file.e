@@ -6,18 +6,13 @@ note
 class
 	SERVICE_FILE
 
+inherit
+	WSF_DEFAULT_SERVICE
+
 create
-	make
+	make_and_launch
 
 feature {NONE} -- Initialization
-
-	make
-			-- Run application.
-		local
-			s: WSF_DEFAULT_SERVICE_LAUNCHER
-		do
-			create s.make_and_launch (agent execute)
-		end
 
 	execute (req: WSF_REQUEST; res: WSF_RESPONSE)
 		local

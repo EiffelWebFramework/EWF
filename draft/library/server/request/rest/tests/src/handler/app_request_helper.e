@@ -84,7 +84,7 @@ feature -- Helpers
 				end
 				rep_data.set_message (s)
 			end
-			rep_data.send (res)
+			res.send (rep_data)
 			rep_data.recycle
 		end
 
