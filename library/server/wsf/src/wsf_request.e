@@ -1188,7 +1188,8 @@ feature {NONE} -- Form fields and related
 		local
 			vars: like internal_form_data_parameters_table
 			l_raw_data_cell: detachable CELL [detachable STRING_8]
-			l_type: like content_type
+			l_type: STRING_8
+			p: INTEGER
 		do
 			vars := internal_form_data_parameters_table
 			if vars = Void then
@@ -1202,9 +1203,17 @@ feature {NONE} -- Form fields and related
 					create vars.make (5)
 					vars.compare_objects
 
-					l_type := content_type
+					p := content_type.index_of (';', 1)
+					if p = 0 then
+						l_type := content_type
+					else
+						l_type := content_type.substring (1, p-1)
+						l_type.right_adjust
+					end
 					if l_type /= Void and then attached mime_handler (l_type) as hdl then
 						hdl.handle (l_type, Current, vars, l_raw_data_cell)
+					else
+						-- TODO: report error that we didn't recognise the mime type
 					end
 					if l_raw_data_cell /= Void and then attached l_raw_data_cell.item as l_raw_data then
 						-- What if no mime handler is associated to `l_type' ?
