@@ -1,18 +1,18 @@
 note
 	description: "[
 			Server request context of the httpd request
-
+			
 			It includes CGI interface and a few extra values that are usually valuable
-				 meta_variable (a_name: READABLE_STRING_8): detachable WSF_STRING
-				 meta_string_variable (a_name: READABLE_STRING_8): detachable READABLE_STRING_32
-
+			    meta_variable (a_name: READABLE_STRING_8): detachable WSF_STRING
+			    meta_string_variable (a_name: READABLE_STRING_8): detachable READABLE_STRING_32
+			    
 			In addition it provides
-
+				
 				query_parameter (a_name: READABLE_STRING_32): detachable WSF_VALUE
 				form_parameter (a_name: READABLE_STRING_32): detachable WSF_VALUE
 				cookie (a_name: READABLE_STRING_8): detachable WSF_VALUE
 				...
-
+				
 			And also has
 				execution_variable (a_name: READABLE_STRING_32): detachable ANY
 					--| to keep value attached to the request
@@ -151,7 +151,7 @@ feature -- Error handling
 
 	error_handler: ERROR_HANDLER
 			-- Error handler
-			-- By default initialized to new handler
+			-- By default initialized to new handler	
 
 feature -- Access: Input
 
@@ -164,7 +164,7 @@ feature -- Access: Input
 		end
 
 	is_chunked_input: BOOLEAN
-			-- Is request using chunked transfer-encoding?
+			-- Is request using chunked transfer-encoding?	
 		do
 			Result := wgi_request.is_chunked_input
 		end
@@ -241,7 +241,7 @@ feature {NONE} -- Access: global variable
 			end
 		end
 
-feature -- Access: global variable
+feature -- Access: global variable		
 
 	items: ITERABLE [WSF_VALUE]
 		do
@@ -358,9 +358,9 @@ feature -- Access: CGI Meta variables
 feature {NONE} -- Access: CGI meta parameters
 
 	meta_variables_table: HASH_TABLE [WSF_STRING, READABLE_STRING_8]
-			-- CGI Environment parameters
+			-- CGI Environment parameters		
 
-feature -- Access: CGI meta parameters - 1.1
+feature -- Access: CGI meta parameters - 1.1			
 
 	auth_type: detachable READABLE_STRING_8
 			-- This variable is specific to requests made via the "http"
@@ -923,7 +923,7 @@ feature -- Query parameters
 feature {NONE} -- Query parameters: implementation
 
 	query_parameters_table: HASH_TABLE [WSF_VALUE, READABLE_STRING_32]
-			-- Variables extracted from QUERY_STRING
+			-- Variables extracted from QUERY_STRING	
 		local
 			vars: like internal_query_parameters_table
 			p,e: INTEGER
@@ -1186,12 +1186,11 @@ feature {NONE} -- Form fields and related
 	uploaded_files_table: HASH_TABLE [WSF_UPLOADED_FILE, READABLE_STRING_32]
 
 	get_form_parameters
-			-- Variables sent by POST, ... request
+			-- Variables sent by POST, ... request	
 		local
 			vars: like internal_form_data_parameters_table
 			l_raw_data_cell: detachable CELL [detachable STRING_8]
-			l_type: STRING_8
-			p: INTEGER
+			l_type: like content_type
 		do
 			vars := internal_form_data_parameters_table
 			if vars = Void then
@@ -1205,17 +1204,9 @@ feature {NONE} -- Form fields and related
 					create vars.make (5)
 					vars.compare_objects
 
-					p := content_type.index_of (';', 1)
-					if p = 0 then
-						l_type := content_type
-					else
-						l_type := content_type.substring (1, p-1)
-						l_type.right_adjust
-					end
+					l_type := content_type
 					if l_type /= Void and then attached mime_handler (l_type) as hdl then
 						hdl.handle (l_type, Current, vars, l_raw_data_cell)
-					else
-						-- TODO: report error that we didn't recognise the mime type
 					end
 					if l_raw_data_cell /= Void and then attached l_raw_data_cell.item as l_raw_data then
 						-- What if no mime handler is associated to `l_type' ?
@@ -1229,7 +1220,7 @@ feature {NONE} -- Form fields and related
 		end
 
 	form_parameters_table: HASH_TABLE [WSF_VALUE, READABLE_STRING_32]
-			-- Variables sent by POST request
+			-- Variables sent by POST request	
 		local
 			vars: like internal_form_data_parameters_table
 		do
@@ -1332,7 +1323,7 @@ feature -- URL Utility
 feature {NONE} -- Implementation: URL Utility
 
 	internal_url_base: detachable STRING
-			-- URL base of potential script
+			-- URL base of potential script	
 
 feature -- Element change
 
@@ -1348,7 +1339,7 @@ feature -- Element change
 			error_handler := ehdl
 		end
 
-feature {WSF_MIME_HANDLER} -- Temporary File handling
+feature {WSF_MIME_HANDLER} -- Temporary File handling		
 
 	delete_uploaded_file (uf: WSF_UPLOADED_FILE)
 			-- Delete file `a_filename'
@@ -1511,7 +1502,7 @@ feature {NONE} -- Implementation
 			end
 		end
 
-feature {NONE} -- Implementation: utilities
+feature {NONE} -- Implementation: utilities	
 
 	single_slash_starting_string (s: READABLE_STRING_32): STRING_32
 			-- Return the string `s' (or twin) with one and only one starting slash
@@ -1541,7 +1532,7 @@ feature {NONE} -- Implementation: utilities
 					check i >= 2 and i <= n end
 					Result := s.substring (i - 1, s.count)
 				else
-					--| starts with one '/' and only one
+					--| starts with one '/' and only one		
 					Result := s
 				end
 			elseif n = 1 then
