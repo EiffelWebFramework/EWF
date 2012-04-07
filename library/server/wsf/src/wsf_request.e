@@ -263,7 +263,6 @@ feature -- Access: global variable
 					end
 				end
 			end
-			Result := v
 		end
 
 	string_item (a_name: READABLE_STRING_8): detachable READABLE_STRING_32
