@@ -91,7 +91,6 @@ feature -- Header output operation
 			wgi_response.put_header_text (status_line + a_headers)
 		ensure
 			status_set: status_is_set
-			status_committed: status_committed
 			header_committed: header_committed
 			message_writable: message_writable
 		end
