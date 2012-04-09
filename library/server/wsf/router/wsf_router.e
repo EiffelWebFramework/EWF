@@ -52,7 +52,7 @@ feature -- Mapping
 		deferred
 		end
 
-feature -- Mapping agent		
+feature -- Mapping agent
 
 	map_agent (a_resource: READABLE_STRING_8; a_action: PROCEDURE [ANY, TUPLE [ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE]])
 			-- Map `a_action' as an handler with `a_resource'
@@ -62,7 +62,7 @@ feature -- Mapping agent
 
 	map_agent_with_request_methods (a_resource: READABLE_STRING_8; a_action: PROCEDURE [ANY, TUPLE [ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE]];
 			 rqst_methods: detachable ARRAY [READABLE_STRING_8])
-			-- Map `a_action' as an handler with `a_resource' and `rqst_methods'			
+			-- Map `a_action' as an handler with `a_resource' and `rqst_methods'
 		local
 			rah: WSF_AGENT_HANDLER [C]
 		do
@@ -74,17 +74,17 @@ feature -- Mapping agent
 			end
 		end
 
-feature -- Mapping response agent		
+feature -- Mapping response agent
 
 	map_agent_response (a_resource: READABLE_STRING_8; a_function: FUNCTION [ANY, TUPLE [ctx: C; req: WSF_REQUEST], WSF_RESPONSE_MESSAGE])
-			-- Map response as Result `a_function' as an handler with `a_resource'	
+			-- Map response as Result `a_function' as an handler with `a_resource'
 		do
 			map_agent_response_with_request_methods (a_resource, a_function, Void)
 		end
 
 	map_agent_response_with_request_methods (a_resource: READABLE_STRING_8; a_function: FUNCTION [ANY, TUPLE [ctx: C; req: WSF_REQUEST], WSF_RESPONSE_MESSAGE];
 			 rqst_methods: detachable ARRAY [READABLE_STRING_8])
-			-- Map response as Result `a_function' as an handler with `a_resource' and `rqst_methods'			
+			-- Map response as Result `a_function' as an handler with `a_resource' and `rqst_methods'
 		local
 			rah: WSF_AGENT_RESPONSE_HANDLER [C]
 		do
@@ -164,7 +164,7 @@ feature {WSF_ROUTED_SERVICE_I} -- Implementation
 feature -- status report
 
 	count: INTEGER
-			-- Count of maps handled by current	
+			-- Count of maps handled by current
 		do
 			across
 				Current as curs

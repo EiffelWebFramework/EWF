@@ -42,7 +42,7 @@ feature -- Access: Input
 			-- Server input channel
 
 	chunked_input: detachable WGI_CHUNKED_INPUT_STREAM
-			-- Chunked server input channel	
+			-- Chunked server input channel
 
 feature -- EWSGI access
 
@@ -358,7 +358,7 @@ feature {NONE} -- Element change: CGI meta parameter related to PATH_INFO
 			end
 		end
 
-feature {NONE} -- Implementation: utilities	
+feature {NONE} -- Implementation: utilities
 
 	has_white_space (s: READABLE_STRING_8): BOOLEAN
 			-- `s' has white space?
@@ -394,7 +394,7 @@ feature {NONE} -- Implementation: utilities
 					check i >= 2 and i <= n end
 					Result := s.substring (i - 1, s.count)
 				else
-					--| starts with one '/' and only one		
+					--| starts with one '/' and only one
 					Result := s
 				end
 			elseif n = 1 then

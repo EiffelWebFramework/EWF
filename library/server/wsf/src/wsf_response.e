@@ -84,11 +84,13 @@ feature -- Header output operation
 		require
 			status_set: status_is_set
 			header_not_committed: not header_committed
+		local
+			status_line: STRING
 		do
-			wgi_response.put_header_text (a_headers)
+			status_line := {HTTP_HEADER_NAMES}.header_status + ": " + status_code.out + {HTTP_CONSTANTS}.crlf
+			wgi_response.put_header_text (status_line + a_headers)
 		ensure
 			status_set: status_is_set
-			status_committed: status_committed
 			header_committed: header_committed
 			message_writable: message_writable
 		end
@@ -260,7 +262,7 @@ feature -- Redirect
 			h: HTTP_HEADER
 		do
 			if header_committed then
-				-- This might be a trouble about content-length				
+				-- This might be a trouble about content-length
 				put_string ("Headers already sent.%NCannot redirect, for now please follow this <a %"href=%"" + a_url + "%">link</a> instead%N")
 			else
 				if a_header /= Void then

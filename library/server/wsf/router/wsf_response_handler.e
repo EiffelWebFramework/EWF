@@ -2,10 +2,10 @@ note
 	description: "[
 				Request handler object which is called by a WSF_ROUTER
 				A response handler should implement the method
-				
+
 					response (ctx: C; req: WSF_REQUEST): WSF_RESPONSE_MESSAGE
 
-					
+
 				The class is generic, this way one can use a custom WSF_HANDLER_CONTEXT if needed
 		]"
 	date: "$Date$"
@@ -30,7 +30,7 @@ feature -- Response
 feature -- Execution
 
 	execute (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
-			-- Execute request handler	
+			-- Execute request handler
 		do
 			res.send (response (ctx, req))
 		end
