@@ -100,14 +100,16 @@ feature -- Status setting
 
 feature -- Header output operation
 
-	put_header_text (a_headers: READABLE_STRING_8)
-			-- Sent `a_headers' and just before send the status code
+	put_header_text (a_text: READABLE_STRING_8)
+			-- Sent `a_text' and just before send the status code
 		require
 			status_set: status_is_set
 			header_not_committed: not header_committed
+			a_text_ends_with_single_crlf: a_text.count > 2 implies not a_text.substring (a_text.count - 2, a_text.count).same_string ("%R%N")
+			a_text_does_not_end_with_double_crlf: a_text.count > 4 implies not a_text.substring (a_text.count - 4, a_text.count).same_string ("%R%N%R%N")
 		do
 			wgi_response.set_status_code (status_code, status_reason_phrase)
-			wgi_response.put_header_text (a_headers)
+			wgi_response.put_header_text (a_text)
 		ensure
 			status_set: status_is_set
 			status_committed: status_committed

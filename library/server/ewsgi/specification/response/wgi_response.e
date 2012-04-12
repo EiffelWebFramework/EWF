@@ -82,6 +82,7 @@ feature -- Header output operation
 			-- It should not contain the ending CR LF CR LF
 			-- since it is the duty of `put_header_text' to write it.
 		require
+			a_text_has_single_ending_crlf: a_text.count > 2 implies not a_text.substring (a_text.count - 2, a_text.count).same_string ("%R%N")
 			a_text_does_not_has_ending_crlf_crlf: a_text.count > 4 implies not a_text.substring (a_text.count - 4, a_text.count).same_string ("%R%N%R%N")
 			status_set: status_is_set
 			header_not_committed: not header_committed
