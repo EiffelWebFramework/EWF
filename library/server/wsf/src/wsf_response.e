@@ -56,35 +56,57 @@ feature -- Status setting
 	status_is_set: BOOLEAN
 			-- Is status set?
 		do
-			Result := wgi_response.status_is_set
+			Result := status_code > 0
 		end
 
 	set_status_code (a_code: INTEGER)
 			-- Set response status code
 			-- Should be done before sending any data back to the client
+			--| note: the status is really sent when the header are set
 		require
+			a_code_valid: a_code > 0
 			status_not_set: not status_committed
 			header_not_committed: not header_committed
 		do
-			wgi_response.set_status_code (a_code)
+			status_code := a_code
+			status_reason_phrase := Void
 		ensure
 			status_code_set: status_code = a_code
 			status_set: status_is_set
 		end
 
+	set_status_code_with_reason_phrase (a_code: INTEGER; a_reason_phrase: READABLE_STRING_8)
+			-- Set response status code
+			-- Should be done before sending any data back to the client
+			--| note: the status is really sent when the header are set			
+		require
+			a_code_valid: a_code > 0
+			status_not_set: not status_committed
+			header_not_committed: not header_committed
+		do
+			set_status_code (a_code)
+			status_reason_phrase := a_reason_phrase
+		ensure
+			status_code_set: status_code = a_code
+			status_reason_phrase_set: status_reason_phrase = a_reason_phrase
+			status_set: status_is_set
+		end
+
 	status_code: INTEGER
 			-- Response status
-		do
-			Result := wgi_response.status_code
-		end
+
+	status_reason_phrase: detachable READABLE_STRING_8
+			-- Custom status reason phrase (optional)
 
 feature -- Header output operation
 
 	put_header_text (a_headers: READABLE_STRING_8)
+			-- Sent `a_headers' and just before send the status code
 		require
 			status_set: status_is_set
 			header_not_committed: not header_committed
 		do
+			wgi_response.set_status_code (status_code, status_reason_phrase)
 			wgi_response.put_header_text (a_headers)
 		ensure
 			status_set: status_is_set
@@ -93,7 +115,7 @@ feature -- Header output operation
 			message_writable: message_writable
 		end
 
-	put_header (a_status_code: INTEGER; a_headers: detachable ARRAY [TUPLE [key: READABLE_STRING_8; value: READABLE_STRING_8]])
+	put_header (a_status_code: INTEGER; a_headers: detachable ARRAY [TUPLE [name: READABLE_STRING_8; value: READABLE_STRING_8]])
 			-- Send headers with status `a_status', and headers from `a_headers'
 		require
 			status_not_committed: not status_committed
@@ -107,14 +129,28 @@ feature -- Header output operation
 				put_header_text (h.string)
 			end
 		ensure
-			header_committed: header_committed
 			status_set: status_is_set
+			header_committed: header_committed
 			message_writable: message_writable
 		end
 
 	put_header_lines (a_lines: ITERABLE [TUPLE [name: READABLE_STRING_8; value: READABLE_STRING_8]])
+			-- Send headers from `a_lines'
+		local
+			h: STRING_8
 		do
-			wgi_response.put_header_lines (a_lines)
+			create h.make (256)
+			across
+				a_lines as c
+			loop
+				h.append (c.item.name)
+				h.append_character (':')
+				h.append_character (' ')
+				h.append (c.item.value)
+				h.append_character ('%R')
+				h.append_character ('%N')
+			end
+			put_header_text (h)
 		end
 
 feature -- Output report

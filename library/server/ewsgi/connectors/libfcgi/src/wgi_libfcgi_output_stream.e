@@ -40,23 +40,24 @@ feature -- Status report
 
 feature -- Status writing
 
-	put_status_line (a_code: INTEGER)
-			-- Put status code line for `a_code'
-			--| Note this is a default implementation, and could be redefined
-			--| for instance in relation to NPH CGI script
+	put_status_line (a_code: INTEGER; a_reason_phrase: detachable READABLE_STRING_8)
+			-- <Precursor>
 		local
 			s: STRING
+			m: detachable READABLE_STRING_8
 		do
-			--| Do not send any Status line back to the FastCGI client
-			--| According to http://www.fastcgi.com/docs/faq.html#httpstatus
 			if a_code /= 200 then
 				create s.make (16)
 				s.append ("Status:")
 				s.append_character (' ')
 				s.append_integer (a_code)
-				if attached http_status_code_message (a_code) as l_status_message then
+				m := a_reason_phrase
+				if m = Void then
+					m := http_status_code_message (a_code)
+				end
+				if m /= Void then
 					s.append_character (' ')
-					s.append_string (l_status_message)
+					s.append_string (m)
 				end
 				put_header_line (s)
 			end

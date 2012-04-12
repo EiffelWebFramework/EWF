@@ -62,10 +62,13 @@ feature -- Specific output
 
 feature -- Status writing
 
-	put_status_line (a_code: INTEGER)
+	put_status_line (a_code: INTEGER; a_reason_phrase: detachable READABLE_STRING_8)
 			-- Put status code line for `a_code'
+			-- with custom `a_reason_phrase' if precised
 			--| Note this is a default implementation, and could be redefined
 			--| for instance in relation to NPH CGI script
+		require
+			a_code_positive: a_code > 0
 		deferred
 		end
 

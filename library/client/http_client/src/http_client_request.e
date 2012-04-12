@@ -92,6 +92,11 @@ feature -- Authentication
 			Result := session.credentials
 		end
 
+	proxy: detachable TUPLE [host: READABLE_STRING_8; port: INTEGER]
+		do
+			Result := session.proxy
+		end
+
 feature -- Settings
 
 	timeout: INTEGER
@@ -129,6 +134,12 @@ feature -- Settings
 			-- Default encoding of responses. Used if no charset is provided by the host.
 		do
 			Result := session.default_response_charset
+		end
+
+	is_insecure: BOOLEAN
+			-- Allow connections to SSL sites without certs	
+		do
+			Result := session.is_insecure
 		end
 
 feature {NONE} -- Utilities

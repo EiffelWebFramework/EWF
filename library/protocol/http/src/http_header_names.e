@@ -231,6 +231,9 @@ feature -- Request or Response header name
 			-- Implementation-specific headers that may have various effects anywhere along the request-response chain.
 			--| Example: Pragma: no-cache
 
+	header_status:  STRING = "Status"
+			-- CGI program can use this to return the HTTP status code to the client.	
+
 	header_via:  STRING = "Via"
 			-- Request: Informs the server of proxies through which the request was sent.
 			-- Response: Informs the client of proxies through which the response was sent.
@@ -245,7 +248,7 @@ feature -- MIME related
 	header_content_transfer_encoding: STRING = "Content-Transfer-Encoding"
 
 note
-	copyright: "2011-2011, Eiffel Software and others"
+	copyright: "2011-2012, Jocelyn Fiat, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

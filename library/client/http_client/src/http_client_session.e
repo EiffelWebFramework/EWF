@@ -105,6 +105,12 @@ feature -- Settings
 	default_response_charset: detachable READABLE_STRING_8
 			-- Default encoding of responses. Used if no charset is provided by the host.
 
+	is_insecure: BOOLEAN
+			-- Allow connections to SSL sites without certs
+
+	proxy: detachable TUPLE [host: READABLE_STRING_8; port: INTEGER]
+			-- Proxy information [`host' and `port']
+
 feature -- Access
 
 	base_url: READABLE_STRING_8
@@ -132,9 +138,9 @@ feature -- Change
 			base_url := u
 		end
 
-	set_timeout (n: like timeout)
+	set_timeout (n_seconds: like timeout)
 		do
-			timeout := n
+			timeout := n_seconds
 		end
 
 	set_connect_timeout (n: like connect_timeout)
@@ -145,6 +151,11 @@ feature -- Change
 	set_user_agent (v: READABLE_STRING_8)
 		do
 			add_header ("User-Agent", v)
+		end
+
+	set_is_insecure (b: BOOLEAN)
+		do
+			is_insecure := b
 		end
 
 	add_header (k: READABLE_STRING_8; v: READABLE_STRING_8)
@@ -201,6 +212,15 @@ feature -- Change
 	set_max_redirects (n: like max_redirects)
 		do
 			max_redirects := n
+		end
+
+	set_proxy (a_host: detachable READABLE_STRING_8; a_port: INTEGER)
+		do
+			if a_host = Void then
+				proxy := Void
+			else
+				proxy := [a_host, a_port]
+			end
 		end
 
 note

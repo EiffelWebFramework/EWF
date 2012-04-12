@@ -54,6 +54,7 @@ feature -- Execution
 			curl_easy: CURL_EASY_EXTERNALS
 			curl_handle: POINTER
 			ctx: like context
+			l_proxy: like proxy
 		do
 			ctx := context
 			curl := session.curl
@@ -83,7 +84,14 @@ feature -- Execution
 			curl_easy.setopt_integer (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_header, 1)
 
 			--| PROXY ...
-			if ctx /= Void and then attached ctx.proxy as l_proxy then
+
+			if ctx /= Void then
+				l_proxy := ctx.proxy
+			end
+			if l_proxy = Void then
+				l_proxy := proxy
+			end
+			if l_proxy /= Void then
 				curl_easy.setopt_integer (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_proxyport, l_proxy.port)
 				curl_easy.setopt_string (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_proxy, l_proxy.host)
 			end
@@ -102,6 +110,12 @@ feature -- Execution
 				curl_easy.setopt_integer (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_maxredirs, max_redirects)
 			else
 				curl_easy.setopt_integer (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_followlocation, 0)
+			end
+
+			--| SSL
+			if is_insecure then
+				curl_easy.setopt_integer (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_ssl_verifyhost, 0)
+				curl_easy.setopt_integer (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_ssl_verifypeer, 0)
 			end
 
 			if request_method.is_case_insensitive_equal ("GET") then

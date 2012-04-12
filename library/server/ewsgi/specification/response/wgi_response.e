@@ -49,21 +49,30 @@ feature -- Status setting
 		deferred
 		end
 
-	set_status_code (a_code: INTEGER)
-			-- Set response status code
+	set_status_code (a_code: INTEGER; a_reason_phrase: detachable READABLE_STRING_8)
+			-- Set response status code with custom `a_reason_phrase' if precised
 			-- Should be done before sending any data back to the client
 		require
+			a_code_positive: a_code > 0
 			status_not_set: not status_committed
 			header_not_committed: not header_committed
 		deferred
 		ensure
 			status_code_set: status_code = a_code
+			status_reason_phrase_set: status_reason_phrase = a_reason_phrase
 			status_set: status_is_set
 		end
 
 	status_code: INTEGER
 			-- Response status
 		deferred
+		end
+
+	status_reason_phrase: detachable READABLE_STRING_8
+			-- Custom status reason phrase for the Response (optional)
+		deferred
+		ensure
+			Result /= Void implies status_is_set
 		end
 
 feature -- Header output operation
@@ -79,17 +88,7 @@ feature -- Header output operation
 		deferred
 		ensure
 			status_set: status_is_set
-			header_committed: header_committed
-			message_writable: message_writable
-		end
-
-	put_header_lines (a_lines: ITERABLE [TUPLE [name: READABLE_STRING_8; value: READABLE_STRING_8]])
-		require
-			status_set: status_is_set
-			header_not_committed: not header_committed
-		deferred
-		ensure
-			status_set: status_is_set
+			status_committed: status_committed
 			header_committed: header_committed
 			message_writable: message_writable
 		end
