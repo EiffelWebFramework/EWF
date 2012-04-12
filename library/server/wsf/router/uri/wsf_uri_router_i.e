@@ -12,7 +12,7 @@ note
 					map_with_request_methods ("/groups/", write_groups_handler, <<"POST", "PUT", "DELETE">>)
 					map_agent_with_request_methods ("/order/", agent do_get_order, <<"GET">>)
 					map_agent_with_request_methods ("/order/", agent do_post_order, <<"POST">>)
-				
+
 
 			]"
 	date: "$Date$"
@@ -102,9 +102,9 @@ feature {NONE} -- Implementation
 			end
 		end
 
-feature {NONE} -- Access: Implementation
+feature {WSF_ROUTED_SERVICE_I} -- Handler
 
-	handler (req: WSF_REQUEST): detachable WSF_ROUTE [H, C]
+	matching_route (req: WSF_REQUEST): detachable WSF_ROUTE [H, C]
 		local
 			h: detachable H
 			ctx: detachable C
@@ -127,6 +127,8 @@ feature {NONE} -- Access: Implementation
 				end
 			end
 		end
+
+feature {NONE} -- Access: Implementation		
 
 	smart_handler (req: WSF_REQUEST): detachable TUPLE [path: READABLE_STRING_8; handler: H]
 		require
