@@ -59,7 +59,7 @@ feature -- Execution
 				s.append_string (" format=" + l_format + "%N")
 			end
 
-			if attached ctx.string_parameter ("op") as l_op then
+			if attached ctx.string_item ("op") as l_op then
 				s.append_string (" op=" + l_op)
 				if l_op.same_string ("crash") then
 					(create {DEVELOPER_EXCEPTION}).raise

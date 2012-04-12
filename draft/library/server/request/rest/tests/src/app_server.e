@@ -50,7 +50,6 @@ feature {NONE} -- Handlers
 
 			create gh.make (4)
 			router.map ("/test", gh)
-			gh.map_default (h)
 --			gh.map ("/test", h)
 			gh.map ("/test/{op}", h)
 			gh.map ("/test.{format}", h)
