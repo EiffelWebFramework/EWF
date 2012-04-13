@@ -80,7 +80,7 @@ feature {NONE} -- Initialization
             loop
             	line := c.item
             	if not line.is_empty then
-            		if line[line.count] = '%R' then
+            		if line [line.count] = '%R' then
 						line.remove_tail (1)
             		end
 					add_header (line)

@@ -54,18 +54,24 @@ feature -- Status setting
 	status_is_set: BOOLEAN
 			-- Is status set?
 		do
-			Result := status_code /= 0
+			Result := status_code > 0
 		end
 
-	set_status_code (a_code: INTEGER)
+	set_status_code (a_code: INTEGER; a_reason_phrase: detachable READABLE_STRING_8)
 			-- Set response status code
 			-- Should be done before sending any data back to the client
 		do
 			status_code := a_code
+			status_reason_phrase := a_reason_phrase
+			output.put_status_line (a_code, a_reason_phrase)
+			status_committed := True
 		end
 
 	status_code: INTEGER
 			-- Response status
+
+	status_reason_phrase: detachable READABLE_STRING_8
+			-- Custom status reason phrase for the Response (optional)
 
 feature -- Header output operation
 
@@ -74,24 +80,6 @@ feature -- Header output operation
 			output.put_string (a_text)
 			output.put_crlf
 			header_committed := True
-		end
-
-	put_header_lines (a_lines: ITERABLE [TUPLE [name: READABLE_STRING_8; value: READABLE_STRING_8]])
-		local
-			h: STRING_8
-		do
-			create h.make (256)
-			across
-				a_lines as c
-			loop
-				h.append (c.item.name)
-				h.append_character (':')
-				h.append_character (' ')
-				h.append (c.item.value)
-				h.append_character ('%R')
-				h.append_character ('%N')
-			end
-			put_header_text (h)
 		end
 
 feature -- Output operation

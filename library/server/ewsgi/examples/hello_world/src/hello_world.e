@@ -23,8 +23,8 @@ feature {NONE} -- Initialization
 
 	execute (req: WGI_REQUEST; res: WGI_RESPONSE)
 		do
-			res.set_status_code (200)
-			res.put_header_lines (<<["Content-Type", "text/plain"]>>)
+			res.set_status_code (200, Void)
+			res.put_header_text ("Content-Type: text/plain%R%N")
 			res.put_string ("Hello World!%N")
 		end
 
