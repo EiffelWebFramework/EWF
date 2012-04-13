@@ -166,11 +166,29 @@ feature -- Retrieve content from WGI_INPUT_STREAM
 	retrieve_data  ( req : WSF_REQUEST) : STRING
 			-- retrieve the content from the input stream
 			-- handle differents transfers
+		local
+			l_input: WGI_INPUT_STREAM
+			n: INTEGER
+			s: STRING
 		do
-			Result := ""
 			if req.is_chunked_input then
-				if attached req.chunked_input as l_chunked_input then
-					Result := l_chunked_input.data.as_string_8
+				l_input := req.input
+				from
+					n := 1_024
+					create Result.make (n)
+				until
+					n = 0
+				loop
+					l_input.read_string (n)
+					s := l_input.last_string
+					if s.count = 0 then
+						n := 0
+					else
+						if s.count < n then
+							n := 0
+						end
+						Result.append (s)
+					end
 				end
 			else
 				req.input.read_string (req.content_length_value.as_integer_32)
@@ -202,7 +220,6 @@ feature -- Handle responses
 			res.put_header_text (h.string)
 			res.put_string (a_description)
 		end
-
 
 	handle_precondition_fail_response (a_description: STRING; ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE )
 		local
