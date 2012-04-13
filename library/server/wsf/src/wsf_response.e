@@ -73,6 +73,7 @@ feature -- Status setting
 		ensure
 			status_code_set: status_code = a_code
 			status_set: status_is_set
+			status_reason_phrase_unset: status_reason_phrase = Void
 		end
 
 	set_status_code_with_reason_phrase (a_code: INTEGER; a_reason_phrase: READABLE_STRING_8)
