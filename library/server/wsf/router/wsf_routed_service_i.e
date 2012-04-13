@@ -36,11 +36,10 @@ feature -- Setup
 feature -- Execution
 
 	execute (req: WSF_REQUEST; res: WSF_RESPONSE)
-		local
-			l_handled: BOOLEAN
 		do
-			l_handled := router.dispatch (req, res)
-			if not l_handled then
+			if attached router.route (req) as r then
+				router.execute_route (r, req, res)
+			else
 				execute_default (req, res)
 			end
 		end

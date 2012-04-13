@@ -13,6 +13,7 @@ inherit
 		redefine
 			map_agent_with_request_methods, map_agent_response_with_request_methods
 		end
+		
 create
 	make
 

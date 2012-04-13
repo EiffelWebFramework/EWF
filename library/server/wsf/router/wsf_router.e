@@ -12,6 +12,14 @@ deferred class
 inherit
 	ITERABLE [TUPLE [handler: H; resource: READABLE_STRING_8; request_methods: detachable ARRAY [READABLE_STRING_8]]]
 
+feature {NONE} -- Initialization
+
+	initialize
+			-- Initialize router
+		do
+			create pre_route_execution_actions
+		end
+
 feature -- Status report
 
 	has_map (a_resource: READABLE_STRING_8; rqst_methods: detachable ARRAY [READABLE_STRING_8]; a_handler: detachable H): BOOLEAN
@@ -116,7 +124,13 @@ feature -- Element change
 			end
 		end
 
-feature -- Execution
+feature -- Hook
+
+	pre_route_execution_actions: ACTION_SEQUENCE [TUPLE [like route]]
+			-- Action triggered before a route is execute
+			--| Could be used for tracing, logging
+
+feature -- Routing
 
 	route (req: WSF_REQUEST): detachable WSF_ROUTE [H, C]
 			-- Route matching `req'.
@@ -124,11 +138,14 @@ feature -- Execution
 			Result := matching_route (req)
 		end
 
+feature -- Execution
+
 	execute_route (a_route: WSF_ROUTE [H,C]; req: WSF_REQUEST; res: WSF_RESPONSE)
 			-- Process route `a_route'
 		require
 			a_route_attached: a_route /= Void
 		do
+			pre_route_execution_actions.call ([a_route])
 			a_route.handler.execute (a_route.context, req, res)
 		end
 

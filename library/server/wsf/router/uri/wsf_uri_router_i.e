@@ -34,6 +34,7 @@ feature -- Initialization
 		do
 			create handlers.make (n)
 			handlers.compare_objects
+			initialize
 		end
 
 	make_with_base_url (n: INTEGER; a_base_url: like base_url)

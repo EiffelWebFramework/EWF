@@ -24,8 +24,7 @@ note
 	revision: "$Revision$"
 
 deferred class
-	WSF_ROUTING_HANDLER  [H -> WSF_HANDLER [C],
-							 C -> WSF_HANDLER_CONTEXT]
+	WSF_ROUTING_HANDLER  [H -> WSF_HANDLER [C], C -> WSF_HANDLER_CONTEXT]
 
 inherit
 	WSF_HANDLER [C]
