@@ -77,20 +77,12 @@ feature -- Access: Input
 
 	input: WGI_INPUT_STREAM
 			-- Server input channel
-		require
-			is_not_chunked_input: not is_chunked_input
+			--| Could also be Chunked input, but this is transparent
 		deferred
 		end
 
 	is_chunked_input: BOOLEAN
 			-- Is request using chunked transfer-encoding?
-		deferred
-		end
-
-	chunked_input: detachable WGI_CHUNKED_INPUT_STREAM
-			-- Chunked server input channel
-		require
-			is_chunked_input: is_chunked_input
 		deferred
 		end
 

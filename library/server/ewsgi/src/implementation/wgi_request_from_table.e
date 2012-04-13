@@ -27,9 +27,18 @@ feature {NONE} -- Initialization
 			input := a_input
 			set_meta_variables (a_vars)
 			update_path_info
-			if attached http_transfer_encoding as l_transfer_encoding and then l_transfer_encoding.same_string ("chunked") then
+			update_input
+		end
+
+	update_input
+			-- Update input, depending on Transfer-Encoding value.
+		do
+			if
+				attached http_transfer_encoding as l_transfer_encoding and then
+				l_transfer_encoding.same_string (once "chunked")
+			then
 				is_chunked_input := True
-				create chunked_input.make (a_input)
+				create {WGI_CHUNKED_INPUT_STREAM} input.make (input)
 			end
 		end
 
@@ -40,9 +49,7 @@ feature -- Access: Input
 
 	input: WGI_INPUT_STREAM
 			-- Server input channel
-
-	chunked_input: detachable WGI_CHUNKED_INPUT_STREAM
-			-- Chunked server input channel	
+			--| Could be a chunked input as well
 
 feature -- EWSGI access
 

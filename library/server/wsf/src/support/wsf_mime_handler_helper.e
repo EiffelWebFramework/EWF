@@ -11,44 +11,30 @@ feature {NONE} -- Implementation
 
 	full_input_data (req: WSF_REQUEST): READABLE_STRING_8
 		do
-			if req.is_chunked_input then
-				if attached req.chunked_input as l_chunked_input then
-					Result := l_chunked_input.data
-				else
-					check has_chunked_input: False end
-					Result := ""
-				end
-			else
-				Result := read_input_data (req.input, req.content_length_value)
-			end
+			Result := read_input_data (req.input)
 		end
 
-	read_input_data (a_input: WGI_INPUT_STREAM; nb: NATURAL_64): STRING_8
+	read_input_data (a_input: WGI_INPUT_STREAM): STRING_8
 			-- All data from input form
 		local
-			nb32: INTEGER
-			n64: NATURAL_64
 			n: INTEGER
 			t: STRING
 		do
 			from
-				n64 := nb
-				nb32 := n64.to_integer_32
-				create Result.make (nb32)
-				n := nb32
-				if n > 1_024 then
-					n := 1_024
-				end
+				n := 1_024
+				create Result.make (n)
 			until
-				n64 <= 0
+				n = 0
 			loop
 				a_input.read_string (n)
 				t := a_input.last_string
-				Result.append_string (t)
-				if t.count < n then
-					n64 := 0
+				if t.count = 0 then
+					n := 0
 				else
-					n64 := n64 - t.count.as_natural_64
+					if t.count < n then
+						n := 0
+					end
+					Result.append_string (t)
 				end
 			end
 		end

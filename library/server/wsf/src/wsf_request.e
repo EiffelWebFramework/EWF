@@ -157,24 +157,15 @@ feature -- Access: Input
 
 	input: WGI_INPUT_STREAM
 			-- Server input channel
-		require
-			is_not_chunked_input: not is_chunked_input
 		do
 			Result := wgi_request.input
 		end
 
 	is_chunked_input: BOOLEAN
 			-- Is request using chunked transfer-encoding?	
+			-- If True, the Content-Length has no meaning
 		do
 			Result := wgi_request.is_chunked_input
-		end
-
-	chunked_input: detachable WGI_CHUNKED_INPUT_STREAM
-			-- Server input channel
-		require
-			is_chunked_input: is_chunked_input
-		do
-			Result := wgi_request.chunked_input
 		end
 
 feature -- Helper
