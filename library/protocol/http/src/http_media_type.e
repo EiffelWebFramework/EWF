@@ -1,13 +1,13 @@
 note
 	description: "[
 			This class is to represent a media type
-			
+
 			the Internet Media Type [9] of the attached entity if the type
 			was provided via a "Content-type" field in the wgi_request header,
 			or if the server can determine it in the absence of a supplied
 			"Content-type" field. The syntax is the same as for the HTTP
 			"Content-Type" header field.
-			
+
 			 CONTENT_TYPE = "" | media-type
 			 media-type   = type "/" subtype *( ";" parameter)
 			 type         = token
@@ -15,15 +15,15 @@ note
 			 parameter    = attribute "=" value
 			 attribute    = token
 			 value        = token | quoted-string
-			
+
 			The type, subtype, and parameter attribute names are not
 			case-sensitive. Parameter values MAY be case sensitive. Media
 			types and their use in HTTP are described in section 3.7 of
 			the HTTP/1.1 specification [8].
-			
+
 			Example:
-			
-			 	application/x-www-form-urlencoded
+
+				application/x-www-form-urlencoded
 				application/x-www-form-urlencoded; charset=UTF8
 
 		]"
@@ -177,7 +177,7 @@ feature -- Conversion
 		end
 
 	simple_type: READABLE_STRING_8
-			-- String representation of type/subtype	
+			-- String representation of type/subtype
 		local
 			res: like internal_simple_type
 			s: like subtype
@@ -227,9 +227,9 @@ feature -- Status report
 		end
 
 	same_simple_type (s: READABLE_STRING_8): BOOLEAN
-			-- Current has same type/subtype string representation as `s'?	
+			-- Current has same type/subtype string representation as `s'?
 		do
-			Result := simple_type.same_string (s)
+			Result := simple_type.substring_index (s, 1) = 1
 		end
 
 	same_string (s: READABLE_STRING_8): BOOLEAN
