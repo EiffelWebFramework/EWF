@@ -232,7 +232,6 @@ feature {NONE} -- Implementation: Form analyzer
 	default_content_type: STRING = "text/plain"
 			-- Default content type		
 
-
 note
 	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"

@@ -987,7 +987,6 @@ feature {NONE} -- Query parameters: implementation
 
 	add_value_to_table (a_name: READABLE_STRING_8; a_value: READABLE_STRING_8; a_table: HASH_TABLE [WSF_VALUE, READABLE_STRING_32])
 		local
-
 			v: detachable WSF_VALUE
 			n,k,r: STRING_8
 			k32: STRING_32
