@@ -54,8 +54,6 @@ feature -- Encoder
 						'.', '-', '~', '_'
 					then
 						Result.extend (c)
-					when ' ' then
-						Result.extend ('+')
 					else
 						Result.append (url_encoded_char (uc))
 					end
@@ -89,8 +87,6 @@ feature -- Encoder
 						'.', '-', '~', '_'
 					then
 						s8.extend (c)
-					when ' ' then
-						s8.extend ('+')
 					else
 						if a_ignore.has (c) then
 							s8.extend (c)
