@@ -50,35 +50,75 @@ feature {NONE} -- Initialization
 
 feature -- Basic operation
 
+	url (a_path: READABLE_STRING_8; ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT): STRING_8
+			-- Url computed from Current and `ctx' data.
+		local
+			s: STRING_8
+			url_encoder: URL_ENCODER
+		do
+			Result := base_url + a_path
+			if ctx /= Void then
+				create s.make_empty
+				create url_encoder
+				across
+					ctx.query_parameters as q
+				loop
+					if not s.is_empty then
+						s.append_character ('&')
+					end
+					s.append (url_encoder.encoded_string (q.key))
+					s.append_character ('=')
+					s.append (url_encoder.encoded_string (q.item))
+				end
+				if not s.is_empty then
+					Result.append_character ('?')
+					Result.append (s)
+				end
+			end
+		end
+
 	get (a_path: READABLE_STRING_8; ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT): HTTP_CLIENT_RESPONSE
+			-- Response for GET request based on Current, `a_path' and `ctx'.
 		deferred
 		end
 
 	head (a_path: READABLE_STRING_8; ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT): HTTP_CLIENT_RESPONSE
+			-- Response for HEAD request based on Current, `a_path' and `ctx'.
 		deferred
 		end
 
 	post (a_path: READABLE_STRING_8; ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT; data: detachable READABLE_STRING_8): HTTP_CLIENT_RESPONSE
+			-- Response for POST request based on Current, `a_path' and `ctx'
+			-- with input `data'	
 		deferred
 		end
 
 	post_file (a_path: READABLE_STRING_8; ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT; fn: detachable READABLE_STRING_8): HTTP_CLIENT_RESPONSE
+			-- Response for POST request based on Current, `a_path' and `ctx'
+			-- with uploaded data file `fn'	
 		deferred
 		end
 
 	post_multipart (a_path: READABLE_STRING_8; ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT; data: detachable READABLE_STRING_8; fn: detachable READABLE_STRING_8): HTTP_CLIENT_RESPONSE
+			-- Response for POST request based on Current, `a_path' and `ctx'
+			-- with `data' and uploaded file `fn'	
 		deferred
 		end
 
 	put (a_path: READABLE_STRING_8; ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT; data: detachable READABLE_STRING_8): HTTP_CLIENT_RESPONSE
+			-- Response for PUT request based on Current, `a_path' and `ctx'
+			-- with input `data'	
 		deferred
 		end
 
 	put_file (a_path: READABLE_STRING_8; ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT; fn: detachable READABLE_STRING_8): HTTP_CLIENT_RESPONSE
+			-- Response for PUT request based on Current, `a_path' and `ctx'
+			-- with uploaded file `fn'	
 		deferred
 		end
 
 	delete (a_path: READABLE_STRING_8; ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT): HTTP_CLIENT_RESPONSE
+			-- Response for DELETE request based on Current, `a_path' and `ctx'
 		deferred
 		end
 
@@ -114,8 +154,10 @@ feature -- Settings
 feature -- Access
 
 	base_url: READABLE_STRING_8
+			-- Base URL for any request created by Current session.
 
 	headers: HASH_TABLE [READABLE_STRING_8, READABLE_STRING_8]
+			-- Headers common to any request created by Current session.
 
 feature -- Authentication
 
