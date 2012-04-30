@@ -19,6 +19,24 @@ convert
 	make_from_string ({READABLE_STRING_8, STRING_8, IMMUTABLE_STRING_8}),
 	string: {READABLE_STRING_8}
 
+feature -- Access
+
+	charset_parameter: detachable READABLE_STRING_8
+		do
+			if has_charset_parameter then
+				Result := parameter (charset_parameter_name)
+			end
+		end
+
+	has_charset_parameter: BOOLEAN
+		do
+			Result := has_parameter (charset_parameter_name)
+		end
+
+feature -- Constant
+
+	charset_parameter_name: STRING_8 = "charset"
+
 note
 	copyright: "2011-2012, Jocelyn Fiat, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
