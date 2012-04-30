@@ -105,70 +105,13 @@ feature -- Status report
 			Result := input.end_of_input
 		end
 
---feature -- Input
-
---	data: STRING_8
---		local
---			d: like internal_data
---		do
---			d := internal_data
---			if d = Void then
---				d := fetched_data
---				internal_data := d
---			end
---			Result := d
---		end
-
 feature {NONE} -- Parser
 
 	index, chunk_lower, chunk_upper: INTEGER
 	last_chunk_size: INTEGER
 	last_chunk: STRING_8
 
---	internal_data: detachable STRING_8
-
 	tmp_hex_chunk_size: STRING_8
-
---	fetched_data: STRING_8
---			-- Read all the data in a chunked stream.
---			-- Make the result available in `last_chunked'.
---			--	   Chunked-Body   = *chunk
---			--                        last-chunk
---			--                        trailer
---			--                        CRLF
---			--       chunk          = chunk-size [ chunk-extension ] CRLF
---			--                        chunk-data CRLF
---			--       chunk-size     = 1*HEX
---			--       last-chunk     = 1*("0") [ chunk-extension ] CRLF
---			--       chunk-extension= *( ";" chunk-ext-name [ "=" chunk-ext-val ] )
---			--       chunk-ext-name = token
---			--       chunk-ext-val  = token | quoted-string
---			--       chunk-data     = chunk-size(OCTET)
---			--       trailer        = *(entity-header CRLF)
---		local
---			eoc: BOOLEAN
---			s: STRING_8
---		do
---			from
---				create s.make (1024)
---			until
---				eoc
---			loop
---				read_chunk
---				if attached last_chunk as l_last_chunk then
---					s.append (l_last_chunk)
---				else
---					eoc := True
---				end
---				if last_chunk_size = 0 then
---					eoc := True
---				end
---			end
-
---			read_trailer
-
---			Result := s
---		end
 
 	read_chunk
 		do
