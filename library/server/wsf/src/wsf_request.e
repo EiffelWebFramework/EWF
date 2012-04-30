@@ -239,7 +239,7 @@ feature -- Access: global variable
 			Result := items_table
 		end
 
-	item (a_name: READABLE_STRING_8): detachable WSF_VALUE
+	item (a_name: READABLE_STRING_32): detachable WSF_VALUE
 			-- Variable named `a_name' from any of the variables container
 			-- and following a specific order
 			-- execution, environment, get, post, cookies
@@ -842,7 +842,7 @@ feature -- Cookies
 			Result := cookies_table
 		end
 
-	cookie (a_name: READABLE_STRING_8): detachable WSF_VALUE
+	cookie (a_name: READABLE_STRING_32): detachable WSF_VALUE
 			-- Field for name `a_name'.
 		do
 			Result := cookies_table.item (a_name)
@@ -1078,7 +1078,7 @@ feature -- Form fields and related
 			Result := form_parameters_table
 		end
 
-	form_parameter (a_name: READABLE_STRING_8): detachable WSF_VALUE
+	form_parameter (a_name: READABLE_STRING_32): detachable WSF_VALUE
 			-- Field for name `a_name'.
 		do
 			Result := form_parameters_table.item (a_name)

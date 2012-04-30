@@ -9,7 +9,7 @@ note
 
 				In addition to what WSF_HANDLER_CONTEXT already provides, i.e:
 				 	- request: WSF_REQUEST -- Associated request
-					- path: READABLE_STRING_8	-- Associated path				
+					- path: READABLE_STRING_8	-- Associated path
 
 			]"
 	date: "$Date$"
@@ -46,11 +46,11 @@ feature -- Access
 
 feature -- Item
 
-	item (a_name: READABLE_STRING_8): detachable WSF_VALUE
+	item (a_name: READABLE_STRING_32): detachable WSF_VALUE
 			-- Variable value for parameter or variable `a_name'
 			-- See `{WSF_REQUEST}.item(s)'
 		do
-			Result := path_parameter (a_name)
+			Result := path_parameter (a_name.as_string_8) --| Should we handle url-encoded name?
 			if Result = Void then
 				Result := request.item (a_name)
 			end

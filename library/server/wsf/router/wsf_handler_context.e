@@ -111,7 +111,7 @@ feature -- Query
 
 feature -- Item
 
-	item (a_name: READABLE_STRING_8): detachable WSF_VALUE
+	item (a_name: READABLE_STRING_32): detachable WSF_VALUE
 			-- Variable value for parameter or variable `a_name'
 			-- See `{WSF_REQUEST}.item(s)'
 		deferred
