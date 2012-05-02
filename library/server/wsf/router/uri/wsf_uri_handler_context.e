@@ -4,7 +4,7 @@ note
 	
 				It does not provide additional information compared to {WSF_HANDLER_CONTEXT}
 				 	- request: WSF_REQUEST -- Associated request
-					- path: READABLE_STRING_8	-- Associated path				
+					- path: READABLE_STRING_8	-- Associated path
 			]"
 	date: "$Date$"
 	revision: "$Revision$"
@@ -28,7 +28,7 @@ feature {NONE} -- Initialization
 
 feature -- Item		
 
-	item (a_name: READABLE_STRING_8): detachable WSF_VALUE
+	item (a_name: READABLE_STRING_32): detachable WSF_VALUE
 			-- Variable value for parameter or variable `a_name'
 			-- See `{WSF_REQUEST}.item(s)'
 		do
