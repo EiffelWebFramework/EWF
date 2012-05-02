@@ -16,8 +16,7 @@ create
 	make_from_string
 
 convert
-	make_from_string ({READABLE_STRING_8, STRING_8, IMMUTABLE_STRING_8}),
-	string: {READABLE_STRING_8}
+	make_from_string ({READABLE_STRING_8, STRING_8, IMMUTABLE_STRING_8})
 
 feature -- Access
 

@@ -41,8 +41,7 @@ create
 	make_from_string
 
 convert
-	make_from_string ({READABLE_STRING_8, STRING_8, IMMUTABLE_STRING_8}),
-	string: {READABLE_STRING_8}
+	make_from_string ({READABLE_STRING_8, STRING_8, IMMUTABLE_STRING_8})
 
 feature {NONE} -- Initialization
 
@@ -227,7 +226,7 @@ feature -- Status report
 		end
 
 	same_simple_type (s: READABLE_STRING_8): BOOLEAN
-			-- Current has same type/subtype string representation as `s'?	
+			-- Current has same type/subtype string representation as `s'?
 		do
 			Result := simple_type.same_string (s)
 		end

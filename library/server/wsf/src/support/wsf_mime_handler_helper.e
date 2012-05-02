@@ -87,7 +87,6 @@ feature {NONE} -- Implementation
 						if p > 0 then
 							q := r.index_of ({CHARACTER_32} ']', p + 1)
 							if q > p then
---								k32 := url_encoder.decoded_string (k)
 								if attached {WSF_TABLE} ptb.value (k) as l_tb_value then
 									tb := l_tb_value
 								else

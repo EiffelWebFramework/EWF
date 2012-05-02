@@ -24,7 +24,6 @@ feature {NONE} -- Helpers
 		do
 			Result := Precursor (ctx)
 			Result.headers.extend ("chunked", "Transfer-Encoding")
---			Result.set_proxy ("127.0.0.1", 8888) --| inspect traffic with http://www.fiddler2.com/
 		end
 
 feature -- Test routines

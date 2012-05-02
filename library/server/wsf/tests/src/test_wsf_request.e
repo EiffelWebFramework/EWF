@@ -36,6 +36,7 @@ feature {NONE} -- Events
 			wt: WORKER_THREAD
 			e: EXECUTION_ENVIRONMENT
 		do
+--			port_number := 9091
 			port_number := 0
 			base_url := "test/"
 			create app.make_custom (to_wgi_service, base_url)
@@ -50,11 +51,41 @@ feature {NONE} -- Events
 			port_number := app.port
 		end
 
+	server_log_name: STRING
+		local
+			fn: FILE_NAME
+		once
+			create fn.make_from_string ("..")
+			fn.extend ("..")
+			fn.extend ("..")
+			fn.extend ("..")
+			fn.extend ("..")
+			fn.extend ("server_test.log")
+			Result := fn.string
+		end
+
+	server_log (m: STRING_8)
+		local
+			f: RAW_FILE
+		do
+			create f.make_open_append (server_log_name)--"..\server-tests.log")
+			f.put_string (m)
+			f.put_character ('%N')
+			f.close
+		end
+
 	execute (req: WSF_REQUEST; res: WSF_RESPONSE)
 		local
 			q: detachable STRING_32
 			page: WSF_PAGE_RESPONSE
 		do
+			debug
+				server_log (req.request_uri)
+				if attached req.content_type as l_content_type then
+					server_log ("content_type:" + l_content_type.string)
+				end
+			end
+
 			create page.make
 			if attached req.request_uri as l_uri then
 				if l_uri.starts_with (test_url ("get/01")) then
@@ -93,16 +124,23 @@ feature {NONE} -- Events
 					end
 
 					create q.make_empty
-
+--					req.set_raw_input_data_recorded (True)
 
 					across
 						req.form_parameters as fcur
 					loop
+						debug
+							server_log ("%Tform: " + fcur.item.name)
+						end
 						if not q.is_empty then
 							q.append_character ('&')
 						end
 						q.append (fcur.item.name.as_string_32 + "=" + fcur.item.as_string)
 					end
+
+--					if attached req.raw_input_data as d then
+--						server_log ("Raw data=" + d)
+--					end
 
 					if not q.is_empty then
 						page.put_string (" : " + q )
@@ -154,6 +192,7 @@ feature {NONE} -- Events
 				http_session := sess
 				sess.set_timeout (-1)
 				sess.set_connect_timeout (-1)
+--				sess.set_proxy ("127.0.0.1", 8888) --| inspect traffic with http://www.fiddler2.com/								
 			end
 		end
 

@@ -80,7 +80,7 @@ feature {NONE} -- Initialization
 			-- Content-Type
 			s8 := wgi_request.content_type
 			if s8 /= Void then
-				content_type := s8
+				create content_type.make_from_string (s8)
 			else
 				content_type := Void
 			end
@@ -1111,7 +1111,7 @@ feature -- Form fields and related
 
 feature -- Access: MIME handler
 
-	has_mime_handler (a_content_type: READABLE_STRING_8): BOOLEAN
+	has_mime_handler (a_content_type: HTTP_CONTENT_TYPE): BOOLEAN
 			-- Has a MIME handler registered for `a_content_type'?
 		do
 			if attached mime_handlers as hdls then
