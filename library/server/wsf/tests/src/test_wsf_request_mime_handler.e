@@ -51,7 +51,7 @@ feature -- Tests
 			create ct.make_from_string ({HTTP_MIME_TYPES}.multipart_form_data)
 			ct.add_parameter ("boundary", "__=_the_boundary_1332296477_1804289383_=__")
 			create h.make
-			h.put_content_type (ct)
+			h.put_content_type (ct.string)
 
 			b := "[
 --__=_the_boundary_1332296477_1804289383_=__
