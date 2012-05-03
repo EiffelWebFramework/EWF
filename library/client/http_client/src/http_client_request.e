@@ -31,6 +31,14 @@ feature {NONE} -- Initialization
 
 	context: detachable HTTP_CLIENT_REQUEST_CONTEXT
 
+feature -- Status report
+
+	is_debug: BOOLEAN
+			-- Debug mode enabled?
+		do
+			Result := session.is_debug
+		end
+
 feature -- Access
 
 	request_method: READABLE_STRING_8

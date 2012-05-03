@@ -122,11 +122,15 @@ feature -- Basic operation
 		deferred
 		end
 
+feature -- Status report
+
+	is_debug: BOOLEAN
+			-- Produce debug output
+
 feature -- Settings
 
 	timeout: INTEGER
 			-- HTTP transaction timeout in seconds. Defaults to 5 seconds.
-
 
 	connect_timeout: INTEGER
 			-- HTTP connection timeout in seconds. Defaults to 1 second.
@@ -173,7 +177,15 @@ feature -- Authentication
 
 	credentials: detachable READABLE_STRING_32
 
-feature -- Change
+
+feature -- Status setting
+
+	set_is_debug (b: BOOLEAN)
+		do
+			is_debug := b
+		end
+
+feature -- Element change
 
 	set_base_url (u: like base_url)
 		do

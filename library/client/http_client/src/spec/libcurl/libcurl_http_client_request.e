@@ -48,38 +48,173 @@ feature -- Execution
 			l_result: INTEGER
 			l_curl_string: CURL_STRING
 			l_url: READABLE_STRING_8
-			p: POINTER
-			l_form, l_last: CURL_FORM
-			curl: CURL_EXTERNALS
-			curl_easy: CURL_EASY_EXTERNALS
+			l_form: detachable CURL_FORM
+			l_last: CURL_FORM
+			l_upload_file: detachable RAW_FILE
+			l_uploade_file_read_function: detachable LIBCURL_UPLOAD_FILE_READ_FUNCTION
+			curl: detachable CURL_EXTERNALS
+			curl_easy: detachable CURL_EASY_EXTERNALS
 			curl_handle: POINTER
 			ctx: like context
-			l_proxy: like proxy
+			p_slist: POINTER
+			retried: BOOLEAN
 		do
-			ctx := context
-			curl := session.curl
-			curl_easy := session.curl_easy
+			if not retried then
+				curl := session.curl
+				curl_easy := session.curl_easy
+				curl_handle := curl_easy.init
+				curl.global_init
 
-			l_url := url
-			if ctx /= Void then
-				if attached ctx.query_parameters as l_query_params then
-					from
-						l_query_params.start
-					until
-						l_query_params.after
-					loop
-						append_parameters_to_url (l_url, <<[l_query_params.key_for_iteration, urlencode (l_query_params.item_for_iteration)]>>)
-						l_query_params.forth
+				ctx := context
+
+				--| Configure cURL session
+				initialize_curl_session (ctx, curl, curl_easy, curl_handle)
+
+				--| URL
+				l_url := url
+				if ctx /= Void then
+					if attached ctx.query_parameters as l_query_params then
+						from
+							l_query_params.start
+						until
+							l_query_params.after
+						loop
+							append_parameters_to_url (l_url, <<[l_query_params.key_for_iteration, urlencode (l_query_params.item_for_iteration)]>>)
+							l_query_params.forth
+						end
 					end
 				end
+
+				debug ("service")
+					io.put_string ("SERVICE: " + l_url)
+					io.put_new_line
+				end
+				curl_easy.setopt_string (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_url, l_url)
+
+				--| Header
+				if attached headers as l_headers then
+					across
+						l_headers as curs
+					loop
+						p_slist := curl.slist_append (p_slist, curs.key + ": " + curs.item)
+					end
+				end
+				p_slist := curl.slist_append (p_slist, "Expect:")
+				curl_easy.setopt_slist (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_httpheader, p_slist)
+
+				--| Credential
+				if ctx /= Void and then ctx.credentials_required then
+					if attached credentials as l_credentials then
+						inspect auth_type_id
+						when {HTTP_CLIENT_CONSTANTS}.Auth_type_none then
+							curl_easy.setopt_integer (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_httpauth, {CURL_OPT_CONSTANTS}.curlauth_none)
+						when {HTTP_CLIENT_CONSTANTS}.Auth_type_basic then
+							curl_easy.setopt_integer (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_httpauth, {CURL_OPT_CONSTANTS}.curlauth_basic)
+						when {HTTP_CLIENT_CONSTANTS}.Auth_type_digest then
+							curl_easy.setopt_integer (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_httpauth, {CURL_OPT_CONSTANTS}.curlauth_digest)
+						when {HTTP_CLIENT_CONSTANTS}.Auth_type_any then
+							curl_easy.setopt_integer (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_httpauth, {CURL_OPT_CONSTANTS}.curlauth_any)
+						when {HTTP_CLIENT_CONSTANTS}.Auth_type_anysafe then
+							curl_easy.setopt_integer (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_httpauth, {CURL_OPT_CONSTANTS}.curlauth_anysafe)
+						else
+						end
+
+						curl_easy.setopt_string (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_userpwd, l_credentials)
+					else
+						--| Credentials not prov  ided ...
+					end
+				end
+
+				if ctx /= Void and then ctx.has_form_data then
+					if attached ctx.form_parameters as l_forms and then not l_forms.is_empty then
+						create l_form.make
+						create l_last.make
+						from
+							l_forms.start
+						until
+							l_forms.after
+						loop
+							curl.formadd_string_string (l_form, l_last, {CURL_FORM_CONSTANTS}.curlform_copyname, l_forms.key_for_iteration, {CURL_FORM_CONSTANTS}.CURLFORM_COPYCONTENTS, l_forms.item_for_iteration, {CURL_FORM_CONSTANTS}.CURLFORM_END)
+							l_forms.forth
+						end
+						l_last.release_item
+						curl_easy.setopt_form (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_httppost, l_form)
+					end
+				end
+				if ctx /= Void then
+					if request_method.is_case_insensitive_equal ("POST") or request_method.is_case_insensitive_equal ("PUT") then
+						if ctx.has_upload_data and then attached ctx.upload_data as l_upload_data then
+							curl_easy.setopt_string (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_postfields, l_upload_data)
+							curl_easy.setopt_integer (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_postfieldsize, l_upload_data.count)
+						end
+						if ctx.has_upload_filename and then attached ctx.upload_filename as l_upload_filename then
+							create l_upload_file.make (l_upload_filename)
+							if l_upload_file.exists and then l_upload_file.is_readable then
+								curl_easy.setopt_integer (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_upload, 1)
+
+								curl_easy.setopt_integer (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_infilesize, l_upload_file.count)
+									-- specify callback read function for upload file
+								create l_uploade_file_read_function.make_with_file (l_upload_file)
+								l_upload_file.open_read
+								curl_easy.set_curl_function (l_uploade_file_read_function)
+								curl_easy.set_read_function (curl_handle)
+							end
+						end
+					end
+				end
+
+				curl_easy.set_read_function (curl_handle)
+				curl_easy.set_write_function (curl_handle)
+				if is_debug then
+					curl_easy.set_debug_function (curl_handle)
+					curl_easy.setopt_integer (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_verbose, 1)
+				end
+				create l_curl_string.make_empty
+				curl_easy.setopt_curl_string (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_writedata, l_curl_string)
+
+				create Result.make
+				l_result := curl_easy.perform (curl_handle)
+
+				if l_result = {CURL_CODES}.curle_ok then
+					Result.status := response_status_code (curl_easy, curl_handle)
+					set_header_and_body_to (l_curl_string.string, Result)
+				else
+					Result.set_error_occurred (True)
+					Result.status := response_status_code (curl_easy, curl_handle)
+				end
+
+				curl.global_cleanup
+				curl_easy.cleanup (curl_handle)
+			else
+				create Result.make
+				Result.set_error_occurred (True)
 			end
+			if l_form /= Void then
+				l_form.dispose
+			end
+			if curl /= Void and then p_slist /= default_pointer then
+				curl.slist_free_all (p_slist)
+			end
+			if l_upload_file /= Void and then not l_upload_file.is_closed then
+				l_upload_file.close
+			end
+		rescue
+			retried := True
+			if curl /= Void then
+				curl.global_cleanup
+				curl := Void
+			end
+			if curl_easy /= Void and curl_handle /= default_pointer then
+				curl_easy.cleanup (curl_handle)
+				curl_easy := Void
+			end
+			retry
+		end
 
-			--| Configure cURL session
-			curl_handle := curl_easy.init
-
-			--| URL
-			curl_easy.setopt_string (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_url, l_url)
-
+	initialize_curl_session (ctx: like context; curl: CURL_EXTERNALS; curl_easy: CURL_EASY_EXTERNALS; curl_handle: POINTER)
+		local
+			l_proxy: like proxy
+		do
 			--| RESPONSE HEADERS
 			curl_easy.setopt_integer (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_header, 1)
 
@@ -118,6 +253,7 @@ feature -- Execution
 				curl_easy.setopt_integer (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_ssl_verifypeer, 0)
 			end
 
+			--| Request method
 			if request_method.is_case_insensitive_equal ("GET") then
 				curl_easy.setopt_integer (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_httpget, 1)
 			elseif request_method.is_case_insensitive_equal ("POST") then
@@ -132,98 +268,6 @@ feature -- Execution
 				curl_easy.setopt_string (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_customrequest, request_method)
 				--| ignored
 			end
-
-			--| Credential
-			if ctx /= Void and then ctx.credentials_required then
-				if attached credentials as l_credentials then
-					inspect auth_type_id
-					when {HTTP_CLIENT_CONSTANTS}.Auth_type_none then
-						curl_easy.setopt_integer (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_httpauth, {CURL_OPT_CONSTANTS}.curlauth_none)
-					when {HTTP_CLIENT_CONSTANTS}.Auth_type_basic then
-						curl_easy.setopt_integer (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_httpauth, {CURL_OPT_CONSTANTS}.curlauth_basic)
-					when {HTTP_CLIENT_CONSTANTS}.Auth_type_digest then
-						curl_easy.setopt_integer (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_httpauth, {CURL_OPT_CONSTANTS}.curlauth_digest)
-					when {HTTP_CLIENT_CONSTANTS}.Auth_type_any then
-						curl_easy.setopt_integer (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_httpauth, {CURL_OPT_CONSTANTS}.curlauth_any)
-					when {HTTP_CLIENT_CONSTANTS}.Auth_type_anysafe then
-						curl_easy.setopt_integer (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_httpauth, {CURL_OPT_CONSTANTS}.curlauth_anysafe)
-					else
-					end
-
-					curl_easy.setopt_string (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_userpwd, l_credentials)
-				else
-					--| Credentials not prov  ided ...
-				end
-			end
-
-			if ctx /= Void and then ctx.has_form_data then
-				if attached ctx.form_parameters as l_forms and then not l_forms.is_empty then
---					curl_easy.set_debug_function (curl_handle)
---					curl_easy.setopt_integer (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_verbose, 1)
-
-					create l_form.make
-					create l_last.make
-					from
-						l_forms.start
-					until
-						l_forms.after
-					loop
-						curl.formadd_string_string (l_form, l_last, {CURL_FORM_CONSTANTS}.CURLFORM_COPYNAME, l_forms.key_for_iteration, {CURL_FORM_CONSTANTS}.CURLFORM_COPYCONTENTS, l_forms.item_for_iteration, {CURL_FORM_CONSTANTS}.CURLFORM_END)
-						l_forms.forth
-					end
-					l_last.release_item
-					curl_easy.setopt_form (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_httppost, l_form)
-				end
-			end
-			if ctx /= Void then
-				if request_method.is_case_insensitive_equal ("POST") or request_method.is_case_insensitive_equal ("PUT") then
-					if ctx.has_upload_data and then attached ctx.upload_data as l_upload_data then
-						curl_easy.setopt_string (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_postfields, l_upload_data)
-						curl_easy.setopt_integer (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_postfieldsize, l_upload_data.count)
-					end
-					if ctx.has_upload_filename and then attached ctx.upload_filename as l_upload_filename then
---						curl_easy.setopt_string (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_postfields, l_upload_data)
---						curl_easy.setopt_integer (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_postfieldsize, l_upload_data.count)
---| Not Yet Implemented
-					end
-				end
-			end
-
-			curl.global_init
-			if attached headers as l_headers then
-				across
-					l_headers as curs
-				loop
-					p := curl.slist_append (p, curs.key + ": " + curs.item)
-				end
-			end
-			p := curl.slist_append (p, "Expect:")
-			curl_easy.setopt_slist (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_httpheader, p)
-
-			curl.global_cleanup
-
-			curl_easy.set_read_function (curl_handle)
-			curl_easy.set_write_function (curl_handle)
-			create l_curl_string.make_empty
-			curl_easy.setopt_curl_string (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_writedata, l_curl_string)
-
-			debug ("service")
-				io.put_string ("SERVICE: " + l_url)
-				io.put_new_line
-			end
-
-			create Result.make
-			l_result := curl_easy.perform (curl_handle)
-
-			if l_result = {CURL_CODES}.curle_ok then
-				Result.status := response_status_code (curl_easy, curl_handle)
-				set_header_and_body_to (l_curl_string.string, Result)
-			else
-				Result.set_error_occurred (True)
-				Result.status := response_status_code (curl_easy, curl_handle)
-			end
-
-			curl_easy.cleanup (curl_handle)
 		end
 
 feature {NONE} -- Implementation		

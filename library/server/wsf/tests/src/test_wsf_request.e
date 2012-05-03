@@ -77,6 +77,7 @@ feature {NONE} -- Events
 	execute (req: WSF_REQUEST; res: WSF_RESPONSE)
 		local
 			q: detachable STRING_32
+			n: NATURAL_64
 			page: WSF_PAGE_RESPONSE
 		do
 			debug
@@ -145,6 +146,15 @@ feature {NONE} -- Events
 					if not q.is_empty then
 						page.put_string (" : " + q )
 					end
+				elseif l_uri.starts_with (test_url ("post/file/01")) then
+					page.put_header (200, <<["Content-Type", "text/plain"]>>)
+					page.put_string ("post-file-01")
+					n := req.content_length_value
+					if n > 0 then
+						req.input.read_string (n.to_integer_32)
+						q := req.input.last_string
+						page.put_string ("%N" + q)
+					end
 				else
 					page.put_header (200, <<["Content-Type", "text/plain"]>>)
 					page.put_string ("Hello")
@@ -191,6 +201,7 @@ feature {NONE} -- Events
 			if attached {HTTP_CLIENT_SESSION} h.new_session ("localhost:" + port_number.out + "/" + b) as sess then
 				http_session := sess
 				sess.set_timeout (-1)
+				sess.set_is_debug (True)
 				sess.set_connect_timeout (-1)
 --				sess.set_proxy ("127.0.0.1", 8888) --| inspect traffic with http://www.fiddler2.com/								
 			end
@@ -220,6 +231,18 @@ feature {NONE} -- Events
 			end
 		end
 
+	test_post_request_with_filename (a_url: READABLE_STRING_8; ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT; a_fn: STRING; a_expected_body: READABLE_STRING_8)
+		do
+			get_http_session
+			if attached http_session as sess then
+				if attached sess.post_file (a_url, adapted_context (ctx), a_fn) as res and then not res.error_occurred and then attached res.body as l_body then
+					assert ("Good answer got=%""+l_body+"%" expected=%""+a_expected_body+"%"", l_body.same_string (a_expected_body))
+				else
+					assert ("Request %""+a_url+"%" failed", False)
+				end
+			end
+		end
+
 	adapted_context (ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT): HTTP_CLIENT_REQUEST_CONTEXT
 		do
 			if ctx /= Void then
@@ -241,6 +264,26 @@ feature -- Test routines
 				test_get_request ("get/01/?foo=bar", Void, "get-01(foo=bar)")
 				test_get_request ("get/01/?foo=bar&abc=def", Void, "get-01(foo=bar&abc=def)")
 				test_get_request ("get/01/?lst=a&lst=b", Void, "get-01(lst=[a,b])")
+			else
+				assert ("not_implemented", False)
+			end
+		end
+
+	test_post_request_uploaded_file
+			-- New test routine
+		local
+			fn: FILE_NAME
+			f: RAW_FILE
+			s: STRING
+		do
+			get_http_session
+			if attached http_session as sess then
+				create fn.make_temporary_name
+				create f.make_create_read_write (fn.string)
+				s := "This is an uploaded file%NTesting purpose%N"
+				f.put_string (s)
+				f.close
+				test_post_request_with_filename ("post/file/01", Void, fn.string, "post-file-01%N" + s)
 			else
 				assert ("not_implemented", False)
 			end
