@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+
+<project name="build_library" default="help">
+	<description>
+		description: "Compile Eiffel Web Framework / Contrib / ISE library"
+	</description>
+	
+	<target name="help">
+		<echo message="usage:"/>
+		<echo message=" geant compile"/>
+		<echo message=" geant clean"/>
+		<echo message=" geant clobber"/>
+	</target>
+	
+	<target name="compile" >
+		<echo message="- Compile ise_library" />
+		<geant target="_build_tpl_" arguments="compile" />
+	</target>
+	
+	<target name="clean" >
+		<echo message="- Clean ise_library" />
+		<geant target="_build_tpl_" arguments="clean" />
+	</target>
+
+	<target name="clobber" >
+		<echo message="- Clobber ise_library" />
+		<geant target="_build_tpl_" arguments="clobber" />
+	</target>
+
+	<target name="_build_tpl_" >
+		<argument name="_target_name" />
+		<geant target="${_target_name}" dir="cURL" file="build.eant" reuse_variables="true" />
+	</target>
+	
+</project>
