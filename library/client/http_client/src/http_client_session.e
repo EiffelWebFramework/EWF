@@ -98,12 +98,6 @@ feature -- Basic operation
 		deferred
 		end
 
-	post_multipart (a_path: READABLE_STRING_8; ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT; data: detachable READABLE_STRING_8; fn: detachable READABLE_STRING_8): HTTP_CLIENT_RESPONSE
-			-- Response for POST request based on Current, `a_path' and `ctx'
-			-- with `data' and uploaded file `fn'	
-		deferred
-		end
-
 	put (a_path: READABLE_STRING_8; ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT; data: detachable READABLE_STRING_8): HTTP_CLIENT_RESPONSE
 			-- Response for PUT request based on Current, `a_path' and `ctx'
 			-- with input `data'	

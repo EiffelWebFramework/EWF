@@ -43,34 +43,12 @@ feature -- Basic operation
 
 	post (a_path: READABLE_STRING_8; a_ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT; data: detachable READABLE_STRING_8): HTTP_CLIENT_RESPONSE
 		do
-			Result := post_multipart (a_path, a_ctx, data, Void)
+			Result := impl_post (a_path, a_ctx, data, Void)
 		end
 
 	post_file (a_path: READABLE_STRING_8; a_ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT; fn: detachable READABLE_STRING_8): HTTP_CLIENT_RESPONSE
 		do
-			Result := post_multipart (a_path, a_ctx, Void, fn)
-		end
-
-	post_multipart (a_path: READABLE_STRING_8; a_ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT; data: detachable READABLE_STRING_8; fn: detachable READABLE_STRING_8): HTTP_CLIENT_RESPONSE
-		local
-			req: HTTP_CLIENT_REQUEST
-			ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT
-		do
-			ctx := a_ctx
-			if data /= Void then
-				if ctx = Void then
-					create ctx.make
-				end
-				ctx.set_upload_data (data)
-			end
-			if fn /= Void then
-				if ctx = Void then
-					create ctx.make
-				end
-				ctx.set_upload_filename (fn)
-			end
-			create {LIBCURL_HTTP_CLIENT_REQUEST} req.make (base_url + a_path, "POST", Current, ctx)
-			Result := req.execute
+			Result := impl_post (a_path, a_ctx, Void, fn)
 		end
 
 	put (a_path: READABLE_STRING_8; a_ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT; data: detachable READABLE_STRING_8): HTTP_CLIENT_RESPONSE
@@ -110,6 +88,30 @@ feature -- Basic operation
 			req: HTTP_CLIENT_REQUEST
 		do
 			create {LIBCURL_HTTP_CLIENT_REQUEST} req.make (base_url + a_path, "DELETE", Current, ctx)
+			Result := req.execute
+		end
+
+feature {NONE} -- Implementation
+
+	impl_post (a_path: READABLE_STRING_8; a_ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT; data: detachable READABLE_STRING_8; fn: detachable READABLE_STRING_8): HTTP_CLIENT_RESPONSE
+		local
+			req: HTTP_CLIENT_REQUEST
+			ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT
+		do
+			ctx := a_ctx
+			if data /= Void then
+				if ctx = Void then
+					create ctx.make
+				end
+				ctx.set_upload_data (data)
+			end
+			if fn /= Void then
+				if ctx = Void then
+					create ctx.make
+				end
+				ctx.set_upload_filename (fn)
+			end
+			create {LIBCURL_HTTP_CLIENT_REQUEST} req.make (base_url + a_path, "POST", Current, ctx)
 			Result := req.execute
 		end
 
