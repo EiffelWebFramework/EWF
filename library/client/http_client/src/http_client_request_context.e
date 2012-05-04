@@ -49,6 +49,9 @@ feature -- Settings
 	credentials_required: BOOLEAN
 			-- If True, the request will precise the HTTP_AUTHORIZATION.
 
+	proxy: detachable TUPLE [host: READABLE_STRING_8; port: INTEGER]
+			-- Optional proxy, see {HTTP_CLIENT_SESSION}.proxy
+
 feature -- Access
 
 	headers: HASH_TABLE [READABLE_STRING_8, READABLE_STRING_8]
@@ -62,11 +65,6 @@ feature -- Access
 	form_parameters: HASH_TABLE [READABLE_STRING_32, READABLE_STRING_32]
 			-- Form parameters
 
-	proxy: detachable TUPLE [host: READABLE_STRING_8; port: INTEGER]
-			-- Optional proxy, see {HTTP_CLIENT_SESSION}.proxy
-
-feature {HTTP_CLIENT_REQUEST, HTTP_CLIENT_SESSION} -- Internal access
-
 	upload_data: detachable READABLE_STRING_8
 			-- Upload data
 			--| Note: make sure to precise the Content-Type header
@@ -75,7 +73,7 @@ feature {HTTP_CLIENT_REQUEST, HTTP_CLIENT_SESSION} -- Internal access
 			-- Upload data read from `upload_filename'
 			--| Note: make sure to precise the Content-Type header		
 
-feature {HTTP_CLIENT_REQUEST, HTTP_CLIENT_SESSION} -- Status report
+feature -- Status report
 
 	has_form_data: BOOLEAN
 		do
@@ -114,19 +112,6 @@ feature -- Element change
 			credentials_required := b
 		end
 
-feature -- Status setting
-
-	set_proxy (a_host: detachable READABLE_STRING_8; a_port: INTEGER)
-		do
-			if a_host = Void then
-				proxy := Void
-			else
-				proxy := [a_host, a_port]
-			end
-		end
-
-feature {HTTP_CLIENT_REQUEST, HTTP_CLIENT_SESSION} -- Internal Element change				
-
 	set_upload_data (a_data: like upload_data)
 		require
 			has_no_upload_data: not has_upload_data
@@ -139,6 +124,17 @@ feature {HTTP_CLIENT_REQUEST, HTTP_CLIENT_SESSION} -- Internal Element change
 			has_no_upload_filename: not has_upload_filename
 		do
 			upload_filename := a_fn
+		end
+
+feature -- Status setting
+
+	set_proxy (a_host: detachable READABLE_STRING_8; a_port: INTEGER)
+		do
+			if a_host = Void then
+				proxy := Void
+			else
+				proxy := [a_host, a_port]
+			end
 		end
 
 feature -- Conversion helpers
