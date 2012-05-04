@@ -1,8 +1,9 @@
 note
-	description : "Objects that ..."
-	author      : "$Author$"
-	date        : "$Date$"
-	revision    : "$Revision$"
+	description: "[
+				Specific implementation of HTTP_CLIENT_REQUEST based on Eiffel cURL library
+			]"
+	date: "$Date$"
+	revision: "$Revision$"
 
 class
 	LIBCURL_HTTP_CLIENT_REQUEST
@@ -58,6 +59,10 @@ feature -- Execution
 			ctx: like context
 			p_slist: POINTER
 			retried: BOOLEAN
+			l_form_data: detachable HASH_TABLE [READABLE_STRING_32, READABLE_STRING_32]
+			l_upload_data: detachable READABLE_STRING_8
+			l_upload_filename: detachable READABLE_STRING_8
+			l_headers: like headers
 		do
 			if not retried then
 				curl := session.curl
@@ -73,16 +78,7 @@ feature -- Execution
 				--| URL
 				l_url := url
 				if ctx /= Void then
-					if attached ctx.query_parameters as l_query_params then
-						from
-							l_query_params.start
-						until
-							l_query_params.after
-						loop
-							append_parameters_to_url (l_url, <<[l_query_params.key_for_iteration, urlencode (l_query_params.item_for_iteration)]>>)
-							l_query_params.forth
-						end
-					end
+					append_parameters_to_url (ctx.query_parameters, l_url)
 				end
 
 				debug ("service")
@@ -91,78 +87,117 @@ feature -- Execution
 				end
 				curl_easy.setopt_string (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_url, l_url)
 
-				--| Header
-				if attached headers as l_headers then
-					across
-						l_headers as curs
-					loop
-						p_slist := curl.slist_append (p_slist, curs.key + ": " + curs.item)
+				l_headers := headers
+
+				-- Context
+				if ctx /= Void then
+					--| Credential				
+					if ctx.credentials_required then
+						if attached credentials as l_credentials then
+							inspect auth_type_id
+							when {HTTP_CLIENT_CONSTANTS}.Auth_type_none then
+								curl_easy.setopt_integer (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_httpauth, {CURL_OPT_CONSTANTS}.curlauth_none)
+							when {HTTP_CLIENT_CONSTANTS}.Auth_type_basic then
+								curl_easy.setopt_integer (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_httpauth, {CURL_OPT_CONSTANTS}.curlauth_basic)
+							when {HTTP_CLIENT_CONSTANTS}.Auth_type_digest then
+								curl_easy.setopt_integer (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_httpauth, {CURL_OPT_CONSTANTS}.curlauth_digest)
+							when {HTTP_CLIENT_CONSTANTS}.Auth_type_any then
+								curl_easy.setopt_integer (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_httpauth, {CURL_OPT_CONSTANTS}.curlauth_any)
+							when {HTTP_CLIENT_CONSTANTS}.Auth_type_anysafe then
+								curl_easy.setopt_integer (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_httpauth, {CURL_OPT_CONSTANTS}.curlauth_anysafe)
+							else
+							end
+
+							curl_easy.setopt_string (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_userpwd, l_credentials)
+						else
+							--| Credentials not provided ...
+						end
 					end
+
+					if ctx.has_upload_data then
+						l_upload_data := ctx.upload_data
+					end
+					if ctx.has_upload_filename then
+						l_upload_filename := ctx.upload_filename
+					end
+					if ctx.has_form_data then
+						l_form_data := ctx.form_parameters
+						check non_empty_form_data: not l_form_data.is_empty end
+						if l_upload_data = Void and l_upload_filename = Void then
+							-- Send as form-urlencoded
+							if
+								l_headers.has_key ("Content-Type") and then
+								attached l_headers.found_item as l_ct
+							then
+								if l_ct.starts_with ("application/x-www-form-urlencoded") then
+									-- Content-Type is already application/x-www-form-urlencoded
+									l_upload_data := ctx.form_parameters_to_url_encoded_string
+								else
+									-- Existing Content-Type and not application/x-www-form-urlencoded
+								end
+							else
+								l_upload_data := ctx.form_parameters_to_url_encoded_string
+							end
+						else
+							create l_form.make
+							create l_last.make
+							from
+								l_form_data.start
+							until
+								l_form_data.after
+							loop
+								curl.formadd_string_string (l_form, l_last,
+										{CURL_FORM_CONSTANTS}.curlform_copyname, l_form_data.key_for_iteration,
+										{CURL_FORM_CONSTANTS}.curlform_copycontents, l_form_data.item_for_iteration,
+										{CURL_FORM_CONSTANTS}.curlform_end
+									)
+								l_form_data.forth
+							end
+							l_last.release_item
+							curl_easy.setopt_form (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_httppost, l_form)
+						end
+					end
+
+					if l_upload_data /= Void then
+						check
+							post_or_put_request_method:	request_method.is_case_insensitive_equal ("POST")
+														or request_method.is_case_insensitive_equal ("PUT")
+						end
+
+						curl_easy.setopt_string (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_postfields, l_upload_data)
+						curl_easy.setopt_integer (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_postfieldsize, l_upload_data.count)
+					elseif l_upload_filename /= Void then
+						check
+							post_or_put_request_method:	request_method.is_case_insensitive_equal ("POST")
+														or request_method.is_case_insensitive_equal ("PUT")
+						end
+
+						create l_upload_file.make (l_upload_filename)
+						if l_upload_file.exists and then l_upload_file.is_readable then
+							curl_easy.setopt_integer (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_upload, 1)
+
+							curl_easy.setopt_integer (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_infilesize, l_upload_file.count)
+								-- specify callback read function for upload file
+							create l_uploade_file_read_function.make_with_file (l_upload_file)
+							l_upload_file.open_read
+							curl_easy.set_curl_function (l_uploade_file_read_function)
+							curl_easy.set_read_function (curl_handle)
+						end
+					else
+						check no_upload_data: l_upload_data = Void and l_upload_filename = Void end
+					end
+				end -- ctx /= Void
+
+				--| Header
+				across
+					l_headers as curs
+				loop
+					p_slist := curl.slist_append (p_slist, curs.key + ": " + curs.item)
 				end
 				p_slist := curl.slist_append (p_slist, "Expect:")
 				curl_easy.setopt_slist (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_httpheader, p_slist)
 
-				--| Credential
-				if ctx /= Void and then ctx.credentials_required then
-					if attached credentials as l_credentials then
-						inspect auth_type_id
-						when {HTTP_CLIENT_CONSTANTS}.Auth_type_none then
-							curl_easy.setopt_integer (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_httpauth, {CURL_OPT_CONSTANTS}.curlauth_none)
-						when {HTTP_CLIENT_CONSTANTS}.Auth_type_basic then
-							curl_easy.setopt_integer (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_httpauth, {CURL_OPT_CONSTANTS}.curlauth_basic)
-						when {HTTP_CLIENT_CONSTANTS}.Auth_type_digest then
-							curl_easy.setopt_integer (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_httpauth, {CURL_OPT_CONSTANTS}.curlauth_digest)
-						when {HTTP_CLIENT_CONSTANTS}.Auth_type_any then
-							curl_easy.setopt_integer (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_httpauth, {CURL_OPT_CONSTANTS}.curlauth_any)
-						when {HTTP_CLIENT_CONSTANTS}.Auth_type_anysafe then
-							curl_easy.setopt_integer (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_httpauth, {CURL_OPT_CONSTANTS}.curlauth_anysafe)
-						else
-						end
-
-						curl_easy.setopt_string (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_userpwd, l_credentials)
-					else
-						--| Credentials not prov  ided ...
-					end
-				end
-
-				if ctx /= Void and then ctx.has_form_data then
-					if attached ctx.form_parameters as l_forms and then not l_forms.is_empty then
-						create l_form.make
-						create l_last.make
-						from
-							l_forms.start
-						until
-							l_forms.after
-						loop
-							curl.formadd_string_string (l_form, l_last, {CURL_FORM_CONSTANTS}.curlform_copyname, l_forms.key_for_iteration, {CURL_FORM_CONSTANTS}.CURLFORM_COPYCONTENTS, l_forms.item_for_iteration, {CURL_FORM_CONSTANTS}.CURLFORM_END)
-							l_forms.forth
-						end
-						l_last.release_item
-						curl_easy.setopt_form (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_httppost, l_form)
-					end
-				end
-				if ctx /= Void then
-					if request_method.is_case_insensitive_equal ("POST") or request_method.is_case_insensitive_equal ("PUT") then
-						if ctx.has_upload_data and then attached ctx.upload_data as l_upload_data then
-							curl_easy.setopt_string (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_postfields, l_upload_data)
-							curl_easy.setopt_integer (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_postfieldsize, l_upload_data.count)
-						end
-						if ctx.has_upload_filename and then attached ctx.upload_filename as l_upload_filename then
-							create l_upload_file.make (l_upload_filename)
-							if l_upload_file.exists and then l_upload_file.is_readable then
-								curl_easy.setopt_integer (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_upload, 1)
-
-								curl_easy.setopt_integer (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_infilesize, l_upload_file.count)
-									-- specify callback read function for upload file
-								create l_uploade_file_read_function.make_with_file (l_upload_file)
-								l_upload_file.open_read
-								curl_easy.set_curl_function (l_uploade_file_read_function)
-								curl_easy.set_read_function (curl_handle)
-							end
-						end
-					end
-				end
-
+				--| Execution
 				curl_easy.set_read_function (curl_handle)
 				curl_easy.set_write_function (curl_handle)
 				if is_debug then
@@ -175,6 +210,7 @@ feature -- Execution
 				create Result.make
 				l_result := curl_easy.perform (curl_handle)
 
+				--| Result
 				if l_result = {CURL_CODES}.curle_ok then
 					Result.status := response_status_code (curl_easy, curl_handle)
 					set_header_and_body_to (l_curl_string.string, Result)
@@ -183,12 +219,16 @@ feature -- Execution
 					Result.status := response_status_code (curl_easy, curl_handle)
 				end
 
+				--| Cleaning
+
 				curl.global_cleanup
 				curl_easy.cleanup (curl_handle)
 			else
 				create Result.make
 				Result.set_error_occurred (True)
 			end
+
+			--| Remaining cleaning			
 			if l_form /= Void then
 				l_form.dispose
 			end

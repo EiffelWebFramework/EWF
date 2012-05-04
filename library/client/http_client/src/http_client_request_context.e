@@ -1,6 +1,24 @@
 note
-	description: "Summary description for {HTTP_CLIENT_REQUEST_CONTEXT}."
-	author: ""
+	description: "[
+				Context for HTTP client request
+				This is used to hold 
+					- headers
+					- query_parameters
+					- form parameters
+					- upload_data or upload_filename
+				And in addition it has 
+					- credentials_required
+					- proxy
+					
+				Note that any value set in this context class overrides conflicting value eventually
+				     set in associated HTTP_CLIENT_SESSION.
+			
+				Warning: for now [2012-May], you can have only one of the following data
+						- form_parameters
+						- or upload_data 
+						- or upload_filename 
+						If you set more than one, the priority is then upload_data, then upload_filename, then form_parameters
+			]"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -29,20 +47,31 @@ feature {NONE} -- Initialization
 feature -- Settings
 
 	credentials_required: BOOLEAN
+			-- If True, the request will precise the HTTP_AUTHORIZATION.
 
 feature -- Access
 
 	headers: HASH_TABLE [READABLE_STRING_8, READABLE_STRING_8]
+			-- Specific headers to use in addition to the one set in the related HTTP_CLIENT_SESSION
+			--| note: the value from Current context override the one from the session in case of conflict
 
-	query_parameters: HASH_TABLE [READABLE_STRING_32, READABLE_STRING_8]
+	query_parameters: HASH_TABLE [READABLE_STRING_32, READABLE_STRING_32]
+			-- Query parameters to be appended to the url
+			--| note: if the url already contains a query_string, the `query_parameters' will be appended to the url
 
-	form_parameters: HASH_TABLE [READABLE_STRING_32, READABLE_STRING_8]
+	form_parameters: HASH_TABLE [READABLE_STRING_32, READABLE_STRING_32]
+			-- Form parameters
 
 	upload_data: detachable READABLE_STRING_8
+			-- Upload data
+			--| Note: make sure to precise the Content-Type header
 
 	upload_filename: detachable READABLE_STRING_8
+			-- Upload data read from `upload_filename'
+			--| Note: make sure to precise the Content-Type header	
 
 	proxy: detachable TUPLE [host: READABLE_STRING_8; port: INTEGER]
+			-- Optional proxy, see {HTTP_CLIENT_SESSION}.proxy
 
 feature -- Status report
 
@@ -63,12 +92,17 @@ feature -- Status report
 
 feature -- Element change
 
-	add_query_parameter (k: READABLE_STRING_8; v: READABLE_STRING_32)
+	add_header (k: READABLE_STRING_8; v: READABLE_STRING_8)
+		do
+			headers.force (v, k)
+		end
+
+	add_query_parameter (k: READABLE_STRING_32; v: READABLE_STRING_32)
 		do
 			query_parameters.force (v, k)
 		end
 
-	add_form_parameter (k: READABLE_STRING_8; v: READABLE_STRING_32)
+	add_form_parameter (k: READABLE_STRING_32; v: READABLE_STRING_32)
 		do
 			form_parameters.force (v, k)
 		end
@@ -99,6 +133,45 @@ feature -- Element change
 			else
 				proxy := [a_host, a_port]
 			end
+		end
+
+feature -- Conversion helpers
+
+	query_parameters_to_url_encoded_string: STRING_8
+			-- `query_parameters' as url-encoded string.
+		do
+			Result := parameters_to_url_encoded_string (query_parameters)
+		end
+
+	form_parameters_to_url_encoded_string: STRING_8
+			-- `form_parameters' as url-encoded string.	
+		do
+			Result := parameters_to_url_encoded_string (form_parameters)
+		end
+
+feature {NONE} -- Implementation
+
+	parameters_to_url_encoded_string (ht: HASH_TABLE [READABLE_STRING_32, READABLE_STRING_32]): STRING_8
+		do
+			create Result.make (64)
+			from
+				ht.start
+			until
+				ht.after
+			loop
+				if not Result.is_empty then
+					Result.append_character ('&')
+				end
+				Result.append (url_encoder.encoded_string (ht.key_for_iteration))
+				Result.append_character ('=')
+				Result.append (url_encoder.encoded_string (ht.item_for_iteration))
+				ht.forth
+			end
+		end
+
+	url_encoder: URL_ENCODER
+		once
+			create Result
 		end
 
 note

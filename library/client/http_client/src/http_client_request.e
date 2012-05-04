@@ -1,8 +1,10 @@
 note
-	description : "Objects that ..."
-	author      : "$Author$"
-	date        : "$Date$"
-	revision    : "$Revision$"
+	description: "[
+				Object representing a http client request
+				It is mainly used internally by the HTTP_CLIENT_SESSION
+			]"
+	date: "$Date$"
+	revision: "$Revision$"
 
 deferred class
 	HTTP_CLIENT_REQUEST
@@ -152,15 +154,14 @@ feature -- Settings
 
 feature {NONE} -- Utilities
 
-	append_parameters_to_url (a_url: STRING; a_parameters: detachable ARRAY [detachable TUPLE [name: READABLE_STRING_8; value: READABLE_STRING_8]])
+	append_parameters_to_url (a_parameters: HASH_TABLE [READABLE_STRING_32, READABLE_STRING_32]; a_url: STRING)
 			-- Append parameters `a_parameters' to `a_url'
 		require
 			a_url_attached: a_url /= Void
 		local
-			i: INTEGER
 			l_first_param: BOOLEAN
 		do
-			if a_parameters /= Void and then a_parameters.count > 0 then
+			if a_parameters.count > 0 then
 				if a_url.index_of ('?', 1) > 0 then
 					l_first_param := False
 				elseif a_url.index_of ('&', 1) > 0 then
@@ -168,23 +169,22 @@ feature {NONE} -- Utilities
 				else
 					l_first_param := True
 				end
+
 				from
-					i := a_parameters.lower
+					a_parameters.start
 				until
-					i > a_parameters.upper
+					a_parameters.after
 				loop
-					if attached a_parameters[i] as a_param then
-						if l_first_param then
-							a_url.append_character ('?')
-						else
-							a_url.append_character ('&')
-						end
-						a_url.append_string (a_param.name)
-						a_url.append_character ('=')
-						a_url.append_string (a_param.value)
-						l_first_param := False
+					if l_first_param then
+						a_url.append_character ('?')
+					else
+						a_url.append_character ('&')
 					end
-					i := i + 1
+					a_url.append (urlencode (a_parameters.key_for_iteration))
+					a_url.append_character ('=')
+					a_url.append (urlencode (a_parameters.item_for_iteration))
+					l_first_param := False
+					a_parameters.forth
 				end
 			end
 		end

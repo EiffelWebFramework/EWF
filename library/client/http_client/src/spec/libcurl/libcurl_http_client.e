@@ -1,5 +1,7 @@
 note
-	description : "Objects that ..."
+	description : "[
+				Specific implementation of HTTP_CLIENT based on Eiffel cURL library
+			]"
 	author      : "$Author$"
 	date        : "$Date$"
 	revision    : "$Revision$"

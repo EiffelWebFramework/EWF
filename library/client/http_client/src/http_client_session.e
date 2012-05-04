@@ -1,13 +1,12 @@
 note
 	description : "[
-				HTTP_CLIENT_SESSION represent a session
+				HTTP_CLIENT_SESSION represents a session
 				and is used to call get, post, .... request
 				with predefined settings such as 
 					base_url
 					specific common headers
 					timeout and so on ...
 			]"
-	author: "$Author$"
 	date: "$Date$"
 	revision: "$Revision$"
 

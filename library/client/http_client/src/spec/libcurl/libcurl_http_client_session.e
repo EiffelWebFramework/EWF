@@ -1,8 +1,9 @@
 note
-	description : "Objects that ..."
-	author      : "$Author$"
-	date        : "$Date$"
-	revision    : "$Revision$"
+	description: "[
+				Specific implementation of HTTP_CLIENT_SESSION based on Eiffel cURL library
+			]"
+	date: "$Date$"
+	revision: "$Revision$"
 
 class
 	LIBCURL_HTTP_CLIENT_SESSION

@@ -1,6 +1,8 @@
 note
-	description : "Objects that ..."
-	author      : "$Author$"
+	description : "[
+				Instantiate one of the descendant of HTTP_CLIENT
+				then use `new_session' to create a session of http requests
+			]"
 	date        : "$Date$"
 	revision    : "$Revision$"
 
@@ -10,6 +12,7 @@ deferred class
 feature -- Status
 
 	new_session (a_base_url: READABLE_STRING_8): HTTP_CLIENT_SESSION
+			-- Create a new session using `a_base_url'.
 		deferred
 		end
 

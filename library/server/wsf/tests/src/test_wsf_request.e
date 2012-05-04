@@ -275,6 +275,7 @@ feature -- Test routines
 			fn: FILE_NAME
 			f: RAW_FILE
 			s: STRING
+			ctx: HTTP_CLIENT_REQUEST_CONTEXT
 		do
 			get_http_session
 			if attached http_session as sess then
@@ -284,6 +285,10 @@ feature -- Test routines
 				f.put_string (s)
 				f.close
 				test_post_request_with_filename ("post/file/01", Void, fn.string, "post-file-01%N" + s)
+
+				create ctx.make
+				ctx.add_form_parameter ("foo", "bar")
+				test_post_request_with_filename ("post/file/01", ctx, fn.string, "post-file-01%N" + s)
 			else
 				assert ("not_implemented", False)
 			end
@@ -298,10 +303,11 @@ feature -- Test routines
 			if attached http_session as sess then
 				create ctx.make
 				ctx.add_form_parameter ("id", "123")
-				test_post_request ("post/01", ctx, "post-01 : id=123")
-				test_post_request ("post/01/?foo=bar", ctx, "post-01(foo=bar) : id=123")
-				test_post_request ("post/01/?foo=bar&abc=def", ctx, "post-01(foo=bar&abc=def) : id=123")
-				test_post_request ("post/01/?lst=a&lst=b", ctx, "post-01(lst=[a,b]) : id=123")
+				ctx.add_form_parameter ("Eiffel", "Web")
+				test_post_request ("post/01", ctx, "post-01 : " + ctx.form_parameters_to_url_encoded_string)
+				test_post_request ("post/01/?foo=bar", ctx, "post-01(foo=bar) : " + ctx.form_parameters_to_url_encoded_string)
+				test_post_request ("post/01/?foo=bar&abc=def", ctx, "post-01(foo=bar&abc=def) : " + ctx.form_parameters_to_url_encoded_string)
+				test_post_request ("post/01/?lst=a&lst=b", ctx, "post-01(lst=[a,b]) : " + ctx.form_parameters_to_url_encoded_string)
 			else
 				assert ("not_implemented", False)
 			end
