@@ -27,6 +27,20 @@ feature -- Access
 	path: READABLE_STRING_8
 			-- Associated path
 
+feature -- Request data
+
+	apply (req: WSF_REQUEST)
+			-- Apply current data to request `req'
+			--| mainly to fill {WSF_REQUEST}.path_parameters
+		deferred
+		end
+
+	revert (req: WSF_REQUEST)
+			-- Revert potential previous `apply' for request `req'
+			--| mainly to restore previous {WSF_REQUEST}.path_parameters
+		deferred
+		end
+
 feature -- Url Query
 
 	script_absolute_url (a_path: STRING): STRING

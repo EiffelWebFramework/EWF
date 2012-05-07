@@ -26,6 +26,18 @@ feature {NONE} -- Initialization
 			path := p
 		end
 
+feature -- Request data
+
+	apply (req: WSF_REQUEST)
+			-- <Precursor>
+		do
+		end
+
+	revert (req: WSF_REQUEST)
+			-- <Precursor>
+		do
+		end
+
 feature -- Item		
 
 	item (a_name: READABLE_STRING_32): detachable WSF_VALUE

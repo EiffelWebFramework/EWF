@@ -43,6 +43,24 @@ feature -- Access
 
 	uri_template_match: URI_TEMPLATE_MATCH_RESULT
 
+feature -- Environment
+
+	old_path_parameters: detachable ITERABLE [WSF_VALUE]
+
+	apply (req: WSF_REQUEST)
+			-- <Precursor>
+		do
+			old_path_parameters := req.path_parameters
+			req.import_raw_path_parameters (uri_template_match.path_variables)
+		end
+
+	revert (req: WSF_REQUEST)
+			-- <Precursor>
+		do
+			if attached old_path_parameters as vals then
+				req.reset_path_parameters (vals)
+			end
+		end
 
 feature -- Item
 

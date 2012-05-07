@@ -144,9 +144,16 @@ feature -- Execution
 			-- Process route `a_route'
 		require
 			a_route_attached: a_route /= Void
+		local
+			ctx: C
 		do
 			pre_route_execution_actions.call ([a_route])
-			a_route.handler.execute (a_route.context, req, res)
+			ctx := a_route.context
+			ctx.apply (req)
+			a_route.handler.execute (ctx, req, res)
+			ctx.revert (req)
+		rescue
+			a_route.context.revert (req)
 		end
 
 	dispatch (req: WSF_REQUEST; res: WSF_RESPONSE): BOOLEAN

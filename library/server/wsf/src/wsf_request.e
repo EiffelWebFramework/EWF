@@ -56,6 +56,9 @@ feature {NONE} -- Initialization
 			set_raw_input_data_recorded (False)
 			create {STRING_32} empty_string.make_empty
 
+			create path_parameters_table.make (0)
+			path_parameters_table.compare_objects
+
 			create execution_variables_table.make (0)
 			execution_variables_table.compare_objects
 
@@ -200,7 +203,7 @@ feature -- Eiffel WGI access
 
 feature {NONE} -- Access: global variable
 
-	items_table: HASH_TABLE [WSF_VALUE, READABLE_STRING_8]
+	items_table: HASH_TABLE [WSF_VALUE, READABLE_STRING_32]
 			-- Table containing all the various variables
 			-- Warning: this is computed each time, if you change the content of other containers
 			-- this won't update this Result's content, unless you query it again
@@ -208,7 +211,7 @@ feature {NONE} -- Access: global variable
 			create Result.make (100)
 
 			across
-				meta_variables as vars
+				path_parameters as vars
 			loop
 				Result.force (vars.item, vars.item.name)
 			end
@@ -224,12 +227,6 @@ feature {NONE} -- Access: global variable
 			loop
 				Result.force (vars.item, vars.item.name)
 			end
-
-			across
-				cookies as vars
-			loop
-				Result.force (vars.item, vars.item.name)
-			end
 		end
 
 feature -- Access: global variable		
@@ -241,22 +238,19 @@ feature -- Access: global variable
 
 	item (a_name: READABLE_STRING_32): detachable WSF_VALUE
 			-- Variable named `a_name' from any of the variables container
-			-- and following a specific order
-			-- execution, environment, get, post, cookies
+			-- and following a specific order: form_, query_ and path_ parameters
+			--| Cookie are not included due to security reason.
 		do
-			Result := meta_variable (a_name)
+			Result := form_parameter (a_name)
 			if Result = Void then
 				Result := query_parameter (a_name)
 				if Result = Void then
-					Result := form_parameter (a_name)
-					if Result = Void then
-						Result := cookie (a_name)
-					end
+					Result := path_parameter (a_name)
 				end
 			end
 		end
 
-	string_item (a_name: READABLE_STRING_8): detachable READABLE_STRING_32
+	string_item (a_name: READABLE_STRING_32): detachable READABLE_STRING_32
 		do
 			if attached {WSF_STRING} item (a_name) as val then
 				Result := val.string
@@ -267,7 +261,7 @@ feature -- Access: global variable
 
 feature -- Execution variables
 
-	execution_variable (a_name: READABLE_STRING_8): detachable ANY
+	execution_variable (a_name: READABLE_STRING_32): detachable ANY
 			-- Execution variable related to `a_name'
 		require
 			a_name_valid: a_name /= Void and then not a_name.is_empty
@@ -898,6 +892,61 @@ feature {NONE} -- Cookies
 			Result := l_cookies
 		end
 
+feature -- Path parameters
+
+	path_parameters: ITERABLE [WSF_VALUE]
+		do
+			Result := path_parameters_table
+		end
+
+	path_parameter (a_name: READABLE_STRING_32): detachable WSF_VALUE
+			-- Parameter for name `n'.
+		do
+			Result := path_parameters_table.item (a_name)
+		end
+
+feature -- Path parameters: Element change
+
+	import_raw_path_parameters (lst: detachable TABLE_ITERABLE [READABLE_STRING_8, READABLE_STRING_8])
+			-- The `path_parameters' are filled when known during the request handling
+			-- with table of urlencoded values
+		local
+			l_table: like path_parameters_table
+		do
+			create l_table.make (3)
+			path_parameters_table := l_table
+
+			-- Remove existing previous values
+			l_table.wipe_out
+			if lst /= Void then
+				across
+					lst as c
+				loop
+					add_value_to_table (c.key, c.item, l_table)
+				end
+			end
+		end
+
+	reset_path_parameters (vars: detachable like path_parameters)
+		local
+			l_table: like path_parameters_table
+		do
+			l_table := path_parameters_table
+			l_table.wipe_out
+			if vars /= Void then
+				across
+					vars as c
+				loop
+					l_table.force (c.item, c.item.name)
+				end
+			end
+		end
+
+feature {NONE} -- Query parameters: implementation
+
+	path_parameters_table: HASH_TABLE [WSF_VALUE, READABLE_STRING_32]
+			-- Variables extracted from QUERY_STRING	
+
 feature -- Query parameters
 
 	query_parameters: ITERABLE [WSF_VALUE]
@@ -1408,40 +1457,6 @@ feature {WSF_MIME_HANDLER} -- Temporary File handling
 		rescue
 			rescued := True
 			retry
-		end
-
-feature {WSF_MIME_HANDLER} -- Input data access
-
-	form_input_data (nb: NATURAL_64): READABLE_STRING_8
-			-- All data from input form
-		local
-			nb32: INTEGER
-			n64: NATURAL_64
-			n: INTEGER
-			t: STRING
-			s: STRING_8
-		do
-			from
-				n64 := nb
-				nb32 := n64.to_integer_32
-				create s.make (nb32)
-				Result := s
-				n := nb32
-				if n > 1_024 then
-					n := 1_024
-				end
-			until
-				n64 <= 0
-			loop
-				input.read_string (n)
-				t := input.last_string
-				s.append_string (t)
-				if t.count < n then
-					n64 := 0
-				else
-					n64 := n64 - t.count.as_natural_64
-				end
-			end
 		end
 
 feature {NONE} -- Internal value
