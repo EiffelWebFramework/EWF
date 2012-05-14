@@ -1,3 +1,315 @@
+2012-05-14  Jocelyn Fiat
+
+  Rather use (READABLE_)STRING_GENERAL for argument instead of _8 or _32
+  variant Better design to set the WSF_REQUEST.path_parameters especially
+  handle the case where the request goes trought more than one route (could be
+  the case when using WSF_ROUTING_HANDLER)
+
+  Updated URI Template to follow official RFC6570
+
+2012-05-07  Jocelyn Fiat
+
+  Reviewed WSF_REQUEST.item (..) and items  to look into Form, Query, and Path
+  (cookie are excluded for security) Added WSF_REQUEST.path_parameter (a_name):
+  detachable WSF_VALUE - fill path_parameters using
+  `import_raw_path_parameters" when executing the route - reset to previous
+  value with reset_path_parameters (..), just in case the request is executed
+  via severals routes.
+
+2012-05-04  Jocelyn Fiat
+
+  Reverted back to export upload_data and upload_filename to ANY (and related
+  features)
+
+  Removed HTTP_CLIENT_SESSION.post_multipart .. because it was not doing what
+  the name might evoque Restrict export of
+  HTTP_CLIENT_REQUEST_CONTEXT.upload_data and upload_filename (and related) to
+  .._SESSION and .._REQUEST this is mainly internal data, and is more about
+  implementation than interface
+
+  Now the http_client will send the form parameters urlencoded if this is
+  possible (instead of multipart form data)  Note for now, the library does not
+  support sending file and form parameters at the same time.
+
+2012-05-03  Jocelyn Fiat
+
+  Fixed typo in .ecf .. curl instead of cURL
+
+  Added geant scripts to compile EWF
+
+  Improved the libcurl implementation of http_client by adding
+  HTTP_CLIENT_SESSION.is_debug: BOOLEAN if True, this display verbose debug
+  information in console Implemented uploading of file for PUT and POST
+  requests Refactored LIBCURL_HTTP_CLIENT_REQUEST to free used pointer, and
+  also ease extension of the class if needed. Updated cURL library with
+  addition of {CURL_EXTERNALS}.slist_free_all (..)
+
+2012-05-02  Jocelyn Fiat
+
+  do not use implicit conversion from HTTP_CONTENT_TYPE
+
+  Fixed wrong signature should be READABLE_STRING_32 instead of _8
+
+  Also removing the implicit conversion from STRING to HTTP_*_TYPE
+
+  Removed implicit conversion from HTTP_CONTENT_TYPE to STRING_8 because it
+  could be a source of bug due to hidden conversion (and parameters) Applied
+  changes to autotest cases Cosmetic
+
+2012-04-30  Jocelyn Fiat
+
+  Added comments Added `url' to compute the url from base_url, path and query
+  parameters
+
+  Fixed error in URL encoding, according to the RFC3986, space should not be
+  encoded with '+' but with percent encoding.
+
+  Fixed signature issue, the argument `name' should be READABLE_STRING_32
+
+  Code cleaning
+
+  Added specific helper function related to `charset' parameter
+
+2012-04-27  Jocelyn Fiat
+
+  added postcondition status_reason_phrase_unset  to `set_status'
+
+  cosmetic
+
+2012-04-13  Jocelyn Fiat
+
+  Fixed a last minute regression due to removal REQUEST.chunked_input
+
+  Added WSF_ROUTER.pre_route_execution_actions: ACTION_SEQUENCE [like route]
+  This way, one can add logger hook to router, to see which "route" was taken
+  by the request.
+
+  Made WGI_CHUNKED_INPUT_STREAM inherits from WGI_INPUT_STREAM Merged
+  REQUEST.input and REQUEST.chunked_input Now REQUEST.input handles directly
+  the chunked transfer encoding, or the non chunked. Kept
+  REQUEST.is_chunked_input since it matters that Content-Length is 0 even if
+  there are input (chunked) data.
+
+2012-04-12  Jocelyn Fiat
+
+  Fixed compilation of samples
+
+  Fixed compilation
+
+  Now WGI_RESPONSE.set_status_code (..) has a new argument to pass optional
+  custom reason phrase. This is a minor breaking change (but prior to the first
+  release, so acceptable) And then it is now possible to precise a custom
+  reason phrase (useful for 4xx and 5xx response)  At the WSF_RESPONSE level,
+  the status code is now sent only when the header are sent. thus, it is
+  possible to change the status code as long as no header is sent. (in the
+  future, we should also try to delay the sending of headers)  Removed
+  WGI_RESPONSE.put_header_lines (..) which was not used, and WGI is not meant
+  to provide such user friendly features Now this is available directly on
+  WSF_RESPONSE
+
+2012-04-06  Jocelyn Fiat
+
+  updated to EiffelWebFramework/EWF
+
+  sync with json lib.
+
+  Sync with wiki
+
+  Use https://github.com/EiffelWebFramework/EWF.git as master
+
+2012-04-05  Jocelyn Fiat
+
+  Added `transfered_content_length' to WSF_RESPONSE to provide the information
+  to application This can be used to build logs for instance.
+
+  Relaxed WSF_REDIRECTION_RESPONSE.set_content (.., ..) to allow Void for
+  content type in order to use the one set in header or the default one.
+
+  Removed default handler for WSF_ROUTER Added 	WSF_ROUTE to replace a TUPLE
+  [H, C] WSF_ROUTER.route (req): detachable WSF_ROUTE WSF_ROUTER.execute_route
+  (a_route, req, res) To help usage of Routers Remove WSF_HANDLER_CONTEXT
+  obsolete features. Added comments
+
+2012-03-27  Olivier Ligot
+
+  [REM] Remove unneeded precondition
+
+  [IMP] Ignore *.swp files
+
+2012-04-02  Jocelyn Fiat
+
+  removed obsolete message.
+
+2012-03-27  Olivier Ligot
+
+  [REM] Remove unneeded precondition
+
+  [IMP] Ignore *.swp files
+
+2012-03-23  Jocelyn Fiat
+
+  Renamed same_media_type as same_simple_type Added comments
+
+  updated tests.ecf
+
+  Added HTTP_MEDIA_TYPE  (maybe it will just replace the HTTP_CONTENT_TYPE
+  later) renamed .media_type as .simple_type for now allow more than one
+  parameters
+
+  Use media_type as replacement for type_and_subtype_string in
+  HTTP_CONTENT_TYPE
+
+  Added class HTTP_CONTENT_TYPE to help manipulation of Content-Type value Now
+  WSF_REQUEST return a HTTP_CONTENT_TYPE if available Adapted WSF_MIME_HANDLER
+  to use this new class Added one manual autotest to test MIME handler
+
+2012-03-21  Jocelyn Fiat
+
+  in WSF_RESPONSE, `put_header' now call `put_header_text' Removed unused local
+  variable
+
+  Fixed very bad mistake where no Result was ever set for WSF_REQUEST.item (..)
+
+2012-03-20  Jocelyn Fiat
+
+  fixed compilation issue  (typo)
+
+  Do not try to compile_all in "dev" folder
+
+  Reverted a previous change, we should not truncated Content-Type after ; In
+  the case of multipart/form-data  the parameter "boundary=" is essential
+
+  Use WSF_DEFAULT_SERVICE for the test echo server
+
+  Fixing compilation of specific example using the WGI connector directly
+
+  Added WSF_SERVICE.to_wgi_service to ease direct integration with existing WGI
+  components
+
+  Relaxed access to `send_to', now it is exported again to avoid breaking
+  existing code.
+
+  remove unused local variable
+
+  WSF_REQUEST.content_type should keep only the relevant part of the content
+  type and forget about the eventual parameters (charset, name) ...  note: it
+  is possible to query meta_string_variable ("CONTENT_TYPE") to get the
+  complete Content-Type header
+
+  Added HTTP_HEADER.(put|add)_content_type_with_parameters (...)
+
+  removed obsolete
+
+  Implemented WSF_RESPONSE.put_error (...) and related Added
+  WSF_RESPONSE.put_character Renamed  WGI_OUTPUT_STREAM.put_character_8 as
+  put_character  to follow style of put_string  (and not put_string_8)
+  Refactored the WSF_DEFAULT_SERVICE_LAUNCHER Added WSF_DEFAULT_SERVICE to be
+  more user friendly Splitted the wsf/default/ libraries to have
+  wsf/connector/... and being able to handle more than one connector in the
+  same application
+
+  Moved mime handler classes under wsf/src/mime/
+
+2012-03-19  Jocelyn Fiat
+
+  removed unwanted rescue clause
+
+  Updating EWSGI specification classes
+
+  Removed WGI_RESPONSE.write (..) Replaced any internal call to
+  WGI_RESPONSE.write () by the associated implementation (i.e 
+  output.put_string (...)  ) Added WGI_OUTPUT_STREAM.put_crlf  Renamed
+  WSF_RESPONSE.put_response (a_message) as  `send (a_message)'
+  WSF_RESPONSE_MESSAGE.send_to (res)  is now exported only to WSF_RESPONSE
+
+2012-03-19  Berend de Boer
+
+  Avoid another indirection.
+
+  status must be set, else WGI_SERVICE.execute will report the postcondition
+  violation.  Conflicts:  library/server/wsf/router/wsf_handler.e
+
+  Minor code cleanup/typo fix.
+
+2012-03-17  Berend de Boer
+
+  Move wgi_service spec to its own directory else I get a class conflicts with
+  compile_ise.ecf generated by gexace.
+
+2012-03-19  Jocelyn Fiat
+
+  Improved comment in WSF_RESPONSE.put_response (..) Added
+  WSF_REDIRECTION_RESPONSE class
+
+  Added WSF_RESPONSE_HANDLER based on WSF_RESPONSE_MESSAGE The descendant has
+  to implement the function  response (ctx: C; req: WSF_REQUEST):
+  WSF_RESPONSE_MESSAGE  Added related features and class in WSF_ROUTER to be
+  able to use agent easily.
+
+  Refactored WSF_HANDLER_CONTEXT - removed path_parameter - added `item' to
+  include WSF_REQUEST.item - marked obsolete `parameter'  The goal is to remove
+  confusion, remove URI_TEMPLATE specific `path_parameter' and provide a way to
+  use ctx.item (..) to also include meta variable, query, form, ... items
+
+  Use local variable to speed up access to `input'
+
+2012-03-16  Jocelyn Fiat
+
+  Applied wsf_extension creation, and classes moved from wsf to wsf_extension
+
+  Created wsf_extension, and moved some classes from wsf to wsf_extension
+  WSF_HANDLER_HELPER WSF_RESOURCE_HANDLER_HELPER WSF_HANDLER_ROUTES_RECORDER
+
+  applied removal of HTTP_HEADER.put_status (..)
+
+  Removed HTTP_HEADER.put_status (...) It is not recommended to send the status
+  code as part of the HTTP Header, so let's remove this ambiguity and do not
+  encourage EWF user to use it
+
+  Major renaming, adopt the WSF_ prefix for all classes under "wsf", and
+  simplify some class names Removed in WGI_INPUT_STREAM, the assertion
+  "same_last_string_reference" Copyright updates
+
+2012-03-13  Jocelyn Fiat
+
+  Fixed compilation of draft/library/server/request/rest/tests/.. Note the
+  "rest" library will not be maintained since this is not REST.
+
+  precise that library/server/request/router is now part of "wsf" library and
+  not anymore independant library.
+
+  Nino connector: - fixed issue related to `ready_for_reading'  now use the
+  `try_...' variant - for now Nino does not support persistent connection, then
+  we have to respond with "Connection: close"  REQUEST_FILE_SYSTEM_HANDLER: -
+  added not_found_handler and access_denied_handler, so that the user can
+  customize related response  WSF_REQUEST and WSF_VALUE: - modified how
+  uploaded file are handled, fixed various issues, and added WSF_UPLOADED_FILE
+  (it is a WSF_VALUE)  WSF_VALUE: - added change_name (a_name: like name) -
+  added url_encoded_name to other WSF_values  WSF_REQUEST: - added `destroy' to
+  perform end of request cleaning (such as deleting temp uploaded files) -
+  renamed `raw_post_data_recorded' as `raw_input_data_recorded', and related
+  feature - do not store the RAW_POST_DATA in meta variable anymore, but in
+  WSF_REQUEST.raw_input_data is asked  Added WSF_HTML_PAGE_RESPONSE to help
+  user  WSF_REPONSE.redirect_... now use "temp_redirect" as default instead of
+  "moved_permanently" which is specific usage  Removed many obsolete features.
+
+2012-02-29  Jocelyn Fiat
+
+  use https:// url for git submodules
+
+  Added assertions to catch if route mapping does not already exists
+
+2012-02-28  Jocelyn Fiat
+
+  Synchronized with nino and json library
+
+2012-02-17  jvelilla
+
+  Refactor REQUEST_RESOURCE_HANDLER_HELPER to figure out the transfer encoding:
+  Chunked. Added a new method to retrieve_data independently if the transfer is
+  chunked or not. Updated ORDER_HANLDER to use this new feature. Sync with
+  Jocelyn repo
+
 2012-02-16  Jocelyn Fiat
 
   Minor correction, to avoid returning 200 as status code, when the client can
@@ -60,6 +372,10 @@
 2012-02-08  Jocelyn Fiat
 
   fixed http_client tests
+
+2012-02-08  jvelilla
+
+  Updated content
 
 2012-02-07  Jocelyn Fiat
 
