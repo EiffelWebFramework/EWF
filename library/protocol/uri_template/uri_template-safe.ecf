@@ -13,21 +13,6 @@
 		<library name="base" location="$ISE_LIBRARY\library\base\base-safe.ecf"/>
 		<library name="encoder" location="..\..\text\encoder\encoder-safe.ecf"/>
 		<library name="time" location="$ISE_LIBRARY\library\time\time-safe.ecf"/>
-		<cluster name="src" location="src\" recursive="true">
-			<file_rule>
-				<exclude>/draft_05$</exclude>
-			</file_rule>
-			<file_rule>
-				<exclude>/uri_template_constants.e</exclude>
-				<condition>
-					<custom name="uri_template" value="draft_05"/>
-				</condition>
-			</file_rule>
-		</cluster>
-		<cluster name="draft_05" location=".\src\draft_05\">
-			<condition>
-				<custom name="uri_template" value="draft_05"/>
-			</condition>
-		</cluster>
+		<cluster name="src" location="src\" recursive="true"/>
 	</target>
 </system>

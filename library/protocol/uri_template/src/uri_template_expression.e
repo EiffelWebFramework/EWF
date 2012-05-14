@@ -12,7 +12,7 @@ inherit
 
 	DEBUG_OUTPUT
 		export {NONE} all end
-		
+
 	URI_TEMPLATE_CONSTANTS
 		export {NONE} all end
 
@@ -72,6 +72,17 @@ feature -- Processing
 						operator := '?'
 						op_prefix := '?'
 						op_delimiter := '&'
+					when form_style_query_continuation then
+						--| '&'
+						operator := '&'
+						op_prefix := '&'
+						op_delimiter := '&'
+					when fragment_expansion then
+						--| '#'
+						reserved := True
+						operator := '#'
+						op_prefix := '#'
+						op_delimiter := ','
 					when '|', '!', '@' then
 						operator := exp[1]
 					else
@@ -238,7 +249,7 @@ feature {NONE} -- Implementation
 						else
 							a_buffer.append_character (delimiter_char)
 						end
-						if l_use_default and (operator = Form_style_query_operator) and not vi.has_explode_star then
+						if l_use_default and (operator = Form_style_query_operator or operator = form_style_query_continuation or operator = path_style_parameters_operator) and not vi.has_explode_star then
 							a_buffer.append (vi.name)
 							if vi.has_explode_plus then
 								a_buffer.append_character ('.')
@@ -262,7 +273,7 @@ feature -- Status report
 		end
 
 ;note
-	copyright: "2011-2011, Eiffel Software and others"
+	copyright: "2011-2012, Jocelyn Fiat, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

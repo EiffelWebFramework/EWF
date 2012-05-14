@@ -2,9 +2,9 @@ note
 	description: "[
 		Summary description for {URI_TEMPLATE_CONSTANTS}.
 
-		see http://tools.ietf.org/html/draft-gregorio-uritemplate-04
+		see http://tools.ietf.org/html/rfc6570
 	]"
-	author: ""
+	author: "Jocelyn Fiat"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -17,15 +17,19 @@ feature -- Operator
 
 	Form_style_query_operator: CHARACTER = '?'
 
+	Form_style_query_continuation: CHARACTER = '&'
+
 	Path_style_parameters_operator: CHARACTER = ';'
 
 	Path_segment_operator: CHARACTER = '/'
+
+	Fragment_expansion: CHARACTER = '#'
 
 	Label_operator: CHARACTER = '.'
 
 feature -- Separator	
 
-	Default_delimiter: CHARACTER = '=' --| Draft 0.4  , change to '|' for Draft 0.5
+	Default_delimiter: CHARACTER = '=' --| Not included in the RFC, but was part of previous Draft
 
 feature -- Explode	
 

@@ -57,26 +57,37 @@ feature -- Query
 
 feature -- Query: url-decoded
 
-	url_decoded_query_variable (n: READABLE_STRING_8): detachable READABLE_STRING_32
+	encoded_name (n: READABLE_STRING_GENERAL): READABLE_STRING_8
+			-- URL encoded name `n' 
+			-- to be used with ..._variable functions
+		do
+			if attached {READABLE_STRING_32} n as n32 then
+				Result := url_encoded_string (n32)
+			else
+				Result := n.as_string_8
+			end
+		end
+
+	url_decoded_query_variable (n: READABLE_STRING_GENERAL): detachable READABLE_STRING_32
 			-- Unencoded value related to variable name `n'
 		do
-			if attached query_variable (n) as v then
+			if attached query_variable (encoded_name (n)) as v then
 				Result := url_decoded_string (v)
 			end
 		end
 
-	url_decoded_path_variable (n: READABLE_STRING_8): detachable READABLE_STRING_32
+	url_decoded_path_variable (n: READABLE_STRING_GENERAL): detachable READABLE_STRING_32
 			-- Unencoded value related to variable name `n'
 		do
-			if attached path_variable (n) as v then
+			if attached path_variable (encoded_name (n)) as v then
 				Result := url_decoded_string (v)
 			end
 		end
 
-	url_decoded_variable (n: READABLE_STRING_8): detachable READABLE_STRING_32
+	url_decoded_variable (n: READABLE_STRING_GENERAL): detachable READABLE_STRING_32
 			-- Unencoded value related to variable name `n'
 		do
-			if attached variable (n) as v then
+			if attached variable (encoded_name (n)) as v then
 				Result := url_decoded_string (v)
 			end
 		end
@@ -85,7 +96,12 @@ feature {NONE} -- Implementation
 
 	url_decoded_string (s: READABLE_STRING_8): READABLE_STRING_32
 		do
-			Result := url_encoder.decoded_string (s.as_string_8)
+			Result := url_encoder.decoded_string (s)
+		end
+
+	url_encoded_string (s: READABLE_STRING_32): READABLE_STRING_8
+		do
+			Result := url_encoder.encoded_string (s)
 		end
 
 	url_encoder: URL_ENCODER

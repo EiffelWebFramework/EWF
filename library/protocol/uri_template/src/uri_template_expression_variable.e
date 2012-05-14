@@ -45,12 +45,19 @@ feature {NONE} -- Initialization
 			when Form_style_query_operator then --| '?'
 				op_prefix := '?'
 				op_separator := '&'
+			when form_style_query_continuation then --| '&'
+				op_prefix := '&'
+				op_separator := '&'
 			when Path_style_parameters_operator then --| ';'
 				op_prefix := ';'
 				op_separator := ';'
 			when Path_segment_operator then --| '/'
 				op_prefix := '/'
 				op_separator := '/'
+			when fragment_expansion then --| '#'
+				reserved := True
+				op_prefix := '#'
+				op_separator := ','
 			when Label_operator then --| '.'
 				op_prefix := '.'
 				op_separator := '.'
@@ -169,7 +176,7 @@ feature -- Report
 			create Result.make (20)
 			if attached {READABLE_STRING_GENERAL} d as l_string then
 				v_enc := url_encoded_string (modified_string (l_string), not reserved)
-				if op = Form_style_query_operator then
+				if op = Form_style_query_operator or op = form_style_query_continuation then
 	                Result.append (name)
 	                Result.append_character ('=')
 				elseif op = Path_style_parameters_operator then
@@ -183,7 +190,7 @@ feature -- Report
 				if l_array.is_empty then
 					if dft /= Void then
 						inspect op
-						when Form_style_query_operator, Path_style_parameters_operator then
+						when Path_style_parameters_operator,Form_style_query_operator, form_style_query_continuation then
 							if not l_has_explode then
 								Result.append (name)
 								Result.append_character ('=')
@@ -195,6 +202,16 @@ feature -- Report
 								end
 								Result.append (dft.out)
 							end
+
+--							if not explode_is_plus then
+--								Result.append (name)
+--								Result.append_character ('=')
+--								Result.append (dft.out)
+--							else
+--								Result.append (name)
+--								Result.append_character ('.')
+--								Result.append (dft.out)
+--							end
 						when Path_segment_operator then
 							if explode_is_plus then
 								Result.append (name)
@@ -220,7 +237,7 @@ feature -- Report
 					else
 						l_delimiter := ','
 						inspect op
-						when Form_style_query_operator then
+						when Form_style_query_operator, form_style_query_continuation, path_style_parameters_operator then
 							Result.append (name)
 							Result.append_character ('=')
 						else
@@ -242,6 +259,7 @@ feature -- Report
 						if explode_is_plus then
 							if
 								(op = Form_style_query_operator and explode_is_plus) or
+								(op = form_style_query_continuation and explode_is_plus) or
 								(op = Path_style_parameters_operator and l_has_explode)
 							then
 								Result.append (name)
@@ -250,7 +268,7 @@ feature -- Report
 								Result.append (name)
 								Result.append_character ('.')
 							end
-						elseif explode_is_star and op = Form_style_query_operator then
+						elseif explode_is_star and (op = Form_style_query_operator or op = form_style_query_continuation or op = path_style_parameters_operator) then
 							Result.append (name)
 							Result.append_character ('=')
 						end
@@ -269,7 +287,7 @@ feature -- Report
 				if l_table.is_empty then
 					if dft /= Void then
 						inspect op
-						when Form_style_query_operator, Path_style_parameters_operator then
+						when Path_style_parameters_operator, Form_style_query_operator, form_style_query_continuation then
 							if not l_has_explode then
 								Result.append (name)
 								Result.append_character ('=')
@@ -281,6 +299,15 @@ feature -- Report
 								end
 								Result.append (dft.out)
 							end
+--							if not explode_is_plus then
+--								Result.append (name)
+--								Result.append_character ('=')
+--								Result.append (dft.out)
+--							else
+--								Result.append (name)
+--								Result.append_character ('.')
+--								Result.append (dft.out)
+--							end
 						when Path_segment_operator then
 							if explode_is_plus then
 								Result.append (name)
@@ -306,7 +333,7 @@ feature -- Report
 					else
 						l_delimiter := ','
 						inspect op
-						when Form_style_query_operator then
+						when Form_style_query_operator, form_style_query_continuation, path_style_parameters_operator then
 							Result.append (name)
 							Result.append_character ('=')
 						else
@@ -358,7 +385,7 @@ feature -- Report
 				else
 					v_enc := default_value
 				end
-				if op = Form_style_query_operator then
+				if op = Form_style_query_operator or op = form_style_query_continuation then
 	                Result.append (name)
 	                if v_enc /= Void then
 		                Result.append_character ('=')
@@ -400,7 +427,7 @@ feature {NONE} -- Implementation
 		end
 
 ;note
-	copyright: "2011-2011, Eiffel Software and others"
+	copyright: "2011-2012, Jocelyn Fiat, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

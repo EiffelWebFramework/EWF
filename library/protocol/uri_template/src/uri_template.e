@@ -1,12 +1,9 @@
 note
 	description: "[
-			Summary description for {URI_TEMPLATE}.
-			
-			See http://tools.ietf.org/html/draft-gregorio-uritemplate-04
-			
-			note for draft 05, check {URI_TEMPLATE_CONSTANTS}.Default_delimiter
+			Implementation of URI Template  RFC6570.
 
-			]"
+			See http://tools.ietf.org/html/rfc6570
+		]"
 	legal: "See notice at end of class."
 	status: "See notice at end of class."
 	date: "$Date$"
@@ -513,7 +510,7 @@ feature {NONE} -- Implementation
 		end
 
 note
-	copyright: "2011-2012, Eiffel Software and others"
+	copyright: "2011-2012, Jocelyn Fiat, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software
