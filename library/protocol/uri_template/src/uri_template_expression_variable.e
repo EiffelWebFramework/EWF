@@ -202,16 +202,6 @@ feature -- Report
 								end
 								Result.append (dft.out)
 							end
-
---							if not explode_is_plus then
---								Result.append (name)
---								Result.append_character ('=')
---								Result.append (dft.out)
---							else
---								Result.append (name)
---								Result.append_character ('.')
---								Result.append (dft.out)
---							end
 						when Path_segment_operator then
 							if explode_is_plus then
 								Result.append (name)
@@ -299,15 +289,6 @@ feature -- Report
 								end
 								Result.append (dft.out)
 							end
---							if not explode_is_plus then
---								Result.append (name)
---								Result.append_character ('=')
---								Result.append (dft.out)
---							else
---								Result.append (name)
---								Result.append_character ('.')
---								Result.append (dft.out)
---							end
 						when Path_segment_operator then
 							if explode_is_plus then
 								Result.append (name)
