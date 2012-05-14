@@ -19,6 +19,8 @@ inherit
 			{NONE} all
 		end
 
+	DEBUG_OUTPUT
+
 feature -- Access
 
 	request: WSF_REQUEST
@@ -125,7 +127,7 @@ feature -- Query
 
 feature -- Item
 
-	item (a_name: READABLE_STRING_32): detachable WSF_VALUE
+	item (a_name: READABLE_STRING_GENERAL): detachable WSF_VALUE
 			-- Variable value for parameter or variable `a_name'
 			-- See `{WSF_REQUEST}.item(s)'
 		deferred
@@ -133,13 +135,13 @@ feature -- Item
 
 feature -- Parameter
 
-	string_item (a_name: READABLE_STRING_8): detachable READABLE_STRING_32
+	string_item (a_name: READABLE_STRING_GENERAL): detachable READABLE_STRING_32
 			-- String value for any variable of parameter `a_name' if relevant.	
 		do
 			Result := string_from (item (a_name))
 		end
 
-	string_array_item (a_name: READABLE_STRING_8): detachable ARRAY [READABLE_STRING_32]
+	string_array_item (a_name: READABLE_STRING_GENERAL): detachable ARRAY [READABLE_STRING_32]
 			-- Array of string values for query parameter `a_name' if relevant.
 		do
 			Result := string_array_for (a_name, agent string_item)
@@ -147,32 +149,32 @@ feature -- Parameter
 
 feature -- Query parameter	
 
-	query_parameter (a_name: READABLE_STRING_8): detachable WSF_VALUE
+	query_parameter (a_name: READABLE_STRING_GENERAL): detachable WSF_VALUE
 			-- Parameter value for query variable `a_name'	
 			--| i.e after the ? character
 		do
 			Result := request.query_parameter (a_name)
 		end
 
-	string_query_parameter (a_name: READABLE_STRING_8): detachable READABLE_STRING_32
+	string_query_parameter (a_name: READABLE_STRING_GENERAL): detachable READABLE_STRING_32
 			-- String value for query parameter `a_name' if relevant.	
 		do
 			Result := string_from (query_parameter (a_name))
 		end
 
-	string_array_query_parameter (a_name: READABLE_STRING_8): detachable ARRAY [READABLE_STRING_32]
+	string_array_query_parameter (a_name: READABLE_STRING_GENERAL): detachable ARRAY [READABLE_STRING_32]
 			-- Array of string values for query parameter `a_name' if relevant.
 		do
 			Result := string_array_for (a_name, agent string_query_parameter)
 		end
 
-	is_integer_query_parameter (a_name: READABLE_STRING_8): BOOLEAN
+	is_integer_query_parameter (a_name: READABLE_STRING_GENERAL): BOOLEAN
 			-- Is query parameter related to `a_name' an integer value?
 		do
 			Result := attached string_query_parameter (a_name) as s and then s.is_integer
 		end
 
-	integer_query_parameter (a_name: READABLE_STRING_8): INTEGER
+	integer_query_parameter (a_name: READABLE_STRING_GENERAL): INTEGER
 			-- Integer value for query parameter  `a_name' if relevant.
 		require
 			is_integer_query_parameter: is_integer_query_parameter (a_name)
@@ -202,7 +204,7 @@ feature -- Convertion
 
 feature {NONE} -- Implementation		
 
-	string_array_for (a_name: READABLE_STRING_8; a_item_fct: FUNCTION [ANY, TUPLE [READABLE_STRING_8], detachable READABLE_STRING_32]): detachable ARRAY [READABLE_STRING_32]
+	string_array_for (a_name: READABLE_STRING_GENERAL; a_item_fct: FUNCTION [ANY, TUPLE [READABLE_STRING_GENERAL], detachable READABLE_STRING_32]): detachable ARRAY [READABLE_STRING_32]
 			-- Array of string values for query parameter `a_name' if relevant.
 		local
 			i: INTEGER
@@ -224,6 +226,14 @@ feature {NONE} -- Implementation
 				end
 			end
 			Result.keep_head (n - 1)
+		end
+
+feature -- Status report
+
+	debug_output: STRING
+			-- String that should be displayed in debugger to represent `Current'.
+		do
+			Result := path
 		end
 
 ;note

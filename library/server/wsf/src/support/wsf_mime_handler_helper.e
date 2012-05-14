@@ -39,12 +39,12 @@ feature {NONE} -- Implementation
 			end
 		end
 
-	add_string_value_to_table (a_name: READABLE_STRING_8; a_value: READABLE_STRING_8; a_table: HASH_TABLE [WSF_VALUE, READABLE_STRING_32])
+	add_string_value_to_table (a_name: READABLE_STRING_8; a_value: READABLE_STRING_8; a_table: HASH_TABLE [WSF_VALUE, READABLE_STRING_GENERAL])
 		do
 			add_value_to_table (a_name, new_string_value (a_name, a_value), a_table)
 		end
 
-	add_value_to_table (a_name: READABLE_STRING_8; a_value: WSF_VALUE; a_table: HASH_TABLE [WSF_VALUE, READABLE_STRING_32])
+	add_value_to_table (a_name: READABLE_STRING_8; a_value: WSF_VALUE; a_table: HASH_TABLE [WSF_VALUE, READABLE_STRING_GENERAL])
 		local
 			l_decoded_name: STRING_32
 			v: detachable WSF_VALUE

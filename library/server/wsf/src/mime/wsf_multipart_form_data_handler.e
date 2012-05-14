@@ -32,7 +32,7 @@ feature -- Status report
 feature -- Execution
 
 	handle (a_content_type: HTTP_CONTENT_TYPE; req: WSF_REQUEST;
-				a_vars: HASH_TABLE [WSF_VALUE, READABLE_STRING_32]; a_raw_data: detachable CELL [detachable STRING_8])
+				a_vars: HASH_TABLE [WSF_VALUE, READABLE_STRING_GENERAL]; a_raw_data: detachable CELL [detachable STRING_8])
 		local
 			s: like full_input_data
 		do
@@ -46,7 +46,7 @@ feature -- Execution
 
 feature {NONE} -- Implementation: Form analyzer
 
-	analyze_multipart_form (req: WSF_REQUEST; a_content_type: HTTP_CONTENT_TYPE; s: READABLE_STRING_8; vars: HASH_TABLE [WSF_VALUE, READABLE_STRING_32])
+	analyze_multipart_form (req: WSF_REQUEST; a_content_type: HTTP_CONTENT_TYPE; s: READABLE_STRING_8; vars: HASH_TABLE [WSF_VALUE, READABLE_STRING_GENERAL])
 			-- Analyze multipart form content
 			--| FIXME[2011-06-21]: integrate eMIME parser library
 		require
@@ -111,7 +111,7 @@ feature {NONE} -- Implementation: Form analyzer
 			end
 		end
 
-	analyze_multipart_form_input (req: WSF_REQUEST; s: STRING; vars: HASH_TABLE [WSF_VALUE, READABLE_STRING_32])
+	analyze_multipart_form_input (req: WSF_REQUEST; s: STRING; vars: HASH_TABLE [WSF_VALUE, READABLE_STRING_GENERAL])
 			-- Analyze multipart entry
 		require
 			s_not_empty: s /= Void and then not s.is_empty

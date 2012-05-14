@@ -3,18 +3,18 @@ note
 			Server request context of the httpd request
 			
 			It includes CGI interface and a few extra values that are usually valuable
-			    meta_variable (a_name: READABLE_STRING_8): detachable WSF_STRING
-			    meta_string_variable (a_name: READABLE_STRING_8): detachable READABLE_STRING_32
+			    meta_variable (a_name: READABLE_STRING_GENERAL): detachable WSF_STRING
+			    meta_string_variable (a_name: READABLE_STRING_GENERAL): detachable READABLE_STRING_32
 			    
 			In addition it provides
 				
-				query_parameter (a_name: READABLE_STRING_32): detachable WSF_VALUE
-				form_parameter (a_name: READABLE_STRING_32): detachable WSF_VALUE
-				cookie (a_name: READABLE_STRING_8): detachable WSF_VALUE
+				query_parameter (a_name: READABLE_STRING_GENERAL): detachable WSF_VALUE
+				form_parameter (a_name: READABLE_STRING_GENERAL): detachable WSF_VALUE
+				cookie (a_name: READABLE_STRING_GENERAL): detachable WSF_VALUE
 				...
 				
 			And also has
-				execution_variable (a_name: READABLE_STRING_32): detachable ANY
+				execution_variable (a_name: READABLE_STRING_GENERAL): detachable ANY
 					--| to keep value attached to the request
 			]"
 	date: "$Date$"
@@ -39,27 +39,25 @@ feature {NONE} -- Initialization
 			tb: like meta_variables_table
 		do
 			wgi_request := r
+			create string_equality_tester
 			if attached r.meta_variables as l_vars then
-				create tb.make (l_vars.count)
+				create tb.make_with_key_tester (l_vars.count, string_equality_tester)
 				across
 					l_vars as c
 				loop
 					tb.force (new_string_value (c.key, c.item), c.key)
 				end
 			else
-				create tb.make (0)
+				create tb.make_with_key_tester (0, string_equality_tester)
 			end
 			meta_variables_table := tb
 			meta_variables := tb
 			create error_handler.make
-			create uploaded_files_table.make (0)
+			create uploaded_files_table.make_with_key_tester (0, string_equality_tester)
 			set_raw_input_data_recorded (False)
 			create {STRING_32} empty_string.make_empty
 
-			create path_parameters_table.make (0)
-			path_parameters_table.compare_objects
-
-			create execution_variables_table.make (0)
+			create execution_variables_table.make_with_key_tester (0, string_equality_tester)
 			execution_variables_table.compare_objects
 
 			initialize
@@ -173,10 +171,10 @@ feature -- Access: Input
 
 feature -- Helper
 
-	is_request_method (m: READABLE_STRING_8): BOOLEAN
+	is_request_method (m: READABLE_STRING_GENERAL): BOOLEAN
 			-- Is `m' the Current request_method?
 		do
-			Result := request_method.is_case_insensitive_equal (m)
+			Result := request_method.is_case_insensitive_equal (m.as_string_8)
 		end
 
 feature -- Eiffel WGI access
@@ -203,29 +201,31 @@ feature -- Eiffel WGI access
 
 feature {NONE} -- Access: global variable
 
-	items_table: HASH_TABLE [WSF_VALUE, READABLE_STRING_32]
+	items_table: HASH_TABLE_EX [WSF_VALUE, READABLE_STRING_GENERAL]
 			-- Table containing all the various variables
 			-- Warning: this is computed each time, if you change the content of other containers
 			-- this won't update this Result's content, unless you query it again
 		do
-			create Result.make (100)
+			create Result.make_with_key_tester (20, string_equality_tester)
 
-			across
-				path_parameters as vars
-			loop
-				Result.force (vars.item, vars.item.name)
+			if attached path_parameters as l_path_parameters then
+				across
+					l_path_parameters as c
+				loop
+					Result.force (c.item, c.item.name)
+				end
 			end
 
 			across
-				query_parameters as vars
+				query_parameters as c
 			loop
-				Result.force (vars.item, vars.item.name)
+				Result.force (c.item, c.item.name)
 			end
 
 			across
-				form_parameters as vars
+				form_parameters as c
 			loop
-				Result.force (vars.item, vars.item.name)
+				Result.force (c.item, c.item.name)
 			end
 		end
 
@@ -236,7 +236,7 @@ feature -- Access: global variable
 			Result := items_table
 		end
 
-	item (a_name: READABLE_STRING_32): detachable WSF_VALUE
+	item (a_name: READABLE_STRING_GENERAL): detachable WSF_VALUE
 			-- Variable named `a_name' from any of the variables container
 			-- and following a specific order: form_, query_ and path_ parameters
 			--| Cookie are not included due to security reason.
@@ -250,7 +250,7 @@ feature -- Access: global variable
 			end
 		end
 
-	string_item (a_name: READABLE_STRING_32): detachable READABLE_STRING_32
+	string_item (a_name: READABLE_STRING_GENERAL): detachable READABLE_STRING_32
 		do
 			if attached {WSF_STRING} item (a_name) as val then
 				Result := val.string
@@ -261,7 +261,7 @@ feature -- Access: global variable
 
 feature -- Execution variables
 
-	execution_variable (a_name: READABLE_STRING_32): detachable ANY
+	execution_variable (a_name: READABLE_STRING_GENERAL): detachable ANY
 			-- Execution variable related to `a_name'
 		require
 			a_name_valid: a_name /= Void and then not a_name.is_empty
@@ -269,14 +269,14 @@ feature -- Execution variables
 			Result := execution_variables_table.item (a_name)
 		end
 
-	set_execution_variable (a_name: READABLE_STRING_32; a_value: detachable ANY)
+	set_execution_variable (a_name: READABLE_STRING_GENERAL; a_value: detachable ANY)
 		do
 			execution_variables_table.force (a_value, a_name)
 		ensure
 			param_set: execution_variable (a_name) = a_value
 		end
 
-	unset_execution_variable (a_name: READABLE_STRING_32)
+	unset_execution_variable (a_name: READABLE_STRING_GENERAL)
 		do
 			execution_variables_table.remove (a_name)
 		ensure
@@ -285,11 +285,11 @@ feature -- Execution variables
 
 feature {NONE} -- Execution variables: implementation
 
-	execution_variables_table: HASH_TABLE [detachable ANY, READABLE_STRING_32]
+	execution_variables_table: HASH_TABLE_EX [detachable ANY, READABLE_STRING_GENERAL]
 
 feature -- Access: CGI Meta variables
 
-	meta_variable (a_name: READABLE_STRING_8): detachable WSF_STRING
+	meta_variable (a_name: READABLE_STRING_GENERAL): detachable WSF_STRING
 			-- CGI Meta variable related to `a_name'
 		require
 			a_name_valid: a_name /= Void and then not a_name.is_empty
@@ -297,7 +297,7 @@ feature -- Access: CGI Meta variables
 			Result := meta_variables_table.item (a_name)
 		end
 
-	meta_string_variable (a_name: READABLE_STRING_8): detachable READABLE_STRING_32
+	meta_string_variable (a_name: READABLE_STRING_GENERAL): detachable READABLE_STRING_32
 			-- CGI meta variable related to `a_name'
 		require
 			a_name_valid: a_name /= Void and then not a_name.is_empty
@@ -310,7 +310,7 @@ feature -- Access: CGI Meta variables
 	meta_variables: ITERABLE [WSF_STRING]
 			-- CGI meta variables values
 
-	meta_string_variable_or_default (a_name: READABLE_STRING_8; a_default: READABLE_STRING_32; use_default_when_empty: BOOLEAN): READABLE_STRING_32
+	meta_string_variable_or_default (a_name: READABLE_STRING_GENERAL; a_default: READABLE_STRING_32; use_default_when_empty: BOOLEAN): READABLE_STRING_32
 			-- Value for meta parameter `a_name'
 			-- If not found, return `a_default'
 		require
@@ -327,13 +327,15 @@ feature -- Access: CGI Meta variables
 		end
 
 	set_meta_string_variable (a_name: READABLE_STRING_8; a_value: READABLE_STRING_32)
+			-- Set meta variable `a_name' and `a_value'
+			--| `a_name' is READABLE_STRING_8 on purpose.
 		do
 			meta_variables_table.force (new_string_value (a_name, a_value), a_name)
 		ensure
 			param_set: attached {WSF_STRING} meta_variable (a_name) as val and then val.url_encoded_string.same_string (a_value)
 		end
 
-	unset_meta_variable (a_name: READABLE_STRING_8)
+	unset_meta_variable (a_name: READABLE_STRING_GENERAL)
 		do
 			meta_variables_table.remove (a_name)
 		ensure
@@ -342,7 +344,7 @@ feature -- Access: CGI Meta variables
 
 feature {NONE} -- Access: CGI meta parameters
 
-	meta_variables_table: HASH_TABLE [WSF_STRING, READABLE_STRING_8]
+	meta_variables_table: HASH_TABLE_EX [WSF_STRING, READABLE_STRING_GENERAL]
 			-- CGI Environment parameters		
 
 feature -- Access: CGI meta parameters - 1.1			
@@ -832,11 +834,12 @@ feature -- Extra CGI environment variables
 feature -- Cookies
 
 	cookies: ITERABLE [WSF_VALUE]
+			-- All cookies.
 		do
 			Result := cookies_table
 		end
 
-	cookie (a_name: READABLE_STRING_32): detachable WSF_VALUE
+	cookie (a_name: READABLE_STRING_GENERAL): detachable WSF_VALUE
 			-- Field for name `a_name'.
 		do
 			Result := cookies_table.item (a_name)
@@ -844,7 +847,7 @@ feature -- Cookies
 
 feature {NONE} -- Cookies
 
-	cookies_table: HASH_TABLE [WSF_VALUE, READABLE_STRING_32]
+	cookies_table: HASH_TABLE_EX [WSF_VALUE, READABLE_STRING_GENERAL]
 			-- Expanded cookies variable
 		local
 			i,j,p,n: INTEGER
@@ -855,7 +858,7 @@ feature {NONE} -- Cookies
 			if l_cookies = Void then
 				if attached {WSF_STRING} meta_variable ({WSF_META_NAMES}.http_cookie) as val then
 					s := val.string
-					create l_cookies.make (5)
+					create l_cookies.make_with_key_tester (5, string_equality_tester)
 					l_cookies.compare_objects
 					from
 						n := s.count
@@ -884,7 +887,7 @@ feature {NONE} -- Cookies
 						end
 					end
 				else
-					create l_cookies.make (0)
+					create l_cookies.make_with_key_tester (0, string_equality_tester)
 					l_cookies.compare_objects
 				end
 				internal_cookies_table := l_cookies
@@ -894,76 +897,86 @@ feature {NONE} -- Cookies
 
 feature -- Path parameters
 
-	path_parameters: ITERABLE [WSF_VALUE]
+	path_parameters: detachable ITERABLE [WSF_VALUE]
+			-- All path parameters.
+			--| Could be Void
 		do
 			Result := path_parameters_table
 		end
 
-	path_parameter (a_name: READABLE_STRING_32): detachable WSF_VALUE
-			-- Parameter for name `n'.
+	path_parameter (a_name: READABLE_STRING_GENERAL): detachable WSF_VALUE
+			-- Path Parameter for name `a_name'.
 		do
-			Result := path_parameters_table.item (a_name)
-		end
-
-feature -- Path parameters: Element change
-
-	import_raw_path_parameters (lst: detachable TABLE_ITERABLE [READABLE_STRING_8, READABLE_STRING_8])
-			-- The `path_parameters' are filled when known during the request handling
-			-- with table of urlencoded values
-		local
-			l_table: like path_parameters_table
-		do
-			create l_table.make (3)
-			path_parameters_table := l_table
-
-			-- Remove existing previous values
-			l_table.wipe_out
-			if lst /= Void then
-				across
-					lst as c
-				loop
-					add_value_to_table (c.key, c.item, l_table)
-				end
-			end
-		end
-
-	reset_path_parameters (vars: detachable like path_parameters)
-		local
-			l_table: like path_parameters_table
-		do
-			l_table := path_parameters_table
-			l_table.wipe_out
-			if vars /= Void then
-				across
-					vars as c
-				loop
-					l_table.force (c.item, c.item.name)
-				end
+			if attached path_parameters_table as tb then
+				Result := tb.item (a_name)
 			end
 		end
 
 feature {NONE} -- Query parameters: implementation
 
-	path_parameters_table: HASH_TABLE [WSF_VALUE, READABLE_STRING_32]
-			-- Variables extracted from QUERY_STRING	
+	path_parameters_table: detachable HASH_TABLE_EX [WSF_VALUE, READABLE_STRING_GENERAL]
+			-- Parameters computed from `path_parameters_source'
+			--| most often coming from the associated route from WSF_ROUTER
+
+feature {WSF_REQUEST_PATH_PARAMETERS_SOURCE} -- Path parameters: Element change
+
+	path_parameters_source: detachable WSF_REQUEST_PATH_PARAMETERS_SOURCE
+			-- Source of urlencoded path_parameters, or saved computed path parameters as WSF_VALUE.
+
+	set_path_parameters_source (src: like path_parameters_source)
+		local
+			l_table: detachable like path_parameters_table
+			lst: detachable TABLE_ITERABLE [READABLE_STRING_8, READABLE_STRING_8]
+			l_count: INTEGER
+		do
+			path_parameters_source := src
+			if src = Void then
+				l_table := Void
+			else
+				l_count := src.path_parameters_count
+				if l_count = 0 then
+					l_table := Void
+				else
+					create l_table.make_with_key_tester (l_count, string_equality_tester)
+					l_table.compare_objects
+					if attached src.path_parameters as tb then
+						across
+							tb as c
+						loop
+							l_table.force (c.item, c.item.name)
+						end
+					else
+						lst := src.urlencoded_path_parameters
+						across
+							lst as c
+						loop
+							add_value_to_table (c.key, c.item, l_table)
+						end
+						src.update_path_parameters (l_table)
+					end
+				end
+			end
+			path_parameters_table := l_table
+		end
 
 feature -- Query parameters
 
 	query_parameters: ITERABLE [WSF_VALUE]
+			-- All query parameters
 		do
 			Result := query_parameters_table
 		end
 
-	query_parameter (a_name: READABLE_STRING_32): detachable WSF_VALUE
-			-- Parameter for name `n'.
+	query_parameter (a_name: READABLE_STRING_GENERAL): detachable WSF_VALUE
+			-- Query parameter for name `a_name'.
 		do
 			Result := query_parameters_table.item (a_name)
 		end
 
 feature {NONE} -- Query parameters: implementation
 
-	query_parameters_table: HASH_TABLE [WSF_VALUE, READABLE_STRING_32]
-			-- Variables extracted from QUERY_STRING	
+	query_parameters_table: HASH_TABLE_EX [WSF_VALUE, READABLE_STRING_GENERAL]
+			-- Parameters extracted from QUERY_STRING	
 		local
 			vars: like internal_query_parameters_table
 			p,e: INTEGER
@@ -993,7 +1006,7 @@ feature {NONE} -- Query parameters: implementation
 			Result := vars
 		end
 
-	urlencoded_parameters (a_content: detachable READABLE_STRING_8): HASH_TABLE [WSF_VALUE, READABLE_STRING_32]
+	urlencoded_parameters (a_content: detachable READABLE_STRING_8): HASH_TABLE_EX [WSF_VALUE, READABLE_STRING_GENERAL]
 			-- Import `a_content'
 		local
 			n, p, i, j: INTEGER
@@ -1001,13 +1014,13 @@ feature {NONE} -- Query parameters: implementation
 			l_name, l_value: READABLE_STRING_8
 		do
 			if a_content = Void then
-				create Result.make (0)
+				create Result.make_with_key_tester (0, string_equality_tester)
 			else
 				n := a_content.count
 				if n = 0 then
-					create Result.make (0)
+					create Result.make_with_key_tester (0, string_equality_tester)
 				else
-					create Result.make (3)
+					create Result.make_with_key_tester (3, string_equality_tester) --| 3 = arbitrary value
 					from
 						p := 1
 					until
@@ -1034,92 +1047,6 @@ feature {NONE} -- Query parameters: implementation
 			end
 		end
 
-	add_value_to_table (a_name: READABLE_STRING_8; a_value: READABLE_STRING_8; a_table: HASH_TABLE [WSF_VALUE, READABLE_STRING_32])
-		local
-			v: detachable WSF_VALUE
-			n,k,r: STRING_8
-			k32: STRING_32
-			p,q: INTEGER
-			tb,ptb: detachable WSF_TABLE
-		do
-			--| Check if this is a list format such as   choice[]  or choice[a] or even choice[a][] or choice[a][b][c]...
-			p := a_name.index_of ('[', 1)
-			if p > 0 then
-				q := a_name.index_of (']', p + 1)
-				if q > p then
-					n := a_name.substring (1, p - 1)
-					r := a_name.substring (q + 1, a_name.count)
-					r.left_adjust; r.right_adjust
-
-					create tb.make (n)
-					if a_table.has_key (tb.name) and then attached {WSF_TABLE} a_table.found_item as l_existing_table then
-						tb := l_existing_table
-					end
-
-					k := a_name.substring (p + 1, q - 1)
-					k.left_adjust; k.right_adjust
-					if k.is_empty then
-						k.append_integer (tb.count + 1)
-					end
-					v := tb
-					n.append_character ('[')
-					n.append (k)
-					n.append_character (']')
-
-					from
-					until
-						r.is_empty
-					loop
-						ptb := tb
-						p := r.index_of ({CHARACTER_8} '[', 1)
-						if p > 0 then
-							q := r.index_of ({CHARACTER_8} ']', p + 1)
-							if q > p then
-								k32 := url_encoder.decoded_string (k)
-								if attached {WSF_TABLE} ptb.value (k32) as l_tb_value then
-									tb := l_tb_value
-								else
-									create tb.make (n)
-									ptb.add_value (tb, k32)
-								end
-
-								k := r.substring (p + 1, q - 1)
-								r := r.substring (q + 1, r.count)
-								r.left_adjust; r.right_adjust
-								if k.is_empty then
-									k.append_integer (tb.count + 1)
-								end
-								n.append_character ('[')
-								n.append (k)
-								n.append_character (']')
-							end
-						else
-							r.wipe_out
-							--| Ignore bad value
-						end
-					end
-					tb.add_value (new_string_value (n, a_value), k)
-				else
-					--| Missing end bracket
-				end
-			end
-			if v = Void then
-				v := new_string_value (a_name, a_value)
-			end
-			if a_table.has_key (v.name) and then attached a_table.found_item as l_existing_value then
-				if tb /= Void then
-					--| Already done in previous part
-				elseif attached {WSF_MULTIPLE_STRING} l_existing_value as l_multi then
-					l_multi.add_value (v)
-				else
-					a_table.force (create {WSF_MULTIPLE_STRING}.make_with_array (<<l_existing_value, v>>), v.name)
-					check replaced: a_table.found and then a_table.found_item ~ l_existing_value end
-				end
-			else
-				a_table.force (v, v.name)
-			end
-		end
-
 feature -- Form fields and related
 
 	form_parameters: ITERABLE [WSF_VALUE]
@@ -1127,7 +1054,7 @@ feature -- Form fields and related
 			Result := form_parameters_table
 		end
 
-	form_parameter (a_name: READABLE_STRING_32): detachable WSF_VALUE
+	form_parameter (a_name: READABLE_STRING_GENERAL): detachable WSF_VALUE
 			-- Field for name `a_name'.
 		do
 			Result := form_parameters_table.item (a_name)
@@ -1222,7 +1149,7 @@ feature {NONE} -- Implementation: MIME handler
 
 feature {NONE} -- Form fields and related
 
-	uploaded_files_table: HASH_TABLE [WSF_UPLOADED_FILE, READABLE_STRING_32]
+	uploaded_files_table: HASH_TABLE_EX [WSF_UPLOADED_FILE, READABLE_STRING_GENERAL]
 
 	get_form_parameters
 			-- Variables sent by POST, ... request	
@@ -1234,13 +1161,13 @@ feature {NONE} -- Form fields and related
 			vars := internal_form_data_parameters_table
 			if vars = Void then
 				if not is_chunked_input and content_length_value = 0 then
-					create vars.make (0)
+					create vars.make_with_key_tester (0, string_equality_tester)
 					vars.compare_objects
 				else
 					if raw_input_data_recorded then
 						create l_raw_data_cell.put (Void)
 					end
-					create vars.make (5)
+					create vars.make_with_key_tester (5, string_equality_tester)
 					vars.compare_objects
 
 					l_type := content_type
@@ -1258,7 +1185,7 @@ feature {NONE} -- Form fields and related
 			internal_form_data_parameters_table /= Void
 		end
 
-	form_parameters_table: HASH_TABLE [WSF_VALUE, READABLE_STRING_32]
+	form_parameters_table: HASH_TABLE_EX [WSF_VALUE, READABLE_STRING_GENERAL]
 			-- Variables sent by POST request	
 		local
 			vars: like internal_form_data_parameters_table
@@ -1267,14 +1194,104 @@ feature {NONE} -- Form fields and related
 			vars := internal_form_data_parameters_table
 			if vars = Void then
 				check form_parameters_already_retrieved: False end
-				create vars.make (0)
+				create vars.make_with_key_tester (0, string_equality_tester)
 			end
 			Result := vars
 		end
 
+feature {NONE} -- Implementation: smart parameter identification		
+
+	add_value_to_table (a_name: READABLE_STRING_8; a_value: READABLE_STRING_8; a_table: HASH_TABLE [WSF_VALUE, READABLE_STRING_GENERAL])
+			-- Add urlencoded parameter  `a_name'=`a_value' to `a_table'
+			-- following smart computation such as handling the "..[..]" as table
+		local
+			v: detachable WSF_VALUE
+			n, k, r: STRING_8
+			k32: STRING_32
+			p, q: INTEGER
+			tb, ptb: detachable WSF_TABLE
+		do
+			--| Check if this is a list format such as   choice[]  or choice[a] or even choice[a][] or choice[a][b][c]...
+			p := a_name.index_of ('[', 1)
+			if p > 0 then
+				q := a_name.index_of (']', p + 1)
+				if q > p then
+					n := a_name.substring (1, p - 1)
+					r := a_name.substring (q + 1, a_name.count)
+					r.left_adjust; r.right_adjust
+
+					create tb.make (n)
+					if a_table.has_key (tb.name) and then attached {WSF_TABLE} a_table.found_item as l_existing_table then
+						tb := l_existing_table
+					end
+
+					k := a_name.substring (p + 1, q - 1)
+					k.left_adjust; k.right_adjust
+					if k.is_empty then
+						k.append_integer (tb.count + 1)
+					end
+					v := tb
+					n.append_character ('[')
+					n.append (k)
+					n.append_character (']')
+
+					from
+					until
+						r.is_empty
+					loop
+						ptb := tb
+						p := r.index_of ({CHARACTER_8} '[', 1)
+						if p > 0 then
+							q := r.index_of ({CHARACTER_8} ']', p + 1)
+							if q > p then
+								k32 := url_encoder.decoded_string (k)
+								if attached {WSF_TABLE} ptb.value (k32) as l_tb_value then
+									tb := l_tb_value
+								else
+									create tb.make (n)
+									ptb.add_value (tb, k32)
+								end
+
+								k := r.substring (p + 1, q - 1)
+								r := r.substring (q + 1, r.count)
+								r.left_adjust; r.right_adjust
+								if k.is_empty then
+									k.append_integer (tb.count + 1)
+								end
+								n.append_character ('[')
+								n.append (k)
+								n.append_character (']')
+							end
+						else
+							r.wipe_out
+							--| Ignore bad value
+						end
+					end
+					tb.add_value (new_string_value (n, a_value), k)
+				else
+					--| Missing end bracket
+				end
+			end
+			if v = Void then
+				v := new_string_value (a_name, a_value)
+			end
+			if a_table.has_key (v.name) and then attached a_table.found_item as l_existing_value then
+				if tb /= Void then
+					--| Already done in previous part
+				elseif attached {WSF_MULTIPLE_STRING} l_existing_value as l_multi then
+					l_multi.add_value (v)
+				else
+					a_table.force (create {WSF_MULTIPLE_STRING}.make_with_array (<<l_existing_value, v>>), v.name)
+					check replaced: a_table.found and then a_table.found_item ~ l_existing_value end
+				end
+			else
+				a_table.force (v, v.name)
+			end
+		end
+
 feature -- Uploaded File Handling
 
-	is_uploaded_file (a_filename: STRING): BOOLEAN
+	is_uploaded_file (a_filename: READABLE_STRING_GENERAL): BOOLEAN
 			-- Is `a_filename' a file uploaded via HTTP Form
 		local
 			l_files: like uploaded_files_table
@@ -1286,7 +1303,7 @@ feature -- Uploaded File Handling
 				until
 					l_files.after or Result
 				loop
-					if attached l_files.item_for_iteration.tmp_name as l_tmp_name and then l_tmp_name.same_string (a_filename) then
+					if attached l_files.item_for_iteration.tmp_name as l_tmp_name and then l_tmp_name.same_string_general (a_filename) then
 						Result := True
 					end
 					l_files.forth
@@ -1508,6 +1525,8 @@ feature {NONE} -- Implementation
 		end
 
 feature {NONE} -- Implementation: utilities	
+
+	string_equality_tester: STRING_EQUALITY_TESTER
 
 	single_slash_starting_string (s: READABLE_STRING_32): STRING_32
 			-- Return the string `s' (or twin) with one and only one starting slash

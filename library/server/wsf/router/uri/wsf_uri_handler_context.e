@@ -40,7 +40,7 @@ feature -- Request data
 
 feature -- Item		
 
-	item (a_name: READABLE_STRING_32): detachable WSF_VALUE
+	item (a_name: READABLE_STRING_GENERAL): detachable WSF_VALUE
 			-- Variable value for parameter or variable `a_name'
 			-- See `{WSF_REQUEST}.item(s)'
 		do
