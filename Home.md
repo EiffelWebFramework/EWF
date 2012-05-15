@@ -12,3 +12,5 @@ The official documentation/wiki is located at https://github.com/EiffelWebFramew
    - EWSGI: [[Eiffel Web Server Gateway Interface| EWSGI]]
    - [[Overview of the server side architecture| Spec-Server-Architecture]]
    - This project is also a collection of [[Libraries]] related to the Web
+
+- This wiki needs to be updated, in the meantime, please have a look at the presentation: https://docs.google.com/presentation/d/1aI6Yps59rEW2Ci0fSeJSXpE5-2SE2Tesyj2yu1cuQKk/edit
