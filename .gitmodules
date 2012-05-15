@@ -1,6 +1,3 @@
-[submodule "doc/wiki"]
-	path = doc/wiki
-	url = https://github.com/EiffelWebFramework/EWF.wiki.git
 [submodule "contrib/library/server/nino"]
 	path = contrib/library/server/nino
 	url = https://github.com/Eiffel-World/EiffelWebNino.git

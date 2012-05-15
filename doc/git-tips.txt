@@ -1,0 +1,25 @@
+= subtree-merge =
+See http://help.github.com/subtree-merge/
+For instance
+:	git remote add -f ewf_wiki https://github.com/EiffelWebFramework/EWF.wiki.git
+:	git merge -s ours --no-commit ewf_wiki/master
+:	git read-tree --prefix=doc/wiki/ -u ewf_wiki/master
+:	git commit -m "Added subtree merged in doc/wiki"
+
+
+Update
+:	git pull -s subtree ewf_wiki master
+
+
+= remove git submodule =
+1. Delete the relevant section from the .gitmodules file.
+2. Delete the relevant section from .git/config.
+3. Run git rm --cached path_to_submodule (no trailing slash).
+4. Commit and delete the now untracked submodule files.
+
+Ex:
+:	vi .gitmodules
+:	vi .git/config
+:	git rm --cached doc/wiki
+:	git commit -m "Removed submodule doc/wiki"
+
