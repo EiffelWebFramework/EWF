@@ -330,7 +330,7 @@ feature -- Redirect
 		require
 			header_not_committed: not header_committed
 		do
-			redirect_now_custom (a_url, {HTTP_STATUS_CODE}.temp_redirect, Void, Void)
+			redirect_now_custom (a_url, {HTTP_STATUS_CODE}.found, Void, Void)
 		end
 
 	redirect_now_with_content (a_url: READABLE_STRING_8; a_content: READABLE_STRING_8; a_content_type: READABLE_STRING_8)
