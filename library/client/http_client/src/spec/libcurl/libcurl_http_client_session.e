@@ -55,7 +55,11 @@ feature -- Basic operation
 		local
 			req: HTTP_CLIENT_REQUEST
 			ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT
+			f: detachable RAW_FILE
+			l_data: detachable READABLE_STRING_8
 		do
+			--| Quick and dirty hack using real file, for PUT uploaded data
+			--| FIXME [2012-05-23]: better use libcurl for that purpose
 			ctx := a_ctx
 			if data /= Void then
 				if ctx = Void then
@@ -63,8 +67,27 @@ feature -- Basic operation
 				end
 				ctx.set_upload_data (data)
 			end
+			if ctx /= Void then
+				l_data := ctx.upload_data
+			end
+			if l_data /= Void then
+				create f.make_open_write (create {FILE_NAME}.make_temporary_name)
+				f.put_string (l_data)
+				f.close
+				check ctx /= Void then
+					ctx.set_upload_data (Void)
+					ctx.set_upload_filename (f.name)
+				end
+			end
 			create {LIBCURL_HTTP_CLIENT_REQUEST} req.make (base_url + a_path, "PUT", Current, ctx)
 			Result := req.execute
+			if f /= Void then
+				f.delete
+			end
+			if l_data /= Void and a_ctx /= Void then
+				a_ctx.set_upload_filename (Void)
+				a_ctx.set_upload_data (l_data)
+			end
 		end
 
 	put_file (a_path: READABLE_STRING_8; a_ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT; fn: detachable READABLE_STRING_8): HTTP_CLIENT_RESPONSE
