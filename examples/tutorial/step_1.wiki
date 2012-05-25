@@ -12,7 +12,7 @@ or go to [[step_2.wiki|step 2]]
 === From the source ===
 * '''Requirement''': install [http://www.git-scm.org/ git] on your machine
 	
-	git clone --recursive https://github.com/EiffelWebFramework/EWF.git ewf
+ $ git clone --recursive https://github.com/EiffelWebFramework/EWF.git ewf
 
 == Install EWF ==
 For now, there is nothing specific to do.
