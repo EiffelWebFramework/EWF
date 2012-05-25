@@ -19,6 +19,6 @@ feature {NONE} -- Initialization
 			f: WSF_FILE_RESPONSE
 		do
 			create f.make_html ("home.html")
-			res.put_response (f)
+			res.send (f)
 		end
 end

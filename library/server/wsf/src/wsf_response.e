@@ -9,6 +9,7 @@ note
 				- using put_error will eventually send error message directly to the underlying connector's log
 				  (i.e for apache, it will go to the error log)
 				- And you can also send the message as "chunked", see put_chunk (..) for more details
+				- Or you can send a WSF_RESPONSE_MESSAGE in once, see `send (mesg)'
 			]"
 	date: "$Date$"
 	revision: "$Revision$"

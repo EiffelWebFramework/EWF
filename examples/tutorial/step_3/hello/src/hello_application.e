@@ -33,9 +33,9 @@ feature {NONE} -- Initialization
 			Result.set_title ("EWF tutorial / Hello World!")
 			--| Check if the request contains a parameter named "user"
 			--| this could be a query, or a form parameter
-			if attached req.string_item ("user") as f_user then
+			if attached req.string_item ("user") as l_user then
 				--| If yes, say hello world #name
-				Result.set_body ("Hello " + f_user.string + "!")
+				Result.set_body ("Hello " + l_user + "!")
 				--| We should html encode this name
 				--| but to keep the example simple, we don't do that for now.
 			else
