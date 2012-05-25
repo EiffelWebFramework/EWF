@@ -1,11 +1,13 @@
 Back to the [[step_1.wiki|step 1]] 
 or go to [[step_3.wiki|step 3]]
 
+----
+
 = Tutorial Step 2 =
 * '''Goal''': Build a simple Hello World application
 * '''Requirements''': 
 ** know how to compile with Eiffel (EiffelStudio).
-** [[step_1.wiki|Previous step]] completed
+** [[step_1.wiki|Previous step]]  completed
 
 
 == "hello" project ==
@@ -18,6 +20,28 @@ or go to [[step_3.wiki|step 3]]
 * You will find inside [[step_2]] the "hello" project
 ** target "hello" provides a very simple implementation (But by default, it is using port 80 with Eiffel Web Nino, which might already be busy by other application)
 ** target "hello_custom" which uses almost the same code, but in addition, you can use the ewf.ini file to precise the port number (9999 for this example)
+
+* Eiffel code
+ class
+     HELLO_APPLICATION
+ 
+ inherit
+     WSF_DEFAULT_RESPONSE_SERVICE
+ 
+ create
+     make_and_launch
+ 
+ feature {NONE} -- Initialization
+ 
+     response (req: WSF_REQUEST): WSF_PAGE_RESPONSE
+             -- Computed response message.
+         do
+             create Result.make
+             Result.put_string ("Hello World")
+         end
+ 
+ end
+
 
 ----
 
