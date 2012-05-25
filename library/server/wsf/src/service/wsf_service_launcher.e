@@ -66,13 +66,6 @@ feature {NONE} -- Initialization
 			make (create {WSF_CALLBACK_SERVICE}.make (a_callback), a_options)
 		end
 
-	frozen make_and_launch_with_options (a_callback: like {WSF_CALLBACK_SERVICE}.callback; a_options: like options)
-		obsolete
-			"[2012-Mars-20] Use make_callback_and_launch (a_callback, a_options)"
-		do
-			make_callback_and_launch (a_callback, a_options)
-		end
-
 	initialize
 			-- Initialize Current using `options' if attached
 			-- and build the connector

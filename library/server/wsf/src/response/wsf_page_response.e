@@ -79,7 +79,7 @@ feature -- Element change
 			l_body.append (a_string)
 		end
 
-feature -- Output
+feature {WSF_SERVICE, WSF_RESPONSE} -- Output
 
 	send_to (res: WSF_RESPONSE)
 		local

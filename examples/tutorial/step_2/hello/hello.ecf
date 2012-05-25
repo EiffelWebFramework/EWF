@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<system xmlns="http://www.eiffel.com/developers/xml/configuration-1-9-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eiffel.com/developers/xml/configuration-1-9-0 http://www.eiffel.com/developers/xml/configuration-1-9-0.xsd" name="hello" uuid="25B014D9-CC71-484D-93D9-5E93B51C6B36">
+
+	<target name="hello">
+		<file_rule>
+			<exclude>/EIFGENs$</exclude>
+			<exclude>/CVS$</exclude>
+			<exclude>/.svn$</exclude>
+		</file_rule>
+		<root class="APPLICATION" feature="make_and_launch"/>
+		<option warning="true" is_attached_by_default="true" void_safety="all" syntax="transitional">
+			<assertions precondition="true" postcondition="true" check="true" invariant="true" loop="true" supplier_precondition="true"/>
+		</option>
+		<library name="base" location="$ISE_LIBRARY\library\base\base-safe.ecf"/>
+		<library name="wsf" location="..\..\..\..\library\server\wsf\wsf-safe.ecf"/>
+		<library name="default_nino" location="..\..\..\..\library\server\wsf\default\nino-safe.ecf"/>
+		<cluster name="hello" location=".\" recursive="true"/>
+	</target>
+
+</system>

@@ -14,7 +14,14 @@ note
 class
 	WSF_SERVICE_LAUNCHER_OPTIONS
 
+inherit
+	ANY
+		redefine
+			default_create
+		end
+
 create
+	default_create,
 	make,
 	make_from_array
 
@@ -23,9 +30,15 @@ convert
 
 feature {NONE} -- Initialization
 
+	default_create
+		do
+			Precursor
+			create options.make (0)
+		end
+
 	make
 		do
-			create options.make (0)
+			default_create
 		end
 
 	make_from_array (a_options: ARRAY [TUPLE [name: READABLE_STRING_GENERAL; value: detachable ANY]])

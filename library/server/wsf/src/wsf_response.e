@@ -265,22 +265,6 @@ feature -- Output operation
 
 feature -- Response object
 
-	put_response (a_message: WSF_RESPONSE_MESSAGE)
-			-- Set `a_message' as the whole response to the client
-			--| `a_message' is responsible to sent the status code, the header and the content
-		obsolete
-			"[2012-Mars-19] Use `send (a_message)' "
-		require
-			header_not_committed: not header_committed
-			status_not_committed: not status_committed
-			no_message_committed: not message_committed
-		do
-			a_message.send_to (Current)
-		ensure
-			status_committed: status_committed
-			header_committed: header_committed
-		end
-
 	send (a_message: WSF_RESPONSE_MESSAGE)
 			-- Set `a_message' as the whole response to the client
 			--| `a_message' is responsible to sent the status code, the header and the content

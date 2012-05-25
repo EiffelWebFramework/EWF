@@ -14,8 +14,7 @@ create
 	make,
 	make_and_launch,
 	make_callback,
-	make_callback_and_launch,
-	make_and_launch_with_options -- obsolete
+	make_callback_and_launch
 
 note
 	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"

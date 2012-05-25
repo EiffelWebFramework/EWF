@@ -11,11 +11,18 @@ inherit
 
 feature {NONE} -- Initialization
 
-	make_and_launch
+	frozen make_and_launch
 		local
 			l_launcher: G
 		do
+			initialize
 			create l_launcher.make_and_launch (Current, service_options)
+		end
+
+	initialize
+			-- Initialize current service
+			--| Could be redefine to set custom service option(s)
+		do
 		end
 
 	service_options: detachable WSF_SERVICE_LAUNCHER_OPTIONS

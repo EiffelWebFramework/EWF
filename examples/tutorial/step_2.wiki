@@ -1,0 +1,27 @@
+[[README.wiki|Back to tutorial index]]
+
+= Tutorial Step 2 =
+* '''Goal''': Build a simple Hello World application
+* '''Requirements''': 
+** know how to compile with Eiffel (EiffelStudio).
+** [[step_1.wiki|Previous step]] completed
+
+
+== Create "hello" project ==
+=== From the archive ===
+- to be completed
+
+=== From the source ===
+- Requirement: install git on your machine  (http://www.git-scm.org/)
+
+	git clone --recursive https://github.com/EiffelWebFramework/EWF.git ewf
+
+And that's it  for now.
+
+== Install EWF ==
+For now, there is nothing specific to do.
+
+(Note: if you want to use the "http_client" library, you will need to do a few extra steps to eventually compile Eiffel Curl.)
+
+----
+Previous [[step_1|step 1]] | Go to [[step_3.wiki|step 3]]

@@ -104,7 +104,7 @@ feature -- Element change
 			answer_head_request_method := b
 		end
 
-feature -- Basic operations
+feature {WSF_SERVICE, WSF_RESPONSE} -- Basic operations
 
 	send_to (res: WSF_RESPONSE)
 		do

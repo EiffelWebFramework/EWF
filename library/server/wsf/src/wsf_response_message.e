@@ -7,9 +7,11 @@ note
 deferred class
 	WSF_RESPONSE_MESSAGE
 
-feature -- Output
+feature {WSF_SERVICE, WSF_RESPONSE} -- Output
 
 	send_to (res: WSF_RESPONSE)
+			-- Send Current message to `res'
+			--| This should not be called by user's code directly
 		require
 			header_not_committed: not res.header_committed
 			status_not_committed: not res.status_committed
