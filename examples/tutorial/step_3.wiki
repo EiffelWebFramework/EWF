@@ -1,2 +1,15 @@
+[[README.wiki|Back to tutorial index]]
+
 = Tutorial Step 3 =
+* '''Goal''': Build Hello $user application using form parameter as input
+* '''Requirements''': 
+** know how to compile with Eiffel (EiffelStudio).
+** [[step_2.wiki|Previous step]] completed
+
+== "hello" project ==
+* Let's start from the "hello_custom" project
+* you will learn how to use the req: WSF_REQUEST argument
+
+----
+Previous [[step_2|step 2]] | Go to [[step_4.wiki|step 4]]
 

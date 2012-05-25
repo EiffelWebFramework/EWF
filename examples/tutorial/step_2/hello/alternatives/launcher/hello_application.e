@@ -8,23 +8,25 @@ note
 			]"
 
 class
-	APPLICATION
+	HELLO_APPLICATION
 
 inherit
-	WSF_DEFAULT_RESPONSE_SERVICE
-		redefine
-			initialize
-		end
+	WSF_RESPONSE_SERVICE
 
 create
 	make_and_launch
 
 feature {NONE} -- Initialization
 
-	initialize
+	make_and_launch
+		local
+			launcher: WSF_DEFAULT_SERVICE_LAUNCHER
+			opts: detachable WSF_SERVICE_LAUNCHER_OPTIONS
 		do
-			create {WSF_SERVICE_LAUNCHER_OPTIONS_FROM_INI} service_options.make_from_file ("ewf.ini")
-			Precursor
+			--| Uncomment the following line, to read options from "ewf.ini" configuration file
+			--	create {WSF_SERVICE_LAUNCHER_OPTIONS_FROM_INI} opts.make_from_file ("ewf.ini")
+
+			create launcher.make_and_launch (Current, opts)
 		end
 
 feature {NONE} -- Initialization

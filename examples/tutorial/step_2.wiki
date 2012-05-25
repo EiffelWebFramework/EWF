@@ -7,21 +7,16 @@
 ** [[step_1.wiki|Previous step]] completed
 
 
-== Create "hello" project ==
-=== From the archive ===
-- to be completed
+== "hello" project ==
+* using the "wsf" library:
+** It provides service, request, response, ...
+* using the "default_nino" library
+** This is used to build the application in a portable manner, but for this compilation, it uses Eiffel Web Nino as connector.
+** We use Eiffel Web Nino for this tutorial, because there is no need to configure any apache, iis, and so on. And it is convenient to execute inside EiffelStudio
 
-=== From the source ===
-- Requirement: install git on your machine  (http://www.git-scm.org/)
-
-	git clone --recursive https://github.com/EiffelWebFramework/EWF.git ewf
-
-And that's it  for now.
-
-== Install EWF ==
-For now, there is nothing specific to do.
-
-(Note: if you want to use the "http_client" library, you will need to do a few extra steps to eventually compile Eiffel Curl.)
+* You will find inside [[step_2]] the "hello" project
+** target "hello" provides a very simple implementation (But by default, it is using port 80 with Eiffel Web Nino, which might already be busy by other application)
+** target "hello_custom" which uses almost the same code, but in addition, you can use the ewf.ini file to precise the port number (9999 for this example)
 
 ----
 Previous [[step_1|step 1]] | Go to [[step_3.wiki|step 3]]
