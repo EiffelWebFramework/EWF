@@ -46,7 +46,7 @@ For now, there is nothing specific to do.
 (Note: if you want to use the "http_client" library, you will need to do a few extra steps to eventually compile Eiffel Curl.)
 
 == Step 1 ==
-[[tutorial_1|Check the first step]]
+[[tutorial_1.wiki|Check the first step]]
 
 == Step 2 ==
 
