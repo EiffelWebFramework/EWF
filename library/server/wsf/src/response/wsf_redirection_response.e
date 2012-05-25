@@ -18,7 +18,7 @@ feature {NONE} -- Initialization
 
 	make (a_url_location: like url_location)
 		do
-			status_code := {HTTP_STATUS_CODE}.temp_redirect
+			status_code := {HTTP_STATUS_CODE}.ok
 			url_location := a_url_location
 			create header.make
 		end
