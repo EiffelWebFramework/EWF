@@ -7,14 +7,14 @@ or go to [[step_4.wiki|step 4]]
 * '''Goal''': Build Hello $user application using form parameter as input
 * '''Requirements''': 
 ** know how to compile with Eiffel (EiffelStudio).
-** [[step_2.wiki|Previous step]] completed
+** [[step_2.wiki|Previous step ]] completed
 
 == "hello" project ==
 * Let's start from the "hello_custom" project
 * you will learn how to use the req: WSF_REQUEST argument
-* See the hello project from [[step_3]] folder
+* See the hello project from [[step_3|step #3]] folder
 
-* The code looks like
+* You can find code in [[step_3]] folder :
 
  response (req: WSF_REQUEST): WSF_HTML_PAGE_RESPONSE
          -- Computed response message.
