@@ -1,6 +1,14 @@
 note
 	description: "[
 				Main interface to send message back to the client
+				
+				You can send part by part, i.e:
+				- set the status code, see: set_status_code (a_code)
+				- put the header's text, see: put_header_text (a_text)
+				- put string for the body, see: put_string (s), put_character (c)
+				- using put_error will eventually send error message directly to the underlying connector's log
+				  (i.e for apache, it will go to the error log)
+				- And you can also send the message as "chunked", see put_chunk (..) for more details
 			]"
 	date: "$Date$"
 	revision: "$Revision$"
