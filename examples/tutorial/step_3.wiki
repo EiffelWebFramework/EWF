@@ -25,9 +25,9 @@ or go to [[step_4.wiki|step 4]]
  			Result.set_title ("EWF tutorial / Hello World!")
  			--| Check if the request contains a parameter named "user"
  			--| this could be a query, or a form parameter
- 			if attached req.string_item ("user") as f_user then
+ 			if attached req.string_item ("user") as l_user then
  				--| If yes, say hello world #name
- 				Result.set_body ("Hello " + f_user.string + "!")
+ 				Result.set_body ("Hello " + l_user + "!")
  				--| We should html encode this name
  				--| but to keep the example simple, we don't do that for now.
  			else
@@ -41,8 +41,8 @@ or go to [[step_4.wiki|step 4]]
  						]"
  					)
  			end
-      --| note:
-      --| 1) Source of the parameter, we could have used
+         --| note:
+         --| 1) Source of the parameter, we could have used
  			--|		 req.query_parameter ("user") to search only in the query string
  			--|		 req.form_parameter ("user") to search only in the form parameters
  			--| 2) response type
