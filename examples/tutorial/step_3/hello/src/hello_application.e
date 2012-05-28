@@ -22,7 +22,7 @@ inherit
 create
 	make_and_launch
 
-feature {NONE} -- Initialization
+feature {NONE} -- Execution
 
 	response (req: WSF_REQUEST): WSF_HTML_PAGE_RESPONSE
 			-- Computed response message.

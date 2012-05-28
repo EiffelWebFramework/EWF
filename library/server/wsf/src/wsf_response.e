@@ -329,7 +329,7 @@ feature -- Redirect
 	redirect_now_with_content (a_url: READABLE_STRING_8; a_content: READABLE_STRING_8; a_content_type: READABLE_STRING_8)
 			-- Redirect to the given url `a_url'
 		do
-			redirect_now_custom (a_url, {HTTP_STATUS_CODE}.temp_redirect, Void, [a_content, a_content_type])
+			redirect_now_custom (a_url, {HTTP_STATUS_CODE}.found, Void, [a_content, a_content_type])
 		end
 
 feature -- Error reporting

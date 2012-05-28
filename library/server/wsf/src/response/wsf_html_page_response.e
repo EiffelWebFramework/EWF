@@ -114,8 +114,6 @@ feature {WSF_SERVICE, WSF_RESPONSE} -- Output
 
 	send_to (res: WSF_RESPONSE)
 		local
-			t: like title
-			lines: like head_lines
 			b: like body
 			h: like header
 			s: STRING_8
@@ -131,6 +129,32 @@ feature {WSF_SERVICE, WSF_RESPONSE} -- Output
 			end
 			s.append (">%N")
 
+			append_html_head_code (s)
+			append_html_body_code (s)
+
+
+			s.append ("</html>%N")
+
+			h := header
+			res.set_status_code (status_code)
+
+			if not h.has_content_length then
+				h.put_content_length (s.count)
+			end
+			if not h.has_content_type then
+				h.put_content_type_text_html
+			end
+			res.put_header_text (h.string)
+			res.put_string (s)
+		end
+
+feature {NONE} -- HTML Generation
+
+	append_html_head_code (s: STRING_8)
+		local
+			t: like title
+			lines: like head_lines
+		do
 			t := title
 			lines := head_lines
 			if t /= Void or else lines.count > 0 then
@@ -147,25 +171,18 @@ feature {WSF_SERVICE, WSF_RESPONSE} -- Output
 				end
 				s.append ("</head>%N")
 			end
+		end
 
+	append_html_body_code (s: STRING_8)
+		local
+			b: like body
+		do
 			b := body
 			s.append ("<body>%N")
 			if b /= Void then
 				s.append (b)
 			end
-			s.append ("%N</body></html>%N")
-
-			h := header
-			res.set_status_code (status_code)
-
-			if not h.has_content_length then
-				h.put_content_length (s.count)
-			end
-			if not h.has_content_type then
-				h.put_content_type_text_html
-			end
-			res.put_header_text (h.string)
-			res.put_string (s)
+			s.append ("%N</body>")
 		end
 
 note

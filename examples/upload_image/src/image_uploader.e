@@ -31,12 +31,6 @@ feature {NONE} -- Initialization
 			make_and_launch
 		end
 
-	create_router
-			-- Create router
-		do
-			create router.make (5)
-		end
-
 	setup_router
 			-- Setup router
 		local

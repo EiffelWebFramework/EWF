@@ -13,6 +13,15 @@ inherit
 			router
 		end
 
+feature {NONE} -- Initialization
+
+	create_router
+			-- Create router
+			--| it can be redefine to create with precise count if needed.
+		do
+			create router.make (0)
+		end
+
 feature -- Router
 
 	router: WSF_URI_TEMPLATE_ROUTER
