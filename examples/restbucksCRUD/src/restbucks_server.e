@@ -28,12 +28,6 @@ feature {NONE} -- Initialization
 			make_and_launch
 		end
 
-
-	create_router
-		do
-			create router.make (2)
-		end
-
 	setup_router
 		local
 			order_handler: ORDER_HANDLER [WSF_URI_TEMPLATE_HANDLER_CONTEXT]
@@ -69,7 +63,7 @@ feature -- Execution
 		end
 
 note
-	copyright: "2011-2011, Javier Velilla and others"
+	copyright: "2011-2012, Javier Velilla and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software
