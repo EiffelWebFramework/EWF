@@ -36,7 +36,7 @@ or go to the [[README.wiki|index]]
 
 * In this example, we use the URI Template router, this allows to define the route using resource like /user/{user} , and then you get access to the "user" data from the WSF_REQUEST.path_parameter or using the context argument passed for the execute or response handler.
 
-* The example also include some basic notion of url, html encoding, check the hello.ecf to see the added libraries  (http to get easy access to the http status code, encoder for simple encoding components)
+* The example also includes basic notions of url, html encoding, check the hello.ecf to see the added libraries  (http to get easy access to the http status code, encoder for simple encoding components)
 ----
 
 Back to the [[step_3.wiki|step 3]] 
