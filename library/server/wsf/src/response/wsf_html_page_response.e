@@ -114,7 +114,6 @@ feature {WSF_SERVICE, WSF_RESPONSE} -- Output
 
 	send_to (res: WSF_RESPONSE)
 		local
-			b: like body
 			h: like header
 			s: STRING_8
 		do

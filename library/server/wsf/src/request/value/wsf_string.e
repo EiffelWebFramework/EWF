@@ -56,6 +56,12 @@ feature -- Status report
 	is_string: BOOLEAN = True
 			-- Is Current as a WSF_STRING representation?
 
+	is_empty: BOOLEAN
+			-- Is empty?
+		do
+			Result := string.is_empty
+		end
+
 feature -- Helper
 
 	same_string (a_other: READABLE_STRING_GENERAL): BOOLEAN
@@ -82,6 +88,25 @@ feature -- Conversion
 	string_representation: STRING_32
 		do
 			create Result.make_from_string (string)
+		end
+
+	html_encoded_name: READABLE_STRING_8
+			-- HTML encoded string `name'
+		do
+			Result := (create {HTML_ENCODER}).encoded_string (name)
+		end
+
+	html_encoded_string: READABLE_STRING_8
+			-- HTML encoded string `string'
+		do
+			Result := (create {HTML_ENCODER}).encoded_string (string)
+		end
+
+feature {NONE} -- Conversion		
+
+	html_decoded_string (s: READABLE_STRING_GENERAL): READABLE_STRING_32
+		do
+			Result := (create {HTML_ENCODER}).general_decoded_string (s)
 		end
 
 feature -- Visitor

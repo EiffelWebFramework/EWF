@@ -91,63 +91,97 @@ feature -- Decoder
 			end
 		end
 
+	general_decoded_string (v: READABLE_STRING_GENERAL): STRING_32
+			-- The HTML-encoded equivalent of the given string
+		local
+			i, n: INTEGER
+			c: NATURAL_32
+			cl_i: CELL [INTEGER]
+			amp_code: NATURAL_32
+		do
+			has_error := False
+			n := v.count
+			create Result.make (n)
+			create cl_i.put (0)
+			amp_code := ('&').natural_32_code
+			from i := 1 until i > n loop
+				c := v.code (i)
+				if c = amp_code then
+					cl_i.replace (i)
+					Result.append_string_general (next_entity (v, cl_i))
+					i := cl_i.item
+				else
+					Result.append_character (c.to_character_32)
+					i := i + 1
+				end
+			end
+		end
+
 feature {NONE} -- Implementation: decoder
 
-	next_entity (v: STRING_8; cl_i: CELL [INTEGER]): STRING_32
+	next_entity (v: READABLE_STRING_GENERAL; cl_i: CELL [INTEGER]): STRING_32
 			-- Return next entity value
 			-- move index
 		local
 			i: INTEGER
-			c: CHARACTER
+			l_code: NATURAL_32
 			is_char: BOOLEAN
 			is_hexa: BOOLEAN
 			s: STRING_32
+			sharp_code,
+			x_code,
+			semi_colon_code: NATURAL_32
 		do
+			sharp_code := ('#').natural_32_code
+			x_code := ('x').natural_32_code
+			x_code := (';').natural_32_code
+
 			i := cl_i.item
 			create s.make_empty
 			i := i + 1
-			c := v[i]
-			if c = '#' then
+			l_code := v.code (i)
+			if l_code = sharp_code then
 				is_char := True
 				i := i + 1
-				c := v[i]
-				if c = 'x' then
+				l_code := v.code (i)
+				if l_code = x_code then
 					is_hexa := True
 					i := i + 1
-					c := v[i]
+					l_code := v.code (i)
 				end
 			end
+
 			if is_char then
 				if is_hexa then
 					from
 					until
-						not c.is_hexa_digit or c = ';'
+						not is_hexa_digit (l_code) or l_code = semi_colon_code
 					loop
-						s.append_character (c)
+						s.append_code (l_code)
 						i := i + 1
-						c := v[i]
+						l_code := v.code (i)
 					end
 				else
 					from
 					until
-						not c.is_digit or c = ';'
+						not is_digit (l_code) or l_code = semi_colon_code
 					loop
-						s.append_character (c)
+						s.append_code (l_code)
 						i := i + 1
-						c := v[i]
+						l_code := v.code (i)
 					end
 				end
 			else
 				from
 				until
-					not valid_entity_character (c) or c = ';'
+					not valid_entity_character (l_code) or l_code = semi_colon_code
 				loop
-					s.append_character (c)
+					s.append_code (l_code)
 					i := i + 1
-					c := v[i]
+					l_code := v.code (i)
 				end
 			end
-			if c = ';' then
+			if l_code = semi_colon_code then
 				if is_char then
 					if is_hexa then
 						-- not yet implemented
@@ -242,20 +276,35 @@ feature {NONE} -- Implementation: decoder
 			end
 		end
 
-	valid_entity_character	(c: CHARACTER): BOOLEAN
+	valid_entity_character	(a_code: NATURAL_32): BOOLEAN
 			-- Is `c' a valid character in html entity value?
 			--| such as &amp;	
+		local
+			c: CHARACTER_8
 		do
-			inspect
-				c
-			when 'a'..'z' then
-				Result := True
-			when 'A'..'Z' then
-				Result := True
-			when '0'..'9' then
-				Result := True
-			else
+			if a_code.is_valid_character_8_code then
+				c := a_code.to_character_8
+				inspect
+					c
+				when 'a'..'z' then
+					Result := True
+				when 'A'..'Z' then
+					Result := True
+				when '0'..'9' then
+					Result := True
+				else
+				end
 			end
+		end
+
+	is_hexa_digit (c: NATURAL_32): BOOLEAN
+		do
+			Result := c.is_valid_character_8_code and then c.to_character_8.is_hexa_digit
+		end
+
+	is_digit (c: NATURAL_32): BOOLEAN
+		do
+			Result := c.is_valid_character_8_code and then c.to_character_8.is_digit
 		end
 
 note
