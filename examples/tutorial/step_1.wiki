@@ -7,7 +7,7 @@ or go to [[step_2.wiki|step 2]]
 
 == Get EWF package ==
 === From the archive ===
-* to be completed
+* Get recent archive from https://github.com/EiffelWebFramework/EWF/downloads
 
 === From the source ===
 * '''Requirement''': install [http://www.git-scm.org/ git] on your machine
