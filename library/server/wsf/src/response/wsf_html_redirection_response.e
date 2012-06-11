@@ -1,6 +1,6 @@
 note
 	description: "[
-				Immediate redirection with HTML content	
+				Immediate redirection with HTML content
 			]"
 	date: "$Date$"
 	revision: "$Revision$"
@@ -41,7 +41,7 @@ feature -- Element change
 			url_location := a_url_location
 		end
 
-feature {WSF_SERVICE, WSF_RESPONSE} -- Output
+feature {WSF_RESPONSE} -- Output
 
 	send_to (res: WSF_RESPONSE)
 		local

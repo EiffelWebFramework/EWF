@@ -76,7 +76,7 @@ feature -- Execution: report
 
 feature {WSF_ROUTER} -- Routes change
 
-	on_handler_mapped (a_resource: READABLE_STRING_8; a_rqst_methods: detachable ARRAY [READABLE_STRING_8])
+	on_handler_mapped (a_resource: READABLE_STRING_8; a_rqst_methods: detachable WSF_ROUTER_METHODS)
 			-- Callback called when a router map a route to Current handler
 		do
 		end

@@ -16,6 +16,11 @@ feature -- Access
 		deferred
 		end
 
+	frozen key: like name
+		do
+			Result := name
+		end
+
 feature -- Element change
 
 	change_name (a_name: like name)
@@ -78,7 +83,7 @@ feature -- Status report
 	debug_output: STRING
 			-- String that should be displayed in debugger to represent `Current'.
 		do
-			create Result.make_from_string (name.as_string_8 + "=" + string_representation.as_string_8)
+			create Result.make_from_string (url_encoder.encoded_string (name) + "=" + url_encoder.encoded_string (string_representation))
 		end
 
 feature {NONE} -- Implementation

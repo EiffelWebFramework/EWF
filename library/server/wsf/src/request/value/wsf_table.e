@@ -47,7 +47,7 @@ feature -- Access
 			end
 		end
 
-	first_key: detachable READABLE_STRING_32
+	first_name: detachable READABLE_STRING_32
 		do
 			across
 				values as c
@@ -68,6 +68,13 @@ feature -- Access
 	count: INTEGER
 		do
 			Result := values.count
+		end
+
+	frozen first_key: like first_name
+		obsolete
+			"Use first_name [2012-May-31]"
+		do
+			Result := first_name
 		end
 
 feature -- Element change
@@ -122,7 +129,7 @@ feature -- Helper
 	string_representation: STRING_32
 		do
 			create Result.make_from_string ("{")
-			if values.count = 1 and then attached first_key as fk then
+			if values.count = 1 and then attached first_name as fk then
 				Result.append (fk + ": ")
 				if attached value (fk) as fv then
 					Result.append (fv.string_representation)

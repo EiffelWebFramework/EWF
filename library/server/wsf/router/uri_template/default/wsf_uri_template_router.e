@@ -22,7 +22,7 @@ create
 feature -- Mapping agent
 
 	map_agent_with_request_methods (a_id: READABLE_STRING_8; a_action: PROCEDURE [ANY, TUPLE [ctx: WSF_URI_TEMPLATE_HANDLER_CONTEXT; req: WSF_REQUEST; res: WSF_RESPONSE]];
-			 rqst_methods: detachable ARRAY [READABLE_STRING_8])
+			 rqst_methods: detachable WSF_ROUTER_METHODS)
 		local
 			h: WSF_AGENT_HANDLER [WSF_URI_TEMPLATE_HANDLER_CONTEXT]
 		do
@@ -31,7 +31,7 @@ feature -- Mapping agent
 		end
 
 	map_agent_response_with_request_methods (a_id: READABLE_STRING_8; a_action: FUNCTION [ANY, TUPLE [ctx: WSF_URI_TEMPLATE_HANDLER_CONTEXT; req: WSF_REQUEST], WSF_RESPONSE_MESSAGE];
-			 rqst_methods: detachable ARRAY [READABLE_STRING_8])
+			 rqst_methods: detachable WSF_ROUTER_METHODS)
 		local
 			h: WSF_AGENT_RESPONSE_HANDLER [WSF_URI_TEMPLATE_HANDLER_CONTEXT]
 		do

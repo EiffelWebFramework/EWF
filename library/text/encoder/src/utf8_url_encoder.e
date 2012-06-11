@@ -45,11 +45,8 @@ feature -- Encoder
 	encoded_string (s: READABLE_STRING_32): STRING_8
 			-- URL-encoded value of `s'.
 		do
-			Result := Precursor (s)
-			if not has_error then
-				Result := utf32_to_utf8 (Result)
-				has_error := not last_conversion_successful
-			end
+			Result := utf32_to_utf8 (s)
+			Result := Precursor (Result)
 		end
 
 	partial_encoded_string (s: READABLE_STRING_32; a_ignore: ARRAY [CHARACTER]): READABLE_STRING_8
@@ -58,7 +55,6 @@ feature -- Encoder
 			Result := Precursor (s, a_ignore)
 			if not has_error then
 				Result := utf32_to_utf8 (Result)
-				has_error := not last_conversion_successful
 			end
 		end
 

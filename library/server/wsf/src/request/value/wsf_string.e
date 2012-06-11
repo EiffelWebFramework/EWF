@@ -1,6 +1,7 @@
 note
-	description: "Summary description for {WSF_STRING}."
-	author: ""
+	description: "[
+				{WSF_STRING} represents a String parameter
+			]"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -25,21 +26,70 @@ feature {NONE} -- Initialization
 	make (a_name: READABLE_STRING_8; a_string: READABLE_STRING_8)
 		do
 			name := url_decoded_string (a_name)
-			string := url_decoded_string (a_string)
+			value := url_decoded_string (a_string)
 
 			url_encoded_name := a_name
-			url_encoded_string := a_string
+			url_encoded_value := a_string
 		end
 
 feature -- Access
 
 	name: READABLE_STRING_32
+			-- <Precursor>
+			--| Note that the value might be html encoded as well
+			--| this is the application responsibility to html decode it
 
-	string: READABLE_STRING_32
+	value: READABLE_STRING_32
+			-- <Precursor>
+			--| Note that the value might be html encoded as well
+			--| this is the application responsibility to html decode it
 
 	url_encoded_name: READABLE_STRING_8
+			-- URL encoded string of `name'.
 
-	url_encoded_string: READABLE_STRING_8
+	url_encoded_value: READABLE_STRING_8
+			-- URL encoded string of `value'.
+
+	frozen string: like value
+		obsolete
+			"Use value [2012-May-31]"
+		do
+			Result := value
+		end
+
+	frozen url_encoded_string: like url_encoded_value
+		obsolete
+			"Use url_encoded_value [2012-May-31]"
+		do
+			Result := url_encoded_value
+		end
+
+feature -- Conversion
+
+	integer_value: INTEGER
+			-- Integer value of `value'.
+		require
+			value_is_integer: is_integer
+		do
+			Result := value.to_integer
+		end
+
+feature -- Status report
+
+	is_string: BOOLEAN = True
+			-- Is Current as a WSF_STRING representation?
+
+	is_empty: BOOLEAN
+			-- Is empty?
+		do
+			Result := value.is_empty
+		end
+
+	is_integer: BOOLEAN
+			-- Is `value' an integer?
+		do
+			Result := value.is_integer
+		end
 
 feature -- Element change
 
@@ -51,31 +101,20 @@ feature -- Element change
 			a_name.same_string (url_encoded_name)
 		end
 
-feature -- Status report
-
-	is_string: BOOLEAN = True
-			-- Is Current as a WSF_STRING representation?
-
-	is_empty: BOOLEAN
-			-- Is empty?
-		do
-			Result := string.is_empty
-		end
-
 feature -- Helper
 
 	same_string (a_other: READABLE_STRING_GENERAL): BOOLEAN
 			-- Does `a_other' represent the same string as `Current'?	
 		do
-			Result := string.same_string_general (a_other)
+			Result := value.same_string_general (a_other)
 		end
 
 	is_case_insensitive_equal (a_other: READABLE_STRING_8): BOOLEAN
 			-- Does `a_other' represent the same case insensitive string as `Current'?
 		local
-			v: like string
+			v: like value
 		do
-			v := string
+			v := value
 			if v = a_other then
 				Result := True
 			elseif v.is_valid_as_string_8 then
@@ -87,26 +126,7 @@ feature -- Conversion
 
 	string_representation: STRING_32
 		do
-			create Result.make_from_string (string)
-		end
-
-	html_encoded_name: READABLE_STRING_8
-			-- HTML encoded string `name'
-		do
-			Result := (create {HTML_ENCODER}).encoded_string (name)
-		end
-
-	html_encoded_string: READABLE_STRING_8
-			-- HTML encoded string `string'
-		do
-			Result := (create {HTML_ENCODER}).encoded_string (string)
-		end
-
-feature {NONE} -- Conversion		
-
-	html_decoded_string (s: READABLE_STRING_GENERAL): READABLE_STRING_32
-		do
-			Result := (create {HTML_ENCODER}).general_decoded_string (s)
+			create Result.make_from_string (value)
 		end
 
 feature -- Visitor

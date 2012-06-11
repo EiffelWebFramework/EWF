@@ -1,17 +1,24 @@
 note
-	description: "Summary description for {WSF_RESPONSE_MESSAGE}."
-	author: ""
+	description: "[
+				Object to represent a full message to be send to the client 
+				via {WSF_RESPONSE}.send (obj)
+				
+				The only requirement is to implement correctly the `send_to (WSF_RESPONSE)'
+				method.
+			]"
 	date: "$Date$"
 	revision: "$Revision$"
 
 deferred class
 	WSF_RESPONSE_MESSAGE
 
-feature {WSF_SERVICE, WSF_RESPONSE} -- Output
+feature {WSF_RESPONSE} -- Output
 
 	send_to (res: WSF_RESPONSE)
 			-- Send Current message to `res'
-			--| This should not be called by user's code directly
+			--
+			-- This feature should be called via `{WSF_RESPONSE}.send (obj)'
+			-- where `obj' is the current object
 		require
 			header_not_committed: not res.header_committed
 			status_not_committed: not res.status_committed

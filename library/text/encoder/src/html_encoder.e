@@ -3,6 +3,7 @@ note
 				Summary description for {HTML_ENCODER}.
 				
 				see: http://en.wikipedia.org/wiki/List_of_XML_and_HTML_character_entity_references
+				see: http://en.wikipedia.org/wiki/Character_encodings_in_HTML
 		]"
 	legal: "See notice at end of class."
 	status: "See notice at end of class."
@@ -38,6 +39,7 @@ feature -- Encoder
 		local
 			i, n: INTEGER
 			uc: CHARACTER_32
+			l_code: INTEGER
 			c: CHARACTER_8
 		do
 			has_error := False
@@ -47,14 +49,31 @@ feature -- Encoder
 				uc := s.item (i)
 				if uc.is_character_8 then
 					c := uc.to_character_8
+
 					inspect c
+					when '%T', '%N', '%R' then
+						Result.extend (c)
 					when '%"' then Result.append_string ("&quot;")
 					when '&' then Result.append_string ("&amp;")
 					when '%'' then Result.append_string ("&apos;")
 					when '<' then Result.append_string ("&lt;")
 					when '>' then Result.append_string ("&gt;")
 					else
-						Result.extend (c)
+						l_code := c.code
+						if
+							l_code <= 31 or -- Hexa 1F
+							l_code = 127 -- Hexa 7F
+						then
+							-- Ignore (forbidden in HTML, even by reference
+
+						elseif l_code >= 128 then
+							--| Tolerated
+							Result.append ("&#")
+							Result.append (l_code.out)
+							Result.extend (';')
+						else
+							Result.extend (c)
+						end
 					end
 				else
 					Result.append ("&#")
@@ -134,7 +153,7 @@ feature {NONE} -- Implementation: decoder
 		do
 			sharp_code := ('#').natural_32_code
 			x_code := ('x').natural_32_code
-			x_code := (';').natural_32_code
+			semi_colon_code := (';').natural_32_code
 
 			i := cl_i.item
 			create s.make_empty

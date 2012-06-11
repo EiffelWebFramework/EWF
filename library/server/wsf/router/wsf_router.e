@@ -10,7 +10,7 @@ deferred class
 	WSF_ROUTER [H -> WSF_HANDLER [C], C -> WSF_HANDLER_CONTEXT]
 
 inherit
-	ITERABLE [TUPLE [handler: H; resource: READABLE_STRING_8; request_methods: detachable ARRAY [READABLE_STRING_8]]]
+	ITERABLE [TUPLE [handler: H; resource: READABLE_STRING_8; request_methods: detachable WSF_ROUTER_METHODS]]
 
 feature {NONE} -- Initialization
 
@@ -22,7 +22,7 @@ feature {NONE} -- Initialization
 
 feature -- Status report
 
-	has_map (a_resource: READABLE_STRING_8; rqst_methods: detachable ARRAY [READABLE_STRING_8]; a_handler: detachable H): BOOLEAN
+	has_map (a_resource: READABLE_STRING_8; rqst_methods: detachable WSF_ROUTER_METHODS; a_handler: detachable H): BOOLEAN
 			-- Has a map corresponding to `a_resource' and `rqst_methods' other than `a_handler'?
 		do
 			if attached handlers_matching_map (a_resource, rqst_methods) as lst then
@@ -30,7 +30,7 @@ feature -- Status report
 			end
 		end
 
-	handlers_matching_map (a_resource: READABLE_STRING_8; rqst_methods: detachable ARRAY [READABLE_STRING_8]): detachable LIST [H]
+	handlers_matching_map (a_resource: READABLE_STRING_8; rqst_methods: detachable WSF_ROUTER_METHODS): detachable LIST [H]
 			-- Existing handlers matching map with `a_resource' and `rqst_methods'
 		deferred
 		end
@@ -53,7 +53,7 @@ feature -- Mapping
 			map (a_resource, h)
 		end
 
-	map_with_request_methods (a_resource: READABLE_STRING_8; h: H; rqst_methods: detachable ARRAY [READABLE_STRING_8])
+	map_with_request_methods (a_resource: READABLE_STRING_8; h: H; rqst_methods: detachable WSF_ROUTER_METHODS)
 			-- Map handler `h' with `a_resource' and `rqst_methods'
 		require
 			has_not_such_map: not has_map (a_resource, rqst_methods, h)
@@ -69,7 +69,7 @@ feature -- Mapping agent
 		end
 
 	map_agent_with_request_methods (a_resource: READABLE_STRING_8; a_action: PROCEDURE [ANY, TUPLE [ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE]];
-			 rqst_methods: detachable ARRAY [READABLE_STRING_8])
+			 rqst_methods: detachable WSF_ROUTER_METHODS)
 			-- Map `a_action' as an handler with `a_resource' and `rqst_methods'			
 		local
 			rah: WSF_AGENT_HANDLER [C]
@@ -91,7 +91,7 @@ feature -- Mapping response agent
 		end
 
 	map_agent_response_with_request_methods (a_resource: READABLE_STRING_8; a_function: FUNCTION [ANY, TUPLE [ctx: C; req: WSF_REQUEST], WSF_RESPONSE_MESSAGE];
-			 rqst_methods: detachable ARRAY [READABLE_STRING_8])
+			 rqst_methods: detachable WSF_ROUTER_METHODS)
 			-- Map response as Result `a_function' as an handler with `a_resource' and `rqst_methods'			
 		local
 			rah: WSF_AGENT_RESPONSE_HANDLER [C]
@@ -203,7 +203,7 @@ feature -- status report
 
 feature -- Traversing
 
-	new_cursor: ITERATION_CURSOR [TUPLE [handler: H; resource: READABLE_STRING_8; request_methods: detachable ARRAY [READABLE_STRING_8]]]
+	new_cursor: ITERATION_CURSOR [TUPLE [handler: H; resource: READABLE_STRING_8; request_methods: detachable WSF_ROUTER_METHODS]]
 			-- Fresh cursor associated with current structure
 		deferred
 		end
@@ -225,51 +225,108 @@ feature {WSF_ROUTED_SERVICE_I} -- Handler
 			source_uri_unchanged: source_uri (req).same_string (old source_uri (req))
 		end
 
+feature -- Request methods helper
+
+	methods_head: WSF_ROUTER_METHODS
+		once ("THREAD")
+			create Result
+			Result.enable_head
+			Result.lock
+		end
+
+	methods_options: WSF_ROUTER_METHODS
+		once ("THREAD")
+			create Result
+			Result.enable_options
+			Result.lock
+		end
+
+	methods_get: WSF_ROUTER_METHODS
+		once ("THREAD")
+			create Result
+			Result.enable_get
+			Result.lock
+		end
+
+	methods_post: WSF_ROUTER_METHODS
+		once ("THREAD")
+			create Result
+			Result.enable_post
+			Result.lock
+		end
+
+	methods_put: WSF_ROUTER_METHODS
+		once ("THREAD")
+			create Result
+			Result.enable_put
+			Result.lock
+		end
+
+	methods_delete: WSF_ROUTER_METHODS
+		once ("THREAD")
+			create Result
+			Result.enable_delete
+			Result.lock
+		end
+
+	methods_get_post: WSF_ROUTER_METHODS
+		once ("THREAD")
+			create Result.make (2)
+			Result.enable_get
+			Result.enable_post
+			Result.lock
+		end
+
+	methods_put_post: WSF_ROUTER_METHODS
+		once ("THREAD")
+			create Result.make (2)
+			Result.enable_put
+			Result.enable_post
+			Result.lock
+		end
+
 feature {NONE} -- Access: Implementation
 
-	is_matching_request_methods (a_request_method: READABLE_STRING_GENERAL; a_rqst_methods: like formatted_request_methods): BOOLEAN
-			-- `a_request_method' is matching `a_rqst_methods' contents
+	request_method (req: WSF_REQUEST): READABLE_STRING_8
+			-- Request method from `req' to be used in the router implementation.
 		local
-			i,n: INTEGER
-			m: READABLE_STRING_GENERAL
+			m: READABLE_STRING_8
+		do
+			m := req.request_method
+			if m.is_case_insensitive_equal ({HTTP_REQUEST_METHODS}.method_get) then
+				Result := {HTTP_REQUEST_METHODS}.method_get
+			elseif m.is_case_insensitive_equal ({HTTP_REQUEST_METHODS}.method_post) then
+				Result := {HTTP_REQUEST_METHODS}.method_post
+			elseif m.is_case_insensitive_equal ({HTTP_REQUEST_METHODS}.method_head) then
+				Result := {HTTP_REQUEST_METHODS}.method_head
+			elseif m.is_case_insensitive_equal ({HTTP_REQUEST_METHODS}.method_trace) then
+				Result := {HTTP_REQUEST_METHODS}.method_trace
+			elseif m.is_case_insensitive_equal ({HTTP_REQUEST_METHODS}.method_options) then
+				Result := {HTTP_REQUEST_METHODS}.method_options
+			elseif m.is_case_insensitive_equal ({HTTP_REQUEST_METHODS}.method_put) then
+				Result := {HTTP_REQUEST_METHODS}.method_put
+			elseif m.is_case_insensitive_equal ({HTTP_REQUEST_METHODS}.method_delete) then
+				Result := {HTTP_REQUEST_METHODS}.method_delete
+			elseif m.is_case_insensitive_equal ({HTTP_REQUEST_METHODS}.method_connect) then
+				Result := {HTTP_REQUEST_METHODS}.method_connect
+			elseif m.is_case_insensitive_equal ({HTTP_REQUEST_METHODS}.method_patch) then
+				Result := {HTTP_REQUEST_METHODS}.method_patch
+			else
+				Result := m.as_upper
+			end
+		end
+
+	is_matching_request_methods (a_request_method: READABLE_STRING_8; a_rqst_methods: detachable WSF_ROUTER_METHODS): BOOLEAN
+			-- `a_request_method' is matching `a_rqst_methods' contents
 		do
 			if a_rqst_methods /= Void and then not a_rqst_methods.is_empty then
-				m := a_request_method
-				from
-					i := a_rqst_methods.lower
-					n := a_rqst_methods.upper
-				until
-					i > n or Result
-				loop
-					Result := m.same_string (a_rqst_methods [i])
-					i := i + 1
-				end
+				Result := a_rqst_methods.has (a_request_method)
 			else
 				Result := True
 			end
 		end
 
-	formatted_request_methods (rqst_methods: like formatted_request_methods): detachable ARRAY [READABLE_STRING_8]
-			-- Formatted request methods values
-		local
-			i,l,u: INTEGER
-		do
-			if rqst_methods /= Void and then not rqst_methods.is_empty then
-				l := rqst_methods.lower
-				u := rqst_methods.upper
-				create Result.make_filled (rqst_methods[l], l, u)
-				from
-					i := l + 1
-				until
-					i > u
-				loop
-					Result[i] := rqst_methods[i].as_string_8.as_upper
-					i := i + 1
-				end
-			end
-		end
-
-;note
+note
 	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[

@@ -1,6 +1,7 @@
 note
-	description: "Summary description for {WSF_ANY}."
-	author: ""
+	description: "[
+				{WSF_ANY} represents a parameter holding any object.
+			]"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -15,11 +16,11 @@ create
 
 feature {NONE} -- Initialization
 
-	make (a_name: READABLE_STRING_8; a_value: like item)
+	make (a_name: READABLE_STRING_8; a_value: like value)
 		do
 			name := url_decoded_string (a_name)
 			url_encoded_name := a_name
-			item := a_value
+			value := a_value
 		end
 
 feature -- Access
@@ -28,7 +29,7 @@ feature -- Access
 
 	url_encoded_name: READABLE_STRING_8
 
-	item: detachable ANY
+	value: detachable ANY
 
 feature -- Element change
 
@@ -50,8 +51,8 @@ feature -- Query
 			-- String representation of Current
 			-- if possible
 		do
-			if attached item as i then
-				Result := i.generating_type
+			if attached value as v then
+				Result := v.generating_type
 			else
 				Result := "Void"
 			end

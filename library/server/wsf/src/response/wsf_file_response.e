@@ -150,7 +150,7 @@ feature -- Element change
 			update_content_length
 		end
 
-feature {WSF_SERVICE, WSF_RESPONSE} -- Output
+feature {WSF_RESPONSE} -- Output
 
 	send_to (res: WSF_RESPONSE)
 		local

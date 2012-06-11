@@ -70,7 +70,7 @@ feature -- Element change
 			content_type := Void
 		end
 
-feature {WSF_SERVICE, WSF_RESPONSE} -- Output	
+feature {WSF_RESPONSE} -- Output
 
 	send_to (res: WSF_RESPONSE)
 		local

@@ -110,7 +110,7 @@ feature -- Element change
 			body := b
 		end
 
-feature {WSF_SERVICE, WSF_RESPONSE} -- Output
+feature {WSF_RESPONSE} -- Output
 
 	send_to (res: WSF_RESPONSE)
 		local
@@ -147,7 +147,19 @@ feature {WSF_SERVICE, WSF_RESPONSE} -- Output
 			res.put_string (s)
 		end
 
+feature -- HTML facilities
+
+	html_encoded_string (s: READABLE_STRING_32): READABLE_STRING_8
+		do
+			Result := html_encoder.encoded_string (s)
+		end
+
 feature {NONE} -- HTML Generation
+
+	html_encoder: HTML_ENCODER
+		once ("thread")
+			create Result
+		end
 
 	append_html_head_code (s: STRING_8)
 		local

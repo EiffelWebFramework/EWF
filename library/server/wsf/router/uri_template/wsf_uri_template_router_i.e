@@ -44,7 +44,7 @@ feature -- Initialization
 
 feature -- Status report		
 
-	handlers_matching_map (a_resource: READABLE_STRING_8; rqst_methods: detachable ARRAY [READABLE_STRING_8]): detachable LIST [H]
+	handlers_matching_map (a_resource: READABLE_STRING_8; rqst_methods: detachable WSF_ROUTER_METHODS): detachable LIST [H]
 		local
 			l_res: READABLE_STRING_8
 		do
@@ -75,7 +75,7 @@ feature -- Registration
 			map_with_uri_template_and_request_methods (uri, h, Void)
 		end
 
-	map_with_uri_template_and_request_methods (uri: URI_TEMPLATE; h: H; rqst_methods: detachable ARRAY [READABLE_STRING_8])
+	map_with_uri_template_and_request_methods (uri: URI_TEMPLATE; h: H; rqst_methods: detachable WSF_ROUTER_METHODS)
 		require
 			uri_is_valid: uri.is_valid
 			has_not_such_map: not has_map (uri.template, rqst_methods, h)
@@ -86,12 +86,12 @@ feature -- Registration
 			l_uri := based_uri (uri)
 			l_tpl := l_uri.template
 
-			handlers.force ([h, l_tpl, formatted_request_methods (rqst_methods)])
+			handlers.force ([h, l_tpl, rqst_methods])
 			templates.force (l_uri, l_tpl)
 			h.on_handler_mapped (l_tpl, rqst_methods)
 		end
 
-	map_with_request_methods (tpl: READABLE_STRING_8; h: H; rqst_methods: detachable ARRAY [READABLE_STRING_8])
+	map_with_request_methods (tpl: READABLE_STRING_8; h: H; rqst_methods: detachable WSF_ROUTER_METHODS)
 		do
 			map_with_uri_template_and_request_methods (create {URI_TEMPLATE}.make (tpl), h, rqst_methods)
 		end
@@ -124,12 +124,12 @@ feature {WSF_ROUTED_SERVICE_I} -- Handler
 			l_handlers: like handlers
 			t: READABLE_STRING_8
 			p: READABLE_STRING_8
-			l_req_method: READABLE_STRING_GENERAL
+			l_req_method: READABLE_STRING_8
 			l_res: URI_TEMPLATE_MATCH_RESULT
 		do
 			p := source_uri (req)
 			from
-				l_req_method := req.request_method
+				l_req_method := request_method (req)
 				l_handlers := handlers
 				l_handlers.start
 			until
@@ -178,7 +178,7 @@ feature {NONE} -- Context factory
 
 feature -- Access: ITERABLE
 
-	new_cursor: ITERATION_CURSOR [TUPLE [handler: H; resource: READABLE_STRING_8; request_methods: detachable ARRAY [READABLE_STRING_8]]]
+	new_cursor: ITERATION_CURSOR [TUPLE [handler: H; resource: READABLE_STRING_8; request_methods: detachable WSF_ROUTER_METHODS]]
 			-- Fresh cursor associated with current structure
 		do
 			Result := handlers.new_cursor
@@ -186,7 +186,7 @@ feature -- Access: ITERABLE
 
 feature {NONE} -- Implementation
 
-	handlers: ARRAYED_LIST [TUPLE [handler: H; resource: READABLE_STRING_8; request_methods: detachable ARRAY [READABLE_STRING_8]]]
+	handlers: ARRAYED_LIST [TUPLE [handler: H; resource: READABLE_STRING_8; request_methods: detachable WSF_ROUTER_METHODS]]
 			-- Handlers indexed by the template expression
 			-- see `templates'
 

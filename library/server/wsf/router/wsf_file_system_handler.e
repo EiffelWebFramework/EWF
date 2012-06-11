@@ -67,7 +67,7 @@ feature -- Execution
 			-- i.e: path of the file system resource if any
 		do
 			if attached {WSF_STRING} ctx.item ("path") as v_path then
-				Result := v_path.string.as_string_8
+				Result := v_path.value.as_string_8
 			end
 		end
 

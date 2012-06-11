@@ -30,11 +30,10 @@ feature {NONE} -- Initialization
 		do
 			router.map_agent ("/hello", agent execute_hello)
 
+			router.map_with_request_methods ("/users/{user}/message/{mesgid}", create {USER_MESSAGE_HANDLER}, router.methods_GET_POST)
+			router.map_with_request_methods ("/users/{user}/message/", create {USER_MESSAGE_HANDLER}, router.methods_GET_POST)
 
-			router.map_with_request_methods ("/users/{user}/message/{mesgid}", create {USER_MESSAGE_HANDLER}, <<"GET", "POST">>)
-			router.map_with_request_methods ("/users/{user}/message/", create {USER_MESSAGE_HANDLER}, <<"GET", "POST">>)
-
-			router.map_agent_response_with_request_methods ("/users/{user}/{?op}", agent response_user, <<"GET">>)
+			router.map_agent_response_with_request_methods ("/users/{user}/{?op}", agent response_user, router.methods_GET)
 		end
 
 feature -- Execution
@@ -50,6 +49,7 @@ feature -- Execution
 		local
 			mesg: WSF_HTML_PAGE_RESPONSE
 			s: STRING_8
+			l_user_name: READABLE_STRING_32
 		do
 			--| It is now returning a WSF_HTML_PAGE_RESPONSE
 			--| Since it is easier for building html page
@@ -59,9 +59,12 @@ feature -- Execution
 			--| this could be a query, or a form parameter
 			if attached {WSF_STRING} req.item ("user") as u then
 				--| If yes, say hello world #name
-				s := "<p>Hello " + u.html_encoded_string + "!</p>"
-				s.append ("Display a <a href=%"/users/" + u.url_encoded_string + "/message/%">message</a></p>")
-				s.append ("<p>Click <a href=%"/users/" + u.url_encoded_string + "/?op=quit%">here</a> to quit.</p>")
+
+				l_user_name := (create {HTML_ENCODER}).decoded_string (u.value)
+
+				s := "<p>Hello " + mesg.html_encoded_string (l_user_name) + "!</p>"
+				s.append ("Display a <a href=%"/users/" + u.url_encoded_value + "/message/%">message</a></p>")
+				s.append ("<p>Click <a href=%"/users/" + u.url_encoded_value + "/?op=quit%">here</a> to quit.</p>")
 				mesg.set_body (s)
 				--| We should html encode this name
 				--| but to keep the example simple, we don't do that for now.
@@ -69,7 +72,7 @@ feature -- Execution
 				--| Otherwise, ask for name
 				s := (create {HTML_ENCODER}).encoded_string ({STRING_32} "Hello / ahoj / नमस्ते / Ciào / مرحبا / Hola / 你好 / Hallo / Selam / Bonjour ")
 				s.append ("[
-							<form action="/hello" method="POST">
+							<form action="/hello" method="GET">
 								What is your name?</p>
 								<input type="text" name="user"/>
 								<input type="submit" value="Validate"/>
@@ -96,30 +99,33 @@ feature -- Execution
 			html: WSF_HTML_PAGE_RESPONSE
 			redir: WSF_HTML_DELAYED_REDIRECTION_RESPONSE
 			s: STRING_8
+			l_username: STRING_32
 		do
 			if attached {WSF_STRING} ctx.path_parameter ("user") as u then
+				l_username := (create {HTML_ENCODER}).general_decoded_string (u.value)
 				if
 					attached {WSF_STRING} req.query_parameter ("op") as l_op
 				then
 					if l_op.is_case_insensitive_equal ("quit") then
 						create redir.make (req.script_url ("/hello"), 5)
-						redir.set_title ("Bye " + u.url_encoded_string)
-						redir.set_body ("Bye " + u.url_encoded_string + ",<br/> see you soon.<p>You will be redirected to " +
+						redir.set_title ("Bye " + u.url_encoded_value)
+						redir.set_body ("Bye " + u.url_encoded_value + ",<br/> see you soon.<p>You will be redirected to " +
 										redir.url_location + " in " + redir.delay.out + " second(s) ...</p>"
 								)
 						Result := redir
 					else
 						create html.make
 						html.set_title ("Bad request")
-						html.set_body ("Bad request: unknown operation '" + l_op.url_encoded_string + "'.")
+						html.set_body ("Bad request: unknown operation '" + l_op.url_encoded_value + "'.")
 						Result := html
 					end
 				else
-					s := "<p>User <em>'" + u.url_encoded_string + "'</em>!</p>"
-					s.append ("Display a <a href=%"/users/" + u.url_encoded_string + "/message/%">message</a></p>")
-					s.append ("<p>Click <a href=%"/users/" + u.url_encoded_string + "/?op=quit%">here</a> to quit.</p>")
 					create html.make
-					html.set_title ("User '" + u.url_encoded_string + "'")
+
+					s := "<p>User <em>'" + html.html_encoded_string (l_username)  + "'</em>!</p>"
+					s.append ("Display a <a href=%"/users/" + u.url_encoded_value + "/message/%">message</a></p>")
+					s.append ("<p>Click <a href=%"/users/" + u.url_encoded_value + "/?op=quit%">here</a> to quit.</p>")
+					html.set_title ("User '" + u.url_encoded_value + "'")
 					html.set_body (s)
 					Result := html
 				end

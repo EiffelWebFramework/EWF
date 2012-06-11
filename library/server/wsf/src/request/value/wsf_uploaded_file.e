@@ -1,6 +1,7 @@
 note
-	description: "Summary description for {WSF_UPLOADED_FILE}."
-	author: ""
+	description: "[
+					{WSF_UPLOADED_FILE} represents an uploaded file from form parameters.
+			]"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -40,12 +41,10 @@ feature -- Element change
 			a_name.same_string (url_encoded_name)
 		end
 
-
 feature -- Status report
 
 	is_string: BOOLEAN = False
 			-- Is Current as a WSF_STRING representation?			
-
 
 feature -- Conversion
 

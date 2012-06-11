@@ -13,6 +13,35 @@ note
 class
 	HTTP_REQUEST_METHODS
 
+feature -- Query
+
+	method (m: READABLE_STRING_8): READABLE_STRING_8
+			-- Return the associated constant object if any
+			-- otherwise the uppercased version of `m'
+		do
+			if m.is_case_insensitive_equal (method_get) then
+				Result := method_get
+			elseif m.is_case_insensitive_equal (method_post) then
+				Result := method_post
+			elseif m.is_case_insensitive_equal (method_head) then
+				Result := method_head
+			elseif m.is_case_insensitive_equal (method_trace) then
+				Result := method_trace
+			elseif m.is_case_insensitive_equal (method_options) then
+				Result := method_options
+			elseif m.is_case_insensitive_equal (method_put) then
+				Result := method_put
+			elseif m.is_case_insensitive_equal (method_delete) then
+				Result := method_delete
+			elseif m.is_case_insensitive_equal (method_connect) then
+				Result := method_connect
+			elseif m.is_case_insensitive_equal (method_patch) then
+				Result := method_patch
+			else
+				Result := m.as_upper
+			end
+		end
+
 feature -- Safe Methods
 
 	method_head: STRING = "HEAD"
@@ -63,7 +92,7 @@ feature -- Other Methods
 			-- Is used to apply partial modifications to a resource
 
 note
-	copyright: "2011-2011, Eiffel Software and others"
+	copyright: "2011-2012, Jocelyn Fiat, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

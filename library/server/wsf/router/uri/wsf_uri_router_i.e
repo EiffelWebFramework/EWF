@@ -47,7 +47,7 @@ feature -- Initialization
 
 feature {WSF_ROUTED_SERVICE_I} -- Status report
 
-	handlers_matching_map (a_resource: READABLE_STRING_8; rqst_methods: detachable ARRAY [READABLE_STRING_8]): detachable LIST [H]
+	handlers_matching_map (a_resource: READABLE_STRING_8; rqst_methods: detachable WSF_ROUTER_METHODS): detachable LIST [H]
 		local
 			l_res: READABLE_STRING_8
 		do
@@ -79,7 +79,7 @@ feature {WSF_ROUTED_SERVICE_I} -- Default: implementation
 
 feature -- Registration
 
-	map_with_request_methods (p: READABLE_STRING_8; h: H; rqst_methods: detachable ARRAY [READABLE_STRING_8])
+	map_with_request_methods (p: READABLE_STRING_8; h: H; rqst_methods: detachable WSF_ROUTER_METHODS)
 		local
 			l_uri: READABLE_STRING_8
 		do
@@ -88,7 +88,7 @@ feature -- Registration
 			else
 				l_uri := p
 			end
-			handlers.force ([h, l_uri, formatted_request_methods (rqst_methods)])
+			handlers.force ([h, l_uri, rqst_methods])
 			h.on_handler_mapped (l_uri, rqst_methods)
 		end
 
@@ -109,10 +109,13 @@ feature {WSF_ROUTED_SERVICE_I} -- Handler
 		local
 			h: detachable H
 			ctx: detachable C
+			rq_method: READABLE_STRING_8
 		do
-			h := handler_by_path (source_uri (req), req.request_method)
+			rq_method := request_method (req)
+
+			h := handler_by_path (source_uri (req), rq_method)
 			if h = Void then
-				if attached smart_handler_by_path (source_uri (req), req.request_method) as info then
+				if attached smart_handler_by_path (source_uri (req), rq_method) as info then
 					h := info.handler
 					ctx := handler_context (info.path, req)
 				end
@@ -131,16 +134,7 @@ feature {WSF_ROUTED_SERVICE_I} -- Handler
 
 feature {NONE} -- Access: Implementation		
 
-	smart_handler (req: WSF_REQUEST): detachable TUPLE [path: READABLE_STRING_8; handler: H]
-		require
-			req_valid: req /= Void and then source_uri (req) /= Void
-		do
-			Result := smart_handler_by_path (source_uri (req), req.request_method)
-		ensure
-			req_path_info_unchanged: source_uri (req).same_string (old source_uri (req))
-		end
-
-	handler_by_path (a_path: READABLE_STRING_GENERAL; rqst_method: READABLE_STRING_GENERAL): detachable H
+	handler_by_path (a_path: READABLE_STRING_GENERAL; rqst_method: READABLE_STRING_8): detachable H
 		require
 			a_path_valid: a_path /= Void
 		local
@@ -163,7 +157,7 @@ feature {NONE} -- Access: Implementation
 			a_path_unchanged: a_path.same_string (old a_path)
 		end
 
-	smart_handler_by_path (a_path: READABLE_STRING_8; rqst_method: READABLE_STRING_GENERAL): detachable TUPLE [path: READABLE_STRING_8; handler: H]
+	smart_handler_by_path (a_path: READABLE_STRING_8; rqst_method: READABLE_STRING_8): detachable TUPLE [path: READABLE_STRING_8; handler: H]
 		require
 			a_path_valid: a_path /= Void
 		local
@@ -207,7 +201,7 @@ feature {NONE} -- Context factory
 
 feature -- Access
 
-	new_cursor: ITERATION_CURSOR [TUPLE [handler: H; resource: READABLE_STRING_8; request_methods: detachable ARRAY [READABLE_STRING_8]]]
+	new_cursor: ITERATION_CURSOR [TUPLE [handler: H; resource: READABLE_STRING_8; request_methods: detachable WSF_ROUTER_METHODS]]
 			-- Fresh cursor associated with current structure
 		do
 			Result := handlers.new_cursor
@@ -215,7 +209,7 @@ feature -- Access
 
 feature {NONE} -- Implementation
 
-	handlers: ARRAYED_LIST [TUPLE [handler: H; resource: READABLE_STRING_8; request_methods: detachable ARRAY [READABLE_STRING_8]]]
+	handlers: ARRAYED_LIST [TUPLE [handler: H; resource: READABLE_STRING_8; request_methods: detachable WSF_ROUTER_METHODS]]
 			-- Handlers indexed by the template expression
 			-- see `templates'
 

@@ -82,7 +82,8 @@ feature -- Mapping
 			router.map (a_resource, h)
 		end
 
-	map_with_request_methods (a_resource: READABLE_STRING_8; h: H; rqst_methods: detachable ARRAY [READABLE_STRING_8])
+	map_with_request_methods (a_resource: READABLE_STRING_8; h: H;
+				rqst_methods: detachable WSF_ROUTER_METHODS)
 			-- Map handler `h' with `a_resource' and `rqst_methods'
 		do
 			router.map_with_request_methods (a_resource, h, rqst_methods)
@@ -94,7 +95,7 @@ feature -- Mapping
 		end
 
 	map_agent_with_request_methods (a_resource: READABLE_STRING_8; a_action: PROCEDURE [ANY, TUPLE [ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE]];
-			 rqst_methods: detachable ARRAY [READABLE_STRING_8])
+			 	rqst_methods: detachable WSF_ROUTER_METHODS)
 		do
 			router.map_agent_with_request_methods (a_resource, a_action, rqst_methods)
 		end

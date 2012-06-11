@@ -1,6 +1,7 @@
 note
-	description: "Summary description for {WSF_MULTIPLE_STRING}."
-	author: ""
+	description: "[
+				{WSF_MULTIPLE_STRING} represents a sequence of name=value parameters
+			]"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -25,7 +26,7 @@ feature {NONE} -- Initialization
 	make_with_value (a_value: WSF_VALUE)
 		do
 			name := a_value.name
-			create {LINKED_LIST [WSF_STRING]} string_values.make
+			create {LINKED_LIST [WSF_STRING]} values.make
 			add_value (a_value)
 		end
 
@@ -58,11 +59,25 @@ feature -- Access
 
 	name: READABLE_STRING_32
 
-	string_values: LIST [WSF_STRING]
+	values: LIST [WSF_STRING]
 
-	first_string_value: WSF_STRING
+	frozen string_values: like values
+		obsolete
+			"Use `values' [2012-May-31]"
 		do
-			Result := string_values.first
+			Result := values
+		end
+
+	first_value: WSF_STRING
+		do
+			Result := values.first
+		end
+
+	frozen first_string_value: WSF_STRING
+		obsolete
+			"Use `first_value' [2012-May-31]"
+		do
+			Result := first_value
 		end
 
 feature -- Element change
@@ -79,15 +94,15 @@ feature -- Status report
 	is_string: BOOLEAN
 			-- Is Current as a WSF_STRING representation?
 		do
-			Result := string_values.count = 1
+			Result := values.count = 1
 		end
 
 feature -- Conversion
 
 	as_string: WSF_STRING
 		do
-			if string_values.count = 1 then
-				Result := first_string_value
+			if values.count = 1 then
+				Result := first_value
 			else
 				Result := Precursor
 			end
@@ -97,19 +112,19 @@ feature -- Traversing
 
 	new_cursor: ITERATION_CURSOR [WSF_STRING]
 		do
-			Result := string_values.new_cursor
+			Result := values.new_cursor
 		end
 
 feature -- Helper
 
 	string_representation: STRING_32
 		do
-			if string_values.count = 1 then
-				create Result.make_from_string (first_string_value)
+			if values.count = 1 then
+				create Result.make_from_string (first_value)
 			else
 				create Result.make_from_string ("[")
 				across
-					string_values as c
+					values as c
 				loop
 					if Result.count > 1 then
 						Result.append_character (',')
@@ -139,7 +154,7 @@ feature -- Element change
 
 	add_string_value (s: WSF_STRING)
 		do
-			string_values.extend (s)
+			values.extend (s)
 		end
 
 feature -- Visitor
@@ -150,7 +165,7 @@ feature -- Visitor
 		end
 
 invariant
-	string_values_not_empty: string_values.count >= 1
+	string_values_not_empty: values.count >= 1
 
 note
 	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"

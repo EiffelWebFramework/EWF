@@ -14,12 +14,15 @@ inherit
 feature -- Access
 
 	response (ctx: WSF_URI_TEMPLATE_HANDLER_CONTEXT; req: WSF_REQUEST): WSF_RESPONSE_MESSAGE
+		local
+			l_username: READABLE_STRING_32
 		do
 			if attached {WSF_STRING} ctx.path_parameter ("user") as u then
+				l_username := html_decoded_string (u.value)
 				if req.is_request_method ("GET") then
-					Result := user_message_get (u, ctx, req)
+					Result := user_message_get (l_username, ctx, req)
 				elseif req.is_request_method ("POST") then
-					Result := user_message_response_post (u, ctx, req)
+					Result := user_message_response_post (l_username, ctx, req)
 				else
 					Result := unsupported_method_response (req)
 				end
@@ -43,12 +46,12 @@ feature -- Access
 		end
 
 
-	user_message_get (u: WSF_STRING; ctx: WSF_URI_TEMPLATE_HANDLER_CONTEXT; req: WSF_REQUEST): WSF_HTML_PAGE_RESPONSE
+	user_message_get (u: READABLE_STRING_32; ctx: WSF_URI_TEMPLATE_HANDLER_CONTEXT; req: WSF_REQUEST): WSF_HTML_PAGE_RESPONSE
 		local
 			s: STRING_8
 		do
 			create Result.make
-			s := "<p>No message from user '" + u.html_encoded_string + "'.</p>"
+			s := "<p>No message from user '" + Result.html_encoded_string (u) + "'.</p>"
 			s.append ("<form action=%""+ req.request_uri +"%" method=%"POST%">")
 			s.append ("<textarea name=%"message%" rows=%"10%" cols=%"70%" ></textarea>")
 			s.append ("<input type=%"submit%" value=%"Ok%" />")
@@ -56,18 +59,32 @@ feature -- Access
 			Result.set_body (s)
 		end
 
-	user_message_response_post  (u: WSF_STRING; ctx: WSF_URI_TEMPLATE_HANDLER_CONTEXT; req: WSF_REQUEST): WSF_HTML_PAGE_RESPONSE
+	user_message_response_post (u: READABLE_STRING_32; ctx: WSF_URI_TEMPLATE_HANDLER_CONTEXT; req: WSF_REQUEST): WSF_HTML_PAGE_RESPONSE
 		local
 			s: STRING_8
 		do
 			create Result.make
-			s := "<p>Message from user '<a href=%"/users/" + u.url_encoded_string + "/%">" + u.html_encoded_string + "</a>'.</p>"
+			s := "<p>Message from user '<a href=%"/users/" + url_encoded_string (u) + "/%">" + Result.html_encoded_string (u) + "</a>'.</p>"
 			if attached {WSF_STRING} req.form_parameter ("message") as m and then not m.is_empty then
-				s.append ("<textarea>"+ m.string +"</textarea>")
+				s.append ("<textarea>"+ m.value +"</textarea>")
 			else
 				s.append ("<strong>No or empty message!</strong>")
 			end
 			Result.set_body (s)
+		end
+
+	url_encoded_string (s: READABLE_STRING_32): STRING_8
+		do
+			Result := (create {UTF8_URL_ENCODER}).encoded_string (s)
+		end
+
+	html_decoded_string (v: READABLE_STRING_32): READABLE_STRING_32
+		do
+			if v.is_valid_as_string_8 then
+				Result := (create {HTML_ENCODER}).decoded_string (v)
+			else
+				Result := v
+			end
 		end
 
 end

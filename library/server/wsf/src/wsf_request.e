@@ -87,12 +87,12 @@ feature {NONE} -- Initialization
 			end
 
 			--| PATH_INFO
-			path_info := url_encoder.decoded_string (wgi_request.path_info)
+			path_info := raw_url_encoder.decoded_string (wgi_request.path_info)
 
 			--| PATH_TRANSLATED
 			s8 := wgi_request.path_translated
 			if s8 /= Void then
-				path_translated := url_encoder.decoded_string (s8)
+				path_translated := raw_url_encoder.decoded_string (s8)
 			end
 
 				--| Here one can set its own environment entries if needed
@@ -253,7 +253,7 @@ feature -- Access: global variable
 	string_item (a_name: READABLE_STRING_GENERAL): detachable READABLE_STRING_32
 		do
 			if attached {WSF_STRING} item (a_name) as val then
-				Result := val.string
+				Result := val.value
 			else
 				check is_string_value: False end
 			end
@@ -303,7 +303,7 @@ feature -- Access: CGI Meta variables
 			a_name_valid: a_name /= Void and then not a_name.is_empty
 		do
 			if attached meta_variable (a_name) as val then
-				Result := val.string
+				Result := val.value
 			end
 		end
 
@@ -317,7 +317,7 @@ feature -- Access: CGI Meta variables
 			a_name_not_empty: a_name /= Void and then not a_name.is_empty
 		do
 			if attached meta_variable (a_name) as val then
-				Result := val.string
+				Result := val.value
 				if use_default_when_empty and then Result.is_empty then
 					Result := a_default
 				end
@@ -332,7 +332,7 @@ feature -- Access: CGI Meta variables
 		do
 			meta_variables_table.force (new_string_value (a_name, a_value), a_name)
 		ensure
-			param_set: attached {WSF_STRING} meta_variable (a_name) as val and then val.url_encoded_string.same_string (a_value)
+			param_set: attached {WSF_STRING} meta_variable (a_name) as val and then val.url_encoded_value.same_string (a_value)
 		end
 
 	unset_meta_variable (a_name: READABLE_STRING_GENERAL)
@@ -825,9 +825,9 @@ feature -- Extra CGI environment variables
 		do
 			if
 				attached {WSF_STRING} meta_variable ({WSF_META_NAMES}.request_time) as t and then
-				t.string.is_integer_64
+				t.value.is_integer_64
 			then
-				Result := date_time_utilities.unix_time_stamp_to_date_time (t.string.to_integer_64)
+				Result := date_time_utilities.unix_time_stamp_to_date_time (t.value.to_integer_64)
 			end
 		end
 
@@ -857,7 +857,7 @@ feature {NONE} -- Cookies
 			l_cookies := internal_cookies_table
 			if l_cookies = Void then
 				if attached {WSF_STRING} meta_variable ({WSF_META_NAMES}.http_cookie) as val then
-					s := val.string
+					s := val.value
 					create l_cookies.make_with_key_tester (5, string_equality_tester)
 					l_cookies.compare_objects
 					from
@@ -1581,6 +1581,11 @@ feature {NONE} -- Implementation: utilities
 
 	empty_string: READABLE_STRING_32
 			-- Reusable empty string
+
+	raw_url_encoder: URL_ENCODER
+		once
+			create {URL_ENCODER} Result
+		end
 
 	url_encoder: URL_ENCODER
 		once
