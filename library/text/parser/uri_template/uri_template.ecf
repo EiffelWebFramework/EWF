@@ -10,9 +10,12 @@
 		<option warning="true" full_class_checking="true" is_attached_by_default="true" void_safety="all">
 			<assertions precondition="true"/>
 		</option>
-		<library name="base" location="$ISE_LIBRARY\library\base\base-safe.ecf"/>
-		<library name="encoder" location="..\..\text\encoder\encoder-safe.ecf"/>
-		<library name="time" location="$ISE_LIBRARY\library\time\time-safe.ecf"/>
+		<option warning="true" full_class_checking="true">
+			<assertions precondition="true"/>
+		</option>
+		<library name="base" location="$ISE_LIBRARY\library\base\base.ecf"/>
+		<library name="encoder" location="../../encoder/encoder.ecf"/>
+		<library name="time" location="$ISE_LIBRARY\library\time\time.ecf"/>
 		<cluster name="src" location="src\" recursive="true"/>
 	</target>
 </system>

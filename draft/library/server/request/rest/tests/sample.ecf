@@ -13,7 +13,7 @@
 		<library name="base" location="$ISE_LIBRARY\library\base\base-safe.ecf"/>
 		<library name="rest" location="..\rest-safe.ecf" readonly="false"/>
 		<library name="wsf" location="..\..\..\..\..\..\library\server\wsf\wsf-safe.ecf" readonly="false"/>
-		<library name="http" location="..\..\..\..\..\..\library\protocol\http\http-safe.ecf" readonly="false"/>
+		<library name="http" location="../../../../../../library/network/protocol/http/http-safe.ecf" readonly="false"/>
 	</target>
 	<target name="sample_fcgi" extends="common">
 		<root class="APP_SERVER" feature="make"/>

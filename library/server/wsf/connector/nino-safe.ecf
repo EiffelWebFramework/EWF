@@ -18,8 +18,8 @@
 			<renaming old_name="HTTP_CONSTANTS" new_name="NINO_HTTP_CONSTANTS"/>
 		</library>
 		
-		<library name="error" location="..\..\..\error\error-safe.ecf"/>
-		<library name="http" location="..\..\..\protocol\http\http-safe.ecf"/>
+		<library name="error" location="../../../utility/general/error/error-safe.ecf"/>
+		<library name="http" location="../../../network/protocol/http/http-safe.ecf"/>
 		<library name="encoder" location="..\..\..\text\encoder\encoder-safe.ecf" readonly="false"/>
 		<cluster name="wsf_nino" location="./nino" recursive="true"/>
 	</target>

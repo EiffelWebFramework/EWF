@@ -20,10 +20,10 @@
 		</library>
 		<library name="default_nino" location="..\..\library\server\wsf\default\nino-safe.ecf" readonly="false" use_application_options="true"/>
 		<library name="encoder" location="..\..\library\text\encoder\encoder-safe.ecf" readonly="false"/>
-		<library name="http" location="..\..\library\protocol\http\http-safe.ecf" readonly="false"/>
+		<library name="http" location="../../library/network/protocol/http/http-safe.ecf" readonly="false"/>
 		<library name="router" location="..\..\library\server\request\router\router-safe.ecf" readonly="false"/>
 		<library name="testing" location="$ISE_LIBRARY\library\testing\testing-safe.ecf"/>
-		<library name="uri_template" location="..\..\library\protocol\uri_template\uri_template-safe.ecf" readonly="false"/>
+		<library name="uri_template" location="../../library/text/parser/uri_template/uri_template-safe.ecf" readonly="false"/>
 		<library name="wsf" location="..\..\library\server\wsf\wsf-safe.ecf" readonly="false" use_application_options="true"/>
 		<cluster name="src" location="src\" recursive="true">
 		</cluster>
