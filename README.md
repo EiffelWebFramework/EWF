@@ -11,6 +11,9 @@ For more information please have a look at the related wiki:
 
 * https://github.com/EiffelWebFramework/EWF/wiki
 
+For download, check
+* https://github.com/EiffelWebFramework/EWF/downloads
+
 ## Requirements
 
 * Developped using EiffelStudio 7.0 (on Windows, Linux)
