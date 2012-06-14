@@ -61,16 +61,16 @@ echo Install examples
 %COPYCMD% %TMP_DIR%\examples	%TMP_TARGET_DIR%\examples\ewf
 
 echo Install library: error
-%COPYCMD% %TMP_DIR%\library\error	%TMP_TARGET_DIR%\library\utility\general\error
+%COPYCMD% %TMP_DIR%\library\utility\general\error	%TMP_TARGET_DIR%\library\utility\general\error
 echo Install library: http_client
-%COPYCMD% %TMP_DIR%\library\client\http_client	%TMP_TARGET_DIR%\library\network\http_client
+%COPYCMD% %TMP_DIR%\library\network\http_client	%TMP_TARGET_DIR%\library\network\http_client
 echo Install library: http
-%COPYCMD% %TMP_DIR%\library\protocol\http	%TMP_TARGET_DIR%\library\network\protocol\http
+%COPYCMD% %TMP_DIR%\library\network\protocol\http	%TMP_TARGET_DIR%\library\network\protocol\http
 echo Install library: uri_template
-%COPYCMD% %TMP_DIR%\library\protocol\uri_template %TMP_TARGET_DIR%\library\text\parser\uri_template
+%COPYCMD% %TMP_DIR%\library\text\parser\uri_template %TMP_TARGET_DIR%\library\text\parser\uri_template
 
 echo Install contrib library: nino
-%COPYCMD% %TMP_DIR%\contrib\library\server\nino	%TMP_TARGET_DIR%\contrib\library\network\server\nino
+%COPYCMD% %TMP_DIR%\contrib\library\network\server\nino	%TMP_TARGET_DIR%\contrib\library\network\server\nino
 
 cd %TMP_TARGET_DIR%
 call %~dp0\bin\ecf_updater.bat --force --backup --verbose --diff --ise_library .

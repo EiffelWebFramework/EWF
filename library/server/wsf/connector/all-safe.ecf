@@ -16,7 +16,7 @@
 		<library name="connector_cgi" location="../../ewsgi/connectors/cgi/cgi-safe.ecf"/>
 		<library name="connector_libfcgi" location="../../ewsgi/connectors/libfcgi/libfcgi-safe.ecf"/>
 		<library name="connector_nino" location="../../ewsgi/connectors/nino/nino-safe.ecf"/>
-		<library name="nino" location="..\..\..\..\contrib\library\server\nino\nino-safe.ecf" readonly="false">
+		<library name="nino" location="nino-safe.ecf" readonly="false">
 			<renaming old_name="HTTP_CONSTANTS" new_name="NINO_HTTP_CONSTANTS"/>
 		</library>
 		
