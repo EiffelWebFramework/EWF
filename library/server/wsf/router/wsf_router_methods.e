@@ -65,7 +65,7 @@ feature {NONE} -- Initialization
 			across
 				v as vc
 			loop
-				smart_add_method (vc.item)
+				add_method_using_constant (vc.item)
 			end
 		end
 
@@ -330,7 +330,8 @@ feature -- Access
 
 feature {NONE} -- Implementation
 
-	smart_add_method (v: READABLE_STRING_8)
+	add_method_using_constant (v: READABLE_STRING_8)
+			-- Add method `v' using method_* constant
 		do
 			if v.is_case_insensitive_equal (method_get) then
 				enable_get
@@ -341,7 +342,7 @@ feature {NONE} -- Implementation
 			elseif v.is_case_insensitive_equal (method_delete) then
 				enable_delete
 			elseif v.is_case_insensitive_equal (method_head) then
-				enable_delete
+				enable_head
 			elseif v.is_case_insensitive_equal (method_options) then
 				enable_options
 			elseif v.is_case_insensitive_equal (method_trace) then
@@ -353,6 +354,8 @@ feature {NONE} -- Implementation
 			else
 				enable_custom (v)
 			end
+		ensure
+			method_set: has (v.as_upper)
 		end
 
 	add_method (v: READABLE_STRING_8)
