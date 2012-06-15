@@ -19,7 +19,7 @@
 			</option>
 		</library>
 		<library name="default_nino" location="..\..\library\server\wsf\default\nino-safe.ecf" readonly="false"/>
-		<library name="eel" location="..\..\library\crypto\eel\eel-safe.ecf" readonly="false"/>
+		<library name="eel" location="..\..\contrib\ise_library\text\encryption\eel\eel-safe.ecf" readonly="false"/>
 		<library name="encoder" location="..\..\library\text\encoder\encoder-safe.ecf" readonly="false"/>
 		<library name="http" location="../../library/network/protocol/http/http-safe.ecf" readonly="false"/>
 		<library name="json" location="..\..\contrib\library\text\parser\json\library\json-safe.ecf" readonly="false"/>
