@@ -20,7 +20,7 @@ create
 feature -- Mapping
 
 	map_agent_with_request_methods (a_id: READABLE_STRING_8; a_action: PROCEDURE [ANY, TUPLE [ctx: REST_REQUEST_URI_TEMPLATE_HANDLER_CONTEXT; req: WSF_REQUEST; res: WSF_RESPONSE]];
-			 rqst_methods: detachable ARRAY [READABLE_STRING_8])
+			 rqst_methods: detachable WSF_ROUTER_METHODS)
 		local
 			h: REST_REQUEST_AGENT_HANDLER [REST_REQUEST_URI_TEMPLATE_HANDLER_CONTEXT]
 		do
