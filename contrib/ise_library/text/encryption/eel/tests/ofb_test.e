@@ -1,8 +1,8 @@
 note
 	description: "Tests Output Feedback mode"
 	author: "Colin LeMahieu"
-	date: "$Date$"
-	revision: "$Revision$"
+	date: "$Date: 2011-11-11 18:13:16 +0100 (ven., 11 nov. 2011) $"
+	revision: "$Revision: 87787 $"
 	quote: "Government is actually the worst failure of civilized man. There has never been a really good one, and even those that are most tolerable are arbitrary, cruel, grasping, and unintelligent. - H. L. Mencken"
 
 class

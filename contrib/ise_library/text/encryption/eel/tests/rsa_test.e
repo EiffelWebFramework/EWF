@@ -1,8 +1,8 @@
 note
 	description: "Summary description for {RSA_TEST}."
 	author: "Colin LeMahieu"
-	date: "$Date$"
-	revision: "$Revision$"
+	date: "$Date: 2011-11-11 18:13:16 +0100 (ven., 11 nov. 2011) $"
+	revision: "$Revision: 87787 $"
 	quote: "When buying and selling are controlled by legislation, the first things to be bought and sold are legislators. - P.J. O'Rourke"
 
 class

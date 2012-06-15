@@ -1,8 +1,8 @@
 note
 	description: "Tests Counter mode"
 	author: "Colin LeMahieu"
-	date: "$Date$"
-	revision: "$Revision$"
+	date: "$Date: 2011-11-11 18:13:16 +0100 (ven., 11 nov. 2011) $"
+	revision: "$Revision: 87787 $"
 	quote: "We contend that for a nation to try to tax itself into prosperity is like a man standing in a bucket and trying to lift himself up by the handle. - Winston Churchill (1903)"
 
 class

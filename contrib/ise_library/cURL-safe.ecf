@@ -57,7 +57,7 @@
 		</external_object>
 		<library name="api_wrapper" location="$ISE_LIBRARY\library\api_wrapper\api_wrapper-safe.ecf"/>
 		<library name="base" location="$ISE_LIBRARY\library\base\base-safe.ecf"/>
-		<cluster name="curl" location=".\" recursive="true">
+		<cluster name="curl" location=".\cURL" recursive="true">
 			<file_rule>
 				<exclude>/spec$</exclude>
 				<exclude>/Clib$</exclude>

@@ -8,7 +8,7 @@
 		<variable name="eapml_scan_type" value="gcc"/>
 		<variable name="eapml_limb_type" value="natural_32"/>
 		<library name="base" location="$ISE_LIBRARY\library\base\base.ecf"/>
-		<library name="eapml" location="..\..\eapml\eapml.ecf"/>
+		<library name="eapml" location="$ISE_LIBRARY\contrib\library\math\eapml\eapml.ecf"/>
 		<library name="eel" location="..\eel.ecf" readonly="false">
 			<option>
 				<assertions precondition="true"/>

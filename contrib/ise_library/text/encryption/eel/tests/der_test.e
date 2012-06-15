@@ -1,8 +1,8 @@
 note
 	description: "Tests DER encoding facilities"
 	author: "Colin LeMahieu"
-	date: "$Date$"
-	revision: "$Revision$"
+	date: "$Date: 2011-11-11 18:13:16 +0100 (ven., 11 nov. 2011) $"
+	revision: "$Revision: 87787 $"
 	quote: "Nothing can destroy a government more quickly than its failure to observe its own laws, or worse, its disregard of the charter of its own existence - U.S. Supreme Court Justice Tom C. Clark - Mapp vs. Ohio"
 
 class

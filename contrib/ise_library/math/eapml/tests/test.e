@@ -1,7 +1,7 @@
 note
 	description : "Library unit test root class"
-	date        : "$Date: 2008-12-29 15:41:59 -0800 (Mon, 29 Dec 2008) $"
-	revision    : "$Revision: 76432 $"
+	date        : "$Date: 2011-11-11 18:13:16 +0100 (ven., 11 nov. 2011) $"
+	revision    : "$Revision: 87787 $"
 
 class
 	TEST

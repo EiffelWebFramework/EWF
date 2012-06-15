@@ -1,8 +1,8 @@
 note
 	description: "Objects that ..."
 	author: "Colin LeMahieu"
-	date: "$Date$"
-	revision: "$Revision$"
+	date: "$Date: 2011-11-11 18:13:16 +0100 (ven., 11 nov. 2011) $"
+	revision: "$Revision: 87787 $"
 	quote: "The best government is the one that charges you the least blackmail for leaving you alone. - Thomas Rudmose-Brown (1996)"
 
 class
