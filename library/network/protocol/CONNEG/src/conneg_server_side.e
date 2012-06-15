@@ -76,7 +76,7 @@ feature -- Server Side Defaults Formats
 
 feature -- Media Type Negotiation
 
-	media_type_preference ( mime_types_supported : LIST[STRING]; header : STRING) : MEDIA_TYPE_VARIANT_RESULTS
+	media_type_preference ( mime_types_supported : LIST[STRING]; header: detachable READABLE_STRING_8) : MEDIA_TYPE_VARIANT_RESULTS
 			-- mime_types_supported represent media types supported by the server.
 			-- header represent the Accept header, ie, the client preferences.
 			-- Return which media type to use for representaion in a response, if the server support
@@ -86,7 +86,7 @@ feature -- Media Type Negotiation
 			mime_match: STRING
 		do
 			create Result
-			if header.is_empty then
+			if header = Void or else header.is_empty then
 				-- the request has no Accept header, ie the header is empty, in this case we use the default format
 				Result.set_acceptable (TRUE)
 				Result.set_media_type (mime_default)
@@ -109,7 +109,7 @@ feature -- Media Type Negotiation
 
 feature -- Encoding Negotiation
 
-	charset_preference (server_charset_supported : LIST[STRING]; header: STRING) : CHARACTER_ENCODING_VARIANT_RESULTS
+	charset_preference (server_charset_supported : LIST[STRING]; header: detachable READABLE_STRING_8) : CHARACTER_ENCODING_VARIANT_RESULTS
 			-- server_charset_supported represent a list of charset supported by the server.
 			-- header represent the Accept-Charset header, ie, the client preferences.
 			-- Return which Charset to use in a response, if the server support
@@ -119,7 +119,7 @@ feature -- Encoding Negotiation
 			charset_match : STRING
 		do
 			create Result
-			if header.is_empty then
+			if header = Void or else header.is_empty then
 				-- the request has no Accept-Charset header, ie the header is empty, in this case use default charset encoding
 				-- (UTF-8)
 				Result.set_acceptable (TRUE)
@@ -142,7 +142,7 @@ feature -- Encoding Negotiation
 
 feature -- Compression Negotiation
 
-	encoding_preference (server_encoding_supported : LIST[STRING]; header: STRING) : COMPRESSION_VARIANT_RESULTS
+	encoding_preference (server_encoding_supported : LIST[STRING]; header: detachable READABLE_STRING_8) : COMPRESSION_VARIANT_RESULTS
 			-- server_encoding_supported represent a list of encoding supported by the server.
 			-- header represent the Accept-Encoding header, ie, the client preferences.
 			-- Return which Encoding to use in a response, if the server support
@@ -152,7 +152,7 @@ feature -- Compression Negotiation
 			compression_match : STRING
 		do
 			create Result
-			if header.is_empty then
+			if header = Void or else header.is_empty then
 				-- the request has no Accept-Encoding header, ie the header is empty, in this case do not compress representations
 				Result.set_acceptable (TRUE)
 				Result.set_compression_type (encoding_default)
@@ -176,7 +176,7 @@ feature -- Compression Negotiation
 
 feature -- Language Negotiation
 
-	language_preference (server_language_supported : LIST[STRING]; header: STRING) : LANGUAGE_VARIANT_RESULTS
+	language_preference (server_language_supported : LIST[STRING]; header: detachable READABLE_STRING_8) : LANGUAGE_VARIANT_RESULTS
 			-- server_language_supported represent a list of languages supported by the server.
 			-- header represent the Accept-Language header, ie, the client preferences.
 			-- Return which Language to use in a response, if the server support
@@ -186,7 +186,7 @@ feature -- Language Negotiation
 			language_match: STRING
 		do
 			create Result
-			if header.is_empty then
+			if header = Void or else header.is_empty then
 				-- the request has no Accept header, ie the header is empty, in this case we use the default format
 				Result.set_acceptable (TRUE)
 				Result.set_language_type (language_default)
