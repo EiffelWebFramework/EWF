@@ -269,6 +269,23 @@ feature -- Request methods helper
 			Result.lock
 		end
 
+	methods_head_get_post: WSF_ROUTER_METHODS
+		once ("THREAD")
+			create Result.make (3)
+			Result.enable_head
+			Result.enable_get
+			Result.enable_post
+			Result.lock
+		end
+
+	methods_head_get: WSF_ROUTER_METHODS
+		once ("THREAD")
+			create Result.make (2)
+			Result.enable_head
+			Result.enable_get
+			Result.lock
+		end
+
 	methods_get_post: WSF_ROUTER_METHODS
 		once ("THREAD")
 			create Result.make (2)
