@@ -32,3 +32,5 @@
   - See [[the collaboration page|Community-collaboration]] 
 
 note: In bold, you see the responsible for each task, but contribution from other is possible as well.
+
+This needs updating, I think.
