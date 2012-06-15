@@ -11,8 +11,8 @@ The user agent (a web browser, for example. or the curl program), can request di
 
 Next, we need to declare all the representations we support:
 
-`	mime_types_supported: LINKED_LIST [STRING] is
-			-- Media types 'Current' supports
+	mime_types_supported: LINKED_LIST [STRING] is
+			-- Media types `Current' supports
 		once
 			create Result.make
 			Result.put_front ({HTTP_MIME_TYPES}.application_xml)
@@ -23,7 +23,7 @@ Next, we need to declare all the representations we support:
 		end
 
 	charsets_supported: LINKED_LIST [STRING] is
-			-- Character sets 'Current' supports
+			-- Character sets `Current' supports
 		once
 			create Result.make
 			Result.put_front ("UTF-8")
@@ -33,7 +33,7 @@ Next, we need to declare all the representations we support:
 		end
 	
 	encodings_supported: LINKED_LIST [STRING] is
-			-- Encodings 'Current' supports
+			-- Encodings `Current' supports
 		once
 			create Result.make
 			Result.put_front ("identity")
@@ -44,7 +44,7 @@ Next, we need to declare all the representations we support:
 		end
 
 	languages_supported: LINKED_LIST [STRING] is
-			-- Languages 'Current' supports
+			-- Languages `Current' supports
 		once
 			create Result.make
 			Result.put_front ("en")
@@ -55,8 +55,8 @@ Next, we need to declare all the representations we support:
 
 Now we are in a position to do some negotiating. At the beginning of your handler(s), code:
 
-`
-local
+
+    local
 			l_media_variants: MEDIA_TYPE_VARIANT_RESULTS
 		do
 			l_media_variants:= conneg.media_type_preference (mime_types_supported, a_req.http_accept)
