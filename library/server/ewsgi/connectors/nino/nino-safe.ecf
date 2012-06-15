@@ -12,7 +12,7 @@
 		<library name="base" location="$ISE_LIBRARY\library\base\base-safe.ecf"/>
 		<library name="ewsgi" location="..\..\ewsgi-safe.ecf" readonly="false"/>
 		<library name="http" location="../../../../network/protocol/http/http-safe.ecf"/>
-		<library name="nino" location="../../../wsf/connector/nino-safe.ecf" readonly="false">
+		<library name="nino" location="../../../../../contrib/library/network/server/nino/nino-safe.ecf" readonly="false">
 			<renaming old_name="HTTP_CONSTANTS" new_name="NINO_HTTP_CONSTANTS"/>
 		</library>
 		<cluster name="src" location=".\src\" recursive="true"/>
