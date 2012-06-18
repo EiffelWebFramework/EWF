@@ -76,11 +76,11 @@ COPYCMDIFMISSING $TMP_TARGET_DIR/library/cURL $TMP_DIR/contrib/ise_library/cURL	
 
 echo Install eapml if missing
 mkdir -p $TMP_TARGET_DIR/contrib/library/math
-COPYCMDIFMISSING $TMP_DIR/contrib/ise_library/math/eapml	$TMP_TARGET_DIR/contrib/library/math/eapml
+COPYCMDIFMISSING $TMP_TARGET_DIR/contrib/library/math/eapml $TMP_DIR/contrib/ise_library/math/eapml	$TMP_TARGET_DIR/contrib/library/math/eapml
 
 echo Install eel if missing
 mkdir -p $TMP_TARGET_DIR/contrib/library/text/encryption
-COPYCMDIFMISSING $TMP_DIR/contrib/ise_library/text/encryption/eel	$TMP_TARGET_DIR/contrib/library/text/encryption/eel
+COPYCMDIFMISSING $TMP_TARGET_DIR/contrib/library/text/encryption/eel $TMP_DIR/contrib/ise_library/text/encryption/eel	$TMP_TARGET_DIR/contrib/library/text/encryption/eel
 
 echo Install json if missing
 mkdir -p $TMP_TARGET_DIR/contrib/library/text/parser
