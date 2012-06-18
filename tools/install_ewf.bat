@@ -2,6 +2,7 @@
 setlocal
 set TMP_EXCLUDE=%~dp0.install_ewf-copydir-exclude
 set COPYCMD= xcopy /EXCLUDE:%TMP_EXCLUDE% /I /E /Y 
+set SVNCO=svn checkout 
 set TMP_DIR=%~dp0..
 
 echo EIFGENs > %TMP_EXCLUDE%
@@ -44,54 +45,58 @@ set TMP_TARGET_DIR=%CD%\ewf
 goto start
 
 :start
+set TMP_CONTRIB_DIR=%TMP_TARGET_DIR%\contrib
+
 echo Install framework ewf
-mkdir %TMP_TARGET_DIR%\contrib\library\web\framework\ewf
+mkdir %TMP_CONTRIB_DIR%\library\web\framework\ewf
 echo Install library: ewf/ewsgi
-%COPYCMD% %TMP_DIR%\library\server\ewsgi	%TMP_TARGET_DIR%\contrib\library\web\framework\ewf\ewsgi
+%COPYCMD% %TMP_DIR%\library\server\ewsgi	%TMP_CONTRIB_DIR%\library\web\framework\ewf\ewsgi
 echo Install library: ewf/libfcgi
-%COPYCMD% %TMP_DIR%\library\server\libfcgi	%TMP_TARGET_DIR%\contrib\library\web\framework\ewf\libfcgi
+%COPYCMD% %TMP_DIR%\library\server\libfcgi	%TMP_CONTRIB_DIR%\library\web\framework\ewf\libfcgi
 echo Install library: ewf/wsf
-%COPYCMD% %TMP_DIR%\library\server\wsf	%TMP_TARGET_DIR%\contrib\library\web\framework\ewf\wsf
+%COPYCMD% %TMP_DIR%\library\server\wsf	%TMP_CONTRIB_DIR%\library\web\framework\ewf\wsf
 echo Install library: ewf/wsf_extension
-%COPYCMD% %TMP_DIR%\library\server\wsf_extension	%TMP_TARGET_DIR%\contrib\library\web\framework\ewf\wsf_extension
+%COPYCMD% %TMP_DIR%\library\server\wsf_extension	%TMP_CONTRIB_DIR%\library\web\framework\ewf\wsf_extension
 echo Install library: ewf/encoder
-%COPYCMD% %TMP_DIR%\library\text\encoder	%TMP_TARGET_DIR%\contrib\library\web\framework\ewf\text\encoder
+%COPYCMD% %TMP_DIR%\library\text\encoder	%TMP_CONTRIB_DIR%\library\web\framework\ewf\text\encoder
 
 echo Install examples
-%COPYCMD% %TMP_DIR%\examples	%TMP_TARGET_DIR%\examples\ewf
-%COPYCMD% %TMP_DIR%\precomp		%TMP_TARGET_DIR%\examples\ewf_precomp
+%COPYCMD% %TMP_DIR%\examples	%TMP_CONTRIB_DIR%\examples\ewf
+%COPYCMD% %TMP_DIR%\precomp		%TMP_CONTRIB_DIR%\examples\ewf_precomp
 
 echo Install library: error
-%COPYCMD% %TMP_DIR%\library\utility\general\error	%TMP_TARGET_DIR%\library\utility\general\error
+%COPYCMD% %TMP_DIR%\library\utility\general\error	%TMP_CONTRIB_DIR%\library\utility\general\error
 echo Install library: http_client
-%COPYCMD% %TMP_DIR%\library\network\http_client	%TMP_TARGET_DIR%\library\network\http_client
+%COPYCMD% %TMP_DIR%\library\network\http_client	%TMP_CONTRIB_DIR%\library\network\http_client
 echo Install library: http
-%COPYCMD% %TMP_DIR%\library\network\protocol\http	%TMP_TARGET_DIR%\library\network\protocol\http
+%COPYCMD% %TMP_DIR%\library\network\protocol\http	%TMP_CONTRIB_DIR%\library\network\protocol\http
 echo Install library: uri_template
-%COPYCMD% %TMP_DIR%\library\text\parser\uri_template %TMP_TARGET_DIR%\library\text\parser\uri_template
+%COPYCMD% %TMP_DIR%\library\text\parser\uri_template %TMP_CONTRIB_DIR%\library\text\parser\uri_template
 
 echo Install contrib library: nino
-%COPYCMD% %TMP_DIR%\contrib\library\network\server\nino	%TMP_TARGET_DIR%\contrib\library\network\server\nino
+%COPYCMD% %TMP_DIR%\contrib\library\network\server\nino	%TMP_CONTRIB_DIR%\library\network\server\nino
 
 rem #--- IF Missing ---#
 
-echo Install json if missing
-if not exist %TMP_TARGET_DIR%\contrib\library\text\parser\json %COPYCMD% %TMP_DIR%\contrib\library\text\parser\json	%TMP_TARGET_DIR%\contrib\library\text\parser\json
-
 echo Install cURL if missing
-if not exist %TMP_TARGET_DIR%\library\cURL %COPYCMD% %TMP_DIR%\contrib\ise_library\cURL	%TMP_TARGET_DIR%\contrib\library\network\cURL
+mkdir -p %TMP_CONTRIB_DIR%\library\network
+if not exist %TMP_CONTRIB_DIR%\library\cURL %COPYCMD% %TMP_DIR%\contrib\ise_library\cURL	%TMP_CONTRIB_DIR%\library\network\cURL
+if not exist %TMP_CONTRIB_DIR%\library\cURL\cURL.ecf %SVNCO% https://svn.eiffel.com/eiffelstudio/trunk/Src/library/cURL %TMP_CONTRIB_DIR%\library\network\cURL
+
+echo Install json if missing
+if not exist %TMP_CONTRIB_DIR%\library\text\parser\json %COPYCMD% %TMP_DIR%\contrib\library\text\parser\json	%TMP_CONTRIB_DIR%\library\text\parser\json
+if not exist %TMP_CONTRIB_DIR%\library\text\parser\json\library\json.ecf %SVNCO% https://svn.github.com/eiffelhub/json.git %TMP_CONTRIB_DIR%\library\text\parser\json
 
 echo Install eapml if missing
-if not exist %TMP_TARGET_DIR%\contrib\library\math\eapml %COPYCMD% %TMP_DIR%\contrib\ise_library\math\eapml	%TMP_TARGET_DIR%\contrib\library\math\eapml
+if not exist %TMP_CONTRIB_DIR%\library\math\eapml %COPYCMD% %TMP_DIR%\contrib\ise_library\math\eapml	%TMP_CONTRIB_DIR%\library\math\eapml
 
 echo Install eel if missing
-if not exist %TMP_TARGET_DIR%\contrib\library\text\encryption\eel %COPYCMD% %TMP_DIR%\contrib\ise_library\text\encryption\eel	%TMP_TARGET_DIR%\contrib\library\text\encryption\eel
-
+if not exist %TMP_CONTRIB_DIR%\library\text\encryption\eel %COPYCMD% %TMP_DIR%\contrib\ise_library\text\encryption\eel	%TMP_CONTRIB_DIR%\library\text\encryption\eel
 
 rem #--- Update ecf files ---#
 
 cd %TMP_TARGET_DIR%
-call %~dp0\bin\ecf_updater.bat --force --verbose --diff %2 %3 %4 %5 %6 %7 %8 %9 .
+call %~dp0\bin\ecf_updater.bat --force %2 %3 %4 %5 %6 %7 %8 %9 contrib
 goto end
 
 :end

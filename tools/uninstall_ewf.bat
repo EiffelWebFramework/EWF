@@ -39,22 +39,25 @@ set TMP_TARGET_DIR=%CD%\ewf
 goto start
 
 :start
+set TMP_CONTRIB_DIR=%TMP_TARGET_DIR%\contrib
+
 echo Uninstall framework: ewf
-%RDCMD% %TMP_TARGET_DIR%\contrib\library\web\framework\ewf
+%RDCMD% %TMP_CONTRIB_DIR%\library\web\framework\ewf
 
 echo Uninstall ewf examples
-%RDCMD% %TMP_TARGET_DIR%\examples\ewf
+%RDCMD% %TMP_CONTRIB_DIR%\examples\ewf
+%RDCMD% %TMP_CONTRIB_DIR%\examples\ewf_precomp
 
 echo Uninstall library: error
-%RDCMD% %TMP_TARGET_DIR%\library\utility\general\error
+%RDCMD% %TMP_CONTRIB_DIR%\library\utility\general\error
 echo Uninstall library: http_client
-%RDCMD% %TMP_TARGET_DIR%\library\network\http_client
+%RDCMD% %TMP_CONTRIB_DIR%\library\network\http_client
 echo Uninstall library: http
-%RDCMD% %TMP_TARGET_DIR%\library\network\protocol\http
+%RDCMD% %TMP_CONTRIB_DIR%\library\network\protocol\http
 echo Uninstall library: uri_template
-%RDCMD% %TMP_TARGET_DIR%\library\text\parser\uri_template
+%RDCMD% %TMP_CONTRIB_DIR%\library\text\parser\uri_template
 
 echo Uninstall contrib library: nino
-%RDCMD% %TMP_TARGET_DIR%\contrib\library\network\server\nino
+%RDCMD% %TMP_CONTRIB_DIR%\contrib\library\network\server\nino
 
 :end
