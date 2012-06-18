@@ -20,8 +20,8 @@ COPYCMD() {
 	fi
 }
 COPYCMDIFMISSING() {
-	if [ ! -d "$2" ]; then
-		COPYCMD $1 $2
+	if [ ! -d "$1" ]; then
+		COPYCMD $2 $3
 	fi
 }
 
@@ -68,13 +68,11 @@ echo Install contrib library: nino
 mkdir -p $TMP_TARGET_DIR/contrib/library/network/server
 COPYCMD $TMP_DIR/contrib/library/network/server/nino	$TMP_TARGET_DIR/contrib/library/network/server/nino
 
-echo Install json if missing
-mkdir -p $TMP_TARGET_DIR/contrib/library/text/parser
-COPYCMDIFMISSING $TMP_DIR/contrib/library/text/parser/json	$TMP_TARGET_DIR/contrib/library/text/parser/json
+#--- IF Missing ---#
 
 echo Install cURL if missing
 mkdir -p $TMP_TARGET_DIR/contrib/library/network
-COPYCMDIFMISSING $TMP_DIR/contrib/ise_library/cURL	$TMP_TARGET_DIR/contrib/library/network/cURL
+COPYCMDIFMISSING $TMP_TARGET_DIR/library/cURL $TMP_DIR/contrib/ise_library/cURL	$TMP_TARGET_DIR/contrib/library/network/cURL
 
 echo Install eapml if missing
 mkdir -p $TMP_TARGET_DIR/contrib/library/math
@@ -84,6 +82,15 @@ echo Install eel is missing
 mkdir -p $TMP_TARGET_DIR/contrib/library/text/encryption
 COPYCMDIFMISSING $TMP_DIR/contrib/ise_library/text/encryption/eel	$TMP_TARGET_DIR/contrib/library/text/encryption/eel
 
+echo Install json if missing
+mkdir -p $TMP_TARGET_DIR/contrib/library/text/parser
+COPYCMDIFMISSING $TMP_TARGET_DIR/contrib/library/text/parser/json $TMP_DIR/contrib/library/text/parser/json	$TMP_TARGET_DIR/contrib/library/text/parser/json
+
+
+#--- Update ecf files ---#
+
 cd $TMP_TARGET_DIR
 echo ecf_updater
-$TMP_CWD/bin/ecf_updater --force --backup --verbose --diff $2 $3 $4 $5 $6 $7 .
+$TMP_CWD/bin/ecf_updater --force --verbose --diff $2 $3 $4 $5 $6 $7 $8 $9 .
+
+

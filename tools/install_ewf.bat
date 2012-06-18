@@ -45,11 +45,11 @@ goto start
 
 :start
 echo Install framework ewf
-mkdir %TMP_TARGET_DIR%\contrib\library\web\framework\ewf\ewsgi
+mkdir %TMP_TARGET_DIR%\contrib\library\web\framework\ewf
 echo Install library: ewf/ewsgi
 %COPYCMD% %TMP_DIR%\library\server\ewsgi	%TMP_TARGET_DIR%\contrib\library\web\framework\ewf\ewsgi
 echo Install library: ewf/libfcgi
-%COPYCMD% %TMP_DIR%\library\server\libfcgi	%TMP_TARGET_DIR%\\contrib\library\web\framework\ewf\libfcgi
+%COPYCMD% %TMP_DIR%\library\server\libfcgi	%TMP_TARGET_DIR%\contrib\library\web\framework\ewf\libfcgi
 echo Install library: ewf/wsf
 %COPYCMD% %TMP_DIR%\library\server\wsf	%TMP_TARGET_DIR%\contrib\library\web\framework\ewf\wsf
 echo Install library: ewf/wsf_extension
@@ -59,6 +59,7 @@ echo Install library: ewf/encoding
 
 echo Install examples
 %COPYCMD% %TMP_DIR%\examples	%TMP_TARGET_DIR%\examples\ewf
+%COPYCMD% %TMP_DIR%\precomp		%TMP_TARGET_DIR%\examples\ewf_precomp
 
 echo Install library: error
 %COPYCMD% %TMP_DIR%\library\utility\general\error	%TMP_TARGET_DIR%\library\utility\general\error
@@ -72,10 +73,26 @@ echo Install library: uri_template
 echo Install contrib library: nino
 %COPYCMD% %TMP_DIR%\contrib\library\network\server\nino	%TMP_TARGET_DIR%\contrib\library\network\server\nino
 
+rem #--- IF Missing ---#
+
+echo Install json if missing
+if not exist %TMP_TARGET_DIR%/contrib/library/text/parser/json %COPYCMD% %TMP_DIR%/contrib/library/text/parser/json	%TMP_TARGET_DIR%/contrib/library/text/parser/json
+
+echo Install cURL if missing
+if not exist %TMP_TARGET_DIR%/library/cURL %COPYCMD% %TMP_DIR%/contrib/ise_library/cURL	%TMP_TARGET_DIR%/contrib/library/network/cURL
+
+echo Install eapml if missing
+if not exist %TMP_TARGET_DIR%/contrib/library/math/eapml %COPYCMD% %TMP_DIR%/contrib/ise_library/math/eapml	%TMP_TARGET_DIR%/contrib/library/math/eapml
+
+echo Install eel is missing
+if not exist %TMP_TARGET_DIR%/contrib/library/text/encryption/eel %COPYCMD% %TMP_DIR%/contrib/ise_library/text/encryption/eel	%TMP_TARGET_DIR%/contrib/library/text/encryption/eel
+
+
+rem #--- Update ecf files ---#
+
 cd %TMP_TARGET_DIR%
-call %~dp0\bin\ecf_updater.bat --force --backup --verbose --diff --ise_library .
-rem ecf_updater --force --backup --verbose --diff %TMP_TARGET_DIR%
+call %~dp0\bin\ecf_updater.bat --force --verbose --diff %2 %3 %4 %5 %6 %7 %8 %9 .
+goto end
 
 :end
 del %TMP_EXCLUDE%
-
