@@ -76,16 +76,17 @@ echo Install contrib library: nino
 rem #--- IF Missing ---#
 
 echo Install json if missing
-if not exist %TMP_TARGET_DIR%/contrib/library/text/parser/json %COPYCMD% %TMP_DIR%/contrib/library/text/parser/json	%TMP_TARGET_DIR%/contrib/library/text/parser/json
+echo on
+if not exist %TMP_TARGET_DIR%\contrib\library\text\parser\json %COPYCMD% %TMP_DIR%\contrib\library\text\parser\json	%TMP_TARGET_DIR%\contrib\library\text\parser\json
 
 echo Install cURL if missing
-if not exist %TMP_TARGET_DIR%/library/cURL %COPYCMD% %TMP_DIR%/contrib/ise_library/cURL	%TMP_TARGET_DIR%/contrib/library/network/cURL
+if not exist %TMP_TARGET_DIR%\library\cURL %COPYCMD% %TMP_DIR%\contrib\ise_library\cURL	%TMP_TARGET_DIR%\contrib\library\network\cURL
 
 echo Install eapml if missing
-if not exist %TMP_TARGET_DIR%/contrib/library/math/eapml %COPYCMD% %TMP_DIR%/contrib/ise_library/math/eapml	%TMP_TARGET_DIR%/contrib/library/math/eapml
+if not exist %TMP_TARGET_DIR%\contrib\library\math\eapml %COPYCMD% %TMP_DIR%\contrib\ise_library\math\eapml	%TMP_TARGET_DIR%\contrib\library\math\eapml
 
-echo Install eel is missing
-if not exist %TMP_TARGET_DIR%/contrib/library/text/encryption/eel %COPYCMD% %TMP_DIR%/contrib/ise_library/text/encryption/eel	%TMP_TARGET_DIR%/contrib/library/text/encryption/eel
+echo Install eel if missing
+if not exist %TMP_TARGET_DIR%\contrib\library\text\encryption\eel %COPYCMD% %TMP_DIR%\contrib\ise_library\text\encryption\eel	%TMP_TARGET_DIR%\contrib\library\text\encryption\eel
 
 
 rem #--- Update ecf files ---#
