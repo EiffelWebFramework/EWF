@@ -19,6 +19,11 @@ COPYCMD() {
 		fi
 	fi
 }
+COPYCMDIFMISSING() {
+	if [ ! -d "$2" ]; then
+		COPYCMD $1 $2
+	fi
+}
 
 if [ -z "$1" ]; then
 	echo ERROR: please provide as argument the installation directory
@@ -44,6 +49,7 @@ COPYCMD $TMP_DIR/library/text/encoder	$TMP_TARGET_DIR/contrib/library/web/framew
 echo Install examples
 mkdir -p $TMP_TARGET_DIR/examples
 COPYCMD $TMP_DIR/examples	$TMP_TARGET_DIR/examples/ewf
+COPYCMD $TMP_DIR/precomp	$TMP_TARGET_DIR/examples/ewf_precomp
 
 echo Install library: error
 mkdir -p $TMP_TARGET_DIR/library/utility/general
@@ -62,6 +68,22 @@ echo Install contrib library: nino
 mkdir -p $TMP_TARGET_DIR/contrib/library/network/server
 COPYCMD $TMP_DIR/contrib/library/network/server/nino	$TMP_TARGET_DIR/contrib/library/network/server/nino
 
+echo Install json if missing
+mkdir -p $TMP_TARGET_DIR/contrib/library/text/parser
+COPYCMDIFMISSING $TMP_DIR/contrib/library/text/parser/json	$TMP_TARGET_DIR/contrib/library/text/parser/json
+
+echo Install cURL if missing
+mkdir -p $TMP_TARGET_DIR/contrib/library/network
+COPYCMDIFMISSING $TMP_DIR/contrib/ise_library/cURL	$TMP_TARGET_DIR/contrib/library/network/cURL
+
+echo Install eapml if missing
+mkdir -p $TMP_TARGET_DIR/contrib/library/math
+COPYCMDIFMISSING $TMP_DIR/contrib/ise_library/math/eapml	$TMP_TARGET_DIR/contrib/library/math/eapml
+
+echo Install eel is missing
+mkdir -p $TMP_TARGET_DIR/contrib/library/text/encryption
+COPYCMDIFMISSING $TMP_DIR/contrib/ise_library/text/encryption/eel	$TMP_TARGET_DIR/contrib/library/text/encryption/eel
+
 cd $TMP_TARGET_DIR
 echo ecf_updater
-$TMP_CWD/bin/ecf_updater --force --backup --verbose --diff --eiffel_library .
+$TMP_CWD/bin/ecf_updater --force --backup --verbose --diff $2 $3 $4 $5 $6 $7 .
