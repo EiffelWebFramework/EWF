@@ -54,8 +54,8 @@ echo Install library: ewf/wsf
 %COPYCMD% %TMP_DIR%\library\server\wsf	%TMP_TARGET_DIR%\contrib\library\web\framework\ewf\wsf
 echo Install library: ewf/wsf_extension
 %COPYCMD% %TMP_DIR%\library\server\wsf_extension	%TMP_TARGET_DIR%\contrib\library\web\framework\ewf\wsf_extension
-echo Install library: ewf/encoding
-%COPYCMD% %TMP_DIR%\library\text\encoder	%TMP_TARGET_DIR%\contrib\library\web\framework\ewf\text\encoding
+echo Install library: ewf/encoder
+%COPYCMD% %TMP_DIR%\library\text\encoder	%TMP_TARGET_DIR%\contrib\library\web\framework\ewf\text\encoder
 
 echo Install examples
 %COPYCMD% %TMP_DIR%\examples	%TMP_TARGET_DIR%\examples\ewf
@@ -76,7 +76,6 @@ echo Install contrib library: nino
 rem #--- IF Missing ---#
 
 echo Install json if missing
-echo on
 if not exist %TMP_TARGET_DIR%\contrib\library\text\parser\json %COPYCMD% %TMP_DIR%\contrib\library\text\parser\json	%TMP_TARGET_DIR%\contrib\library\text\parser\json
 
 echo Install cURL if missing

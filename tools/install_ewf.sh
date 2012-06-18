@@ -42,9 +42,9 @@ echo Install library: ewf/wsf
 COPYCMD $TMP_DIR/library/server/wsf	$TMP_TARGET_DIR/contrib/library/web/framework/ewf/wsf
 echo Install library: ewf/wsf_extension
 COPYCMD $TMP_DIR/library/server/wsf_extension	$TMP_TARGET_DIR/contrib/library/web/framework/ewf/wsf_extension
-echo Install library: ewf/encoding
+echo Install library: ewf/encoder
 mkdir -p $TMP_TARGET_DIR/contrib/library/web/framework/ewf/text
-COPYCMD $TMP_DIR/library/text/encoder	$TMP_TARGET_DIR/contrib/library/web/framework/ewf/text/encoding
+COPYCMD $TMP_DIR/library/text/encoder	$TMP_TARGET_DIR/contrib/library/web/framework/ewf/text/encoder
 
 echo Install examples
 mkdir -p $TMP_TARGET_DIR/examples
