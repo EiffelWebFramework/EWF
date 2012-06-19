@@ -106,7 +106,7 @@ set TMP_ECF_UPDATER_CMD=%~dp0\bin\ecf_updater.bat
 goto ecf_update
 
 :ecf_update
-call %ECF_UPDATER_PATH%\%TMP_ECF_UPDATER_CMD% --force %2 %3 %4 %5 %6 %7 %8 %9 contrib
+call %TMP_ECF_UPDATER_CMD% --force %2 %3 %4 %5 %6 %7 %8 %9 contrib
 
 :end
 del %TMP_EXCLUDE%
