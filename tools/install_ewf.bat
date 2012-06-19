@@ -96,8 +96,17 @@ if not exist %TMP_CONTRIB_DIR%\library\text\encryption\eel %COPYCMD% %TMP_DIR%\c
 rem #--- Update ecf files ---#
 
 cd %TMP_TARGET_DIR%
-call %~dp0\bin\ecf_updater.bat --force %2 %3 %4 %5 %6 %7 %8 %9 contrib
-goto end
+
+if -%ECF_UPDATER_PATH%- == -- goto use_bin_dir
+TMP_ECF_UPDATER_CMD=%ECF_UPDATER_PATH%\ecf_updater.exe
+goto ecf_update
+
+:use_bin_dir
+TMP_ECF_UPDATER_CMD=%~dp0\bin\ecf_updater.bat
+goto ecf_update
+
+:ecf_update
+call %ECF_UPDATER_PATH%\%TMP_ECF_UPDATER_CMD% --force %2 %3 %4 %5 %6 %7 %8 %9 contrib
 
 :end
 del %TMP_EXCLUDE%

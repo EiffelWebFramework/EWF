@@ -1,7 +1,10 @@
 @echo off
 setlocal
 
-set ECF_UPDATER_PATH=
+if "%ECF_UPDATER_PATH%" == "" goto LOCAL_ECF_UPDATER
+goto start
+
+:LOCAL_ECF_UPDATER
 if exist "%~dp0ecf_updater.exe" set ECF_UPDATER_PATH=%~dp0
 
 if "%ECF_UPDATER_PATH%" == "" goto SEARCH_ECF_UPDATER

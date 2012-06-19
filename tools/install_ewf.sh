@@ -101,6 +101,9 @@ COPYCMDIFMISSING $TMP_CONTRIB_DIR/library/text/encryption/eel $TMP_DIR/contrib/i
 #--- Update ecf files ---#
 
 cd $TMP_TARGET_DIR
-$TMP_CWD/bin/ecf_updater --force --verbose --diff $2 $3 $4 $5 $6 $7 $8 $9 contrib
+if [ -z "$ECF_UPDATER_PATH" ]; then
+	ECF_UPDATER_PATH=$TMP_CWD/bin
+fi
+$ECF_UPDATER_PATH/ecf_updater --force --verbose --diff $2 $3 $4 $5 $6 $7 $8 $9 contrib
 
 
