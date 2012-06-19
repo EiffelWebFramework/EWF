@@ -51,9 +51,9 @@ mkdir -p $TMP_CONTRIB_DIR/library/web/framework/ewf/text
 COPYCMD $TMP_DIR/library/text/encoder	$TMP_CONTRIB_DIR/library/web/framework/ewf/text/encoder
 
 echo Install examples
-mkdir -p $TMP_CONTRIB_DIR/examples
-COPYCMD $TMP_DIR/examples	$TMP_CONTRIB_DIR/examples/ewf
-COPYCMD $TMP_DIR/precomp	$TMP_CONTRIB_DIR/examples/ewf_precomp
+mkdir -p $TMP_CONTRIB_DIR/examples/web
+COPYCMD $TMP_DIR/examples	$TMP_CONTRIB_DIR/examples/web/ewf
+COPYCMD $TMP_DIR/precomp	$TMP_CONTRIB_DIR/examples/web/ewf_precomp
 
 echo Install library: error
 mkdir -p $TMP_CONTRIB_DIR/library/utility/general

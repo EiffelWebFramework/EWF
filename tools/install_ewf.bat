@@ -4,6 +4,7 @@ set TMP_EXCLUDE=%~dp0.install_ewf-copydir-exclude
 set COPYCMD= xcopy /EXCLUDE:%TMP_EXCLUDE% /I /E /Y 
 set SVNCO=svn checkout 
 set TMP_DIR=%~dp0..
+set SAFE_MD=call safe_md
 
 echo EIFGENs > %TMP_EXCLUDE%
 echo .git >> %TMP_EXCLUDE%
@@ -48,7 +49,7 @@ goto start
 set TMP_CONTRIB_DIR=%TMP_TARGET_DIR%\contrib
 
 echo Install framework ewf
-mkdir %TMP_CONTRIB_DIR%\library\web\framework\ewf
+%SAFE_MD% %TMP_CONTRIB_DIR%\library\web\framework\ewf
 echo Install library: ewf/ewsgi
 %COPYCMD% %TMP_DIR%\library\server\ewsgi	%TMP_CONTRIB_DIR%\library\web\framework\ewf\ewsgi
 echo Install library: ewf/libfcgi
@@ -61,8 +62,10 @@ echo Install library: ewf/encoder
 %COPYCMD% %TMP_DIR%\library\text\encoder	%TMP_CONTRIB_DIR%\library\web\framework\ewf\text\encoder
 
 echo Install examples
-%COPYCMD% %TMP_DIR%\examples	%TMP_CONTRIB_DIR%\examples\ewf
-%COPYCMD% %TMP_DIR%\precomp		%TMP_CONTRIB_DIR%\examples\ewf_precomp
+%SAFE_MD% %TMP_CONTRIB_DIR%\examples
+%SAFE_MD% %TMP_CONTRIB_DIR%\examples\web
+%COPYCMD% %TMP_DIR%\examples	%TMP_CONTRIB_DIR%\examples\web\ewf
+%COPYCMD% %TMP_DIR%\precomp		%TMP_CONTRIB_DIR%\examples\web\ewf_precomp
 
 echo Install library: error
 %COPYCMD% %TMP_DIR%\library\utility\general\error	%TMP_CONTRIB_DIR%\library\utility\general\error
@@ -79,7 +82,7 @@ echo Install contrib library: nino
 rem #--- IF Missing ---#
 
 echo Install cURL if missing
-mkdir -p %TMP_CONTRIB_DIR%\library\network
+%SAFE_MD% %TMP_CONTRIB_DIR%\library\network
 if not exist %TMP_CONTRIB_DIR%\library\cURL %COPYCMD% %TMP_DIR%\contrib\ise_library\cURL	%TMP_CONTRIB_DIR%\library\network\cURL
 if not exist %TMP_CONTRIB_DIR%\library\cURL\cURL.ecf %SVNCO% https://svn.eiffel.com/eiffelstudio/trunk/Src/library/cURL %TMP_CONTRIB_DIR%\library\network\cURL
 
