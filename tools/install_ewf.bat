@@ -98,11 +98,11 @@ rem #--- Update ecf files ---#
 cd %TMP_TARGET_DIR%
 
 if -%ECF_UPDATER_PATH%- == -- goto use_bin_dir
-TMP_ECF_UPDATER_CMD=%ECF_UPDATER_PATH%\ecf_updater.exe
+set TMP_ECF_UPDATER_CMD=%ECF_UPDATER_PATH%\ecf_updater.exe
 goto ecf_update
 
 :use_bin_dir
-TMP_ECF_UPDATER_CMD=%~dp0\bin\ecf_updater.bat
+set TMP_ECF_UPDATER_CMD=%~dp0\bin\ecf_updater.bat
 goto ecf_update
 
 :ecf_update
