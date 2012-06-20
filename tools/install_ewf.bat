@@ -78,6 +78,8 @@ echo Install library: uri_template
 
 echo Install contrib library: nino
 %COPYCMD% %TMP_DIR%\contrib\library\network\server\nino	%TMP_CONTRIB_DIR%\library\network\server\nino
+rem remove fonts folder from nino examples
+rd /q/s %TMP_CONTRIB_DIR%\library\network\server\nino\example\SimpleWebServer\webroot\example\fonts
 
 rem #--- IF Missing ---#
 
