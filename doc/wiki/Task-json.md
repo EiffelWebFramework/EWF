@@ -7,4 +7,4 @@
 - and then let Eiffel Software include it, in the official libraries
 
 ## Roadmap ##
-- this should be done before 1st of October
+- this should be done before 1st of October - so has this been achieved?
