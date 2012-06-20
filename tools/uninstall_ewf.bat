@@ -45,8 +45,8 @@ echo Uninstall framework: ewf
 %RDCMD% %TMP_CONTRIB_DIR%\library\web\framework\ewf
 
 echo Uninstall ewf examples
-%RDCMD% %TMP_CONTRIB_DIR%\examples\ewf
-%RDCMD% %TMP_CONTRIB_DIR%\examples\ewf_precomp
+%RDCMD% %TMP_CONTRIB_DIR%\examples\web\ewf
+%RDCMD% %TMP_CONTRIB_DIR%\examples\ewb\ewf_precomp
 
 echo Uninstall library: error
 %RDCMD% %TMP_CONTRIB_DIR%\library\utility\general\error
