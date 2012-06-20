@@ -1,3 +1,0 @@
-[submodule "contrib/ise_library/cURL"]
-	path = contrib/ise_library/cURL
-	url = https://github.com/EiffelSoftware/mirror-Eiffel-cURL.git
