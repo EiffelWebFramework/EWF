@@ -1,5 +1,7 @@
 # Eiffel Web Framework
 
+## Version: v0.1
+
 
 ## Overview
 
@@ -46,7 +48,7 @@ An alternative to the last 2 instructions is to use the script from tools folder
   * connectors: various web server connectors for EWSGI
 * libfcgi: Wrapper for libfcgi SDK 
 * __wsf__: Web Server Framework [read more](library/server/wsf)
-  *  __router__: URL dispatching/routing based on uri, uri_template, or custom [read more](library/server/wsf/router)
+  *  include URL dispatching/routing based on uri, uri_template, or custom [read more](library/server/wsf/router)
 
 ### protocol
 * __http__: HTTP related classes, constants for status code, content types, ... [read more](library/protocol/http)
@@ -59,16 +61,15 @@ An alternative to the last 2 instructions is to use the script from tools folder
 ### text
 * __encoder__: Various simpler encoders: base64, url-encoder, xml entities, html entities [read more](library/text/encoder)
 
-### crypto
-* eel
-* eapml
-
 ### Others
 * error: very simple/basic library to handle error
 
 ## External libraries under 'contrib'
 * [Eiffel Web Nino](contrib/library/server/nino)
-* ..
+* contrib/ise_library/cURL
+* contrib/ise_library/math/eapml
+* contrib/ise_library/text/encryption/eel
+* contrib/library/text/parser/json
 
 ## Draft folder = call for contribution ##
 ### library/server/request ###
