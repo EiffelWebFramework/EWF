@@ -71,6 +71,8 @@ COPYCMD $TMP_DIR/library/text/parser/uri_template $TMP_CONTRIB_DIR/library/text/
 echo Install contrib library: nino
 mkdir -p $TMP_CONTRIB_DIR/library/network/server
 COPYCMD $TMP_DIR/contrib/library/network/server/nino	$TMP_CONTRIB_DIR/library/network/server/nino
+# remove fonts folder from nino examples
+rm -rf $TMP_CONTRIB_DIR/library/network/server/nino/example/SimpleWebServer/webroot/example/fonts
 
 #--- IF Missing ---#
 
