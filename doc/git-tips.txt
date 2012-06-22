@@ -10,6 +10,37 @@ For instance
 Update
 :	git pull -s subtree ewf_wiki master
 
+Reconnect subtree from a cloned repository
+- doc/wiki
+  git remote add -f ewf_wiki https://github.com/EiffelWebFramework/EWF.wiki.git
+  git merge -s ours --no-commit --squash ewf_wiki/master
+  git pull -s subtree ewf_wiki master
+- contrib/ise_library/cURL
+  git remote add -f ewf_curl https://github.com/EiffelSoftware/mirror-Eiffel-cURL.git
+  git merge -s ours --no-commit --squash ewf_curl/master
+  git pull -s subtree ewf_curl master
+- contrib/library/text/parser/json
+  git remote add -f ewf_json https://github.com/eiffelhub/json.git
+  git merge -s ours --no-commit --squash ewf_json/master
+  git pull -s subtree ewf_json master
+- contrib/library/network/server/nino
+  git remote add -f ewf_nino  https://github.com/Eiffel-World/EiffelWebNino.git
+  git merge -s ours --no-commit --squash ewf_nino/master
+  git pull -s subtree ewf_nino master
+
+When there are troubles ... to pull subtree from a cloned repository
+  git remote add -f ewf_nino  https://github.com/Eiffel-World/EiffelWebNino.git
+  git merge -s ours --no-commit --squash ewf_nino/master
+  git checkout ewf_nino/master -b ewf_nino
+  git pull ewf_nino master
+  git checkout master
+  git merge --squash -s subtree --no-commit ewf_nino/master
+
+Note ... even if git is working great also on Windows
+It might occurs that handling the subtree pulling fails on Windows, and works
+on Linux. So I would advice to use Linux to manipulate those subtree
+operation.
+
 
 = remove git submodule =
 1. Delete the relevant section from the .gitmodules file.
@@ -23,3 +54,18 @@ Ex:
 :	git rm --cached doc/wiki
 :	git commit -m "Removed submodule doc/wiki"
 
+= Remove remote tag =
+:	git pull # to marge changes from others
+:	git tag -d v0.1 # delete the tag
+:	git push origin :refs/tags/v0.1 # this remove tag from remote repository
+:	git tag -a v0.1 "First official version" # this mark the most recent commit
+:	git push origin v0.1 # push a new tag position to remote repository
+
+= git branches and remote =
+* git push origin my_branch	#push local my_branch to the remote "origin"
+* git push origin :my_branch #delete remote branch "my_branch" from "origin"
+* git branch -d my_branch #delete local branch "my_branch"
+
+* Then from another local repository, you can get this new branch using
+: git fetch origin
+: git checkout --track origin/my_branch -b my_branch
