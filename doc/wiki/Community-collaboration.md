@@ -10,10 +10,15 @@ This project is a community project
 - Proposal from Paul Cohen for a EWSGI spec at http://eiffel.seibostudios.se/wiki/EWSGI
 
 ## Main contributors ##
-- **jfiat**: Jocelyn Fiat (Eiffel Software | http://eiffel.com/)
-- **jvelilla**: Hector Javier Velilla (Seibo Software Studios | http://http://seibostudios.se/en/)
-- **paco**: Paul Cohen (Seibo Software Studios | http://http://seibostudios.se/en/)
-- **daro**: Daniel Rodriguez (Seibo Software Studios | http://http://seibostudios.se/en/)
+- **jfiat**: Jocelyn Fiat (Eiffel Software)
+- **jvelilla**: Hector Javier Velilla (Seibo Software Studios)
+- **paco**: Paul Cohen (Seibo Software Studios)
+- **daro**: Daniel Rodriguez (Seibo Software Studios)
+- Olivier Ligot (Groupe-S)
+- Paul G.Crismer (Groupe-S)
+- Berend de Boer (XplainHosting)
+- Colin Adams (AXA R.)
+- Alexander Kogtenkov (Eiffel Software)
 
 ## You want to participate ##
 - You are welcome to contribute (code, test, doc, code review, feedback, suggestion, spread the words ...)
