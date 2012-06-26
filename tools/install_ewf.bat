@@ -85,8 +85,8 @@ rem #--- IF Missing ---#
 
 echo Install cURL if missing
 %SAFE_MD% %TMP_CONTRIB_DIR%\library\network
-if not exist %TMP_CONTRIB_DIR%\library\cURL %COPYCMD% %TMP_DIR%\contrib\ise_library\cURL	%TMP_CONTRIB_DIR%\library\network\cURL
-if not exist %TMP_CONTRIB_DIR%\library\cURL\cURL.ecf %SVNCO% https://svn.eiffel.com/eiffelstudio/trunk/Src/library/cURL %TMP_CONTRIB_DIR%\library\network\cURL
+if not exist %TMP_TARGET_DIR%\library\cURL %COPYCMD% %TMP_DIR%\contrib\ise_library\cURL	%TMP_CONTRIB_DIR%\library\network\cURL
+if not exist %TMP_TARGET_DIR%\library\cURL if not exist %TMP_CONTRIB_DIR%\library\cURL\cURL.ecf %SVNCO% https://svn.eiffel.com/eiffelstudio/trunk/Src/library/cURL %TMP_CONTRIB_DIR%\library\network\cURL
 
 echo Install json if missing
 if not exist %TMP_CONTRIB_DIR%\library\text\parser\json %COPYCMD% %TMP_DIR%\contrib\library\text\parser\json	%TMP_CONTRIB_DIR%\library\text\parser\json
