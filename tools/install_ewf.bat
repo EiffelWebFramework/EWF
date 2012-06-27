@@ -2,7 +2,8 @@
 setlocal
 set TMP_EXCLUDE=%~dp0.install_ewf-copydir-exclude
 set COPYCMD= xcopy /EXCLUDE:%TMP_EXCLUDE% /I /E /Y 
-set SVNCO=svn checkout 
+set SVNCO=svn checkout
+set SVNEXPORT=svn export 
 set TMP_DIR=%~dp0..
 set SAFE_MD=call safe_md
 
@@ -83,34 +84,40 @@ rd /q/s %TMP_CONTRIB_DIR%\library\network\server\nino\example\SimpleWebServer\we
 
 rem #--- IF Missing ---#
 
+:curl
 echo Install cURL if missing
 %SAFE_MD% %TMP_CONTRIB_DIR%\library\network
 if not exist %TMP_TARGET_DIR%\library\cURL %COPYCMD% %TMP_DIR%\contrib\ise_library\cURL	%TMP_CONTRIB_DIR%\library\network\cURL
-if not exist %TMP_TARGET_DIR%\library\cURL if not exist %TMP_CONTRIB_DIR%\library\cURL\cURL.ecf %SVNCO% https://svn.eiffel.com/eiffelstudio/trunk/Src/library/cURL %TMP_CONTRIB_DIR%\library\network\cURL
+if not exist %TMP_TARGET_DIR%\library\cURL if not exist %TMP_CONTRIB_DIR%\library\cURL\cURL.ecf %SVNEXPORT% https://svn.eiffel.com/eiffelstudio/trunk/Src/library/cURL %TMP_CONTRIB_DIR%\library\network\cURL
 
+:json
 echo Install json if missing
 if not exist %TMP_CONTRIB_DIR%\library\text\parser\json %COPYCMD% %TMP_DIR%\contrib\library\text\parser\json	%TMP_CONTRIB_DIR%\library\text\parser\json
-if not exist %TMP_CONTRIB_DIR%\library\text\parser\json\library\json.ecf %SVNCO% https://svn.github.com/eiffelhub/json.git %TMP_CONTRIB_DIR%\library\text\parser\json
+if not exist %TMP_CONTRIB_DIR%\library\text\parser\json\library\json.ecf %SVNEXPORT% https://svn.github.com/eiffelhub/json.git %TMP_CONTRIB_DIR%\library\text\parser\json
 
+:eapml
 echo Install eapml if missing
 if not exist %TMP_CONTRIB_DIR%\library\math\eapml %COPYCMD% %TMP_DIR%\contrib\ise_library\math\eapml	%TMP_CONTRIB_DIR%\library\math\eapml
 
+:eel
 echo Install eel if missing
 if not exist %TMP_CONTRIB_DIR%\library\text\encryption\eel %COPYCMD% %TMP_DIR%\contrib\ise_library\text\encryption\eel	%TMP_CONTRIB_DIR%\library\text\encryption\eel
 
+goto ecf_updating
 rem #--- Update ecf files ---#
 
+:ecf_updating
 cd %TMP_TARGET_DIR%
 
 if -%ECF_UPDATER_PATH%- == -- goto use_bin_dir
 set TMP_ECF_UPDATER_CMD=%ECF_UPDATER_PATH%\ecf_updater.exe
-goto ecf_update
+goto call_ecf_update
 
 :use_bin_dir
 set TMP_ECF_UPDATER_CMD=%~dp0\bin\ecf_updater.bat
-goto ecf_update
+goto call_ecf_update
 
-:ecf_update
+:call_ecf_update
 call %TMP_ECF_UPDATER_CMD% --force %2 %3 %4 %5 %6 %7 %8 %9 contrib
 
 :end
