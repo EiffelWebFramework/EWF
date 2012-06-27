@@ -9,7 +9,10 @@ CLEANDIR() {
 	done
 }
 SVNCO() {
-	svn co $1 $2
+	svn checkout $1 $2
+}
+SVNEXPORT() {
+	svn export $1 $2
 }
 COPYCMD() {
 	if [ -d "$1" ]; then
@@ -81,7 +84,7 @@ mkdir -p $TMP_CONTRIB_DIR/library/network
 COPYCMDIFMISSING $TMP_TARGET_DIR/library/cURL $TMP_DIR/contrib/ise_library/cURL	$TMP_CONTRIB_DIR/library/network/cURL
 if [ ! -f "$TMP_TARGET_DIR/library/cURL/cURL.ecf" ]; then
 	if [ ! -f "$TMP_CONTRIB_DIR/library/network/cURL/cURL.ecf" ]; then
-		SVNCO https://svn.eiffel.com/eiffelstudio/trunk/Src/library/cURL $TMP_CONTRIB_DIR/library/network/cURL
+		SVNEXPORT https://svn.eiffel.com/eiffelstudio/trunk/Src/library/cURL $TMP_CONTRIB_DIR/library/network/cURL
 	fi
 fi
 
@@ -89,7 +92,7 @@ echo Install json if missing
 mkdir -p $TMP_CONTRIB_DIR/library/text/parser
 COPYCMDIFMISSING $TMP_CONTRIB_DIR/library/text/parser/json $TMP_DIR/contrib/library/text/parser/json	$TMP_CONTRIB_DIR/library/text/parser/json
 if [ ! -f "$TMP_CONTRIB_DIR/library/text/parser/json/library/json.ecf" ]; then
-	SVNCO https://svn.github.com/eiffelhub/json.git $TMP_CONTRIB_DIR/library/text/parser/json
+	SVNEXPORT https://svn.github.com/eiffelhub/json.git $TMP_CONTRIB_DIR/library/text/parser/json
 fi
 
 echo Install eapml if missing
