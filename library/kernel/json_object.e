@@ -113,12 +113,13 @@ feature -- Access
             Result.append_character ('}')
         end
 
+feature -- Mesurement
+
 	count: INTEGER
 			-- Number of field
 		do
 			Result := object.count
 		end
-
 
 feature -- Access
 
