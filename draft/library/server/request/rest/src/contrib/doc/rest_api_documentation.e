@@ -37,7 +37,7 @@ feature -- Access
 	resource_value (ctx: C): detachable READABLE_STRING_32
 		do
 			if attached {WSF_STRING} ctx.item ("resource") as s then
-				Result := s.string
+				Result := s.value
 			end
 		end
 
