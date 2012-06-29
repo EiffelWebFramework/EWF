@@ -7,4 +7,5 @@
 - and then let Eiffel Software include it, in the official libraries
 
 ## Roadmap ##
-- this should be done before 1st of October
+- This task is completed.
+- Future task: review the library, and improve it.
