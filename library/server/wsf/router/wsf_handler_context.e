@@ -188,7 +188,7 @@ feature -- Convertion
 			-- String value from `a_value' if relevant.
 		do
 			if attached {WSF_STRING} a_value as val then
-				Result := val.string
+				Result := val.value
 			end
 		end
 

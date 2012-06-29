@@ -23,6 +23,9 @@ feature {NONE} -- Initialization
 		do
 			create h.make
 			sess := h.new_session ("http://127.0.0.1:9090")
+-- Uncomment the following 2 lines, if you use fiddler2 web debugging tool
+--			sess.set_is_debug (True)
+--			sess.set_proxy ("127.0.0.1", 8888)
 
 			-- Create Order
 			print ("%N Create Order %N")

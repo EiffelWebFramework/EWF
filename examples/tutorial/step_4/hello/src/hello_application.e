@@ -3,8 +3,7 @@
 				This class implements the `Hello World' service.
 
 				It inherits from WSF_DEFAULT_SERVICE to get default EWF connector ready
-				only `response' needs to be implemented.
-				In this example, it is redefined and specialized to be WSF_PAGE_RESPONSE
+				And from WSF_URI_TEMPLATE_ROUTED_SERVICE to use the router service
 
 				`initialize' can be redefine to provide custom options if needed.
 
@@ -30,7 +29,7 @@ feature {NONE} -- Initialization
 		do
 			router.map_agent ("/hello", agent execute_hello)
 
-			router.map_with_request_methods ("/users/{user}/message/{mesgid}", create {USER_MESSAGE_HANDLER}, router.methods_GET_POST)
+			router.map_with_request_methods ("/users/{user}/message/{mesgid}", create {USER_MESSAGE_HANDLER}, router.methods_HEAD_GET_POST)
 			router.map_with_request_methods ("/users/{user}/message/", create {USER_MESSAGE_HANDLER}, router.methods_GET_POST)
 
 			router.map_agent_response_with_request_methods ("/users/{user}/{?op}", agent response_user, router.methods_GET)
@@ -107,7 +106,7 @@ feature -- Execution
 					attached {WSF_STRING} req.query_parameter ("op") as l_op
 				then
 					if l_op.is_case_insensitive_equal ("quit") then
-						create redir.make (req.script_url ("/hello"), 5)
+						create redir.make (req.script_url ("/hello"), 3)
 						redir.set_title ("Bye " + u.url_encoded_value)
 						redir.set_body ("Bye " + u.url_encoded_value + ",<br/> see you soon.<p>You will be redirected to " +
 										redir.url_location + " in " + redir.delay.out + " second(s) ...</p>"
