@@ -23,4 +23,4 @@ The official documentation/wiki is located at https://github.com/EiffelWebFramew
    - This project is also a collection of [[Libraries]] related to the Web
 
 ## Note ##
-   - This wiki needs to be updated, in the meantime, please have a look at the presentation: https://docs.google.com/presentation/d/1aI6Yps59rEW2Ci0fSeJSXpE5-2SE2Tesyj2yu1cuQKk/edit
+   - This wiki needs to be updated, in the meantime, please have a look at the presentation: https://docs.google.com/presentation/pub?id=1GPFv6aHhTjFSLMnlAt-J4WeIHSGfHdB42dQxmOVOH8s&start=false&loop=false&delayms=3000
