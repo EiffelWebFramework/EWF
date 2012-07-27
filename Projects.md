@@ -72,7 +72,7 @@ This page lists potential projects on EWF, this is open for contribution, and if
 * _Suggested by **Jocelyn**_
 * example: multipage web form
 
-## Template engine
+## library: Template engine
 * _Suggested by **Jocelyn**_
 * Get inspired by any existing template engine, and build one for Eiffel
   - http://www.smarty.net/
@@ -80,12 +80,12 @@ This page lists potential projects on EWF, this is open for contribution, and if
   - ...
 * This is not specific to EWF, but it will be very useful in website context
 
-## Wikitext, markdown parser and renderer
+## library: Wikitext, markdown parser and renderer
 * _Suggested by **Jocelyn**_
 * Support reading of wikitext, and markdown, and provide HTML rendering
 * extension: render wikitext and markdown into Vision2 widget (not related to EWF, but could be useful to build editor)
 
-## Web component to build HTML5 widget
+## library: Web component to build HTML5 widget
 * _Suggested by **Jocelyn**_
 * Build set of Eiffel component to ease development of websites
   - table widget (with sorting ...)
@@ -105,3 +105,14 @@ This page lists potential projects on EWF, this is open for contribution, and if
 ## Concurrenty and EWF
 * _Suggested by **Jocelyn**_
 * Make sure EWF is compliant with concurrency, provide example
+
+## Build a simple CMS with EWF
+* _Suggested by **Jocelyn**_
+* Build a simple CMS website with EWF
+* features:
+   - user management  (register, login, lost password -> send email)
+   - page editing
+   - blog
+   - template / theme
+   - persistency / storage / ...
+   - extension at compilation time
