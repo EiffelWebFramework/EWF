@@ -28,7 +28,9 @@ This page lists potential projects on EWF, this is open for contribution, and if
 * Support for configuration
 * Ready to use logging facilities
 * Smart handler for HEAD or similar
-* Added component to ease the caching functionalities
+* Adding component to ease the caching functionalities
+* Adding Session support
+* URL rewriting ?
 * Mass testing
 * ...
 
