@@ -121,3 +121,6 @@ This page lists potential projects on EWF, this is open for contribution, and if
 * _Suggested by **Jocelyn**_
 * See http://en.wikipedia.org/wiki/Websocket
 
+## Build P2P connector
+* _Suggested by **Jocelyn**_
+* Imagine you want to publish a website running on your machine (behing firewall). One would need to initiate the connection via a public website, this is common for P2P software such as remote assistance (i.e: join.me, teamviewer, showmypc, ...)
