@@ -116,3 +116,8 @@ This page lists potential projects on EWF, this is open for contribution, and if
    - template / theme
    - persistency / storage / ...
    - extension at compilation time
+
+## Provide a Websocket implementation
+* _Suggested by **Jocelyn**_
+* See http://en.wikipedia.org/wiki/Websocket
+
