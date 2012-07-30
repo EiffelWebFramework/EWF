@@ -1,5 +1,7 @@
-This page lists potential projects on EWF, this is open for contribution, and if you are a student, don't hesitate to pick on, you will get close support from EWF's team.
+This page lists potential projects on EWF, this is open for contribution.
+If you are a student, don't hesitate to pick one, or even suggest a new project, or a project being a merge of several, in any case, you will get close support from EWF's team. 
 
+----
 # Studies/Analysis/Documentation
 
 ## Evaluate EWF according to the following constraints ... 
@@ -18,7 +20,7 @@ This page lists potential projects on EWF, this is open for contribution, and if
 * _Suggested by **Javier**_
 * (maybe based on our graphviz example) or and extension to RestBucksCRUD
 
-
+----
 # Works related to EWF / framework / tools
 
 ## Improve EWF
@@ -62,7 +64,8 @@ This page lists potential projects on EWF, this is open for contribution, and if
 * _Suggested by **Jocelyn**_
 * See http://en.wikipedia.org/wiki/Websocket
 
-# Use of EWF
+----
+# Usage of EWF
 
 ## HAL browser 
 * _Suggested by **Javier**_
@@ -84,11 +87,13 @@ This page lists potential projects on EWF, this is open for contribution, and if
    - template / theme
    - persistency / storage / ...
    - extension at compilation time
+* The result should be used by any user to build his own CMS, and extend it easily.
 
 ## Build P2P connector
 * _Suggested by **Jocelyn**_
 * Imagine you want to publish a website running on your machine (behing firewall). One would need to initiate the connection via a public website, this is common for P2P software such as remote assistance (i.e: join.me, teamviewer, showmypc, ...)
 
+----
 # Libraries
 
 ## Hypermedia API library to work with XHTML 
@@ -133,8 +138,7 @@ This page lists potential projects on EWF, this is open for contribution, and if
   - WYSIWYG textarea widget (could reuse existing JS solution ...)
   - ...
 
-
-
+----
 # Clients
 
 ## Libraries: Reusable Client Design based on J.Moore Presentation 
@@ -162,3 +166,7 @@ This page lists potential projects on EWF, this is open for contribution, and if
 * Flickr
 * ... etc
 * This should reuse and improve the "http_client" provided by EWF. Eventually also write the EiffelNet implementation to be independant from cURL
+
+----
+# Feel free to add new idea below this line
+----
