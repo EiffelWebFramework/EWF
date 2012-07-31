@@ -2,7 +2,7 @@ This page lists potential projects on EWF, this is open for contribution.
 If you are a student, don't hesitate to pick one, or even suggest a new project, or a project being a merge of several, in any case, you will get close support from EWF's team. 
 
 ----
-# Studies/Analysis/Documentation
+# Study/Analysis/Documentation
 
 ## Evaluate EWF according to the following constraints ... 
 * _Suggested by **Javier**_
