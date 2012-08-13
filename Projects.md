@@ -214,4 +214,4 @@ If you are a student, don't hesitate to pick one, or even suggest a new project,
 ----
 # Feel free to add new idea below this line
 ----
-Use the following page [[Projects Suggestions]] to suggest new project, or request a feature.
+Use the following page [[Projects new suggestions]] to suggest new project, or request a feature.
