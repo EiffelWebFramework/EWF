@@ -214,3 +214,10 @@ If you are a student, don't hesitate to pick one, or even suggest a new project,
 ----
 # Feel free to add new idea below this line
 ----
+Use the following page [[Project suggestions]] to suggest new project, or request a feature.
+We'll move the content to this page for time to time.
+Please provide:
+* a short title
+* a description
+* eventual requirement
+* "_Suggested by_": so that we know who suggested a feature.
