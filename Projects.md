@@ -137,11 +137,25 @@ If you are a student, don't hesitate to pick one, or even suggest a new project,
    - Facebook Connect
 * The goal is to provide component to consume other popular API/service, but also component for your own service so that other can consume it.
 
-## Design a state machine to serve response
+## Security: provide popular authentication mechanisms
 * _Suggested by **Jocelyn**_
 * _Supervisor_:  
 * _Suitability_: TODO 
-* _Description_: In the world of Hypermedia API, the notion of state machine is pertinent, but this could also be used to provide a multi-page web form.
+* _Description_: Any web service, web site, API need a reliable authentication mechanism, the could be on the server side or the client side to build mashup service (integrate with other web API such as google, flicker, ...). So far, EWF provides only basic HTTP Authorization, and application would need more solutions such as :
+   - OAuth: consumer and provider
+   - OpenID
+   - Google Connect
+   - Facebook Connect
+* The goal is to provide component to consume other popular API/service, but also component for your own service so that other can consume it.
+
+## Provide a SSO (Single Sign On) implementation (server, and clients)
+* _Suggested by **Jocelyn**_
+* _Supervisor_:  
+* _Suitability_: TODO 
+* _Description_: Design and build a Single Sign On implementation for Eiffel. That should include the authentication server, and at least one Eiffel client component (it would be convenient to also provide php, js, ...). In the same spirit, having Eiffel client for popular SSO server would be appreciated as well.
+* _Reference_: 
+    - http://en.wikipedia.org/wiki/Single_sign-on
+    - http://en.wikipedia.org/wiki/List_of_single_sign-on_implementations
 
 ## library: Template engine
 * _Suggested by **Jocelyn**_
