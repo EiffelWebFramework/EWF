@@ -1,8 +1,8 @@
 note
 	description: "A JSON converter"
 	author: "Paul Cohen"
-	date: "$Date: $"
-	revision: "$Revision: $"
+	date: "$Date$"
+	revision: "$Revision$"
 	file: "$HeadURL: $"
 
 deferred class JSON_CONVERTER
@@ -19,7 +19,7 @@ feature -- Access
 
 feature -- Conversion
 
-    from_json (j: attached  like to_json): detachable like object
+    from_json (j: attached like to_json): detachable like object
             -- Convert from JSON value. 
 			-- Returns Void if unable to convert
         deferred
