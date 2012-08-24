@@ -1,8 +1,8 @@
 note
     description: "Core factory class for creating JSON objects and corresponding Eiffel objects."
     author: "Paul Cohen"
-    date: "$Date: $"
-    revision: "$Revision: $"
+    date: "$Date$"
+    revision: "$Revision$"
     file: "$HeadURL: $"
 
 class EJSON
@@ -69,7 +69,7 @@ feature -- Access
             elseif attached {STRING_8} an_object as s8 then
                 create {JSON_STRING} Result.make_json (s8)
             elseif attached {STRING_32} an_object as s32 then
-                create {JSON_STRING} Result.make_json (s32.as_string_8) -- FIXME: need correct convertion/encoding here ...
+                create {JSON_STRING} Result.make_json_from_string_32 (s32)
             end
 
             if Result = Void then
@@ -253,9 +253,9 @@ feature {NONE} -- Implementation (Exceptions)
             -- Exception message for failing to convert `a' to a JSON_VALUE.
         do
 			Result := exception_prefix + "Failed to convert Eiffel object to a JSON_VALUE"
-        	if an_object /= Void then
-	            Result := ": " + an_object.generator
-        	end
+			if an_object /= Void then
+				Result := ": " + an_object.generator
+			end
         end
 
 feature {NONE} -- Implementation (JSON parser)
