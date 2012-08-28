@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<system xmlns="http://www.eiffel.com/developers/xml/configuration-1-10-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eiffel.com/developers/xml/configuration-1-10-0 http://www.eiffel.com/developers/xml/configuration-1-10-0.xsd" name="ewf_ise_wizard" uuid="F881A707-745E-4C6D-90D1-F820EE3B1470">
-	<target name="ewf_ise_wizard">
+<system xmlns="http://www.eiffel.com/developers/xml/configuration-1-10-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eiffel.com/developers/xml/configuration-1-10-0 http://www.eiffel.com/developers/xml/configuration-1-10-0.xsd" name="wizard" uuid="F881A707-745E-4C6D-90D1-F820EE3B1470">
+	<target name="wizard">
 		<root class="EWF_WIZARD" feature="make"/>
 		<file_rule>
 			<exclude>/.git$</exclude>
@@ -14,5 +14,8 @@
 		<library name="uuid" location="$ISE_LIBRARY\library\uuid\uuid-safe.ecf"/>
 		<library name="vision2" location="$ISE_LIBRARY\library\vision2\vision2-safe.ecf"/>
 		<cluster name="src" location=".\src\" recursive="true"/>
+	</target>
+	<target name="custom_wizard" extends="wizard">
+		<root class="EWF_CUSTOM_WIZARD" feature="make"/>
 	</target>
 </system>

@@ -25,8 +25,6 @@ feature {NONE} -- Initialization
 			end
 		end
 
-feature -- Status
-
 feature -- Access
 
 	project_directory_name: detachable READABLE_STRING_8
@@ -65,7 +63,7 @@ feature -- Form
 				projet_name := "ewf"
 			end
 
-			if boolean_question ("Do you want to use router (Y|n) ? ", <<["y", True], ["Y", True]>>, "Y") then
+			if boolean_question ("Do you want to use WSF_ROUTER (Y|n) ? ", <<["y", True], ["Y", True]>>, "Y") then
 				use_router := True
 				router_type := "uri-template"
 			else
@@ -131,13 +129,13 @@ feature -- Form
 						d.recursive_create_dir
 					end
 					create tfn.make_from_string (dn.string)
-					tfn.set_file_name ("ewb_application")
+					tfn.set_file_name ("ewf_application")
 					tfn.add_extension ("e")
 					if attached router_type as rt then
 						check rt.same_string ("uri-template") end
-						copy_resource_template ("ewb_application-"+ rt +".e", tfn.string)
+						copy_resource_template ("ewf_application-"+ rt +".e", tfn.string)
 					else
-						copy_resource_template ("ewb_application.e", tfn.string)
+						copy_resource_template ("ewf_application.e", tfn.string)
 					end
 
 					create tfn.make_from_string (dn.string)
