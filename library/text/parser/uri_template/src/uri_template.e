@@ -24,7 +24,7 @@ create {URI_TEMPLATE}
 	make_from_uri_template
 
 convert
-	make ({READABLE_STRING_8})
+	make ({READABLE_STRING_8, STRING_8})
 
 feature {NONE} -- Initialization
 
