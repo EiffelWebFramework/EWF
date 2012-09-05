@@ -1,9 +1,8 @@
 note
     description: "A JSON converter for BOOK_COLLECTION"
     author: "Paul Cohen"
-    date: "$Date: 2010-03-08 20:46:59 -0300 (Mon, 08 Mar 2010) $"
-    revision: "$Revision: 82 $"
-    file: "$HeadURL: https://svn.origo.ethz.ch/ejson/branches/POC-converters-factory/test/json_book_collection_converter.e $"
+    date: "$Date$"
+    revision: "$Revision$"
 
 class JSON_BOOK_COLLECTION_CONVERTER
 

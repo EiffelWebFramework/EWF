@@ -2,10 +2,10 @@ setlocal
 
 rd /q/s tmp
 mkdir tmp
-ecb -config ewf_ise_wizard-safe.ecf -finalize -c_compile -project_path tmp
+ecb -config ewf_ise_wizard-safe.ecf -target wizard -finalize -c_compile -project_path tmp
 mkdir spec
 mkdir spec\%ISE_PLATFORM%
-move tmp\EIFGENs\ewf_ise_wizard\F_code\ewf_ise_wizard.exe spec\%ISE_PLATFORM%\wizard.exe
+move tmp\EIFGENs\wizard\F_code\wizard.exe spec\%ISE_PLATFORM%\wizard.exe
 rd /q/s tmp
 
 set WIZ_TARGET=%ISE_EIFFEL%\studio\wizards\new_projects\ewf
