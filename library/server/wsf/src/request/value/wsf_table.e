@@ -65,11 +65,6 @@ feature -- Access
 			Result := values.item (k)
 		end
 
-	is_empty: BOOLEAN
-		do
-			Result := count = 0
-		end
-
 	count: INTEGER
 		do
 			Result := values.count
@@ -100,6 +95,12 @@ feature -- Status report
 			if values.count = 1 and then attached first_value as fv then
 				Result := fv.is_string
 			end
+		end
+
+	is_empty: BOOLEAN
+			-- Is Current empty?
+		do
+			Result := values.is_empty
 		end
 
 feature -- Conversion

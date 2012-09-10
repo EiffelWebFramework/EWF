@@ -97,6 +97,12 @@ feature -- Status report
 			Result := values.count = 1
 		end
 
+	is_empty: BOOLEAN
+			-- Is Current empty?
+		do
+			Result := values.is_empty
+		end
+
 feature -- Conversion
 
 	as_string: WSF_STRING
