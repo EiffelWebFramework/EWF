@@ -36,19 +36,25 @@ feature -- Encoder
 
 	encoded_string (s: READABLE_STRING_32): STRING_8
 			-- HTML-encoded value of `s'.
+		do
+			Result := general_encoded_string (s)
+		end
+
+	general_encoded_string (s: READABLE_STRING_GENERAL): STRING_8
+			-- The HTML-encoded equivalent of the given string
+			-- HTML-encoded value of `s'.
 		local
 			i, n: INTEGER
-			uc: CHARACTER_32
-			l_code: INTEGER
+			l_code: NATURAL_32
 			c: CHARACTER_8
 		do
 			has_error := False
 			create Result.make (s.count + s.count // 10)
 			n := s.count
 			from i := 1 until i > n loop
-				uc := s.item (i)
-				if uc.is_character_8 then
-					c := uc.to_character_8
+				l_code := s.code (i)
+				if l_code.is_valid_character_8_code then
+					c := l_code.to_character_8
 
 					inspect c
 					when '%T', '%N', '%R' then
@@ -59,7 +65,6 @@ feature -- Encoder
 					when '<' then Result.append_string ("&lt;")
 					when '>' then Result.append_string ("&gt;")
 					else
-						l_code := c.code
 						if
 							l_code <= 31 or -- Hexa 1F
 							l_code = 127 -- Hexa 7F
@@ -77,7 +82,7 @@ feature -- Encoder
 					end
 				else
 					Result.append ("&#")
-					Result.append (uc.code.out)
+					Result.append (l_code.out)
 					Result.extend (';')
 				end
 				i := i + 1
