@@ -13,7 +13,7 @@ class
 	HELLO_APPLICATION
 
 inherit
-	WSF_URI_TEMPLATE_ROUTED_SERVICE
+	WSF_ROUTED_SERVICE
 
 	WSF_DEFAULT_SERVICE
 		redefine
@@ -27,12 +27,34 @@ feature {NONE} -- Initialization
 
 	setup_router
 		do
-			router.map_agent ("/hello", agent execute_hello)
+--			router.map (create {WSF_URI_MAPPING}.make ("/hello", create {WSF_AGENT_URI_HANDLER}.make (agent execute_hello)))			
+			map_agent_uri ("/hello", agent execute_hello, Void)
 
-			router.map_with_request_methods ("/users/{user}/message/{mesgid}", create {USER_MESSAGE_HANDLER}, router.methods_HEAD_GET_POST)
-			router.map_with_request_methods ("/users/{user}/message/", create {USER_MESSAGE_HANDLER}, router.methods_GET_POST)
+--			router.map_with_request_methods (create {WSF_URI_TEMPLATE_MAPPING}.make ("/users/{user}/message/{mesgid}", create {USER_MESSAGE_HANDLER}), router.methods_HEAD_GET_POST)
+			map_uri_template ("/users/{user}/message/{mesgid}", create {USER_MESSAGE_HANDLER}, router.methods_HEAD_GET_POST)
 
-			router.map_agent_response_with_request_methods ("/users/{user}/{?op}", agent response_user, router.methods_GET)
+--			router.map_with_request_methods (create {WSF_URI_TEMPLATE_MAPPING}.make ("/users/{user}/message/", create {USER_MESSAGE_HANDLER}), router.methods_GET_POST)
+			map_uri_template ("/users/{user}/message/", create {USER_MESSAGE_HANDLER}, router.methods_GET_POST)
+
+--			router.map_with_request_methods (create {WSF_URI_TEMPLATE_MAPPING}.make ("/users/{user}/{?op}", create {WSF_AGENT_URI_TEMPLATE_RESPONSE_HANDLER}.make (agent response_user)), router.methods_GET)
+			map_agent_uri_template_response ("/users/{user}/{?op}", agent response_user, router.methods_GET)
+		end
+
+feature -- Helper: mapping
+
+	map_agent_uri (a_uri: READABLE_STRING_8; a_action: like {WSF_AGENT_URI_HANDLER}.action; rqst_methods: detachable WSF_ROUTER_METHODS)
+		do
+			router.map_with_request_methods (create {WSF_URI_MAPPING}.make (a_uri, create {WSF_AGENT_URI_HANDLER}.make (a_action)), rqst_methods)
+		end
+
+	map_uri_template (a_tpl: READABLE_STRING_8; a_handler: WSF_URI_TEMPLATE_HANDLER; rqst_methods: detachable WSF_ROUTER_METHODS)
+		do
+			router.map_with_request_methods (create {WSF_URI_TEMPLATE_MAPPING}.make (a_tpl, a_handler), rqst_methods)
+		end
+
+	map_agent_uri_template_response (a_tpl: READABLE_STRING_8; a_action: like {WSF_AGENT_URI_TEMPLATE_RESPONSE_HANDLER}.action; rqst_methods: detachable WSF_ROUTER_METHODS)
+		do
+			router.map_with_request_methods (create {WSF_URI_TEMPLATE_MAPPING}.make (a_tpl, create {WSF_AGENT_URI_TEMPLATE_RESPONSE_HANDLER}.make (a_action)), rqst_methods)
 		end
 
 feature -- Execution
@@ -43,7 +65,7 @@ feature -- Execution
 			res.redirect_now_with_content (req.script_url ("/hello"), "Redirection to " + req.script_url ("/hello"), "text/html")
 		end
 
-	execute_hello (ctx: WSF_URI_TEMPLATE_HANDLER_CONTEXT; req: WSF_REQUEST; res: WSF_RESPONSE)
+	execute_hello (req: WSF_REQUEST; res: WSF_RESPONSE)
 			-- Computed response message.
 		local
 			mesg: WSF_HTML_PAGE_RESPONSE
@@ -107,8 +129,9 @@ feature -- Execution
 				then
 					if l_op.is_case_insensitive_equal ("quit") then
 						create redir.make (req.script_url ("/hello"), 3)
-						redir.set_title ("Bye " + u.url_encoded_value)
-						redir.set_body ("Bye " + u.url_encoded_value + ",<br/> see you soon.<p>You will be redirected to " +
+						create html.make
+						redir.set_title ("Bye " + html.html_encoded_string (l_username))
+						redir.set_body ("Bye " + html.html_encoded_string (l_username) + ",<br/> see you soon.<p>You will be redirected to " +
 										redir.url_location + " in " + redir.delay.out + " second(s) ...</p>"
 								)
 						Result := redir

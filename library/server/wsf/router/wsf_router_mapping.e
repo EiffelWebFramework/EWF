@@ -1,33 +1,33 @@
 note
-	description: "[
-						This class helps to build Routing handler based for WSF_URI_ROUTER
-				]"
+	description: "Summary description for {WSF_ROUTER_MAPPING}."
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
-class
-	WSF_URI_ROUTING_HANDLER_I [H -> WSF_HANDLER [C],
-							 C -> WSF_URI_HANDLER_CONTEXT create make end]
+deferred class
+	WSF_ROUTER_MAPPING
 
-inherit
-	WSF_ROUTING_HANDLER  [H, C]
+feature -- Access		
 
-create
-	make
-
-feature {NONE} -- Initialization
-
-	make (n: INTEGER)
-		do
-			create router.make (n)
+	handler: WSF_HANDLER
+		deferred
 		end
 
-feature {NONE} -- Routing
+feature -- Status
 
-	router: WSF_URI_ROUTER_I [H, C]
+	routed_handler (req: WSF_REQUEST; res: WSF_RESPONSE; a_router: WSF_ROUTER): detachable WSF_HANDLER
+		deferred
+		end
 
-;note
+feature -- Helper
+
+	source_uri (req: WSF_REQUEST): READABLE_STRING_32
+			-- URI to use to find handler.
+		do
+			Result := req.path_info
+		end
+
+note
 	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[

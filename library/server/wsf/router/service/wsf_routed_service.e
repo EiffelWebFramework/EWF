@@ -5,12 +5,11 @@ note
 	revision: "$Revision$"
 
 deferred class
-	WSF_ROUTED_SERVICE_I [H -> WSF_HANDLER [C], C -> WSF_HANDLER_CONTEXT]
+	WSF_ROUTED_SERVICE
 
-feature -- Setup
+feature -- Initialization
 
 	initialize_router
-			-- Initialize `router'
 		do
 			create_router
 			setup_router
@@ -18,7 +17,8 @@ feature -- Setup
 
 	create_router
 			-- Create `router'	
-		deferred
+		do
+			create router.make (10)
 		ensure
 			router_created: router /= Void
 		end
@@ -30,15 +30,12 @@ feature -- Setup
 		deferred
 		end
 
-	router: WSF_ROUTER [H, C]
-			-- Request router
-
 feature -- Execution
 
 	execute (req: WSF_REQUEST; res: WSF_RESPONSE)
 		do
-			if attached router.route (req) as r then
-				router.execute_route (r, req, res)
+			if attached router.dispatch_and_return_handler (req, res) as p then
+				-- executed
 			else
 				execute_default (req, res)
 			end
@@ -48,7 +45,11 @@ feature -- Execution
 		deferred
 		end
 
-note
+feature -- Access
+
+	router: WSF_ROUTER
+
+;note
 	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[

@@ -1,28 +1,35 @@
 note
-	description: "[
-						WSF_URI_ROUTING_HANDLER is a default descendant of WSF_URI_ROUTING_HANDLER_I
-						for WSF_URI_ROUTER
-				]"
+	description: "Summary description for {WSF_AGENT_HANDLER}."
+	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
 class
-	WSF_URI_ROUTING_HANDLER
+	WSF_AGENT_URI_HANDLER
 
 inherit
-	WSF_URI_ROUTING_HANDLER_I [WSF_HANDLER [WSF_URI_HANDLER_CONTEXT], WSF_URI_HANDLER_CONTEXT]
-		redefine
-			router
-		end
+	WSF_URI_HANDLER
 
 create
 	make
 
-feature {NONE} -- Routing
+feature {NONE} -- Initialization
 
-	router: WSF_URI_ROUTER
+	make (a_action: like action)
+		do
+			action := a_action
+		end
 
-;note
+	action: PROCEDURE [ANY, TUPLE [request: WSF_REQUEST; response: WSF_RESPONSE]]
+
+feature -- Execution
+
+	execute (req: WSF_REQUEST; res: WSF_RESPONSE)
+		do
+			action.call ([req, res])
+		end
+
+note
 	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[

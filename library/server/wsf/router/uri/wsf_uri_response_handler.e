@@ -1,25 +1,18 @@
 note
-	description: "[
-				Request handler object which is called by a WSF_ROUTER
-				A response handler should implement the method
-				
-					response (ctx: C; req: WSF_REQUEST): WSF_RESPONSE_MESSAGE
-
-					
-				The class is generic, this way one can use a custom WSF_HANDLER_CONTEXT if needed
-		]"
+	description: "Summary description for {WSF_URI_RESPONSE_HANDLER}."
+	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
 deferred class
-	WSF_RESPONSE_HANDLER [C -> WSF_HANDLER_CONTEXT]
+	WSF_URI_RESPONSE_HANDLER
 
 inherit
-	WSF_HANDLER [C]
+	WSF_URI_HANDLER
 
 feature -- Response
 
-	response (ctx: C; req: WSF_REQUEST): WSF_RESPONSE_MESSAGE
+	response (req: WSF_REQUEST): WSF_RESPONSE_MESSAGE
 		require
 			is_valid_context: is_valid_context (req)
 		deferred
@@ -29,10 +22,10 @@ feature -- Response
 
 feature -- Execution
 
-	execute (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
+	execute (req: WSF_REQUEST; res: WSF_RESPONSE)
 			-- Execute request handler	
 		do
-			res.send (response (ctx, req))
+			res.send (response (req))
 		end
 
 note

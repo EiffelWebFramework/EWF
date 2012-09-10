@@ -1,13 +1,14 @@
 note
-	description: "Summary description for WSF_AGENT_HANDLER."
+	description: "Summary description for {WSF_AGENT_URI_TEMPLATE_RESPONSE_HANDLER}."
+	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
 class
-	WSF_AGENT_HANDLER [C -> WSF_HANDLER_CONTEXT]
+	WSF_AGENT_URI_TEMPLATE_RESPONSE_HANDLER
 
 inherit
-	WSF_HANDLER [C]
+	WSF_URI_TEMPLATE_RESPONSE_HANDLER
 
 create
 	make
@@ -21,13 +22,13 @@ feature -- Initialization
 
 feature -- Access
 
-	action: PROCEDURE [ANY, TUPLE [ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE]]
+	action: FUNCTION [ANY, TUPLE [ctx: WSF_URI_TEMPLATE_HANDLER_CONTEXT; req: WSF_REQUEST], WSF_RESPONSE_MESSAGE]
 
 feature -- Execution
 
-	execute (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
+	response (ctx: WSF_URI_TEMPLATE_HANDLER_CONTEXT; req: WSF_REQUEST): WSF_RESPONSE_MESSAGE
 		do
-			action.call ([ctx, req, res])
+			Result := action.item ([ctx, req])
 		end
 
 note
