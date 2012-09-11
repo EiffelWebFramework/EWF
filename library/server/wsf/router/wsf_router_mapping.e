@@ -10,19 +10,21 @@ deferred class
 feature -- Access		
 
 	handler: WSF_HANDLER
+			-- Handler associated with Current mapping.
 		deferred
 		end
 
 feature -- Status
 
 	routed_handler (req: WSF_REQUEST; res: WSF_RESPONSE; a_router: WSF_ROUTER): detachable WSF_HANDLER
+			-- Return the handler if Current matches the request `req'.
 		deferred
 		end
 
 feature -- Helper
 
-	source_uri (req: WSF_REQUEST): READABLE_STRING_32
-			-- URI to use to find handler.
+	path_from_request (req: WSF_REQUEST): READABLE_STRING_32
+			-- Path used by Current to check that Current mapping matches request `req'.
 		do
 			Result := req.path_info
 		end

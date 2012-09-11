@@ -17,23 +17,25 @@ create
 feature {NONE} -- Initialization
 
 	make (n: INTEGER)
+			-- Create the router with a capacity of `n' mappings
 		do
 			create mappings.make (n)
-			initialize
+			initialize (n)
 		end
 
 	make_with_base_url (n: INTEGER; a_base_url: like base_url)
 			-- Make router allocated for at least `n' maps,
-			-- and use `a_base_url' as base_url
+			-- and use `a_base_url' as `base_url'
+			--| This avoids prefixing all the resource string.
 		do
 			make (n)
 			set_base_url (a_base_url)
 		end
 
-	initialize
+	initialize (n: INTEGER)
 			-- Initialize router
 		do
-			create mappings.make (10)
+			create mappings.make (n)
 			create pre_execution_actions
 		end
 
@@ -59,9 +61,11 @@ feature -- Access
 
 	is_dispatched: BOOLEAN
 			-- `dispatch' set `is_dispatched' to True
-			-- if handler was found and executed
+			-- if mapping was found, and associated handler executed
 
 	dispatch (req: WSF_REQUEST; res: WSF_RESPONSE)
+			-- Dispatch request `req' among  the `mappings'
+			-- Set `is_dispatched' if the request were dispatched
 		do
 			if attached dispatch_and_return_handler (req, res) then
 				check is_dispatched: is_dispatched end
@@ -69,6 +73,8 @@ feature -- Access
 		end
 
 	dispatch_and_return_handler (req: WSF_REQUEST; res: WSF_RESPONSE): detachable WSF_HANDLER
+			-- Dispatch request `req' among the `mappings'
+			-- And return the associated handler if mapping found and handler executed.
 		local
 			l_req_method: READABLE_STRING_8
 			m: WSF_ROUTER_MAPPING
@@ -96,11 +102,14 @@ feature -- Access
 feature -- Hook
 
 	execute_before (a_mapping: WSF_ROUTER_MAPPING)
+			-- Execute before the handler associated with the matching mapping is executed
 		do
 			pre_execution_actions.call ([a_mapping])
 		end
 
 	execute_after (a_mapping: WSF_ROUTER_MAPPING)
+			-- Execute after the handler associated with the matching mapping is executed	
+			--| Could be redefined to add specific hook.
 		do
 		end
 
@@ -111,6 +120,7 @@ feature -- Hook
 feature -- Base url
 
 	count: INTEGER
+			-- Number of mappings registered
 		do
 			Result := mappings.count
 		end
@@ -260,4 +270,14 @@ feature {NONE} -- Access: Implementation
 			end
 		end
 
+note
+	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
+	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
+	source: "[
+			Eiffel Software
+			5949 Hollister Ave., Goleta, CA 93117 USA
+			Telephone 805-685-1006, Fax 805-685-6869
+			Website http://www.eiffel.com
+			Customer support http://support.eiffel.com
+		]"
 end

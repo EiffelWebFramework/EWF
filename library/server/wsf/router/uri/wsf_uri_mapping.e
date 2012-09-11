@@ -43,7 +43,7 @@ feature -- Status
 			p: READABLE_STRING_8
 			l_uri: like uri
 		do
-			p := source_uri (req)
+			p := path_from_request (req)
 			l_uri := based_uri (uri, a_router)
 			if l_uri.ends_with ("/") then
 				if not p.ends_with ("/") then

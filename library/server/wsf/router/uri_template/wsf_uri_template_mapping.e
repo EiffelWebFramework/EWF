@@ -48,14 +48,18 @@ feature -- Status
 			p: READABLE_STRING_32
 			ctx: detachable WSF_URI_TEMPLATE_HANDLER_CONTEXT
 		do
-			p := source_uri (req)
+			p := path_from_request (req)
 			tpl := based_uri_template (template, a_router)
 			if attached tpl.match (p) as tpl_res then
 				Result := handler
-				create ctx.make (req, tpl, tpl_res, source_uri (req))
+				create ctx.make (req, tpl, tpl_res, path_from_request (req))
 				a_router.execute_before (Current)
+				--| Applied the context to the request
+				--| in practice, this will fill the {WSF_REQUEST}.path_parameters
 				ctx.apply (req)
 				handler.execute (ctx, req, res)
+				--| Revert {WSF_REQUEST}.path_parameters_source to former value
+				--| In case the request object passed by other handler that alters its values.
 				ctx.revert (req)
 				a_router.execute_after (Current)
 			end
@@ -78,4 +82,14 @@ feature {NONE} -- Implementation
 		end
 
 
+note
+	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
+	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
+	source: "[
+			Eiffel Software
+			5949 Hollister Ave., Goleta, CA 93117 USA
+			Telephone 805-685-1006, Fax 805-685-6869
+			Website http://www.eiffel.com
+			Customer support http://support.eiffel.com
+		]"
 end
