@@ -17,6 +17,7 @@ inherit
 		redefine
 			default_create,
 			name,
+			general_encoded_string,
 			encoded_string, partial_encoded_string,
 			decoded_string
 		end
@@ -49,7 +50,17 @@ feature -- Encoder
 			Result := Precursor (Result)
 		end
 
-	partial_encoded_string (s: READABLE_STRING_32; a_ignore: ARRAY [CHARACTER]): READABLE_STRING_8
+	general_encoded_string (s: READABLE_STRING_GENERAL): STRING_8
+		do
+			if attached {READABLE_STRING_32} s as s32 then
+				Result := utf32_to_utf8 (s32)
+			else
+				Result := s.as_string_8
+			end
+			Result := Precursor (Result)
+		end
+
+	partial_encoded_string (s: READABLE_STRING_GENERAL; a_ignore: ARRAY [CHARACTER]): STRING_8
 			-- URL-encoded value of `s'.
 		do
 			Result := Precursor (s, a_ignore)
