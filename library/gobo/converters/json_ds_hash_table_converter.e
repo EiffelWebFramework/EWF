@@ -64,11 +64,11 @@ feature -- Conversion
             until
                 c.after
             loop
-            	if attached {JSON_STRING} json.value (c.key) as l_key then
-            		js := l_key
-            	else
-                	create js.make_json (c.key.out)
-            	end
+                if attached {JSON_STRING} json.value (c.key) as l_key then
+                    js := l_key
+                else
+                    create js.make_json (c.key.out)
+                end
                 jv := json.value (c.item)
                 if jv /= Void then
                     Result.put (jv, js)
