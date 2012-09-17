@@ -25,6 +25,7 @@ Long url: ?
  * Focus on new design for the router system
  * Demo for a CMS built with EWF (inspired by Drupal)
 * Future tasks
+ * [graphviz-server](https://github.com/EiffelWebFramework/graphviz-server)
 * Users feedback, suggestions and requests
 * Next meeting
 
