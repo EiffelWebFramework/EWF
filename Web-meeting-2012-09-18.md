@@ -9,13 +9,14 @@
 ## Information
 
 ### When ?
-Tuesday 18th of september, 19:00 - 20:00 UTC/GMT time (see http://www.doodle.com/8v2sekiyebp4dpyh)
+Tuesday 18th of september, 19:00 - 20:00 UTC/GMT time (see 3rd time in http://www.doodle.com/8v2sekiyebp4dpyh)
 
 ### Where ?
 Web meeting using webex
 
-Short url: visit this page before the meeting
-Long url: ?
+Short url: http://goo.gl/wBz11
+
+Long url: https://eiffel.webex.com/eiffel/j.php?ED=211265702&UID=0&PW=NZWNiMjBiZWIz&RT=MiMyMA%3D%3D 
 
 ## Agenda
 
