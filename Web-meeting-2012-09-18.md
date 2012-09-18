@@ -4,7 +4,6 @@
 * Berend de Boer
 * Olivier Ligot
 * Javier Velilla
-* Emmanuel Stapf
 
 ## Information
 
@@ -37,7 +36,8 @@ Web meeting using webex
 * Future tasks
  * [graphviz-server](https://github.com/EiffelWebFramework/graphviz-server)
  * Improving Eiffel Web Nino: to support persistent connection, and better concurrency design.
- * Provide friendly components to generate HTML (DHTML, HTML5, ...), (coders do not want to learn HTML and CSS)
+ * Provide friendly components to generate HTML (DHTML, HTML5, ...), (coders do not want to learn HTML and 
+CSS)
 * Users feedback, suggestions and requests
  * ...
 * Next meeting
@@ -45,3 +45,18 @@ Web meeting using webex
 ## Materials
 
 ## Minutes
+* swagger: see if we could generate EWF code from a swagger specification
+* Jocelyn will publish its attempt to build a CMS with EWF
+ * CMS demo: ... as announced ... some parts look very like drupal. 
+* Jocelyn will publish a few in-progress draft libraries
+* Javier will focus on graphviz-server and hypermedia API
+* Berend may send a short note on how he uses EWF (and generate code from description)
+* Jocelyn will try to find time to complete the thread and SCOOP implementation of Eiffel Web Nino
+* Olivier will have a closer look at swagger
+* EWF will adopt the new WSF_ROUTER design as no-one expressed opposition. Olivier said converting his code is not a big task. Same for other users.
+* The current state of EWF/WSF seems to be ok for users, we can focus on libraries on top of EWF/WSF
+* We might need an HTML parser, if we want to support HTML as an hypermedia API  (maybe we can require XHTML for now)
+* No high priority to improve Eiffel Web Nino , for now it is mainly used during development.
+
+* It seems RESTful + Hypermedia API is the top priority for EWF.
+
