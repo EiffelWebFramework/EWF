@@ -4,7 +4,7 @@
 * Berend de Boer
 * Olivier Ligot
 * Javier Velilla
-* Alexander Kogtenkov
+* Emmanuel Stapf
 
 ## Information
 
