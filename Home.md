@@ -6,7 +6,7 @@ The official documentation/wiki is located at https://github.com/EiffelWebFramew
 ## Organization ##
 - Mailing list: please visit and subscribe to the mailing list page [[http://groups.google.com/group/eiffel-web-framework]]  ![logo](http://groups.google.com/intl/en/images/logos/groups_logo_sm.gif)
 - Most of the topics are discussed on the mailing list (google group). 
-- For time to time we have [web meetings](meetings), and less frequently [physical meetings](meetings) that occurs usually during other Eiffel related events.
+- For time to time we have [[web meetings|meetings]], and less frequently [[physical meetings|meetings]] that occurs usually during other Eiffel related events.
 
 ## Documentation ##
 - to redo
