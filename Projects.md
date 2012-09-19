@@ -226,6 +226,13 @@ If you are a student, don't hesitate to pick one, or even suggest a new project,
 * This should reuse and improve the "http_client" provided by EWF. Eventually also write the EiffelNet implementation to be independant from cURL
 * **Requirement**: OAuth client eiffel component
 
+## Build a ESI preprocessor, or proxy
+* _Suggested by **Jocelyn**_
+* _Supervisor_:  
+* _Suitability_: TODO 
+* _Description_: TODO 
+* See: http://en.wikipedia.org/wiki/Edge_Side_Includes
+
 ----
 # Feel free to add new idea below this line
 ----
