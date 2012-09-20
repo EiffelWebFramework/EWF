@@ -35,18 +35,24 @@ feature -- Encoder
 
 	encoded_string (s: READABLE_STRING_32): STRING_8
 			-- URL-encoded value of `s'.
+		do
+			Result := general_encoded_string (s)
+		end
+
+	general_encoded_string (s: READABLE_STRING_GENERAL): STRING_8
+			-- URL-encoded value of `s'.
 		local
 			i, n: INTEGER
-			uc: CHARACTER_32
 			c: CHARACTER_8
+			l_code: NATURAL_32
 		do
 			has_error := False
 			create Result.make (s.count + s.count // 10)
 			n := s.count
 			from i := 1 until i > n loop
-				uc := s.item (i)
-				if uc.is_character_8 then
-					c := uc.to_character_8
+				l_code := s.code (i)
+				if l_code.is_valid_character_8_code then
+					c := l_code.to_character_8
 					inspect c
 					when
 						'A' .. 'Z',
@@ -55,20 +61,20 @@ feature -- Encoder
 					then
 						Result.extend (c)
 					else
-						Result.append (url_encoded_char (uc))
+						Result.append (url_encoded_char (l_code))
 					end
 				else
-					Result.append (url_encoded_char (uc))
+					Result.append (url_encoded_char (l_code))
 				end
 				i := i + 1
 			end
 		end
 
-	partial_encoded_string (s: READABLE_STRING_32; a_ignore: ARRAY [CHARACTER]): READABLE_STRING_8
+	partial_encoded_string (s: READABLE_STRING_GENERAL; a_ignore: ARRAY [CHARACTER]): STRING_8
 			-- URL-encoded value of `s'.
 		local
 			i, n: INTEGER
-			uc: CHARACTER_32
+			l_code: NATURAL_32
 			c: CHARACTER_8
 			s8: STRING_8
 		do
@@ -77,9 +83,9 @@ feature -- Encoder
 			Result := s8
 			n := s.count
 			from i := 1 until i > n loop
-				uc := s.item (i)
-				if uc.is_character_8 then
-					c := uc.to_character_8
+				l_code := s.code (i)
+				if l_code.is_valid_character_8_code then
+					c := l_code.to_character_8
 					inspect c
 					when
 						'A' .. 'Z',
@@ -91,14 +97,14 @@ feature -- Encoder
 						if a_ignore.has (c) then
 							s8.extend (c)
 						else
-							s8.append (url_encoded_char (uc))
+							s8.append (url_encoded_char (l_code))
 						end
 					end
 				else
 					if a_ignore.has (c) then
 						s8.extend (c)
 					else
-						s8.append (url_encoded_char (uc))
+						s8.append (url_encoded_char (l_code))
 					end
 				end
 				i := i + 1
@@ -107,12 +113,12 @@ feature -- Encoder
 
 feature {NONE} -- encoder character
 
-	url_encoded_char (uc: CHARACTER_32): STRING_8
+	url_encoded_char (a_code: NATURAL_32): STRING_8
 		do
 			create Result.make (3)
-			if uc.is_character_8 then
+			if a_code.is_valid_character_8_code then
 				Result.extend ('%%')
-				Result.append (uc.code.to_hex_string)
+				Result.append (a_code.to_hex_string)
 				from
 				until
 					Result.count < 2 or else Result[2] /= '0'

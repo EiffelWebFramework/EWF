@@ -390,23 +390,33 @@ feature -- Date
 			put_utc_date (create {DATE_TIME}.make_now_utc)
 		end
 
-	put_utc_date (dt: DATE_TIME)
+	put_utc_date (a_utc_date: DATE_TIME)
 			-- Put UTC date time `dt' with "Date" header
 		do
-			put_date (date_to_rfc1123_http_date_format (dt))
+			put_date (date_to_rfc1123_http_date_format (a_utc_date))
 		end
 
-	put_last_modified (dt: DATE_TIME)
+	put_last_modified (a_utc_date: DATE_TIME)
 			-- Put UTC date time `dt' with "Date" header
 		do
-			put_header_key_value ({HTTP_HEADER_NAMES}.header_last_modified, date_to_rfc1123_http_date_format (dt))
+			put_header_key_value ({HTTP_HEADER_NAMES}.header_last_modified, date_to_rfc1123_http_date_format (a_utc_date))
 		end
 
-feature -- Others		
+feature -- Others	
 
-	put_expires (n: INTEGER)
+	put_expires (sec: INTEGER)
 		do
-			put_header_key_value ("Expires", n.out)
+			put_expires_string (sec.out)
+		end
+
+	put_expires_string (s: STRING)
+		do
+			put_header_key_value ("Expires", s)
+		end
+
+	put_expires_date (a_utc_date: DATE_TIME)
+		do
+			put_header_key_value ("Expires", date_to_rfc1123_http_date_format (a_utc_date))
 		end
 
 	put_cache_control (s: READABLE_STRING_8)

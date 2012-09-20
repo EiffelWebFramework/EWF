@@ -44,7 +44,13 @@ feature -- Element change
 feature -- Status report
 
 	is_string: BOOLEAN = False
-			-- Is Current as a WSF_STRING representation?			
+			-- Is Current as a WSF_STRING representation?	
+
+	is_empty: BOOLEAN
+			-- Is Current empty?
+		do
+			Result := size = 0
+		end
 
 feature -- Conversion
 

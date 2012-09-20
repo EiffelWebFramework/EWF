@@ -177,6 +177,18 @@ feature -- Helper
 			Result := request_method.is_case_insensitive_equal (m.as_string_8)
 		end
 
+	is_post_request_method: BOOLEAN
+			-- Is Current a POST request method?
+		do
+			Result := request_method.is_case_insensitive_equal ({HTTP_REQUEST_METHODS}.method_post)
+		end
+
+	is_get_request_method: BOOLEAN
+			-- Is Current a GET request method?
+		do
+			Result := request_method.is_case_insensitive_equal ({HTTP_REQUEST_METHODS}.method_get)
+		end
+
 feature -- Eiffel WGI access
 
 	wgi_version: READABLE_STRING_8
@@ -257,6 +269,36 @@ feature -- Access: global variable
 			else
 				check is_string_value: False end
 			end
+		end
+
+	string_array_item (a_name: READABLE_STRING_GENERAL): detachable ARRAY [READABLE_STRING_32]
+			-- Array of string values for path parameter `a_name' if relevant.
+		do
+			Result := string_array_item_for (a_name, agent item)
+		end
+
+	string_array_item_for (a_name: READABLE_STRING_GENERAL; a_item_fct: FUNCTION [ANY, TUPLE [READABLE_STRING_GENERAL], detachable WSF_VALUE]): detachable ARRAY [READABLE_STRING_32]
+			-- Array of string values for query parameter `a_name' if relevant.
+		local
+			i: INTEGER
+			n: INTEGER
+		do
+			from
+				i := 1
+				n := 1
+				create Result.make_filled ("", 1, 5)
+			until
+				i = 0
+			loop
+				if attached {WSF_STRING} a_item_fct.item ([a_name + "[" + i.out + "]"]) as v then
+					Result.force (v.value, n)
+					n := n + 1
+					i := i + 1
+				else
+					i := 0 -- Exit
+				end
+			end
+			Result.keep_head (n - 1)
 		end
 
 feature -- Execution variables
@@ -1231,6 +1273,7 @@ feature {NONE} -- Implementation: smart parameter identification
 						k.append_integer (tb.count + 1)
 					end
 					v := tb
+					create n.make_from_string (n)
 					n.append_character ('[')
 					n.append (k)
 					n.append_character (']')
@@ -1280,6 +1323,9 @@ feature {NONE} -- Implementation: smart parameter identification
 					--| Already done in previous part
 				elseif attached {WSF_MULTIPLE_STRING} l_existing_value as l_multi then
 					l_multi.add_value (v)
+				elseif attached {WSF_TABLE} l_existing_value as l_table then
+					-- Keep previous values (most likely we have table[1]=foo, table[2]=bar ..and table=/foo/bar
+					-- Anyway for this case, we keep the previous version, and ignore this "conflict"
 				else
 					a_table.force (create {WSF_MULTIPLE_STRING}.make_with_array (<<l_existing_value, v>>), v.name)
 					check replaced: a_table.found and then a_table.found_item ~ l_existing_value end

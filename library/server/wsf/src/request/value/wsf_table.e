@@ -97,6 +97,12 @@ feature -- Status report
 			end
 		end
 
+	is_empty: BOOLEAN
+			-- Is Current empty?
+		do
+			Result := values.is_empty
+		end
+
 feature -- Conversion
 
 	as_string: WSF_STRING
@@ -105,6 +111,59 @@ feature -- Conversion
 				Result := fv.as_string
 			else
 				Result := Precursor
+			end
+		end
+
+	as_array_of_string: detachable ARRAY [READABLE_STRING_32]
+			-- Return an array of STRING if possible., otherwise Void
+		local
+			i,n: INTEGER
+			nb: INTEGER
+		do
+			from
+				i := 1
+				n := count
+				create Result.make_filled ("", 1, n)
+			until
+				i > n or Result = Void
+			loop
+				if attached {WSF_STRING} value (i.out) as s then
+					Result.put (s.value, i)
+					nb := nb + 1
+				else
+					Result := Void
+				end
+				i := i + 1
+			end
+			if Result /= Void and then nb /= n then
+				Result := Void
+			end
+		ensure
+			is_array_of_string implies Result /= Void and then Result.count = count and then Result.lower = 1
+		end
+
+	is_array_of_string: BOOLEAN
+			-- Is Current representable as an array of string?
+		local
+			i,n, nb: INTEGER
+		do
+			from
+				i := 1
+				n := count
+				nb := 0
+				Result := True
+			until
+				i > n or not Result
+			loop
+				if attached {WSF_STRING} value (i.out) then
+					nb := nb + 1
+				else
+					Result := False
+				end
+				i := i + 1
+			end
+			if nb /= n then
+				Result := False
 			end
 		end
 

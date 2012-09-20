@@ -1,9 +1,8 @@
 note
     description: "A JSON converter for AUTHOR"
     author: "Paul Cohen"
-    date: "$Date: 2010-03-08 20:46:59 -0300 (Mon, 08 Mar 2010) $"
-    revision: "$Revision: 82 $"
-    file: "$HeadURL: https://svn.origo.ethz.ch/ejson/branches/POC-converters-factory/test/json_author_converter.e $"
+    date: "$Date$"
+    revision: "$Revision$"
 
 class JSON_AUTHOR_CONVERTER
 

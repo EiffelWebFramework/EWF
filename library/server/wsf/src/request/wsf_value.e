@@ -35,6 +35,12 @@ feature -- Status report
 		deferred
 		end
 
+	is_empty: BOOLEAN
+			-- Is Current empty?
+			--| i.e empty string, empty table, ...
+		deferred
+		end
+
 feature -- Query
 
 	as_string: WSF_STRING

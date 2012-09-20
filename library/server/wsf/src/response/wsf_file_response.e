@@ -42,18 +42,23 @@ feature {NONE} -- Initialization
 		local
 			h: like header
 		do
+			get_file_exists
 			create h.make
 			header := h
-
 			h.put_content_type (content_type)
-			if attached file_last_modified as dt then
-				h.put_last_modified (dt)
-			end
-			get_file_size
-			if file_size = 0 then
-				set_status_code ({HTTP_STATUS_CODE}.not_found)
+
+			if file_exists then
+				if attached file_last_modified as dt then
+					h.put_last_modified (dt)
+				end
+				get_file_size
+				if file_size = 0 then
+					set_status_code ({HTTP_STATUS_CODE}.not_found)
+				else
+					set_status_code ({HTTP_STATUS_CODE}.ok)
+				end
 			else
-				set_status_code ({HTTP_STATUS_CODE}.ok)
+				set_status_code ({HTTP_STATUS_CODE}.not_found)
 			end
 			update_content_length
 		end
@@ -62,12 +67,16 @@ feature {NONE} -- Initialization
 		local
 			n: INTEGER
 		do
-			n := file_size
-			if attached head as h then
-				n := n + h.count
-			end
-			if attached bottom as b then
-				n := n + b.count
+			if file_exists then
+				n := file_size
+				if attached head as h then
+					n := n + h.count
+				end
+				if attached bottom as b then
+					n := n + b.count
+				end
+			else
+				n := 0
 			end
 			content_length := n
 			header.put_content_length (n)
@@ -75,9 +84,14 @@ feature {NONE} -- Initialization
 
 feature -- Element change
 
-	set_expires (t: INTEGER)
+	set_expires_in_seconds (sec: INTEGER)
 		do
-			header.put_expires (t)
+			set_expires (sec.out)
+		end
+
+	set_expires (s: STRING)
+		do
+			header.put_expires_string (s)
 		end
 
 	set_no_cache
@@ -103,6 +117,9 @@ feature -- Access
 			-- Content-Type of the response
 
 	file_name: READABLE_STRING_8
+
+	file_exists: BOOLEAN
+			-- File exists?
 
 	file_size: INTEGER
 			-- Size of file named `file_name'
@@ -157,42 +174,54 @@ feature {WSF_RESPONSE} -- Output
 			s: detachable READABLE_STRING_8
 		do
 			res.set_status_code (status_code)
-			res.put_header_text (header.string)
-			s := head
-			if s /= Void then
-				res.put_string (s)
-			end
-			if not answer_head_request_method then
-				send_file_content_to (file_name, res)
-			end
-			s := bottom
-			if s /= Void then
-				res.put_string (s)
+			if status_code = {HTTP_STATUS_CODE}.not_found then
+			else
+				res.put_header_text (header.string)
+				s := head
+				if s /= Void then
+					res.put_string (s)
+				end
+				if not answer_head_request_method then
+					send_file_content_to (file_name, res)
+				end
+				s := bottom
+				if s /= Void then
+					res.put_string (s)
+				end
 			end
 		end
 
 feature {NONE} -- Implementation: file system helper
 
-	get_file_size
-			-- Get `file_size' from file named `file_name'
+	get_file_exists
+			-- Get `file_exists'
 		local
 			f: RAW_FILE
 		do
 			create f.make (file_name)
-			if f.exists then
-				file_size := f.count
-			end
+			file_exists := f.exists
+		end
+
+	get_file_size
+			-- Get `file_size' from file named `file_name'
+		require
+			file_exists: file_exists
+		local
+			f: RAW_FILE
+		do
+			create f.make (file_name)
+			file_size := f.count
 		end
 
 	file_last_modified: detachable DATE_TIME
 			-- Get `file_size' from file named `file_name'
+		require
+			file_exists: file_exists
 		local
 			f: RAW_FILE
 		do
 			create f.make (file_name)
-			if f.exists then
-				create Result.make_from_epoch (f.change_date)
-			end
+			create Result.make_from_epoch (f.change_date)
 		end
 
 	file_extension (fn: STRING): STRING
@@ -231,11 +260,12 @@ feature {NONE} -- Implementation: output
 		require
 			string_not_empty: not fn.is_empty
 			is_readable: (create {RAW_FILE}.make (fn)).is_readable
+			file_exists: file_exists
 		local
 			f: RAW_FILE
 		do
 			create f.make (fn)
-			check f.exists and then f.is_readable end
+			check f.is_readable end
 
 			f.open_read
 			from

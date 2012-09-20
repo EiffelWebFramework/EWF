@@ -45,6 +45,11 @@ feature -- Status report
 	is_string: BOOLEAN = False
 			-- Is Current as a WSF_STRING representation?
 
+	is_empty: BOOLEAN
+		do
+			Result := value = Void
+		end
+
 feature -- Query
 
 	string_representation: STRING_32
