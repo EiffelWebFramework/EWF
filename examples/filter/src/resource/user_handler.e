@@ -5,12 +5,14 @@ note
 	revision: "$Revision$"
 
 class
-	USER_HANDLER [C -> WSF_HANDLER_CONTEXT]
+	USER_HANDLER
 
 inherit
-	WSF_FILTER_HANDLER [C]
+	WSF_FILTER_HANDLER [WSF_URI_TEMPLATE_HANDLER]
 
-	WSF_RESOURCE_HANDLER_HELPER [C]
+	WSF_URI_TEMPLATE_HANDLER
+
+	WSF_RESOURCE_HANDLER_HELPER
 		redefine
 			do_get
 		end
@@ -21,13 +23,13 @@ inherit
 
 feature -- Basic operations
 
-	execute (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
+	execute (req: WSF_REQUEST; res: WSF_RESPONSE)
 			-- Execute request handler	
 		do
-			execute_methods (ctx, req, res)
+			execute_methods (req, res)
 		end
 
-	do_get (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
+	do_get (req: WSF_REQUEST; res: WSF_RESPONSE)
 			-- Using GET to retrieve resource information.
 			-- If the GET request is SUCCESS, we response with
 			-- 200 OK, and a representation of the user
@@ -39,16 +41,16 @@ feature -- Basic operations
 			if attached req.orig_path_info as orig_path then
 				id := get_user_id_from_path (orig_path)
 				if attached retrieve_user (id) as l_user then
-					compute_response_get (ctx, req, res, l_user)
+					compute_response_get (req, res, l_user)
 				else
-					handle_resource_not_found_response ("The following resource " + orig_path + " is not found ", ctx, req, res)
+					handle_resource_not_found_response ("The following resource " + orig_path + " is not found ", req, res)
 				end
 			end
 		end
 
 feature {NONE} -- Implementation
 
-	compute_response_get (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE; l_user : USER)
+	compute_response_get (req: WSF_REQUEST; res: WSF_RESPONSE; l_user : USER)
 		local
 			h: HTTP_HEADER
 			l_msg : STRING

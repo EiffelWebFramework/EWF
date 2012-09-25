@@ -5,10 +5,10 @@ note
 	revision: "$Revision$"
 
 deferred class
-	REST_REQUEST_HANDLER [C -> REST_REQUEST_HANDLER_CONTEXT]
+	REST_REQUEST_HANDLER
 
 inherit
-	WSF_HANDLER [C]
+	WSF_URI_TEMPLATE_HANDLER
 
 	WSF_HANDLER_HELPER
 
@@ -34,7 +34,7 @@ feature -- Element change
 
 feature -- Execution
 
-	execute (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
+	execute (ctx: REST_REQUEST_URI_TEMPLATE_HANDLER_CONTEXT; req: WSF_REQUEST; res: WSF_RESPONSE)
 			-- Execute request handler	
 		do
 			if request_method_name_supported (req.request_method) then
@@ -52,26 +52,26 @@ feature -- Execution
 			execute_rescue (ctx, req, res)
 		end
 
-	execute_application (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
+	execute_application (ctx: REST_REQUEST_URI_TEMPLATE_HANDLER_CONTEXT; req: WSF_REQUEST; res: WSF_RESPONSE)
 		deferred
 		end
 
-	pre_execute (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
+	pre_execute (ctx: REST_REQUEST_URI_TEMPLATE_HANDLER_CONTEXT; req: WSF_REQUEST; res: WSF_RESPONSE)
 		do
 		end
 
-	post_execute (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
+	post_execute (ctx: REST_REQUEST_URI_TEMPLATE_HANDLER_CONTEXT; req: WSF_REQUEST; res: WSF_RESPONSE)
 		do
 		end
 
-	execute_rescue (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
+	execute_rescue (ctx: REST_REQUEST_URI_TEMPLATE_HANDLER_CONTEXT; req: WSF_REQUEST; res: WSF_RESPONSE)
 		do
 			post_execute (ctx, req, res)
 		rescue
 			--| Just in case, the rescue is raising other exceptions ...
 		end
 
-	execute_unauthorized (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
+	execute_unauthorized (ctx: REST_REQUEST_URI_TEMPLATE_HANDLER_CONTEXT; req: WSF_REQUEST; res: WSF_RESPONSE)
 		do
 			res.put_header ({HTTP_STATUS_CODE}.unauthorized, Void)
 			res.put_string ("Unauthorized")
@@ -79,7 +79,7 @@ feature -- Execution
 
 feature -- Auth
 
-	authenticated (ctx: C): BOOLEAN
+	authenticated (ctx: REST_REQUEST_URI_TEMPLATE_HANDLER_CONTEXT): BOOLEAN
 			-- Is authenticated?
 		do
 			--| To redefine if needed

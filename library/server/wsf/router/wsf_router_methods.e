@@ -62,11 +62,7 @@ feature {NONE} -- Initialization
 	make_from_iterable (v: ITERABLE [READABLE_STRING_8])
 		do
 			make (1)
-			across
-				v as vc
-			loop
-				add_method_using_constant (vc.item)
-			end
+			add_methods (v)
 		end
 
 	make_from_string (v: READABLE_STRING_8)
@@ -113,6 +109,19 @@ feature -- Status change
 			-- Once it is locked, it is impossible to unlock.
 		do
 			is_locked := True
+		end
+
+feature -- Basic operations
+
+	add alias "+" (a_other: WSF_ROUTER_METHODS): WSF_ROUTER_METHODS
+			-- Merge Current and a_other into Result
+		require
+			a_other_not_void: a_other /= Void
+		do
+			create Result.make_from_iterable (Current)
+			Result.add_methods (a_other)
+		ensure
+
 		end
 
 feature -- Element change
@@ -328,7 +337,21 @@ feature -- Access
 			Result := methods.to_array
 		end
 
-feature {NONE} -- Implementation
+feature {WSF_ROUTER_METHODS} -- Implementation
+
+	add_methods (lst: ITERABLE [READABLE_STRING_8])
+			-- Enable methods from `lst'			
+		do
+			if not is_locked then
+				across
+					lst as c
+				loop
+					add_method_using_constant (c.item)
+				end
+			end
+		end
+
+feature {NONE} -- Implementation		
 
 	add_method_using_constant (v: READABLE_STRING_8)
 			-- Add method `v' using method_* constant
@@ -356,15 +379,6 @@ feature {NONE} -- Implementation
 			end
 		ensure
 			method_set: has (v.as_upper)
-		end
-
-	add_method (v: READABLE_STRING_8)
-		require
-			is_upper_case: v.same_string (v.as_upper)
-		do
-			if not is_locked then
-				methods.extend (v)
-			end
 		end
 
 	prune_method (v: READABLE_STRING_8)

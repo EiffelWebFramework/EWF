@@ -1,34 +1,41 @@
 note
-	description: "[
-				Handler that can also play the role of a filter, i.e. 
-				than can pre-process incoming data and post-process outgoing data.
-		]"
+	description: "Summary description for {WSF_FILTERED_SERVICE}."
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
 deferred class
-	WSF_FILTER_HANDLER [H -> WSF_HANDLER]
+	WSF_FILTERED_SERVICE
 
-inherit
-	WSF_HANDLER
+feature {NONE} -- Initialization
+
+	initialize_filter
+			-- Initialize `filter'
+		do
+			create_filter
+			setup_filter
+		end
+
+	create_filter
+			-- Create `filter'	
+		deferred
+		ensure
+			filter_created: filter /= Void
+		end
+
+	setup_filter
+			-- Setup `filter'
+		require
+			filter_created: filter /= Void
+		deferred
+		end
 
 feature -- Access
 
-	next: detachable H
-			-- Next handler
+	filter: WSF_FILTER
+			-- Filter
 
-feature -- Element change
-
-	set_next (a_next: like next)
-			-- Set `next' to `a_next'
-		do
-			next := a_next
-		ensure
-			next_set: next = a_next
-		end
-
-note
+;note
 	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[

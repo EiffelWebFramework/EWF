@@ -1,31 +1,29 @@
 note
-	description: "[
-				Handler that can also play the role of a filter, i.e. 
-				than can pre-process incoming data and post-process outgoing data.
-		]"
+	description: "Summary description for {WSF_URI_TEMPLATE_WITH_CONTEXT_ROUTING_HANDLER}."
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
-deferred class
-	WSF_FILTER_HANDLER [H -> WSF_HANDLER]
+class
+	WSF_URI_TEMPLATE_WITH_CONTEXT_ROUTING_HANDLER
 
 inherit
-	WSF_HANDLER
+	WSF_ROUTING_HANDLER
 
-feature -- Access
+	WSF_URI_TEMPLATE_WITH_CONTEXT_HANDLER
+		rename
+			execute as uri_template_xecute
+		end
 
-	next: detachable H
-			-- Next handler
+create
+	make,
+	make_with_router
 
-feature -- Element change
+feature	-- Execution
 
-	set_next (a_next: like next)
-			-- Set `next' to `a_next'
+	uri_template_xecute (ctx: WSF_URI_TEMPLATE_HANDLER_CONTEXT; req: WSF_REQUEST; res: WSF_RESPONSE)
 		do
-			next := a_next
-		ensure
-			next_set: next = a_next
+			execute (req, res)
 		end
 
 note

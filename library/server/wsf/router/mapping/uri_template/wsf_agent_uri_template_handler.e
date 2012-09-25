@@ -1,31 +1,32 @@
 note
-	description: "[
-				Handler that can also play the role of a filter, i.e. 
-				than can pre-process incoming data and post-process outgoing data.
-		]"
+	description: "Summary description for {WSF_AGENT_URI_TEMPLATE_HANDLER}."
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
-deferred class
-	WSF_FILTER_HANDLER [H -> WSF_HANDLER]
+class
+	WSF_AGENT_URI_TEMPLATE_HANDLER
 
 inherit
-	WSF_HANDLER
+	WSF_URI_TEMPLATE_HANDLER
 
-feature -- Access
+create
+	make
 
-	next: detachable H
-			-- Next handler
+feature {NONE} -- Initialization
 
-feature -- Element change
-
-	set_next (a_next: like next)
-			-- Set `next' to `a_next'
+	make (a_action: like action)
 		do
-			next := a_next
-		ensure
-			next_set: next = a_next
+			action := a_action
+		end
+
+	action: PROCEDURE [ANY, TUPLE [request: WSF_REQUEST; response: WSF_RESPONSE]]
+
+feature -- Execution
+
+	execute (req: WSF_REQUEST; res: WSF_RESPONSE)
+		do
+			action.call ([req, res])
 		end
 
 note

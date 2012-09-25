@@ -1,31 +1,26 @@
 note
-	description: "[
-				Handler that can also play the role of a filter, i.e. 
-				than can pre-process incoming data and post-process outgoing data.
-		]"
+	description: "Summary description for {EWF_ROUTER_URI_PATH_HANDLER}."
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
 deferred class
-	WSF_FILTER_HANDLER [H -> WSF_HANDLER]
+	WSF_URI_HANDLER
 
 inherit
 	WSF_HANDLER
 
-feature -- Access
+feature -- Execution
 
-	next: detachable H
-			-- Next handler
+	execute (req: WSF_REQUEST; res: WSF_RESPONSE)
+		deferred
+		end
 
-feature -- Element change
+feature {WSF_ROUTER} -- Mapping
 
-	set_next (a_next: like next)
-			-- Set `next' to `a_next'
+	new_mapping (a_uri: READABLE_STRING_8): WSF_URI_MAPPING
 		do
-			next := a_next
-		ensure
-			next_set: next = a_next
+			create Result.make (a_uri, Current)
 		end
 
 note

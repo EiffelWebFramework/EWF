@@ -1,41 +1,29 @@
 note
-	description: "Summary description for {WSF_URI_TEMPLATE_FILTERED_SERVICE}."
+	description: "Summary description for {WSF_STARTS_WITH_HANDLER}."
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
 deferred class
-	WSF_URI_TEMPLATE_FILTERED_SERVICE
+	WSF_STARTS_WITH_HANDLER
 
-feature {NONE} -- Initialization
+inherit
+	WSF_HANDLER
 
-	initialize_filter
-			-- Initialize `filter'
+feature -- Execution
+
+	execute (a_start_path: READABLE_STRING_8; req: WSF_REQUEST; res: WSF_RESPONSE)
+		deferred
+		end
+
+feature {WSF_ROUTER} -- Mapping
+
+	new_mapping (a_uri: READABLE_STRING_8): WSF_STARTS_WITH_MAPPING
 		do
-			create_filter
-			setup_filter
+			create Result.make (a_uri, Current)
 		end
 
-	create_filter
-			-- Create `filter'	
-		deferred
-		ensure
-			filter_created: filter /= Void
-		end
-
-	setup_filter
-			-- Setup `filter'
-		require
-			filter_created: filter /= Void
-		deferred
-		end
-
-feature -- Access
-
-	filter: WSF_FILTER
-			-- Filter
-
-;note
+note
 	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[

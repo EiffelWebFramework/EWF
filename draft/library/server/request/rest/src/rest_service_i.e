@@ -5,21 +5,13 @@ note
 	revision: "$Revision$"
 
 deferred class
-	REST_SERVICE_I [H -> REST_REQUEST_HANDLER [C], C -> REST_REQUEST_HANDLER_CONTEXT]
+	REST_SERVICE_I
 
 inherit
-	WSF_ROUTED_SERVICE_I [H, C]
-		redefine
-			router
-		end
-
-feature -- Setup	
-
-	router: REST_REQUEST_ROUTER [H, C]
-			-- Request router
+	WSF_URI_TEMPLATE_ROUTED_SERVICE
 
 ;note
-	copyright: "Copyright (c) 1984-2011, Eiffel Software and others"
+	copyright: "Copyright (c) 1984-2012, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

@@ -12,16 +12,16 @@ inherit
 
 create
 	make,
-	make_from_string
+	make_from_template
 
 feature {NONE} -- Initialization
 
-	make_from_string (s: READABLE_STRING_8; h: like handler)
+	make (s: READABLE_STRING_8; h: like handler)
 		do
-			make (create {URI_TEMPLATE}.make (s), h)
+			make_from_template (create {URI_TEMPLATE}.make (s), h)
 		end
 
-	make (tpl: URI_TEMPLATE; h: like handler)
+	make_from_template (tpl: URI_TEMPLATE; h: like handler)
 		do
 			template := tpl
 			handler := h
@@ -46,26 +46,26 @@ feature -- Status
 		local
 			tpl: URI_TEMPLATE
 			p: READABLE_STRING_32
-			ctx: detachable WSF_URI_TEMPLATE_HANDLER_CONTEXT
+			new_src: detachable WSF_REQUEST_PATH_PARAMETERS_PROVIDER
 		do
 			p := path_from_request (req)
 			tpl := based_uri_template (template, a_router)
 			if attached tpl.match (p) as tpl_res then
 				Result := handler
-				create ctx.make (req, tpl, tpl_res, path_from_request (req))
 				a_router.execute_before (Current)
 				--| Applied the context to the request
 				--| in practice, this will fill the {WSF_REQUEST}.path_parameters
-				ctx.apply (req)
-				handler.execute (ctx, req, res)
+				create new_src.make (tpl_res.path_variables.count, tpl_res.path_variables)
+				new_src.apply (req)
+				handler.execute (req, res)
 				--| Revert {WSF_REQUEST}.path_parameters_source to former value
 				--| In case the request object passed by other handler that alters its values.
-				ctx.revert (req)
+				new_src.revert (req)
 				a_router.execute_after (Current)
 			end
 		rescue
-			if ctx /= Void then
-				ctx.revert (req)
+			if new_src /= Void then
+				new_src.revert (req)
 			end
 		end
 

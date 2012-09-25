@@ -5,16 +5,27 @@ note
 	revision: "$Revision$"
 
 class
-	AUTHENTICATION_FILTER [C -> WSF_URI_TEMPLATE_HANDLER_CONTEXT]
+	AUTHENTICATION_FILTER
 
 inherit
-	WSF_FILTER_HANDLER [C]
+	WSF_FILTER_HANDLER [WSF_URI_TEMPLATE_HANDLER]
 
 	SHARED_DATABASE_API
 
+	WSF_URI_TEMPLATE_HANDLER
+
+	WSF_RESOURCE_HANDLER_HELPER
+--		redefine
+--			do_get
+--		end
+
+	SHARED_DATABASE_API
+
+	SHARED_EJSON
+
 feature -- Basic operations
 
-	execute (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
+	execute (req: WSF_REQUEST; res: WSF_RESPONSE)
 			-- Execute the filter
 		local
 			l_auth: HTTP_AUTHORIZATION
@@ -24,15 +35,24 @@ feature -- Basic operations
 				attached Db_access.users.item (1) as l_user and then
 				(attached l_auth.login as l_auth_login and then l_auth_login.is_equal (l_user.name)
 				and attached l_auth.password as l_auth_password and then l_auth_password.is_equal (l_user.password)) then
-				execute_next (ctx, req, res)
+				execute_next (req, res)
 			else
-				handle_unauthorized ("Unauthorized", ctx, req, res)
+				handle_unauthorized ("Unauthorized", req, res)
+			end
+		end
+
+feature -- Filter
+
+	execute_next (req: WSF_REQUEST; res: WSF_RESPONSE)
+		do
+			if attached next as n then
+				n.execute (req, res)
 			end
 		end
 
 feature {NONE} -- Implementation
 
-	handle_unauthorized (a_description: STRING; ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
+	handle_unauthorized (a_description: STRING; req: WSF_REQUEST; res: WSF_RESPONSE)
 			-- Handle forbidden.
 		local
 			h: HTTP_HEADER

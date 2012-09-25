@@ -57,6 +57,21 @@ feature -- Mapping
 			a_mapping.handler.on_mapped (a_mapping, rqst_methods)
 		end
 
+feature -- Mapping handler
+
+	handle (a_resource: READABLE_STRING_8; h: WSF_HANDLER)
+			-- Map the mapping associated to handler `h' for resource `a_resource'
+		do
+			handle_with_request_methods (a_resource, h, Void)
+		end
+
+	handle_with_request_methods (a_resource: READABLE_STRING_8; h: WSF_HANDLER; rqst_methods: detachable WSF_ROUTER_METHODS)
+			-- Map the mapping associated to handler `h' for resource `a_resource'	
+			-- and only for request methods `rqst_methods'
+		do
+			map_with_request_methods (h.new_mapping (a_resource), rqst_methods)
+		end
+
 feature -- Access
 
 	is_dispatched: BOOLEAN

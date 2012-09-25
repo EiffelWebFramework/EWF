@@ -1,31 +1,32 @@
 note
-	description: "Summary description for {WSF_URI_TEMPLATE_RESPONSE_HANDLER}."
+	description: "Summary description for {WSF_AGENT_URI_TEMPLATE_WITH_CONTEXT_HANDLER}."
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
-deferred class
-	WSF_URI_TEMPLATE_RESPONSE_HANDLER
+class
+	WSF_AGENT_URI_TEMPLATE_WITH_CONTEXT_HANDLER
 
 inherit
-	WSF_URI_TEMPLATE_HANDLER
+	WSF_URI_TEMPLATE_WITH_CONTEXT_HANDLER
 
-feature -- Response
+create
+	make
 
-	response (ctx: WSF_URI_TEMPLATE_HANDLER_CONTEXT; req: WSF_REQUEST): WSF_RESPONSE_MESSAGE
-		require
-			is_valid_context: is_valid_context (req)
-		deferred
-		ensure
-			Result_attached: Result /= Void
+feature {NONE} -- Initialization
+
+	make (a_action: like action)
+		do
+			action := a_action
 		end
+
+	action: PROCEDURE [ANY, TUPLE [context: WSF_URI_TEMPLATE_HANDLER_CONTEXT; request: WSF_REQUEST; response: WSF_RESPONSE]]
 
 feature -- Execution
 
 	execute (ctx: WSF_URI_TEMPLATE_HANDLER_CONTEXT; req: WSF_REQUEST; res: WSF_RESPONSE)
-			-- Execute request handler	
 		do
-			res.send (response (ctx, req))
+			action.call ([ctx, req, res])
 		end
 
 note

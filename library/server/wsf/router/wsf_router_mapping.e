@@ -7,6 +7,12 @@ note
 deferred class
 	WSF_ROUTER_MAPPING
 
+feature {NONE} -- Initialization
+
+	make (a_resource: READABLE_STRING_8; h: like handler)
+		deferred
+		end
+
 feature -- Access		
 
 	handler: WSF_HANDLER

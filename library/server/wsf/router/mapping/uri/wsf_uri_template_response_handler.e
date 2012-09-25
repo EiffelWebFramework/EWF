@@ -1,34 +1,31 @@
 note
-	description: "Summary description for {WSF_AGENT_URI_TEMPLATE_RESPONSE_HANDLER}."
+	description: "Summary description for {WSF_URI_TEMPLATE_RESPONSE_HANDLER}."
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
-class
-	WSF_AGENT_URI_TEMPLATE_RESPONSE_HANDLER
-
-inherit
+deferred class
 	WSF_URI_TEMPLATE_RESPONSE_HANDLER
 
-create
-	make
+inherit
+	WSF_URI_TEMPLATE_HANDLER
 
-feature -- Initialization
+feature -- Response
 
-	make (act: like action)
-		do
-			action := act
+	response (req: WSF_REQUEST): WSF_RESPONSE_MESSAGE
+		require
+			is_valid_context: is_valid_context (req)
+		deferred
+		ensure
+			Result_attached: Result /= Void
 		end
-
-feature -- Access
-
-	action: FUNCTION [ANY, TUPLE [ctx: WSF_URI_TEMPLATE_HANDLER_CONTEXT; req: WSF_REQUEST], WSF_RESPONSE_MESSAGE]
 
 feature -- Execution
 
-	response (ctx: WSF_URI_TEMPLATE_HANDLER_CONTEXT; req: WSF_REQUEST): WSF_RESPONSE_MESSAGE
+	execute (req: WSF_REQUEST; res: WSF_RESPONSE)
+			-- Execute request handler	
 		do
-			Result := action.item ([ctx, req])
+			res.send (response (req))
 		end
 
 note

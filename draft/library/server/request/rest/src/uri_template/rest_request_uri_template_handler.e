@@ -8,11 +8,11 @@ deferred class
 	REST_REQUEST_URI_TEMPLATE_HANDLER
 
 inherit
-	REST_REQUEST_HANDLER [REST_REQUEST_URI_TEMPLATE_HANDLER_CONTEXT]
+	REST_REQUEST_HANDLER
 
 
 ;note
-	copyright: "Copyright (c) 1984-2011, Eiffel Software and others"
+	copyright: "Copyright (c) 1984-2012, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

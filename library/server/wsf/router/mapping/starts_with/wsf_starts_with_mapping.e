@@ -1,5 +1,5 @@
 note
-	description: "Summary description for EWF_URI_PATH."
+	description: "Summary description for EWF_STARTS_WITH_PATH."
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"

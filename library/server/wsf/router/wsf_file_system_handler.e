@@ -20,7 +20,7 @@ feature {NONE} -- Initialization
 
 	make (d: like document_root)
 		require
-			valid_d: (d /= Void and then not d.is_empty) implies d.ends_with ("/")
+			valid_d: (d /= Void and then not d.is_empty) implies not d.ends_with (operating_environment.directory_separator.out)
 		local
 			e: EXECUTION_ENVIRONMENT
 		do
@@ -30,6 +30,8 @@ feature {NONE} -- Initialization
 			else
 				document_root := d
 			end
+		ensure
+			not document_root.is_empty and then not document_root.ends_with (operating_environment.directory_separator.out)
 		end
 
 feature -- Access		
@@ -337,7 +339,7 @@ feature {NONE} -- Implementation
 
 	resource_filename (uri: READABLE_STRING_8): READABLE_STRING_8
 		do
-			Result := real_filename (document_root + real_filename (uri))
+			Result := real_filename (document_root + operating_environment.directory_separator.out + real_filename (uri))
 		end
 
 	dirname (uri: READABLE_STRING_8): READABLE_STRING_8
@@ -450,4 +452,14 @@ feature {NONE} -- implementation: date time
 			Result := date_time_utility.unix_time_stamp_to_date_time (n)
 		end
 
+note
+	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
+	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
+	source: "[
+			Eiffel Software
+			5949 Hollister Ave., Goleta, CA 93117 USA
+			Telephone 805-685-1006, Fax 805-685-6869
+			Website http://www.eiffel.com
+			Customer support http://support.eiffel.com
+		]"
 end

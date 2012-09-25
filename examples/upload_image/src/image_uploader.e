@@ -10,7 +10,11 @@ class
 inherit
 	ANY
 
+	WSF_ROUTED_SERVICE
+
 	WSF_URI_TEMPLATE_ROUTED_SERVICE
+
+	WSF_URI_ROUTED_SERVICE
 
 	WSF_DEFAULT_SERVICE
 
@@ -34,14 +38,14 @@ feature {NONE} -- Initialization
 	setup_router
 			-- Setup router
 		local
-			www: WSF_FILE_SYSTEM_HANDLER [WSF_URI_TEMPLATE_HANDLER_CONTEXT]
+			www: WSF_FILE_SYSTEM_HANDLER
 		do
-			router.map_agent ("/upload{?nb}", agent execute_upload)
+			map_uri_template_agent ("/upload{?nb}", agent execute_upload)
 
 			create www.make (document_root)
 			www.set_directory_index (<<"index.html">>)
 			www.set_not_found_handler (agent execute_not_found)
-			router.map_with_request_methods ("{/path}{?query}", www, <<"GET">>)
+			router.handle_with_request_methods ("", www, router.methods_GET)
 		end
 
 feature -- Configuration		
@@ -59,6 +63,8 @@ feature -- Configuration
 			if Result [Result.count] = Operating_environment.directory_separator then
 				Result := Result.substring (1, Result.count - 1)
 			end
+		ensure
+			not Result.ends_with (Operating_environment.directory_separator.out)
 		end
 
 	files_root: READABLE_STRING_8
@@ -79,7 +85,7 @@ feature -- Execution
 			res.redirect_now_with_content (req.script_url ("/"), "Redirection to " + req.script_url ("/"), "text/html")
 		end
 
-	execute_not_found (uri: READABLE_STRING_8; ctx: WSF_URI_TEMPLATE_HANDLER_CONTEXT; req: WSF_REQUEST; res: WSF_RESPONSE)
+	execute_not_found (uri: READABLE_STRING_8; req: WSF_REQUEST; res: WSF_RESPONSE)
 			-- `uri' is not found, redirect to default page
 		do
 			res.redirect_now_with_content (req.script_url ("/"), uri + ": not found.%NRedirection to " + req.script_url ("/"), "text/html")
