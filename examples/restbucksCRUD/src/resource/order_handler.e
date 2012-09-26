@@ -41,7 +41,7 @@ feature -- execute
 			execute_methods (req, res)
 		end
 
-	uri_template_execute (ctx: WSF_URI_TEMPLATE_HANDLER_CONTEXT; req: WSF_REQUEST; res: WSF_RESPONSE)
+	uri_template_execute (req: WSF_REQUEST; res: WSF_RESPONSE)
 			-- Execute request handler	
 		do
 			execute_methods (req, res)
@@ -366,7 +366,9 @@ feature {NONE} -- Implementation Repository Layer
 			json.add_converter(joc)
 			create parser.make_parser (l_post)
 			if attached parser.parse as jv and parser.is_parsed then
-				Result ?= json.object (jv, "ORDER")
+				if attached {like extract_order_request} json.object (jv, "ORDER") as res then
+					Result := res
+				end
 			end
 		end
 
