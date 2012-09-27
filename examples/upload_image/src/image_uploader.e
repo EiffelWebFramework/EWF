@@ -91,7 +91,7 @@ feature -- Execution
 			res.redirect_now_with_content (req.script_url ("/"), uri + ": not found.%NRedirection to " + req.script_url ("/"), "text/html")
 		end
 
-	execute_upload (ctx: WSF_URI_TEMPLATE_HANDLER_CONTEXT; req: WSF_REQUEST; res: WSF_RESPONSE)
+	execute_upload (req: WSF_REQUEST; res: WSF_RESPONSE)
 			-- Upload page is requested, either GET or POST
 			-- On GET display the web form to upload file, by passing ?nb=5 you can upload 5 images
 			-- On POST display the uploaded files
@@ -110,14 +110,14 @@ feature -- Execution
 				page.set_body (l_body)
 				l_body.append ("<h1>EWF: Upload image file</h1>%N")
 				l_body.append ("<form action=%""+ req.script_url ("/upload") +"%" method=%"POST%" enctype=%"multipart/form-data%">%N")
-				if attached ctx.string_query_parameter ("nb") as p_nb and then p_nb.is_integer then
-					n := p_nb.to_integer
+				if attached {WSF_STRING} req.query_parameter ("nb") as p_nb and then p_nb.is_integer then
+					n := p_nb.integer_value
 				else
 					n := 1
 				end
-				if attached ctx.string_query_parameter ("demo") as p_demo then
+				if attached {WSF_STRING} req.query_parameter ("demo") as p_demo then
 					create fn.make_from_string (document_root)
-					fn.set_file_name (p_demo.string)
+					fn.set_file_name (p_demo.value)
 					l_body.append ("File: <input type=%"file%" name=%"uploaded_file[]%" size=%"60%" value=%""+ html_encode (fn.string) +"%"></br>%N")
 				end
 

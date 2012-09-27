@@ -1,34 +1,32 @@
 note
-	description: "Summary description for {WSF_AGENT_URI_TEMPLATE_RESPONSE_HANDLER}."
+	description: "Summary description for {WSF_URI_TEMPLATE_AGENT_HANDLER}."
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
 class
-	WSF_AGENT_URI_TEMPLATE_RESPONSE_HANDLER
+	WSF_URI_TEMPLATE_AGENT_HANDLER
 
 inherit
-	WSF_URI_TEMPLATE_RESPONSE_HANDLER
+	WSF_URI_TEMPLATE_HANDLER
 
 create
 	make
 
-feature -- Initialization
+feature {NONE} -- Initialization
 
-	make (act: like action)
+	make (a_action: like action)
 		do
-			action := act
+			action := a_action
 		end
 
-feature -- Access
-
-	action: FUNCTION [ANY, TUPLE [req: WSF_REQUEST], WSF_RESPONSE_MESSAGE]
+	action: PROCEDURE [ANY, TUPLE [request: WSF_REQUEST; response: WSF_RESPONSE]]
 
 feature -- Execution
 
-	response (req: WSF_REQUEST): WSF_RESPONSE_MESSAGE
+	execute (req: WSF_REQUEST; res: WSF_RESPONSE)
 		do
-			Result := action.item ([req])
+			action.call ([req, res])
 		end
 
 note

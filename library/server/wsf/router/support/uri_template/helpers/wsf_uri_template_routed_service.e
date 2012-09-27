@@ -31,7 +31,7 @@ feature -- Mapping helper: uri agent
 
 	map_uri_template_agent_with_request_methods (a_tpl: READABLE_STRING_8; proc: PROCEDURE [ANY, TUPLE [req: WSF_REQUEST; res: WSF_RESPONSE]]; rqst_methods: detachable WSF_ROUTER_METHODS)
 		do
-			map_uri_template_with_request_methods (a_tpl, create {WSF_AGENT_URI_TEMPLATE_HANDLER}.make (proc), rqst_methods)
+			map_uri_template_with_request_methods (a_tpl, create {WSF_URI_TEMPLATE_AGENT_HANDLER}.make (proc), rqst_methods)
 		end
 
 note

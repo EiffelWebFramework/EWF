@@ -1,33 +1,22 @@
 note
-	description: "Summary description for {WSF_AGENT_URI_TEMPLATE_HANDLER}."
+	description: "Summary description for {WSF_URI_TEMPLATE_AGENT_CONTEXT_HANDLER}."
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
 class
-	WSF_AGENT_URI_TEMPLATE_HANDLER
+	WSF_URI_TEMPLATE_AGENT_CONTEXT_HANDLER [C -> WSF_HANDLER_CONTEXT create make end]
 
 inherit
-	WSF_URI_TEMPLATE_HANDLER
+	WSF_URI_TEMPLATE_CONTEXT_HANDLER [C]
+
+	WSF_AGENT_CONTEXT_HANDLER [C]
+		rename
+			set_action as make
+		end
 
 create
 	make
-
-feature {NONE} -- Initialization
-
-	make (a_action: like action)
-		do
-			action := a_action
-		end
-
-	action: PROCEDURE [ANY, TUPLE [request: WSF_REQUEST; response: WSF_RESPONSE]]
-
-feature -- Execution
-
-	execute (req: WSF_REQUEST; res: WSF_RESPONSE)
-		do
-			action.call ([req, res])
-		end
 
 note
 	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"

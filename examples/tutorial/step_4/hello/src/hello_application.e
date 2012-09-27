@@ -42,9 +42,9 @@ feature {NONE} -- Initialization
 
 feature -- Helper: mapping
 
-	map_agent_uri (a_uri: READABLE_STRING_8; a_action: like {WSF_AGENT_URI_HANDLER}.action; rqst_methods: detachable WSF_ROUTER_METHODS)
+	map_agent_uri (a_uri: READABLE_STRING_8; a_action: like {WSF_URI_AGENT_HANDLER}.action; rqst_methods: detachable WSF_ROUTER_METHODS)
 		do
-			router.map_with_request_methods (create {WSF_URI_MAPPING}.make (a_uri, create {WSF_AGENT_URI_HANDLER}.make (a_action)), rqst_methods)
+			router.map_with_request_methods (create {WSF_URI_MAPPING}.make (a_uri, create {WSF_URI_AGENT_HANDLER}.make (a_action)), rqst_methods)
 		end
 
 	map_uri_template (a_tpl: READABLE_STRING_8; a_handler: WSF_URI_TEMPLATE_HANDLER; rqst_methods: detachable WSF_ROUTER_METHODS)
@@ -52,9 +52,9 @@ feature -- Helper: mapping
 			router.map_with_request_methods (create {WSF_URI_TEMPLATE_MAPPING}.make (a_tpl, a_handler), rqst_methods)
 		end
 
-	map_agent_uri_template_response (a_tpl: READABLE_STRING_8; a_action: like {WSF_AGENT_URI_TEMPLATE_RESPONSE_HANDLER}.action; rqst_methods: detachable WSF_ROUTER_METHODS)
+	map_agent_uri_template_response (a_tpl: READABLE_STRING_8; a_action: like {WSF_URI_TEMPLATE_RESPONSE_AGENT_HANDLER}.action; rqst_methods: detachable WSF_ROUTER_METHODS)
 		do
-			router.map_with_request_methods (create {WSF_URI_TEMPLATE_MAPPING}.make (a_tpl, create {WSF_AGENT_URI_TEMPLATE_RESPONSE_HANDLER}.make (a_action)), rqst_methods)
+			router.map_with_request_methods (create {WSF_URI_TEMPLATE_MAPPING}.make (a_tpl, create {WSF_URI_TEMPLATE_RESPONSE_AGENT_HANDLER}.make (a_action)), rqst_methods)
 		end
 
 feature -- Execution
@@ -114,7 +114,7 @@ feature -- Execution
 			res.send (mesg)
 		end
 
-	response_user (ctx: WSF_URI_TEMPLATE_HANDLER_CONTEXT; req: WSF_REQUEST): WSF_RESPONSE_MESSAGE
+	response_user (req: WSF_REQUEST): WSF_RESPONSE_MESSAGE
 			-- Computed response message.
 		local
 			html: WSF_HTML_PAGE_RESPONSE
@@ -122,7 +122,7 @@ feature -- Execution
 			s: STRING_8
 			l_username: STRING_32
 		do
-			if attached {WSF_STRING} ctx.path_parameter ("user") as u then
+			if attached {WSF_STRING} req.path_parameter ("user") as u then
 				l_username := (create {HTML_ENCODER}).general_decoded_string (u.value)
 				if
 					attached {WSF_STRING} req.query_parameter ("op") as l_op

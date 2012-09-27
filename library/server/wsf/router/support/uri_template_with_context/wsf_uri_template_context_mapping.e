@@ -1,14 +1,14 @@
 note
-	description: "Summary description for {EWF_ROUTER_URI_TEMPLATE_WITH_CONTEXT_PATH}."
+	description: "Summary description for {WSF_URI_TEMPLATE_CONTEXT_MAPPING}."
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
 class
-	WSF_URI_TEMPLATE_WITH_CONTEXT_MAPPING
+	WSF_URI_TEMPLATE_CONTEXT_MAPPING [C -> WSF_HANDLER_CONTEXT create make end]
 
 inherit
-	WSF_ROUTER_MAPPING
+	WSF_ROUTER_CONTEXT_MAPPING [C]
 
 create
 	make,
@@ -29,7 +29,7 @@ feature {NONE} -- Initialization
 
 feature -- Access		
 
-	handler: WSF_URI_TEMPLATE_WITH_CONTEXT_HANDLER
+	handler: WSF_URI_TEMPLATE_CONTEXT_HANDLER [C]
 
 	template: URI_TEMPLATE
 
@@ -46,26 +46,28 @@ feature -- Status
 		local
 			tpl: URI_TEMPLATE
 			p: READABLE_STRING_32
-			ctx: detachable WSF_URI_TEMPLATE_HANDLER_CONTEXT
+			ctx: detachable C
+			new_src: detachable WSF_REQUEST_PATH_PARAMETERS_PROVIDER
 		do
 			p := path_from_request (req)
 			tpl := based_uri_template (template, a_router)
 			if attached tpl.match (p) as tpl_res then
 				Result := handler
-				create ctx.make (req, tpl, tpl_res, path_from_request (req))
+				create ctx.make (req, Current)
 				a_router.execute_before (Current)
 				--| Applied the context to the request
 				--| in practice, this will fill the {WSF_REQUEST}.path_parameters
-				ctx.apply (req)
+				create new_src.make (tpl_res.path_variables.count, tpl_res.path_variables)
+				new_src.apply (req)
 				handler.execute (ctx, req, res)
 				--| Revert {WSF_REQUEST}.path_parameters_source to former value
 				--| In case the request object passed by other handler that alters its values.
-				ctx.revert (req)
+				new_src.revert (req)
 				a_router.execute_after (Current)
 			end
 		rescue
-			if ctx /= Void then
-				ctx.revert (req)
+			if new_src /= Void then
+				new_src.revert (req)
 			end
 		end
 

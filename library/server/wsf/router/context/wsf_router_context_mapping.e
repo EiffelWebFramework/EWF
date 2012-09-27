@@ -1,29 +1,20 @@
 note
-	description: "Summary description for {WSF_URI_TEMPLATE_WITH_CONTEXT_ROUTING_HANDLER}."
+	description: "Summary description for {WSF_ROUTER_CONTEXT_MAPPING}."
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
-class
-	WSF_URI_TEMPLATE_WITH_CONTEXT_ROUTING_HANDLER
+deferred class
+	WSF_ROUTER_CONTEXT_MAPPING [C -> WSF_HANDLER_CONTEXT create make end]
 
 inherit
-	WSF_ROUTING_HANDLER
+	WSF_ROUTER_MAPPING
 
-	WSF_URI_TEMPLATE_WITH_CONTEXT_HANDLER
-		rename
-			execute as uri_template_xecute
-		end
+feature -- Access		
 
-create
-	make,
-	make_with_router
-
-feature	-- Execution
-
-	uri_template_xecute (ctx: WSF_URI_TEMPLATE_HANDLER_CONTEXT; req: WSF_REQUEST; res: WSF_RESPONSE)
-		do
-			execute (req, res)
+	handler: WSF_CONTEXT_HANDLER [C]
+			-- Handler associated with Current mapping.
+		deferred
 		end
 
 note

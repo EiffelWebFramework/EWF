@@ -1,26 +1,31 @@
 note
-	description: "Summary description for EWF_URI_TEMPLATE_WITH_CONTEXT_HANDLER."
+	description: "Summary description for {WSF_AGENT_CONTEXT_HANDLER}."
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
 deferred class
-	WSF_URI_TEMPLATE_WITH_CONTEXT_HANDLER
+	WSF_AGENT_CONTEXT_HANDLER [C -> WSF_HANDLER_CONTEXT create make end]
 
 inherit
-	WSF_HANDLER
+	WSF_CONTEXT_HANDLER [C]
+
+feature -- Change
+
+	set_action (a_action: like action)
+		do
+			action := a_action
+		end
+
+feature -- Access	
+
+	action: PROCEDURE [ANY, TUPLE [context: C; request: WSF_REQUEST; response: WSF_RESPONSE]]
 
 feature -- Execution
 
-	execute (ctx: WSF_URI_TEMPLATE_HANDLER_CONTEXT; req: WSF_REQUEST; res: WSF_RESPONSE)
-		deferred
-		end
-
-feature {WSF_ROUTER} -- Mapping
-
-	new_mapping (a_tpl: READABLE_STRING_8): WSF_URI_TEMPLATE_WITH_CONTEXT_MAPPING
+	execute (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
 		do
-			create Result.make (a_tpl, Current)
+			action.call ([ctx, req, res])
 		end
 
 note

@@ -10,6 +10,7 @@ deferred class
 feature -- Initialization
 
 	initialize_router
+			-- Initialize router
 		do
 			create_router
 			setup_router
@@ -17,6 +18,7 @@ feature -- Initialization
 
 	create_router
 			-- Create `router'	
+			--| could be redefine to initialize with proper capacity
 		do
 			create router.make (10)
 		ensure
@@ -33,6 +35,8 @@ feature -- Initialization
 feature -- Execution
 
 	execute (req: WSF_REQUEST; res: WSF_RESPONSE)
+			-- Dispatch the request
+			-- and if you dispatch is found, execute the default procedure `execute_default'
 		do
 			if attached router.dispatch_and_return_handler (req, res) as p then
 				-- executed
@@ -42,12 +46,15 @@ feature -- Execution
 		end
 
 	execute_default (req: WSF_REQUEST; res: WSF_RESPONSE)
+			-- Default procedure
 		deferred
 		end
 
 feature -- Access
 
 	router: WSF_ROUTER
+			-- Router used to dispatch the request according to the WSF_REQUEST object
+			-- and associated request methods
 
 ;note
 	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"

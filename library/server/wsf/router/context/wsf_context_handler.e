@@ -1,32 +1,26 @@
 note
-	description: "Summary description for {WSF_HANDLER}."
+	description: "Summary description for {WSF_CONTEXT_HANDLER}."
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
 deferred class
+	WSF_CONTEXT_HANDLER [C -> WSF_HANDLER_CONTEXT create make end]
+
+inherit
 	WSF_HANDLER
 
-feature -- Status report
+feature -- Execution
 
-	is_valid_context (req: WSF_REQUEST): BOOLEAN
-			-- Is `req' valid context for current handler?
-		do
-			Result := True
+	execute (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
+		deferred
 		end
 
 feature {WSF_ROUTER} -- Mapping
 
-	new_mapping (a_resource: READABLE_STRING_8): WSF_ROUTER_MAPPING
+	new_mapping (a_resource: READABLE_STRING_8): WSF_ROUTER_CONTEXT_MAPPING [C]
 			-- New mapping built with Current as handler
 		deferred
-		ensure
-			Result /= Void and then Result.handler = Current
-		end
-
-	on_mapped (a_mapping: like new_mapping; a_rqst_methods: detachable WSF_ROUTER_METHODS)
-			-- Callback called when a router map a route to Current handler
-		do
 		end
 
 note
