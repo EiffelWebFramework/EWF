@@ -1,20 +1,11 @@
 note
-	description: "[
-				Request handler object which is called by a WSF_ROUTER
-				An handler should implement the method
-
-					execute (ctx, req, res)
-
-				The class is generic, this way one can use a custom WSF_HANDLER_CONTEXT if needed
-		]"
+	description: "Summary description for {WSF_HANDLER}."
+	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
 deferred class
-	WSF_HANDLER [C -> WSF_HANDLER_CONTEXT]
-
-inherit
-	ANY
+	WSF_HANDLER
 
 feature -- Status report
 
@@ -24,59 +15,16 @@ feature -- Status report
 			Result := True
 		end
 
-feature -- Execution
+feature {WSF_ROUTER} -- Mapping
 
-	execute (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
-			-- Execute request handler
-			--
-			-- `ctx': contains advanced data related to request_uri
-			--	      in the case of URI_TEMPLATE, it add support for "path_parameter"
-			-- `req': request data
-			-- `res': reponse stream
-			--| note `ctx' can also provide data coming from `req'
-		require
-			is_valid_context: is_valid_context (req)
+	new_mapping (a_resource: READABLE_STRING_8): WSF_ROUTER_MAPPING
+			-- New mapping built with Current as handler
 		deferred
 		ensure
-			response_status_set: res.status_is_set
+			Result /= Void and then Result.handler = Current
 		end
 
-feature -- Execution: report
-
-	url (req: WSF_REQUEST; a_base: detachable READABLE_STRING_8; args: detachable STRING; abs: BOOLEAN): STRING
-			-- Associated url based on `a_base' and `args'
-			-- if `abs' then return absolute url
-		local
-			s: detachable STRING
-			l_base: STRING
-		do
-			if a_base /= Void then
-				l_base := a_base
-			else
-				l_base := req.request_uri
-			end
-			s := args
-			if s /= Void and then s.count > 0 then
-				if s[1] /= '/' then
-					s := l_base + "/" + s
-				else
-					s := l_base + s
-				end
-			else
-				s := l_base
-			end
-			if abs then
-				Result := req.absolute_script_url (s)
-			else
-				Result := req.script_url (s)
-			end
-		ensure
-			result_attached: Result /= Void
-		end
-
-feature {WSF_ROUTER} -- Routes change
-
-	on_handler_mapped (a_resource: READABLE_STRING_8; a_rqst_methods: detachable WSF_ROUTER_METHODS)
+	on_mapped (a_mapping: like new_mapping; a_rqst_methods: detachable WSF_ROUTER_METHODS)
 			-- Callback called when a router map a route to Current handler
 		do
 		end

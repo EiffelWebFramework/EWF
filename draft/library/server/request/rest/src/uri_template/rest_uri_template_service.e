@@ -8,17 +8,10 @@ deferred class
 	REST_URI_TEMPLATE_SERVICE
 
 inherit
-	REST_SERVICE_I [REST_REQUEST_HANDLER [REST_REQUEST_URI_TEMPLATE_HANDLER_CONTEXT], REST_REQUEST_URI_TEMPLATE_HANDLER_CONTEXT]
-		redefine
-			router
-		end
-
-feature -- Router
-
-	router: REST_REQUEST_URI_TEMPLATE_ROUTER
+	REST_SERVICE_I
 
 ;note
-	copyright: "Copyright (c) 1984-2011, Eiffel Software and others"
+	copyright: "Copyright (c) 1984-2012, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

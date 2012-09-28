@@ -1,42 +1,70 @@
 note
-	description: "[
-			Request handler used to respond file system request.
-		]"
+	description: "Summary description for {WSF_FILE_SYSTEM_HANDLER}."
+	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
 class
-	WSF_FILE_SYSTEM_HANDLER [C -> WSF_HANDLER_CONTEXT]
+	WSF_FILE_SYSTEM_HANDLER
 
 inherit
-	WSF_HANDLER [C]
+	WSF_STARTS_WITH_HANDLER
+		rename
+			execute as execute_starts_with
+		end
 
 create
 	make
 
 feature {NONE} -- Initialization
 
-	make (a_root: READABLE_STRING_8)
+	make (d: like document_root)
 		require
-			a_root_exists: node_exists (a_root)
+			valid_d: (d /= Void and then not d.is_empty) implies not d.ends_with (operating_environment.directory_separator.out)
+		local
+			e: EXECUTION_ENVIRONMENT
 		do
-			document_root := a_root
+			if d.is_empty then
+				create e
+				document_root := e.current_working_directory
+			else
+				document_root := d
+			end
+		ensure
+			not document_root.is_empty and then not document_root.ends_with (operating_environment.directory_separator.out)
 		end
 
-feature -- Access
+feature -- Access		
 
-	document_root: READABLE_STRING_8
-			-- Document root for the file system
+	document_root: STRING
+	max_age: INTEGER
+
+	index_disabled: BOOLEAN
+			-- Index disabled?
 
 	directory_index: detachable ARRAY [READABLE_STRING_8]
 			-- File serve if a directory index is requested
 
-	not_found_handler: detachable PROCEDURE [ANY, TUPLE [uri: READABLE_STRING_8; ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE]]
+	not_found_handler: detachable PROCEDURE [ANY, TUPLE [uri: READABLE_STRING_8; req: WSF_REQUEST; res: WSF_RESPONSE]]
 
-	access_denied_handler: detachable PROCEDURE [ANY, TUPLE [uri: READABLE_STRING_8; ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE]]
-
+	access_denied_handler: detachable PROCEDURE [ANY, TUPLE [uri: READABLE_STRING_8; req: WSF_REQUEST; res: WSF_RESPONSE]]
 
 feature -- Element change
+
+	enable_index
+		do
+			index_disabled := False
+		end
+
+	disable_index
+		do
+			index_disabled := True
+		end
+
+	set_max_age (a_seconds: like max_age)
+		do
+			max_age := a_seconds
+		end
 
 	set_directory_index (idx: like directory_index)
 			-- Set `directory_index' as `idx'
@@ -62,38 +90,25 @@ feature -- Element change
 
 feature -- Execution
 
-	requested_path (ctx: C): detachable READABLE_STRING_8
-			-- Path associated with the request
-			-- i.e: path of the file system resource if any
-		do
-			if attached {WSF_STRING} ctx.item ("path") as v_path then
-				Result := v_path.value.as_string_8
-			end
-		end
-
-	execute (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
-			-- Execute request handler	
+	execute (a_start_path: READABLE_STRING_8; req: WSF_REQUEST; res: WSF_RESPONSE)
 		local
-			h: HTTP_HEADER
-			s: STRING
+			p: STRING
 		do
-			if attached requested_path (ctx) as uri then
-				process_uri (uri, ctx, req, res)
+			p := req.path_info
+			if p.starts_with (a_start_path) then
+				p.remove_head (a_start_path.count)
 			else
-				s := "Hello " + ctx.path + "%N"
-				s.append ("root=" + document_root)
-
-				create h.make
-				h.put_content_type_text_html
-				h.put_content_length (s.count)
-
-				res.set_status_code ({HTTP_STATUS_CODE}.ok)
-				res.put_header_text (h.string)
-				res.put_string (s)
+				check starts_with_base: False end
 			end
+			process_uri (p, req, res)
 		end
 
-	process_uri (uri: READABLE_STRING_8; ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
+	execute_starts_with (a_start_path: READABLE_STRING_8; req: WSF_REQUEST; res: WSF_RESPONSE)
+		do
+			execute (a_start_path,req, res)
+		end
+
+	process_uri (uri: READABLE_STRING_8; req: WSF_REQUEST; res: WSF_RESPONSE)
 		local
 			f: RAW_FILE
 			fn: READABLE_STRING_8
@@ -103,19 +118,23 @@ feature -- Execution
 			if f.exists then
 				if f.is_readable then
 					if f.is_directory then
-						respond_index (req.request_uri, fn, ctx, req, res)
+						if index_disabled then
+							process_directory_index_disabled (uri, req, res)
+						else
+							process_index (req.request_uri, fn, req, res)
+						end
 					else
-						respond_file (f, ctx, req, res)
+						process_file (f, req, res)
 					end
 				else
-					respond_access_denied (uri, ctx, req, res)
+					process_access_denied (uri, req, res)
 				end
 			else
-				respond_not_found (uri, ctx, req, res)
+				process_not_found (uri, req, res)
 			end
 		end
 
-	respond_index (a_uri: READABLE_STRING_8; dn: READABLE_STRING_8; ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
+	process_index (a_uri: READABLE_STRING_8; dn: READABLE_STRING_8; req: WSF_REQUEST; res: WSF_RESPONSE)
 		local
 			h: HTTP_HEADER
 			uri, s: STRING_8
@@ -124,7 +143,7 @@ feature -- Execution
 		do
 			create d.make_open_read (dn)
 			if attached directory_index_file (d) as f then
-				respond_file (f, ctx, req, res)
+				process_file (f, req, res)
 			else
 				uri := a_uri
 				if not uri.is_empty and then uri [uri.count] /= '/'  then
@@ -170,31 +189,72 @@ feature -- Execution
 			d.close
 		end
 
-	respond_file (f: FILE; ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
+	process_file (f: FILE; req: WSF_REQUEST; res: WSF_RESPONSE)
 		local
 			ext: READABLE_STRING_8
 			ct: detachable READABLE_STRING_8
 			fres: WSF_FILE_RESPONSE
+			dt: DATE_TIME
 		do
 			ext := extension (f.name)
 			ct := extension_mime_mapping.mime_type (ext)
 			if ct = Void then
 				ct := {HTTP_MIME_TYPES}.application_force_download
 			end
-			create fres.make_with_content_type (ct, f.name)
-			fres.set_status_code ({HTTP_STATUS_CODE}.ok)
-			fres.set_answer_head_request_method (req.request_method.same_string ({HTTP_REQUEST_METHODS}.method_head))
+			if
+				attached req.meta_string_variable ("HTTP_IF_MODIFIED_SINCE") as s_if_modified_since and then
+				attached file_date (f) as f_date and then (f_date >= rfc1123_http_date_format_to_date (s_if_modified_since))
+			then
+				process_not_modified (f_date, req, res)
+			else
+				create fres.make_with_content_type (ct, f.name)
+				fres.set_status_code ({HTTP_STATUS_CODE}.ok)
 
-			res.send (fres)
+				-- cache control
+				create dt.make_now_utc
+				fres.header.put_cache_control ("private, max-age=" + max_age.out)
+				fres.header.put_utc_date (dt)
+				if max_age > 0 then
+					dt := dt.twin
+					dt.second_add (max_age)
+				end
+				fres.header.put_expires_date (dt)
+
+				fres.set_answer_head_request_method (req.request_method.same_string ({HTTP_REQUEST_METHODS}.method_head))
+				res.send (fres)
+			end
 		end
 
-	respond_not_found (uri: READABLE_STRING_8; ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
+	process_not_modified (a_utc_date: detachable DATE_TIME; req: WSF_REQUEST; res: WSF_RESPONSE)
+		local
+			h: HTTP_HEADER
+			dt: DATE_TIME
+		do
+			create dt.make_now_utc
+			create h.make
+			h.put_cache_control ("private, max-age=" + max_age.out)
+			h.put_utc_date (dt)
+			if max_age > 0 then
+				dt := dt.twin
+				dt.second_add (max_age)
+			end
+			h.put_expires_date (dt)
+
+			if a_utc_date /= Void then
+				h.put_last_modified (a_utc_date)
+			end
+			res.set_status_code ({HTTP_STATUS_CODE}.not_modified)
+			res.put_header_text (h.string)
+			res.flush
+		end
+
+	process_not_found (uri: READABLE_STRING_8; req: WSF_REQUEST; res: WSF_RESPONSE)
 		local
 			h: HTTP_HEADER
 			s: STRING_8
 		do
 			if attached not_found_handler as hdl then
-				hdl.call ([uri, ctx, req, res])
+				hdl.call ([uri, req, res])
 			else
 				create h.make
 				h.put_content_type_text_plain
@@ -208,18 +268,38 @@ feature -- Execution
 			end
 		end
 
-	respond_access_denied (uri: READABLE_STRING_8; ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
+	process_access_denied (uri: READABLE_STRING_8; req: WSF_REQUEST; res: WSF_RESPONSE)
 		local
 			h: HTTP_HEADER
 			s: STRING_8
 		do
 			if attached access_denied_handler as hdl then
-				hdl.call ([uri, ctx, req, res])
+				hdl.call ([uri, req, res])
 			else
 				create h.make
 				h.put_content_type_text_plain
 				create s.make_empty
 				s.append ("Resource %"" + uri + "%": Access denied%N")
+				res.set_status_code ({HTTP_STATUS_CODE}.forbidden)
+				h.put_content_length (s.count)
+				res.put_header_text (h.string)
+				res.put_string (s)
+				res.flush
+			end
+		end
+
+	process_directory_index_disabled (uri: READABLE_STRING_8; req: WSF_REQUEST; res: WSF_RESPONSE)
+		local
+			h: HTTP_HEADER
+			s: STRING_8
+		do
+			if attached access_denied_handler as hdl then
+				hdl.call ([uri, req, res])
+			else
+				create h.make
+				h.put_content_type_text_plain
+				create s.make_empty
+				s.append ("Directory index: Access denied%N")
 				res.set_status_code ({HTTP_STATUS_CODE}.forbidden)
 				h.put_content_length (s.count)
 				res.put_header_text (h.string)
@@ -259,7 +339,7 @@ feature {NONE} -- Implementation
 
 	resource_filename (uri: READABLE_STRING_8): READABLE_STRING_8
 		do
-			Result := real_filename (document_root + real_filename (uri))
+			Result := real_filename (document_root + operating_environment.directory_separator.out + real_filename (uri))
 		end
 
 	dirname (uri: READABLE_STRING_8): READABLE_STRING_8
@@ -341,6 +421,35 @@ feature {NONE} -- Implementation
 			else
 				create Result.make_default
 			end
+		end
+
+feature {NONE} -- implementation: date time
+
+	date_time_utility: HTTP_DATE_TIME_UTILITIES
+		once
+			create Result
+		end
+
+	file_date (f: FILE): DATE_TIME
+		do
+			Result := timestamp_to_date (f.date)
+		end
+
+	rfc1123_http_date_format_to_date (s: STRING): DATE_TIME
+			-- String representation of `dt' using the RFC 1123
+		local
+			t: STRING
+		do
+			t := s
+			if t.ends_with ("GMT") then
+				t := t.substring (1, t.count - 4)
+			end
+			create Result.make_from_string (t, "ddd,[0]dd mmm yyyy [0]hh:[0]mi:[0]ss.ff2")
+		end
+
+	timestamp_to_date (n: INTEGER): DATE_TIME
+		do
+			Result := date_time_utility.unix_time_stamp_to_date_time (n)
 		end
 
 note

@@ -9,20 +9,20 @@ class
 	USER_MESSAGE_HANDLER
 
 inherit
-	WSF_RESPONSE_HANDLER [WSF_URI_TEMPLATE_HANDLER_CONTEXT]
+	WSF_URI_TEMPLATE_RESPONSE_HANDLER
 
 feature -- Access
 
-	response (ctx: WSF_URI_TEMPLATE_HANDLER_CONTEXT; req: WSF_REQUEST): WSF_RESPONSE_MESSAGE
+	response (req: WSF_REQUEST): WSF_RESPONSE_MESSAGE
 		local
 			l_username: READABLE_STRING_32
 		do
-			if attached {WSF_STRING} ctx.path_parameter ("user") as u then
+			if attached {WSF_STRING} req.path_parameter ("user") as u then
 				l_username := html_decoded_string (u.value)
 				if req.is_request_method ("GET") then
-					Result := user_message_get (l_username, ctx, req)
+					Result := user_message_get (l_username, req)
 				elseif req.is_request_method ("POST") then
-					Result := user_message_response_post (l_username, ctx, req)
+					Result := user_message_response_post (l_username, req)
 				else
 					Result := unsupported_method_response (req)
 				end
@@ -46,7 +46,7 @@ feature -- Access
 		end
 
 
-	user_message_get (u: READABLE_STRING_32; ctx: WSF_URI_TEMPLATE_HANDLER_CONTEXT; req: WSF_REQUEST): WSF_HTML_PAGE_RESPONSE
+	user_message_get (u: READABLE_STRING_32; req: WSF_REQUEST): WSF_HTML_PAGE_RESPONSE
 		local
 			s: STRING_8
 		do
@@ -59,7 +59,7 @@ feature -- Access
 			Result.set_body (s)
 		end
 
-	user_message_response_post (u: READABLE_STRING_32; ctx: WSF_URI_TEMPLATE_HANDLER_CONTEXT; req: WSF_REQUEST): WSF_HTML_PAGE_RESPONSE
+	user_message_response_post (u: READABLE_STRING_32; req: WSF_REQUEST): WSF_HTML_PAGE_RESPONSE
 		local
 			s: STRING_8
 		do

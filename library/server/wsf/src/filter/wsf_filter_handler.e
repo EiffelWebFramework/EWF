@@ -8,34 +8,24 @@ note
 	revision: "$Revision$"
 
 deferred class
-	WSF_FILTER_HANDLER [C -> WSF_HANDLER_CONTEXT]
+	WSF_FILTER_HANDLER [H -> WSF_HANDLER]
 
 inherit
-	WSF_HANDLER [C]
+	WSF_HANDLER
 
 feature -- Access
 
-	next: detachable WSF_FILTER_HANDLER [C]
-			-- Next filter
+	next: detachable H
+			-- Next handler
 
 feature -- Element change
 
-	set_next (a_next: WSF_FILTER_HANDLER [C])
+	set_next (a_next: like next)
 			-- Set `next' to `a_next'
 		do
 			next := a_next
 		ensure
 			next_set: next = a_next
-		end
-
-feature {NONE} -- Implementation
-
-	execute_next (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
-			-- Execute the `next' filter.
-		do
-			if attached next as n then
-				n.execute (ctx, req, res)
-			end
 		end
 
 note

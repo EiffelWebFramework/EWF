@@ -5,10 +5,23 @@ note
 	revision: "$Revision$"
 
 class
-	ORDER_HANDLER [C -> WSF_HANDLER_CONTEXT]
+	ORDER_HANDLER
 inherit
-	WSF_HANDLER [C]
-	WSF_RESOURCE_HANDLER_HELPER [C]
+	WSF_URI_HANDLER
+		rename
+			execute as uri_execute,
+			new_mapping as new_uri_mapping
+		end
+
+	WSF_URI_TEMPLATE_HANDLER
+		rename
+			execute as uri_template_execute,
+			new_mapping as new_uri_template_mapping
+		select
+			new_uri_template_mapping
+		end
+
+	WSF_RESOURCE_HANDLER_HELPER
 		redefine
 			do_get,
 			do_post,
@@ -22,10 +35,16 @@ inherit
 
 feature -- execute
 
-	execute (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
+	uri_execute (req: WSF_REQUEST; res: WSF_RESPONSE)
 			-- Execute request handler	
 		do
-			execute_methods (ctx, req, res)
+			execute_methods (req, res)
+		end
+
+	uri_template_execute (req: WSF_REQUEST; res: WSF_RESPONSE)
+			-- Execute request handler	
+		do
+			execute_methods (req, res)
 		end
 
 feature -- API DOC
@@ -34,7 +53,7 @@ feature -- API DOC
 
 feature -- HTTP Methods
 
-	do_get (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
+	do_get (req: WSF_REQUEST; res: WSF_RESPONSE)
 			-- Using GET to retrieve resource information.
 			-- If the GET request is SUCCESS, we response with
 			-- 200 OK, and a representation of the order
@@ -49,12 +68,12 @@ feature -- HTTP Methods
 				id := get_order_id_from_path (orig_path)
 				if attached retrieve_order (id) as l_order then
 					if is_conditional_get (req, l_order) then
-						handle_resource_not_modified_response ("The resource" + orig_path + "does not change", ctx, req, res)
+						handle_resource_not_modified_response ("The resource" + orig_path + "does not change", req, res)
 					else
-						compute_response_get (ctx, req, res, l_order)
+						compute_response_get (req, res, l_order)
 					end
 				else
-					handle_resource_not_found_response ("The following resource" + orig_path + " is not found ", ctx, req, res)
+					handle_resource_not_found_response ("The following resource" + orig_path + " is not found ", req, res)
 				end
 			end
 		end
@@ -74,7 +93,7 @@ feature -- HTTP Methods
 			end
 		end
 
-	compute_response_get (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE; l_order : ORDER)
+	compute_response_get (req: WSF_REQUEST; res: WSF_RESPONSE; l_order : ORDER)
 		local
 			h: HTTP_HEADER
 			l_msg : STRING
@@ -96,7 +115,7 @@ feature -- HTTP Methods
 			end
 		end
 
-	do_put (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
+	do_put (req: WSF_REQUEST; res: WSF_RESPONSE)
 		-- Updating a resource with PUT
 		-- A successful PUT request will not create a new resource, instead it will
 		-- change the state of the resource identified by the current uri.
@@ -120,16 +139,16 @@ feature -- HTTP Methods
 					if is_valid_to_update(l_order) then
 						if is_conditional_put (req, l_order) then
 							update_order( l_order)
-							compute_response_put (ctx, req, res, l_order)
+							compute_response_put (req, res, l_order)
 						else
-							handle_precondition_fail_response ("", ctx, req, res)
+							handle_precondition_fail_response ("", req, res)
 						end
 					else
 						--| FIXME: Here we need to define the Allow methods
-						handle_resource_conflict_response (l_put +"%N There is conflict while trying to update the order, the order could not be update in the current state", ctx, req, res)
+						handle_resource_conflict_response (l_put +"%N There is conflict while trying to update the order, the order could not be update in the current state", req, res)
 					end
 				else
-					handle_bad_request_response (l_put +"%N is not a valid ORDER, maybe the order does not exist in the system", ctx, req, res)
+					handle_bad_request_response (l_put +"%N is not a valid ORDER, maybe the order does not exist in the system", req, res)
 				end
 			end
 		end
@@ -153,7 +172,7 @@ feature -- HTTP Methods
 		end
 
 
-	compute_response_put (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE; l_order : ORDER)
+	compute_response_put (req: WSF_REQUEST; res: WSF_RESPONSE; l_order : ORDER)
 		local
 			h: HTTP_HEADER
 			joc : JSON_ORDER_CONVERTER
@@ -179,7 +198,7 @@ feature -- HTTP Methods
 		end
 
 
-	do_delete (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
+	do_delete (req: WSF_REQUEST; res: WSF_RESPONSE)
 		-- Here we use DELETE to cancel an order, if that order is in state where
 		-- it can still be canceled.
 		-- 200 if is ok
@@ -194,18 +213,18 @@ feature -- HTTP Methods
 				if db_access.orders.has_key (id) then
 					if is_valid_to_delete (id) then
 						delete_order( id)
-						compute_response_delete (ctx, req, res)
+						compute_response_delete (req, res)
 					else
 						--| FIXME: Here we need to define the Allow methods
-						handle_method_not_allowed_response (orig_path + "%N There is conflict while trying to delete the order, the order could not be deleted in the current state", ctx, req, res)
+						handle_method_not_allowed_response (orig_path + "%N There is conflict while trying to delete the order, the order could not be deleted in the current state", req, res)
 					end
 				else
-					handle_resource_not_found_response (orig_path + " not found in this server", ctx, req, res)
+					handle_resource_not_found_response (orig_path + " not found in this server", req, res)
 				end
 			end
 		end
 
-	compute_response_delete (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
+	compute_response_delete (req: WSF_REQUEST; res: WSF_RESPONSE)
 		local
 			h : HTTP_HEADER
 		do
@@ -218,7 +237,7 @@ feature -- HTTP Methods
 			res.put_header_text (h.string)
 		end
 
-	do_post (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
+	do_post (req: WSF_REQUEST; res: WSF_RESPONSE)
 			-- Here the convention is the following.
 			-- POST is used for creation and the server determines the URI
 			-- of the created resource.
@@ -233,13 +252,13 @@ feature -- HTTP Methods
 			l_post := retrieve_data (req)
 			if attached extract_order_request (l_post) as l_order then
 				save_order (l_order)
-				compute_response_post (ctx, req, res, l_order)
+				compute_response_post (req, res, l_order)
 			else
-				handle_bad_request_response (l_post +"%N is not a valid ORDER", ctx, req, res)
+				handle_bad_request_response (l_post +"%N is not a valid ORDER", req, res)
 			end
 		end
 
-	compute_response_post (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE; l_order : ORDER)
+	compute_response_post (req: WSF_REQUEST; res: WSF_RESPONSE; l_order : ORDER)
 		local
 			h: HTTP_HEADER
 			l_msg : STRING
@@ -347,7 +366,9 @@ feature {NONE} -- Implementation Repository Layer
 			json.add_converter(joc)
 			create parser.make_parser (l_post)
 			if attached parser.parse as jv and parser.is_parsed then
-				Result ?= json.object (jv, "ORDER")
+				if attached {like extract_order_request} json.object (jv, "ORDER") as res then
+					Result := res
+				end
 			end
 		end
 

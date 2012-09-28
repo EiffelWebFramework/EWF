@@ -1,46 +1,14 @@
-note
-	description: "Summary description for REST_REQUEST_AGENT_HANDLER."
-	author: ""
-	date: "$Date$"
-	revision: "$Revision$"
-
 class
-	REST_REQUEST_AGENT_HANDLER [C -> REST_REQUEST_HANDLER_CONTEXT]
+	REST_REQUEST_AGENT_HANDLER
 
 inherit
-	WSF_AGENT_HANDLER [C]
-		rename
-			execute as execute_application
-		end
-
-	REST_REQUEST_HANDLER [C]
-		select
-			execute
-		end
+	WSF_URI_TEMPLATE_AGENT_HANDLER
 
 create
 	make
 
-feature -- status
-
-	authentication_required (req: WSF_REQUEST): BOOLEAN
-		do
-			Result := internal_authentication_required
-		end
-
-feature -- Element change
-
-	set_authentication_required (b: like authentication_required)
-		do
-			internal_authentication_required := b
-		end
-
-feature {NONE} -- Implementation
-
-	internal_authentication_required: BOOLEAN
-
-;note
-	copyright: "Copyright (c) 1984-2011, Eiffel Software and others"
+note
+	copyright: "Copyright (c) 1984-2012, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

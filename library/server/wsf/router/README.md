@@ -1,7 +1,7 @@
 # Router 
 
 ## Requirements
-* [URI Template](../../../protocol/rui_template)
+* [URI Template](../../../protocol/uri_template)
 
 ## Overview
 

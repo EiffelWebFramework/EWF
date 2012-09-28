@@ -1,6 +1,5 @@
 note
-	description : "Objects that ..."
-	author      : "$Author$"
+	description : "REST Buck server"
 	date        : "$Date$"
 	revision    : "$Revision$"
 
@@ -30,11 +29,11 @@ feature {NONE} -- Initialization
 
 	setup_router
 		local
-			order_handler: ORDER_HANDLER [WSF_URI_TEMPLATE_HANDLER_CONTEXT]
+			order_handler: ORDER_HANDLER
 		do
 			create order_handler
-			router.map_with_request_methods ("/order", order_handler, <<"POST">>)
-			router.map_with_request_methods ("/order/{orderid}", order_handler, <<"GET", "DELETE", "PUT">>)
+			router.handle_with_request_methods ("/order", order_handler, router.methods_POST)
+			router.handle_with_request_methods ("/order/{orderid}", order_handler, router.methods_GET + router.methods_DELETE + router.methods_PUT)
 		end
 
 feature -- Execution

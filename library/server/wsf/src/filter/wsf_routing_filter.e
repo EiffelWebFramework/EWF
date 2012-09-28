@@ -5,7 +5,7 @@ note
 	revision: "$Revision$"
 
 class
-	WSF_ROUTING_FILTER [H -> WSF_HANDLER [C], C -> WSF_HANDLER_CONTEXT]
+	WSF_ROUTING_FILTER
 
 inherit
 	WSF_FILTER
@@ -15,7 +15,7 @@ create
 
 feature {NONE} -- Initialization
 
-	make (a_router: WSF_ROUTER [H, C])
+	make (a_router: WSF_ROUTER)
 		do
 			router := a_router
 		ensure
@@ -24,7 +24,7 @@ feature {NONE} -- Initialization
 
 feature -- Access
 
-	router: WSF_ROUTER [H, C]
+	router: WSF_ROUTER
 			-- Router
 
 	execute_default_action: detachable PROCEDURE [ANY, TUPLE [req: WSF_REQUEST; res: WSF_RESPONSE]]
@@ -45,8 +45,8 @@ feature -- Basic operations
 	execute (req: WSF_REQUEST; res: WSF_RESPONSE)
 			-- Execute the filter
 		do
-			if attached router.route (req) as r then
-				router.execute_route (r, req, res)
+			if attached router.dispatch_and_return_handler (req, res) then
+				check router.is_dispatched end
 			else
 				execute_default (req, res)
 			end

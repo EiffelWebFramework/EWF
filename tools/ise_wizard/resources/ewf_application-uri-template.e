@@ -27,7 +27,7 @@ feature {NONE} -- Initialization
 	setup_router
 		do
 			-- Set the router here
-			router.map_agent ("/hello/{user}", agent execute_hello)
+			map_uri_template_agent ("/hello/{user}", agent execute_hello)
 		end
 
 feature -- Execution
@@ -43,7 +43,7 @@ feature -- Execution
 			res.redirect_now_with_content (l_url, "Redirection to " + l_url, "text/html")
 		end
 
-	execute_hello (ctx: WSF_URI_TEMPLATE_HANDLER_CONTEXT; req: WSF_REQUEST; res: WSF_RESPONSE)
+	execute_hello (req: WSF_REQUEST; res: WSF_RESPONSE)
 			-- Computed response message.
 		local
 			mesg: WSF_HTML_PAGE_RESPONSE
