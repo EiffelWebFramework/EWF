@@ -12,9 +12,9 @@ inherit
 
 feature {WSF_ROUTER} -- Mapping
 
-	new_mapping (a_tpl: READABLE_STRING_8): WSF_URI_TEMPLATE_CONTEXT_MAPPING [C]
+	new_mapping (a_tpl: READABLE_STRING_8): WSF_ROUTER_MAPPING
 		do
-			create Result.make (a_tpl, Current)
+			create {WSF_URI_TEMPLATE_CONTEXT_MAPPING [C]} Result.make (a_tpl, Current)
 		end
 
 note

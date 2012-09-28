@@ -18,9 +18,9 @@ feature -- Execution
 
 feature {WSF_ROUTER} -- Mapping
 
-	new_mapping (a_uri: READABLE_STRING_8): WSF_URI_MAPPING
+	new_mapping (a_uri: READABLE_STRING_8): WSF_ROUTER_MAPPING
 		do
-			create Result.make (a_uri, Current)
+			create {WSF_URI_MAPPING} Result.make (a_uri, Current)
 		end
 
 note

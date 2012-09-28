@@ -7,12 +7,12 @@
 			<exclude>/EIFGENs$</exclude>
 			<exclude>/.svn$</exclude>
 		</file_rule>
-		<option warning="true" full_class_checking="true" void_safety="none" syntax="standard">
+		<option warning="true" full_class_checking="true" is_attached_by_default="true" void_safety="all" syntax="standard">
 		</option>
-		<library name="base" location="$ISE_LIBRARY/library/base/base.ecf"/>
-		<library name="http" location="../../network/protocol/http/http.ecf"/>
-		<library name="ewsgi" location="..\ewsgi\ewsgi.ecf"/>
-		<library name="wsf" location="..\wsf\wsf.ecf"/>
-		<cluster name="src" location="./src" recursive="true"/>
+		<library name="base" location="$ISE_LIBRARY/library/base/base-safe.ecf"/>
+		<library name="http" location="../../network/protocol/http/http-safe.ecf"/>
+		<library name="ewsgi" location="..\ewsgi\ewsgi-safe.ecf"/>
+		<library name="wsf-safe" location="..\wsf\wsf-safe.ecf"/>
+		<cluster name="extension" location=".extension" recursive="true"/>
 	</target>
 </system>
