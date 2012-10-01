@@ -5,10 +5,10 @@ note
 	revision: "$Revision$"
 
 class
-	WSF_URI_TEMPLATE_CONTEXT_MAPPING [C -> WSF_HANDLER_CONTEXT create make end]
+	WSF_URI_TEMPLATE_CONTEXT_MAPPING
 
 inherit
-	WSF_ROUTER_CONTEXT_MAPPING [C]
+	WSF_ROUTER_CONTEXT_MAPPING
 
 create
 	make,
@@ -29,7 +29,7 @@ feature {NONE} -- Initialization
 
 feature -- Access		
 
-	handler: WSF_URI_TEMPLATE_CONTEXT_HANDLER [C]
+	handler: WSF_URI_TEMPLATE_CONTEXT_HANDLER
 
 	template: URI_TEMPLATE
 
@@ -46,14 +46,14 @@ feature -- Status
 		local
 			tpl: URI_TEMPLATE
 			p: READABLE_STRING_32
-			ctx: detachable C
+			ctx: detachable WSF_HANDLER_CONTEXT
 			new_src: detachable WSF_REQUEST_PATH_PARAMETERS_PROVIDER
 		do
 			p := path_from_request (req)
 			tpl := based_uri_template (template, a_router)
 			if attached tpl.match (p) as tpl_res then
 				Result := handler
-				create ctx.make (req, Current)
+				ctx := context (req, Current)
 				a_router.execute_before (Current)
 				--| Applied the context to the request
 				--| in practice, this will fill the {WSF_REQUEST}.path_parameters
@@ -83,6 +83,10 @@ feature {NONE} -- Implementation
 			end
 		end
 
+	context (req: WSF_REQUEST; map: WSF_ROUTER_MAPPING): WSF_HANDLER_CONTEXT
+		do
+			create Result.make (req, map)
+		end
 
 note
 	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"

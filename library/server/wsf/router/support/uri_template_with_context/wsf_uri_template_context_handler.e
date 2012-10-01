@@ -5,14 +5,14 @@ note
 	revision: "$Revision$"
 
 deferred class
-	WSF_URI_TEMPLATE_CONTEXT_HANDLER [C -> WSF_HANDLER_CONTEXT create make end]
+	WSF_URI_TEMPLATE_CONTEXT_HANDLER
 
 inherit
-	WSF_CONTEXT_HANDLER [C]
+	WSF_CONTEXT_HANDLER
 
 feature {WSF_ROUTER} -- Mapping
 
-	new_mapping (a_tpl: READABLE_STRING_8): WSF_URI_TEMPLATE_CONTEXT_MAPPING [C]
+	new_mapping (a_tpl: READABLE_STRING_8): WSF_URI_TEMPLATE_CONTEXT_MAPPING
 		do
 			create Result.make (a_tpl, Current)
 		end

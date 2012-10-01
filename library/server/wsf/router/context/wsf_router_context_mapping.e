@@ -5,14 +5,14 @@ note
 	revision: "$Revision$"
 
 deferred class
-	WSF_ROUTER_CONTEXT_MAPPING [C -> WSF_HANDLER_CONTEXT create make end]
+	WSF_ROUTER_CONTEXT_MAPPING
 
 inherit
 	WSF_ROUTER_MAPPING
 
 feature -- Access		
 
-	handler: WSF_CONTEXT_HANDLER [C]
+	handler: WSF_CONTEXT_HANDLER
 			-- Handler associated with Current mapping.
 		deferred
 		end

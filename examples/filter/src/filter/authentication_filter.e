@@ -8,11 +8,9 @@ class
 	AUTHENTICATION_FILTER
 
 inherit
-	WSF_FILTER_HANDLER [WSF_URI_TEMPLATE_HANDLER]
+	WSF_FILTER_URI_TEMPLATE_HANDLER
 
 	SHARED_DATABASE_API
-
-	WSF_URI_TEMPLATE_HANDLER
 
 	WSF_RESOURCE_HANDLER_HELPER
 --		redefine
@@ -38,15 +36,6 @@ feature -- Basic operations
 				execute_next (req, res)
 			else
 				handle_unauthorized ("Unauthorized", req, res)
-			end
-		end
-
-feature -- Filter
-
-	execute_next (req: WSF_REQUEST; res: WSF_RESPONSE)
-		do
-			if attached next as n then
-				n.execute (req, res)
 			end
 		end
 
