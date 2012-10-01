@@ -64,7 +64,7 @@ feature -- Execution
 			content_type_supported := <<{HTTP_CONSTANTS}.application_json, {HTTP_CONSTANTS}.text_xml, {HTTP_CONSTANTS}.text_plain>>
 			l_format_id := ctx.request_accepted_format_id ("format", content_type_supported)
 			if authenticated (ctx) then
-				l_full := attached ctx.query_parameter ("details") as v and then v.is_case_insensitive_equal ("true")
+				l_full := attached req.query_parameter ("details") as v and then v.is_case_insensitive_equal ("true")
 				if attached authenticated_identifier (ctx) as log then
 					l_login := log.as_string_8
 
@@ -92,10 +92,10 @@ feature -- Execution
 						res.put_string (s)
 					end
 				else
-					send_error (ctx.path, 0, "User/password unknown", Void, ctx, req, res)
+					send_error (req.path_info, 0, "User/password unknown", Void, ctx, req, res)
 				end
 			else
-				send_error (ctx.path, 0, "Authentication rejected", Void, ctx, req, res)
+				send_error (req.path_info, 0, "Authentication rejected", Void, ctx, req, res)
 			end
 		end
 

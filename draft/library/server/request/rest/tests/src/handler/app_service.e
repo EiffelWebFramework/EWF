@@ -8,14 +8,8 @@ deferred class
 	APP_SERVICE
 
 inherit
-	REST_SERVICE_I [APP_REQUEST_HANDLER, APP_REQUEST_HANDLER_CONTEXT]
-		redefine
-			router
-		end
+	REST_SERVICE_I [APP_REQUEST_HANDLER_CONTEXT]
 
-feature {NONE} -- Router
-
-	router: APP_REQUEST_ROUTER
 
 ;note
 	copyright: "Copyright (c) 1984-2011, Eiffel Software and others"

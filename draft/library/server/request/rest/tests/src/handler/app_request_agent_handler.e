@@ -9,17 +9,33 @@ class
 
 inherit
 	APP_REQUEST_HANDLER
-		undefine
-			execute, pre_execute, post_execute
-		end
+--		undefine
+--			execute, pre_execute, post_execute
+--		end
 
 	REST_REQUEST_AGENT_HANDLER [APP_REQUEST_HANDLER_CONTEXT]
 		undefine
-			authenticated
+			execute
+--			authenticated
 		end
 
 create
 	make
+
+feature -- Access
+
+	execute_application (ctx: APP_REQUEST_HANDLER_CONTEXT; req: WSF_REQUEST; res: WSF_RESPONSE)
+		do
+			execute (ctx, req, res)
+		end
+
+	authentication_required (req: WSF_REQUEST): BOOLEAN
+			-- Is authentication required
+			-- might depend on the request environment
+			-- or the associated resources
+		do
+			Result := False
+		end
 
 
 note

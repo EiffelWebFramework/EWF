@@ -5,10 +5,10 @@ note
 	revision: "$Revision$"
 
 deferred class
-	REST_SERVICE_I
+	REST_SERVICE_I [C -> WSF_HANDLER_CONTEXT create make end]
 
 inherit
-	WSF_URI_TEMPLATE_ROUTED_SERVICE
+	WSF_URI_TEMPLATE_CONTEXT_ROUTED_SERVICE [C]
 
 ;note
 	copyright: "Copyright (c) 1984-2012, Eiffel Software and others"

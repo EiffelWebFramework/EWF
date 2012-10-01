@@ -9,25 +9,32 @@ class
 
 inherit
 	APP_REQUEST_HANDLER
+		rename
+			execute as uri_template_execute
 		undefine
-			execute
+			uri_template_execute
 		end
 
-	REST_REQUEST_URI_TEMPLATE_ROUTING_HANDLER_I [APP_REQUEST_HANDLER, APP_REQUEST_HANDLER_CONTEXT]
-		undefine
-			authenticated,
-			pre_execute,
-			post_execute
-		redefine
-			router
-		end
+	WSF_URI_TEMPLATE_ROUTING_CONTEXT_HANDLER [APP_REQUEST_HANDLER_CONTEXT]
 
 create
 	make
 
-feature {NONE} -- Routing
+feature -- Access
 
-	router: APP_REQUEST_ROUTER
+	authentication_required (req: WSF_REQUEST): BOOLEAN
+			-- Is authentication required
+			-- might depend on the request environment
+			-- or the associated resources
+		do
+		end
+
+feature -- Execution
+
+	execute_application	 (ctx: APP_REQUEST_HANDLER_CONTEXT; req: WSF_REQUEST; res: WSF_RESPONSE)
+		do
+			uri_template_execute (ctx, req, res)
+		end
 
 ;note
 	copyright: "Copyright (c) 1984-2011, Eiffel Software and others"

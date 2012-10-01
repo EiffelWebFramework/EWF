@@ -5,10 +5,10 @@ note
 	revision: "$Revision$"
 
 deferred class
-	REST_REQUEST_URI_TEMPLATE_HANDLER
+	REST_REQUEST_URI_TEMPLATE_HANDLER [C -> WSF_HANDLER_CONTEXT create make end]
 
 inherit
-	REST_REQUEST_HANDLER
+	REST_REQUEST_HANDLER [C]
 
 
 ;note

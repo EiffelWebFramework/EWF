@@ -18,7 +18,7 @@ feature -- Execution
 
 feature {WSF_ROUTER} -- Mapping
 
-	new_mapping (a_resource: READABLE_STRING_8): WSF_ROUTER_CONTEXT_MAPPING [C]
+	new_mapping (a_resource: READABLE_STRING_8): WSF_ROUTER_MAPPING
 			-- New mapping built with Current as handler
 		deferred
 		end

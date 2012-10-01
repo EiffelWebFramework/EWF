@@ -59,14 +59,14 @@ feature -- Execution
 				s.append_string (" format=" + l_format + "%N")
 			end
 
-			if attached ctx.string_item ("op") as l_op then
+			if attached ctx.string_item (req, "op") as l_op then
 				s.append_string (" op=" + l_op)
 				if l_op.same_string ("crash") then
 					(create {DEVELOPER_EXCEPTION}).raise
 				elseif l_op.starts_with ("env") then
 					s.append_string ("%N%NAll variables:")
 					s.append (wgi_value_iteration_to_string (req.items, False))
-					s.append_string ("<br/>script_url(%"" + req.path_info + "%")=" + ctx.script_url (req.path_info) + "%N")
+					s.append_string ("<br/>script_url(%"" + req.path_info + "%")=" + req.script_url (req.path_info) + "%N")
 --					if attached ctx.http_authorization_login_password as t then
 --						s.append_string ("Check login=" + t.login + "<br/>%N")
 --					end
@@ -75,8 +75,8 @@ feature -- Execution
 					end
 				end
 			else
-				s.append ("%N Try " + ctx.script_absolute_url (req.path_info + "?op=env") + " to display all variables%N")
-				s.append ("%N Try " + ctx.script_absolute_url (req.path_info + "?op=crash") + " to demonstrate exception trace%N")
+				s.append ("%N Try " + ctx.script_absolute_url (req, req.path_info + "?op=env") + " to display all variables%N")
+				s.append ("%N Try " + ctx.script_absolute_url (req, req.path_info + "?op=crash") + " to demonstrate exception trace%N")
 			end
 
 			res.set_status_code (200)

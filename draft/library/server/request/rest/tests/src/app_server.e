@@ -10,10 +10,12 @@ class
 inherit
 	APP_SERVICE
 		redefine
+			create_router,
 			execute
 		end
 
 	REST_SERVICE_GATEWAY
+	WSF_REQUEST_UTILITY
 
 create
 	make
@@ -42,18 +44,17 @@ feature {NONE} -- Handlers
 			gh: APP_REQUEST_ROUTING_HANDLER
 		do
 			create {APP_ACCOUNT_VERIFY_CREDENTIAL} h.make
-			router.map ("/account/verify_credentials", h)
-			router.map ("/account/verify_credentials.{format}", h)
+			router.handle ("/account/verify_credentials.{format}", h)
 
 
 			create {APP_TEST} h.make
 
 			create gh.make (4)
-			router.map ("/test", gh)
+			router.handle ("/test", gh)
 --			gh.map ("/test", h)
-			gh.map ("/test/{op}", h)
-			gh.map ("/test.{format}", h)
-			gh.map ("/test.{format}/{op}", h)
+			gh.router.handle ("/test/{op}", h)
+			gh.router.handle ("/test.{format}", h)
+			gh.router.handle ("/test.{format}/{op}", h)
 
 
 			create rah.make (agent execute_exit_application)
@@ -61,8 +62,8 @@ feature {NONE} -- Handlers
 			h.set_description ("tell the REST server to exit (in FCGI context, this is used to reload the FCGI server)")
 			h.enable_request_method_get
 			h.enable_format_text
-			router.map ("/debug/exit", h)
-			router.map ("/debug/exit.{format}", h)
+			router.handle ("/debug/exit", h)
+			router.handle ("/debug/exit.{format}", h)
 		end
 
 feature -- Execution
@@ -131,7 +132,7 @@ feature -- Implementation
 
 			create s.make_empty
 			s.append_string ("Exited")
-			s.append_string (" <a href=%"" + ctx.script_url ("/") + "%">start again</a>%N")
+			s.append_string (" <a href=%"" + req.script_url ("/") + "%">start again</a>%N")
 			res.put_string (s)
 			exit_with_code (0)
 		end
