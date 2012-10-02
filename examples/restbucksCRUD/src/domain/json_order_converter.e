@@ -34,9 +34,15 @@ feature -- Conversion
         do
             is_valid_from_json := True
 
-            s_id   ?= json.object (j.item (id_key), Void)
-            s_location ?= json.object (j.item (location_key), Void)
-            s_status ?= json.object (j.item (status_key), Void)
+			if attached {STRING_32} json.object (j.item (id_key), Void) as l_id then
+				s_id := s_id
+			end
+			if attached {STRING_32} json.object (j.item (location_key), Void) as l_location then
+				s_location := l_location
+			end
+			if attached {STRING_32} json.object (j.item (status_key), Void) as l_status then
+				s_status := l_status
+			end
 
          	create o.make ("", s_location, s_status)
 
