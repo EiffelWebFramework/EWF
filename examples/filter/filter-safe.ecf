@@ -25,7 +25,7 @@
 		<library name="json" location="..\..\contrib\library\text\parser\json\library\json-safe.ecf" readonly="false"/>
 		<library name="uri_template" location="../../library/text/parser/uri_template/uri_template-safe.ecf" readonly="false"/>
 		<library name="wsf" location="..\..\library\server\wsf\wsf-safe.ecf" readonly="false"/>
-		<library name="wsf_extension" location="..\..\library\server\wsf_extension\wsf_extension-safe.ecf" readonly="false"/>
+		<library name="wsf_extension" location="..\..\library\server\wsf\wsf_extension-safe.ecf" readonly="false"/>
                 <library name="http_authorization" location="..\..\library\server\authentication\http_authorization\http_authorization-safe.ecf" readonly="false"/>
 		<library name="time" location="$ISE_LIBRARY\library\time\time-safe.ecf"/>
 		<cluster name="src" location="src\" recursive="true"/>
