@@ -7,6 +7,12 @@
 class
 	USER
 
+inherit
+	ANY
+		redefine
+			is_equal
+		end
+
 create
 	make
 
@@ -33,6 +39,19 @@ feature -- Access
 
  	password: STRING
  			-- Password
+
+feature -- Comparison
+
+	is_equal (other: like Current): BOOLEAN
+			-- Is `other' attached to an object considered
+			-- equal to current object?
+		do
+			if Current = other then
+				Result := True
+			else
+				Result := (id = other.id) and (name = other.name) and (password = other.password)
+			end
+		end
 
 ;note
 	copyright: "2011-2011, Javier Velilla and others"

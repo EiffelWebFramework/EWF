@@ -37,7 +37,7 @@ feature {NONE} -- Initialization
 			l_router: WSF_ROUTER
 			l_authentication_filter_hdl: AUTHENTICATION_FILTER
 			l_user_filter: USER_HANDLER
-			l_user_handler: WSF_URI_TEMPLATE_HANDLER
+			l_user_handler: WSF_HANDLER
 			l_routing_filter: WSF_ROUTING_FILTER
 		do
 			create l_router.make (1)

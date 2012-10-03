@@ -8,22 +8,18 @@ class
 	AUTHENTICATION_FILTER
 
 inherit
-	WSF_FILTER_URI_TEMPLATE_HANDLER
+	WSF_FILTER_CONTEXT_HANDLER
+
+	WSF_URI_TEMPLATE_CONTEXT_HANDLER
+		redefine
+			new_mapping
+		end
 
 	SHARED_DATABASE_API
-
-	WSF_RESOURCE_HANDLER_HELPER
---		redefine
---			do_get
---		end
-
-	SHARED_DATABASE_API
-
-	SHARED_EJSON
 
 feature -- Basic operations
 
-	execute (req: WSF_REQUEST; res: WSF_RESPONSE)
+	execute (ctx: FILTER_HANDLER_CONTEXT; req: WSF_REQUEST; res: WSF_RESPONSE)
 			-- Execute the filter
 		local
 			l_auth: HTTP_AUTHORIZATION
@@ -33,10 +29,18 @@ feature -- Basic operations
 				attached Db_access.users.item (1) as l_user and then
 				(attached l_auth.login as l_auth_login and then l_auth_login.is_equal (l_user.name)
 				and attached l_auth.password as l_auth_password and then l_auth_password.is_equal (l_user.password)) then
-				execute_next (req, res)
+				ctx.set_user (l_user)
+				execute_next (ctx, req, res)
 			else
 				handle_unauthorized ("Unauthorized", req, res)
 			end
+		end
+
+feature {WSF_ROUTER} -- Mapping
+
+	new_mapping (a_tpl: READABLE_STRING_8): FILTER_CONTEXT_MAPPING
+		do
+			create Result.make (a_tpl, Current)
 		end
 
 feature {NONE} -- Implementation

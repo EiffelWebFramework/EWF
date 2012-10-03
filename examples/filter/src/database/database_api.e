@@ -18,6 +18,8 @@ feature -- Initialization
 			create users.make (10)
 			create l_user.make (1, "foo", "bar")
 			users.put (l_user, l_user.id)
+			create l_user.make (2, "demo", "demo")
+			users.put (l_user, l_user.id)
 		end
 
 feature -- Access
