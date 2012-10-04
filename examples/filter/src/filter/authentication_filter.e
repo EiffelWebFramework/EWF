@@ -8,16 +8,9 @@ class
 	AUTHENTICATION_FILTER
 
 inherit
-	WSF_FILTER_HANDLER [WSF_URI_TEMPLATE_HANDLER]
+	WSF_FILTER_CONTEXT_HANDLER [FILTER_HANDLER_CONTEXT, WSF_URI_TEMPLATE_CONTEXT_HANDLER [FILTER_HANDLER_CONTEXT]]
 
-	SHARED_DATABASE_API
-
-	WSF_URI_TEMPLATE_HANDLER
-
-	WSF_RESOURCE_HANDLER_HELPER
---		redefine
---			do_get
---		end
+	WSF_URI_TEMPLATE_CONTEXT_HANDLER [FILTER_HANDLER_CONTEXT]
 
 	SHARED_DATABASE_API
 
@@ -25,7 +18,7 @@ inherit
 
 feature -- Basic operations
 
-	execute (req: WSF_REQUEST; res: WSF_RESPONSE)
+	execute (ctx: FILTER_HANDLER_CONTEXT; req: WSF_REQUEST; res: WSF_RESPONSE)
 			-- Execute the filter
 		local
 			l_auth: HTTP_AUTHORIZATION
@@ -34,19 +27,12 @@ feature -- Basic operations
 			if (attached l_auth.type as l_auth_type and then l_auth_type.is_equal ("basic")) and
 				attached Db_access.users.item (1) as l_user and then
 				(attached l_auth.login as l_auth_login and then l_auth_login.is_equal (l_user.name)
-				and attached l_auth.password as l_auth_password and then l_auth_password.is_equal (l_user.password)) then
-				execute_next (req, res)
+				and attached l_auth.password as l_auth_password and then l_auth_password.is_equal (l_user.password))
+			then
+				ctx.set_user (l_user)
+				execute_next (ctx, req, res)
 			else
 				handle_unauthorized ("Unauthorized", req, res)
-			end
-		end
-
-feature -- Filter
-
-	execute_next (req: WSF_REQUEST; res: WSF_RESPONSE)
-		do
-			if attached next as n then
-				n.execute (req, res)
 			end
 		end
 
@@ -67,4 +53,7 @@ feature {NONE} -- Implementation
 			res.put_string (a_description)
 		end
 
+note
+	copyright: "2011-2012, Olivier Ligot, Jocelyn Fiat and others"
+	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 end

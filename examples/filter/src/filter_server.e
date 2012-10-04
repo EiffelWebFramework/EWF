@@ -37,17 +37,14 @@ feature {NONE} -- Initialization
 			l_router: WSF_ROUTER
 			l_authentication_filter_hdl: AUTHENTICATION_FILTER
 			l_user_filter: USER_HANDLER
-			l_user_handler: WSF_URI_TEMPLATE_HANDLER
 			l_routing_filter: WSF_ROUTING_FILTER
 		do
 			create l_router.make (1)
 			create l_authentication_filter_hdl
 			create l_user_filter
 			l_authentication_filter_hdl.set_next (l_user_filter)
-			l_user_handler := l_authentication_filter_hdl
-			l_router.handle_with_request_methods ("/user/{userid}", l_user_handler, l_router.methods_get)
---			l_router.map_with_request_methods ("/user/{userid}", l_user_handler, << "GET" >>)
---			create l_routing_hdl.make_with_router (l_router)
+
+			l_router.handle_with_request_methods ("/user/{userid}", l_authentication_filter_hdl, l_router.methods_get)
 			create l_routing_filter.make (l_router)
 			l_routing_filter.set_execute_default_action (agent execute_default)
 			filter := l_routing_filter
@@ -99,7 +96,7 @@ feature -- Basic operations
 		end
 
 note
-	copyright: "2011-2012, Javier Velilla and others"
+	copyright: "2011-2012, Olivier Ligot, Jocelyn Fiat and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

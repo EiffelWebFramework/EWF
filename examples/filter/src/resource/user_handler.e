@@ -8,11 +8,11 @@ class
 	USER_HANDLER
 
 inherit
-	WSF_FILTER_HANDLER [WSF_URI_TEMPLATE_HANDLER]
+	WSF_FILTER_CONTEXT_HANDLER [FILTER_HANDLER_CONTEXT, WSF_URI_TEMPLATE_CONTEXT_HANDLER [FILTER_HANDLER_CONTEXT]]
 
-	WSF_URI_TEMPLATE_HANDLER
+	WSF_URI_TEMPLATE_CONTEXT_HANDLER [FILTER_HANDLER_CONTEXT]
 
-	WSF_RESOURCE_HANDLER_HELPER
+	WSF_RESOURCE_CONTEXT_HANDLER_HELPER [FILTER_HANDLER_CONTEXT]
 		redefine
 			do_get
 		end
@@ -23,25 +23,34 @@ inherit
 
 feature -- Basic operations
 
-	execute (req: WSF_REQUEST; res: WSF_RESPONSE)
+	execute (ctx: FILTER_HANDLER_CONTEXT; req: WSF_REQUEST; res: WSF_RESPONSE)
 			-- Execute request handler	
 		do
-			execute_methods (req, res)
+			execute_methods (ctx, req, res)
+			execute_next (ctx, req, res)
 		end
 
-	do_get (req: WSF_REQUEST; res: WSF_RESPONSE)
+	do_get (ctx: FILTER_HANDLER_CONTEXT; req: WSF_REQUEST; res: WSF_RESPONSE)
 			-- Using GET to retrieve resource information.
 			-- If the GET request is SUCCESS, we response with
 			-- 200 OK, and a representation of the user
 			-- If the GET request is not SUCCESS, we response with
 			-- 404 Resource not found
+		require else
+			authenticated_user_attached: attached ctx.user
 		local
 			id :  STRING
 		do
 			if attached req.orig_path_info as orig_path then
 				id := get_user_id_from_path (orig_path)
 				if attached retrieve_user (id) as l_user then
-					compute_response_get (req, res, l_user)
+					if l_user ~ ctx.user then
+						compute_response_get (req, res, l_user)
+					elseif attached ctx.user as l_auth_user then
+						-- Trying to access another user that the authenticated one,
+						-- which is forbidden in this example...
+						handle_forbidden ("You try to access the user " + id.out + " while authenticating with the user " + l_auth_user.id.out, req, res)
+					end
 				else
 					handle_resource_not_found_response ("The following resource " + orig_path + " is not found ", req, res)
 				end
@@ -61,7 +70,7 @@ feature {NONE} -- Implementation
 				l_msg := jv.representation
 				h.put_content_length (l_msg.count)
 				if attached req.request_time as time then
-					h.add_header ("Date:" + time.formatted_out ("ddd,[0]dd mmm yyyy [0]hh:[0]mi:[0]ss.ff2") + " GMT")
+					h.put_utc_date (time)
 				end
 				res.set_status_code ({HTTP_STATUS_CODE}.ok)
 				res.put_header_text (h.string)
@@ -69,7 +78,7 @@ feature {NONE} -- Implementation
 			end
 		end
 
-	get_user_id_from_path (a_path: READABLE_STRING_32) : STRING
+	get_user_id_from_path (a_path: READABLE_STRING_32): STRING
 		do
 			Result := a_path.split ('/').at (3)
 		end
@@ -83,6 +92,6 @@ feature {NONE} -- Implementation
 		end
 
 note
-	copyright: "2011-2012, Javier Velilla and others"
+	copyright: "2011-2012, Olivier Ligot, Jocelyn Fiat and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 end
