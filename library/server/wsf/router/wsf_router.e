@@ -59,17 +59,17 @@ feature -- Mapping
 
 feature -- Mapping handler
 
-	handle (a_resource: READABLE_STRING_8; h: WSF_HANDLER)
-			-- Map the mapping associated to handler `h' for resource `a_resource'
+	handle (a_resource: READABLE_STRING_8; f: WSF_ROUTER_MAPPING_FACTORY)
+			-- Map the mapping created by factory `f' for resource `a_resource'
 		do
-			handle_with_request_methods (a_resource, h, Void)
+			handle_with_request_methods (a_resource, f, Void)
 		end
 
-	handle_with_request_methods (a_resource: READABLE_STRING_8; h: WSF_HANDLER; rqst_methods: detachable WSF_ROUTER_METHODS)
-			-- Map the mapping associated to handler `h' for resource `a_resource'	
+	handle_with_request_methods (a_resource: READABLE_STRING_8; f: WSF_ROUTER_MAPPING_FACTORY; rqst_methods: detachable WSF_ROUTER_METHODS)
+			-- Map the mapping created by factory `f' for resource `a_resource'	
 			-- and only for request methods `rqst_methods'
 		do
-			map_with_request_methods (h.new_mapping (a_resource), rqst_methods)
+			map_with_request_methods (f.new_mapping (a_resource), rqst_methods)
 		end
 
 feature -- Access
@@ -217,6 +217,15 @@ feature -- Request methods helper
 			Result.enable_head
 			Result.enable_get
 			Result.enable_post
+			Result.lock
+		end
+
+	methods_get_put_delete: WSF_ROUTER_METHODS
+		once ("THREAD")
+			create Result.make (3)
+			Result.enable_get
+			Result.enable_put
+			Result.enable_delete
 			Result.lock
 		end
 

@@ -10,6 +10,8 @@ deferred class
 inherit
 	WSF_CONTEXT_HANDLER [C]
 
+	WSF_ROUTER_MAPPING_FACTORY
+
 feature {WSF_ROUTER} -- Mapping
 
 	new_mapping (a_tpl: READABLE_STRING_8): WSF_ROUTER_MAPPING

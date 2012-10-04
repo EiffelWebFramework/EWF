@@ -1,28 +1,22 @@
 note
-	description: "Summary description for {EWF_ROUTER_URI_PATH_HANDLER}."
+	description: "[
+				Component that know how to create a router mapping from request and response.
+				Usually handler inherits from this classes, this way, it is easy to use WSF_ROUTER.handle_... (resource, handler, ..)
+			]"
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
 deferred class
-	WSF_URI_HANDLER
-
-inherit
-	WSF_HANDLER
-
 	WSF_ROUTER_MAPPING_FACTORY
-
-feature -- Execution
-
-	execute (req: WSF_REQUEST; res: WSF_RESPONSE)
-		deferred
-		end
 
 feature {WSF_ROUTER} -- Mapping
 
 	new_mapping (a_uri: READABLE_STRING_8): WSF_ROUTER_MAPPING
-		do
-			create {WSF_URI_MAPPING} Result.make (a_uri, Current)
+			-- New mapping object
+		deferred
+		ensure
+			Result_attached: Result /= Void
 		end
 
 note

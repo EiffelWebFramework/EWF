@@ -16,13 +16,6 @@ feature -- Execution
 		deferred
 		end
 
-feature {WSF_ROUTER} -- Mapping
-
-	new_mapping (a_resource: READABLE_STRING_8): WSF_ROUTER_MAPPING
-			-- New mapping built with Current as handler
-		deferred
-		end
-
 note
 	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"

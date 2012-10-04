@@ -17,14 +17,7 @@ feature -- Status report
 
 feature {WSF_ROUTER} -- Mapping
 
-	new_mapping (a_resource: READABLE_STRING_8): WSF_ROUTER_MAPPING
-			-- New mapping built with Current as handler
-		deferred
-		ensure
-			Result /= Void and then Result.handler = Current
-		end
-
-	on_mapped (a_mapping: like new_mapping; a_rqst_methods: detachable WSF_ROUTER_METHODS)
+	on_mapped (a_mapping: WSF_ROUTER_MAPPING; a_rqst_methods: detachable WSF_ROUTER_METHODS)
 			-- Callback called when a router map a route to Current handler
 		do
 		end

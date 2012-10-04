@@ -1,28 +1,24 @@
 note
-	description: "Summary description for {EWF_ROUTER_URI_PATH_HANDLER}."
+	description: "Summary description for {WSF_FILTER_CONTEXT_HANDLER}."
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
 deferred class
-	WSF_URI_HANDLER
+	WSF_FILTER_CONTEXT_HANDLER [C -> WSF_HANDLER_CONTEXT create make end, H -> WSF_CONTEXT_HANDLER [C]]
 
 inherit
-	WSF_HANDLER
+	WSF_FILTER_HANDLER [H]
 
-	WSF_ROUTER_MAPPING_FACTORY
+	WSF_CONTEXT_HANDLER [C]
 
-feature -- Execution
+feature {NONE} -- Implementation
 
-	execute (req: WSF_REQUEST; res: WSF_RESPONSE)
-		deferred
-		end
-
-feature {WSF_ROUTER} -- Mapping
-
-	new_mapping (a_uri: READABLE_STRING_8): WSF_ROUTER_MAPPING
+	execute_next (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
 		do
-			create {WSF_URI_MAPPING} Result.make (a_uri, Current)
+			if attached next as n then
+				n.execute (ctx, req, res)
+			end
 		end
 
 note

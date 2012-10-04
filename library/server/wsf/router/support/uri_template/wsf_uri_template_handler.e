@@ -10,6 +10,8 @@ deferred class
 inherit
 	WSF_HANDLER
 
+	WSF_ROUTER_MAPPING_FACTORY
+
 feature -- Execution
 
 	execute (req: WSF_REQUEST; res: WSF_RESPONSE)

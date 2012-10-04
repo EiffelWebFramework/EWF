@@ -1,29 +1,20 @@
 note
-	description: "Summary description for {EWF_ROUTER_URI_PATH_HANDLER}."
+	description: "Summary description for {WSF_STARTS_WITH_ROUTING_HANDLER}."
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
-deferred class
-	WSF_URI_HANDLER
+class
+	WSF_STARTS_WITH_ROUTING_HANDLER
 
 inherit
-	WSF_HANDLER
+	WSF_ROUTING_HANDLER
 
-	WSF_ROUTER_MAPPING_FACTORY
+	WSF_STARTS_WITH_HANDLER
 
-feature -- Execution
-
-	execute (req: WSF_REQUEST; res: WSF_RESPONSE)
-		deferred
-		end
-
-feature {WSF_ROUTER} -- Mapping
-
-	new_mapping (a_uri: READABLE_STRING_8): WSF_ROUTER_MAPPING
-		do
-			create {WSF_URI_MAPPING} Result.make (a_uri, Current)
-		end
+create
+	make,
+	make_with_router
 
 note
 	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
