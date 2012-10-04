@@ -11,13 +11,25 @@ inherit
 	WSF_ROUTING_HANDLER
 
 	WSF_STARTS_WITH_HANDLER
+		rename
+			execute as starts_with_execute
+		end
 
 create
 	make,
 	make_with_router
 
+feature	-- Execution
+
+	starts_with_execute (a_start_path: READABLE_STRING_8; req: WSF_REQUEST; res: WSF_RESPONSE)
+			-- <Precursor>
+			--| For such routing handler, the previous `a_start_path' is lost
+		do
+			execute (req, res)
+		end
+
 note
-	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
+	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software
