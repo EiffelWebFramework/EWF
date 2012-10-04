@@ -35,6 +35,6 @@ feature -- Constants
 	Date_time_format: STRING = "yyyy/[0]mm/[0]dd [0]hh:[0]mi:[0]ss.ff3"
 
 note
-	copyright: "2011-2012, Javier Velilla and others"
+	copyright: "2011-2012, Olivier Ligot, Jocelyn Fiat and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 end

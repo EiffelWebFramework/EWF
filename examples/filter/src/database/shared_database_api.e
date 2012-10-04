@@ -13,8 +13,8 @@ feature -- Access
 		once
 			create Result.make
 		end
-		
+
 note
-	copyright: "2011-2011, Javier Velilla and others"
+	copyright: "2011-2012, Olivier Ligot, Jocelyn Fiat and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 end
