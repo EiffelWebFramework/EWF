@@ -18,3 +18,12 @@ For any entry, please use this template
 * _References_: http://swagger.wordnik.com/
 
 ----
+
+## Add support for Apache logging
+* _Suggested by **Olivier**_
+* _Description_: Be able to log using the Apache Common Log Format
+* _References_: 
+    - http://httpd.apache.org/docs/2.2/logs.html#common
+    - http://www.w3.org/Daemon/User/Config/Logging.html#common-logfile-format
+
+----
