@@ -40,12 +40,6 @@ feature -- Access
  	password: STRING
  			-- Password
 
- 	foo_: STRING
- 		do
- 		ensure
-			anchor: False
- 		end
-
 feature -- Comparison
 
 	is_equal (other: like Current): BOOLEAN
