@@ -37,6 +37,25 @@ feature -- Execute template
 			end
 		end
 
+feature -- Method Get
+
+	execute_get (req: WSF_REQUEST; res: WSF_RESPONSE)
+		do
+			do_get (req, res)
+		end
+
+	do_get (req: WSF_REQUEST; res: WSF_RESPONSE)
+			-- Using GET to retrieve resource information.
+			-- If the GET request is SUCCESS, we response with
+			-- 200 OK, and a representation of the person
+			-- If the GET request is not SUCCESS, we response with
+			-- 404 Resource not found
+			-- If is a Condition GET and the resource does not change we send a
+			-- 304, Resource not modifed	
+		do
+			handle_not_implemented ("Method GET not implemented", req, res)
+		end
+
 feature -- Method Post
 
 	execute_post (req: WSF_REQUEST; res: WSF_RESPONSE)
@@ -53,6 +72,14 @@ feature -- Method Post
 		end
 
 	do_post (req: WSF_REQUEST; res: WSF_RESPONSE)
+			-- Here the convention is the following.
+			-- POST is used for creation and the server determines the URI
+			-- of the created resource.
+			-- If the request post is SUCCESS, the server will create the order and will response with
+			-- HTTP_RESPONSE 201 CREATED, the Location header will contains the newly created order's URI
+			-- if the request post is not SUCCESS, the server will response with
+			-- HTTP_RESPONSE 400 BAD REQUEST, the client send a bad request
+			-- HTTP_RESPONSE 500 INTERNAL_SERVER_ERROR, when the server can deliver the request
 		do
 			handle_not_implemented ("Method POST not implemented",  req, res)
 		end
@@ -77,18 +104,6 @@ feature-- Method Put
 			handle_not_implemented ("Method PUT not implemented", req, res)
 		end
 
-feature -- Method Get
-
-	execute_get (req: WSF_REQUEST; res: WSF_RESPONSE)
-		do
-			do_get (req, res)
-		end
-
-	do_get (req: WSF_REQUEST; res: WSF_RESPONSE)
-		do
-			handle_not_implemented ("Method GET not implemented", req, res)
-		end
-
 feature -- Method DELETE
 
 	execute_delete (req: WSF_REQUEST; res: WSF_RESPONSE)
@@ -97,6 +112,10 @@ feature -- Method DELETE
 		end
 
 	do_delete (req: WSF_REQUEST; res: WSF_RESPONSE)
+			-- Here we use DELETE to logically delete a person.
+			-- 204 if is ok
+			-- 404 Resource not found
+			-- 500 if we have an internal server error	
 		do
 			handle_not_implemented ("Method DELETE not implemented", req, res)
 		end
@@ -121,6 +140,13 @@ feature -- Method HEAD
 		end
 
 	do_head (req: WSF_REQUEST; res: WSF_RESPONSE)
+			-- Using HEAD to retrieve resource information.
+			-- If the HEAD request is SUCCESS, we response with
+			-- 200 OK, and WITHOUT a representation of the person
+			-- If the HEAD request is not SUCCESS, we response with
+			-- 404 Resource not found
+			-- If is a Condition HEAD and the resource does not change we send a
+			-- 304, Resource not modifed	
 		do
 			handle_not_implemented ("Method HEAD not implemented", req, res)
 		end
@@ -201,122 +227,77 @@ feature -- Handle responses
 	-- The option : Server-driven negotiation: uses request headers to select a variant
 	-- More info : http://www.w3.org/Protocols/rfc2616/rfc2616-sec12.html#sec12
 
-	supported_content_types: detachable ARRAY [READABLE_STRING_8]
-			-- Supported content types
-			-- Can be redefined
-		do
-			Result := Void
-		end
+--	supported_content_types: detachable ARRAY [READABLE_STRING_8]
+--			-- Supported content types
+--			-- Can be redefined
+--		do
+--			Result := Void
+--		end
 
-	handle_bad_request_response (a_description: STRING; req: WSF_REQUEST; res: WSF_RESPONSE )
+	handle_error (a_description: STRING; a_status_code: INTEGER; req: WSF_REQUEST; res: WSF_RESPONSE)
+			-- Handle an error.
 		local
-			h : HTTP_HEADER
+			h: HTTP_HEADER
 		do
 			create h.make
-			h.put_content_type_application_json
+			h.put_content_type_text_plain
 			h.put_content_length (a_description.count)
 			h.put_current_date
-			res.set_status_code ({HTTP_STATUS_CODE}.bad_request)
+			res.set_status_code (a_status_code)
 			res.put_header_text (h.string)
 			res.put_string (a_description)
 		end
 
-	handle_precondition_fail_response (a_description: STRING; req: WSF_REQUEST; res: WSF_RESPONSE )
-		local
-			h : HTTP_HEADER
+	handle_not_implemented (a_description: STRING; req: WSF_REQUEST; res: WSF_RESPONSE)
 		do
-			create h.make
-			h.put_content_type_application_json
-			h.put_content_length (a_description.count)
-			h.put_current_date
-			res.set_status_code ({HTTP_STATUS_CODE}.precondition_failed)
-			res.put_header_text (h.string)
-			res.put_string (a_description)
+			handle_error (a_description, {HTTP_STATUS_CODE}.not_implemented, req, res)
 		end
 
-	handle_internal_server_error (a_description: STRING; req: WSF_REQUEST; res: WSF_RESPONSE )
-		local
-			h : HTTP_HEADER
+	handle_bad_request_response (a_description: STRING; req: WSF_REQUEST; res: WSF_RESPONSE)
 		do
-			create h.make
-			h.put_content_type_application_json
-			h.put_content_length (a_description.count)
-			h.put_current_date
-			res.set_status_code ({HTTP_STATUS_CODE}.internal_server_error)
-			res.put_header_text (h.string)
-			res.put_string (a_description)
-		end
-
-	handle_not_implemented (a_description: STRING; req: WSF_REQUEST; res: WSF_RESPONSE )
-		local
-			h : HTTP_HEADER
-		do
-			create h.make
-			h.put_content_type_application_json
-			h.put_content_length (a_description.count)
-			h.put_current_date
-			res.set_status_code ({HTTP_STATUS_CODE}.not_implemented)
-			res.put_header_text (h.string)
-			res.put_string (a_description)
-		end
-
-	handle_method_not_allowed_response (a_description: STRING; req: WSF_REQUEST; res: WSF_RESPONSE)
-		local
-			h : HTTP_HEADER
-		do
-			create h.make
-			h.put_content_type_application_json
-			h.put_content_length (a_description.count)
-			h.put_current_date
-			res.set_status_code ({HTTP_STATUS_CODE}.method_not_allowed)
-			res.put_header_text (h.string)
-			res.put_string (a_description)
+			handle_error (a_description, {HTTP_STATUS_CODE}.bad_request, req, res)
 		end
 
 	handle_resource_not_found_response (a_description: STRING; req: WSF_REQUEST; res: WSF_RESPONSE)
-		local
-			h : HTTP_HEADER
 		do
-			create h.make
-			h.put_content_type_application_json
-			h.put_content_length (a_description.count)
-			h.put_current_date
-			res.set_status_code ({HTTP_STATUS_CODE}.not_found)
-			res.put_header_text (h.string)
-			res.put_string (a_description)
+			handle_error (a_description, {HTTP_STATUS_CODE}.not_found, req, res)
 		end
 
+	handle_forbidden (a_description: STRING; req: WSF_REQUEST; res: WSF_RESPONSE)
+			-- Handle forbidden.
+		do
+			handle_error (a_description, {HTTP_STATUS_CODE}.forbidden, req, res)
+		end
+
+feature -- Handle responses: others		
+
+	handle_precondition_fail_response (a_description: STRING; req: WSF_REQUEST; res: WSF_RESPONSE )
+		do
+			handle_error (a_description, {HTTP_STATUS_CODE}.precondition_failed, req, res)
+		end
+
+	handle_internal_server_error (a_description: STRING; req: WSF_REQUEST; res: WSF_RESPONSE )
+		do
+			handle_error (a_description, {HTTP_STATUS_CODE}.internal_server_error, req, res)
+		end
+
+	handle_method_not_allowed_response (a_description: STRING; req: WSF_REQUEST; res: WSF_RESPONSE)
+		do
+			handle_error (a_description, {HTTP_STATUS_CODE}.method_not_allowed, req, res)
+		end
 
 	handle_resource_not_modified_response (a_description: STRING; req: WSF_REQUEST; res: WSF_RESPONSE)
-		local
-			h : HTTP_HEADER
 		do
-			res.flush
-			create h.make
-			h.put_content_type_application_json
-			h.put_content_length (a_description.count)
-			h.put_current_date
-			res.set_status_code ({HTTP_STATUS_CODE}.not_modified)
-			res.put_header_text (h.string)
-			res.put_string (a_description)
+			handle_error (a_description, {HTTP_STATUS_CODE}.not_modified, req, res)
 		end
 
-
 	handle_resource_conflict_response (a_description: STRING; req: WSF_REQUEST; res: WSF_RESPONSE)
-		local
-			h : HTTP_HEADER
 		do
-			create h.make
-			h.put_content_type_application_json
-			h.put_content_length (a_description.count)
-			h.put_current_date
-			res.set_status_code ({HTTP_STATUS_CODE}.conflict)
-			res.put_header_text (h.string)
-			res.put_string (a_description)
+			handle_error (a_description, {HTTP_STATUS_CODE}.conflict, req, res)
 		end
 
 note
-	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
+	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

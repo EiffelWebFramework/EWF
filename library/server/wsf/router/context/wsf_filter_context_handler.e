@@ -5,12 +5,20 @@ note
 	revision: "$Revision$"
 
 deferred class
-	WSF_FILTER_CONTEXT_HANDLER [C -> WSF_HANDLER_CONTEXT create make end, H -> WSF_CONTEXT_HANDLER [C]]
+	WSF_FILTER_CONTEXT_HANDLER [C -> WSF_HANDLER_CONTEXT create make end]
 
 inherit
-	WSF_FILTER_HANDLER [H]
+	WSF_FILTER_HANDLER
+		redefine
+			next
+		end
 
 	WSF_CONTEXT_HANDLER [C]
+
+feature -- Access
+
+	next: detachable WSF_CONTEXT_HANDLER [C]
+			-- Next handler	
 
 feature {NONE} -- Implementation
 

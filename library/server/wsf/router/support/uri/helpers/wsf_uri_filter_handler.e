@@ -5,12 +5,20 @@ note
 	revision    : "$Revision$"
 
 deferred class
-	WSF_FILTER_URI_TEMPLATE_HANDLER
+	WSF_URI_FILTER_HANDLER
 
 inherit
-	WSF_FILTER_HANDLER [WSF_URI_TEMPLATE_HANDLER]
+	WSF_FILTER_HANDLER
+		redefine
+			next
+		end
 
-	WSF_URI_TEMPLATE_HANDLER
+	WSF_URI_HANDLER
+
+feature -- Access
+
+	next: detachable WSF_URI_FILTER_HANDLER
+			-- Next handler	
 
 feature -- Execution
 

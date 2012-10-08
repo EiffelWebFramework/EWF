@@ -8,14 +8,14 @@ note
 	revision: "$Revision$"
 
 deferred class
-	WSF_FILTER_HANDLER [H -> WSF_HANDLER]
+	WSF_FILTER_HANDLER
 
 inherit
 	WSF_HANDLER
 
 feature -- Access
 
-	next: detachable H
+	next: detachable WSF_HANDLER
 			-- Next handler
 
 feature -- Element change

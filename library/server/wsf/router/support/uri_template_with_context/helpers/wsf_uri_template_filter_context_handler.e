@@ -5,19 +5,27 @@ note
 	revision    : "$Revision$"
 
 deferred class
-	WSF_FILTER_URI_HANDLER
+	WSF_URI_TEMPLATE_FILTER_CONTEXT_HANDLER [C -> WSF_HANDLER_CONTEXT create make end]
 
 inherit
-	WSF_FILTER_HANDLER [WSF_URI_HANDLER]
+	WSF_FILTER_HANDLER
+		redefine
+			next
+		end
 
-	WSF_URI_HANDLER
+	WSF_URI_TEMPLATE_CONTEXT_HANDLER [C]
+
+feature -- Access
+
+	next: detachable WSF_URI_TEMPLATE_CONTEXT_HANDLER [C]
+			-- Next handler	
 
 feature -- Execution
 
-	execute_next (req: WSF_REQUEST; res: WSF_RESPONSE)
+	execute_next (ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
 		do
 			if attached next as n then
-				n.execute (req, res)
+				n.execute (ctx, req, res)
 			end
 		end
 

@@ -24,6 +24,31 @@ feature -- Initialization
 
 feature -- Access
 
+	user (a_id: INTEGER; a_name: detachable READABLE_STRING_GENERAL): detachable USER
+			-- User with id `a_id' or name `a_name'.
+		require
+			a_id > 0 xor a_name /= Void
+		local
+			n: like {USER}.name
+		do
+			if a_id > 0 then
+				Result := users.item (a_id)
+			elseif a_name /= Void then
+				n := a_name.as_string_8
+				across
+					users as c
+				until
+					Result /= Void
+				loop
+					if attached c.item as u and then u.name.same_string (n) then
+						Result := u
+					end
+				end
+			end
+		ensure
+			Result /= Void implies ((a_id > 0 and then Result.id = a_id) xor (a_name /= Void and then Result.name.same_string_general (a_name)))
+		end
+
 	users: HASH_TABLE [USER, INTEGER]
 
 ;note

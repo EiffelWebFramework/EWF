@@ -8,7 +8,7 @@ class
 	AUTHENTICATION_FILTER
 
 inherit
-	WSF_FILTER_CONTEXT_HANDLER [FILTER_HANDLER_CONTEXT, WSF_URI_TEMPLATE_CONTEXT_HANDLER [FILTER_HANDLER_CONTEXT]]
+	WSF_FILTER_CONTEXT_HANDLER [FILTER_HANDLER_CONTEXT]
 
 	WSF_URI_TEMPLATE_CONTEXT_HANDLER [FILTER_HANDLER_CONTEXT]
 
@@ -25,9 +25,11 @@ feature -- Basic operations
 		do
 			create l_auth.make (req.http_authorization)
 			if (attached l_auth.type as l_auth_type and then l_auth_type.is_equal ("basic")) and
-				attached Db_access.users.item (1) as l_user and then
-				(attached l_auth.login as l_auth_login and then l_auth_login.is_equal (l_user.name)
-				and attached l_auth.password as l_auth_password and then l_auth_password.is_equal (l_user.password))
+				attached l_auth.login as l_auth_login and then
+				attached Db_access.user (0, l_auth_login) as l_user and then
+				l_auth_login.same_string (l_user.name) and then
+				attached l_auth.password as l_auth_password and then
+				l_auth_password.same_string (l_user.password)
 			then
 				ctx.set_user (l_user)
 				execute_next (ctx, req, res)
