@@ -19,7 +19,7 @@ feature {NONE} -- Initialization
 
 	make (n: INTEGER)
 		do
-			make_with_router (create {WSF_ROUTER}.make (n))
+			make_with_router (create {like router}.make (n))
 		end
 
 feature -- Access
