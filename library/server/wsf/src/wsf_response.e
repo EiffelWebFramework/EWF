@@ -290,6 +290,7 @@ feature -- Redirect
 			header_not_committed: not header_committed
 		local
 			h: HTTP_HEADER
+			b: READABLE_STRING_8
 		do
 			if header_committed then
 				-- This might be a trouble about content-length				
@@ -302,15 +303,18 @@ feature -- Redirect
 				end
 				h.put_location (a_url)
 				if a_status_code = 0 then
-					set_status_code ({HTTP_STATUS_CODE}.temp_redirect)
+					if not status_is_set then
+						set_status_code ({HTTP_STATUS_CODE}.temp_redirect)
+					end
 				else
 					set_status_code (a_status_code)
 				end
 				if a_content /= Void then
-					h.put_content_length (a_content.body.count)
+					b := a_content.body
+					h.put_content_length (b.count)
 					h.put_content_type (a_content.type)
 					put_header_text (h.string)
-					put_string (a_content.body)
+					put_string (b)
 				else
 					h.put_content_length (0)
 					put_header_text (h.string)
