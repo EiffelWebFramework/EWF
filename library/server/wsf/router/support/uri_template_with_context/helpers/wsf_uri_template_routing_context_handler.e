@@ -8,11 +8,13 @@ class
 	WSF_URI_TEMPLATE_ROUTING_CONTEXT_HANDLER [C -> WSF_HANDLER_CONTEXT create make end]
 
 inherit
-	WSF_ROUTING_HANDLER
+	WSF_ROUTING_CONTEXT_HANDLER [C]
 
 	WSF_URI_TEMPLATE_CONTEXT_HANDLER [C]
 		rename
 			execute as uri_template_execute
+		select
+			uri_template_execute
 		end
 
 create
@@ -25,7 +27,7 @@ feature	-- Execution
 			-- <Precursor>
 			--| For such routing handler, the previous context is lost
 		do
-			execute (req, res)
+			execute_with_context (ctx, req, res)
 		end
 
 note
