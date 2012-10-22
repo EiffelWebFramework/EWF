@@ -3,10 +3,37 @@ class
 
 inherit
 	WSF_URI_TEMPLATE_AGENT_CONTEXT_HANDLER [C]
+		rename
+			execute as execute_application
+		end
+
+	REST_REQUEST_HANDLER [C]
+		select
+			execute
+		end
 
 create
 	make
 
+feature -- status
+
+	authentication_required (req: WSF_REQUEST): BOOLEAN
+		do
+			Result := internal_authentication_required
+		end
+
+feature -- Element change
+
+	set_authentication_required (b: like authentication_required)
+		do
+			internal_authentication_required := b
+		end
+
+feature {NONE} -- Implementation
+
+	internal_authentication_required: BOOLEAN
+
+invariant
 note
 	copyright: "Copyright (c) 1984-2012, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
