@@ -10,7 +10,7 @@ deferred class
 inherit
 	WSF_HANDLER_CONTEXT
 
-	WSF_REQUEST_UTILITY
+	WSF_REQUEST_UTILITY_PROXY
 
 feature -- Accept: Content-Type
 
@@ -25,7 +25,7 @@ feature -- Accept: Content-Type
 	get_accepted_content_type (a_supported_content_types: detachable ARRAY [STRING_8])
 		do
 			if internal_accepted_content_type = Void then
-				internal_accepted_content_type := request_accepted_content_type (request, a_supported_content_types)
+				internal_accepted_content_type := request_accepted_content_type (a_supported_content_types)
 			end
 		end
 
@@ -78,7 +78,7 @@ feature -- Format
 			if a_format_variable_name /= Void and then attached {WSF_STRING} request.item (a_format_variable_name) as ctx_format then
 				Result := ctx_format.value
 			else
-				Result := request_format_from_content_type (request_accepted_content_type (request, a_supported_content_types))
+				Result := request_format_from_content_type (request_accepted_content_type (a_supported_content_types))
 			end
 		end
 
