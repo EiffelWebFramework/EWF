@@ -1369,7 +1369,7 @@ feature -- URL Utility
 			if s = Void then
 				if
 					server_protocol.count >= 5 and then
-					server_protocol.substring (1, 5).is_case_insensitive_equal_general ("https")
+					server_protocol.substring (1, 5).is_case_insensitive_equal ("https")
 				then
 					create s.make_from_string ("https://")
 				else
