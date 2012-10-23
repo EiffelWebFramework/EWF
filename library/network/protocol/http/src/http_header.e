@@ -360,6 +360,7 @@ feature -- Content-type helpers
 	put_content_type_application_json		do put_content_type ({HTTP_MIME_TYPES}.application_json) end
 	put_content_type_application_javascript	do put_content_type ({HTTP_MIME_TYPES}.application_javascript) end
 	put_content_type_application_zip		do put_content_type ({HTTP_MIME_TYPES}.application_zip)	end
+	put_content_type_application_pdf		do put_content_type ({HTTP_MIME_TYPES}.application_pdf) end
 
 	put_content_type_image_gif				do put_content_type ({HTTP_MIME_TYPES}.image_gif) end
 	put_content_type_image_png				do put_content_type ({HTTP_MIME_TYPES}.image_png) end
@@ -675,7 +676,7 @@ feature {NONE} -- Implementation
 	date_to_rfc1123_http_date_format (dt: DATE_TIME): STRING_8
 			-- String representation of `dt' using the RFC 1123
 		do
-			Result := dt.formatted_out ("ddd,[0]dd mmm yyyy [0]hh:[0]mi:[0]ss.ff2") + " GMT"
+			Result := dt.formatted_out ("ddd, [0]dd mmm yyyy [0]hh:[0]mi:[0]ss") + " GMT"
 		end
 
 feature {NONE} -- Constants
