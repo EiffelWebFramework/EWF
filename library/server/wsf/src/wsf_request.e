@@ -1359,16 +1359,37 @@ feature -- Uploaded File Handling
 
 feature -- URL Utility
 
+	server_url: STRING
+			-- Server url, as http://example.com:8080
+		local
+			s: like internal_server_url
+			p: like server_port
+		do
+			s := internal_server_url
+			if s = Void then
+				if
+					server_protocol.count >= 5 and then
+					server_protocol.substring (1, 5).is_case_insensitive_equal_general ("https")
+				then
+					create s.make_from_string ("https://")
+				else
+					create s.make_from_string ("http://")
+				end
+				s.append (server_name)
+				p := server_port
+				if p > 0 then
+					s.append_character (':')
+					s.append_integer (p)
+				end
+			end
+			Result := s
+		end
+
 	absolute_script_url (a_path: STRING): STRING
 			-- Absolute Url for the script if any, extended by `a_path'
 		do
 			Result := script_url (a_path)
-			if attached http_host as h then
-				Result.prepend (h)
-				Result.prepend ("http://")
-			else
-				--| Issue ??
-			end
+			Result.prepend (server_url)
 		end
 
 	script_url (a_path: STRING): STRING
@@ -1423,6 +1444,9 @@ feature -- URL Utility
 		end
 
 feature {NONE} -- Implementation: URL Utility
+
+	internal_server_url: detachable like server_url
+			-- Server url
 
 	internal_url_base: detachable STRING
 			-- URL base of potential script	
