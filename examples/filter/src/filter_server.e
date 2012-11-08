@@ -34,18 +34,17 @@ feature {NONE} -- Initialization
 	create_filter
 			-- Create `filter'
 		local
-			l_router: WSF_ROUTER
 			l_authentication_filter_hdl: AUTHENTICATION_FILTER
 			l_user_filter: USER_HANDLER
 			l_routing_filter: WSF_ROUTING_FILTER
 		do
-			create l_router.make (1)
+			create router.make (1)
 			create l_authentication_filter_hdl
 			create l_user_filter
 			l_authentication_filter_hdl.set_next (l_user_filter)
 
-			l_router.handle_with_request_methods ("/user/{userid}", l_authentication_filter_hdl, l_router.methods_get)
-			create l_routing_filter.make (l_router)
+			router.handle_with_request_methods ("/user/{userid}", l_authentication_filter_hdl, router.methods_get)
+			create l_routing_filter.make (router)
 			l_routing_filter.set_execute_default_action (agent execute_default)
 			filter := l_routing_filter
 		end
@@ -79,20 +78,81 @@ feature -- Basic operations
 		local
 			h : HTTP_HEADER
 			l_description : STRING
-			l_api_doc : STRING
 		do
 			if req.content_length_value > 0 then
 				req.input.read_string (req.content_length_value.as_integer_32)
 			end
 			create h.make
 			h.put_content_type_text_plain
-			l_api_doc := "%NPlease check the API%NURI:/user/{userid} METHOD: GET%N"
-			l_description := req.request_method + req.request_uri + " is not allowed" + "%N" + l_api_doc
+			l_description := req.request_method + " " + req.request_uri + " is not allowed" + "%N" + api_doc
 			h.put_content_length (l_description.count)
 			h.put_current_date
 			res.set_status_code ({HTTP_STATUS_CODE}.method_not_allowed)
 			res.put_header_text (h.string)
 			res.put_string (l_description)
+		end
+
+feature {NONE} -- Implementation
+
+	router: WSF_ROUTER
+
+	api_doc: STRING
+		do
+			Result := "%NPlease check the API%N"
+			across
+				router as l_cursor
+			loop
+				Result.append_string ("URI: ")
+				if attached {WSF_URI_TEMPLATE_CONTEXT_MAPPING [WSF_HANDLER_CONTEXT]} l_cursor.item.mapping as l_mapping then
+					Result.append_string (l_mapping.template.template)
+				end
+				Result.append_string ("%N%TMethods: ")
+				if attached {WSF_ROUTER_METHODS} l_cursor.item.request_methods as l_methods then
+					Result.append_string (methods_documentation (l_methods))
+				end
+				Result.append_string ("%N%TFilters: ")
+				if attached {WSF_FILTER_HANDLER} l_cursor.item.mapping.handler as l_filter then
+					Result.append_string (filter_handler_documentation (l_filter))
+				else
+					Result.append_string (l_cursor.item.mapping.handler.generator)
+				end
+			end
+		end
+
+	methods_documentation (a_methods: WSF_ROUTER_METHODS): STRING
+		local
+			l_methods: ARRAY[READABLE_STRING_8]
+			i: INTEGER
+		do
+			create Result.make_empty
+			l_methods := a_methods.to_array
+			from
+				i := l_methods.lower
+			until
+				i > l_methods.upper
+			loop
+				Result.append_string_general (l_methods.item (i))
+				if i < l_methods.upper then
+					Result.append_string (", ")
+				end
+				i := i + 1
+			end
+		end
+
+	filter_handler_documentation (a_filter_handler: WSF_FILTER_HANDLER): STRING
+		local
+			the_filter: like a_filter_handler
+		do
+			create Result.make_empty
+			from
+				the_filter := a_filter_handler
+				Result.append_string (the_filter.generator)
+			until
+				not attached the_filter.next as l_next
+			loop
+				Result.append_string (" -> " + l_next.generator)
+				the_filter := l_next
+			end
 		end
 
 note
