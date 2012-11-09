@@ -18,7 +18,7 @@ inherit
 feature -- Access
 
 	next: detachable WSF_CONTEXT_HANDLER [C]
-			-- Next handler	
+			-- Next filter	
 
 feature {NONE} -- Implementation
 

@@ -16,7 +16,7 @@ inherit
 feature -- Access
 
 	next: detachable WSF_HANDLER
-			-- Next handler
+			-- Next filter
 
 feature -- Element change
 
