@@ -141,17 +141,21 @@ feature {NONE} -- Implementation
 
 	filter_handler_documentation (a_filter_handler: WSF_FILTER_HANDLER): STRING
 		local
-			the_filter: like a_filter_handler
+			the_filter: detachable WSF_FILTER_HANDLER
 		do
 			create Result.make_empty
 			from
 				the_filter := a_filter_handler
 				Result.append_string (the_filter.generator)
 			until
-				not attached the_filter.next as l_next
+				the_filter = Void or else not attached the_filter.next as l_next
 			loop
 				Result.append_string (" -> " + l_next.generator)
-				the_filter := l_next
+				if attached {WSF_FILTER_HANDLER} l_next as l_next_filter then
+					the_filter := l_next_filter
+				else
+					the_filter := Void
+				end
 			end
 		end
 
