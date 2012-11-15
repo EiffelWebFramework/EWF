@@ -8,7 +8,10 @@ For instance
 
 
 Update
-:	git pull -s subtree ewf_wiki master
+:	git pull -X subtree=doc/wiki ewf_wiki master
+:	git pull -X subtree=contrib/ise_library/cURL ewf_curl master
+:	git pull -X subtree=contrib/library/text/parser/json ewf_json master
+:	git pull -X subtree=contrib/library/network/server/nino ewf_nino master
 
 Reconnect subtree from a cloned repository
 - doc/wiki
