@@ -71,9 +71,6 @@ An alternative to the last 2 instructions is to use the script from tools folder
 * ..
 
 ## Draft folder = call for contribution ##
-### library/server/request ###
-* request
-  *  rest: (experimental) "a" RESTful library to help building RESTful services
 
 ## Examples
 ..
