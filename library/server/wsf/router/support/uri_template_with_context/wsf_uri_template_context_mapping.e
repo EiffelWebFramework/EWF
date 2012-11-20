@@ -10,6 +10,8 @@ class
 inherit
 	WSF_ROUTER_CONTEXT_MAPPING [C]
 
+	DEBUG_OUTPUT
+
 create
 	make,
 	make_from_template
@@ -32,6 +34,14 @@ feature -- Access
 	handler: WSF_URI_TEMPLATE_CONTEXT_HANDLER [C]
 
 	template: URI_TEMPLATE
+
+feature -- Status report
+
+	debug_output: STRING
+			-- String that should be displayed in debugger to represent `Current'.
+		do
+			Result := "URI-template: " + template.template
+		end
 
 feature -- Element change
 

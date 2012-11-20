@@ -8,7 +8,7 @@ class
 	WSF_ROUTER
 
 inherit
-	ITERABLE [TUPLE [mapping: WSF_ROUTER_MAPPING; request_methods: detachable WSF_ROUTER_METHODS]]
+	ITERABLE [WSF_ROUTER_ITEM]
 
 create
 	make,
@@ -39,7 +39,7 @@ feature {NONE} -- Initialization
 			create pre_execution_actions
 		end
 
-	mappings: ARRAYED_LIST [TUPLE [mapping: WSF_ROUTER_MAPPING; request_methods: detachable WSF_ROUTER_METHODS]]
+	mappings: ARRAYED_LIST [WSF_ROUTER_ITEM]
 			-- Existing mappings
 
 feature -- Mapping
@@ -53,7 +53,7 @@ feature -- Mapping
 	map_with_request_methods (a_mapping: WSF_ROUTER_MAPPING; rqst_methods: detachable WSF_ROUTER_METHODS)
 			-- Map `a_mapping' for request methods `rqst_methods'
 		do
-			mappings.extend ([a_mapping, rqst_methods])
+			mappings.extend (create {WSF_ROUTER_ITEM}.make_with_request_methods (a_mapping, rqst_methods))
 			a_mapping.handler.on_mapped (a_mapping, rqst_methods)
 		end
 
@@ -161,7 +161,7 @@ feature -- Element change
 
 feature -- Traversing
 
-	new_cursor: ITERATION_CURSOR [TUPLE [mapping: WSF_ROUTER_MAPPING; request_methods: detachable WSF_ROUTER_METHODS]]
+	new_cursor: ITERATION_CURSOR [WSF_ROUTER_ITEM]
 			-- Fresh cursor associated with current structure
 		do
 			Result := mappings.new_cursor
