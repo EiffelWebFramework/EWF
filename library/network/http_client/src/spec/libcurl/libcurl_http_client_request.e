@@ -207,7 +207,7 @@ feature -- Execution
 				create l_curl_string.make_empty
 				curl_easy.setopt_curl_string (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_writedata, l_curl_string)
 
-				create Result.make
+				create Result.make (l_url)
 				l_result := curl_easy.perform (curl_handle)
 
 				--| Result
@@ -224,7 +224,7 @@ feature -- Execution
 				curl.global_cleanup
 				curl_easy.cleanup (curl_handle)
 			else
-				create Result.make
+				create Result.make (url)
 				Result.set_error_occurred (True)
 			end
 

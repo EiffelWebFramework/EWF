@@ -13,11 +13,12 @@ create
 
 feature {NONE} -- Initialization
 
-	make
+	make (a_url: like url)
 			-- Initialize `Current'.
 		do
 				--| Default values
 			status := 200
+			url := a_url
 			create {STRING_8} raw_header.make_empty
 		end
 
@@ -35,6 +36,9 @@ feature {HTTP_CLIENT_REQUEST} -- Status setting
 		end
 
 feature -- Access
+
+	url: STRING_8
+			-- URL associated with Current response
 
 	status: INTEGER assign set_status
 			-- Status code of the response.
