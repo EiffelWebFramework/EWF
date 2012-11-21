@@ -197,8 +197,8 @@ feature -- Retrieve content from WGI_INPUT_STREAM
 			n: INTEGER
 			s: STRING
 		do
+			l_input := req.input
 			if req.is_chunked_input then
-				l_input := req.input
 				from
 					n := 1_024
 					create Result.make (n)
@@ -217,8 +217,8 @@ feature -- Retrieve content from WGI_INPUT_STREAM
 					end
 				end
 			else
-				req.input.read_string (req.content_length_value.as_integer_32)
-				Result := req.input.last_string
+				l_input.read_string (req.content_length_value.as_integer_32)
+				Result := l_input.last_string
 			end
 		end
 
