@@ -48,9 +48,9 @@ feature -- Execution
 			m: WSF_ROUTER_SELF_DOCUMENTATION_MESSAGE
 		do
 			if attached resource as l_resource then
-				create m.make (req, router, l_resource)
+				create m.make_with_resource (req, router, l_resource)
 			else
-				create m.make (req, router, Void)
+				create m.make (req, router)
 			end
 			res.send (m)
 		end

@@ -13,14 +13,24 @@ inherit
 	WSF_RESPONSE_MESSAGE
 
 create
-	make
+	make,
+	make_with_resource
 
 feature {NONE} -- Initialization
 
-	make (req: WSF_REQUEST; a_router: WSF_ROUTER; a_resource: detachable STRING)
+	make (req: WSF_REQUEST; a_router: WSF_ROUTER)
+			-- Make Current for request `req' and router `a_router'
 		do
 			request := req
 			router := a_router
+		end
+
+	make_with_resource (req: WSF_REQUEST; a_router: WSF_ROUTER; a_resource: STRING)
+			-- Make Current for request `req' and router `a_router'
+			-- and use `a_resource' to also generate links to this documentation via `a_resource'
+			--| note: it could be "/doc" or "/api/doc" or ... 
+		do
+			make (req, a_router)
 			if a_resource /= Void and then attached a_router.base_url as l_base_url then
 				resource := l_base_url + a_resource
 			end
