@@ -45,7 +45,7 @@ feature -- Access
 
 feature -- Documentation
 
-	documentation: STRING_32 = "Match-URI-Template"
+	description: STRING_32 = "Match-URI-Template"
 
 feature -- Status report
 

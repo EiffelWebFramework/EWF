@@ -9,7 +9,7 @@ deferred class
 
 feature -- Documentation
 
-	documentation: detachable READABLE_STRING_32
+	mapping_documentation (m: WSF_ROUTER_MAPPING): WSF_ROUTER_MAPPING_DOCUMENTATION
 		deferred
 		end
 

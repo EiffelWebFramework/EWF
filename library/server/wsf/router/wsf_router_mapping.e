@@ -10,6 +10,7 @@ deferred class
 feature {NONE} -- Initialization
 
 	make (a_resource: READABLE_STRING_8; h: like handler)
+			-- Create mapping based on resource `a_resource' and handler `h'
 		deferred
 		end
 
@@ -22,6 +23,13 @@ feature -- Access
 
 	handler: WSF_HANDLER
 			-- Handler associated with Current mapping.
+		deferred
+		end
+
+feature -- Documentation
+
+	description: READABLE_STRING_32
+			-- Short description of associated mapping.
 		deferred
 		end
 
