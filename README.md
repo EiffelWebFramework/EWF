@@ -15,9 +15,9 @@ For download, check
 * https://github.com/EiffelWebFramework/EWF/downloads
 
 ## Requirements
-
+* Compiling from EiffelStudio 7.0
 * Developped using EiffelStudio 7.1 (on Windows, Linux)
-* Tested using EiffelStudio 7.1 with "jenkins" CI server (not anymore compatible with 6.8 due to use of `across')
+* Tested using EiffelStudio 7.1 with "jenkins" CI server (not anymore compatible with 6.8 due to use of `TABLE_ITERABLE')
 * The code have to allow __void-safe__ compilation and non void-safe system (see [more about void-safety](http://docs.eiffel.com/book/method/void-safe-programming-eiffel) )
 
 ## How to get the source code?
