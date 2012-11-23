@@ -96,7 +96,7 @@ feature -- Status report
 
 feature -- Access
 
-	new_cursor: ITERATION_CURSOR [READABLE_STRING_8]
+	new_cursor: INDEXABLE_ITERATION_CURSOR [READABLE_STRING_8]
 			-- Fresh cursor associated with current structure
 		do
 			Result := methods.new_cursor
