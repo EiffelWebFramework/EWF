@@ -28,7 +28,7 @@ feature {NONE} -- Initialization
 	make_with_resource (req: WSF_REQUEST; a_router: WSF_ROUTER; a_resource: STRING)
 			-- Make Current for request `req' and router `a_router'
 			-- and use `a_resource' to also generate links to this documentation via `a_resource'
-			--| note: it could be "/doc" or "/api/doc" or ... 
+			--| note: it could be "/doc" or "/api/doc" or ...
 		do
 			make (req, a_router)
 			if a_resource /= Void and then attached a_router.base_url as l_base_url then
@@ -205,21 +205,24 @@ feature {WSF_RESPONSE} -- Output
 				end
 			end
 			if meths /= Void then
-				s.append (" [ ")
+				s.append (" [")
 				across
 					meths as rq
 				loop
+					s.append (" ")
 					if l_url /= Void and then rq.item.is_case_insensitive_equal ("GET") then
 						s.append ("<a href=%"" + l_base_url + l_url + "%">" + rq.item + "</a>")
 					else
 						s.append (rq.item)
 					end
-					if not rq.is_last then
-						s.append (",")
-					end
-					s.append (" ")
+					s.append (",")
 				end
-				s.append ("]")
+				if s[s.count] = ',' then
+					s.put (' ', s.count) -- Remove last ','
+				else
+					s.append_character (' ')
+				end
+				s.append_character (']')
 			end
 
 			hdl := m.handler
