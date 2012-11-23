@@ -10,6 +10,8 @@ class
 inherit
 	WSF_ROUTER_MAPPING
 
+	WSF_SELF_DOCUMENTED_ROUTER_MAPPING
+
 create
 	make,
 	make_trailing_slash_ignored
@@ -30,11 +32,21 @@ feature {NONE} -- Initialization
 
 feature -- Access
 
+	associated_resource: READABLE_STRING_8
+			-- Associated resource
+		do
+			Result := uri
+		end
+
 	handler: WSF_URI_HANDLER
 
 	uri: READABLE_STRING_8
 
 	trailing_slash_ignored: BOOLEAN
+
+feature -- Documentation
+
+	documentation: STRING_32 = "Is-URI"
 
 feature -- Status
 

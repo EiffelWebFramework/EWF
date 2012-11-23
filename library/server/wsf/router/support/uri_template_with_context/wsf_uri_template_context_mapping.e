@@ -10,6 +10,8 @@ class
 inherit
 	WSF_ROUTER_CONTEXT_MAPPING [C]
 
+	WSF_SELF_DOCUMENTED_ROUTER_MAPPING
+
 	DEBUG_OUTPUT
 
 create
@@ -31,9 +33,19 @@ feature {NONE} -- Initialization
 
 feature -- Access		
 
+	associated_resource: READABLE_STRING_8
+			-- Associated resource
+		do
+			Result := template.template
+		end
+
 	handler: WSF_URI_TEMPLATE_CONTEXT_HANDLER [C]
 
 	template: URI_TEMPLATE
+
+feature -- Documentation
+
+	documentation: STRING_32 = "Is-URI"
 
 feature -- Status report
 

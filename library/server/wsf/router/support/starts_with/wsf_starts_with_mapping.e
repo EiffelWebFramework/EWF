@@ -23,9 +23,19 @@ feature {NONE} -- Initialization
 
 feature -- Access
 
+	associated_resource: READABLE_STRING_8
+			-- Associated resource
+		do
+			Result := uri
+		end
+
 	handler: WSF_STARTS_WITH_HANDLER
 
 	uri: READABLE_STRING_8
+
+feature -- Documentation
+
+	documentation: STRING_32 = "Starts-With-URI"
 
 feature -- Status
 

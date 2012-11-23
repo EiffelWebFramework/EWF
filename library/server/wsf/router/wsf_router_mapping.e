@@ -13,7 +13,12 @@ feature {NONE} -- Initialization
 		deferred
 		end
 
-feature -- Access		
+feature -- Access
+
+	associated_resource: READABLE_STRING_8
+			-- Associated resource
+		deferred
+		end
 
 	handler: WSF_HANDLER
 			-- Handler associated with Current mapping.

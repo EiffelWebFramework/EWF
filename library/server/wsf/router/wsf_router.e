@@ -114,6 +114,64 @@ feature -- Access
 			end
 		end
 
+feature -- Status report
+
+	has_item_associated_with_resource (a_resource: READABLE_STRING_8; rqst_methods: detachable WSF_ROUTER_METHODS): BOOLEAN
+		local
+			m: WSF_ROUTER_MAPPING
+			ok: BOOLEAN
+		do
+			across
+				mappings as c
+			loop
+				m := c.item.mapping
+				ok := True
+				if rqst_methods /= Void then
+					if attached c.item.request_methods as l_item_rqst_methods then
+						ok := across rqst_methods as mtd some is_matching_request_methods (mtd.item, l_item_rqst_methods) end
+					else
+						ok := True
+					end
+				end
+				if ok then
+					if attached {WSF_ROUTING_HANDLER} m.handler as l_routing then
+						Result := l_routing.router.has_item_associated_with_resource (a_resource, rqst_methods)
+					elseif m.associated_resource.same_string (a_resource) then
+						Result := True
+					end
+				end
+			end
+		end
+
+	item_associated_with_resource (a_resource: READABLE_STRING_8; rqst_methods: detachable WSF_ROUTER_METHODS): detachable WSF_ROUTER_ITEM
+		local
+			m: WSF_ROUTER_MAPPING
+			ok: BOOLEAN
+		do
+			across
+				mappings as c
+			until
+				Result /= Void
+			loop
+				m := c.item.mapping
+				ok := True
+				if rqst_methods /= Void then
+					if attached c.item.request_methods as l_item_rqst_methods then
+						ok := across rqst_methods as mtd some is_matching_request_methods (mtd.item, l_item_rqst_methods) end
+					else
+						ok := True
+					end
+				end
+				if ok then
+					if attached {WSF_ROUTING_HANDLER} m.handler as l_routing then
+						Result := l_routing.router.item_associated_with_resource (a_resource, rqst_methods)
+					elseif m.associated_resource.same_string (a_resource) then
+						Result := c.item
+					end
+				end
+			end
+		end
+
 feature -- Hook
 
 	execute_before (a_mapping: WSF_ROUTER_MAPPING)

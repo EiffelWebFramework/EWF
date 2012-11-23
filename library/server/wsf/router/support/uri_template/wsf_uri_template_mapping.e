@@ -10,6 +10,10 @@ class
 inherit
 	WSF_ROUTER_MAPPING
 
+	WSF_SELF_DOCUMENTED_ROUTER_MAPPING
+
+	DEBUG_OUTPUT
+
 create
 	make,
 	make_from_template
@@ -29,9 +33,27 @@ feature {NONE} -- Initialization
 
 feature -- Access		
 
+	associated_resource: READABLE_STRING_8
+			-- Associated resource
+		do
+			Result := template.template
+		end
+
 	handler: WSF_URI_TEMPLATE_HANDLER
 
 	template: URI_TEMPLATE
+
+feature -- Documentation
+
+	documentation: STRING_32 = "Match-URI-Template"
+
+feature -- Status report
+
+	debug_output: STRING
+			-- String that should be displayed in debugger to represent `Current'.
+		do
+			Result := "URI-template: " + template.template
+		end
 
 feature -- Element change
 
