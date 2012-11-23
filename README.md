@@ -16,8 +16,8 @@ For download, check
 
 ## Requirements
 
-* Developped using EiffelStudio 7.0 (on Windows, Linux)
-* Tested using EiffelStudio 7.0 with "jenkins" CI server (and v6.8 for time to time)
+* Developped using EiffelStudio 7.1 (on Windows, Linux)
+* Tested using EiffelStudio 7.1 with "jenkins" CI server (not anymore compatible with 6.8 due to use of `across')
 * The code have to allow __void-safe__ compilation and non void-safe system (see [more about void-safety](http://docs.eiffel.com/book/method/void-safe-programming-eiffel) )
 
 ## How to get the source code?
