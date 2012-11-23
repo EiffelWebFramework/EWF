@@ -119,18 +119,16 @@ feature {WSF_RESPONSE} -- Output
 				l_description.append ("</ul>")
 			end
 
-			if attached resource as l_resource and then attached request.path_info as l_path then
-				if l_path.starts_with (l_resource) then
-					l_api_resource := l_path.substring (l_resource.count + 1, l_path.count)
-					if l_api_resource.is_empty then
-						l_api_resource := Void
-					end
+			if doc_url_supported and then attached {WSF_STRING} request.query_parameter ("api") as l_api then
+				l_api_resource := l_api.value
+				if l_api_resource.is_empty then
+					l_api_resource := Void
 				end
 			end
 
 			if l_api_resource /= Void then
 				if doc_url_supported then
-					l_description.append ("<a href=%""+ doc_url ("") +"%">Index</a><br/>")
+					l_description.append ("<a href=%""+ doc_url ("") + "%">Index</a><br/>")
 				end
 				if attached router.item_associated_with_resource (l_api_resource, Void) as l_api_item then
 					l_description.append ("<h2>Information related to %"" + l_api_resource + "%"</h2><ul>")
@@ -252,11 +250,9 @@ feature {NONE} -- Implementation
 			doc_url_supported: doc_url_supported
 		do
 			if attached resource as s then
-				Result := request.script_url (s + url_encoder.encoded_string (a_api))
-			elseif attached router.base_url as l_base_url then
-				Result := request.script_url (l_base_url + url_encoder.encoded_string (a_api))
+				Result := request.script_url (s)  + "?api=" + url_encoder.encoded_string (a_api)
 			else
-				Result := request.script_url (a_api)
+				Result := request.script_url ("")
 			end
 		end
 
