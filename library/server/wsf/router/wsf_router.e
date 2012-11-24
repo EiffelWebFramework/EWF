@@ -53,6 +53,9 @@ feature -- Mapping
 	map_with_request_methods (a_mapping: WSF_ROUTER_MAPPING; rqst_methods: detachable WSF_ROUTER_METHODS)
 			-- Map `a_mapping' for request methods `rqst_methods'
 		do
+			if attached rqst_methods as l_rm and then l_rm.has ("GET") then
+				l_rm.enable_head
+			end
 			mappings.extend (create {WSF_ROUTER_ITEM}.make_with_request_methods (a_mapping, rqst_methods))
 			a_mapping.handler.on_mapped (a_mapping, rqst_methods)
 		end
