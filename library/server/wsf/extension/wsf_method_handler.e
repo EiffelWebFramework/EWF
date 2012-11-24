@@ -19,7 +19,7 @@ feature -- Method
 		ensure
 			valid_response_for_http_1_0: is_1_0 (a_req.server_protocol) implies
 				valid_response_for_http_1_0 (a_res.status_code)
-			empty_body_for_no_content_response: is_no_content_response(a_res.status_code) implies a_res.transfered_content_length = 0 -- Is that the right measure?
+			empty_body_for_no_content_response: is_no_content_response (a_res.status_code) implies is_empty_content (a_res)
 		end
 
 feature -- Contract support
@@ -58,6 +58,14 @@ feature -- Contract support
 			else
 				-- default to False
 			end
+		end
+
+	is_empty_content (a_res: WSF_RESPONSE): BOOLEAN
+			-- Does `a_res' not contain an entity?
+		require
+			a_res_not_void: a_res /= Void
+		do
+			Result := a_res.transfered_content_length = 0 -- Is that the right measure?
 		end
 
 end

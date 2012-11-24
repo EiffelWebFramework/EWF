@@ -178,6 +178,7 @@ feature -- Method OPTIONS
 
 	do_options (req: WSF_REQUEST; res: WSF_RESPONSE)
 		do
+			-- TODO - implement a default method that lists the accepted methods for the resource.
 			handle_not_implemented ("Method OPTIONS not implemented", req, res)
 		end
 
