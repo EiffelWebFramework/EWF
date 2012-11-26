@@ -223,21 +223,24 @@ feature {WSF_RESPONSE} -- Output
 				s.append ("</code>")
 
 				if meths /= Void then
-					s.append (" [ ")
+					s.append (" [")
 					across
 						meths as rq
 					loop
+						s.append_character (' ')
 						if l_url /= Void and then rq.item.is_case_insensitive_equal ("GET") then
 							s.append ("<a href=%"" + l_base_url + l_url + "%">" + rq.item + "</a>")
 						else
 							s.append (rq.item)
 						end
-						if not rq.is_last then
-							s.append (",")
-						end
-						s.append (" ")
+						s.append_character (',')
 					end
-					s.append ("]")
+					if s[s.count] = ',' then
+						s.put (' ', s.count)
+					else
+						s.append_character (' ')
+					end
+					s.append_character (']')
 				end
 
 				s.append (" <em class=%"mappingdoc%">" + html_encoder.encoded_string (m.description) + "</em> ")
