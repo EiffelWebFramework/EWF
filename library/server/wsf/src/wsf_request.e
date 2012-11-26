@@ -39,6 +39,7 @@ feature {NONE} -- Initialization
 			tb: like meta_variables_table
 		do
 			wgi_request := r
+
 			create string_equality_tester
 			if attached r.meta_variables as l_vars then
 				create tb.make_with_key_tester (l_vars.count, string_equality_tester)
@@ -55,21 +56,26 @@ feature {NONE} -- Initialization
 			create error_handler.make
 			create uploaded_files_table.make_with_key_tester (0, string_equality_tester)
 			set_raw_input_data_recorded (False)
-			create {STRING_32} empty_string.make_empty
+			create {IMMUTABLE_STRING_32} empty_string.make_empty
 
 			create execution_variables_table.make_with_key_tester (0, string_equality_tester)
 			execution_variables_table.compare_objects
 
 			initialize
 			analyze
+		ensure
+			wgi_request_set: wgi_request = r
+			request_method_set: request_method.same_string (r.request_method)
 		end
 
 	initialize
 			-- Specific initialization
 		local
 			s8: detachable READABLE_STRING_8
+			req: WGI_REQUEST
 		do
 			init_mime_handlers
+			req := wgi_request
 
 			--| Content-Length
 			if attached content_length as s and then s.is_natural_64 then
@@ -79,18 +85,21 @@ feature {NONE} -- Initialization
 			end
 
 			-- Content-Type
-			s8 := wgi_request.content_type
+			s8 := req.content_type
 			if s8 /= Void then
 				create content_type.make_from_string (s8)
 			else
 				content_type := Void
 			end
 
+			--| Request Methods
+			request_method := req.request_method
+
 			--| PATH_INFO
-			path_info := raw_url_encoder.decoded_string (wgi_request.path_info)
+			path_info := raw_url_encoder.decoded_string (req.path_info)
 
 			--| PATH_TRANSLATED
-			s8 := wgi_request.path_translated
+			s8 := req.path_translated
 			if s8 /= Void then
 				path_translated := raw_url_encoder.decoded_string (s8)
 			end
@@ -209,6 +218,15 @@ feature -- Eiffel WGI access
 			-- Associated Eiffel WGI connector
 		do
 			Result := wgi_request.wgi_connector
+		end
+
+feature {WSF_REQUEST_EXPORTER} -- Override value		
+
+	set_request_method (a_request_method: like request_method)
+			-- Set `request_method' to `a_request_method'
+			-- note: this is mainly to have smart handling of HEAD request
+		do
+			request_method := a_request_method
 		end
 
 feature {NONE} -- Access: global variable
@@ -679,9 +697,6 @@ feature -- Access: CGI meta parameters - 1.1
 			-- This variable is specific to requests made with HTTP.
 			--
 			-- Servers MUST provide this metavariable to scripts.
-		do
-			Result := wgi_request.request_method
-		end
 
 	script_name: READABLE_STRING_8
 			-- The SCRIPT_NAME metavariable is set to a URL path that could

@@ -195,7 +195,6 @@ feature {WSF_RESPONSE} -- Output
 		local
 			l_url: detachable STRING_8
 			l_base_url: detachable READABLE_STRING_8
-			hdl: WSF_HANDLER
 			l_doc: detachable WSF_ROUTER_MAPPING_DOCUMENTATION
 		do
 			if attached {WSF_SELF_DOCUMENTED_ROUTER_MAPPING} m as l_doc_mapping then

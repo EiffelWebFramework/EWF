@@ -9,12 +9,23 @@ deferred class
 
 inherit
 	WSF_ROUTER_MAPPING
+		redefine
+			debug_output
+		end
 
 feature -- Access		
 
 	handler: WSF_CONTEXT_HANDLER [C]
 			-- Handler associated with Current mapping.
 		deferred
+		end
+
+feature -- Status report
+
+	debug_output: STRING
+			-- String that should be displayed in debugger to represent `Current'.
+		do
+			Result := Precursor + " {" + {C}.name + "}"
 		end
 
 note

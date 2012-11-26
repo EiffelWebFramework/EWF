@@ -1,6 +1,11 @@
 note
-	description: "Summary description for {WSF_ROUTER_ITEM}."
-	author: ""
+	description: "[
+				Entry of WSF_ROUTER
+				It contains
+					- mapping
+					- request methods				
+					
+				]"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -38,11 +43,7 @@ feature -- Status report
 	debug_output: STRING
 			-- String that should be displayed in debugger to represent `Current'.
 		do
-			if attached {DEBUG_OUTPUT} mapping as d then
-				create Result.make_from_string (d.debug_output)
-			else
-				create Result.make_from_string (mapping.generator)
-			end
+			create Result.make_from_string (mapping.debug_output)
 			if attached request_methods as mtds then
 				Result.append_string (" [ ")
 				across
@@ -65,5 +66,16 @@ feature -- Change
 
 invariant
 	mapping_attached: mapping /= Void
+
+note
+	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
+	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
+	source: "[
+			Eiffel Software
+			5949 Hollister Ave., Goleta, CA 93117 USA
+			Telephone 805-685-1006, Fax 805-685-6869
+			Website http://www.eiffel.com
+			Customer support http://support.eiffel.com
+		]"
 
 end
