@@ -11,6 +11,9 @@ inherit
 	WSF_ROUTER_CONTEXT_MAPPING [C]
 
 	WSF_SELF_DOCUMENTED_ROUTER_MAPPING
+		undefine
+			debug_output
+		end
 
 create
 	make,

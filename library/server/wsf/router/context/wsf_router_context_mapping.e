@@ -25,7 +25,7 @@ feature -- Status report
 	debug_output: STRING
 			-- String that should be displayed in debugger to represent `Current'.
 		do
-			Result := Precursor + " {" + {C}.name + "}"
+			Result := Precursor + " {" + ({C}).name + "}"
 		end
 
 note

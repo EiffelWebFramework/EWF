@@ -17,8 +17,11 @@ inherit
 			on_mapped
 		end
 
+	WSF_SELF_DOCUMENTED_HANDLER
+
 create
-	make
+	make,
+	make_hidden
 
 feature {NONE} -- Initialization
 
@@ -27,9 +30,27 @@ feature {NONE} -- Initialization
 			router := a_router
 		end
 
+	make_hidden (a_router: WSF_ROUTER)
+		do
+			make (a_router)
+			is_hidden := True
+		end
+
 	router: WSF_ROUTER
 
 	resource: detachable STRING
+
+	is_hidden: BOOLEAN
+			-- Current mapped handler should be hidden from self documentation
+
+feature -- Documentation
+
+	mapping_documentation (m: WSF_ROUTER_MAPPING): WSF_ROUTER_MAPPING_DOCUMENTATION
+		do
+			create Result.make (m)
+			Result.set_is_hidden (is_hidden)
+			Result.add_description ("Self generated documentation based on the router's setup")
+		end
 
 feature {WSF_ROUTER} -- Mapping
 

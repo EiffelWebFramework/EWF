@@ -10,6 +10,8 @@ class
 inherit
 	WSF_ROUTER_MAPPING
 
+	WSF_SELF_DOCUMENTED_ROUTER_MAPPING
+
 create
 	make
 
