@@ -9,6 +9,7 @@
 		</file_rule>
 		<option warning="true" full_class_checking="true" syntax="provisional">
 		</option>
+		<library name="base" location="$ISE_LIBRARY\library\base\base.ecf"/>
 		<library name="wsf" location="../wsf.ecf"/>
 		<library name="wsf_cgi" location="../connector/cgi.ecf"/>
 		<cluster name="default_cgi" location="./cgi" recursive="true"/>

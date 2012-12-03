@@ -46,7 +46,7 @@ feature -- Access
 
 feature -- Documentation
 
-	documentation: STRING_32 = "Is-URI"
+	description: STRING_32 = "Is-URI"
 
 feature -- Status
 

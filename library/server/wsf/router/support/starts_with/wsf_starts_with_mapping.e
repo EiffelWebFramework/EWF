@@ -35,7 +35,7 @@ feature -- Access
 
 feature -- Documentation
 
-	documentation: STRING_32 = "Starts-With-URI"
+	description: STRING_32 = "Starts-With-URI"
 
 feature -- Status
 

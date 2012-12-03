@@ -12,8 +12,6 @@ inherit
 
 	WSF_SELF_DOCUMENTED_ROUTER_MAPPING
 
-	DEBUG_OUTPUT
-
 create
 	make,
 	make_from_template
@@ -45,15 +43,7 @@ feature -- Access
 
 feature -- Documentation
 
-	documentation: STRING_32 = "Match-URI-Template"
-
-feature -- Status report
-
-	debug_output: STRING
-			-- String that should be displayed in debugger to represent `Current'.
-		do
-			Result := "URI-template: " + template.template
-		end
+	description: STRING_32 = "Match-URI-Template"
 
 feature -- Element change
 

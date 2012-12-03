@@ -21,6 +21,7 @@ feature {NONE} -- Initialization
 	make (req: WSF_REQUEST; a_router: WSF_ROUTER)
 			-- Make Current for request `req' and router `a_router'
 		do
+			status_code := {HTTP_STATUS_CODE}.ok
 			request := req
 			router := a_router
 		end
@@ -31,12 +32,20 @@ feature {NONE} -- Initialization
 			--| note: it could be "/doc" or "/api/doc" or ...
 		do
 			make (req, a_router)
-			if a_resource /= Void and then attached a_router.base_url as l_base_url then
-				resource := l_base_url + a_resource
+			if a_resource /= Void then
+				if attached a_router.base_url as l_base_url then
+					resource := l_base_url + a_resource
+				else
+					resource := a_resource
+				end
 			end
 		end
 
 feature -- Access		
+
+	status_code: INTEGER
+			-- Associated status code
+			-- Default is Ok
 
 	request: WSF_REQUEST
 
@@ -56,6 +65,13 @@ feature -- Properties
 		-- URL for a custom style css document.
 
 feature -- Change
+
+	set_status_code (c: like status_code)
+		require
+			c_positive_or_zero: c >= 0
+		do
+			status_code := c
+		end
 
 	set_header (v: like header)
 		do
@@ -97,8 +113,10 @@ feature {WSF_RESPONSE} -- Output
 				l_description.append ("[
 						<style type="text/css">
 							.mappingresource { color: #00f; }
-							.mappingdoc { color: #900; }
+							.mappingdoc { color: #900; float: right}
 							.handlerdoc { white-space: pre; }
+							ul.mapping { margin: 0; padding: 5px; list-style-type: none; }
+							ul.mapping>li { margin-bottom: 5px; padding-left: 5px; border-left: solid 3px #ccc; border-top: dotted 1px #ccc; }
 							div#footer { padding: 10px; width: 100%; margin-top: 20px;  border-top: 1px dotted #999; color: #999; text-align: center; }
 						</style>
 						]")
@@ -141,12 +159,12 @@ feature {WSF_RESPONSE} -- Output
 					l_description.append ("<a href=%""+ doc_url ("") + "%">Index</a><br/>")
 				end
 				if attached router.item_associated_with_resource (l_api_resource, Void) as l_api_item then
-					l_description.append ("<h2>Information related to %"" + l_api_resource + "%"</h2><ul>")
+					l_description.append ("<h2>Information related to <code>" + l_api_resource + "</code></h2><ul class=%"mapping%">")
 					append_documentation_to (l_description, l_api_item.mapping, l_api_item.request_methods)
 					l_description.append ("</ul>")
 				end
 			else
-				l_description.append ("<h2>Router</h2><ul>")
+				l_description.append ("<h2>Router</h2><ul class=%"mapping%">")
 				across
 					router as c
 				loop
@@ -165,9 +183,10 @@ feature {WSF_RESPONSE} -- Output
 
 			l_description.append ("</body></html>")
 
+			-- Compute and send the response message
 			h.put_content_length (l_description.count)
 			h.put_current_date
-			res.set_status_code ({HTTP_STATUS_CODE}.ok)
+			res.set_status_code (status_code)
 			res.put_header_text (h.string)
 			res.put_string (l_description)
 		end
@@ -177,76 +196,81 @@ feature {WSF_RESPONSE} -- Output
 			l_url: detachable STRING_8
 			l_base_url: detachable READABLE_STRING_8
 			hdl: WSF_HANDLER
+			l_doc: detachable WSF_ROUTER_MAPPING_DOCUMENTATION
 		do
-			l_base_url := router.base_url
-			if l_base_url = Void then
-				l_base_url := ""
-			end
-
-			l_url := Void
-			s.append ("<li>")
-			s.append ("<code>")
-			if doc_url_supported then
-				s.append ("<a class=%"mappingresource%" href=%"")
-				s.append (doc_url (m.associated_resource))
-				s.append ("%">")
-				s.append (m.associated_resource)
-				s.append ("</a>")
-			else
-				s.append (m.associated_resource)
-			end
-			s.append ("</code>")
-
 			if attached {WSF_SELF_DOCUMENTED_ROUTER_MAPPING} m as l_doc_mapping then
-				s.append (" <em class=%"mappingdoc%">" + html_encoder.encoded_string (l_doc_mapping.documentation) + "</em> ")
-			else
-				debug
-					s.append (" <em class=%"mappingdoc%">" + m.generating_type.out + "</em> ")
-				end
+				l_doc := l_doc_mapping.documentation
 			end
-			if meths /= Void then
-				s.append (" [")
-				across
-					meths as rq
-				loop
-					s.append (" ")
-					if l_url /= Void and then rq.item.is_case_insensitive_equal ("GET") then
-						s.append ("<a href=%"" + l_base_url + l_url + "%">" + rq.item + "</a>")
-					else
-						s.append (rq.item)
-					end
-					s.append (",")
-				end
-				if s[s.count] = ',' then
-					s.put (' ', s.count) -- Remove last ','
-				else
-					s.append_character (' ')
-				end
-				s.append_character (']')
-			end
+			if l_doc = Void or else not l_doc.is_hidden then
 
-			hdl := m.handler
-			if attached {WSF_SELF_DOCUMENTED_HANDLER} hdl as l_doc_handler and then attached l_doc_handler.documentation as l_doc then
-				s.append ("%N<ul class=%"handlerdoc%">")
-				s.append (html_encoder.encoded_string (l_doc))
-				s.append ("%N</ul>%N")
-			else
-				debug
+				l_base_url := router.base_url
+				if l_base_url = Void then
+					l_base_url := ""
+				end
+
+				l_url := Void
+				s.append ("<li>")
+				s.append ("<code>")
+				if doc_url_supported then
+					s.append ("<a class=%"mappingresource%" href=%"")
+					s.append (doc_url (m.associated_resource))
+					s.append ("%">")
+					s.append (m.associated_resource)
+					s.append ("</a>")
+				else
+					s.append (m.associated_resource)
+				end
+				s.append ("</code>")
+
+				if meths /= Void then
+					s.append (" [")
+					across
+						meths as rq
+					loop
+						s.append_character (' ')
+						if l_url /= Void and then rq.item.is_case_insensitive_equal ("GET") then
+							s.append ("<a href=%"" + l_base_url + l_url + "%">" + rq.item + "</a>")
+						else
+							s.append (rq.item)
+						end
+						s.append_character (',')
+					end
+					if s[s.count] = ',' then
+						s.put (' ', s.count)
+					else
+						s.append_character (' ')
+					end
+					s.append_character (']')
+				end
+
+				s.append (" <em class=%"mappingdoc%">" + html_encoder.encoded_string (m.description) + "</em> ")
+
+				if l_doc /= Void and then not l_doc.is_empty then
 					s.append ("%N<ul class=%"handlerdoc%">")
-					s.append (hdl.generating_type.out)
+					s.append (html_encoder.encoded_string (l_doc.description))
+					s.append ("%N</ul>%N")
+				else
+					debug
+						s.append ("%N<ul class=%"handlerdoc%">")
+						s.append (m.handler.generating_type.out)
+						s.append ("%N</ul>%N")
+					end
+				end
+				if attached {WSF_ROUTING_HANDLER} m.handler as l_routing_hdl then
+					s.append ("%N<ul>%N")
+					across
+						l_routing_hdl.router as c
+					loop
+						append_documentation_to (s, c.item.mapping, c.item.request_methods)
+					end
 					s.append ("%N</ul>%N")
 				end
-			end
-			if attached {WSF_ROUTING_HANDLER} hdl as l_routing_hdl then
-				s.append ("%N<ul>%N")
-				across
-					l_routing_hdl.router as c
-				loop
-					append_documentation_to (s, c.item.mapping, c.item.request_methods)
+				s.append ("</li>%N")
+			else
+				debug
+					s.append ("<li>" + m.associated_resource + " is HIDDEN</li>%N")
 				end
-				s.append ("%N</ul>%N")
 			end
-			s.append ("</li>%N")
 		end
 
 feature {NONE} -- Implementation

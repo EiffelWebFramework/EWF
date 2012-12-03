@@ -8,6 +8,7 @@
 			<exclude>/\.svn$</exclude>
 		</file_rule>
 		<option warning="true" full_class_checking="true" is_attached_by_default="true" void_safety="all" syntax="provisional"/>
+		<library name="base" location="$ISE_LIBRARY\library\base\base-safe.ecf"/>
 		<library name="wsf" location="../wsf-safe.ecf"/>
 		<library name="wsf_cgi" location="../connector/cgi-safe.ecf"/>
 		<cluster name="default_cgi" location="./cgi" recursive="true"/>
