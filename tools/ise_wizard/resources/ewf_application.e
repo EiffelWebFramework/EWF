@@ -26,8 +26,6 @@ feature -- Execution
 			-- Default request handler if no other are relevant
 		local
 			mesg: WSF_HTML_PAGE_RESPONSE
-			s: STRING_8
-			l_user_name: READABLE_STRING_32
 		do
 			create mesg.make
 			mesg.set_title ("Hello World!")
@@ -44,9 +42,6 @@ feature {NONE} -- Initialization
 
 				--| If you don't need any custom options, you are not obliged to redefine `initialize'
 			Precursor
-
-				--| Initialize router
-			initialize_router
 		end
 
 end
