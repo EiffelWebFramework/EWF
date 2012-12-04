@@ -119,14 +119,13 @@ feature -- Form
 					tfn.add_extension ("ecf")
 					copy_resource_template ("template.ecf", tfn.string)
 
+					create res.make (tfn.string, d.name)
+
 					create tfn.make_from_string (dn.string)
 
 					tfn.set_file_name ("ewf")
 					tfn.add_extension ("ini")
 					copy_resource_template ("ewf.ini", tfn.string)
-
-
-					create res.make (tfn.string, d.name)
 
 					create dn.make_from_string (pdn)
 					dn.extend (pn)
