@@ -61,7 +61,7 @@ feature -- Request processing
 	process_request (a_handler: HTTP_CONNECTION_HANDLER; a_socket: TCP_STREAM_SOCKET)
 			-- Process request ...
 		local
-			env, vars: HASH_TABLE [STRING, STRING]
+			env: HASH_TABLE [STRING, STRING]
 			p: INTEGER
 			l_request_uri, l_script_name, l_query_string, l_path_info: STRING
 			l_server_name, l_server_port: detachable STRING
@@ -73,8 +73,16 @@ feature -- Request processing
 			l_request_uri := a_handler.uri
 			a_headers_map := a_handler.request_header_map
 			create e
-			vars := e.starting_environment_variables
-			env := vars.twin
+			if attached e.starting_environment as vars then
+				create env.make (vars.count)
+				across
+					vars as c
+				loop
+					env.force (c.item.to_string_8, c.key.to_string_8)
+				end
+			else
+				create env.make (0)
+			end
 
 			--| for Any Abc-Def-Ghi add (or replace) the HTTP_ABC_DEF_GHI variable to `env'
 			from
