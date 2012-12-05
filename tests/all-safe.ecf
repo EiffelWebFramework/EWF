@@ -25,4 +25,15 @@
 		<library name="wsf_extension" location="..\library\server\wsf\wsf_extension-safe.ecf" readonly="false"/>
 		<library name="wsf_session" location="..\library\server\wsf\wsf_session-safe.ecf" readonly="false"/>
 	</target>
+	<target name="all_windows" extends="all">
+		<description>Compiling as Windows , on other platforms than Windows</description>
+		<root all_classes="true"/>
+		<setting name="platform" value="windows"/>
+	</target>
+	<target name="all_unix" extends="all">
+		<description>Compiling as UNIX , on other platforms than Unix</description>
+		<root all_classes="true"/>
+		<setting name="platform" value="unix"/>
+	</target>
+
 </system>
