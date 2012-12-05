@@ -53,7 +53,7 @@ feature {NONE} -- Initialization
 	setup_filter
 			-- Setup `filter'
 		local
-			l_logging_filter: LOGGING_FILTER
+			l_logging_filter: WSF_LOGGING_FILTER
 		do
 			create l_logging_filter
 			filter.set_next (l_logging_filter)
