@@ -19,7 +19,7 @@ create
 
 feature {NONE} -- Initialization
 
-	make (a_vars: HASH_TABLE [READABLE_STRING_8, READABLE_STRING_8]; a_input: like input; a_wgi_connector: like wgi_connector)
+	make (a_vars: HASH_TABLE [READABLE_STRING_GENERAL, READABLE_STRING_GENERAL]; a_input: like input; a_wgi_connector: like wgi_connector)
 		require
 			vars_attached: a_vars /= Void
 		do
@@ -244,7 +244,7 @@ feature -- Access: Extension to CGI meta parameters - 1.1
 
 feature {NONE} -- Element change: CGI meta parameter related to PATH_INFO
 
-	set_meta_variables (a_vars: HASH_TABLE [READABLE_STRING_8, READABLE_STRING_8])
+	set_meta_variables (a_vars: HASH_TABLE [READABLE_STRING_GENERAL, READABLE_STRING_GENERAL])
 			-- Fill with variable from `a_vars'
 		local
 			s: like meta_string_variable
@@ -264,7 +264,7 @@ feature {NONE} -- Element change: CGI meta parameter related to PATH_INFO
 			until
 				a_vars.after
 			loop
-				table.force (a_vars.item_for_iteration, a_vars.key_for_iteration)
+				table.force (a_vars.item_for_iteration.to_string_8, a_vars.key_for_iteration.to_string_8)
 				a_vars.forth
 			end
 
