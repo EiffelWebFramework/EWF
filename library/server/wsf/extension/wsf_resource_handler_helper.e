@@ -47,7 +47,7 @@ feature -- Method Get
 			do_get (req, res)
 		end
 
-	frozen do_get (req: WSF_REQUEST; res: WSF_RESPONSE)
+	do_get (req: WSF_REQUEST; res: WSF_RESPONSE)
 			-- Using GET to retrieve resource information.
 			-- If the GET request is SUCCESS, we respond with
 			-- 200 OK, and a representation of the resource.
@@ -56,22 +56,7 @@ feature -- Method Get
 			-- If is a Condition GET and the resource does not change we send a
 			-- 304, Resource not modifed	
 		do
-			do_get_head (req, res, True)
-		end
-
-	do_get_head (a_req: WSF_REQUEST; a_res: WSF_RESPONSE; a_is_get: BOOLEAN)
-			-- Using GET or HEAD to retrieve resource information.
-			-- If the GET or HEAD request is SUCCESS, we respond with
-			-- 200 OK, and WITH/WITHOUT (for GET/HEAD respectively) a representation of the resource
-			-- If the GET or HEAD request is not SUCCESS, we respond with
-			-- 404 Resource not found.
-			-- If Conditional GET or HEAD and the resource does not change we send a
-			-- 304, Resource not modifed.
-		do
-			handle_not_implemented ("Methods GET and HEAD not implemented", a_req, a_res)
-		ensure
-			all_postconditions_for_do_get: a_is_get implies True
-			all_postconditions_for_do_head: not a_is_get implies True
+			handle_not_implemented ("Method GET not implemented", req, res)
 		end
 
 feature -- Method Post
@@ -157,7 +142,7 @@ feature -- Method HEAD
 			do_head (req, res)
 		end
 
-	frozen do_head (req: WSF_REQUEST; res: WSF_RESPONSE)
+	do_head (req: WSF_REQUEST; res: WSF_RESPONSE)
 			-- Using HEAD to retrieve resource information.
 			-- If the HEAD request is SUCCESS, we respond with
 			-- 200 OK, and WITHOUT a representation of the resource.
@@ -166,7 +151,7 @@ feature -- Method HEAD
 			-- If Conditional HEAD and the resource does not change we send a
 			-- 304, Resource not modifed.
 		do
-			do_get_head (req, res, False)
+			handle_not_implemented ("Method HEAD not implemented", req, res)
 		end
 
 feature -- Method OPTIONS

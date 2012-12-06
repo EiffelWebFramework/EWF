@@ -23,7 +23,7 @@ inherit
 
 	WSF_RESOURCE_HANDLER_HELPER
 		redefine
-			do_get_head,
+			do_get,
 			do_post,
 			do_put,
 			do_delete
@@ -53,7 +53,7 @@ feature -- API DOC
 
 feature -- HTTP Methods
 
-	do_get_head (a_req: WSF_REQUEST; a_res: WSF_RESPONSE; a_is_get: BOOLEAN)
+	do_get (a_req: WSF_REQUEST; a_res: WSF_RESPONSE)
 			-- <Precursor>
 		local
 			id:  STRING
@@ -64,7 +64,7 @@ feature -- HTTP Methods
 					if is_conditional_get (a_req, l_order) then
 						handle_resource_not_modified_response ("The resource" + orig_path + "does not change", a_req, a_res)
 					else
-						compute_response_get_head (a_req, a_res, l_order, a_is_get)
+						compute_response_get (a_req, a_res, l_order)
 					end
 				else
 					handle_resource_not_found_response ("The following resource" + orig_path + " is not found ", a_req, a_res)
@@ -87,7 +87,7 @@ feature -- HTTP Methods
 			end
 		end
 
-	compute_response_get_head (a_req: WSF_REQUEST; a_res: WSF_RESPONSE; l_order: ORDER; a_is_get: BOOLEAN)
+	compute_response_get (a_req: WSF_REQUEST; a_res: WSF_RESPONSE; l_order: ORDER)
 		local
 			h: HTTP_HEADER
 			l_msg : STRING
@@ -105,9 +105,7 @@ feature -- HTTP Methods
 				h.add_header ("etag:" + etag_utils.md5_digest (l_order.out))
 				a_res.set_status_code ({HTTP_STATUS_CODE}.ok)
 				a_res.put_header_text (h.string)
-				if a_is_get then
-					a_res.put_string (l_msg)
-				end
+				a_res.put_string (l_msg)
 			end
 		end
 
