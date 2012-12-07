@@ -73,7 +73,7 @@ feature -- Request processing
 			l_request_uri := a_handler.uri
 			a_headers_map := a_handler.request_header_map
 			create e
-			if attached e.starting_environment as vars then
+			if attached e.starting_environment_variables as vars then
 				create env.make (vars.count)
 				across
 					vars as c
@@ -197,7 +197,7 @@ feature -- Request processing
 		end
 
 note
-	copyright: "2011-2011, Eiffel Software and others"
+	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software
