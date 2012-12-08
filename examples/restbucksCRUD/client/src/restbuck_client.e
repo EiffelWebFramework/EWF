@@ -17,7 +17,7 @@ feature {NONE} -- Initialization
 		local
 			h: LIBCURL_HTTP_CLIENT
 			sess: HTTP_CLIENT_SESSION
-			resp : HTTP_CLIENT_RESPONSE
+			resp : detachable HTTP_CLIENT_RESPONSE
 			l_location : detachable READABLE_STRING_8
 			body : STRING
 		do
@@ -39,7 +39,7 @@ feature {NONE} -- Initialization
 
 
 			-- Update the Order
-			if attached resp.body as l_body then
+			if resp /= Void and then attached resp.body as l_body then
 				body := l_body.as_string_8
 				body.replace_substring_all ("takeAway", "in Shop")
 				print ("%N Update Order %N")
@@ -47,11 +47,10 @@ feature {NONE} -- Initialization
 			end
 		end
 
-	update_order ( sess: HTTP_CLIENT_SESSION; uri : detachable READABLE_STRING_8; a_body : STRING) : HTTP_CLIENT_RESPONSE
+	update_order ( sess: HTTP_CLIENT_SESSION; uri : detachable READABLE_STRING_8; a_body : STRING): detachable HTTP_CLIENT_RESPONSE
 		local
 			context : HTTP_CLIENT_REQUEST_CONTEXT
 		do
-			create Result.make
 			if attached uri as l_uri then
 				sess.set_base_url (l_uri)
 				create context.make
@@ -74,9 +73,8 @@ feature {NONE} -- Initialization
 		end
 
 
-	read_order ( sess: HTTP_CLIENT_SESSION; uri : detachable READABLE_STRING_8) : HTTP_CLIENT_RESPONSE
+	read_order ( sess: HTTP_CLIENT_SESSION; uri : detachable READABLE_STRING_8): detachable HTTP_CLIENT_RESPONSE
 		do
-			create Result.make
 			if attached uri as l_uri then
 				sess.set_base_url (l_uri)
 				Result := sess.get ("", Void)

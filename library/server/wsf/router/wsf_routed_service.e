@@ -47,7 +47,11 @@ feature -- Execution
 
 	execute_default (req: WSF_REQUEST; res: WSF_RESPONSE)
 			-- Default procedure
-		deferred
+		local
+			not_found: WSF_NOT_FOUND_RESPONSE
+		do
+			create not_found.make (req)
+			res.send (not_found)
 		end
 
 feature -- Access

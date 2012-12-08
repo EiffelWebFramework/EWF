@@ -10,6 +10,9 @@ inherit
 	ANY
 
 	WSF_URI_TEMPLATE_ROUTED_SERVICE
+		redefine
+			execute_default
+		end
 
 	WSF_HANDLER_HELPER
 
@@ -30,10 +33,13 @@ feature {NONE} -- Initialization
 	setup_router
 		local
 			order_handler: ORDER_HANDLER
+			doc: WSF_ROUTER_SELF_DOCUMENTATION_HANDLER
 		do
 			create order_handler
 			router.handle_with_request_methods ("/order", order_handler, router.methods_POST)
 			router.handle_with_request_methods ("/order/{orderid}", order_handler, router.methods_GET + router.methods_DELETE + router.methods_PUT)
+			create doc.make_hidden (router)
+			router.handle_with_request_methods ("/api/doc", doc, router.methods_GET)
 		end
 
 feature -- Execution
@@ -54,6 +60,7 @@ feature -- Execution
 			h.put_content_type_text_plain
 			l_api_doc := "%NPlease check the API%NURI:/order METHOD: POST%NURI:/order/{orderid} METHOD: GET, PUT, DELETE%N"
 			l_description := req.request_method + req.request_uri + " is not allowed" + "%N" + l_api_doc
+			l_description.append ("%NHTML documentation:/api/doc METHOD: GET%N")
 			h.put_content_length (l_description.count)
 			h.put_current_date
 			res.set_status_code ({HTTP_STATUS_CODE}.method_not_allowed)

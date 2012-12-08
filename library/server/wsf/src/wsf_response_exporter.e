@@ -1,5 +1,13 @@
-${NOTE_KEYWORD}
-	copyright: "2011-${YEAR}, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
+note
+	description: "Objects that can access low level features of {WSF_RESPONSE}"
+	date: "$Date$"
+	revision: "$Revision$"
+
+deferred class
+	WSF_RESPONSE_EXPORTER
+
+note
+	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software
@@ -8,3 +16,4 @@ ${NOTE_KEYWORD}
 			Website http://www.eiffel.com
 			Customer support http://support.eiffel.com
 		]"
+end

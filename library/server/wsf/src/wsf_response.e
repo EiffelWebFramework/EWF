@@ -31,6 +31,8 @@ feature {NONE} -- Initialization
 			wgi_response := r
 		end
 
+feature {WSF_RESPONSE_EXPORTER} -- Properties		
+
 	wgi_response: WGI_RESPONSE
 			-- Associated WGI_RESPONSE
 

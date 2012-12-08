@@ -1,6 +1,10 @@
 note
-	description: "Summary description for {EWF_ROUTER}."
-	author: ""
+	description: "[
+			URL dispatching of request
+			
+			Map a route to an handler according to the request method and path
+
+		]"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -9,6 +13,8 @@ class
 
 inherit
 	ITERABLE [WSF_ROUTER_ITEM]
+
+	WSF_REQUEST_EXPORTER
 
 create
 	make,
@@ -53,8 +59,15 @@ feature -- Mapping
 	map_with_request_methods (a_mapping: WSF_ROUTER_MAPPING; rqst_methods: detachable WSF_ROUTER_METHODS)
 			-- Map `a_mapping' for request methods `rqst_methods'
 		do
-			if attached rqst_methods as l_rm and then l_rm.has ({HTTP_REQUEST_METHODS}.method_get) then
-				l_rm.enable_head
+			debug ("router")
+				-- Display conflict in mapping
+				if has_item_associated_with_resource (a_mapping.associated_resource, rqst_methods) then
+					io.error.put_string ("Mapping: " + a_mapping.debug_output + ": conflict with existing mapping")
+					if attached item_associated_with_resource (a_mapping.associated_resource, rqst_methods) as l_conflicted then
+						io.error.put_string (": " + l_conflicted.debug_output)
+					end
+					io.error.put_string ("%N")
+				end
 			end
 			mappings.extend (create {WSF_ROUTER_ITEM}.make_with_request_methods (a_mapping, rqst_methods))
 			a_mapping.handler.on_mapped (a_mapping, rqst_methods)
@@ -95,10 +108,28 @@ feature -- Access
 			-- And return the associated handler if mapping found and handler executed.
 		local
 			l_req_method: READABLE_STRING_8
+			head_res: WSF_HEAD_RESPONSE_WRAPPER
+		do
+			l_req_method := request_method (req)
+			is_dispatched := False
+			Result := dispatch_and_return_handler_for_request_method (req, res, l_req_method)
+			if Result = Void and l_req_method = {HTTP_REQUEST_METHODS}.method_head then
+				check is_not_dispatched: not is_dispatched end
+				create head_res.make_from_response (res)
+				req.set_request_method ({HTTP_REQUEST_METHODS}.method_GET)
+				Result := dispatch_and_return_handler_for_request_method (req, head_res, {HTTP_REQUEST_METHODS}.method_GET)
+			end
+		end
+
+feature {NONE} -- Dispatch implementation		
+
+	dispatch_and_return_handler_for_request_method (req: WSF_REQUEST; res: WSF_RESPONSE; a_request_method: READABLE_STRING_8): detachable WSF_HANDLER
+			-- Dispatch request `req' among the `mappings'
+			-- And return the associated handler if mapping found and handler executed.
+		local
 			m: WSF_ROUTER_MAPPING
 		do
 			is_dispatched := False
-			l_req_method := request_method (req)
 
 			across
 				mappings as c
@@ -106,7 +137,7 @@ feature -- Access
 				Result /= Void
 			loop
 				if attached c.item as l_info then
-					if is_matching_request_methods (l_req_method, l_info.request_methods) then
+					if is_matching_request_methods (a_request_method, l_info.request_methods) then
 						m := l_info.mapping
 						if attached m.routed_handler (req, res, Current) as r then
 							is_dispatched := True

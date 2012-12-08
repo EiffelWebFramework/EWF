@@ -10,7 +10,7 @@
 		<setting name="console_application" value="true"/>
 		<setting name="concurrency" value="thread"/>
 		<library name="base" location="$ISE_LIBRARY\library\base\base.ecf"/>
-		<library name="fcgi" location="..\fcgi.ecf" readonly="false"/>
+		<library name="fcgi" location="..\libfcgi.ecf" readonly="false"/>
 		<cluster name="application" location=".\" recursive="true"/>
 	</target>
 </system>

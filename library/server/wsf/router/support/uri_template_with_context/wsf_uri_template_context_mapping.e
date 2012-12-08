@@ -11,8 +11,9 @@ inherit
 	WSF_ROUTER_CONTEXT_MAPPING [C]
 
 	WSF_SELF_DOCUMENTED_ROUTER_MAPPING
-
-	DEBUG_OUTPUT
+		undefine
+			debug_output
+		end
 
 create
 	make,
@@ -45,15 +46,7 @@ feature -- Access
 
 feature -- Documentation
 
-	description: STRING_32 = "Is-URI"
-
-feature -- Status report
-
-	debug_output: STRING
-			-- String that should be displayed in debugger to represent `Current'.
-		do
-			Result := "URI-template: " + template.template
-		end
+	description: STRING_32 = "Match-URI-Template"
 
 feature -- Element change
 
