@@ -778,6 +778,17 @@ feature -- Test
 
         end
 
+    test_json_object_hash_code
+        local
+            ht: HASH_TABLE [ANY, JSON_VALUE]
+            jo: JSON_OBJECT
+        do
+            create ht.make (1)
+            create jo.make
+            ht.force ("", jo)
+            assert ("ht.has_key (jo)", ht.has_key (jo))
+        end
+
     test_json_failed_json_conversion
             -- Test converting an Eiffel object to JSON that is based on a class
             -- for which no JSON converter has been registered.

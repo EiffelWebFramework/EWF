@@ -161,7 +161,7 @@ feature -- Report
         do
             from
                 object.start
-                Result := object.item_for_iteration.hash_code
+                Result := object.out.hash_code
             until
                 object.off
             loop
