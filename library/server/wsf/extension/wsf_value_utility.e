@@ -25,7 +25,11 @@ feature -- Parameter
 	string_array_item (req: WSF_REQUEST; a_name: READABLE_STRING_GENERAL): detachable ARRAY [READABLE_STRING_32]
 			-- Array of string values for query parameter `a_name' if relevant.
 		do
-			Result := string_array_for (req, a_name, agent string_item)
+			if attached {WSF_TABLE} req.item (a_name) as tb then
+				Result := tb.as_array_of_string
+			else
+				Result := string_array_for (req, a_name, agent string_item)
+			end
 		end
 
 feature -- Query parameter	
@@ -46,7 +50,11 @@ feature -- Query parameter
 	string_array_query_parameter (req: WSF_REQUEST; a_name: READABLE_STRING_GENERAL): detachable ARRAY [READABLE_STRING_32]
 			-- Array of string values for query parameter `a_name' if relevant.
 		do
-			Result := string_array_for (req, a_name, agent string_query_parameter)
+			if attached {WSF_TABLE} req.query_parameter (a_name) as tb then
+				Result := tb.as_array_of_string
+			else
+				Result := string_array_for (req, a_name, agent string_query_parameter)
+			end
 		end
 
 	is_integer_query_parameter (req: WSF_REQUEST; a_name: READABLE_STRING_GENERAL): BOOLEAN
@@ -80,7 +88,11 @@ feature -- Path parameter
 	string_array_path_parameter (req: WSF_REQUEST; a_name: READABLE_STRING_GENERAL): detachable ARRAY [READABLE_STRING_32]
 			-- Array of string values for path parameter `a_name' if relevant.
 		do
-			Result := string_array_for (req, a_name, agent string_path_parameter)
+			if attached {WSF_TABLE} req.path_parameter (a_name) as tb then
+				Result := tb.as_array_of_string
+			else
+				Result := string_array_for (req, a_name, agent string_path_parameter)
+			end
 		end
 
 	is_integer_path_parameter (req: WSF_REQUEST; a_name: READABLE_STRING_GENERAL): BOOLEAN
