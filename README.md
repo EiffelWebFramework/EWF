@@ -1,5 +1,7 @@
 # Eiffel Web Framework
 
+* version: v0.2
+
 
 ## Overview
 
@@ -16,24 +18,18 @@ For download, check
 
 ## Requirements
 * Compiling from EiffelStudio 7.0
-* Developped using EiffelStudio 7.1 (on Windows, Linux)
-* Tested using EiffelStudio 7.1 with "jenkins" CI server (not anymore compatible with 6.8 due to use of `TABLE_ITERABLE')
+* Developped using EiffelStudio 7.1 and 7.2 (on Windows, Linux)
+* Tested using EiffelStudio 7.1 with "jenkins" CI server (not compatible with 6.8 due to use of `TABLE_ITERABLE')
 * The code have to allow __void-safe__ compilation and non void-safe system (see [more about void-safety](http://docs.eiffel.com/book/method/void-safe-programming-eiffel) )
 
 ## How to get the source code?
 
-Using git version >= 1.6.5
-* git clone --recursive https://github.com/EiffelWebFramework/EWF.git
-
-Otherwise, try
 * git clone https://github.com/EiffelWebFramework/EWF.git
-* cd Eiffel-Web-Framework
-* git submodule update --init
-* git submodule foreach --recursive git checkout master
+* svn checkout https://github.com/EiffelWebFramework/EWF/trunk
 
-An alternative to the last 2 instructions is to use the script from tools folder:
-* cd tools
-* update_git_working_copy
+* Notes:
+** It does not use submodule anymore due to recurrent trouble for users.
+** EWF is also provided by delivery of EiffelStudio  (starting from version 7.1 shipping v0.1, and 7.2 that ships v0.2)
 
 * And to build the required and related Clibs
   * cd contrib/ise_library/cURL
@@ -51,7 +47,7 @@ An alternative to the last 2 instructions is to use the script from tools folder
 ### protocol
 * __http__: HTTP related classes, constants for status code, content types, ... [read more](library/protocol/http)
 * __uri_template__: URI Template library (parsing and expander) [read more](library/protocol/uri_template)
-* __CONNEG__: CONNEG library (Content-type Negociation) [read more](library/protocol/CONNEG)
+*not yet released:  __CONNEG__: CONNEG library (Content-type Negociation) [read more](library/protocol/CONNEG) 
 
 ### client
 * __http_client__: simple HTTP client based on cURL [read more](library/client/http_client)
