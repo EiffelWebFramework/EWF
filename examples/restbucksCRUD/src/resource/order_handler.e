@@ -53,21 +53,21 @@ feature -- API DOC
 
 feature -- HTTP Methods
 
-	do_get (a_req: WSF_REQUEST; a_res: WSF_RESPONSE)
+	do_get (req: WSF_REQUEST; res: WSF_RESPONSE)
 			-- <Precursor>
 		local
 			id:  STRING
 		do
-			if attached a_req.orig_path_info as orig_path then
+			if attached req.orig_path_info as orig_path then
 				id := get_order_id_from_path (orig_path)
 				if attached retrieve_order (id) as l_order then
-					if is_conditional_get (a_req, l_order) then
-						handle_resource_not_modified_response ("The resource" + orig_path + "does not change", a_req, a_res)
+					if is_conditional_get (req, l_order) then
+						handle_resource_not_modified_response ("The resource" + orig_path + "does not change", req, res)
 					else
-						compute_response_get (a_req, a_res, l_order)
+						compute_response_get (req, res, l_order)
 					end
 				else
-					handle_resource_not_found_response ("The following resource" + orig_path + " is not found ", a_req, a_res)
+					handle_resource_not_found_response ("The following resource" + orig_path + " is not found ", req, res)
 				end
 			end
 		end
@@ -87,7 +87,7 @@ feature -- HTTP Methods
 			end
 		end
 
-	compute_response_get (a_req: WSF_REQUEST; a_res: WSF_RESPONSE; l_order: ORDER)
+	compute_response_get (req: WSF_REQUEST; res: WSF_RESPONSE; l_order: ORDER)
 		local
 			h: HTTP_HEADER
 			l_msg : STRING
@@ -99,13 +99,13 @@ feature -- HTTP Methods
 			if attached {JSON_VALUE} json.value (l_order) as jv then
 				l_msg := jv.representation
 				h.put_content_length (l_msg.count)
-				if attached a_req.request_time as time then
+				if attached req.request_time as time then
 					h.add_header ("Date:" + time.formatted_out ("ddd,[0]dd mmm yyyy [0]hh:[0]mi:[0]ss.ff2") + " GMT")
 				end
 				h.add_header ("etag:" + etag_utils.md5_digest (l_order.out))
-				a_res.set_status_code ({HTTP_STATUS_CODE}.ok)
-				a_res.put_header_text (h.string)
-				a_res.put_string (l_msg)
+				res.set_status_code ({HTTP_STATUS_CODE}.ok)
+				res.put_header_text (h.string)
+				res.put_string (l_msg)
 			end
 		end
 

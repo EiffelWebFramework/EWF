@@ -10,16 +10,16 @@ deferred class	WSF_METHOD_HANDLER
 
 feature -- Method
 
-	do_method (a_req: WSF_REQUEST; a_res: WSF_RESPONSE)
-			-- Respond to `a_req' using `a_res'.
+	do_method (req: WSF_REQUEST; res: WSF_RESPONSE)
+			-- Respond to `req' using `res'.
 		require
-			a_req_not_void: a_req /= Void
-			a_res_not_void: a_res /= Void
+			req_not_void: req /= Void
+			res_not_void: res /= Void
 		deferred
 		ensure
-			valid_response_for_http_1_0: is_1_0 (a_req.server_protocol) implies
-				valid_response_for_http_1_0 (a_res.status_code)
-			empty_body_for_no_content_response: is_no_content_response (a_res.status_code) implies is_empty_content (a_res)
+			valid_response_for_http_1_0: is_1_0 (req.server_protocol) implies
+				valid_response_for_http_1_0 (res.status_code)
+			empty_body_for_no_content_response: is_no_content_response (res.status_code) implies is_empty_content (res)
 		end
 
 feature -- Contract support
@@ -60,12 +60,12 @@ feature -- Contract support
 			end
 		end
 
-	is_empty_content (a_res: WSF_RESPONSE): BOOLEAN
-			-- Does `a_res' not contain an entity?
+	is_empty_content (res: WSF_RESPONSE): BOOLEAN
+			-- Does `res' not contain an entity?
 		require
-			a_res_not_void: a_res /= Void
+			res_not_void: res /= Void
 		do
-			Result := a_res.transfered_content_length = 0 -- Is that the right measure?
+			Result := res.transfered_content_length = 0 -- Is that the right measure?
 		end
 
 end
