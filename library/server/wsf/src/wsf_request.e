@@ -144,12 +144,26 @@ feature -- Setting
 
 feature -- Raw input data
 
-	raw_input_data: detachable READABLE_STRING_8
+	raw_input_data: detachable IMMUTABLE_STRING_8
 			-- Raw input data is `raw_input_data_recorded' is True
 
 	set_raw_input_data (d: READABLE_STRING_8)
 		do
-			raw_input_data := d
+			if attached {IMMUTABLE_STRING_8} d as imm then
+				raw_input_data := d
+			else
+				create raw_input_data.make_from_string (d)
+			end
+		end
+
+feature -- Raw header data
+
+	raw_header_data: like meta_string_variable
+			-- Raw header data if available.
+		do
+			Result := meta_string_variable ("RAW_HEADER_DATA")
+		ensure
+			is_valid_as_string_8: Result /= Void implies Result.is_valid_as_string_8
 		end
 
 feature -- Error handling
@@ -178,6 +192,48 @@ feature -- Access: Input
 			Result := wgi_request.is_chunked_input
 		end
 
+	read_input_data_into (buf: STRING)
+			-- retrieve the content from the `input' stream into `s'
+			-- warning: if the input data has already been retrieved
+			--          you might not get anything
+		local
+			l_input: WGI_INPUT_STREAM
+			n: INTEGER
+			s: STRING
+		do
+			if raw_input_data_recorded and then attached raw_input_data as d then
+				buf.copy (d)
+			else
+				l_input := input
+				if is_chunked_input then
+					from
+						n := 1_024
+					until
+						n = 0
+					loop
+						l_input.read_string (n)
+						s := l_input.last_string
+						if s.count = 0 then
+							n := 0
+						else
+							if s.count < n then
+								n := 0
+							end
+							buf.append (s)
+						end
+					end
+				else
+					n := content_length_value.as_integer_32
+					buf.resize (buf.count + n)
+					n := l_input.read_to_string (buf, buf.count + 1, n)
+					check n = content_length_value.as_integer_32 end
+				end
+				if raw_input_data_recorded then
+					set_raw_input_data (buf)
+				end
+			end
+		end
+
 feature -- Helper
 
 	is_request_method (m: READABLE_STRING_GENERAL): BOOLEAN
@@ -196,6 +252,14 @@ feature -- Helper
 			-- Is Current a GET request method?
 		do
 			Result := request_method.is_case_insensitive_equal ({HTTP_REQUEST_METHODS}.method_get)
+		end
+
+	is_content_type_accepted (a_content_type: READABLE_STRING_GENERAL): BOOLEAN
+			-- Does client accepts content_type for the response?
+		do
+			if attached http_accept as l_accept then
+				Result := l_accept.has_substring (a_content_type)
+			end
 		end
 
 feature -- Eiffel WGI access

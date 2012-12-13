@@ -48,10 +48,23 @@ feature -- Execution
 	execute_default (req: WSF_REQUEST; res: WSF_RESPONSE)
 			-- Default procedure
 		local
+			msg: WSF_RESPONSE_MESSAGE
 			not_found: WSF_NOT_FOUND_RESPONSE
+			not_allowed: WSF_METHOD_NOT_ALLOWED_RESPONSE
+			trace: WSF_TRACE_RESPONSE
 		do
-			create not_found.make (req)
-			res.send (not_found)
+			if req.is_request_method ({HTTP_REQUEST_METHODS}.method_trace) then
+				create trace.make (req)
+				msg := trace
+			elseif attached router.allowed_methods_for_request (req) as mtds and then not mtds.is_empty then
+				create not_allowed.make (req)
+				not_allowed.set_suggested_methods (mtds)
+				msg := not_allowed
+			else
+				create not_found.make (req)
+				msg := not_found
+			end
+			res.send (msg)
 		end
 
 feature -- Access

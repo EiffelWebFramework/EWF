@@ -207,6 +207,31 @@ feature -- Status report
 			end
 		end
 
+	allowed_methods_for_request (req: WSF_REQUEST): WSF_ROUTER_METHODS
+			-- Allowed methods for `req'
+		local
+			m: WSF_ROUTER_MAPPING
+			l_rqsmethods: detachable WSF_ROUTER_METHODS
+		do
+			create Result
+
+			across
+				mappings as c
+			loop
+				m := c.item.mapping
+				if attached {WSF_ROUTING_HANDLER} m.handler as l_routing then
+					l_rqsmethods := l_routing.router.allowed_methods_for_request (req)
+				elseif m.is_mapping (req, Current) then
+					l_rqsmethods := c.item.request_methods
+				else
+					l_rqsmethods := Void
+				end
+				if l_rqsmethods /= Void then
+					Result := Result + l_rqsmethods
+				end
+			end
+		end
+
 feature -- Hook
 
 	execute_before (a_mapping: WSF_ROUTER_MAPPING)
