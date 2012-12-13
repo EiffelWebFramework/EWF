@@ -50,7 +50,6 @@ feature {WSF_RESPONSE} -- Output
 	send_to (res: WSF_RESPONSE)
 		local
 			s: STRING
-			l_title: detachable READABLE_STRING_GENERAL
 			h: like header
 		do
 			h := header
