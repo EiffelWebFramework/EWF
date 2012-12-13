@@ -54,15 +54,9 @@ feature -- API DOC
 feature -- HTTP Methods
 
 	do_get (req: WSF_REQUEST; res: WSF_RESPONSE)
-			-- Using GET to retrieve resource information.
-			-- If the GET request is SUCCESS, we response with
-			-- 200 OK, and a representation of the order
-			-- If the GET request is not SUCCESS, we response with
-			-- 404 Resource not found
-			-- If is a Condition GET and the resource does not change we send a
-			-- 304, Resource not modifed
+			-- <Precursor>
 		local
-			id :  STRING
+			id:  STRING
 		do
 			if attached req.orig_path_info as orig_path then
 				id := get_order_id_from_path (orig_path)
@@ -93,7 +87,7 @@ feature -- HTTP Methods
 			end
 		end
 
-	compute_response_get (req: WSF_REQUEST; res: WSF_RESPONSE; l_order : ORDER)
+	compute_response_get (req: WSF_REQUEST; res: WSF_RESPONSE; l_order: ORDER)
 		local
 			h: HTTP_HEADER
 			l_msg : STRING

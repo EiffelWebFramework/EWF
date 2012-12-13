@@ -4,13 +4,16 @@ note
 	date: "$Date$"
 	revision: "$Revision$"
 
-class
-	WSF_RESOURCE_HANDLER_HELPER
+class	WSF_RESOURCE_HANDLER_HELPER
+
+inherit
+
+	WSF_METHOD_HANDLERS
 
 feature -- Execute template
 
 	execute_methods (req: WSF_REQUEST; res: WSF_RESPONSE)
-			-- Execute request and dispatch according to the request method
+			-- Execute request and dispatch according to the request method.
 		local
 			m: READABLE_STRING_8
 		do
@@ -46,8 +49,8 @@ feature -- Method Get
 
 	do_get (req: WSF_REQUEST; res: WSF_RESPONSE)
 			-- Using GET to retrieve resource information.
-			-- If the GET request is SUCCESS, we response with
-			-- 200 OK, and a representation of the person
+			-- If the GET request is SUCCESS, we respond with
+			-- 200 OK, and a representation of the resource.
 			-- If the GET request is not SUCCESS, we response with
 			-- 404 Resource not found
 			-- If is a Condition GET and the resource does not change we send a
@@ -141,12 +144,12 @@ feature -- Method HEAD
 
 	do_head (req: WSF_REQUEST; res: WSF_RESPONSE)
 			-- Using HEAD to retrieve resource information.
-			-- If the HEAD request is SUCCESS, we response with
-			-- 200 OK, and WITHOUT a representation of the person
-			-- If the HEAD request is not SUCCESS, we response with
-			-- 404 Resource not found
-			-- If is a Condition HEAD and the resource does not change we send a
-			-- 304, Resource not modifed	
+			-- If the HEAD request is SUCCESS, we respond with
+			-- 200 OK, and WITHOUT a representation of the resource.
+			-- If the HEAD request is not SUCCESS, we respond with
+			-- 404 Resource not found.
+			-- If Conditional HEAD and the resource does not change we send a
+			-- 304, Resource not modifed.
 		do
 			handle_not_implemented ("Method HEAD not implemented", req, res)
 		end
@@ -160,6 +163,7 @@ feature -- Method OPTIONS
 
 	do_options (req: WSF_REQUEST; res: WSF_RESPONSE)
 		do
+			-- TODO - implement a default method that lists the accepted methods for the resource.
 			handle_not_implemented ("Method OPTIONS not implemented", req, res)
 		end
 
@@ -172,6 +176,7 @@ feature -- Method TRACE
 
 	do_trace (req: WSF_REQUEST; res: WSF_RESPONSE)
 		do
+			-- TODO - implement frozen, as there is only one permitted semantic.
 			handle_not_implemented ("Method TRACE not implemented", req, res)
 		end
 
