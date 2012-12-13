@@ -69,7 +69,6 @@ feature -- Mapping
 					io.error.put_string ("%N")
 				end
 			end
-
 			mappings.extend (create {WSF_ROUTER_ITEM}.make_with_request_methods (a_mapping, rqst_methods))
 			a_mapping.handler.on_mapped (a_mapping, rqst_methods)
 		end
