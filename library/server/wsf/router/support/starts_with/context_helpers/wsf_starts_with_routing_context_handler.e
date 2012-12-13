@@ -1,35 +1,29 @@
 note
-	description: "Summary description for WSF_STARTS_WITH_MAPPING."
+	description: "Summary description for {WSF_STARTS_WITH_ROUTING_CONTEXT_HANDLER}."
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
 class
-	WSF_STARTS_WITH_MAPPING
+	WSF_STARTS_WITH_ROUTING_CONTEXT_HANDLER [C -> WSF_HANDLER_CONTEXT create make end]
 
 inherit
-	WSF_STARTS_WITH_MAPPING_I
+	WSF_ROUTING_HANDLER
 
-create
-	make
-
-feature -- Access
-
-	handler: WSF_STARTS_WITH_HANDLER
-
-feature -- change
-
-	set_handler (h: like handler)
-		do
-			handler := h
+	WSF_STARTS_WITH_CONTEXT_HANDLER [C]
+		rename
+			execute as execute_with_context
 		end
 
-feature {NONE} -- Execution
+create
+	make,
+	make_with_router
 
-	execute_handler (h: like handler; a_start_path: like uri; req: WSF_REQUEST; res: WSF_RESPONSE)
-			-- Execute handler `h' with `req' and `res' for Current mapping
+feature	-- Execution
+
+	execute_with_context (a_start_path: READABLE_STRING_8; ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
 		do
-			h.execute (a_start_path, req, res)
+			execute (req, res)
 		end
 
 note

@@ -120,8 +120,6 @@ feature -- Basic operations
 		do
 			create Result.make_from_iterable (Current)
 			Result.add_methods (a_other)
-		ensure
-
 		end
 
 feature -- Element change

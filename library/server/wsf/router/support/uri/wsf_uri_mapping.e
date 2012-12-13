@@ -1,5 +1,5 @@
 note
-	description: "Summary description for EWF_URI_PATH."
+	description: "Summary description for WSF_URI_MAPPING."
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
@@ -8,85 +8,28 @@ class
 	WSF_URI_MAPPING
 
 inherit
-	WSF_ROUTER_MAPPING
-
-	WSF_SELF_DOCUMENTED_ROUTER_MAPPING
+	WSF_URI_MAPPING_I
 
 create
 	make,
 	make_trailing_slash_ignored
 
-feature {NONE} -- Initialization
-
-	make (a_uri: READABLE_STRING_8; h: like handler)
-		do
-			handler := h
-			uri := a_uri
-		end
-
-	make_trailing_slash_ignored (a_uri: READABLE_STRING_8; h: like handler)
-		do
-			make (a_uri, h)
-			trailing_slash_ignored := True
-		end
-
 feature -- Access
-
-	associated_resource: READABLE_STRING_8
-			-- Associated resource
-		do
-			Result := uri
-		end
 
 	handler: WSF_URI_HANDLER
 
-	uri: READABLE_STRING_8
+feature -- Change
 
-	trailing_slash_ignored: BOOLEAN
-
-feature -- Documentation
-
-	description: STRING_32 = "Is-URI"
-
-feature -- Status
-
-	routed_handler (req: WSF_REQUEST; res: WSF_RESPONSE; a_router: WSF_ROUTER): detachable WSF_HANDLER
-		local
-			p: READABLE_STRING_8
-			l_uri: like uri
+	set_handler	(h: like handler)
 		do
-			p := path_from_request (req)
-			l_uri := based_uri (uri, a_router)
-			if l_uri.ends_with ("/") then
-				if not p.ends_with ("/") then
-					p := p + "/"
-				end
-			else
-				if p.ends_with ("/") then
-					p := p.substring (1, p.count - 1)
-				end
-			end
-			if p.same_string (l_uri) then
-				Result := handler
-				a_router.execute_before (Current)
-				handler.execute (req, res)
-				a_router.execute_after (Current)
-			end
+			handler := h
 		end
 
-feature {NONE} -- Implementation
+feature {NONE} -- Execution
 
-	based_uri (a_uri: like uri; a_router: WSF_ROUTER): like uri
-		local
-			s: STRING_8
+	execute_handler (h: like handler; req: WSF_REQUEST; res: WSF_RESPONSE)
 		do
-			if attached a_router.base_url as l_base_url then
-				create s.make_from_string (l_base_url)
-				s.append_string (a_uri)
-				Result := s
-			else
-				Result := a_uri
-			end
+			h.execute (req, res)
 		end
 
 note

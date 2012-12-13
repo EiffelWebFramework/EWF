@@ -1,36 +1,22 @@
 note
-	description: "Summary description for {WSF_URI_TEMPLATE_MAPPING}."
+	description: "Summary description for {WSF_URI_AGENT_CONTEXT_HANDLER}."
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
 class
-	WSF_URI_TEMPLATE_MAPPING
+	WSF_URI_AGENT_CONTEXT_HANDLER [C -> WSF_HANDLER_CONTEXT create make end]
 
 inherit
-	WSF_URI_TEMPLATE_MAPPING_I
+	WSF_URI_CONTEXT_HANDLER [C]
+
+	WSF_AGENT_CONTEXT_HANDLER [C]
+		rename
+			set_action as make
+		end
 
 create
-	make,
-	make_from_template
-
-feature -- Access		
-
-	handler: WSF_URI_TEMPLATE_HANDLER
-
-feature -- Change
-
-	set_handler	(h: like handler)
-		do
-			handler := h
-		end
-
-feature {NONE} -- Execution
-
-	execute_handler (h: like handler; req: WSF_REQUEST; res: WSF_RESPONSE)
-		do
-			h.execute (req, res)
-		end
+	make
 
 note
 	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"

@@ -1,5 +1,5 @@
 note
-	description: "Summary description for EWF_URI_TEMPLATE_WITH_CONTEXT_HANDLER."
+	description: "Summary description for WSF_URI_TEMPLATE_CONTEXT_HANDLER."
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"

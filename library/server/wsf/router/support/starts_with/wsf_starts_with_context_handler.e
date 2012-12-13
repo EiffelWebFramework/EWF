@@ -1,11 +1,11 @@
 note
-	description: "Summary description for {WSF_URI_HANDLER}."
+	description: "Summary description for {WSF_STARTS_WITH_CONTEXT_HANDLER}."
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
 deferred class
-	WSF_URI_HANDLER
+	WSF_STARTS_WITH_CONTEXT_HANDLER [C -> WSF_HANDLER_CONTEXT create make end]
 
 inherit
 	WSF_HANDLER
@@ -14,7 +14,7 @@ inherit
 
 feature -- Execution
 
-	execute (req: WSF_REQUEST; res: WSF_RESPONSE)
+	execute (a_start_path: READABLE_STRING_8; ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE)
 		deferred
 		end
 
@@ -22,7 +22,7 @@ feature {WSF_ROUTER} -- Mapping
 
 	new_mapping (a_uri: READABLE_STRING_8): WSF_ROUTER_MAPPING
 		do
-			create {WSF_URI_MAPPING} Result.make (a_uri, Current)
+			create {WSF_STARTS_WITH_CONTEXT_MAPPING [C]} Result.make (a_uri, Current)
 		end
 
 note

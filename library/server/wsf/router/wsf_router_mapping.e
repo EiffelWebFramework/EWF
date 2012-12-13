@@ -46,6 +46,11 @@ feature -- Status report
 
 feature -- Status
 
+	is_mapping (req: WSF_REQUEST; a_router: WSF_ROUTER): BOOLEAN
+			-- Does Current accept `req'?
+		deferred
+		end
+
 	routed_handler (req: WSF_REQUEST; res: WSF_RESPONSE; a_router: WSF_ROUTER): detachable WSF_HANDLER
 			-- Return the handler if Current matches the request `req'.
 		deferred

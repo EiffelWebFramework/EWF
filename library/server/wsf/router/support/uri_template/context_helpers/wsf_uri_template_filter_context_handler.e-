@@ -1,5 +1,5 @@
 note
-	description : "Objects that ..."
+	description: "Summary description for {WSF_URI_TEMPLATE_FILTER_CONTEXT_HANDLER}."
 	author      : "$Author$"
 	date        : "$Date$"
 	revision    : "$Revision$"

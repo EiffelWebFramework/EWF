@@ -1,35 +1,43 @@
 note
-	description: "Summary description for WSF_STARTS_WITH_MAPPING."
+	description: "Summary description for WSF_URI_CONTEXT_MAPPING."
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
 class
-	WSF_STARTS_WITH_MAPPING
+	WSF_URI_CONTEXT_MAPPING [C -> WSF_HANDLER_CONTEXT create make end]
 
 inherit
-	WSF_STARTS_WITH_MAPPING_I
+	WSF_URI_MAPPING_I
+		undefine
+			debug_output
+		end
+
+	WSF_ROUTER_CONTEXT_MAPPING [C]
 
 create
-	make
+	make,
+	make_trailing_slash_ignored
 
 feature -- Access
 
-	handler: WSF_STARTS_WITH_HANDLER
+	handler: WSF_URI_CONTEXT_HANDLER [C]
 
-feature -- change
+feature -- Change
 
-	set_handler (h: like handler)
+	set_handler	(h: like handler)
 		do
 			handler := h
 		end
 
 feature {NONE} -- Execution
 
-	execute_handler (h: like handler; a_start_path: like uri; req: WSF_REQUEST; res: WSF_RESPONSE)
-			-- Execute handler `h' with `req' and `res' for Current mapping
+	execute_handler (h: like handler; req: WSF_REQUEST; res: WSF_RESPONSE)
+		local
+			ctx: C
 		do
-			h.execute (a_start_path, req, res)
+			create ctx.make (req, Current)
+			h.execute (ctx, req, res)
 		end
 
 note

@@ -1,35 +1,22 @@
 note
-	description: "Summary description for {WSF_URI_TEMPLATE_MAPPING}."
+	description: "Summary description for {WSF_URI_CONTEXT_HANDLER}."
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
-class
-	WSF_URI_TEMPLATE_MAPPING
+deferred class
+	WSF_URI_CONTEXT_HANDLER [C -> WSF_HANDLER_CONTEXT create make end]
 
 inherit
-	WSF_URI_TEMPLATE_MAPPING_I
+	WSF_CONTEXT_HANDLER [C]
 
-create
-	make,
-	make_from_template
+	WSF_ROUTER_MAPPING_FACTORY
 
-feature -- Access		
+feature {WSF_ROUTER} -- Mapping
 
-	handler: WSF_URI_TEMPLATE_HANDLER
-
-feature -- Change
-
-	set_handler	(h: like handler)
+	new_mapping (a_uri: READABLE_STRING_8): WSF_ROUTER_MAPPING
 		do
-			handler := h
-		end
-
-feature {NONE} -- Execution
-
-	execute_handler (h: like handler; req: WSF_REQUEST; res: WSF_RESPONSE)
-		do
-			h.execute (req, res)
+			create {WSF_URI_CONTEXT_MAPPING [C]} Result.make (a_uri, Current)
 		end
 
 note

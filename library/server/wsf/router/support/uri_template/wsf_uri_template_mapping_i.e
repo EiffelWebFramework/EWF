@@ -1,23 +1,16 @@
 note
-	description: "Summary description for {WSF_URI_TEMPLATE_CONTEXT_MAPPING}."
+	description: "Summary description for {WSF_URI_TEMPLATE_MAPPING_I}."
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
-class
-	WSF_URI_TEMPLATE_CONTEXT_MAPPING [C -> WSF_HANDLER_CONTEXT create make end]
+deferred class
+	WSF_URI_TEMPLATE_MAPPING_I
 
 inherit
-	WSF_ROUTER_CONTEXT_MAPPING [C]
+	WSF_ROUTER_MAPPING
 
 	WSF_SELF_DOCUMENTED_ROUTER_MAPPING
-		undefine
-			debug_output
-		end
-
-create
-	make,
-	make_from_template
 
 feature {NONE} -- Initialization
 
@@ -29,7 +22,7 @@ feature {NONE} -- Initialization
 	make_from_template (tpl: URI_TEMPLATE; h: like handler)
 		do
 			template := tpl
-			handler := h
+			set_handler (h)
 		end
 
 feature -- Access		
@@ -40,41 +33,47 @@ feature -- Access
 			Result := template.template
 		end
 
-	handler: WSF_URI_TEMPLATE_CONTEXT_HANDLER [C]
-
 	template: URI_TEMPLATE
+
+feature -- Change
+
+	set_handler (h: like handler)
+		deferred
+		end
 
 feature -- Documentation
 
 	description: STRING_32 = "Match-URI-Template"
 
-feature -- Element change
-
-	set_handler	(h: like handler)
-		do
-			handler := h
-		end
-
 feature -- Status
+
+	is_mapping (req: WSF_REQUEST; a_router: WSF_ROUTER): BOOLEAN
+			-- <Precursor>
+		local
+			tpl: URI_TEMPLATE
+			p: READABLE_STRING_32
+		do
+			p := path_from_request (req)
+			tpl := based_uri_template (template, a_router)
+			Result := tpl.match (p) /= Void
+		end
 
 	routed_handler (req: WSF_REQUEST; res: WSF_RESPONSE; a_router: WSF_ROUTER): detachable WSF_HANDLER
 		local
 			tpl: URI_TEMPLATE
 			p: READABLE_STRING_32
-			ctx: detachable C
 			new_src: detachable WSF_REQUEST_PATH_PARAMETERS_PROVIDER
 		do
 			p := path_from_request (req)
 			tpl := based_uri_template (template, a_router)
 			if attached tpl.match (p) as tpl_res then
 				Result := handler
-				create ctx.make (req, Current)
 				a_router.execute_before (Current)
 				--| Applied the context to the request
 				--| in practice, this will fill the {WSF_REQUEST}.path_parameters
 				create new_src.make (tpl_res.path_variables.count, tpl_res.path_variables)
 				new_src.apply (req)
-				handler.execute (ctx, req, res)
+				execute_handler (handler, req, res)
 				--| Revert {WSF_REQUEST}.path_parameters_source to former value
 				--| In case the request object passed by other handler that alters its values.
 				new_src.revert (req)
@@ -84,6 +83,13 @@ feature -- Status
 			if new_src /= Void then
 				new_src.revert (req)
 			end
+		end
+
+feature {NONE} -- Execution
+
+	execute_handler (h: like handler; req: WSF_REQUEST; res: WSF_RESPONSE)
+			-- Execute handler `h' with `req' and `res' for Current mapping
+		deferred
 		end
 
 feature {NONE} -- Implementation
@@ -97,7 +103,6 @@ feature {NONE} -- Implementation
 				Result := a_tpl
 			end
 		end
-
 
 note
 	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"

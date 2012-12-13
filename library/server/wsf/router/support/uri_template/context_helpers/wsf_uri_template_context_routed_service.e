@@ -12,7 +12,7 @@ inherit
 
 feature -- Mapping helper: uri
 
-	map_uri_template (a_tpl: STRING; h: WSF_URI_TEMPLATE_CONTEXT_HANDLER [C])
+	map_uri_template (a_tpl: READABLE_STRING_8; h: WSF_URI_TEMPLATE_CONTEXT_HANDLER [C])
 		do
 			map_uri_template_with_request_methods (a_tpl, h, Void)
 		end

@@ -1,14 +1,19 @@
 note
-	description: "Summary description for {WSF_URI_TEMPLATE_MAPPING}."
+	description: "Summary description for {WSF_URI_TEMPLATE_CONTEXT_MAPPING}."
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
 class
-	WSF_URI_TEMPLATE_MAPPING
+	WSF_URI_TEMPLATE_CONTEXT_MAPPING [C -> WSF_HANDLER_CONTEXT create make end]
 
 inherit
 	WSF_URI_TEMPLATE_MAPPING_I
+		undefine
+			debug_output
+		end
+
+	WSF_ROUTER_CONTEXT_MAPPING [C]
 
 create
 	make,
@@ -16,7 +21,7 @@ create
 
 feature -- Access		
 
-	handler: WSF_URI_TEMPLATE_HANDLER
+	handler: WSF_URI_TEMPLATE_CONTEXT_HANDLER [C]
 
 feature -- Change
 
@@ -28,8 +33,11 @@ feature -- Change
 feature {NONE} -- Execution
 
 	execute_handler (h: like handler; req: WSF_REQUEST; res: WSF_RESPONSE)
+		local
+			ctx: detachable C
 		do
-			h.execute (req, res)
+			create ctx.make (req, Current)
+			h.execute (ctx, req, res)
 		end
 
 note
