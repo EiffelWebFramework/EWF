@@ -11,6 +11,9 @@ note
 deferred class
 	WGI_INPUT_STREAM
 
+inherit
+	STRING_HANDLER
+
 feature -- Input
 
 	read_character
@@ -48,7 +51,7 @@ feature -- Input
 			a_string_not_void: a_string /= Void
 			valid_position: a_string.valid_index (pos)
 			nb_large_enough: nb > 0
-			nb_small_enough: nb <= a_string.count - pos + 1
+			nb_small_enough: nb <= a_string.capacity - pos + 1
 		local
 			i, end_pos: INTEGER
 		do
@@ -59,16 +62,21 @@ feature -- Input
 				i > end_pos
 			loop
 				read_character
-				if not end_of_input then
-					a_string.put (last_character, i)
-					i := i + 1
-				else
-					Result := i - pos - nb
+				a_string.put (last_character, i)
+
+				if end_of_input then
+					Result := i
 						-- Jump out of the loop.
 					i := end_pos + 1
+				else
+					i := i + 1
 				end
 			end
-			Result := Result + i - pos
+			if not end_of_input then
+				Result := i
+			end
+			a_string.set_count (Result)
+			Result := Result - pos + 1
 		ensure
 			nb_char_read_large_enough: Result >= 0
 			nb_char_read_small_enough: Result <= nb
@@ -99,16 +107,16 @@ feature -- Input
 				i > end_pos
 			loop
 				read_character
-				if not end_of_input then
-					a_string.extend (last_character)
-					i := i + 1
-				else
-					l_count := i - nb
+				a_string.extend (last_character)
+				l_count := l_count + 1
+				if end_of_input then
 						-- Jump out of the loop.
 					i := end_pos + 1
+				else
+					i := i + 1
 				end
 			end
-			last_appended_count := l_count + i
+			last_appended_count := l_count
 		ensure
 			nb_char_read_large_enough: last_appended_count >= 0
 			nb_char_read_small_enough: last_appended_count <= nb
