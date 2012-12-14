@@ -98,6 +98,18 @@ feature -- Recycle
 
 feature -- Access
 
+	count: INTEGER
+			-- Number of header items.
+		do
+			Result := headers.count
+		end
+
+	is_empty: BOOLEAN
+			-- Is empty?
+		do
+			Result := count = 0
+		end
+
 	headers: ARRAYED_LIST [READABLE_STRING_8]
 			-- Header's lines
 
@@ -377,6 +389,28 @@ feature -- Content-type helpers
 	put_content_type_multipart_encrypted	do put_content_type ({HTTP_MIME_TYPES}.multipart_encrypted) end
 	put_content_type_application_x_www_form_encoded	do put_content_type ({HTTP_MIME_TYPES}.application_x_www_form_encoded) end
 
+feature -- Method related
+
+	put_allow (a_methods: ITERABLE [READABLE_STRING_8])
+			-- If `a_methods' is not empty, put `Allow' header with list `a_methods' of methods
+		local
+			s: STRING_8
+		do
+			create s.make_empty
+			across
+				a_methods as c
+			loop
+				if not s.is_empty then
+					s.append_character (',')
+				end
+				s.append_character (' ')
+				s.append (c.item)
+			end
+			if not s.is_empty then
+				put_header_key_value ({HTTP_HEADER_NAMES}.header_allow, s)
+			end
+		end
+
 feature -- Date
 
 	put_date (s: READABLE_STRING_8)
@@ -401,6 +435,14 @@ feature -- Date
 			-- Put UTC date time `dt' with "Date" header
 		do
 			put_header_key_value ({HTTP_HEADER_NAMES}.header_last_modified, date_to_rfc1123_http_date_format (a_utc_date))
+		end
+
+feature -- Authorization
+
+	put_authorization (s: READABLE_STRING_8)
+			-- Put authorization `s' with "Authorization" header
+		do
+			put_header_key_value ({HTTP_HEADER_NAMES}.header_authorization, s)
 		end
 
 feature -- Others	
