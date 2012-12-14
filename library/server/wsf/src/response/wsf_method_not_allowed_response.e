@@ -54,6 +54,11 @@ feature {WSF_RESPONSE} -- Output
 		do
 			h := header
 			res.set_status_code ({HTTP_STATUS_CODE}.method_not_allowed)
+
+			if attached suggested_methods as lst and then not lst.is_empty then
+				h.put_allow (lst)
+			end
+
 			s := "Not allowed"
 
 			if request.is_content_type_accepted ({HTTP_MIME_TYPES}.text_html) then
@@ -119,6 +124,7 @@ feature {WSF_RESPONSE} -- Output
 				end
 				h.put_content_type_text_plain
 			end
+
 			h.put_content_length (s.count)
 			res.put_header_text (h.string)
 			res.put_string (s)
