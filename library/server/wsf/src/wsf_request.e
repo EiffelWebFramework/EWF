@@ -256,8 +256,30 @@ feature -- Helper
 
 	is_content_type_accepted (a_content_type: READABLE_STRING_GENERAL): BOOLEAN
 			-- Does client accepts content_type for the response?
+			--| Based on header "Accept:" that can be for instance
+			--| 	text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+		local
+			i, j: INTEGER
 		do
 			if attached http_accept as l_accept then
+				i := l_accept.substring_index (a_content_type, 1)
+				if i > 0 then
+					-- contains the text, now check if this is the exact text
+					if
+						i = 1	-- At the beginning of text
+						or else l_accept[i-1].is_space -- preceded by space
+						or else l_accept[i-1] = ',' -- preceded by other mime type
+					then
+						j := i + a_content_type.count
+						if l_accept.valid_index (j) then
+							Result := l_accept[j] = ',' -- followed by other mime type
+										or else l_accept[j] = ';' -- followed by quality  ;q=...
+										or else l_accept[j].is_space -- followed by space
+						else -- end of text
+							Result := True
+						end
+					end
+				end
 				Result := l_accept.has_substring (a_content_type)
 			end
 		end
