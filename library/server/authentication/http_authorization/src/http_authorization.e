@@ -24,8 +24,9 @@ feature {NONE} -- Initialization
 			t, s: STRING_8
 			u,p: READABLE_STRING_8
 		do
-			if attached a_http_authorization as l_auth then
-				s := l_auth.as_string_8
+			if a_http_authorization /= Void then
+				s := a_http_authorization.as_string_8
+				create http_authorization.make_from_string (s)
 				if not s.is_empty then
 					i := 1
 					if s[i] = ' ' then
@@ -55,6 +56,8 @@ feature {NONE} -- Initialization
 						end
 					end
 				end
+			else
+				http_authorization := Void
 			end
 		end
 
@@ -73,7 +76,7 @@ feature {NONE} -- Initialization
 			t.left_adjust; t.right_adjust
 			type := t
 			if t.same_string ("basic") then
-				http_authorization := "Basic " + (create {BASE64}).encoded_string (u + ":" + p)
+				create http_authorization.make_from_string ("Basic " + (create {BASE64}).encoded_string (u + ":" + p))
 			else
 				to_implement ("HTTP Authorization %""+ t +"%", not yet implemented")
 			end
@@ -87,7 +90,7 @@ feature -- Access
 
 	password: detachable READABLE_STRING_32
 
-	http_authorization: detachable READABLE_STRING_32
+	http_authorization: detachable IMMUTABLE_STRING_8
 
 
 end
