@@ -101,7 +101,7 @@ feature {NONE} -- Events
 						if not q.is_empty then
 							q.append_character ('&')
 						end
-						q.append (qcur.item.name.as_string_32 + "=" + qcur.item.as_string)
+						q.append (qcur.item.name.as_string_32 + "=" + qcur.item.string_representation)
 					end
 					if not q.is_empty then
 						page.put_string ("(" + q + ")")
@@ -117,7 +117,7 @@ feature {NONE} -- Events
 						if not q.is_empty then
 							q.append_character ('&')
 						end
-						q.append (qcur.item.name.as_string_32 + "=" + qcur.item.as_string)
+						q.append (qcur.item.name.as_string_32 + "=" + qcur.item.string_representation)
 					end
 
 					if not q.is_empty then
@@ -136,7 +136,7 @@ feature {NONE} -- Events
 						if not q.is_empty then
 							q.append_character ('&')
 						end
-						q.append (fcur.item.name.as_string_32 + "=" + fcur.item.as_string)
+						q.append (fcur.item.name.as_string_32 + "=" + fcur.item.string_representation)
 					end
 
 --					if attached req.raw_input_data as d then
