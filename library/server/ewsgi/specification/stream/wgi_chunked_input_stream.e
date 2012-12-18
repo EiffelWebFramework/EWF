@@ -151,7 +151,7 @@ feature {NONE} -- Parser
 				end
 			end
 		ensure
-			attached last_chunk as l_last_chunk implies l_last_chunk.count = chunk_upper - chunk_lower
+			attached last_chunk as l_last_chunk implies l_last_chunk.count = chunk_upper - chunk_lower + 1
 		end
 
 	read_chunk_data

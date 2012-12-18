@@ -17,7 +17,7 @@ inherit
 			on_clean
 		end
 
-	WSF_SERVICE
+	TEST_SERVICE
 		undefine
 			default_create
 		end
@@ -36,19 +36,26 @@ feature {NONE} -- Events
 			wt: WORKER_THREAD
 			e: EXECUTION_ENVIRONMENT
 		do
---			port_number := 9091
-			port_number := 0
-			base_url := "test/"
-			create app.make_custom (to_wgi_service, base_url)
-			web_app := app
-
-			create wt.make (agent app.listen (port_number))
-			wt.launch
-
 			create e
-			e.sleep (1_000_000_000 * 5)
+--			port_number := 9091 -- Uncomment to use with server outside this process
+			if port_number = 0 then
+				server_log ("== Current directory: " + e.current_working_directory)
 
-			port_number := app.port
+				port_number := 0
+				base_url := "/test/"
+				create app.make_custom (to_wgi_service, base_url)
+				web_app := app
+
+				create wt.make (agent app.listen (port_number))
+				wt.launch
+				e.sleep (1_000_000_000 * 5)
+				port_number := app.port
+				server_log ("Server port=" + port_number.out)
+			else
+				server_log ("Use existing server")
+				server_log ("== Current directory: " + e.current_working_directory)
+
+			end
 		end
 
 	server_log_name: STRING
@@ -74,99 +81,6 @@ feature {NONE} -- Events
 			f.close
 		end
 
-	execute (req: WSF_REQUEST; res: WSF_RESPONSE)
-		local
-			q: detachable STRING_32
-			n: NATURAL_64
-			page: WSF_PAGE_RESPONSE
-		do
-			debug
-				server_log (req.request_uri)
-				if attached req.content_type as l_content_type then
-					server_log ("content_type:" + l_content_type.string)
-				end
-			end
-
-			create page.make
-			if attached req.request_uri as l_uri then
-				if l_uri.starts_with (test_url ("get/01")) then
-					page.set_status_code (200)
-					page.header.put_content_type_text_plain
-					page.put_string ("get-01")
-					create q.make_empty
-
-					across
-						req.query_parameters as qcur
-					loop
-						if not q.is_empty then
-							q.append_character ('&')
-						end
-						q.append (qcur.item.name.as_string_32 + "=" + qcur.item.string_representation)
-					end
-					if not q.is_empty then
-						page.put_string ("(" + q + ")")
-					end
-				elseif l_uri.starts_with (test_url ("post/01")) then
-					page.put_header (200, <<["Content-Type", "text/plain"]>>)
-					page.put_string ("post-01")
-					create q.make_empty
-
-					across
-						req.query_parameters as qcur
-					loop
-						if not q.is_empty then
-							q.append_character ('&')
-						end
-						q.append (qcur.item.name.as_string_32 + "=" + qcur.item.string_representation)
-					end
-
-					if not q.is_empty then
-						page.put_string ("(" + q + ")")
-					end
-
-					create q.make_empty
---					req.set_raw_input_data_recorded (True)
-
-					across
-						req.form_parameters as fcur
-					loop
-						debug
-							server_log ("%Tform: " + fcur.item.name)
-						end
-						if not q.is_empty then
-							q.append_character ('&')
-						end
-						q.append (fcur.item.name.as_string_32 + "=" + fcur.item.string_representation)
-					end
-
---					if attached req.raw_input_data as d then
---						server_log ("Raw data=" + d)
---					end
-
-					if not q.is_empty then
-						page.put_string (" : " + q )
-					end
-				elseif l_uri.starts_with (test_url ("post/file/01")) then
-					page.put_header (200, <<["Content-Type", "text/plain"]>>)
-					page.put_string ("post-file-01")
-					n := req.content_length_value
-					if n > 0 then
-						req.input.read_string (n.to_integer_32)
-						q := req.input.last_string
-						page.put_string ("%N" + q)
-					end
-				else
-					page.put_header (200, <<["Content-Type", "text/plain"]>>)
-					page.put_string ("Hello")
-				end
-			else
-				page.put_header (200, <<["Content-Type", "text/plain"]>>)
-				page.put_string ("Bye")
-			end
-
-			res.send (page)
-		end
-
 	test_url (a_query_url: READABLE_STRING_8): READABLE_STRING_8
 		local
 			b: like base_url
@@ -175,7 +89,7 @@ feature {NONE} -- Events
 			if b = Void then
 				b := ""
 			end
-			Result := "/" + b + a_query_url
+			Result := b + a_query_url
 		end
 
 	on_clean

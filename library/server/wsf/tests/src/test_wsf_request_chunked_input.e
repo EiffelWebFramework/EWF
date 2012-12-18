@@ -23,7 +23,7 @@ feature {NONE} -- Helpers
 	adapted_context (ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT): HTTP_CLIENT_REQUEST_CONTEXT
 		do
 			Result := Precursor (ctx)
-			Result.headers.extend ("chunked", "Transfer-Encoding")
+			Result.headers.force ("chunked", "Transfer-Encoding")
 		end
 
 feature -- Test routines
