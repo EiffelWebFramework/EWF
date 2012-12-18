@@ -205,7 +205,7 @@ feature -- Retrieve content from WGI_INPUT_STREAM
 			l_input := req.input
 			if req.is_chunked_input then
 				from
-					n := 1_024
+					n := 8_192
 					create Result.make (n)
 				until
 					n = 0

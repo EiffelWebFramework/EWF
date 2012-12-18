@@ -21,7 +21,7 @@ feature {NONE} -- Implementation
 			t: STRING
 		do
 			from
-				n := 1_024
+				n := 8_192
 				create Result.make (n)
 			until
 				n = 0

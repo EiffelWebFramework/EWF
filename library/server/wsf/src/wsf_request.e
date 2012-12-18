@@ -207,7 +207,7 @@ feature -- Access: Input
 				l_input := input
 				if is_chunked_input then
 					from
-						n := 1_024
+						n := 8_192
 					until
 						n = 0
 					loop
