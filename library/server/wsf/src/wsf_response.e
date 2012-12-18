@@ -13,6 +13,8 @@ note
 			]"
 	date: "$Date$"
 	revision: "$Revision$"
+	EIS: "name=Hypertext Transfer Protocol -- HTTP/1.1 ", "protocol=URI", "src=http://www.w3.org/Protocols/rfc2616/rfc2616.html"
+	EIS: "name=Chunked Transfer Coding", "protocol=URI", "src=http://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html#sec3.6.1"
 
 class
 	WSF_RESPONSE
@@ -222,42 +224,55 @@ feature -- Output operation
 			l_chunk_size_line: STRING_8
 			i: INTEGER
 		do
-			if s.is_empty then
-					-- Should not occur due to precondition,
-					-- but let's handle the case for backward compatibility reason.
-				put_chunk_end
-			else
-					--| Remove all left '0'
-				l_chunk_size_line := s.count.to_hex_string
-				from
-					i := 1
-				until
-					l_chunk_size_line[i] /= '0'
-				loop
-					i := i + 1
-				end
-				if i > 1 then
-					l_chunk_size_line := l_chunk_size_line.substring (i, l_chunk_size_line.count)
-				end
-
-				if a_extension /= Void then
-					l_chunk_size_line.append_character (';')
-					l_chunk_size_line.append (a_extension)
-				end
-				l_chunk_size_line.append ({HTTP_CONSTANTS}.crlf)
-				put_string (l_chunk_size_line)
-				put_string (s)
-				put_string ({HTTP_CONSTANTS}.crlf)
-				flush
-				increment_transfered_content_length (s.count)
+				--| Remove all left '0'
+			l_chunk_size_line := s.count.to_hex_string
+			from
+				i := 1
+			until
+				l_chunk_size_line[i] /= '0'
+			loop
+				i := i + 1
 			end
+			if i > 1 then
+				l_chunk_size_line := l_chunk_size_line.substring (i, l_chunk_size_line.count)
+			end
+
+			if a_extension /= Void then
+				l_chunk_size_line.append_character (';')
+				l_chunk_size_line.append (a_extension)
+			end
+			l_chunk_size_line.append ({HTTP_CONSTANTS}.crlf)
+
+
+			wgi_response.put_string (l_chunk_size_line)
+			put_string (s)
+			wgi_response.put_string ({HTTP_CONSTANTS}.crlf)
+			flush
+		ensure
+			transfered_content_length =  old transfered_content_length + s.count.to_natural_64
 		end
 
 	put_chunk_end
 			-- Put end of chunked content
+			-- without any optional trailer.
 		do
-			put_string ("0" + {HTTP_CONSTANTS}.crlf)
+			wgi_response.put_string ("0")
+			wgi_response.put_string ({HTTP_CONSTANTS}.crlf)
+			-- No trailer
+			wgi_response.put_string ({HTTP_CONSTANTS}.crlf)
 			flush
+		end
+
+	put_chunk_end_with_trailer (a_trailer: detachable READABLE_STRING_8)
+			-- Put end of chunked content
+			-- with optional trailer: *(entity-header CRLF)
+		require
+			a_trailer_well_formatted: (a_trailer /= Void and then not a_trailer.is_empty) implies a_trailer.ends_with ({HTTP_CONSTANTS}.crlf)
+		do
+			if a_trailer /= Void and then not a_trailer.is_empty then
+				wgi_response.put_string (a_trailer)
+			end
+			wgi_response.put_string ({HTTP_CONSTANTS}.crlf)
 		end
 
 	flush
