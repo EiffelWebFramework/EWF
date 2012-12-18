@@ -559,6 +559,12 @@ feature -- HTTP_*
 		deferred
 		end
 
+	http_expect: detachable READABLE_STRING_8
+			-- The Expect request-header field is used to indicate that particular server behaviors are required by the client.
+			-- Example: '100-continue'.
+		deferred
+		end
+
 	http_host: detachable READABLE_STRING_8
 			-- Contents of the Host: header from the current request, if there is one.
 		deferred

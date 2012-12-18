@@ -196,6 +196,13 @@ feature -- Access: HTTP_* CGI meta parameters - 1.1
 			Result := meta_string_variable ({WGI_META_NAMES}.http_connection)
 		end
 
+	http_expect: detachable READABLE_STRING_8
+			-- The Expect request-header field is used to indicate that particular server behaviors are required by the client.
+			-- Example: '100-continue'.
+		do
+			Result := meta_string_variable ({WGI_META_NAMES}.http_expect)
+		end
+
 	http_host: detachable READABLE_STRING_8
 			-- Contents of the Host: header from the current request, if there is one.
 		do

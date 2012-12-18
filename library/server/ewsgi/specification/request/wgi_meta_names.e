@@ -44,6 +44,8 @@ feature -- Access
 
 	http_connection: STRING = "HTTP_CONNECTION"
 
+	http_expect: STRING = "HTTP_EXPECT"
+
 	http_referer: STRING = "HTTP_REFERER"
 
 	http_transfer_encoding: STRING = "HTTP_TRANSFER_ENCODING"

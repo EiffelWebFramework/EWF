@@ -911,6 +911,13 @@ feature -- HTTP_*
 			Result := wgi_request.http_connection
 		end
 
+	http_expect: detachable READABLE_STRING_8
+			-- The Expect request-header field is used to indicate that particular server behaviors are required by the client.
+			-- Example: '100-continue'.
+		do
+			Result := wgi_request.http_expect
+		end
+
 	http_host: detachable READABLE_STRING_8
 			-- Contents of the Host: header from the current wgi_request, if there is one.
 		do
@@ -965,13 +972,26 @@ feature -- Extra CGI environment variables
 
 	request_time: detachable DATE_TIME
 			-- Request time (UTC)
+		local
+			i: like request_time_stamp
+		do
+			i := request_time_stamp
+			if i > 0 then
+				Result := date_time_utilities.unix_time_stamp_to_date_time (i)
+			end
+		end
+
+	request_time_stamp: INTEGER_64
+			-- Request time stamp (UTC)	 (unix time stamp)
 		do
 			if
 				attached {WSF_STRING} meta_variable ({WSF_META_NAMES}.request_time) as t and then
 				t.value.is_integer_64
 			then
-				Result := date_time_utilities.unix_time_stamp_to_date_time (t.value.to_integer_64)
+				Result := t.value.to_integer_64
 			end
+		ensure
+			Result = 0 implies meta_variable ({WSF_META_NAMES}.request_time) = Void
 		end
 
 feature -- Cookies
