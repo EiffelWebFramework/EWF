@@ -47,16 +47,15 @@ feature {WSF_RESPONSE} -- Output
 				s.append (l_header.to_string_8)
 				s.append_character ('%N')
 			else
-				s := ""
+				create s.make_empty
 			end
 			if req.is_chunked_input then
 				h.put_transfer_encoding_chunked
 				res.put_header_text (h.string)
 				res.put_chunk (s, Void)
 				if attached req.input as l_input then
-
 					from
-						n := 1_024
+						n := 8_192
 					until
 						n = 0
 					loop

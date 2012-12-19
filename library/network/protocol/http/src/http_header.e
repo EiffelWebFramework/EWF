@@ -22,7 +22,7 @@ class
 	HTTP_HEADER
 
 inherit
-	ANY
+	ITERABLE [READABLE_STRING_8]
 
 create
 	make,
@@ -147,6 +147,14 @@ feature -- Access
 				end
 			end
 			Result := res
+		end
+
+feature -- Access
+
+	new_cursor: INDEXABLE_ITERATION_CURSOR [READABLE_STRING_8]
+			-- Fresh cursor associated with current structure
+		do
+			Result := headers.new_cursor
 		end
 
 feature -- Header: filling
