@@ -54,24 +54,37 @@ feature {WSF_RESPONSE} -- Output
 				res.put_header_text (h.string)
 				res.put_chunk (s, Void)
 				if attached req.input as l_input then
-					from
-						n := 8_192
-					until
-						n = 0
-					loop
-						s.wipe_out
-						nb := l_input.read_to_string (s, 1, n)
-						if nb = 0 then
-							n := 0
-						else
-							if nb < n then
-								n := 0
-							end
-							res.put_chunk (s, Void)
+					if attached {WGI_CHUNKED_INPUT_STREAM} l_input as l_chunked_input then
+						from
+							l_chunked_input.read_chunk
+						until
+							l_chunked_input.last_chunk_size = 0
+						loop
+							res.put_chunk (l_chunked_input.last_chunk_data, l_chunked_input.last_chunk_extension)
+							l_chunked_input.read_chunk
 						end
+						res.put_custom_chunk_end (l_chunked_input.last_chunk_extension, l_chunked_input.last_trailer)
+					else
+						check is_chunked_input: False end
+						from
+							n := 8_192
+						until
+							n = 0
+						loop
+							s.wipe_out
+							nb := l_input.read_to_string (s, 1, n)
+							if nb = 0 then
+								n := 0
+							else
+								if nb < n then
+									n := 0
+								end
+								res.put_chunk (s, Void)
+							end
+						end
+						res.put_chunk_end
 					end
 				end
-				res.put_chunk_end
 				res.flush
 			else
 				req.read_input_data_into (s)

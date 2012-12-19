@@ -18,7 +18,7 @@ feature {NONE} -- Implementation
 	make (an_input: like input)
 		do
 			create last_string.make_empty
-			create last_chunk.make_empty
+			create last_chunk_data.make_empty
 			last_chunk_size := 0
 			index := 0
 			chunk_lower := 0
@@ -35,12 +35,12 @@ feature -- Input
 		do
 			index := index + 1
 			if index > chunk_upper then
-				read_chunk
-				if last_chunk = Void then
+				read_chunk_block
+				if last_chunk_data = Void then
 					read_trailer_and_crlf
 				end
 			end
-			last_character := last_chunk.item (index)
+			last_character := last_chunk_data.item (index)
 		end
 
 	read_string (nb: INTEGER)
@@ -59,7 +59,7 @@ feature -- Input
 				check input.end_of_input end
 			else
 				if last_chunk_size = 0 then
-					read_chunk
+					read_chunk_block
 				end
 				from
 					index := index + 1
@@ -68,17 +68,17 @@ feature -- Input
 					i - index + 1 = nb or last_chunk_size = 0
 				loop
 					if i + nb - 1 <= chunk_upper then
-						last_string.append (last_chunk.substring (i - chunk_lower + 1, i - chunk_lower + 1 + nb - 1))
+						last_string.append (last_chunk_data.substring (i - chunk_lower + 1, i - chunk_lower + 1 + nb - 1))
 						i := i + nb - 1
 					else
 						-- Need to read new chunk
 						-- first get all available data from current chunk
 						if i <= chunk_upper then
-							last_string.append (last_chunk.substring (i - chunk_lower + 1, chunk_upper - chunk_lower + 1))
+							last_string.append (last_chunk_data.substring (i - chunk_lower + 1, chunk_upper - chunk_lower + 1))
 							i := chunk_upper
 						end
 						-- then continue
-						read_chunk
+						read_chunk_block
 						i := i + 1
 						check i = chunk_lower end
 					end
@@ -103,8 +103,33 @@ feature -- Access
 	last_character: CHARACTER_8
 			-- Last item read.
 
+feature -- Access: chunk			
+
+	last_chunk_size: INTEGER
+			-- Last chunk size.
+
+	last_chunk_data: STRING_8
+			-- Last chunk data.
+
 	last_trailer: detachable STRING_8
-			-- Last trailer content if any.
+			-- Last optional trailer content if any.
+
+	last_chunk_extension: detachable STRING_8
+			-- Last optional extension if any
+
+feature -- Chunk reading
+
+	read_chunk
+			-- Read next chunk
+			-- WARNING: do not mix read_chunk calls and read_string/read_character
+			-- this would mess up the traversal.
+			-- note: modify last_chunk_size, last_chunk, last_extension
+		do
+			read_chunk_block
+			if last_chunk_size = 0 then
+				read_trailer_and_crlf
+			end
+		end
 
 feature -- Status report
 
@@ -123,25 +148,25 @@ feature -- Status report
 feature {NONE} -- Parser
 
 	index, chunk_lower, chunk_upper: INTEGER
-	last_chunk_size: INTEGER
-	last_chunk: STRING_8
-
 	tmp_hex_chunk_size: STRING_8
 
-	read_chunk
+	read_chunk_block
+			-- Read next chunk
+			-- WARNING: do not mix read_chunk calls and read_string/read_character
+			-- this would mess up the traversal.
 		local
 			l_input: like input
 		do
 			if input.end_of_input then
 			else
 				chunk_lower := chunk_upper + 1
-				last_chunk.wipe_out
+				last_chunk_data.wipe_out
 				last_chunk_size := 0
 				read_chunk_size
 				if last_chunk_size > 0 then
 					chunk_upper := chunk_upper + last_chunk_size
 					read_chunk_data
-					check last_chunk.count = last_chunk_size end
+					check last_chunk_data.count = last_chunk_size end
 
 					l_input := input
 					l_input.read_character
@@ -151,12 +176,12 @@ feature {NONE} -- Parser
 				end
 			end
 		ensure
-			attached last_chunk as l_last_chunk implies l_last_chunk.count = chunk_upper - chunk_lower + 1
+			attached last_chunk_data as l_last_chunk implies l_last_chunk.count = chunk_upper - chunk_lower + 1
 		end
 
 	read_chunk_data
 		require
-			last_chunk.is_empty
+			last_chunk_data.is_empty
 			last_chunk_size > 0
 		local
 			l_input: like input
@@ -166,9 +191,9 @@ feature {NONE} -- Parser
 			end
 			l_input := input
 			l_input.read_string (last_chunk_size)
-			last_chunk := l_input.last_string
+			last_chunk_data := l_input.last_string
 		ensure
-			last_chunk_attached: attached last_chunk as el_last_chunk
+			last_chunk_attached: attached last_chunk_data as el_last_chunk
 			last_chunk_size_ok: el_last_chunk.count = last_chunk_size
 		end
 
@@ -229,13 +254,16 @@ feature {NONE} -- Parser
 	read_extension_chunk
 		local
 			l_input: like input
+			s: STRING_8
 		do
 			l_input := input
 			debug ("wgi")
 				print (" Reading extension chunk ")
 			end
+			create s.make_empty
 			from
 				l_input.read_character
+				s.append_character (l_input.last_character)
 			until
 				l_input.last_character = '%R'
 			loop
@@ -243,11 +271,18 @@ feature {NONE} -- Parser
 					print (l_input.last_character)
 				end
 				l_input.read_character
+				s.append_character (l_input.last_character)
+			end
+			s.remove_tail (1)
+			if s.is_empty then
+				last_chunk_extension := Void
+			else
+				last_chunk_extension := s
 			end
 		end
 
 	read_trailer_and_crlf
-			-- trailer        = *(entity-header CRLF)
+			-- trailer = *(entity-header CRLF)
 			-- CRLF
 		local
 			l_input: like input
@@ -285,7 +320,11 @@ feature {NONE} -- Parser
 					check l_input.last_character = '%N' end
 				end
 			end
-			last_trailer := s
+			if s.is_empty then
+				last_trailer := Void
+			else
+				last_trailer := s
+			end
 		end
 
 feature {NONE} -- Implementation

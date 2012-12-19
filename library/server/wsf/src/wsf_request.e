@@ -224,9 +224,11 @@ feature -- Access: Input
 					end
 				else
 					n := content_length_value.as_integer_32
-					buf.resize (buf.count + n)
-					n := l_input.read_to_string (buf, buf.count + 1, n)
-					check n = content_length_value.as_integer_32 end
+					if n > 0 then
+						buf.resize (buf.count + n)
+						n := l_input.read_to_string (buf, buf.count + 1, n)
+						check n = content_length_value.as_integer_32 end
+					end
 				end
 				if raw_input_data_recorded then
 					set_raw_input_data (buf)
