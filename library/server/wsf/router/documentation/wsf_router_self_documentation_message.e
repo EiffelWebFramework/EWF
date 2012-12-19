@@ -240,6 +240,8 @@ feature {WSF_RESPONSE} -- Output
 						s.append_character (' ')
 					end
 					s.append_character (']')
+				else
+					s.append (" [ * ]") -- when no request methods are precised, it accepts any methods.
 				end
 
 				s.append (" <em class=%"mappingdoc%">" + html_encoder.encoded_string (m.description) + "</em> ")
