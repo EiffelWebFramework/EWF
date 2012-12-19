@@ -51,6 +51,7 @@ feature -- Execution
 			msg: WSF_DEFAULT_ROUTER_RESPONSE
 		do
 			create msg.make_with_router (req, router)
+			msg.set_documentation_included (True)
 			res.send (msg)
 		end
 

@@ -17,7 +17,7 @@ feature -- Mapping helper: uri
 			map_uri_with_request_methods (a_uri, h, Void)
 		end
 
-	map_uri_with_request_methods (a_uri: READABLE_STRING_8; h: WSF_URI_HANDLER; rqst_methods: detachable WSF_ROUTER_METHODS)
+	map_uri_with_request_methods (a_uri: READABLE_STRING_8; h: WSF_URI_HANDLER; rqst_methods: detachable WSF_REQUEST_METHODS)
 		do
 			router.map_with_request_methods (create {WSF_URI_MAPPING}.make (a_uri, h), rqst_methods)
 		end
@@ -29,7 +29,7 @@ feature -- Mapping helper: uri agent
 			map_uri_agent_with_request_methods (a_uri, proc, Void)
 		end
 
-	map_uri_agent_with_request_methods (a_uri: READABLE_STRING_8; proc: PROCEDURE [ANY, TUPLE [req: WSF_REQUEST; res: WSF_RESPONSE]]; rqst_methods: detachable WSF_ROUTER_METHODS)
+	map_uri_agent_with_request_methods (a_uri: READABLE_STRING_8; proc: PROCEDURE [ANY, TUPLE [req: WSF_REQUEST; res: WSF_RESPONSE]]; rqst_methods: detachable WSF_REQUEST_METHODS)
 		do
 			map_uri_with_request_methods (a_uri, create {WSF_URI_AGENT_HANDLER}.make (proc), rqst_methods)
 		end

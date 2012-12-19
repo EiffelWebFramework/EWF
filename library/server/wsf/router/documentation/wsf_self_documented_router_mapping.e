@@ -12,10 +12,10 @@ inherit
 
 feature -- Documentation
 
-	documentation: WSF_ROUTER_MAPPING_DOCUMENTATION
+	documentation (a_request_methods: detachable WSF_REQUEST_METHODS): WSF_ROUTER_MAPPING_DOCUMENTATION
 		do
 			if attached {WSF_SELF_DOCUMENTED_HANDLER} handler as obj then
-				Result := obj.mapping_documentation (Current)
+				Result := obj.mapping_documentation (Current, a_request_methods)
 			else
 				create Result.make (Current)
 			end

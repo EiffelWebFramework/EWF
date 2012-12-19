@@ -33,6 +33,8 @@ inherit
 	REFACTORING_HELPER
 	SHARED_ORDER_VALIDATION
 
+	WSF_SELF_DOCUMENTED_HANDLER
+
 feature -- execute
 
 	uri_execute (req: WSF_REQUEST; res: WSF_RESPONSE)
@@ -50,6 +52,25 @@ feature -- execute
 feature -- API DOC
 
 	api_doc : STRING = "URI:/order METHOD: POST%N URI:/order/{orderid} METHOD: GET, PUT, DELETE%N"
+
+
+feature -- Documentation
+
+	mapping_documentation (m: WSF_ROUTER_MAPPING; a_request_methods: detachable WSF_REQUEST_METHODS): WSF_ROUTER_MAPPING_DOCUMENTATION
+		do
+			create Result.make (m)
+			if a_request_methods /= Void then
+				if a_request_methods.has_method_post then
+					Result.add_description ("URI:/order METHOD: POST")
+				elseif
+					a_request_methods.has_method_get
+					or a_request_methods.has_method_put
+					or a_request_methods.has_method_delete
+				then
+					Result.add_description ("URI:/order/{orderid} METHOD: GET, PUT, DELETE")
+				end
+			end
+		end
 
 feature -- HTTP Methods
 

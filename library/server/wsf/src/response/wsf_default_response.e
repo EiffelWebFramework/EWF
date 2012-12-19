@@ -36,18 +36,26 @@ feature {WSF_RESPONSE} -- Output
 		local
 			msg: WSF_RESPONSE_MESSAGE
 			req: like request
-			not_found: WSF_NOT_FOUND_RESPONSE
-			trace: WSF_TRACE_RESPONSE
 		do
 			req := request
 			if req.is_request_method ({HTTP_REQUEST_METHODS}.method_trace) then
-				create trace.make (req)
-				msg := trace
+				msg := trace_message (req)
 			else
-				create not_found.make (req)
-				msg := not_found
+				msg := not_found_message (req)
 			end
 			res.send (msg)
+		end
+
+feature {NONE} -- Implementation
+
+	trace_message (req: WSF_REQUEST): WSF_TRACE_RESPONSE
+		do
+			create Result.make (req)
+		end
+
+	not_found_message (req: WSF_REQUEST): WSF_NOT_FOUND_RESPONSE
+		do
+			create Result.make (req)
 		end
 
 end

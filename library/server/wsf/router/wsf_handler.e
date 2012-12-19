@@ -17,7 +17,7 @@ feature -- Status report
 
 feature {WSF_ROUTER} -- Mapping
 
-	on_mapped (a_mapping: WSF_ROUTER_MAPPING; a_rqst_methods: detachable WSF_ROUTER_METHODS)
+	on_mapped (a_mapping: WSF_ROUTER_MAPPING; a_rqst_methods: detachable WSF_REQUEST_METHODS)
 			-- Callback called when a router map a route to Current handler
 		do
 		end

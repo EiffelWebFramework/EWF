@@ -36,7 +36,7 @@ feature	-- Access
 
 	mapping: WSF_ROUTER_MAPPING
 
-	request_methods: detachable WSF_ROUTER_METHODS
+	request_methods: detachable WSF_REQUEST_METHODS
 
 feature -- Status report
 

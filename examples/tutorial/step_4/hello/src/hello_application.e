@@ -42,17 +42,17 @@ feature {NONE} -- Initialization
 
 feature -- Helper: mapping
 
-	map_agent_uri (a_uri: READABLE_STRING_8; a_action: like {WSF_URI_AGENT_HANDLER}.action; rqst_methods: detachable WSF_ROUTER_METHODS)
+	map_agent_uri (a_uri: READABLE_STRING_8; a_action: like {WSF_URI_AGENT_HANDLER}.action; rqst_methods: detachable WSF_REQUEST_METHODS)
 		do
 			router.map_with_request_methods (create {WSF_URI_MAPPING}.make (a_uri, create {WSF_URI_AGENT_HANDLER}.make (a_action)), rqst_methods)
 		end
 
-	map_uri_template (a_tpl: READABLE_STRING_8; a_handler: WSF_URI_TEMPLATE_HANDLER; rqst_methods: detachable WSF_ROUTER_METHODS)
+	map_uri_template (a_tpl: READABLE_STRING_8; a_handler: WSF_URI_TEMPLATE_HANDLER; rqst_methods: detachable WSF_REQUEST_METHODS)
 		do
 			router.map_with_request_methods (create {WSF_URI_TEMPLATE_MAPPING}.make (a_tpl, a_handler), rqst_methods)
 		end
 
-	map_agent_uri_template_response (a_tpl: READABLE_STRING_8; a_action: like {WSF_URI_TEMPLATE_RESPONSE_AGENT_HANDLER}.action; rqst_methods: detachable WSF_ROUTER_METHODS)
+	map_agent_uri_template_response (a_tpl: READABLE_STRING_8; a_action: like {WSF_URI_TEMPLATE_RESPONSE_AGENT_HANDLER}.action; rqst_methods: detachable WSF_REQUEST_METHODS)
 		do
 			router.map_with_request_methods (create {WSF_URI_TEMPLATE_MAPPING}.make (a_tpl, create {WSF_URI_TEMPLATE_RESPONSE_AGENT_HANDLER}.make (a_action)), rqst_methods)
 		end

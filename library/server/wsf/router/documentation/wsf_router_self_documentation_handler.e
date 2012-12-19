@@ -45,7 +45,7 @@ feature {NONE} -- Initialization
 
 feature -- Documentation
 
-	mapping_documentation (m: WSF_ROUTER_MAPPING): WSF_ROUTER_MAPPING_DOCUMENTATION
+	mapping_documentation (m: WSF_ROUTER_MAPPING; a_request_methods: detachable WSF_REQUEST_METHODS): WSF_ROUTER_MAPPING_DOCUMENTATION
 		do
 			create Result.make (m)
 			Result.set_is_hidden (is_hidden)
@@ -54,7 +54,7 @@ feature -- Documentation
 
 feature {WSF_ROUTER} -- Mapping
 
-	on_mapped (a_mapping: WSF_ROUTER_MAPPING; a_rqst_methods: detachable WSF_ROUTER_METHODS)
+	on_mapped (a_mapping: WSF_ROUTER_MAPPING; a_rqst_methods: detachable WSF_REQUEST_METHODS)
 			-- Callback called when a router map a route to Current handler
 		do
 			if attached {WSF_STARTS_WITH_MAPPING} a_mapping as m then

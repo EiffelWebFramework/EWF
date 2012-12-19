@@ -56,7 +56,7 @@ feature -- Mapping
 			map_with_request_methods (a_mapping, Void)
 		end
 
-	map_with_request_methods (a_mapping: WSF_ROUTER_MAPPING; rqst_methods: detachable WSF_ROUTER_METHODS)
+	map_with_request_methods (a_mapping: WSF_ROUTER_MAPPING; rqst_methods: detachable WSF_REQUEST_METHODS)
 			-- Map `a_mapping' for request methods `rqst_methods'
 		do
 			debug ("router")
@@ -81,7 +81,7 @@ feature -- Mapping handler
 			handle_with_request_methods (a_resource, f, Void)
 		end
 
-	handle_with_request_methods (a_resource: READABLE_STRING_8; f: WSF_ROUTER_MAPPING_FACTORY; rqst_methods: detachable WSF_ROUTER_METHODS)
+	handle_with_request_methods (a_resource: READABLE_STRING_8; f: WSF_ROUTER_MAPPING_FACTORY; rqst_methods: detachable WSF_REQUEST_METHODS)
 			-- Map the mapping created by factory `f' for resource `a_resource'	
 			-- and only for request methods `rqst_methods'
 		do
@@ -150,7 +150,7 @@ feature {NONE} -- Dispatch implementation
 
 feature -- Status report
 
-	has_item_associated_with_resource (a_resource: READABLE_STRING_8; rqst_methods: detachable WSF_ROUTER_METHODS): BOOLEAN
+	has_item_associated_with_resource (a_resource: READABLE_STRING_8; rqst_methods: detachable WSF_REQUEST_METHODS): BOOLEAN
 		local
 			m: WSF_ROUTER_MAPPING
 			ok: BOOLEAN
@@ -177,7 +177,7 @@ feature -- Status report
 			end
 		end
 
-	item_associated_with_resource (a_resource: READABLE_STRING_8; rqst_methods: detachable WSF_ROUTER_METHODS): detachable WSF_ROUTER_ITEM
+	item_associated_with_resource (a_resource: READABLE_STRING_8; rqst_methods: detachable WSF_REQUEST_METHODS): detachable WSF_ROUTER_ITEM
 		local
 			m: WSF_ROUTER_MAPPING
 			ok: BOOLEAN
@@ -206,11 +206,11 @@ feature -- Status report
 			end
 		end
 
-	allowed_methods_for_request (req: WSF_REQUEST): WSF_ROUTER_METHODS
+	allowed_methods_for_request (req: WSF_REQUEST): WSF_REQUEST_METHODS
 			-- Allowed methods for `req'
 		local
 			m: WSF_ROUTER_MAPPING
-			l_rqsmethods: detachable WSF_ROUTER_METHODS
+			l_rqsmethods: detachable WSF_REQUEST_METHODS
 		do
 			create Result
 
@@ -286,49 +286,49 @@ feature -- Traversing
 
 feature -- Request methods helper
 
-	methods_head: WSF_ROUTER_METHODS
+	methods_head: WSF_REQUEST_METHODS
 		once ("THREAD")
 			create Result
 			Result.enable_head
 			Result.lock
 		end
 
-	methods_options: WSF_ROUTER_METHODS
+	methods_options: WSF_REQUEST_METHODS
 		once ("THREAD")
 			create Result
 			Result.enable_options
 			Result.lock
 		end
 
-	methods_get: WSF_ROUTER_METHODS
+	methods_get: WSF_REQUEST_METHODS
 		once ("THREAD")
 			create Result
 			Result.enable_get
 			Result.lock
 		end
 
-	methods_post: WSF_ROUTER_METHODS
+	methods_post: WSF_REQUEST_METHODS
 		once ("THREAD")
 			create Result
 			Result.enable_post
 			Result.lock
 		end
 
-	methods_put: WSF_ROUTER_METHODS
+	methods_put: WSF_REQUEST_METHODS
 		once ("THREAD")
 			create Result
 			Result.enable_put
 			Result.lock
 		end
 
-	methods_delete: WSF_ROUTER_METHODS
+	methods_delete: WSF_REQUEST_METHODS
 		once ("THREAD")
 			create Result
 			Result.enable_delete
 			Result.lock
 		end
 
-	methods_head_get_post: WSF_ROUTER_METHODS
+	methods_head_get_post: WSF_REQUEST_METHODS
 		once ("THREAD")
 			create Result.make (3)
 			Result.enable_head
@@ -337,7 +337,7 @@ feature -- Request methods helper
 			Result.lock
 		end
 
-	methods_get_put_delete: WSF_ROUTER_METHODS
+	methods_get_put_delete: WSF_REQUEST_METHODS
 		once ("THREAD")
 			create Result.make (3)
 			Result.enable_get
@@ -346,7 +346,7 @@ feature -- Request methods helper
 			Result.lock
 		end
 
-	methods_head_get: WSF_ROUTER_METHODS
+	methods_head_get: WSF_REQUEST_METHODS
 		once ("THREAD")
 			create Result.make (2)
 			Result.enable_head
@@ -354,7 +354,7 @@ feature -- Request methods helper
 			Result.lock
 		end
 
-	methods_get_post: WSF_ROUTER_METHODS
+	methods_get_post: WSF_REQUEST_METHODS
 		once ("THREAD")
 			create Result.make (2)
 			Result.enable_get
@@ -362,7 +362,7 @@ feature -- Request methods helper
 			Result.lock
 		end
 
-	methods_put_post: WSF_ROUTER_METHODS
+	methods_put_post: WSF_REQUEST_METHODS
 		once ("THREAD")
 			create Result.make (2)
 			Result.enable_put
@@ -401,7 +401,7 @@ feature {NONE} -- Access: Implementation
 			end
 		end
 
-	is_matching_request_methods (a_request_method: READABLE_STRING_8; a_rqst_methods: detachable WSF_ROUTER_METHODS): BOOLEAN
+	is_matching_request_methods (a_request_method: READABLE_STRING_8; a_rqst_methods: detachable WSF_REQUEST_METHODS): BOOLEAN
 			-- `a_request_method' is matching `a_rqst_methods' contents
 		do
 			if a_rqst_methods /= Void and then not a_rqst_methods.is_empty then

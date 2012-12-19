@@ -22,7 +22,7 @@ feature {NONE} -- Initialization
 		do
 			request := req
 			create header.make
-			create suggested_locations.make (0)
+			create suggested_items.make (0)
 		end
 
 feature -- Header
@@ -33,16 +33,32 @@ feature -- Header
 	request: WSF_REQUEST
 			-- Associated request.
 
-	suggested_locations: ARRAYED_LIST [TUPLE [location: READABLE_STRING_8; title: detachable READABLE_STRING_GENERAL]]
+	suggested_items: ARRAYED_LIST [TUPLE [location: detachable READABLE_STRING_8; text: detachable READABLE_STRING_GENERAL; description: detachable READABLE_STRING_GENERAL]]
 			-- Optional suggestions
 			-- First is the default.
 
+	body: detachable READABLE_STRING_8
+			-- Optional body
+			-- Displayed as extra content
+
 feature -- Element change
 
-	add_suggested_location (a_loc: READABLE_STRING_8; a_title: detachable READABLE_STRING_GENERAL)
-			-- Add `a_loc' to `suggested_locations'
+	add_suggested_location (a_loc: READABLE_STRING_8; a_title: detachable READABLE_STRING_GENERAL; a_description: detachable READABLE_STRING_GENERAL)
+			-- Add `a_loc' to `suggested_items'
 		do
-			suggested_locations.force ([a_loc, a_title])
+			suggested_items.force ([a_loc, a_title, a_description])
+		end
+
+	add_suggested_text (a_text: READABLE_STRING_GENERAL; a_description: detachable READABLE_STRING_GENERAL)
+			-- Add `a_text' to `suggested_items'
+		do
+			suggested_items.force ([Void, a_text, a_description])
+		end
+
+	set_body (b: like body)
+			-- Set `body' to `b'
+		do
+			body := b
 		end
 
 feature {WSF_RESPONSE} -- Output
@@ -50,7 +66,8 @@ feature {WSF_RESPONSE} -- Output
 	send_to (res: WSF_RESPONSE)
 		local
 			s: STRING
-			l_title: detachable READABLE_STRING_GENERAL
+			l_text: detachable READABLE_STRING_GENERAL
+			l_loc: detachable READABLE_STRING_8
 			h: like header
 		do
 			h := header
@@ -85,25 +102,46 @@ feature {WSF_RESPONSE} -- Output
 				s.append ("</div>")
 				s.append ("Error 404 (Not Found)</div>")
 				s.append ("<div id=%"message%">Error 404 (Not Found): <code>" + html_encoder.encoded_string (request.request_uri) + "</code></div>")
-				if attached suggested_locations as lst and then not lst.is_empty then
+				if attached suggested_items as lst and then not lst.is_empty then
 					s.append ("<div id=%"suggestions%"><strong>Perhaps your are looking for:</strong><ul>")
 					from
 						lst.start
 					until
 						lst.after
 					loop
-						s.append ("<li>")
-						l_title := lst.item.title
-						if l_title = Void then
-							l_title := lst.item.location
+						l_text := lst.item.text
+						l_loc := lst.item.location
+						if l_loc /= Void then
+							if l_text = Void then
+								l_text := l_loc
+							end
+							s.append ("<li>")
+							s.append ("<a href=%"" + l_loc + "%">" + html_encoder.encoded_string (l_text.to_string_32) + "</a>")
+						elseif l_text /= Void then
+
+							s.append ("<li>")
+							s.append (html_encoder.encoded_string (l_text.to_string_32))
+							s.append ("</li>%N")
 						end
-						s.append ("<a href=%"" + lst.item.location + "%">" + html_encoder.encoded_string (l_title.to_string_32) + "</a>")
-						s.append ("</li>%N")
+						if (l_loc /= Void or l_text /= Void) then
+							if attached lst.item.description as l_desc then
+								s.append ("<br/> - ")
+								s.append (html_encoder.encoded_string (l_desc.to_string_32))
+								s.append ("%N")
+							end
+							s.append ("</li>%N")
+						end
 
 						lst.forth
 					end
 					s.append ("</ul></div>%N")
 				end
+				if attached body as b then
+					s.append ("<div>")
+					s.append (b)
+					s.append ("</div>%N")
+				end
+
 				s.append ("<div id=%"footer%"></div>")
 				s.append ("</body>%N")
 				s.append ("</html>%N")
@@ -113,23 +151,42 @@ feature {WSF_RESPONSE} -- Output
 				s := "Error 404 (Not Found): "
 				s.append (request.request_uri)
 				s.append_character ('%N')
-				if attached suggested_locations as lst and then not lst.is_empty then
+				if attached suggested_items as lst and then not lst.is_empty then
 					s.append ("%NPerhaps your are looking for:%N")
 					from
 						lst.start
 					until
 						lst.after
 					loop
-						s.append (" - ")
-						l_title := lst.item.title
-						if l_title = Void then
-							l_title := lst.item.location
+						l_text := lst.item.text
+						l_loc := lst.item.location
+						if l_loc /= Void then
+							s.append (" - ")
+							if l_text = Void then
+								s.append (l_loc)
+							else
+								s.append (" : ")
+								s.append (l_text.to_string_8)
+							end
+						elseif l_text /= Void then
+							s.append (" - ")
+							s.append (l_text.to_string_8)
 						end
-						s.append (lst.item.location)
-						s.append ("%N")
-
+						if (l_loc /= Void or l_text /= Void) then
+							s.append ("%N")
+							if attached lst.item.description as l_desc then
+								s.append ("   ")
+								s.append (l_desc.to_string_8)
+								s.append ("%N")
+							end
+						end
 						lst.forth
 					end
+				end
+				if attached body as b then
+					s.append ("%N")
+					s.append (b)
+					s.append ("%N")
 				end
 
 				h.put_content_type_text_plain
