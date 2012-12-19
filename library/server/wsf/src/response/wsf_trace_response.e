@@ -35,6 +35,7 @@ feature {WSF_RESPONSE} -- Output
 	send_to (res: WSF_RESPONSE)
 		local
 			s: STRING
+			t: STRING
 			h: like header
 			req: like request
 			n, nb: INTEGER
@@ -87,10 +88,12 @@ feature {WSF_RESPONSE} -- Output
 				end
 				res.flush
 			else
-				req.read_input_data_into (s)
-				h.put_content_length (s.count)
+				create t.make (req.content_length_value.to_integer_32)
+				req.read_input_data_into (t)
+				h.put_content_length (s.count + t.count)
 				res.put_header_text (h.string)
 				res.put_string (s)
+				res.put_string (t)
 				res.flush
 			end
 		end
