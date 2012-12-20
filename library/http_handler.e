@@ -43,12 +43,22 @@ feature -- Inherited Features
 		local
 			l_listening_socket: detachable TCP_STREAM_SOCKET
 			l_http_port: INTEGER
+			l_factory: INET_ADDRESS_FACTORY			
 		do
 			launched := False
 			port := 0
 			is_stop_requested := False
 			l_http_port := http_server_port
-			create l_listening_socket.make_server_by_port (l_http_port)
+
+			if 
+				attached http_server_name as l_servername and then
+				attached (create {INET_ADDRESS_FACTORY}).create_from_name (l_servername) as l_addr 
+			then
+				create l_listening_socket.make_server_by_address_and_port (l_addr, l_http_port)
+			else
+				create l_listening_socket.make_server_by_port (l_http_port)
+			end
+
 			if not l_listening_socket.is_bound then
 				if is_verbose then
 					log ("Socket could not be bound on port " + l_http_port.out)
@@ -164,6 +174,11 @@ feature -- Access: configuration
 			Result := server_configuration.force_single_threaded
 		end
 
+	http_server_name: detachable STRING
+		do
+			Result := server_configuration.http_server_name
+		end
+
 	http_server_port: INTEGER
 		do
 			Result := server_configuration.http_server_port
@@ -215,6 +230,6 @@ invariant
 	server_attached: server /= Void
 
 note
-	copyright: "2011-2011, Javier Velilla and others"
+	copyright: "2011-2012, Javier Velilla and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 end
