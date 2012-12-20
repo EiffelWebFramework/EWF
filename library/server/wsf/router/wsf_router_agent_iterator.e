@@ -22,10 +22,10 @@ feature {NONE} -- Initialization
 	default_create
 		do
 			Precursor
-			create on_router_actions.make
-			create on_item_actions.make
-			create on_mapping_actions.make
-			create on_handler_actions.make
+			create on_router_actions
+			create on_item_actions
+			create on_mapping_actions
+			create on_handler_actions
 		end
 
 feature -- Actions

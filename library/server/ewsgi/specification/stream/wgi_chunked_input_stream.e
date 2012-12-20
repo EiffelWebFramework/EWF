@@ -187,7 +187,7 @@ feature {NONE} -- Parser
 			l_input: like input
 		do
 			debug ("wgi")
-				print (" Read chunk data ("+ last_chunk_size.out +") %N")
+				io.error.put_string (" Read chunk data ("+ last_chunk_size.out +") %N")
 			end
 			l_input := input
 			l_input.read_string (last_chunk_size)
@@ -207,7 +207,7 @@ feature {NONE} -- Parser
 			l_input: like input
 		do
 			debug ("wgi")
-				print (" Read chunk size: ")
+				io.error.put_string (" Read chunk size: ")
 			end
 
 			l_input := input
@@ -218,7 +218,7 @@ feature {NONE} -- Parser
 			loop
 				c := l_input.last_character
 				debug ("wgi")
-					print (c.out)
+					io.error.put_string (c.out)
 				end
 				inspect c
 				when '%R' then
@@ -247,7 +247,7 @@ feature {NONE} -- Parser
 			tmp_hex_chunk_size.wipe_out
 
 			debug ("wgi")
-				print ("%N Chunk size = " + last_chunk_size.out + "%N")
+				io.error.put_string ("%N Chunk size = " + last_chunk_size.out + "%N")
 			end
 		end
 
@@ -258,7 +258,7 @@ feature {NONE} -- Parser
 		do
 			l_input := input
 			debug ("wgi")
-				print (" Reading extension chunk ")
+				io.error.put_string (" Reading extension chunk ")
 			end
 			create s.make_empty
 			from
@@ -268,7 +268,7 @@ feature {NONE} -- Parser
 				l_input.last_character = '%R'
 			loop
 				debug ("wgi")
-					print (l_input.last_character)
+					io.error.put_character (l_input.last_character)
 				end
 				l_input.read_character
 				s.append_character (l_input.last_character)
@@ -293,7 +293,7 @@ feature {NONE} -- Parser
 			l_input := input
 			if not l_input.end_of_input then
 				debug ("wgi")
-					print (" Reading trailer ")
+					io.error.put_string (" Reading trailer ")
 				end
 				from
 					l_line_size := 1 -- Dummy value /= 0
@@ -309,7 +309,7 @@ feature {NONE} -- Parser
 					loop
 						l_line_size := l_line_size + 1
 						debug ("wgi")
-							print (l_input.last_character)
+							io.error.put_character (l_input.last_character)
 						end
 						l_input.read_character
 						s.append_character (l_input.last_character)

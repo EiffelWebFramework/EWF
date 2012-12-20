@@ -107,7 +107,7 @@ feature -- Server
 			create {WGI_NINO_HANDLER} l_http_handler.make_with_callback (server, Current)
 			if configuration.is_verbose then
 				if attached base as l_base then
-					print ("Base=" + l_base + "%N")
+					io.error.put_string ("Base=" + l_base + "%N")
 				end
 			end
 			server.setup (l_http_handler)

@@ -88,8 +88,12 @@ feature -- Execution
 				conn.configuration.set_is_verbose (verbose)
 				debug ("nino")
 					if verbose then
-						print ("Example: start a Nino web server on port " + port_number.out +
-							 ", %Nand reply Hello World for any request such as http://localhost:" + port_number.out + "/" + base_url + "%N")
+						io.error.put_string ("Launching Nino web server on port " + port_number.out)
+						if attached server_name as l_name then
+							io.error.put_string ("%N http://" + l_name + ":" + port_number.out + "/" + base_url + "%N")
+						else
+							io.error.put_string ("%N http://localhost:" + port_number.out + "/" + base_url + "%N")
+						end
 					end
 				end
 				if attached server_name as l_server_name then

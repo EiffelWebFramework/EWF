@@ -52,7 +52,7 @@ feature -- Access
 			end
 		rescue
 			debug
-				print ("Error occurred in " + generator)
+				io.error.put_string ("Error occurred in " + generator)
 			end
 		end
 

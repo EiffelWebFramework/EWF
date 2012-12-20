@@ -151,7 +151,7 @@ feature {NONE} -- Storage
 				build
 			end
 		rescue
-			print ("ouch")
+			io.error.put_string ("Error while loading Cookie session...!%N")
 		end
 
 	build
