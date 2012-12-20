@@ -43,7 +43,6 @@ feature -- Inherited Features
 		local
 			l_listening_socket: detachable TCP_STREAM_SOCKET
 			l_http_port: INTEGER
-			l_factory: INET_ADDRESS_FACTORY			
 		do
 			launched := False
 			port := 0
