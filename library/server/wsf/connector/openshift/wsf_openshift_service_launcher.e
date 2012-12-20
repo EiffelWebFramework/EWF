@@ -38,6 +38,13 @@ feature {NONE} -- Initialization
 		do
 			Precursor
 			create l_env
+
+			if attached l_env.get (Openshift_ip) as l_ip then
+				server_name := l_ip.to_string_8
+			else
+				die (Openshift_ip + " is not defined")
+			end
+
 			if attached l_env.get (Openshift_port) as l_port then
 				if l_port.is_integer then
 					port_number := l_port.to_integer
@@ -67,7 +74,7 @@ feature {NONE} -- Implementation
 
 	Openshift_port: STRING = "OPENSHIFT_INTERNAL_PORT"
 			-- OpenShift port environment variable name
-		
+
 
 ;note
 	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
