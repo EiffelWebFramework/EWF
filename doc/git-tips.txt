@@ -17,19 +17,22 @@ Reconnect subtree from a cloned repository
 - doc/wiki
   git remote add -f ewf_wiki https://github.com/EiffelWebFramework/EWF.wiki.git
   git merge -s ours --no-commit --squash ewf_wiki/master
-  git pull -s subtree ewf_wiki master
+  git pull -X subtree=doc/wiki ewf_wiki master
+
 - contrib/ise_library/cURL
   git remote add -f ewf_curl https://github.com/EiffelSoftware/mirror-Eiffel-cURL.git
   git merge -s ours --no-commit --squash ewf_curl/master
-  git pull -s subtree ewf_curl master
+  git pull -X subtree=contrib/ise_library/cURL ewf_curl master
+
 - contrib/library/text/parser/json
   git remote add -f ewf_json https://github.com/eiffelhub/json.git
   git merge -s ours --no-commit --squash ewf_json/master
-  git pull -s subtree ewf_json master
+  git pull -X subtree=contrib/library/text/parser/json ewf_json master
+
 - contrib/library/network/server/nino
   git remote add -f ewf_nino  https://github.com/Eiffel-World/EiffelWebNino.git
   git merge -s ours --no-commit --squash ewf_nino/master
-  git pull -s subtree ewf_nino master
+  git pull -X subtree=contrib/library/network/server/nino ewf_nino master
 
 When there are troubles ... to pull subtree from a cloned repository
   git remote add -f ewf_nino  https://github.com/Eiffel-World/EiffelWebNino.git
