@@ -26,4 +26,9 @@ feature -- Access: environment
 			Result := execution_environment.starting_environment
 		end
 
+	environment_item (a_name: READABLE_STRING_GENERAL): detachable STRING_32
+		do
+			Result := execution_environment.item (a_name)
+		end
+
 end

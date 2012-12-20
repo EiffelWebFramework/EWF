@@ -26,4 +26,11 @@ feature -- Access: environment
 			Result := execution_environment.starting_environment_variables
 		end
 
+	environment_item (a_name: READABLE_STRING_GENERAL): detachable STRING_32
+		do
+			if attached execution_environment.get (a_name.to_string_8) as v then
+				Result := v.to_string_32
+			end
+		end
+
 end
