@@ -120,6 +120,11 @@ feature -- Status report
 	is_debug: BOOLEAN
 			-- Produce debug output
 
+	is_available: BOOLEAN
+			-- Is interface usable?
+		deferred
+		end
+			
 feature -- Settings
 
 	timeout: INTEGER

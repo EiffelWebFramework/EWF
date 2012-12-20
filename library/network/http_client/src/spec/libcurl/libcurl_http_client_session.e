@@ -23,6 +23,14 @@ feature {NONE} -- Initialization
 			curl_easy.set_curl_function (create {LIBCURL_DEFAULT_FUNCTION}.make)
 		end
 
+feature -- Status report
+
+	is_available: BOOLEAN
+			-- Is interface usable?
+		do
+			Result := curl.is_dynamic_library_exists
+		end
+
 feature -- Basic operation
 
 	get (a_path: READABLE_STRING_8; ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT): HTTP_CLIENT_RESPONSE
