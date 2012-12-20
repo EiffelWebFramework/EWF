@@ -26,6 +26,7 @@ feature -- Access
 	Server_details : STRING = "Server : NINO Eiffel Server"
 
 	document_root: STRING assign set_document_root
+	http_server_name: detachable STRING assign set_http_server_name
 	http_server_port: INTEGER assign set_http_server_port
 	max_tcp_clients: INTEGER assign set_max_tcp_clients
 	socket_accept_timeout: INTEGER assign set_socket_accept_timeout
@@ -36,6 +37,11 @@ feature -- Access
 			-- Display verbose message to the output?
 
 feature -- Element change
+
+	set_http_server_name (v: like http_server_name)
+		do
+			http_server_name := v
+		end
 
 	set_http_server_port (v: like http_server_port)
 		do
