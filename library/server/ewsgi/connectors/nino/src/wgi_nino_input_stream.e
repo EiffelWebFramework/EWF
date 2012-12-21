@@ -40,7 +40,7 @@ feature -- Input
 			src: like source
 		do
 			src := source
-			if src.socket_ok then
+			if src.readable then
 				src.read_character
 				last_character := src.last_character
 			else
