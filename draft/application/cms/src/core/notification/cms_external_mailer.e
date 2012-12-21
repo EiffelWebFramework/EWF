@@ -78,15 +78,24 @@ feature -- Basic operation
 
 	process_email (a_email: CMS_EMAIL)
 		local
+			proc_args: detachable ARRAYED_LIST [STRING_8]
 			l_factory: PROCESS_FACTORY
 			args: like arguments
 			p: detachable PROCESS
 			retried: INTEGER
 		do
 			if retried = 0 then
+				if attached arguments as l_args then
+					create proc_args.make (l_args.count)
+					across
+						l_args as c
+					loop
+						proc_args.force (c.item)
+					end
+				end
 				create l_factory
 				if stdin_mode_set then
-					p := l_factory.process_launcher (executable_path, arguments, Void)
+					p := l_factory.process_launcher (executable_path, proc_args, Void)
 					p.set_hidden (True)
 					p.set_separate_console (False)
 
@@ -99,18 +108,16 @@ feature -- Basic operation
 						end
 					end
 				else
-					if attached arguments as l_args then
-						args := l_args.twin
-					else
+					if proc_args = Void then
 						if attached {RAW_FILE} new_temporary_file (generator) as f then
 							f.create_read_write
 							f.put_string (a_email.message)
 							f.close
-							create args.make (1)
-							args.force (f.name)
+							create proc_args.make (1)
+							proc_args.force (f.name)
 						end
 					end
-					p := l_factory.process_launcher (executable_path, args, Void)
+					p := l_factory.process_launcher (executable_path, proc_args, Void)
 					p.set_hidden (True)
 					p.set_separate_console (False)
 
