@@ -80,7 +80,6 @@ feature -- Basic operation
 		local
 			proc_args: detachable ARRAYED_LIST [STRING_8]
 			l_factory: PROCESS_FACTORY
-			args: like arguments
 			p: detachable PROCESS
 			retried: INTEGER
 		do

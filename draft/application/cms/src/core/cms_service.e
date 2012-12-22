@@ -39,7 +39,6 @@ feature -- Initialization
 		local
 			e: EXECUTION_ENVIRONMENT
 			dn: DIRECTORY_NAME
-			u: CMS_USER
 		do
 			create e
 			create dn.make_from_string (e.current_working_directory)
