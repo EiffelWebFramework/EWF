@@ -67,6 +67,9 @@ COPYCMD $TMP_DIR/library/network/http_client	$TMP_CONTRIB_DIR/library/network/ht
 echo Install library: http
 mkdir -p $TMP_CONTRIB_DIR/library/network/protocol
 COPYCMD $TMP_DIR/library/network/protocol/http	$TMP_CONTRIB_DIR/library/network/protocol/http
+echo Install library: http_authorization
+mkdir -p $TMP_CONTRIB_DIR/library/network/authentication
+COPYCMD $TMP_DIR/library/server/authentication/http_authorization	$TMP_CONTRIB_DIR/library/network/authentication/http_authorization
 echo Install library: uri_template
 mkdir -p $TMP_CONTRIB_DIR/library/text/parser
 COPYCMD $TMP_DIR/library/text/parser/uri_template $TMP_CONTRIB_DIR/library/text/parser/uri_template
