@@ -103,7 +103,7 @@ feature {WSF_RESPONSE} -- Output
 				s.append ("Error 404 (Not Found)</div>")
 				s.append ("<div id=%"message%">Error 404 (Not Found): <code>" + html_encoder.encoded_string (request.request_uri) + "</code></div>")
 				if attached suggested_items as lst and then not lst.is_empty then
-					s.append ("<div id=%"suggestions%"><strong>Perhaps your are looking for:</strong><ul>")
+					s.append ("<div id=%"suggestions%"><strong>Perhaps you are looking for:</strong><ul>")
 					from
 						lst.start
 					until
@@ -152,7 +152,7 @@ feature {WSF_RESPONSE} -- Output
 				s.append (request.request_uri)
 				s.append_character ('%N')
 				if attached suggested_items as lst and then not lst.is_empty then
-					s.append ("%NPerhaps your are looking for:%N")
+					s.append ("%NPerhaps you are looking for:%N")
 					from
 						lst.start
 					until
