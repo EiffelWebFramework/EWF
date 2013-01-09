@@ -213,6 +213,25 @@ feature -- Header change: general
 			put_header (k + colon_space + v)
 		end
 
+	put_header_key_methods (k: READABLE_STRING_8; a_methods: ITERABLE [READABLE_STRING_8])
+			-- Add header `k: a_methods', or replace existing header of same header methods/key
+		local
+			s: STRING_8
+		do
+			create s.make_empty
+			across
+				a_methods as c
+			loop
+				if not s.is_empty then
+					s.append_string (", ")
+				end
+				s.append (c.item)
+			end
+			if not s.is_empty then
+				put_header_key_value (k, s)
+			end
+		end
+
 feature -- Content related header
 
 	put_content_type (t: READABLE_STRING_8)
@@ -397,26 +416,38 @@ feature -- Content-type helpers
 	put_content_type_multipart_encrypted	do put_content_type ({HTTP_MIME_TYPES}.multipart_encrypted) end
 	put_content_type_application_x_www_form_encoded	do put_content_type ({HTTP_MIME_TYPES}.application_x_www_form_encoded) end
 
+feature -- Cross-Origin Resource Sharing
+
+	put_access_control_allow_origin (s: READABLE_STRING_8)
+			-- Put "Access-Control-Allow-Origin" header.
+		do
+			put_header_key_value ({HTTP_HEADER_NAMES}.header_access_control_allow_origin, s)
+		end
+
+	put_access_control_allow_all_origin
+			-- Put "Access-Control-Allow-Origin: *" header.
+		do
+			put_access_control_allow_origin ("*")
+		end
+
+	put_access_control_allow_methods (a_methods: ITERABLE [READABLE_STRING_8])
+			-- If `a_methods' is not empty, put `Access-Control-Allow-Methods' header with list `a_methods' of methods
+		do
+			put_header_key_methods ({HTTP_HEADER_NAMES}.header_access_control_allow_methods, a_methods)
+		end
+
+	put_access_control_allow_headers (s: READABLE_STRING_8)
+			-- Put "Access-Control-Allow-Headers" header.
+		do
+			put_header_key_value ({HTTP_HEADER_NAMES}.header_access_control_allow_headers, s)
+		end
+
 feature -- Method related
 
 	put_allow (a_methods: ITERABLE [READABLE_STRING_8])
 			-- If `a_methods' is not empty, put `Allow' header with list `a_methods' of methods
-		local
-			s: STRING_8
 		do
-			create s.make_empty
-			across
-				a_methods as c
-			loop
-				if not s.is_empty then
-					s.append_character (',')
-				end
-				s.append_character (' ')
-				s.append (c.item)
-			end
-			if not s.is_empty then
-				put_header_key_value ({HTTP_HEADER_NAMES}.header_allow, s)
-			end
+			put_header_key_methods ({HTTP_HEADER_NAMES}.header_allow, a_methods)
 		end
 
 feature -- Date
@@ -738,7 +769,7 @@ feature {NONE} -- Constants
 	semi_colon_space: STRING = "; "
 
 note
-	copyright: "2011-2012, Jocelyn Fiat, Eiffel Software and others"
+	copyright: "2011-2013, Jocelyn Fiat, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software
