@@ -203,21 +203,34 @@ feature -- Header change: general
 
 	add_header_key_value (k,v: READABLE_STRING_8)
 			-- Add header `k:v', or replace existing header of same header name/key
+		local
+			s: STRING_8
 		do
-			add_header (k + colon_space + v)
+			create s.make (k.count + 2 + v.count)
+			s.append (k)
+			s.append (colon_space)
+			s.append (v)
+			add_header (s)
 		end
 
 	put_header_key_value (k,v: READABLE_STRING_8)
 			-- Add header `k:v', or replace existing header of same header name/key
+		local
+			s: STRING_8
 		do
-			put_header (k + colon_space + v)
+			create s.make (k.count + 2 + v.count)
+			s.append (k)
+			s.append (colon_space)
+			s.append (v)
+			put_header (s)
 		end
 
-	put_header_key_values (k: READABLE_STRING_8; a_values: ITERABLE [READABLE_STRING_8]; a_separator: detachable STRING)
+	put_header_key_values (k: READABLE_STRING_8; a_values: ITERABLE [READABLE_STRING_8]; a_separator: detachable READABLE_STRING_8)
 			-- Add header `k: a_values', or replace existing header of same header values/key.
 			-- Use `comma_space' as default separator if `a_separator' is Void or empty.
 		local
-			s, l_separator: STRING_8
+			s: STRING_8
+			l_separator: READABLE_STRING_8
 		do
 			if a_separator /= Void and then not a_separator.is_empty then
 				l_separator := a_separator
@@ -745,9 +758,20 @@ feature {NONE} -- Constants
 	str_binary: STRING = "binary"
 	str_chunked: STRING = "chunked"
 
-	colon_space: STRING = ": "
-	semi_colon_space: STRING = "; "
-	comma_space: STRING = ", "
+	colon_space: IMMUTABLE_STRING_8
+		once
+			create Result.make_from_string (": ")
+		end
+
+	semi_colon_space: IMMUTABLE_STRING_8
+		once
+			create Result.make_from_string ("; ")
+		end
+
+	comma_space: IMMUTABLE_STRING_8
+		once
+			create Result.make_from_string (", ")
+		end
 
 note
 	copyright: "2011-2013, Jocelyn Fiat, Eiffel Software and others"
