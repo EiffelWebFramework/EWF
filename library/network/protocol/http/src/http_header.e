@@ -213,6 +213,31 @@ feature -- Header change: general
 			put_header (k + colon_space + v)
 		end
 
+	put_header_key_values (k: READABLE_STRING_8; a_values: ITERABLE [READABLE_STRING_8]; a_separator: detachable STRING)
+			-- Add header `k: a_values', or replace existing header of same header values/key.
+			-- Use `comma_space' as default separator if `a_separator' is Void or empty.
+		local
+			s, l_separator: STRING_8
+		do
+			if a_separator /= Void and then not a_separator.is_empty then
+				l_separator := a_separator
+			else
+				l_separator := comma_space
+			end
+			create s.make_empty
+			across
+				a_values as c
+			loop
+				if not s.is_empty then
+					s.append_string (l_separator)
+				end
+				s.append (c.item)
+			end
+			if not s.is_empty then
+				put_header_key_value (k, s)
+			end
+		end
+
 feature -- Content related header
 
 	put_content_type (t: READABLE_STRING_8)
@@ -401,22 +426,8 @@ feature -- Method related
 
 	put_allow (a_methods: ITERABLE [READABLE_STRING_8])
 			-- If `a_methods' is not empty, put `Allow' header with list `a_methods' of methods
-		local
-			s: STRING_8
 		do
-			create s.make_empty
-			across
-				a_methods as c
-			loop
-				if not s.is_empty then
-					s.append_character (',')
-				end
-				s.append_character (' ')
-				s.append (c.item)
-			end
-			if not s.is_empty then
-				put_header_key_value ({HTTP_HEADER_NAMES}.header_allow, s)
-			end
+			put_header_key_values ({HTTP_HEADER_NAMES}.header_allow, a_methods, Void)
 		end
 
 feature -- Date
@@ -736,9 +747,10 @@ feature {NONE} -- Constants
 
 	colon_space: STRING = ": "
 	semi_colon_space: STRING = "; "
+	comma_space: STRING = ", "
 
 note
-	copyright: "2011-2012, Jocelyn Fiat, Eiffel Software and others"
+	copyright: "2011-2013, Jocelyn Fiat, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software
