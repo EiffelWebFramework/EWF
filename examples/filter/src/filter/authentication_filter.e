@@ -8,9 +8,9 @@ class
 	AUTHENTICATION_FILTER
 
 inherit
-	WSF_FILTER_CONTEXT_HANDLER [FILTER_HANDLER_CONTEXT]
+	WSF_FILTER
 
-	WSF_URI_TEMPLATE_CONTEXT_HANDLER [FILTER_HANDLER_CONTEXT]
+	WSF_URI_TEMPLATE_HANDLER
 
 	SHARED_DATABASE_API
 
@@ -18,7 +18,7 @@ inherit
 
 feature -- Basic operations
 
-	execute (ctx: FILTER_HANDLER_CONTEXT; req: WSF_REQUEST; res: WSF_RESPONSE)
+	execute (req: WSF_REQUEST; res: WSF_RESPONSE)
 			-- Execute the filter
 		local
 			l_auth: HTTP_AUTHORIZATION
@@ -31,8 +31,8 @@ feature -- Basic operations
 				attached l_auth.password as l_auth_password and then
 				l_auth_password.same_string (l_user.password)
 			then
-				ctx.set_user (l_user)
-				execute_next (ctx, req, res)
+				req.set_execution_variable ("user", l_user)
+				execute_next (req, res)
 			else
 				handle_unauthorized ("Unauthorized", req, res)
 			end
@@ -56,6 +56,6 @@ feature {NONE} -- Implementation
 		end
 
 note
-	copyright: "2011-2012, Olivier Ligot, Jocelyn Fiat and others"
+	copyright: "2011-2013, Olivier Ligot, Jocelyn Fiat and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 end
