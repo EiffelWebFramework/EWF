@@ -111,23 +111,19 @@ feature -- Access
 		end
 
 	headers: ARRAYED_LIST [READABLE_STRING_8]
-			-- Header's lines
+			-- Header's lines.
 
 	string: STRING_8
-			-- String representation of the headers
+			-- String representation of the header entries.
 		local
-			l_headers: like headers
+			n: like count
 		do
-			l_headers := headers
-			if not l_headers.is_empty then
-				create Result.make (l_headers.count * 32)
-				across
-					l_headers as c
-				loop
-					append_line_to (c.item, Result)
-				end
-			else
+			n := count
+			if n = 0 then
 				create Result.make_empty
+			else
+				create Result.make (n * 32)
+				append_string_to (Result)
 			end
 		ensure
 			result_has_ending_cr_lf: Result.count >= 2 implies Result.substring (Result.count - 1, Result.count).same_string ("%R%N")
@@ -135,6 +131,7 @@ feature -- Access
 		end
 
 	to_name_value_iterable: ITERABLE [TUPLE [name: READABLE_STRING_8; value: READABLE_STRING_8]]
+			-- Iterable representation of the header entries.
 		local
 			res: ARRAYED_LIST [TUPLE [READABLE_STRING_8, READABLE_STRING_8]]
 		do
@@ -149,10 +146,27 @@ feature -- Access
 			Result := res
 		end
 
+feature -- Conversion
+
+	append_string_to (a_result: STRING_8)
+			-- Append current as string representation to `a_result'
+		local
+			l_headers: like headers
+		do
+			l_headers := headers
+			if not l_headers.is_empty then
+				across
+					l_headers as c
+				loop
+					append_line_to (c.item, a_result)
+				end
+			end			
+		end
+
 feature -- Access
 
 	new_cursor: INDEXABLE_ITERATION_CURSOR [READABLE_STRING_8]
-			-- Fresh cursor associated with current structure
+			-- Fresh cursor associated with current structure.
 		do
 			Result := headers.new_cursor
 		end
