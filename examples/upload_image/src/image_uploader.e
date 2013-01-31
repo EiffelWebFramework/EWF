@@ -31,7 +31,7 @@ feature {NONE} -- Initialization
 
 				-- To use particular port number (as 9090) with Nino connector
 				-- Uncomment the following line
---			set_service_option ("port", 9090)
+			set_service_option ("port", 9090)
 			make_and_launch
 		end
 
@@ -78,12 +78,6 @@ feature -- Configuration
 		end
 
 feature -- Execution
-
-	execute_default (req: WSF_REQUEST; res: WSF_RESPONSE)
-			-- Default request handler if no other are relevant
-		do
-			res.redirect_now_with_content (req.script_url ("/"), "Redirection to " + req.script_url ("/"), "text/html")
-		end
 
 	execute_not_found (uri: READABLE_STRING_8; req: WSF_REQUEST; res: WSF_RESPONSE)
 			-- `uri' is not found, redirect to default page
