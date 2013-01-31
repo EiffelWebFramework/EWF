@@ -551,6 +551,7 @@ feature {NONE} -- Implementation
 							err := True
 						end
 						if not err then
+							i := i + 1
 							from until i > n or else not s[i].is_digit loop
 								t.extend (s[i].as_upper)
 								i := i + 1
