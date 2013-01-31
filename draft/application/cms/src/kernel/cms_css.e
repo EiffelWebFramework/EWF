@@ -49,13 +49,13 @@ feature -- Conversion
 					if not s_selectors.is_empty then
 						s_selectors.append_character (',')
 					end
-					s_selectors.append (cs.item)
+					s_selectors.append (cs.item.string)
 				end
 				if not s_selectors.is_empty then
 					a_target.append (s_selectors)
 					a_target.append_character (' ')
 					a_target.append_character ('{')
-					a_target.append (c.item.style)
+					c.item.style.append_text_to (a_target)
 					a_target.append_character ('}')
 					a_target.append_character ('%N')
 				end

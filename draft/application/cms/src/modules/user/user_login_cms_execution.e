@@ -17,9 +17,7 @@ feature -- Status
 
 	valid_credential (u,p: READABLE_STRING_32): BOOLEAN
 		do
-			if attached service.storage.user_by_name (u) as l_user then
-				Result := attached l_user.encoded_password as l_pass and then l_pass.same_string (service.storage.encoded_password (p))
-			end
+			Result := service.storage.is_valid_credential (u, p)
 		end
 
 feature -- Execution

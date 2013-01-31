@@ -59,12 +59,6 @@ feature -- Helper: mapping
 
 feature -- Execution
 
-	execute_default (req: WSF_REQUEST; res: WSF_RESPONSE)
-			-- Default request handler if no other are relevant
-		do
-			res.redirect_now_with_content (req.script_url ("/hello"), "Redirection to " + req.script_url ("/hello"), "text/html")
-		end
-
 	execute_hello (req: WSF_REQUEST; res: WSF_RESPONSE)
 			-- Computed response message.
 		local
