@@ -203,7 +203,7 @@ feature -- Execution
 			end
 			if
 				attached req.meta_string_variable ("HTTP_IF_MODIFIED_SINCE") as s_if_modified_since and then
-				attached rfc1123_http_date_format_to_date (s_if_modified_since) as l_if_modified_since_date and then
+				attached http_date_format_to_date (s_if_modified_since) as l_if_modified_since_date and then
 				attached file_date (f) as f_date and then (f_date >= l_if_modified_since_date)
 			then
 				process_not_modified (f_date, req, res)
@@ -431,7 +431,7 @@ feature {NONE} -- implementation: date time
 			Result := timestamp_to_date (f.date)
 		end
 
-	rfc1123_http_date_format_to_date (s: READABLE_STRING_8): detachable DATE_TIME
+	http_date_format_to_date (s: READABLE_STRING_8): detachable DATE_TIME
 			-- String representation of `dt' using the RFC 1123
 			--       HTTP-date    = rfc1123-date | rfc850-date | asctime-date
 			--       rfc1123-date = wkday "," SP date1 SP time SP "GMT"
