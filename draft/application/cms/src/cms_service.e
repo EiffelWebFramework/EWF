@@ -308,6 +308,15 @@ feature -- Report
 			Result := req.path_info.same_string (front_path)
 		end
 
+feature {CMS_EXECUTION, CMS_MODULE} -- Security report
+
+	user_has_permission (u: detachable CMS_USER; s: detachable READABLE_STRING_8): BOOLEAN
+			-- Anonymous or user `u' has permission for `s' ?
+			--| `s' could be "create page",	
+		do
+			Result := storage.user_has_permission (u, s)
+		end
+
 feature -- Storage
 
 	session_controller (req: WSF_REQUEST): CMS_SESSION_CONTROLER

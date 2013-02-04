@@ -56,6 +56,19 @@ feature -- Access: user
 		deferred
 		end
 
+	user_has_permission (u: detachable CMS_USER; s: detachable READABLE_STRING_8): BOOLEAN
+			-- Anonymous or user `u' has permission for `s' ?
+			--| `s' could be "create page",	
+		do
+			if s = Void then
+				Result := True
+			elseif s.has_substring ("admin") or s.has_substring ("users") then
+				Result := False
+			else
+				Result := True
+			end
+		end
+
 feature -- Change: user
 
 	save_user (a_user: CMS_USER)

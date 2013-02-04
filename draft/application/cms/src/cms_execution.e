@@ -77,7 +77,7 @@ feature -- Access: CMS
 
 feature -- Permission
 
-	has_permissions (lst: detachable ITERABLE [READABLE_STRING_8]): BOOLEAN
+	frozen has_permissions (lst: detachable ITERABLE [READABLE_STRING_8]): BOOLEAN
 		do
 			if lst = Void then
 				Result := True
@@ -86,9 +86,11 @@ feature -- Permission
 			end
 		end
 
-	has_permission (s: detachable READABLE_STRING_8): BOOLEAN
+	frozen has_permission (s: detachable READABLE_STRING_8): BOOLEAN
 			-- Anonymous or Current `user' has permission for `s'
 			--| `s' could be "create page",
+		local
+			u: detachable CMS_USER
 		do
 			if s = Void then
 				Result := True
@@ -96,10 +98,11 @@ feature -- Permission
 				if s.same_string ("authenticated") then
 					Result := authenticated
 				else
-					if s.has_substring ("admin") or s.has_substring ("users") then
-						Result := attached user as u and then u.is_admin
-					else
+					u := user
+					if u /= Void and then u.is_admin then
 						Result := True
+					else
+						Result := service.user_has_permission (u, s)
 					end
 				end
 			end
