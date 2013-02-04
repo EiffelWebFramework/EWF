@@ -114,7 +114,7 @@ feature -- Execution
 				th.set_is_required (True)
 				f.extend (th)
 			else
-				f.extend (create {CMS_FORM_RAW_TEXT}.make ("The associated account has no e-mail address."))
+				f.extend_text ("The associated account has no e-mail address.")
 				err := True
 			end
 

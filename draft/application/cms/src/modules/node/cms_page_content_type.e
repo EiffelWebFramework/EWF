@@ -56,7 +56,7 @@ feature -- Factory
 			ti.set_is_required (True)
 			f.extend (ti)
 
-			f.extend (create {CMS_FORM_RAW_TEXT}.make ("<br/>"))
+			f.extend_text ("<br/>")
 
 			create ta.make ("body")
 			ta.set_rows (10)
@@ -72,8 +72,7 @@ feature -- Factory
 			fset.set_legend ("Body")
 			fset.extend (ta)
 
-
-			fset.extend (create {CMS_FORM_RAW_TEXT}.make ("<br/>"))
+			fset.extend_text ("<br/>")
 
 			create tselect.make ("format")
 			tselect.set_label ("Body's format")

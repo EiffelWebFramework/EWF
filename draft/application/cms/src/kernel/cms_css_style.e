@@ -11,6 +11,9 @@ create
 	make,
 	make_from_string
 
+convert
+	make_from_string ({READABLE_STRING_8, STRING_8})
+
 feature {NONE} -- Initialization
 
 	make

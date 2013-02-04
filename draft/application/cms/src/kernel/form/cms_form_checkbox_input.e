@@ -12,6 +12,7 @@ inherit
 		rename
 			default_value as value
 		redefine
+			set_value,
 			specific_input_attributes_string,
 			child_to_html
 		end
@@ -35,6 +36,8 @@ feature -- Access
 
 	text: detachable READABLE_STRING_32
 
+	raw_text: detachable READABLE_STRING_8
+
 feature -- Status report
 
 	is_same_value (v: READABLE_STRING_32): BOOLEAN
@@ -49,9 +52,33 @@ feature -- Change
 			text := t
 		end
 
+	set_raw_text (t: detachable READABLE_STRING_8)
+		do
+			raw_text := t
+		end
+
 	set_checked (b: like checked)
 		do
 			checked := b
+		end
+
+	set_value (v: detachable WSF_VALUE)
+			-- Set value `v' if applicable to Current
+		do
+			if attached {ITERABLE [WSF_VALUE]} v as lst then
+				across
+					lst as c
+				loop
+					if
+						attached {WSF_STRING} c.item as s and then
+						is_same_value (s.value)
+					then
+						set_checked (True)
+					end
+				end
+			else
+				Precursor (v)
+			end
 		end
 
 feature {NONE} -- Implementation
@@ -60,7 +87,9 @@ feature {NONE} -- Implementation
 			-- Specific child element if any.	
 			--| To redefine if needed
 		do
-			if attached text as t then
+			if attached raw_text as t then
+				Result := t
+			elseif attached text as t then
 				Result := a_theme.html_encoded (t)
 			elseif attached value as v then
 				Result := a_theme.html_encoded (v)

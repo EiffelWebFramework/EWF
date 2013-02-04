@@ -127,7 +127,7 @@ feature -- Execution
 
 			a_type.fill_edit_form (f, a_node)
 
-			f.extend (create {CMS_FORM_RAW_TEXT}.make ("<br/>"))
+			f.extend_text ("<br/>")
 
 			create ts.make ("op")
 			ts.set_default_value ("Save")

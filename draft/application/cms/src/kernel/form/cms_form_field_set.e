@@ -29,6 +29,8 @@ feature -- Access
 
 	legend: detachable READABLE_STRING_8
 
+	is_collapsible: BOOLEAN
+
 feature -- Access
 
 	new_cursor: ITERATION_CURSOR [CMS_FORM_ITEM]
@@ -47,6 +49,30 @@ feature -- Change
 	extend (i: CMS_FORM_ITEM)
 		do
 			items.force (i)
+		end
+
+	extend_text (t: READABLE_STRING_8)
+		do
+			items.force (create {CMS_FORM_RAW_TEXT}.make (t))
+		end
+
+	set_collapsible (b: BOOLEAN)
+		do
+			is_collapsible := b
+			if b then
+				add_css_class ("collapsible")
+			else
+				remove_css_class ("collapsible")
+			end
+		end
+
+	set_collapsed (b: BOOLEAN)
+		do
+			if b then
+				add_css_class ("collapsed")
+			else
+				remove_css_class ("collapsed")
+			end
 		end
 
 feature -- Conversion

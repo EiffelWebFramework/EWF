@@ -38,6 +38,16 @@ feature -- Access
 			Result := items.count
 		end
 
+	is_get_method: BOOLEAN
+		do
+			Result := method.same_string ("GET")
+		end
+
+	is_post_method: BOOLEAN
+		do
+			Result := not is_get_method
+		end
+
 	method: READABLE_STRING_8
 			-- Form's method
 			--| GET or POST

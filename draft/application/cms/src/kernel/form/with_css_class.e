@@ -26,9 +26,22 @@ feature -- Change
 			lst := css_classes
 			if lst = Void then
 				create {ARRAYED_LIST [READABLE_STRING_8]} lst.make (1)
+				lst.compare_objects
 				css_classes := lst
 			end
 			lst.force (a_class)
+		end
+
+	remove_css_class (a_class: READABLE_STRING_8)
+		require
+			is_valid_css_class: is_valid_css_class (a_class)
+		local
+			lst: like css_classes
+		do
+			lst := css_classes
+			if lst /= Void then
+				lst.prune_all (a_class)
+			end
 		end
 
 feature -- Query
@@ -56,7 +69,9 @@ feature -- Conversion
 					loop
 						cl := c.item
 						if not cl.is_empty then
-							if not f then
+							if f then
+								f := False
+							else
 								a_target.append_character (' ')
 							end
 							a_target.append (cl)

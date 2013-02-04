@@ -53,7 +53,11 @@ feature {CMS_SESSION_CONTROLER} -- Access: restricted
 
 	base_url: detachable READABLE_STRING_8
 		do
-			Result := service.server_base_url
+			if attached service.base_url as l_url then
+				Result := request.script_url (l_url)
+			else
+				Result := request.script_url ("")
+			end
 		end
 
 	pending_messages_session_item_name: STRING = "cms.pending_messages"

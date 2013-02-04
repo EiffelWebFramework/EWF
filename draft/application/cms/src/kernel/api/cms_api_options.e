@@ -7,6 +7,9 @@ note
 class
 	CMS_API_OPTIONS
 
+inherit
+	TABLE_ITERABLE [detachable ANY, STRING]
+
 create
 	make,
 	make_from_manifest
@@ -69,6 +72,25 @@ feature -- Access
 		end
 
 	table: HASH_TABLE [detachable ANY, STRING]
+
+feature -- Change
+
+	import (a_opts: CMS_API_OPTIONS)
+		do
+			across
+				a_opts as c
+			loop
+				force (c.item, c.key)
+			end
+		end
+
+feature -- Access
+
+	new_cursor: TABLE_ITERATION_CURSOR [detachable ANY, STRING]
+			-- Fresh cursor associated with current structure
+		do
+			Result := table.new_cursor
+		end
 
 invariant
 

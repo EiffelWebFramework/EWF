@@ -15,7 +15,9 @@ inherit
 	WITH_CSS_ID
 
 create
-	make
+	make,
+	make_with_item,
+	make_with_text
 
 feature {NONE} -- Initialization
 
@@ -23,6 +25,17 @@ feature {NONE} -- Initialization
 			-- Initialize `Current'.
 		do
 			create items.make (0)
+		end
+
+	make_with_text (s: READABLE_STRING_8)
+		do
+			make_with_item (create {CMS_FORM_RAW_TEXT}.make (s))
+		end
+
+	make_with_item (i: CMS_FORM_ITEM)
+		do
+			create items.make (1)
+			extend (i)
 		end
 
 feature -- Access

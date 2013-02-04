@@ -111,7 +111,7 @@ feature -- Access
 				themes_location := s
 			else
 				create dn.make_from_string (root_location)
-				dn.extend ("theme")
+				dn.extend ("themes")
 				themes_location := dn.string
 			end
 		end

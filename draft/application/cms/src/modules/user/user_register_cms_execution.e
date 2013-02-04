@@ -131,21 +131,21 @@ feature -- Execution
 					end)
 			f.extend (ti)
 
-			f.extend (create {CMS_FORM_RAW_TEXT}.make ("<br/>"))
+			f.extend_text ("<br/>")
 
 			create tp.make ("password")
 			tp.set_label ("Password")
 			tp.set_is_required (True)
 			f.extend (tp)
 
-			f.extend (create {CMS_FORM_RAW_TEXT}.make ("<br/>"))
+			f.extend_text ("<br/>")
 
 			create ti.make ("email")
 			ti.set_label ("Valid email address")
 			ti.set_is_required (True)
 			f.extend (ti)
 
-			f.extend (create {CMS_FORM_RAW_TEXT}.make ("<br/>"))
+			f.extend_text ("<br/>")
 
 			create ta.make ("note")
 			ta.set_label ("Additional note about you")
@@ -153,7 +153,7 @@ feature -- Execution
 			ta.set_is_required (False)
 			f.extend (ta)
 
-			f.extend (create {CMS_FORM_RAW_TEXT}.make ("<br/>"))
+			f.extend_text ("<br/>")
 
 			create ts.make ("Register")
 			ts.set_default_value ("Register")
