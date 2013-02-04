@@ -380,7 +380,11 @@ feature -- Access: global variable
 	string_array_item (a_name: READABLE_STRING_GENERAL): detachable ARRAY [READABLE_STRING_32]
 			-- Array of string values for path parameter `a_name' if relevant.
 		do
-			Result := string_array_item_for (a_name, agent item)
+			if attached {WSF_TABLE} item (a_name) as tb then
+				Result := tb.as_array_of_string
+			else
+				Result := string_array_item_for (a_name, agent item)
+			end
 		end
 
 	string_array_item_for (a_name: READABLE_STRING_GENERAL; a_item_fct: FUNCTION [ANY, TUPLE [READABLE_STRING_GENERAL], detachable WSF_VALUE]): detachable ARRAY [READABLE_STRING_32]
@@ -1796,7 +1800,7 @@ invariant
 	wgi_request.content_type /= Void implies content_type /= Void
 
 note
-	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
+	copyright: "2011-2013, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software
