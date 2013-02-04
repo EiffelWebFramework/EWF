@@ -11,7 +11,7 @@ deferred class
 
 feature -- Initialization
 
-	initialize_cms (a_cfg: detachable CMS_CONFIGURATION)
+	initialize_cms (a_base_url: like base_url; a_cfg: detachable CMS_CONFIGURATION)
 		local
 			cfg: detachable CMS_CONFIGURATION
 		do
@@ -20,7 +20,13 @@ feature -- Initialization
 				create cfg.make
 			end
 
-			site_url := "" -- Fixme
+			if a_base_url /= Void and then not a_base_url.is_empty then
+				base_url := a_base_url
+			else
+				base_url := Void
+			end
+
+			site_url := cfg.site_url ("")
 			site_name := cfg.site_name ("EWF::CMS")
 			site_email := cfg.site_email ("webmaster")
 			site_dir := cfg.root_location
@@ -28,6 +34,8 @@ feature -- Initialization
 			files_location := cfg.files_location
 			themes_location := cfg.themes_location
 			theme_name := cfg.theme_name ("default")
+
+			set_script_url (cfg.site_script_url (Void)) -- Temporary value			
 
 			compute_theme_resource_location
 
@@ -266,30 +274,7 @@ feature -- Router
 
 	theme_name: READABLE_STRING_32
 
-	front_path: STRING
-		do
-			if attached base_url as l_base_url then
-				Result := l_base_url + "/"
-			else
-				Result := "/"
-			end
-		end
-
 	router: WSF_ROUTER
-
-	base_url: detachable READABLE_STRING_8
-			-- Base url (related to the script path).
-		deferred
-		ensure
-			valid_base_url: (Result /= Void and then Result.is_empty) implies (Result.starts_with ("/") and not Result.ends_with ("/"))
-		end
-
-	server_base_url: detachable READABLE_STRING_8
-			-- Base url (related to absolute path).
-		deferred
-		ensure
-			valid_base_url: (Result /= Void and then Result.is_empty) implies (Result.starts_with ("/") and not Result.ends_with ("/"))
-		end
 
 	map_uri_template (tpl: STRING; proc: PROCEDURE [ANY, TUPLE [req: WSF_REQUEST; res: WSF_RESPONSE]])
 		do
@@ -299,6 +284,67 @@ feature -- Router
 	map_uri (a_uri: STRING; proc: PROCEDURE [ANY, TUPLE [req: WSF_REQUEST; res: WSF_RESPONSE]])
 		do
 			router.map (create {WSF_URI_MAPPING}.make (a_uri, create {CMS_HANDLER}.make (proc)))
+		end
+
+feature -- URL related	
+
+	front_path: STRING
+		do
+			if attached base_url as l_base_url then
+				Result := l_base_url + "/"
+			else
+				Result := "/"
+			end
+		end
+
+	urls_set: BOOLEAN
+
+	initialize_urls (req: WSF_REQUEST)
+		do
+			if not urls_set then
+				urls_set := True
+				if site_url.is_empty then
+					site_url := req.absolute_script_url ("")
+				end
+				set_script_url (req.script_url (""))
+			end
+		end
+
+	base_url: detachable READABLE_STRING_8
+			-- Base url (related to the script path).
+
+--		deferred
+--		ensure
+--			valid_base_url: (Result /= Void and then Result.is_empty) implies (Result.starts_with ("/") and not Result.ends_with ("/"))
+--		end
+
+--	server_base_url: detachable READABLE_STRING_8
+--			-- Base url (related to absolute path).
+--		deferred
+--		ensure
+--			valid_base_url: (Result /= Void and then Result.is_empty) implies (Result.starts_with ("/") and not Result.ends_with ("/"))
+--		end
+
+	script_url: detachable READABLE_STRING_8
+
+	set_script_url (a_url: like script_url)
+		local
+			s: STRING_8
+		do
+			if a_url = Void then
+				script_url := Void
+			elseif not a_url.is_empty then
+				if a_url.ends_with ("/") then
+					create s.make_from_string (a_url)
+				else
+					create s.make (a_url.count + 1)
+					s.append (a_url)
+					s.append_character ('/')
+				end
+				script_url := s
+			end
+		ensure
+			attached script_url as l_url implies l_url.ends_with ("/")
 		end
 
 feature -- Report
@@ -400,9 +446,7 @@ feature -- Core Execution
 			e: CMS_EXECUTION
 --			not_found: WSF_NOT_FOUND_RESPONSE
 		do
-			if site_url.is_empty then
-				site_url := req.absolute_script_url ("")
-			end
+			initialize_urls (req)
 			if attached router.dispatch_and_return_handler (req, res) as p then
 				-- ok
 			else

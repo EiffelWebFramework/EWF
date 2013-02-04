@@ -136,21 +136,32 @@ feature -- Access
 			end
 		end
 
-	site_base_url (dft: like site_base_url): detachable READABLE_STRING_8
+	site_url (dft: like site_url): READABLE_STRING_8
 		do
-			if attached options.item ("site.base_url") as s then
+			if attached options.item ("site.url") as s then
 				Result := s
 			else
 				Result := dft
 			end
 			if Result /= Void then
 				if Result.is_empty then
-					Result := Void
-				elseif not Result.starts_with ("/") then
-					Result := "/" + Result
-					if Result.ends_with ("/") then
-						Result := Result.substring (1, Result.count - 1)
-					end
+				elseif not Result.ends_with ("/") then
+					Result := Result + "/"
+				end
+			end
+		end
+
+	site_script_url (dft: like site_script_url): detachable READABLE_STRING_8
+		do
+			if attached options.item ("site.script_url") as s then
+				Result := s
+			else
+				Result := dft
+			end
+			if Result /= Void then
+				if Result.is_empty then
+				elseif not Result.ends_with ("/") then
+					Result := Result + "/"
 				end
 			end
 		end

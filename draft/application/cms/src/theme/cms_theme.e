@@ -10,17 +10,10 @@ deferred class
 inherit
 	CMS_COMMON_API
 
-
 feature {NONE} -- Access
 
 	service: CMS_SERVICE
 		deferred
-		end
-
-	base_url: detachable READABLE_STRING_8
-			-- Base url if any.
-		do
-			Result := service.server_base_url
 		end
 
 feature -- Access

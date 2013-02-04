@@ -15,7 +15,8 @@ feature {NONE} -- Access
 
 	base_url: detachable READABLE_STRING_8
 			-- Base url if any.
-		deferred
+		do
+			Result := service.script_url
 		end
 
 	based_path (p: STRING): STRING
@@ -23,7 +24,14 @@ feature {NONE} -- Access
 		do
 			if attached base_url as l_base_url then
 				create Result.make_from_string (l_base_url)
-				Result.append (p)
+				if p.is_empty then
+				else
+					if p[1] = '/' then
+						Result.append (p.substring (2, p.count))
+					else
+						Result.append (p)
+					end
+				end
 			else
 				Result := p
 			end

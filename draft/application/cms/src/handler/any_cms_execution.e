@@ -41,9 +41,9 @@ feature -- Execution
 			elseif attached text as t then
 				create b.make_empty
 				s := request.path_info
-				if attached service.base_url as l_base_url then
-					if s.starts_with (l_base_url) then
-						s.remove_head (l_base_url.count)
+				if attached service.script_url as l_script_url then
+					if s.starts_with (l_script_url) then
+						s.remove_head (l_script_url.count)
 						if s.starts_with ("/") then
 							s.remove_head (1)
 						end

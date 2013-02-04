@@ -55,52 +55,6 @@ feature -- Access
 			Result := tpl
 		end
 
---	css: STRING
---		do
---			Result := "[
---					body { margin: 0; }
---					div#header { background-color: #00a; color: #fff; border: solid 1px #00a; padding: 10px;}
---					div#header img#logo { float: left; margin: 3px; }
---					div#header div#title {font-size: 180%; font-weight: bold; }
---					ul.horizontal {
---						list-style-type: none;
---					}
---					ul.horizontal li {
---						display: inline;
---						padding: 5px;
---					}
---					div#first-menu { padding: 5px; color: #ccf; background-color: #006; }
---					div#first-menu a { color: #ccf; }
---					div#second-menu { color: #99f;  background-color: #333; }
---					div#second-menu a { color: #99f; }					
---					
---					div#left_sidebar {
---						width: 150px;
---						border: solid 1px #009;
---						margin: 5px;
---						padding: 5px;
---						width: 150px;
---						display: inline;
---						float: left;
---						position: relative;
---					}
---					div#main-wrapper {
---						clear: both;
---						display: block;
---						height: 0;
---					}
---					div#main { margin: 0; padding: 10px; clear: both; height:0; display: block; }
---					div#content { padding: 10px; border: solid 1px #00f;
---						width: 700px;
---						display: inline;
---						float: left;
---						position: relative;
---					}
---					div#footer { margin: 10px 0 10px 0; clear: both; display: block; text-align: center; padding: 10px; border-top: solid 1px #00f; color: #fff; background-color: #333;}
---					div#footer a { color: #ff0; }
---				]"
---		end
-
 feature -- Conversion
 
 	prepare (page: CMS_HTML_PAGE)
