@@ -36,8 +36,10 @@ feature -- Execution
 			b: STRING_8
 			s: STRING
 		do
-			create b.make_empty
-			if attached text as t then
+			if attached main_content as m then
+				-- ok
+			elseif attached text as t then
+				create b.make_empty
 				s := request.path_info
 				if attached service.base_url as l_base_url then
 					if s.starts_with (l_base_url) then
@@ -49,10 +51,11 @@ feature -- Execution
 				end
 				set_title (s)
 				b.append (t)
+				set_main_content (b)
 			else
-				set_title ("Page Not Found")
+				set_title ("...")
+				set_main_content ("")
 			end
-			set_main_content (b)
 		end
 
 end
