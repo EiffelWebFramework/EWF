@@ -138,7 +138,9 @@ feature -- Conversion
 			end
 
 			Result.append ("</div>")
-			Result.append ("curr=" + curr.out +" step=" + step.out + " nb=" + nb.out)
+			debug
+				Result.append ("curr=" + curr.out +" step=" + step.out + " nb=" + nb.out)
+			end
 		end
 
 end

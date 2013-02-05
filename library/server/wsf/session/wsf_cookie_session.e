@@ -151,7 +151,9 @@ feature {NONE} -- Storage
 				build
 			end
 		rescue
-			io.error.put_string ("Error while loading Cookie session...!%N")
+			debug ("wsf")
+				io.error.put_string ("Error while loading Cookie session...!%N")
+			end
 		end
 
 	build
