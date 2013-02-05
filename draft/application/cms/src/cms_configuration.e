@@ -47,6 +47,27 @@ feature -- Access
 
 	options: HASH_TABLE [STRING, STRING]
 
+feature -- Conversion
+
+	append_to_string (s: STRING)
+		do
+			s.append ("Options:%N")
+			across
+				options as c
+			loop
+				s.append (c.key)
+				s.append_character ('=')
+				s.append (c.key)
+				s.append_character ('%N')
+			end
+
+			s.append ("Specific:%N")
+			s.append ("root_location=" + root_location + "%N")
+			s.append ("var_location=" + var_location + "%N")
+			s.append ("files_location=" + files_location + "%N")
+			s.append ("themes_location=" + themes_location + "%N")
+		end
+
 feature -- Element change
 
 	set_option (a_name: READABLE_STRING_GENERAL; a_value: STRING)
@@ -58,63 +79,11 @@ feature -- Access
 
 	var_location: READABLE_STRING_8
 
-	get_var_location
-		local
-			res: STRING_32
-		do
-			if attached options.item ("var-dir") as s then
-				res := s
-			else
-				res := execution_environment.current_working_directory
-			end
-			if res.ends_with ("/") then
-				res.remove_tail (1)
-			end
-			var_location := res
-		end
-
 	root_location: READABLE_STRING_8
-
-	get_root_location
-		local
-			res: STRING_32
-		do
-			if attached options.item ("root-dir") as s then
-				res := s
-			else
-				res := execution_environment.current_working_directory
-			end
-			if res.ends_with ("/") then
-				res.remove_tail (1)
-			end
-			root_location := res
-		end
 
 	files_location: STRING
 
-	get_files_location
-		do
-			if attached options.item ("files-dir") as s then
-				files_location := s
-			else
-				files_location := "files"
-			end
-		end
-
 	themes_location: STRING
-
-	get_themes_location
-		local
-			dn: DIRECTORY_NAME
-		do
-			if attached options.item ("themes-dir") as s then
-				themes_location := s
-			else
-				create dn.make_from_string (root_location)
-				dn.extend ("themes")
-				themes_location := dn.string
-			end
-		end
 
 	theme_name (dft: detachable like theme_name): READABLE_STRING_8
 		do
@@ -172,6 +141,61 @@ feature -- Access
 				Result := s
 			else
 				Result := dft
+			end
+		end
+
+feature -- Change
+
+	get_var_location
+		local
+			res: STRING_32
+		do
+			if attached options.item ("var-dir") as s then
+				res := s
+			else
+				res := execution_environment.current_working_directory
+			end
+			if res.ends_with ("/") then
+				res.remove_tail (1)
+			end
+			var_location := res
+		end
+
+
+	get_root_location
+		local
+			res: STRING_32
+		do
+			if attached options.item ("root-dir") as s then
+				res := s
+			else
+				res := execution_environment.current_working_directory
+			end
+			if res.ends_with ("/") then
+				res.remove_tail (1)
+			end
+			root_location := res
+		end
+
+	get_files_location
+		do
+			if attached options.item ("files-dir") as s then
+				files_location := s
+			else
+				files_location := "files"
+			end
+		end
+
+	get_themes_location
+		local
+			dn: DIRECTORY_NAME
+		do
+			if attached options.item ("themes-dir") as s then
+				themes_location := s
+			else
+				create dn.make_from_string (root_location)
+				dn.extend ("themes")
+				themes_location := dn.string
 			end
 		end
 
