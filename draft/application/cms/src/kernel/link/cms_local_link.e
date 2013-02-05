@@ -55,8 +55,15 @@ feature -- Element change
 		end
 
 	get_is_active (req: WSF_REQUEST)
+		local
+			qs: STRING
 		do
-			is_active := req.path_info.same_string (location)
+			create qs.make_from_string (req.path_info)
+			if attached req.query_string as l_query_string and then not l_query_string.is_empty then
+				qs.append_character ('?')
+				qs.append (l_query_string)
+			end
+			is_active := qs.same_string (location)
 		end
 
 	set_permission_arguments (args: ITERABLE [STRING])
