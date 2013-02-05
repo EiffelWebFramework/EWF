@@ -94,45 +94,57 @@ feature -- Items
 
 	has_field (a_name: READABLE_STRING_GENERAL): BOOLEAN
 		do
-			Result := across items as i some attached {CMS_FORM_FIELD} i.item as l_field and then l_field.name.same_string_general (a_name) end
+			Result := container_has_field (Current, a_name)
 		end
 
---	items_by_name (a_name: READABLE_STRING_GENERAL): detachable LIST [CMS_FORM_ITEM]
---		local
---			res: detachable ARRAYED_LIST [CMS_FORM_ITEM]
---		do
---			across
---				items as c
---			loop
---				if c.item.name.same_string_general (a_name) then
---					if res = Void then
---						create res.make (1)
---					end
---					res.force (c.item)
---				end
---			end
---			Result := res
---		end
-
 	fields_by_name (a_name: READABLE_STRING_GENERAL): detachable LIST [CMS_FORM_FIELD]
+		do
+			Result := fields_by_name_from (Current, a_name)
+		end
+
+feature {NONE} -- Implementation: Items			
+
+	container_has_field (a_container: ITERABLE [CMS_FORM_ITEM]; a_name: READABLE_STRING_GENERAL): BOOLEAN
+		do
+			across
+				a_container as i
+			until
+				Result
+			loop
+				if attached {CMS_FORM_FIELD} i.item as l_field and then l_field.name.same_string_general (a_name) then
+					Result := True
+				elseif attached {ITERABLE [CMS_FORM_ITEM]} i.item as l_cont then
+					Result := container_has_field (l_cont, a_name)
+				end
+			end
+		end
+
+	fields_by_name_from (a_container: ITERABLE [CMS_FORM_ITEM]; a_name: READABLE_STRING_GENERAL): detachable ARRAYED_LIST [CMS_FORM_FIELD]
 		local
 			res: detachable ARRAYED_LIST [CMS_FORM_FIELD]
 		do
 			across
-				items as c
+				a_container as i
 			loop
-				if
-					attached {CMS_FORM_FIELD} c.item as l_field and then
-					l_field.name.same_string_general (a_name)
-				then
+				if attached {CMS_FORM_FIELD} i.item as l_field and then l_field.name.same_string_general (a_name) then
 					if res = Void then
 						create res.make (1)
 					end
 					res.force (l_field)
+				elseif attached {ITERABLE [CMS_FORM_ITEM]} i.item as l_cont then
+					if attached fields_by_name_from (l_cont, a_name) as lst then
+						if res = Void then
+							res := lst
+						else
+							res.append (lst)
+						end
+					end
 				end
 			end
 			Result := res
 		end
+
+feature -- Change		
 
 	extend (i: CMS_FORM_ITEM)
 		local
