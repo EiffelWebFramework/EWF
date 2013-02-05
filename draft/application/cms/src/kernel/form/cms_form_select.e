@@ -61,6 +61,33 @@ feature -- Element change
 			end
 		end
 
+	select_value_by_text (a_text: detachable READABLE_STRING_GENERAL)
+		local
+			opt: CMS_FORM_SELECT_OPTION
+			l_found: BOOLEAN
+			v: READABLE_STRING_8
+		do
+			if a_text /= Void then
+				v := html_encoded_string (a_text.to_string_32)
+				across
+					options as o
+				loop
+					if o.item.is_same_text (v) then
+						l_found := True
+						o.item.set_is_selected (True)
+					else
+						o.item.set_is_selected (False)
+					end
+				end
+			else
+				across
+					options as o
+				loop
+					o.item.set_is_selected (False)
+				end
+			end
+		end
+
 	set_value (v: detachable WSF_VALUE)
 		do
 			if attached {WSF_STRING} v as s then

@@ -35,6 +35,11 @@ feature -- Status
 			Result := value.same_string (v)
 		end
 
+	is_same_text (v: like text): BOOLEAN
+		do
+			Result := text.same_string (v)
+		end
+
 feature -- Access
 
 	value: READABLE_STRING_32
