@@ -61,80 +61,87 @@ feature -- Conversion
 			Result.append ("<div")
 			Result.append_character ('>')
 			nb := ((upper - lower) // step).to_integer_32 + 1
-			if attached active_range as rg then
-				if rg.upper_index = 0 then
-					-- all
-				else
-					curr := ((rg.lower_index - lower) // step).to_integer_32
-					if step * curr.to_natural_64 < rg.lower_index then
-						curr := curr + 1
+			if nb > 1 then
+				if attached active_range as rg then
+					if rg.upper_index = 0 then
+						-- all
+					else
+						curr := ((rg.lower_index - lower) // step).to_integer_32
+						if step * curr.to_natural_64 < rg.lower_index then
+							curr := curr + 1
+						end
 					end
 				end
-			end
 
-			l_step := step.to_integer_32
-			create tb.make (2)
-			tb.force (1, "lower")
-			tb.force (step, "upper")
-			if curr > 1 then
-				if curr > 2 then
-					tb.force (1, "lower")
-					tb.force (l_step, "upper")
+				l_step := step.to_integer_32
+				create tb.make (2)
+				tb.force (1, "lower")
+				tb.force (step, "upper")
+				if curr > 1 then
+					if curr > 2 then
+						tb.force (1, "lower")
+						tb.force (l_step, "upper")
 
-					Result.append_character (' ')
-					Result.append (a_theme.link ("<<", template.expanded_string (tb), Void))
-					Result.append_character (' ')
-				end
+						Result.append_character (' ')
+						Result.append (a_theme.link ("<<", template.expanded_string (tb), Void))
+						Result.append_character (' ')
+					end
 
-				tb.force ((curr - 1) * l_step + 1, "lower")
-				tb.force ((curr    ) * l_step    , "upper")
-
-				Result.append_character (' ')
-				Result.append (a_theme.link ("<", template.expanded_string (tb), Void))
-				Result.append_character (' ')
-			end
-
-			from
-				i := (curr - 1).max (1)
-				n := 5
-			until
-				n = 0 or i > nb
-			loop
-				Result.append_character (' ')
-
-				tb.force ((i - 1) * l_step + 1, "lower")
-				tb.force ((i    ) * l_step    , "upper")
-
-				if i = curr then
-					Result.append ("<strong>")
-				end
-				Result.append (a_theme.link (i.out, template.expanded_string (tb), Void))
-				if i = curr then
-					Result.append ("</strong>")
-				end
-
-				Result.append_character (' ')
-
-				i := i + 1
-				n := n - 1
-			end
-
-			if curr < nb then
-				Result.append_character (' ')
-				tb.force ((curr    ) * l_step + 1, "lower")
-				tb.force ((curr + 1) * l_step    , "upper")
-
-				Result.append (a_theme.link (">", template.expanded_string (tb), Void))
-				Result.append_character (' ')
-
-				if curr + 1 < nb then
-					tb.force ((nb - 1) * l_step + 1, "lower")
-					tb.force ( upper , "upper")
+					tb.force ((curr - 1) * l_step + 1, "lower")
+					tb.force ((curr    ) * l_step    , "upper")
 
 					Result.append_character (' ')
-					Result.append (a_theme.link (">>", template.expanded_string (tb), Void))
+					Result.append (a_theme.link ("<", template.expanded_string (tb), Void))
 					Result.append_character (' ')
 				end
+
+				from
+					i := (curr - 1).max (1)
+					n := 5
+				until
+					n = 0 or i > nb
+				loop
+					Result.append_character (' ')
+
+					tb.force ((i - 1) * l_step + 1, "lower")
+					tb.force ((i    ) * l_step    , "upper")
+
+					if i = curr then
+						Result.append ("<strong>")
+					end
+					Result.append (a_theme.link (i.out, template.expanded_string (tb), Void))
+					if i = curr then
+						Result.append ("</strong>")
+					end
+
+					Result.append_character (' ')
+
+					i := i + 1
+					n := n - 1
+				end
+
+				if curr < nb then
+					Result.append_character (' ')
+					tb.force ((curr    ) * l_step + 1, "lower")
+					tb.force ((curr + 1) * l_step    , "upper")
+
+					Result.append (a_theme.link (">", template.expanded_string (tb), Void))
+					Result.append_character (' ')
+
+					if curr + 1 < nb then
+						tb.force ((nb - 1) * l_step + 1, "lower")
+						tb.force ( upper , "upper")
+
+						Result.append_character (' ')
+						Result.append (a_theme.link (">>", template.expanded_string (tb), Void))
+						Result.append_character (' ')
+					end
+				end
+				Result.append_character (' ')
+				tb.force (1, "lower")
+				tb.force (upper , "upper")
+				Result.append (a_theme.link ("all", template.expanded_string (tb), Void))
+				Result.append_character (' ')
 			end
 
 			Result.append ("</div>")
