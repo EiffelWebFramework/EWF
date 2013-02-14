@@ -27,7 +27,7 @@ feature -- Access
 
 	theme: DEFAULT_CMS_THEME
 
-	prepare  (page: CMS_HTML_PAGE)
+	prepare (page: CMS_HTML_PAGE)
 		do
 			variables.make (10)
 
@@ -69,9 +69,9 @@ feature {NONE} -- Implementation
 						</div>
 						<div id="main-wrapper">
 							<div id="main">
-								<div id="first_sidebar" class="sidebar">$first_sidebar</div>
-								<div id="content">$content</div>
-								<div id="second_sidebar" class="sidebar">$second_sidebar</div>
+								<div id="first_sidebar" class="sidebar $first_sidebar_css_class">$first_sidebar</div>
+								<div id="content" class="$content_css_class">$content</div>
+								<div id="second_sidebar" class="sidebar $second_sidebar_css_class">$second_sidebar</div>
 							</div>
 						</div>
 						<div id="footer">$footer</div>
