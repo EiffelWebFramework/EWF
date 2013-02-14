@@ -34,7 +34,7 @@ feature -- Execution
 				b.append ("You are already " + link ("signed in", "/user", Void) + ", please " + link ("signout", "/user/logout", Void) + " before trying to " + link ("register a new account", "/account/register", Void) + ".")
 				set_redirection (url ("/user", Void))
 			else
-				f := registration_form (request.path_info, "reg")
+				f := registration_form (url (request.path_info, Void), "reg")
 
 				if request.is_post_request_method then
 					create fd.make (request, f)

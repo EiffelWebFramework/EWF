@@ -32,7 +32,7 @@ feature -- Execution
 				initialize_primary_tabs (u)
 				if u /= Void then
 					if attached u.email as l_email then
-						f := new_password_form (request.path_info, "new-password")
+						f := new_password_form (url (request.path_info, Void), "new-password")
 						b.append ("Password reset instructions will be mailed to <em>" + l_email + "</em>. You must " +  link ("log out", "/user/logout", Void)  + " to use the password reset link in the e-mail.")
 						b.append (f.to_html (theme))
 					else
