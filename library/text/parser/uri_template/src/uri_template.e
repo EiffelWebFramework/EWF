@@ -8,6 +8,7 @@ note
 	status: "See notice at end of class."
 	date: "$Date$"
 	revision: "$Revision$"
+	EIS: "name=URI Template RFC6570", "protocol=URI", "src=http://tools.ietf.org/html/rfc6570"
 
 class
 	URI_TEMPLATE
