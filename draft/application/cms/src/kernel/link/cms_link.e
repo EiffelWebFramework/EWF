@@ -32,6 +32,10 @@ feature -- status report
 		deferred
 		end
 
+	has_children: BOOLEAN
+		deferred
+		end
+
 feature -- Query
 
 	parent: detachable CMS_LINK
