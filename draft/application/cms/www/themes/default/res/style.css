@@ -70,8 +70,18 @@ div#main-wrapper {
 }
 div#main { margin: 0; padding: 0; clear: both; height:0; display: block;  }
 
+div#content { padding: 5px 3px 5px 20px; 
+	margin-top: 10px;
+	min-width: 80%;
+	display: inline;
+	float: left;
+	position: relative;
+	background-color: #ffffff;
+	padding-bottom: 30px;
+}
+
 div#first_sidebar {
-	width: 20%;
+	width: 200px;
 	margin: 5px; 
 	padding: 5px;
 	display: inline;
@@ -79,12 +89,13 @@ div#first_sidebar {
 	position: relative;
 }
 div#second_sidebar {
-	width: 20%;
+	width: 100px;
 	margin: 5px; 
 	padding: 5px;
 	display: inline;
-	float: left;
+	float: right;
 	position: relative;
+	background-color: #eee;
 }
 div.sidebar div.block {
 	margin-bottom: 5px;
@@ -100,16 +111,6 @@ div.sidebar div.block div.title {
 }
 div.sidebar div.block div.inside {
 	margin: 3px;
-}
-
-div#content { padding: 5px 3px 5px 20px; 
-	margin-top: 10px;
-	width: 50%;
-	display: inline;
-	float: left;
-	position: relative;
-	background-color: #ffffff;
-	padding-bottom: 30px;
 }
 div#footer { margin: 10px 0 10px 0; clear: both; display: block; text-align: center; padding: 10px; border-top: solid 1px #00f; color: #fff; background-color: #333;}
 div#footer a { color: #ff0; }
@@ -180,3 +181,61 @@ div#message li.warning {
 	color: #aa2200;
 	background-color: #ffcc99;
 }
+
+div.columns {
+	margin-top: 10px;
+	display: inline-block;
+	clear: both;
+}
+
+div.columns>* {
+	padding-left: 10px;
+	padding-top: 5px;
+	border-top: dotted 1px #999;
+	border-left: dotted 1px #999;
+	margin-left: 1px;
+	margin-right: 10px;
+	float: left;
+}
+
+/* Link */
+
+a {
+	text-decoration: none;
+}
+a:hover {
+	text-decoration: underline;
+}
+
+div.menu ul.vertical {
+	margin: 0;
+	padding-left: 10px;
+	list-style-type: none;
+}
+
+div.menu ul.vertical ul {
+	border-left: solid 3px #eee;
+	list-style-type: none;
+	margin: 0;
+	padding-left: 5px;
+	margin-left: 5px;
+	margin-bottom: 5px;
+}
+
+/* Fieldset and collapsible */
+
+fieldset.collapsible legend a {
+	padding-left: 15px;
+	background: url(menu-expanded.png) 5px 75% no-repeat;
+}
+
+fieldset.collapsed legend a {
+	padding-left: 15px;
+	background: url(menu-collapsed.png) 5px 50% no-repeat;
+}
+
+fieldset.collapsed {
+	border: none;
+	border-top: dotted 1px #000;
+}
+

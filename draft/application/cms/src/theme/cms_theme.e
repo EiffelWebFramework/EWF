@@ -35,7 +35,7 @@ feature -- Conversion
 
 	menu_html (a_menu: CMS_MENU; is_horizontal: BOOLEAN): STRING_8
 		do
-			create Result.make_from_string ("<div id=%""+ a_menu.name +"%">")
+			create Result.make_from_string ("<div id=%""+ a_menu.name +"%" class=%"menu%">")
 			if is_horizontal then
 				Result.append ("<ul class=%"horizontal%" >%N")
 			else
@@ -44,12 +44,7 @@ feature -- Conversion
 			across
 				a_menu as c
 			loop
-				if c.item.is_active then
-					Result.append ("<li class=%"active%">")
-				else
-					Result.append ("<li>")
-				end
-				Result.append ("<a href=%"" + url (c.item.location, c.item.options) + "%">" + html_encoded (c.item.title) + "</a></li>")
+				append_cms_link_to (c.item, Result)
 			end
 			Result.append ("</ul>%N")
 			Result.append ("</div>")
@@ -58,5 +53,43 @@ feature -- Conversion
 	page_html (page: CMS_HTML_PAGE): STRING_8
 		deferred
 		end
+
+feature {NONE} -- Implementation
+
+	append_cms_link_to (lnk: CMS_LINK; s: STRING_8)
+		local
+			cl: STRING
+		do
+			create cl.make_empty
+			if lnk.is_active then
+				cl.append ("active ")
+			end
+			if lnk.is_expandable then
+				cl.append ("expandable ")
+			end
+			if lnk.is_expanded then
+				cl.append ("expanded ")
+			end
+			if cl.is_empty then
+				s.append ("<li>")
+			else
+				s.append ("<li class=%""+ cl + "%">")
+			end
+			s.append ("<a href=%"" + url (lnk.location, lnk.options) + "%">" + html_encoded (lnk.title) + "</a>")
+			if
+				lnk.is_expanded and then
+				attached lnk.children as l_children
+			then
+				s.append ("<ul>%N")
+				across
+					l_children as c
+				loop
+					append_cms_link_to (c.item, s)
+				end
+				s.append ("</ul>")
+			end
+			s.append ("</li>")
+		end
+
 
 end
