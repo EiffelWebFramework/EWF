@@ -25,7 +25,18 @@ feature {NONE} -- Initialization
 			make
 			configuration_location := a_filename
 			import (a_filename)
+			resolve
 			analyze
+		end
+
+	resolve
+			-- Resolve options related to variable ${..}
+		do
+			across
+				options as c
+			loop
+				options.replace (resolved_string (c.item), c.key)
+			end
 		end
 
 	analyze
@@ -42,7 +53,7 @@ feature -- Access
 
 	option (a_name: READABLE_STRING_GENERAL): detachable ANY
 		do
-			Result := options.item (a_name.as_string_8)
+			Result := options.item (a_name.as_string_8.as_lower)
 		end
 
 	options: HASH_TABLE [STRING, STRING]
@@ -241,5 +252,44 @@ feature {NONE} -- Environment
 		once
 			create Result
 		end
+
+	resolved_string	(s: READABLE_STRING_8): STRING
+			-- Resolved `s' using `options' or else environment variables.
+		local
+			i,n,b,e: INTEGER
+			k: detachable READABLE_STRING_8
+		do
+			from
+				i := 1
+				n := s.count
+				create Result.make (s.count)
+			until
+				i > n
+			loop
+				if i + 1 < n and then s[i] = '$' and then s[i+1] = '{' then
+					b := i + 2
+					e := s.index_of ('}', b) - 1
+					if e > 0 then
+						k := s.substring (b, e)
+						if attached option (k) as v then
+							Result.append (v.out)
+							i := e + 1
+						elseif attached execution_environment.get (k) as v then
+							Result.append (v)
+							i := e + 1
+						else
+							Result.extend (s[i])
+						end
+					else
+						Result.extend (s[i])
+					end
+				else
+					Result.extend (s[i])
+				end
+				i := i + 1
+			end
+		end
+
+
 
 end
