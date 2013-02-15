@@ -63,7 +63,6 @@ feature -- Element change
 
 	select_value_by_text (a_text: detachable READABLE_STRING_GENERAL)
 		local
-			opt: CMS_FORM_SELECT_OPTION
 			l_found: BOOLEAN
 			v: READABLE_STRING_8
 		do
