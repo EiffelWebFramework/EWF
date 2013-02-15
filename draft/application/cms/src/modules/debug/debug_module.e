@@ -86,7 +86,7 @@ feature -- Handler
 
 				s.append ("<hr/>")
 
-				append_info_to ("Current dir", (create {EXECUTION_ENVIRONMENT}).current_working_path.name, e, s)
+				append_info_to ("Current dir", (create {EXECUTION_ENVIRONMENT}).current_working_directory, e, s)
 				append_info_to ("Base url", cms.base_url, e, s)
 				append_info_to ("Script url", cms.script_url, e, s)
 				s.append ("<hr/>")
