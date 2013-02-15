@@ -8,10 +8,10 @@ class
 	WEB_CMS
 
 inherit
-	CMS_SERVICE
-		redefine
-			modules
-		end
+--	CMS_SERVICE
+--		redefine
+--			modules
+--		end
 
 	WSF_DEFAULT_SERVICE
 		redefine
@@ -21,37 +21,6 @@ inherit
 create
 	make_and_launch
 
-feature -- Initialization
-
-	base_url: detachable READABLE_STRING_8
-
-	server_base_url: detachable READABLE_STRING_8
-			-- Base url (related to absolute path).
-			--| Mainly pertinent when run from a standalone server.
-		do
-			Result := base_url
-		end
-
-	modules: ARRAYED_LIST [CMS_MODULE]
-		local
-			m: CMS_MODULE
-		once
-			Result := Precursor
-
-			-- Others
-			create {DEMO_MODULE} m.make (Current)
-			m.enable
-			Result.extend (m)
-
-			create {SHUTDOWN_MODULE} m.make
-			m.enable
-			Result.extend (m)
-
---			create {EIFFEL_LOGIN_MODULE} m.make
---			m.enable
---			Result.extend (m)
-		end
-
 feature {NONE} -- Initialization
 
 	initialize
@@ -59,9 +28,8 @@ feature {NONE} -- Initialization
 			args: ARGUMENTS
 			cfg: detachable STRING
 			i,n: INTEGER
-			cms_config: CMS_CONFIGURATION
-			opts: WSF_SERVICE_LAUNCHER_OPTIONS_FROM_INI
 		do
+				--| Arguments
 			create args
 			from
 				i := 1
@@ -83,34 +51,79 @@ feature {NONE} -- Initialization
 					cfg := "cms.ini"
 				end
 			end
-			if cfg /= Void then
-				create cms_config.make_from_file (cfg)
---				(create {EXECUTION_ENVIRONMENT}).change_working_directory (dir)
-			else
-				create cms_config.make
-			end
 
 				--| EWF settings
-			create opts.make_from_file ("ewf.ini")
-			service_options := opts
+			service_options := create {WSF_SERVICE_LAUNCHER_OPTIONS_FROM_INI}.make_from_file ("ewf.ini")
 			Precursor
 
-				--| CMS settings
-			base_url := cms_config.site_base_url (base_url)
-			initialize_cms (cms_config)
-			site_email := cms_config.site_email (site_email)
-			site_name := cms_config.site_name (site_name)
-
-			on_launched
+				--| CMS initialization
+			launch_cms (cms_setup (cfg))
 		end
 
-	on_launched
+	cms_setup (a_cfg_fn: detachable READABLE_STRING_8): CMS_CUSTOM_SETUP
+		do
+			if a_cfg_fn /= Void then
+				create Result.make_from_file (a_cfg_fn)
+			else
+				create Result -- Default
+			end
+			setup_modules (Result)
+			setup_storage (Result)
+		end
+
+	launch_cms (a_setup: CMS_SETUP)
+		local
+			cms: CMS_SERVICE
+		do
+			create cms.make (a_setup)
+			on_launched (cms)
+			cms_service := cms
+		end
+
+feature -- Execution
+
+	cms_service: CMS_SERVICE
+
+	execute (req: WSF_REQUEST; res: WSF_RESPONSE)
+		do
+			cms_service.execute (req, res)
+		end
+
+feature -- Access
+
+	setup_modules (a_setup: CMS_SETUP)
+		local
+			m: CMS_MODULE
+		do
+			create {DEMO_MODULE} m.make
+			m.enable
+			a_setup.add_module (m)
+
+			create {SHUTDOWN_MODULE} m.make
+			m.enable
+			a_setup.add_module (m)
+
+			create {DEBUG_MODULE} m.make
+			m.enable
+			a_setup.add_module (m)
+		end
+
+	setup_storage (a_setup: CMS_SETUP)
+		do
+
+		end
+
+feature -- Event		
+
+	on_launched (cms: CMS_SERVICE)
 		local
 			e: CMS_EMAIL
 		do
-			create e.make (site_email, site_email, "[" + site_name + "] launched...", "The site [" + site_name + "] was launched at " + (create {DATE_TIME}.make_now_utc).out + " UTC.")
-			mailer.safe_process_email (e)
+			create e.make (cms.site_email, cms.site_email, "[" + cms.site_name + "] launched...", "The site [" + cms.site_name + "] was launched at " + (create {DATE_TIME}.make_now_utc).out + " UTC.")
+			cms.mailer.safe_process_email (e)
 		end
+
+feature -- Helper		
 
 	file_exists (fn: STRING): BOOLEAN
 		local

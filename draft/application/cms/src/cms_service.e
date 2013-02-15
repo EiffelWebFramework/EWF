@@ -6,25 +6,28 @@ note
 				even for a specific handler.
 			]"
 
-deferred class
+class
 	CMS_SERVICE
 
-feature -- Initialization
+inherit
+	WSF_SERVICE
 
-	initialize_cms (a_base_url: like base_url; a_cfg: detachable CMS_CONFIGURATION)
+create
+	make
+
+feature {NONE} -- Initialization
+
+	make (a_setup: CMS_SETUP)
 		local
 			cfg: detachable CMS_CONFIGURATION
 		do
-			cfg := a_cfg
+			cfg := a_setup.configuration
 			if cfg = Void then
 				create cfg.make
 			end
 
-			if a_base_url /= Void and then not a_base_url.is_empty then
-				base_url := a_base_url
-			else
-				base_url := Void
-			end
+			configuration := cfg
+			base_url := a_setup.base_url
 
 			site_url := cfg.site_url ("")
 			site_name := cfg.site_name ("EWF::CMS")
@@ -39,8 +42,14 @@ feature -- Initialization
 
 			compute_theme_resource_location
 
-
 			create content_types.make (3)
+
+			modules := a_setup.modules
+			storage := a_setup.storage
+			session_manager := a_setup.session_manager
+			auth_engine := a_setup.auth_engine
+			mailer := a_setup.mailer
+
 			initialize_storage
 			initialize_auth_engine
 			initialize_session_manager
@@ -50,23 +59,17 @@ feature -- Initialization
 		end
 
 	initialize_session_manager
-		local
-			dn: DIRECTORY_NAME
+--		local
+--			dn: DIRECTORY_NAME
 		do
-			create dn.make_from_string (site_var_dir)
-			dn.extend ("_storage_")
-			dn.extend ("_sessions_")
-			create {WSF_FS_SESSION_MANAGER} session_manager.make_with_folder (dn.string)
+--			create dn.make_from_string (site_var_dir)
+--			dn.extend ("_storage_")
+--			dn.extend ("_sessions_")
+--			create {WSF_FS_SESSION_MANAGER} session_manager.make_with_folder (dn.string)
 		end
 
 	initialize_storage
-		local
-			dn: DIRECTORY_NAME
---			u: CMS_USER
 		do
-			create dn.make_from_string (site_var_dir)
-			dn.extend ("_storage_")
-			create {CMS_SED_STORAGE} storage.make (dn.string)
 			if not storage.has_user then
 				initialize_users
 			end
@@ -85,13 +88,13 @@ feature -- Initialization
 
 	initialize_mailer
 		local
-			ch_mailer: CMS_CHAIN_MAILER
-			st_mailer: CMS_STORAGE_MAILER
+--			ch_mailer: CMS_CHAIN_MAILER
+--			st_mailer: CMS_STORAGE_MAILER
 		do
-			create st_mailer.make (storage)
-			create ch_mailer.make (st_mailer)
-			ch_mailer.set_next (create {CMS_SENDMAIL_MAILER})
-			mailer := ch_mailer
+--			create st_mailer.make (storage)
+--			create ch_mailer.make (st_mailer)
+--			ch_mailer.set_next (create {CMS_SENDMAIL_MAILER})
+--			mailer := ch_mailer
 		end
 
 	initialize_router
@@ -133,31 +136,16 @@ feature -- Initialization
 
 	initialize_auth_engine
 		do
-			create {CMS_STORAGE_AUTH_ENGINE} auth_engine.make (storage)
+--			create {CMS_STORAGE_AUTH_ENGINE} auth_engine.make (storage)
 		end
 
 feature -- Access	
 
+	configuration: CMS_CONFIGURATION
+
 	auth_engine: CMS_AUTH_ENGINE
 
-	modules: ARRAYED_LIST [CMS_MODULE]
-		local
-			m: CMS_MODULE
-		once
-			create Result.make (10)
-			-- Core
-			create {USER_MODULE} m.make (Current)
-			m.enable
-			Result.extend (m)
-
-			create {ADMIN_MODULE} m.make (Current)
-			m.enable
-			Result.extend (m)
-
-			create {NODE_MODULE} m.make (Current)
-			m.enable
-			Result.extend (m)
-		end
+	modules: LIST [CMS_MODULE]
 
 feature -- Hook: menu_alter
 
@@ -313,18 +301,6 @@ feature -- URL related
 	base_url: detachable READABLE_STRING_8
 			-- Base url (related to the script path).
 
---		deferred
---		ensure
---			valid_base_url: (Result /= Void and then Result.is_empty) implies (Result.starts_with ("/") and not Result.ends_with ("/"))
---		end
-
---	server_base_url: detachable READABLE_STRING_8
---			-- Base url (related to absolute path).
---		deferred
---		ensure
---			valid_base_url: (Result /= Void and then Result.is_empty) implies (Result.starts_with ("/") and not Result.ends_with ("/"))
---		end
-
 	script_url: detachable READABLE_STRING_8
 
 	set_script_url (a_url: like script_url)
@@ -435,16 +411,10 @@ feature -- Core Execution
 			(create {HOME_CMS_EXECUTION}.make (req, res, Current)).execute
 		end
 
---	handle_theme (req: WSF_REQUEST; res: WSF_RESPONSE)
---		do
---			(create {THEME_CMS_EXECUTION}.make (req, res, Current)).execute
---		end
-
 	execute (req: WSF_REQUEST; res: WSF_RESPONSE)
 			-- Default request handler if no other are relevant
 		local
 			e: CMS_EXECUTION
---			not_found: WSF_NOT_FOUND_RESPONSE
 		do
 			initialize_urls (req)
 			if attached router.dispatch_and_return_handler (req, res) as p then
@@ -452,8 +422,6 @@ feature -- Core Execution
 			else
 				create {NOT_FOUND_CMS_EXECUTION} e.make (req, res, Current)
 				e.execute
---				create not_found.make
---				res.send (not_found)
 			end
 		end
 

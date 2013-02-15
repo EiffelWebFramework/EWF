@@ -7,9 +7,6 @@ note
 class
 	CMS_CONFIGURATION
 
---inherit
---	SHARED_EXECUTION_ENVIRONMENT
-
 create
 	make,
 	make_from_file
@@ -26,6 +23,7 @@ feature {NONE} -- Initialization
 			-- Initialize `Current'.
 		do
 			make
+			configuration_location := a_filename
 			import (a_filename)
 			analyze
 		end
@@ -39,6 +37,8 @@ feature {NONE} -- Initialization
 		end
 
 feature -- Access
+
+	configuration_location: detachable READABLE_STRING_8
 
 	option (a_name: READABLE_STRING_GENERAL): detachable ANY
 		do
@@ -160,7 +160,6 @@ feature -- Change
 			end
 			var_location := res
 		end
-
 
 	get_root_location
 		local

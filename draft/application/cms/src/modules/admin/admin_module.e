@@ -17,9 +17,8 @@ create
 
 feature {NONE} -- Initialization
 
-	make (a_service: like service)
+	make
 		do
-			service := a_service
 			name := "admin"
 			version := "1.0"
 			description := "Set of service to administrate the site"
@@ -30,16 +29,17 @@ feature {NONE} -- Initialization
 
 feature {CMS_SERVICE} -- Registration
 
-	service: CMS_SERVICE
+	service: detachable CMS_SERVICE
 
 	register (a_service: CMS_SERVICE)
 		do
-			a_service.map_uri ("/admin/", agent handle_admin)
-			a_service.map_uri ("/admin/users/", agent handle_admin_users)
-			a_service.map_uri ("/admin/blocks/", agent handle_admin_blocks)
-			a_service.map_uri ("/admin/modules/", agent handle_admin_modules)
-			a_service.map_uri ("/admin/logs/", agent handle_admin_logs)
-			a_service.map_uri_template ("/admin/log/{log-id}", agent handle_admin_log_view)
+			service := a_service
+			a_service.map_uri ("/admin/", agent handle_admin (a_service, ?, ?))
+			a_service.map_uri ("/admin/users/", agent handle_admin_users (a_service, ?, ?))
+			a_service.map_uri ("/admin/blocks/", agent handle_admin_blocks (a_service, ?, ?))
+			a_service.map_uri ("/admin/modules/", agent handle_admin_modules (a_service, ?, ?))
+			a_service.map_uri ("/admin/logs/", agent handle_admin_logs (a_service, ?, ?))
+			a_service.map_uri_template ("/admin/log/{log-id}", agent handle_admin_log_view (a_service, ?, ?))
 
 			a_service.add_menu_alter_hook (Current)
 		end
@@ -57,43 +57,40 @@ feature -- Hooks
 
 	links: HASH_TABLE [CMS_MODULE_LINK, STRING]
 			-- Link indexed by path
-		local
---			lnk: CMS_MODULE_LINK
 		do
-			create Result.make (3)
---			create lnk.make ("Date/time demo")
---			lnk.set_callback (agent process_date_time_demo, <<"arg">>)
---			Result["/demo/date/{arg}"] := lnk
+			create Result.make (0)
 		end
 
-	handle_admin (req: WSF_REQUEST; res: WSF_RESPONSE)
+feature -- Handler		
+
+	handle_admin (cms: CMS_SERVICE; req: WSF_REQUEST; res: WSF_RESPONSE)
 		do
-			(create {ADMIN_CMS_EXECUTION}.make (req, res, service)).execute
+			(create {ADMIN_CMS_EXECUTION}.make (req, res, cms)).execute
 		end
 
-	handle_admin_users (req: WSF_REQUEST; res: WSF_RESPONSE)
+	handle_admin_users (cms: CMS_SERVICE; req: WSF_REQUEST; res: WSF_RESPONSE)
 		do
-			(create {ADMIN_USERS_CMS_EXECUTION}.make (req, res, service)).execute
+			(create {ADMIN_USERS_CMS_EXECUTION}.make (req, res, cms)).execute
 		end
 
-	handle_admin_blocks (req: WSF_REQUEST; res: WSF_RESPONSE)
+	handle_admin_blocks (cms: CMS_SERVICE; req: WSF_REQUEST; res: WSF_RESPONSE)
 		do
-			(create {ADMIN_BLOCKS_CMS_EXECUTION}.make (req, res, service)).execute
+			(create {ADMIN_BLOCKS_CMS_EXECUTION}.make (req, res, cms)).execute
 		end
 
-	handle_admin_modules (req: WSF_REQUEST; res: WSF_RESPONSE)
+	handle_admin_modules (cms: CMS_SERVICE; req: WSF_REQUEST; res: WSF_RESPONSE)
 		do
-			(create {ADMIN_MODULES_CMS_EXECUTION}.make (req, res, service)).execute
+			(create {ADMIN_MODULES_CMS_EXECUTION}.make (req, res, cms)).execute
 		end
 
-	handle_admin_logs (req: WSF_REQUEST; res: WSF_RESPONSE)
+	handle_admin_logs (cms: CMS_SERVICE; req: WSF_REQUEST; res: WSF_RESPONSE)
 		do
-			(create {ADMIN_LOGS_CMS_EXECUTION}.make (req, res, service)).execute
+			(create {ADMIN_LOGS_CMS_EXECUTION}.make (req, res, cms)).execute
 		end
 
-	handle_admin_log_view (req: WSF_REQUEST; res: WSF_RESPONSE)
+	handle_admin_log_view (cms: CMS_SERVICE; req: WSF_REQUEST; res: WSF_RESPONSE)
 		do
-			(create {LOG_VIEW_CMS_EXECUTION}.make (req, res, service)).execute
+			(create {LOG_VIEW_CMS_EXECUTION}.make (req, res, cms)).execute
 		end
 
 

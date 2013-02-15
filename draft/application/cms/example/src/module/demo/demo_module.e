@@ -15,9 +15,8 @@ create
 
 feature {NONE} -- Initialization
 
-	make (a_service: like service)
+	make
 		do
-			service := a_service
 			name := "demo"
 			version := "1.0"
 			description := "demo"
@@ -26,12 +25,13 @@ feature {NONE} -- Initialization
 
 feature {CMS_SERVICE} -- Registration
 
-	service: CMS_SERVICE
+	service: detachable CMS_SERVICE
 
 	register (a_service: CMS_SERVICE)
 		do
-			a_service.map_uri_template ("/demo/date/{arg}", agent handle_date_time_demo)
-			a_service.map_uri_template ("/demo/format/{arg}", agent handle_format_demo)
+			service := a_service
+			a_service.map_uri_template ("/demo/date/{arg}", agent handle_date_time_demo (a_service, ?, ?))
+			a_service.map_uri_template ("/demo/format/{arg}", agent handle_format_demo (a_service, ?, ?))
 		end
 
 feature -- Hooks
@@ -41,20 +41,20 @@ feature -- Hooks
 		local
 --			lnk: CMS_MODULE_LINK
 		do
-			create Result.make (3)
+			create Result.make (0)
 --			create lnk.make ("Date/time demo")
 --			lnk.set_callback (agent process_date_time_demo, <<"arg">>)
 --			Result["/demo/date/{arg}"] := lnk
 		end
 
-	handle_date_time_demo (req: WSF_REQUEST; res: WSF_RESPONSE)
+	handle_date_time_demo (cms: CMS_SERVICE; req: WSF_REQUEST; res: WSF_RESPONSE)
 		do
-			(create {ANY_CMS_EXECUTION}.make_with_text (req, res, service, "<h1>Demo::date/time</h1>")).execute
+			(create {ANY_CMS_EXECUTION}.make_with_text (req, res, cms, "<h1>Demo::date/time</h1>")).execute
 		end
 
-	handle_format_demo (req: WSF_REQUEST; res: WSF_RESPONSE)
+	handle_format_demo (cms: CMS_SERVICE; req: WSF_REQUEST; res: WSF_RESPONSE)
 		do
-			(create {ANY_CMS_EXECUTION}.make_with_text (req, res, service, "<h1>Demo::format</h1>")).execute
+			(create {ANY_CMS_EXECUTION}.make_with_text (req, res, cms, "<h1>Demo::format</h1>")).execute
 		end
 
 end

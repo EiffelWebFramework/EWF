@@ -19,9 +19,8 @@ create
 
 feature {NONE} -- Initialization
 
-	make (a_service: like service)
+	make
 		do
-			service := a_service
 			name := "node"
 			version := "1.0"
 			description := "Service to manage content based on 'node'"
@@ -32,20 +31,21 @@ feature {NONE} -- Initialization
 
 feature {CMS_SERVICE} -- Registration
 
-	service: CMS_SERVICE
+	service: detachable CMS_SERVICE
 
 	register (a_service: CMS_SERVICE)
 		local
 			h: CMS_HANDLER
 		do
-			a_service.map_uri ("/node/add", agent handle_node_add)
-			a_service.map_uri_template ("/node/add/{type}", agent handle_node_add)
+			service := a_service
+			a_service.map_uri ("/node/add", agent handle_node_add (a_service, ?, ?))
+			a_service.map_uri_template ("/node/add/{type}", agent handle_node_add (a_service, ?, ?))
 
-			create {CMS_HANDLER} h.make (agent handle_node_view)
+			create {CMS_HANDLER} h.make (agent handle_node_view (a_service, ?, ?))
 			a_service.router.map (create {WSF_URI_TEMPLATE_MAPPING}.make ("/node/{nid}", h))
 			a_service.router.map (create {WSF_URI_TEMPLATE_MAPPING}.make ("/node/{nid}/view", h))
 
-			a_service.map_uri_template ("/node/{nid}/edit", agent handle_node_edit)
+			a_service.map_uri_template ("/node/{nid}/edit", agent handle_node_edit (a_service, ?, ?))
 
 			a_service.add_content_type (create {CMS_PAGE_CONTENT_TYPE}.make)
 
@@ -86,28 +86,23 @@ feature -- Hooks
 
 	links: HASH_TABLE [CMS_MODULE_LINK, STRING]
 			-- Link indexed by path
-		local
---			lnk: CMS_MODULE_LINK
 		do
-			create Result.make (3)
---			create lnk.make ("Date/time demo")
---			lnk.set_callback (agent process_date_time_demo, <<"arg">>)
---			Result["/demo/date/{arg}"] := lnk
+			create Result.make (0)
 		end
 
-	handle_node_view (req: WSF_REQUEST; res: WSF_RESPONSE)
+	handle_node_view (cms: CMS_SERVICE; req: WSF_REQUEST; res: WSF_RESPONSE)
 		do
-			(create {NODE_VIEW_CMS_EXECUTION}.make (req, res, service)).execute
+			(create {NODE_VIEW_CMS_EXECUTION}.make (req, res, cms)).execute
 		end
 
-	handle_node_edit (req: WSF_REQUEST; res: WSF_RESPONSE)
+	handle_node_edit (cms: CMS_SERVICE; req: WSF_REQUEST; res: WSF_RESPONSE)
 		do
-			(create {NODE_EDIT_CMS_EXECUTION}.make (req, res, service)).execute
+			(create {NODE_EDIT_CMS_EXECUTION}.make (req, res, cms)).execute
 		end
 
-	handle_node_add (req: WSF_REQUEST; res: WSF_RESPONSE)
+	handle_node_add (cms: CMS_SERVICE; req: WSF_REQUEST; res: WSF_RESPONSE)
 		do
-			(create {NODE_ADD_CMS_EXECUTION}.make (req, res, service)).execute
+			(create {NODE_ADD_CMS_EXECUTION}.make (req, res, cms)).execute
 		end
 
 end
