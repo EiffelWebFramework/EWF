@@ -125,6 +125,7 @@ feature -- Access
 			end
 			if Result /= Void then
 				if Result.is_empty then
+					-- ok
 				elseif not Result.ends_with ("/") then
 					Result := Result + "/"
 				end

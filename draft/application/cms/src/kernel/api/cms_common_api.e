@@ -125,6 +125,18 @@ feature -- Access
 			Result := url ("/node/" + n.id.out, Void)
 		end
 
+	absolute_url (a_path: STRING; opts: detachable CMS_API_OPTIONS): STRING
+		local
+			l_opts: detachable CMS_API_OPTIONS
+		do
+			l_opts := opts
+			if l_opts = Void then
+				create l_opts.make (1)
+			end
+			l_opts.force (True, "absolute")
+			Result := url (a_path, l_opts)
+		end
+
 	url (a_path: STRING; opts: detachable CMS_API_OPTIONS): STRING
 		local
 			q,f: detachable STRING_8
@@ -132,7 +144,6 @@ feature -- Access
 		do
 			l_abs := False
 
-			Result := based_path (a_path)
 			if opts /= Void then
 				l_abs := opts.boolean_item ("absolute", l_abs)
 				if attached opts.item ("query") as l_query then
@@ -157,16 +168,35 @@ feature -- Access
 					f := s_frag
 				end
 			end
+			if l_abs then
+				if a_path.substring_index ("://", 1) = 0 then
+					create Result.make_from_string (service.site_url)
+					if a_path.is_empty then
+					elseif Result.ends_with ("/") then
+						if a_path[1] = '/' then
+							Result.append_string (a_path.substring (2, a_path.count))
+						else
+							Result.append_string (a_path)
+						end
+					else
+						if a_path[1] = '/' then
+							Result.append_string (a_path)
+						else
+							Result.append_character ('/')
+							Result.append_string (a_path)
+						end
+					end
+				else
+					Result := a_path
+				end
+			else
+				Result := based_path (a_path)
+			end
 			if q /= Void then
 				Result.append ("?" + q)
 			end
 			if f /= Void then
 				Result.append ("#" + f)
-			end
-			if l_abs then
-				if Result.substring_index ("://", 1) = 0 then
-					Result.prepend (service.site_url)
-				end
 			end
 		end
 
