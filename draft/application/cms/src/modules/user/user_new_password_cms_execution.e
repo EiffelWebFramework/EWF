@@ -43,7 +43,7 @@ feature -- Execution
 					b.append ("Unexpected issue")
 				end
 			else
-				f := new_password_form (request.path_info, "new-password")
+				f := new_password_form (url (request.path_info, Void), "new-password")
 				if request.is_post_request_method then
 					create fd.make (request, f)
 					if attached {WSF_STRING} fd.item ("name") as s_name then
