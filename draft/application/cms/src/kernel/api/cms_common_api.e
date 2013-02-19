@@ -164,7 +164,6 @@ feature -- Access
 				Result.append ("#" + f)
 			end
 			if l_abs then
-				Result := based_path (Result)
 				if Result.substring_index ("://", 1) = 0 then
 					Result.prepend (service.site_url)
 				end
