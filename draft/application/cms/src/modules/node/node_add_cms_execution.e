@@ -25,7 +25,7 @@ feature -- Execution
 			create b.make_empty
 			if attached non_empty_string_path_parameter ("type") as s_type then
 				if attached service.content_type (s_type) as l_type then
-					f := edit_form (Void, request.path_info, "add-" + l_type.name, l_type)
+					f := edit_form (Void, url (request.path_info, Void), "add-" + l_type.name, l_type)
 					if request.is_post_request_method then
 						create fd.make (request, f)
 						l_preview := attached {WSF_STRING} fd.item ("op") as l_op and then l_op.same_string ("Preview")

@@ -47,7 +47,7 @@ feature -- Execution
 				set_redirection (url ("/user/register", Void))
 			else
 				service.storage.fill_user_profile (u)
-				f := edit_form (u, request.path_info, "user-edit")
+				f := edit_form (u, url (request.path_info, Void), "user-edit")
 
 				if request.is_post_request_method then
 					create fd.make (request, f)
