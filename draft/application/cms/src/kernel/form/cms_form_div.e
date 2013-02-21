@@ -17,6 +17,7 @@ inherit
 create
 	make,
 	make_with_item,
+	make_with_items,
 	make_with_text
 
 feature {NONE} -- Initialization
@@ -36,6 +37,16 @@ feature {NONE} -- Initialization
 		do
 			create items.make (1)
 			extend (i)
+		end
+
+	make_with_items (it: ITERABLE [CMS_FORM_ITEM])
+		do
+			create items.make (2)
+			across
+				it as c
+			loop
+				extend (c.item)
+			end
 		end
 
 feature -- Access

@@ -51,6 +51,11 @@ feature -- Change
 			items.force (i)
 		end
 
+	prepend (i: CMS_FORM_ITEM)
+		do
+			items.put_front (i)
+		end
+
 	extend_text (t: READABLE_STRING_8)
 		do
 			items.force (create {CMS_FORM_RAW_TEXT}.make (t))

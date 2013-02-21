@@ -102,6 +102,20 @@ feature -- Items
 			Result := fields_by_name_from (Current, a_name)
 		end
 
+	items_by_css_id (a_id: READABLE_STRING_GENERAL): detachable LIST [CMS_FORM_ITEM]
+		do
+			Result := items_by_css_id_from (Current, a_id)
+		end
+
+	first_item_by_css_id (a_id: READABLE_STRING_GENERAL): detachable CMS_FORM_ITEM
+		do
+			if attached items_by_css_id_from (Current, a_id) as lst then
+				if not lst.is_empty then
+					Result := lst.first
+				end
+			end
+		end
+
 feature {NONE} -- Implementation: Items			
 
 	container_has_field (a_container: ITERABLE [CMS_FORM_ITEM]; a_name: READABLE_STRING_GENERAL): BOOLEAN
@@ -133,6 +147,35 @@ feature {NONE} -- Implementation: Items
 					res.force (l_field)
 				elseif attached {ITERABLE [CMS_FORM_ITEM]} i.item as l_cont then
 					if attached fields_by_name_from (l_cont, a_name) as lst then
+						if res = Void then
+							res := lst
+						else
+							res.append (lst)
+						end
+					end
+				end
+			end
+			Result := res
+		end
+
+	items_by_css_id_from (a_container: ITERABLE [CMS_FORM_ITEM]; a_id: READABLE_STRING_GENERAL): detachable ARRAYED_LIST [CMS_FORM_ITEM]
+		local
+			res: detachable ARRAYED_LIST [CMS_FORM_ITEM]
+		do
+			across
+				a_container as i
+			loop
+				if
+					attached {WITH_CSS_ID} i.item as l_with_css_id and then
+					attached l_with_css_id.css_id as l_css_id and then
+					l_css_id.same_string_general (a_id)
+				then
+					if res = Void then
+						create res.make (1)
+					end
+					res.force (i.item)
+				elseif attached {ITERABLE [CMS_FORM_ITEM]} i.item as l_cont then
+					if attached items_by_css_id_from (l_cont, a_id) as lst then
 						if res = Void then
 							res := lst
 						else
