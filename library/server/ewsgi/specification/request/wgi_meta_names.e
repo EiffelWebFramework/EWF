@@ -50,6 +50,8 @@ feature -- Access
 
 	http_transfer_encoding: STRING = "HTTP_TRANSFER_ENCODING"
 
+	http_access_control_request_headers: STRING = "HTTP_ACCESS_CONTROL_REQUEST_HEADERS"
+
 	gateway_interface: STRING = "GATEWAY_INTERFACE"
 
 	auth_type: STRING = "AUTH_TYPE"

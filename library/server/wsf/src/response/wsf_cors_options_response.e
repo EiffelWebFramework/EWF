@@ -40,9 +40,13 @@ feature {WSF_RESPONSE} -- Output
 		local
 			l_methods: WSF_REQUEST_METHODS
 		do
-			res.set_status_code ({HTTP_STATUS_CODE}.No_content)
+			res.set_status_code ({HTTP_STATUS_CODE}.Ok)
+			header.put_content_type ({HTTP_MIME_TYPES}.text_plain)
 			header.put_current_date
-			header.put_access_control_allow_headers ({HTTP_HEADER_NAMES}.header_authorization)
+			header.put_content_length (0)
+			if attached request.http_access_control_request_headers as l_headers then
+				header.put_access_control_allow_headers (l_headers)
+			end
 			l_methods := router.allowed_methods_for_request (request)
 			if not l_methods.is_empty then
 				header.put_allow (l_methods)
