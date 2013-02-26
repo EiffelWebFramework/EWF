@@ -34,7 +34,7 @@ feature -- Execution
 					if attached u.email as l_email then
 						f := new_password_form (url (request.path_info, Void), "new-password")
 						b.append ("Password reset instructions will be mailed to <em>" + l_email + "</em>. You must " +  link ("log out", "/user/logout", Void)  + " to use the password reset link in the e-mail.")
-						b.append (f.to_html (theme))
+						f.append_to_html (theme, b)
 					else
 						b.append ("Your account does not have any email address set!")
 						set_redirection (url ("/user/"+ u.id.out +"/edit", Void))
@@ -84,7 +84,7 @@ feature -- Execution
 						end
 						fd.apply_to_associated_form
 					end
-					b.append (f.to_html (theme))
+					f.append_to_html (theme, b)
 				end
 			end
 			set_main_content (b)

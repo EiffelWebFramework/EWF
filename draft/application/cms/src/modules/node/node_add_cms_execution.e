@@ -82,7 +82,7 @@ feature -- Execution
 								end
 								fd.apply_to_associated_form
 							end
-							b.append (f.to_html (theme))
+							f.append_to_html (theme, b)
 						end
 					else
 						set_title ("Access denied")

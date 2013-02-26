@@ -102,7 +102,7 @@ feature -- Element change
 
 feature -- Conversion
 
-	to_html (a_theme: CMS_THEME): STRING_8
+	append_to_html (a_theme: CMS_THEME; a_html: STRING_8)
 		local
 			l_class_items: detachable ARRAYED_LIST [READABLE_STRING_8]
 		do
@@ -117,28 +117,28 @@ feature -- Conversion
 				l_class_items := Void
 			end
 
-			create Result.make_from_string ("<div")
-			append_css_class_to (Result, l_class_items)
-			Result.append_character ('>')
+			a_html.append ("<div")
+			append_css_class_to (a_html, l_class_items)
+			a_html.append_character ('>')
 			if attached label as lab then
-				Result.append ("<strong><label for=%"" + name + "%">" + lab + "</label></strong>")
+				a_html.append ("<strong><label for=%"" + name + "%">" + lab + "</label></strong>")
 				if is_required then
-					Result.append (" (<em>required</em>)")
+					a_html.append (" (<em>required</em>)")
 				end
-				Result.append ("<br/>%N")
+				a_html.append ("<br/>%N")
 			end
-			Result.append (item_to_html (a_theme))
+			append_item_to_html (a_theme, a_html)
 			if attached description as desc then
 				if is_description_collapsible then
-					Result.append ("<div class=%"description collapsible%"><div>Description ...</div><div>" + desc + "</div></div>")
+					a_html.append ("<div class=%"description collapsible%"><div>Description ...</div><div>" + desc + "</div></div>")
 				else
-					Result.append ("<div class=%"description%">" + desc + "</div>")
+					a_html.append ("<div class=%"description%">" + desc + "</div>")
 				end
 			end
-			Result.append ("</div>")
+			a_html.append ("</div>")
 		end
 
-	item_to_html (a_theme: CMS_THEME): STRING_8
+	append_item_to_html (a_theme: CMS_THEME; a_html: STRING_8)
 		deferred
 		end
 

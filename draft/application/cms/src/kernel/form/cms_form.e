@@ -210,11 +210,11 @@ feature -- Change
 
 feature -- Conversion
 
-	to_html (a_theme: CMS_THEME): STRING_8
+	append_to_html (a_theme: CMS_THEME; a_html: STRING_8)
 		local
-			s: STRING
+			s: STRING_8
 		do
-			Result := "<form action=%""+ action +"%" id=%""+ id +"%" method=%""+ method +"%" "
+			a_html.append ("<form action=%""+ action +"%" id=%""+ id +"%" method=%""+ method +"%" ")
 			if not html_classes.is_empty then
 				create s.make_empty
 				across
@@ -225,15 +225,21 @@ feature -- Conversion
 					end
 					s.append (cl.item)
 				end
-				Result.append (" class=%"" + s + "%" ")
+				a_html.append (" class=%"" + s + "%" ")
 			end
-			Result.append (">%N")
+			a_html.append (">%N")
 			across
 				items as c
 			loop
-				Result.append (c.item.to_html (a_theme))
+				c.item.append_to_html (a_theme, a_html)
 			end
-			Result.append ("</form>%N")
+			a_html.append ("</form>%N")
+		end
+
+	to_html (a_theme: CMS_THEME): STRING_8
+		do
+			create Result.make_empty
+			append_to_html (a_theme, Result)
 		end
 
 feature {NONE} -- Implementation

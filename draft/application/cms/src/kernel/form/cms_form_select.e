@@ -103,38 +103,38 @@ feature -- Element change
 
 feature -- Conversion
 
-	item_to_html (a_theme: CMS_THEME): STRING_8
+	append_item_to_html (a_theme: CMS_THEME; a_html: STRING_8)
 		local
 			l_is_already_selected: BOOLEAN
 			h: detachable STRING_8
 		do
-			Result := "<select name=%""+ name +"%" "
+			a_html.append ("<select name=%""+ name +"%" ")
 			if css_id = Void then
-				set_css_id (name +"-select")
+				set_css_id (name + "-select")
 			end
-			append_css_class_to (Result, Void)
-			append_css_id_to (Result)
-			append_css_style_to (Result)
+			append_css_class_to (a_html, Void)
+			append_css_id_to (a_html)
+			append_css_style_to (a_html)
 
 			if is_readonly then
-				Result.append (" readonly=%"readonly%" />")
+				a_html.append (" readonly=%"readonly%" />")
 			else
-				Result.append ("/>")
+				a_html.append ("/>")
 			end
 
 			across
 				options as o
 			loop
-				Result.append ("<option value=%"" + o.item.value + "%" ")
+				a_html.append ("<option value=%"" + o.item.value + "%" ")
 --				if not l_is_already_selected then
 					if
 						o.item.is_selected
 					then
 						l_is_already_selected := True
-						Result.append (" selected=%"selected%"")
+						a_html.append (" selected=%"selected%"")
 					end
 --				end
-				Result.append (">" + o.item.text + "</option>%N")
+				a_html.append (">" + o.item.text + "</option>%N")
 				if attached o.item.description as d then
 					if h = Void then
 						create h.make_empty
@@ -142,9 +142,9 @@ feature -- Conversion
 					h.append ("<div id=%"" + name + "-" + o.item.value + "%" class=%"option%"><strong>"+ o.item.text +"</strong>:"+ d + "</div>")
 				end
 			end
-			Result.append ("</select>%N")
+			a_html.append ("</select>%N")
 			if h /= Void then
-				Result.append ("<div class=%"select help collapsible%" id=%"" + name + "-help%">" + h + "</div>%N")
+				a_html.append ("<div class=%"select help collapsible%" id=%"" + name + "-help%">" + h + "</div>%N")
 			end
 		end
 

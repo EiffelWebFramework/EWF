@@ -78,45 +78,50 @@ feature -- Element change
 
 feature -- Conversion
 
-	item_to_html (a_theme: CMS_THEME): STRING_8
+	append_item_to_html (a_theme: CMS_THEME; a_html: STRING_8)
+		local
+			old_count: INTEGER
 		do
-			Result := "<input type=%""+ input_type +"%" name=%""+ name +"%""
-			append_css_class_to (Result, Void)
-			append_css_id_to (Result)
-			append_css_style_to (Result)
+			a_html.append ("<input type=%""+ input_type +"%" name=%""+ name +"%"")
+			append_css_class_to (a_html, Void)
+			append_css_id_to (a_html)
+			append_css_style_to (a_html)
 
 			if is_readonly then
-				Result.append (" readonly=%"readonly%"")
+				a_html.append (" readonly=%"readonly%"")
 			end
 			if attached default_value as dft then
-				Result.append (" value=%"" + a_theme.html_encoded (dft) + "%"")
+				a_html.append (" value=%"" + a_theme.html_encoded (dft) + "%"")
 			end
 			if disabled then
-				Result.append (" disabled=%"disabled%"")
+				a_html.append (" disabled=%"disabled%"")
 			end
 			if size > 0 then
-				Result.append (" size=%"" + size.out + "%"")
+				a_html.append (" size=%"" + size.out + "%"")
 			end
 			if maxlength > 0 then
-				Result.append (" maxlength=%"" + maxlength.out + "%"")
+				a_html.append (" maxlength=%"" + maxlength.out + "%"")
 			end
 
 			if attached specific_input_attributes_string as s then
-				Result.append_character (' ')
-				Result.append (s)
+				a_html.append_character (' ')
+				a_html.append (s)
 			end
-			if attached child_to_html (a_theme) as s then
-				Result.append (">")
-				Result.append (s)
-				Result.append ("</input>")
+			a_html.append (">")
+			old_count := a_html.count
+			append_child_to_html (a_theme, a_html)
+			if a_html.count > old_count then
+				a_html.append ("</input>")
 			else
-				Result.append ("/>")
+				check a_html.item (a_html.count) = '>' end
+				a_html.put ('/', a_html.count) -- replace previous '>'
+				a_html.append (">")
 			end
 		end
 
 feature {NONE} -- Implementation
 
-	child_to_html (a_theme: CMS_THEME): detachable READABLE_STRING_8
+	append_child_to_html (a_theme: CMS_THEME; a_html: STRING_8)
 			-- Specific child element if any.	
 			--| To redefine if needed
 		do
