@@ -59,6 +59,12 @@ feature -- Access
 
 	name: READABLE_STRING_32
 
+	url_encoded_name: READABLE_STRING_8
+			-- URL encoded string of `name'.
+		do
+			Result := url_encoder.encoded_string (name)
+		end
+
 	values: LIST [WSF_STRING]
 
 	frozen string_values: like values

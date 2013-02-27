@@ -16,6 +16,11 @@ feature -- Access
 		deferred
 		end
 
+	url_encoded_name: READABLE_STRING_8
+			-- URL encoded string of `name'.
+		deferred
+		end
+
 	frozen key: like name
 		do
 			Result := name
