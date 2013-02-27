@@ -559,13 +559,16 @@ feature -- Cookie
 			if
 				domain /= Void and then not domain.same_string ("localhost")
 			then
-				s.append ("; Domain=" + domain)
+				s.append ("; Domain=")
+				s.append (domain)
 			end
 			if path /= Void then
-				s.append ("; Path=" + path)
+				s.append ("; Path=")
+				s.append (path)
 			end
 			if expiration /= Void then
-				s.append ("; Expires=" + expiration)
+				s.append ("; Expires=")
+				s.append (expiration)
 			end
 			if secure then
 				s.append ("; Secure")

@@ -7,13 +7,6 @@ note
 deferred class
 	CMS_SETUP
 
-feature -- Initialization
-
-	initialize_storage (a_cms: CMS_SERVICE)
-		do
-
-		end
-
 feature -- Access
 
 	configuration: detachable CMS_CONFIGURATION

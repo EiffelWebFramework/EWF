@@ -70,9 +70,10 @@ div#main-wrapper {
 }
 div#main { margin: 0; padding: 0; clear: both; height:0; display: block;  }
 
-div#content { padding: 5px 3px 5px 20px; 
+div#content { 
+	padding: 5px 3px 5px 20px; 
 	margin-top: 10px;
-	min-width: 80%;
+	min-width: 60%;
 	display: inline;
 	float: left;
 	position: relative;
@@ -81,7 +82,7 @@ div#content { padding: 5px 3px 5px 20px;
 }
 
 div#first_sidebar {
-	width: 200px;
+	width: 20%;
 	margin: 5px; 
 	padding: 5px;
 	display: inline;
@@ -89,11 +90,11 @@ div#first_sidebar {
 	position: relative;
 }
 div#second_sidebar {
-	width: 100px;
+	width: 20%;
 	margin: 5px; 
 	padding: 5px;
 	display: inline;
-	float: right;
+	float: left;
 	position: relative;
 	background-color: #eee;
 }

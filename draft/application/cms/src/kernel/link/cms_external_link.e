@@ -29,6 +29,8 @@ feature -- Status report
 
 	is_expandable: BOOLEAN = False
 
+	has_children: BOOLEAN = False
+
 	children: detachable LIST [CMS_LINK]
 		do
 		end

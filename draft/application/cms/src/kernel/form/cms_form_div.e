@@ -17,6 +17,7 @@ inherit
 create
 	make,
 	make_with_item,
+	make_with_items,
 	make_with_text
 
 feature {NONE} -- Initialization
@@ -38,6 +39,16 @@ feature {NONE} -- Initialization
 			extend (i)
 		end
 
+	make_with_items (it: ITERABLE [CMS_FORM_ITEM])
+		do
+			create items.make (2)
+			across
+				it as c
+			loop
+				extend (c.item)
+			end
+		end
+
 feature -- Access
 
 	new_cursor: ITERATION_CURSOR [CMS_FORM_ITEM]
@@ -55,20 +66,20 @@ feature -- Change
 
 feature -- Conversion
 
-	to_html (a_theme: CMS_THEME): STRING_8
+	append_to_html (a_theme: CMS_THEME; a_html: STRING_8)
 		do
-			Result := "<div"
-			append_css_class_to (Result, Void)
-			append_css_id_to (Result)
-			append_css_style_to (Result)
+			a_html.append ("<div")
+			append_css_class_to (a_html, Void)
+			append_css_id_to (a_html)
+			append_css_style_to (a_html)
 
-			Result.append (">%N")
+			a_html.append (">%N")
 			across
 				items as c
 			loop
-				Result.append (c.item.to_html (a_theme))
+				c.item.append_to_html (a_theme, a_html)
 			end
-			Result.append ("%N</div>%N")
+			a_html.append ("%N</div>%N")
 		end
 
 feature {NONE} -- Implementation

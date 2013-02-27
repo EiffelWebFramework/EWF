@@ -30,7 +30,7 @@ feature -- Execution
 			then
 				if attached service.content_type (l_node.content_type_name) as l_type then
 					if has_permission ("edit " + l_type.name) then
-						f := edit_form (l_node, request.path_info, "edit-" + l_type.name, l_type)
+						f := edit_form (l_node, url (request.path_info, Void), "edit-" + l_type.name, l_type)
 						if request.is_post_request_method then
 							create fd.make (request, f)
 							l_preview := attached {WSF_STRING} fd.item ("op") as l_op and then l_op.same_string ("Preview")
@@ -87,7 +87,7 @@ feature -- Execution
 								end
 								fd.apply_to_associated_form
 							end
-							b.append (f.to_html (theme))
+							f.append_to_html (theme, b)
 						end
 					else
 						b.append ("<h1>Access denied</h1>")

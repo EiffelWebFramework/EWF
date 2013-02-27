@@ -84,8 +84,11 @@ feature {NONE} -- Implementation
 
 	date_to_rfc1123_http_date_format (dt: DATE_TIME): STRING_8
 			-- String representation of `dt' using the RFC 1123
+		local
+			d: HTTP_DATE
 		do
-			Result := dt.formatted_out ("ddd,[0]dd mmm yyyy [0]hh:[0]mi:[0]ss.ff2") + " GMT"
+			create d.make_from_date_time (dt)
+			Result := d.rfc1123_string
 		end
 
 invariant
