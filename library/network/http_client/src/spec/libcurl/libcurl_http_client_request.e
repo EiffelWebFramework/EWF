@@ -215,7 +215,7 @@ feature -- Execution
 					Result.status := response_status_code (curl_easy, curl_handle)
 					set_header_and_body_to (l_curl_string.string, Result)
 				else
-					Result.set_error_occurred (True)
+					Result.set_error_message ("Error: cURL Error[" + l_result.out + "]")
 					Result.status := response_status_code (curl_easy, curl_handle)
 				end
 
@@ -225,10 +225,10 @@ feature -- Execution
 				curl_easy.cleanup (curl_handle)
 			else
 				create Result.make (url)
-				Result.set_error_occurred (True)
+				Result.set_error_message ("Error: internal error")
 			end
 
-			--| Remaining cleaning			
+			--| Remaining cleaning
 			if l_form /= Void then
 				l_form.dispose
 			end
@@ -339,7 +339,11 @@ feature {NONE} -- Implementation
 					--| ex: HTTP/1.1 200 OK%R%N
 				l_start := l_start + 2
 			end
-			if l_start < a_source.count and then a_source[l_start] = '%R' and a_source[l_start + 1] = '%N' then
+			if l_start = 0 or else 
+				(l_start < a_source.count and then 
+					a_source[l_start] = '%R' and a_source[l_start + 1] = '%N' 
+				)
+			then
 				res.set_body (a_source)
 			else
 				pos := a_source.substring_index ("%R%N%R%N", l_start)
