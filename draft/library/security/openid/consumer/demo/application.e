@@ -37,7 +37,7 @@ feature {NONE} -- Initialization
 		do
 			if attached {WGI_NINO_CONNECTOR} conn as nino then
 				create e
-				if attached e.item ("COMSPEC") as l_comspec then
+				if attached e.get ("COMSPEC") as l_comspec then
 					e.launch (l_comspec + " /C start " + "http://localhost:" + nino.port.out + "/")
 				else
 					e.launch ("http://localhost:" + nino.port.out + "/")

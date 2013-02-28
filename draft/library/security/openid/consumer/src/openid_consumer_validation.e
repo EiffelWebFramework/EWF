@@ -30,7 +30,7 @@ feature -- Access
 
 	identity: detachable READABLE_STRING_8
 
-	attributes: STRING_TABLE [READABLE_STRING_32]
+	attributes: HASH_TABLE [READABLE_STRING_32, STRING_8]
 
 feature -- Basic operation
 
@@ -38,7 +38,7 @@ feature -- Basic operation
 			-- Is openid identifier validated?
 		local
 			l_claimed_id: detachable READABLE_STRING_8
-			tb: STRING_TABLE [detachable READABLE_STRING_32]
+			tb: HASH_TABLE [detachable READABLE_STRING_32, STRING_8]
 			ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT
 			ret: URI
 			sess: HTTP_CLIENT_SESSION
@@ -120,9 +120,6 @@ feature -- Basic operation
 		end
 
 	get_attributes (lst: like values)
-		local
-			s: READABLE_STRING_32
-			sreg_keys: ARRAYED_LIST [READABLE_STRING_32]
 		do
 			attributes.wipe_out
 
@@ -162,7 +159,8 @@ feature -- Basic operation
 			s: READABLE_STRING_32
 			ax_keys: ARRAYED_LIST [READABLE_STRING_32]
 			l_alias: detachable READABLE_STRING_8
-			k_value, k_type, k_count, k: STRING
+			k_value, k_type, k_count: READABLE_STRING_8
+			k: STRING_8
 			i: INTEGER
 		do
 			if lst /= Void and then attached item_by_name ("openid.signed", lst) as l_signed then
@@ -172,13 +170,13 @@ feature -- Basic operation
 				loop
 					i := i + 1
 					s := c.item
-					if s.starts_with ("ns.") then
-						if attached item_by_name ("openid." + s, lst) as v then
-							if s.same_string ("ns.ax") and v.same_string ("http://openid.net/srv/ax/1.0") then
+					if s.starts_with ({STRING_32} "ns.") then
+						if attached item_by_name ({STRING_32} "openid." + s, lst) as v then
+							if s.same_string ({STRING_32} "ns.ax") and v.same_string ({STRING_32} "http://openid.net/srv/ax/1.0") then
 								l_alias := "ax."
 							else
 								if v.same_string ("http://openid.net/srv/ax/1.0") then
-									l_alias := s.substring (("ns.").count + 1, s.count) + "."
+									l_alias := s.substring (("ns.").count + 1, s.count).to_string_8 + "."
 								end
 							end
 						end
@@ -238,7 +236,7 @@ feature -- Basic operation
 			end
 		end
 
-	item_by_name (a_name: READABLE_STRING_32; lst: like values): detachable READABLE_STRING_32
+	item_by_name (a_name: READABLE_STRING_GENERAL; lst: like values): detachable READABLE_STRING_32
 		local
 			l_found: BOOLEAN
 		do

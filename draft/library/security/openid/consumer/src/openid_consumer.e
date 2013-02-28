@@ -137,7 +137,7 @@ feature {OPENID_CONSUMER_VALIDATION} -- Implementation
 			sess: HTTP_CLIENT_SESSION
 			ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT
 			xrds_location: detachable READABLE_STRING_8
-			xml: XML_STANDARD_PARSER
+			xml: XML_LITE_PARSER
 			tree: XML_CALLBACKS_DOCUMENT
 			xelt: detachable XML_ELEMENT
 			s: READABLE_STRING_32
@@ -315,8 +315,8 @@ feature {NONE} -- Implementation
 	add_ax_parameters_to (a_uri: URI)
 		local
 			lst: ARRAYED_LIST [READABLE_STRING_8]
-			l_aliases: STRING_TABLE [READABLE_STRING_8]
-			l_counts: STRING_TABLE [INTEGER]
+			l_aliases: HASH_TABLE [READABLE_STRING_8, STRING_8]
+			l_counts: HASH_TABLE [INTEGER, STRING_8]
 			l_alias: READABLE_STRING_8
 			s: STRING
 		do
@@ -440,7 +440,7 @@ feature {NONE} -- Implementation
 			end
 		end
 
-	ax_to_sreg_map: STRING_TABLE [READABLE_STRING_8]
+	ax_to_sreg_map: HASH_TABLE [READABLE_STRING_8, STRING_8]
 		once
 			create Result.make (7)
 			Result.compare_objects
