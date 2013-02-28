@@ -347,7 +347,7 @@ feature {NONE} -- Access: global variable
 			end
 		end
 
-feature -- Access: global variable		
+feature -- Access: global variables	
 
 	items: ITERABLE [WSF_VALUE]
 		do
@@ -409,6 +409,43 @@ feature -- Access: global variable
 				end
 			end
 			Result.keep_head (n - 1)
+		end
+
+feature -- Helpers: global variables
+
+	items_as_string_items: ITERABLE [TUPLE [name: READABLE_STRING_32; value: detachable READABLE_STRING_32]]
+			-- `items' as strings items
+			-- i.e: flatten any table or related into multiple string items
+		local
+			res: ARRAYED_LIST [TUPLE [name: READABLE_STRING_32; value: detachable READABLE_STRING_32]]
+		do
+			if attached items_table as tb then
+				create res.make (tb.count)
+				across
+					tb as c
+				loop
+					append_value_as_string_items_to (c.item, res)
+				end
+			else
+				create res.make (0)
+			end
+			Result := res
+		end
+
+	append_value_as_string_items_to (v: WSF_VALUE; a_target: LIST [TUPLE [name: READABLE_STRING_32; value: detachable READABLE_STRING_32]])
+			-- Append value `v' to `a_target' as multiple string items
+		do
+			if attached {WSF_STRING} v as s then
+				a_target.force ([s.name, s.value])
+			elseif attached {ITERABLE [WSF_VALUE]} v as lst then
+				across
+					lst as c
+				loop
+					append_value_as_string_items_to (c.item, a_target)
+				end
+			else
+				a_target.force ([v.name, v.string_representation])
+			end
 		end
 
 feature -- Execution variables

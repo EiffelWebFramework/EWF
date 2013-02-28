@@ -24,7 +24,7 @@ feature
 				check o.error = Void end
 				get_openid_response_uri (l_url)
 				if attached openid_response_uri as u and then u.is_valid then
-					create v.make_from_uri (o, u)
+					create v.make_from_items (o, u.decoded_query_items)
 					v.validate
 					if v.is_valid then
 						print ("Succeed ...%N")

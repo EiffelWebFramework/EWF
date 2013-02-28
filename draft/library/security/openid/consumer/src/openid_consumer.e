@@ -47,7 +47,7 @@ feature -- Change
 			across
 				ax_to_sreg_map as c
 			loop
-				ask_info (c.item, is_required)
+				ask_info (c.key.to_string_32, is_required)
 			end
 		end
 
@@ -133,7 +133,7 @@ feature {OPENID_CONSUMER_VALIDATION} -- Implementation
 
 	discovering_info (id: READABLE_STRING_8): detachable OPENID_DISCOVER
 		local
-			cl: LIBCURL_HTTP_CLIENT
+
 			sess: HTTP_CLIENT_SESSION
 			ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT
 			xrds_location: detachable READABLE_STRING_8
@@ -148,18 +148,17 @@ feature {OPENID_CONSUMER_VALIDATION} -- Implementation
 			r_version: INTEGER
 			l_xrds_content: detachable READABLE_STRING_8
 		do
-			create cl.make
-			sess := cl.new_session (id)
-			sess.set_is_insecure (True)
-			if attached sess.get ("", ctx) as rep then
+			sess := new_session (id)
+			if attached sess.head ("", ctx) as rep then
 				if rep.error_occurred then
 					report_error ("Unable get answer from openid provider at " + rep.url)
 				else
 					if
 						attached rep.header ("Content-Type") as l_content_type and then
-						l_content_type.has_substring ("application/xrds+xml")
+						l_content_type.has_substring ("application/xrds+xml") and then
+						attached sess.get ("", ctx) as l_getres
 					then
-						l_xrds_content := rep.body
+						l_xrds_content := l_getres.body
 					elseif attached rep.header ("X-XRDS-Location") as loc then
 						xrds_location := loc
 					else
@@ -168,8 +167,7 @@ feature {OPENID_CONSUMER_VALIDATION} -- Implementation
 				end
 			end
 			if l_xrds_content = Void and xrds_location /= Void then
-				sess := cl.new_session (xrds_location)
-				sess.set_is_insecure (True)
+				sess := new_session (xrds_location)
 				if attached sess.get ("", ctx) as rep then
 					if rep.error_occurred then
 						r_err := True
@@ -256,7 +254,6 @@ feature {OPENID_CONSUMER_VALIDATION} -- Implementation
 				Result.sreg_supported := r_sreg_supported
 				Result.identifier_select := r_identifier_select
 				Result.has_error := r_err
-
 			end
 		end
 
@@ -457,9 +454,9 @@ feature {NONE} -- Implementation
 			Result.force ("language", "pref/language")
 			Result.force ("timezone", "pref/timezone")
 
-			-- extension
-			Result.force ("firstname", "namePerson/first")
-			Result.force ("lastname", "namePerson/last")
+--			-- extension
+--			Result.force ("firstname", "namePerson/first")
+--			Result.force ("lastname", "namePerson/last")
 		end
 
 	ax_to_sreg (n: READABLE_STRING_8): detachable READABLE_STRING_8
@@ -495,6 +492,8 @@ feature {NONE} -- Implementation
 			has_error
 		end
 
+feature -- Helper		
+
 	xml_content (e: XML_ELEMENT): STRING_8
 		do
 			create Result.make_empty
@@ -505,6 +504,17 @@ feature {NONE} -- Implementation
 					Result.append (c.item.content)
 				end
 			end
+		end
+
+	new_session (a_uri: READABLE_STRING_8): HTTP_CLIENT_SESSION
+		local
+			cl: LIBCURL_HTTP_CLIENT
+		do
+			create cl.make
+			Result := cl.new_session (a_uri)
+			Result.set_is_insecure (True)
+			Result.set_max_redirects (5)
+			Result.add_header ("Accept", "application/xrds+xml, */*")
 		end
 
 end

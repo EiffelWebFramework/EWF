@@ -8,25 +8,19 @@ class
 	OPENID_CONSUMER_VALIDATION
 
 create
-	make_from_uri,
-	make_from_string
+	make_from_items
 
 feature {NONE} -- Initialization
 
-	make_from_uri (o: OPENID_CONSUMER; a_uri: URI)
+	make_from_items (o: OPENID_CONSUMER; lst: like values)
 		do
 			openid := o
-			uri := a_uri
+			values := lst
 			return_url := o.return_url
 			create attributes.make (0)
 		end
 
-	make_from_string (o: OPENID_CONSUMER; a_uri: READABLE_STRING_8)
-		do
-			make_from_uri (o, create {URI}.make_from_string (a_uri))
-		end
-
-	uri: URI
+	values: detachable ITERABLE [TUPLE [name: READABLE_STRING_32; value: detachable READABLE_STRING_32]]
 
 	return_url: READABLE_STRING_8
 
@@ -45,7 +39,6 @@ feature -- Basic operation
 		local
 			l_claimed_id: detachable READABLE_STRING_8
 			tb: STRING_TABLE [detachable READABLE_STRING_32]
-			cl: LIBCURL_HTTP_CLIENT
 			ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT
 			ret: URI
 			sess: HTTP_CLIENT_SESSION
@@ -53,7 +46,7 @@ feature -- Basic operation
 			is_valid := False
 			create ret.make_from_string (return_url)
 			create tb.make (5)
-			if attached uri.decoded_query_items as q_lst then
+			if attached values as q_lst then
 				if attached item_by_name ("openid.claimed_id", q_lst) as q_claimed_id then
 					l_claimed_id := q_claimed_id.as_string_8
 				elseif attached item_by_name ("openid.identity", q_lst) as l_id then
@@ -103,7 +96,6 @@ feature -- Basic operation
 						end
 
 						tb.force ("check_authentication", "openid.mode")
-						create cl.make
 						create ctx.make
 						across
 							tb as c
@@ -112,8 +104,7 @@ feature -- Basic operation
 								ctx.add_form_parameter (c.key.to_string_32, l_value)
 							end
 						end
-						sess := cl.new_session (d_info.server_uri)
-						sess.set_is_insecure (True)
+						sess := openid.new_session (d_info.server_uri)
 						if attached sess.post ("", ctx, Void) as res then
 							if res.error_occurred then
 							elseif attached {STRING} res.body as l_body then
@@ -128,7 +119,7 @@ feature -- Basic operation
 			end
 		end
 
-	get_attributes (lst: LIST [TUPLE [name: READABLE_STRING_32; value: detachable READABLE_STRING_32]])
+	get_attributes (lst: like values)
 		local
 			s: READABLE_STRING_32
 			sreg_keys: ARRAYED_LIST [READABLE_STRING_32]
@@ -139,14 +130,14 @@ feature -- Basic operation
 			get_ax_attributes (lst)
 		end
 
-	get_sreg_attributes (lst: LIST [TUPLE [name: READABLE_STRING_32; value: detachable READABLE_STRING_32]])
+	get_sreg_attributes (lst: like values)
 		local
 			s: READABLE_STRING_32
 			sreg_keys: ARRAYED_LIST [READABLE_STRING_32]
 		do
-			if attached item_by_name ("openid.signed", lst) as l_signed then
+			if lst /= Void and then attached item_by_name ("openid.signed", lst) as l_signed then
 					-- sreg attributes
-				create sreg_keys.make (3)
+				create sreg_keys.make (5)
 				across
 					l_signed.split (',') as c
 				loop
@@ -166,7 +157,7 @@ feature -- Basic operation
 			end
 		end
 
-	get_ax_attributes (lst: LIST [TUPLE [name: READABLE_STRING_32; value: detachable READABLE_STRING_32]])
+	get_ax_attributes (lst: like values)
 		local
 			s: READABLE_STRING_32
 			ax_keys: ARRAYED_LIST [READABLE_STRING_32]
@@ -174,38 +165,47 @@ feature -- Basic operation
 			k_value, k_type, k_count, k: STRING
 			i: INTEGER
 		do
-			if attached item_by_name ("openid.signed", lst) as l_signed then
+			if lst /= Void and then attached item_by_name ("openid.signed", lst) as l_signed then
 					-- ax attributes
 				across
 					l_signed.split (',') as c
 				loop
+					i := i + 1
 					s := c.item
 					if s.starts_with ("ns.") then
-						if attached item_by_name (s, lst) as v then
+						if attached item_by_name ("openid." + s, lst) as v then
 							if s.same_string ("ns.ax") and v.same_string ("http://openid.net/srv/ax/1.0") then
 								l_alias := "ax."
 							else
 								if v.same_string ("http://openid.net/srv/ax/1.0") then
-									l_alias := s.substring (("ns.").count, s.count) + "."
+									l_alias := s.substring (("ns.").count + 1, s.count) + "."
 								end
 							end
 						end
 					end
 				end
 				if l_alias /= Void then
-					create ax_keys.make (lst.count)
+					k_value := l_alias + "value."
+					k_type := l_alias + "type."
+					k_count := l_alias + "count."
+
+					create ax_keys.make (i)
 					across
 						l_signed.split (',') as c
 					loop
 						s := c.item
-						if s.starts_with (l_alias) then
+						if
+							s.starts_with (k_value)
+							or s.starts_with (k_type)
+						then
 							ax_keys.force ("openid." + s)
 						end
 					end
 
-					k_value := "openid." + l_alias + "value."
-					k_type := "openid." + l_alias + "type."
-					k_count := "openid." + l_alias + "count."
+					k_value := "openid." + k_value
+					k_type := "openid." + k_type
+					k_count := "openid." + k_count
+
 					across
 						ax_keys as c
 					loop
@@ -230,15 +230,15 @@ feature -- Basic operation
 								else
 									-- no alias !!!								
 								end
+--								attributes.force (v, k)
 							end
-							attributes.force (v, s.substring (5, s.count))
 						end
 					end
 				end
 			end
 		end
 
-	item_by_name (a_name: READABLE_STRING_32; lst: like {URI}.decoded_query_items): detachable READABLE_STRING_32
+	item_by_name (a_name: READABLE_STRING_32; lst: like values): detachable READABLE_STRING_32
 		local
 			l_found: BOOLEAN
 		do

@@ -86,13 +86,13 @@ feature {NONE} -- Initialization
 
 				if l_openid_mode.same_string ("id_res") then
 					o := new_openid_consumer (req)
-					create v.make_from_string (o, req.absolute_script_url (req.request_uri))
+					create v.make_from_items (o, req.items_as_string_items)
 					v.validate
 					if v.is_valid then
 						s.append ("<div>User authenticated</div>")
-						s.append ("<ul>Query")
+						s.append ("<ul>Request items")
 						across
-							req.query_parameters as c
+							req.items as c
 						loop
 							s.append ("<li>" + c.item.url_encoded_name + "=" + c.item.string_representation + "</li>")
 						end
@@ -140,9 +140,10 @@ feature {NONE} -- Initialization
 		do
 			create Result.make (req.absolute_script_url ("/openid"))
 
---			Result.ask_email (True)
-			Result.ask_nickname (False)
+			Result.ask_email (True)
+			Result.ask_all_info (False)
+--			Result.ask_nickname (False)
 --			Result.ask_fullname (False)
-			Result.ask_country (True)
+--			Result.ask_country (True)
 		end
 end
