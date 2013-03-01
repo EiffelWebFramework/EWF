@@ -18,8 +18,9 @@ create
 
 feature -- Initialization
 
-	make (req: WSF_REQUEST; a_mngr: like session_manager)
+	make (req: WSF_REQUEST; a_mngr: like session_manager; a_site_id: READABLE_STRING_8)
 		do
+			site_id := a_site_id
 			session_manager := a_mngr
 			initialize
 			create discarded_sessions.make
@@ -28,9 +29,13 @@ feature -- Initialization
 
 	initialize
 		do
+			session_id_name := "_EWF_CMS_SESSID__" + site_id
 		end
 
-feature -- Session access	
+feature -- Session access
+
+	site_id: READABLE_STRING_8
+			-- Associated CMS site id.
 
 	session: WSF_SESSION
 
@@ -129,6 +134,6 @@ feature -- Session internal
 
 	session_request_variable_name: STRING = "_EWF_CMS_SESSION_"
 
-	session_id_name: STRING = "_EWF_CMS_SESSID"
+	session_id_name: READABLE_STRING_8
 
 end
