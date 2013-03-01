@@ -112,7 +112,15 @@ feature {NONE} -- Internal
 
 	internal_rfc1123_string: detachable STRING
 
-feature -- Conversion to string		
+feature -- Conversion to string
+
+	yyyy_mmm_dd_string: STRING
+			-- String representation YYYY mmm dd
+			-- 2012 Dec 25
+		do
+			create Result.make (11)
+			append_date_time_to_yyyy_mmm_dd_string (date_time, Result)
+		end
 
 	rfc1123_string: STRING
 			-- String representation following RFC 1123.
@@ -144,6 +152,15 @@ feature -- Conversion to string
 		end
 
 feature -- Conversion into string
+
+	append_date_time_to_yyyy_mmm_dd_string (dt: DATE_TIME; s: STRING)
+		do
+			s.append_integer (dt.year)						-- yyyy
+			s.append_character (' ')						-- ' '
+			append_month_mmm_to (dt.month, s)				-- mmm
+			s.append_character (' ')						-- ' '
+			append_2_digits_integer_to (dt.day, s)			-- dd
+		end
 
 	append_date_time_to_rfc1123_string (dt: DATE_TIME; s: STRING)
 		do
