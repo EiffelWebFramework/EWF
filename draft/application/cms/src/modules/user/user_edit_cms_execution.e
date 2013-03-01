@@ -76,7 +76,7 @@ feature -- Execution
 						b.append ("</li>")
 					end
 
-					if attached {WSF_STRING} fd.item ("password") as s_password then
+					if attached {WSF_STRING} fd.item ("password") as s_password  and then not s_password.is_empty then
 						u.set_password (s_password.value)
 					end
 					if attached {WSF_STRING} fd.item ("email") as s_email then
