@@ -7,26 +7,81 @@ note
 class
 	CMS_CSS_STYLE
 
+inherit
+	ITERABLE [READABLE_STRING_8]
+
 create
 	make,
-	make_from_string
+	make_with_string,
+	make_with_items
 
 convert
-	make_from_string ({READABLE_STRING_8, STRING_8})
+	make_with_string ({READABLE_STRING_8, STRING_8})
 
 feature {NONE} -- Initialization
 
 	make
 		do
-			create {ARRAYED_LIST [READABLE_STRING_8]} items.make (3)
+			make_with_items (create {like items}.make (3))
 		end
 
-	make_from_string (s: READABLE_STRING_8)
+	make_with_string (s: READABLE_STRING_8)
 		do
-			items := s.split (';')
+			make_with_items (s.split (';'))
 		end
 
-	items: LIST [READABLE_STRING_8]
+	make_with_items (lst: ITERABLE [READABLE_STRING_8])
+		do
+			create items.make (5)
+			across
+				lst as c
+			loop
+				if attached {IMMUTABLE_STRING_8} c.item as imm then
+					items.force (imm)
+				else
+					items.force (create {IMMUTABLE_STRING_8}.make_from_string (c.item))
+				end
+			end
+		end
+
+	items: ARRAYED_LIST [IMMUTABLE_STRING_8]
+
+feature -- Access
+
+	count: INTEGER
+			-- Count of style entities.
+
+	new_cursor: ITERATION_CURSOR [READABLE_STRING_8]
+		do
+			Result := items.new_cursor
+		end
+
+feature -- Element change
+
+	plus alias "+" (a_other: CMS_CSS_STYLE): like Current
+			-- <Precursor>
+		local
+			lst: ARRAYED_LIST [READABLE_STRING_8]
+		do
+			create lst.make (count + a_other.count)
+			lst.append (items)
+			across
+				a_other as c
+			loop
+				lst.force (c.item)
+			end
+			create Result.make_with_items (lst)
+		end
+
+	append (a_other: CMS_CSS_STYLE)
+			-- Append style from `a_other' into Current
+		do
+			across
+				a_other as c
+			loop
+				items.force (c.item)
+			end
+		end
 
 feature -- Change
 
