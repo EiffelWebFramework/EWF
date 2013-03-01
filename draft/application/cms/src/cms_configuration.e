@@ -107,6 +107,15 @@ feature -- Access
 			end
 		end
 
+	site_id: READABLE_STRING_8
+		do
+			if attached options.item ("site.id") as s then
+				Result := s
+			else
+				Result := "_EWF_CMS_NO_ID_"
+			end
+		end
+
 	site_name (dft: like site_name): READABLE_STRING_8
 		do
 			if attached options.item ("site.name") as s then

@@ -29,6 +29,7 @@ feature {NONE} -- Initialization
 			configuration := cfg
 			base_url := a_setup.base_url
 
+			site_id := cfg.site_id
 			site_url := cfg.site_url ("")
 			site_name := cfg.site_name ("EWF::CMS")
 			site_email := cfg.site_email ("webmaster")
@@ -234,6 +235,8 @@ feature -- Hook: block
 
 feature -- Router
 
+	site_id: READABLE_STRING_8
+
 	site_name: READABLE_STRING_32
 
 	site_email: READABLE_STRING_8
@@ -350,7 +353,7 @@ feature -- Storage
 	session_controller (req: WSF_REQUEST): CMS_SESSION_CONTROLER
 			-- New session controller for request `req'
 		do
-			create Result.make (req, session_manager)
+			create Result.make (req, session_manager, site_id)
 		end
 
 	session_manager: WSF_SESSION_MANAGER
