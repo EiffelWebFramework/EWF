@@ -92,7 +92,11 @@ feature -- Hooks
 				a_execution.add_to_main_menu (lnk)
 			end
 			if a_execution.authenticated then
-				create lnk.make ("My Account", "/user")
+				if attached a_execution.user as u then
+					create lnk.make ("My Account (" + u.name + ")", "/user")
+				else
+					create lnk.make ("My Account", "/user")
+				end
 				a_menu_system.user_menu.extend (lnk)
 				create lnk.make ("Logout", "/user/logout")
 				a_menu_system.user_menu.extend (lnk)
