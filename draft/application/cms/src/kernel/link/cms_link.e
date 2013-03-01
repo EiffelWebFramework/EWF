@@ -10,6 +10,10 @@ deferred class
 inherit
 	REFACTORING_HELPER
 
+	DEBUG_OUTPUT
+
+	ITERABLE [CMS_LINK]
+
 feature -- Access	
 
 	title: READABLE_STRING_32
@@ -42,6 +46,26 @@ feature -- Query
 
 	children: detachable LIST [CMS_LINK]
 		deferred
+		end
+
+feature -- Access
+
+	new_cursor: ITERATION_CURSOR [CMS_LINK]
+			-- Fresh cursor associated with current structure
+		do
+			if attached children as lst then
+				Result := lst.new_cursor
+			else
+				Result := (create {ARRAYED_LIST [CMS_LINK]}.make (0)).new_cursor
+			end
+		end
+
+feature -- Status report
+
+	debug_output: STRING
+			-- String that should be displayed in debugger to represent `Current'.
+		do
+			Result := title.as_string_8 + " -> " + location
 		end
 
 end

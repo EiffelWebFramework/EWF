@@ -8,7 +8,7 @@ class
 	CMS_MENU
 
 inherit
-	ITERABLE [CMS_LINK]
+	CMS_LINK_COMPOSITE
 
 create
 	make,

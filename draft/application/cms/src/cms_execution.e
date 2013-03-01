@@ -386,11 +386,11 @@ feature -- Generation
 			across
 				a_menu_system as c
 			loop
-				prepare_menu (c.item)
+				prepare_links (c.item)
 			end
 		end
 
-	prepare_menu (a_menu: CMS_MENU)
+	prepare_links (a_menu: CMS_LINK_COMPOSITE)
 		local
 			to_remove: ARRAYED_LIST [CMS_LINK]
 		do
@@ -399,11 +399,17 @@ feature -- Generation
 				a_menu as c
 			loop
 				if attached {CMS_LOCAL_LINK} c.item as lm then
-					if not has_permissions (lm.permission_arguments) then
+					if attached lm.permission_arguments as perms and then not has_permissions (perms) then
 						to_remove.force (lm)
 					else
+						-- if lm.permission_arguments is Void , this is permitted
 						lm.get_is_active (request)
+						if attached {CMS_LINK_COMPOSITE} lm as comp then
+							prepare_links (comp)
+						end
 					end
+				elseif attached {CMS_LINK_COMPOSITE} c.item as comp then
+					prepare_links (comp)
 				end
 			end
 			across

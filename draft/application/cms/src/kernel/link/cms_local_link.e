@@ -10,6 +10,13 @@ class
 inherit
 	CMS_LINK
 
+	CMS_LINK_COMPOSITE
+		rename
+			items as children,
+			extend as add_link,
+			remove as remove_link
+		end
+
 create
 	make
 
@@ -30,8 +37,14 @@ feature -- Status report
 	is_active: BOOLEAN
 
 	is_expanded: BOOLEAN
+		do
+			Result := is_expandable and then internal_is_expanded
+		end
 
 	is_expandable: BOOLEAN
+		do
+			Result := internal_is_expandable or internal_is_expanded or has_children
+		end
 
 	has_children: BOOLEAN
 		do
@@ -41,6 +54,10 @@ feature -- Status report
 	permission_arguments: detachable ITERABLE [STRING]
 
 	children: detachable LIST [CMS_LINK]
+
+	internal_is_expandable: BOOLEAN
+
+	internal_is_expanded: BOOLEAN
 
 feature -- Element change
 
@@ -56,6 +73,19 @@ feature -- Element change
 			lst.force (lnk)
 		end
 
+	remove_link (lnk: CMS_LINK)
+		local
+			lst: like children
+		do
+			lst := children
+			if lst /= Void then
+				lst.prune_all (lnk)
+				if lst.is_empty then
+					children := Void
+				end
+			end
+		end
+
 	set_children (lst: like children)
 		do
 			children := lst
@@ -63,18 +93,12 @@ feature -- Element change
 
 	set_expanded (b: like is_expanded)
 		do
-			is_expanded := b
-			if b then
-				is_expandable := True
-			end
+			internal_is_expanded := b
 		end
 
 	set_expandable (b: like is_expandable)
 		do
-			is_expandable := b
-			if not b then
-				is_expanded := False
-			end
+			internal_is_expandable := b
 		end
 
 	get_is_active (req: WSF_REQUEST)
