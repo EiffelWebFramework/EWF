@@ -62,10 +62,8 @@ feature -- Access: user
 		do
 			if s = Void then
 				Result := True
-			elseif s.has_substring ("admin") or s.has_substring ("users") then
-				Result := False
 			else
-				Result := True
+				Result := False
 			end
 		end
 
