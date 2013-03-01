@@ -288,13 +288,19 @@ feature -- URL related
 	urls_set: BOOLEAN
 
 	initialize_urls (req: WSF_REQUEST)
+		local
+			u: like base_url
 		do
 			if not urls_set then
+				u := base_url
+				if u = Void then
+					u := ""
+				end
 				urls_set := True
 				if site_url.is_empty then
-					site_url := req.absolute_script_url ("")
+					site_url := req.absolute_script_url (u)
 				end
-				set_script_url (req.script_url (""))
+				set_script_url (req.script_url (u))
 			end
 		end
 
