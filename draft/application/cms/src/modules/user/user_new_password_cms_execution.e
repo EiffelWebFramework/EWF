@@ -57,7 +57,7 @@ feature -- Execution
 					end
 				end
 				initialize_primary_tabs (u)
-				if fd /= Void and then fd.is_valid then
+				if fd /= Void and then fd.is_valid and then u /= Void then
 					across
 						fd as c
 					loop
@@ -67,13 +67,16 @@ feature -- Execution
 						end
 						b.append ("</li>")
 					end
-					if u /= Void and then attached u.email as l_mail_address then
+					if attached u.email as l_mail_address then
 						l_uuid := (create {UUID_GENERATOR}).generate_uuid
 						e := new_password_email (u, l_mail_address, l_uuid.out)
 						u.set_data_item ("new_password_extra", l_uuid.out)
 						service.storage.save_user (u)
 						service.mailer.safe_process_email (e)
 						add_success_message ("Further instructions have been sent to your e-mail address.")
+						set_redirection (url ("/user", Void))
+					else
+						add_success_message ("No email is associated with the requested account. Please contact the webmaster for help.")
 						set_redirection (url ("/user", Void))
 					end
 					set_main_content (b)
