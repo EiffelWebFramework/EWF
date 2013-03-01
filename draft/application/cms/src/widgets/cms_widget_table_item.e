@@ -16,6 +16,7 @@ inherit
 
 create
 	make_with_text,
+	make_with_text_and_css,
 	make_with_content
 
 feature {NONE} -- Initialization
@@ -23,6 +24,18 @@ feature {NONE} -- Initialization
 	make_with_text (a_text: READABLE_STRING_8)
 		do
 			make_with_content (create {CMS_WIDGET_TEXT}.make_with_text (a_text))
+		end
+
+	make_with_text_and_css (a_text: READABLE_STRING_8; a_css_classes: detachable ITERABLE [READABLE_STRING_8])
+		do
+			make_with_text (a_text)
+			if a_css_classes /= Void then
+				across
+					a_css_classes as c
+				loop
+					add_css_class (c.item)
+				end
+			end
 		end
 
 	make_with_content (a_widget: CMS_WIDGET)
