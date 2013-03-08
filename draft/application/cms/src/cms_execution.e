@@ -637,6 +637,8 @@ feature {NONE} -- Implementation
 			set_session_item ("last_access", (create {DATE_TIME}.make_now_utc))
 		end
 
+feature -- Access: Session		
+
 	session_item (k: READABLE_STRING_GENERAL): detachable ANY
 		do
 			Result := controller.session.item (k)

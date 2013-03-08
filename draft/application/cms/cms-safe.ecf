@@ -13,13 +13,11 @@
 		<setting name="exception_trace" value="true"/>
 		<setting name="concurrency" value="thread"/>
 		<library name="base" location="$ISE_LIBRARY\library\base\base-safe.ecf"/>
-		<library name="default_nino" location="..\..\..\library\server\wsf\default\nino-safe.ecf"/>
 		<library name="encoder" location="..\..\..\library\text\encoder\encoder-safe.ecf" readonly="false"/>
 		<library name="http" location="..\..\..\library\network\protocol\http\http-safe.ecf" readonly="false"/>
-		<library name="nino" location="..\..\..\library\server\ewsgi\connectors\nino\nino-safe.ecf"/>
+		<library name="openid" location="..\..\..\library\security\openid\consumer\openid-safe.ecf" readonly="false"/>
 		<library name="process" location="$ISE_LIBRARY\library\process\process-safe.ecf"/>
 		<library name="time" location="$ISE_LIBRARY\library\time\time-safe.ecf"/>
-		<library name="uri_template" location="..\..\..\library\text\parser\uri_template\uri_template-safe.ecf" readonly="false"/>
 		<library name="uuid" location="$ISE_LIBRARY\library\uuid\uuid-safe.ecf"/>
 		<library name="wsf" location="..\..\..\library\server\wsf\wsf-safe.ecf" readonly="false"/>
 		<library name="wsf_session" location="..\..\..\library\server\wsf\wsf_session-safe.ecf" readonly="false"/>

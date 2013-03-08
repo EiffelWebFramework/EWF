@@ -10,7 +10,7 @@ class
 inherit
 	CMS_FORM_ITEM
 
-	ITERABLE [CMS_FORM_ITEM]
+	CMS_FORM_COMPOSITE
 
 	WITH_CSS_ID
 
@@ -22,7 +22,7 @@ feature {NONE} -- Initialization
 	make
 			-- Initialize `Current'.
 		do
-			create items.make (0)
+			initialize_with_count (0)
 		end
 
 feature -- Access
@@ -31,34 +31,11 @@ feature -- Access
 
 	is_collapsible: BOOLEAN
 
-feature -- Access
-
-	new_cursor: ITERATION_CURSOR [CMS_FORM_ITEM]
-			-- Fresh cursor associated with current structure
-		do
-			Result := items.new_cursor
-		end
-
 feature -- Change
 
 	set_legend (v: like legend)
 		do
 			legend := v
-		end
-
-	extend (i: CMS_FORM_ITEM)
-		do
-			items.force (i)
-		end
-
-	prepend (i: CMS_FORM_ITEM)
-		do
-			items.put_front (i)
-		end
-
-	extend_text (t: READABLE_STRING_8)
-		do
-			items.force (create {CMS_FORM_RAW_TEXT}.make (t))
 		end
 
 	set_collapsible (b: BOOLEAN)
@@ -100,9 +77,5 @@ feature -- Conversion
 			end
 			a_html.append ("%N</fieldset>%N")
 		end
-
-feature {NONE} -- Implementation
-
-	items: ARRAYED_LIST [CMS_FORM_ITEM]
 
 end

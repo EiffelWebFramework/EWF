@@ -49,7 +49,38 @@ feature -- Access
 			Result := items.new_cursor
 		end
 
+	count: INTEGER
+		do
+			Result := items.count
+		end
+
+	item (c: INTEGER): CMS_WIDGET_TABLE_ITEM
+		do
+			Result := items [c]
+		end
+
 feature -- Change
+
+	set_item (w: CMS_WIDGET_TABLE_ITEM; col: INTEGER)
+		do
+			if col > items.count then
+				items.grow (col)
+				from
+				until
+					items.count >= col - 1
+				loop
+					items.force (create {CMS_WIDGET_TABLE_ITEM}.make_with_text (""))
+				end
+				items.force (w)
+			else
+				items.put_i_th (w, col)
+			end
+		end
+
+	add_widget (w: CMS_WIDGET)
+		do
+			add_item (create {CMS_WIDGET_TABLE_ITEM}.make_with_content (w))
+		end
 
 	force, add_item (w: CMS_WIDGET_TABLE_ITEM)
 		do

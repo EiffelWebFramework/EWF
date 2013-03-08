@@ -3,7 +3,7 @@ note
 			Summary description for {CMS_HOOK_AUTO_REGISTER}.
 			When inheriting from this class, the declared hooks are automatically
 			registered, otherwise, each descendant has to add it to the cms service
-			itself.			
+			itself.
 		]"
 	date: "$Date$"
 	revision: "$Revision$"
@@ -24,6 +24,10 @@ feature -- Hook
 			if attached {CMS_HOOK_BLOCK} Current as h_block then
 				a_service.add_block_hook (h_block)
 			end
+			if attached {CMS_HOOK_FORM_ALTER} Current as h_block then
+				a_service.add_form_alter_hook (h_block)
+			end
+
 		end
 
 end

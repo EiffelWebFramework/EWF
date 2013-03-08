@@ -217,6 +217,46 @@ feature -- Change: user
 			a_user.set_profile (prof)
 		end
 
+feature -- Access: user_role
+
+	user_role_by_id (a_id: INTEGER): detachable CMS_USER_ROLE
+		do
+			if attached {like user_role_by_id} object_with_id (a_id, "user_roles") as ur then
+				Result := ur
+			end
+		end
+
+	user_roles: LIST [CMS_USER_ROLE]
+		local
+			i: INTEGER
+			n: like last_sequence
+		do
+			n := last_sequence ("user_roles")
+			create {ARRAYED_LIST [CMS_USER_ROLE]} Result.make (n)
+			if n > 0 then
+				from
+					i := 1
+				until
+					i > n
+				loop
+					if attached user_role_by_id (i) as ur then
+						Result.force (ur)
+					end
+					i := i + 1
+				end
+			end
+		end
+
+feature -- Change: user_role		
+
+	save_user_role (a_role: CMS_USER_ROLE)
+		do
+			if not a_role.has_id then
+				a_role.set_id (next_sequence ("user_roles"))
+			end
+			save_object_with_id (a_role, a_role.id, "user_roles")
+		end
+
 feature -- Email		
 
 	save_email (a_email: CMS_EMAIL)
@@ -459,52 +499,116 @@ feature {NONE} -- Implementation
 			save_object_with_id (a_prof, l_id, "user_profile")
 		end
 
---	user_profiles: TUPLE [by_username: HASH_TABLE [CMS_USER_PROFILE, like {CMS_USER}.name]]
---		local
---			f: RAW_FILE
---			fn: FILE_NAME
---			res: detachable like user_profiles
---			retried: INTEGER
---		do
---			if retried = 0 then
---				create fn.make_from_string (directory_name)
---				fn.set_file_name ("user_profiles.db")
---				create f.make (fn.string)
---				if f.exists and then f.is_readable then
---					f.open_read
---					if attached {like user_profiles} sed_file_retrieved (f) as r then
---						res := r
---					end
---					f.close
---				else
---				end
---			end
---			if res = Void then
---				res := [create {HASH_TABLE [CMS_USER_PROFILE, like {CMS_USER}.name]}.make (1)]
---				if retried <= 1 then
---					store_user_profiles (res)
---				end
---			end
---			Result := res
---		rescue
---			retried := retried + 1
---			retry
---		end
+feature -- Misc
 
---	store_user_profiles (a_user_profiles: like user_profiles)
---		local
---			f: RAW_FILE
---			fn: FILE_NAME
---		do
---			create fn.make_from_string (directory_name)
---			fn.set_file_name ("user_profiles.db")
---			create f.make (fn.string)
---			if not f.exists or else f.is_writable then
---				f.open_write
---				sed_file_store (a_user_profiles, f)
---				f.close
---			end
---		end
+	custom_type (a_type: READABLE_STRING_8): STRING
+		do
+			Result := "custom__" + a_type
+		end
+
+	custom_value_id (a_name: READABLE_STRING_8; a_type: READABLE_STRING_8): INTEGER
+			-- Storage `id' for custom value named `a_name' if any.
+			-- If no such data exists, return 0
+		local
+			i,
+			l_id, l_last_id: INTEGER
+			t: STRING
+		do
+			t := custom_type (a_type)
+			l_last_id := last_sequence (t)
+			from
+				i := 1
+			until
+				i > l_last_id or l_id > 0
+			loop
+				if
+					attached {TUPLE [name: READABLE_STRING_8; value: attached like custom_value]} object_with_id (i, t) as obj and then
+					obj.name.same_string (a_name)
+				then
+					l_id := i
+				end
+				i := i + 1
+			end
+		end
+
+	set_custom_value (a_name: READABLE_STRING_8; a_value: attached like custom_value ; a_type: READABLE_STRING_8)
+			-- Save data `a_name:a_value' for type `a_type'
+		local
+			t: STRING
+			l_id: INTEGER
+		do
+			t := custom_type (a_type)
+			l_id := custom_value_id (a_name, a_type)
+			if l_id = 0 then
+				l_id := next_sequence (t)
+			end
+			save_object_with_id ([a_name, a_value], l_id, t)
+		end
+
+	custom_value (a_name: READABLE_STRING_8; a_type: READABLE_STRING_8): detachable TABLE_ITERABLE [READABLE_STRING_8, STRING_8]
+			-- Data for name `a_name' and type `a_type'.
+		local
+			i,
+			l_id, l_last_id: INTEGER
+			t: STRING
+		do
+			t := custom_type (a_type)
+			l_last_id := last_sequence (t)
+			from
+				i := 1
+			until
+				i > l_last_id or l_id > 0
+			loop
+				if
+					attached {TUPLE [name: READABLE_STRING_8; value: attached like custom_value]} object_with_id (i, t) as obj and then
+					obj.name.same_string (a_name)
+				then
+					l_id := i
+					Result := obj.value
+				end
+				i := i + 1
+			end
+		end
+
+	custom_value_names_where (a_where_key, a_where_value: READABLE_STRING_8; a_type: READABLE_STRING_8): detachable LIST [READABLE_STRING_8]
+			-- Name where custom value has item `a_where_key' same as `a_where_value' for  type `a_type'.
+		local
+			i, l_last_id: INTEGER
+			t: STRING
+			l_key_found: BOOLEAN
+			res: ARRAYED_LIST [READABLE_STRING_8]
+		do
+			create res.make (0)
+			t := custom_type (a_type)
+			l_last_id := last_sequence (t)
+			from
+				i := 1
+			until
+				i > l_last_id
+			loop
+				if
+					attached {TUPLE [name: READABLE_STRING_8; value: attached like custom_value]} object_with_id (i, t) as d
+				then
+					l_key_found := False
+					across
+						d.value as c
+					until
+						l_key_found or Result /= Void
+					loop
+						if c.key.same_string (a_where_key) then
+							l_key_found := True
+							if c.item.same_string (a_where_value) then
+								res.force (d.name)
+							end
+						end
+					end
+				end
+				i := i + 1
+			end
+			if not res.is_empty then
+				Result := res
+			end
+		end
 
 feature {NONE} -- Implementation		
 

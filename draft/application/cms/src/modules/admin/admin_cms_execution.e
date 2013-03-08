@@ -29,6 +29,9 @@ feature -- Execution
 			if has_permission ("administrate blocks") then
 				b.append ("<li>" + link ("Blocks", "/admin/blocks/", Void) + "</li>")
 			end
+			if has_permission ("administrate user-roles") then
+				b.append ("<li>" + link ("User roles", "/admin/roles/", Void) + "</li>")
+			end
 			if has_permission ("administrate users") then
 				b.append ("<li>" + link ("Users", "/admin/users/", Void) + "</li>")
 			end

@@ -35,9 +35,9 @@ feature -- Execution
 			set_main_content (s)
 		end
 
-	new_table: CMS_WIDGET_TABLE [READABLE_STRING_8]
+	new_table: CMS_WIDGET_AGENT_TABLE [READABLE_STRING_8]
 		local
-			l_table: CMS_WIDGET_TABLE [READABLE_STRING_8]
+			l_table: CMS_WIDGET_AGENT_TABLE [READABLE_STRING_8]
 		do
 			create l_table.make
 			l_table.add_css_style ("width: 85%%; border: solid 1px #999; padding: 2px;")

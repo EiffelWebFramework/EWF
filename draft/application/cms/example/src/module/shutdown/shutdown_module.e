@@ -9,6 +9,9 @@ class
 
 inherit
 	CMS_MODULE
+		redefine
+			permissions
+		end
 
 	CMS_HOOK_MENU_ALTER
 
@@ -39,25 +42,19 @@ feature {CMS_SERVICE} -- Registration
 
 feature -- Hooks
 
+	permissions (a_service: CMS_SERVICE): LIST [CMS_PERMISSION]
+		do
+			Result := Precursor (a_service)
+			Result.extend ("shutdown")
+		end
+
 	menu_alter (a_menu_system: CMS_MENU_SYSTEM; a_execution: CMS_EXECUTION)
 		local
 			lnk: CMS_LOCAL_LINK
 		do
 			create lnk.make ("Shutdown", "/admin/shutdown/")
-			lnk.set_permission_arguments (<<"admin shutdown">>)
+			lnk.set_permission_arguments (<<"shutdown">>)
 			a_menu_system.management_menu.extend (lnk)
-
-		end
-
-	links: HASH_TABLE [CMS_MODULE_LINK, STRING]
-			-- Link indexed by path
-		local
---			lnk: CMS_MODULE_LINK
-		do
-			create Result.make (3)
---			create lnk.make ("Date/time demo")
---			lnk.set_callback (agent process_date_time_demo, <<"arg">>)
---			Result["/demo/date/{arg}"] := lnk
 		end
 
 	handle_shutdown (req: WSF_REQUEST; res: WSF_RESPONSE)

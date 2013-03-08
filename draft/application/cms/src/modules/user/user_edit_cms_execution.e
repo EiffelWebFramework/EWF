@@ -21,8 +21,7 @@ feature -- Execution
 			b: STRING_8
 			f: CMS_FORM
 			fd: detachable CMS_FORM_DATA
-			u, fu: detachable CMS_USER
-			up: detachable CMS_USER_PROFILE
+			u: detachable CMS_USER
 			l_is_editing_current_user: BOOLEAN
 		do
 			if attached {WSF_STRING} request.path_parameter ("uid") as p_uid and then p_uid.is_integer then
@@ -50,65 +49,90 @@ feature -- Execution
 				f := edit_form (u, url (request.path_info, Void), "user-edit")
 
 				if request.is_post_request_method then
-					create fd.make (request, f)
-					if attached {WSF_STRING} fd.item ("username") as s_username then
-						fu := service.storage.user_by_name (s_username.value)
-						if fu = Void then
-							fd.report_invalid_field ("username", "User does not exist!")
-						end
-					end
-					if attached {WSF_STRING} fd.item ("email") as s_email then
-						fu := service.storage.user_by_email (s_email.value)
-						if fu /= Void and then fu.id /= u.id then
-							fd.report_invalid_field ("email", "Email is already used by another user!")
-						end
-					end
-					fu := Void
-				end
-				if fd /= Void and then fd.is_valid then
-					across
-						fd as c
-					loop
-						b.append ("<li>" +  html_encoded (c.key) + "=")
-						if attached c.item as v then
-							b.append (html_encoded (v.string_representation))
-						end
-						b.append ("</li>")
-					end
-
-					if attached {WSF_STRING} fd.item ("password") as s_password  and then not s_password.is_empty then
-						u.set_password (s_password.value)
-					end
-					if attached {WSF_STRING} fd.item ("email") as s_email then
-						u.set_email (s_email.value)
-					end
-
-					if attached {WSF_STRING} fd.item ("note") as s_note then
-						up := u.profile
-						if up = Void then
-							create up.make
-						end
-						up.force (s_note.value, "note")
-						u.set_profile (up)
-					end
-
-					service.storage.save_user (u)
-					if l_is_editing_current_user and u /= user then
-						set_user (u)
-					end
-					set_redirection (url ("/user", Void))
-					set_main_content (b)
+					f.validation_actions.extend (agent edit_form_validate (?, u))
+					f.submit_actions.extend (agent edit_form_submit (?, u, l_is_editing_current_user, b))
+					f.process (Current)
+					fd := f.last_data
 				else
-					if fd /= Void then
-						if not fd.is_valid then
-							report_form_errors (fd)
-						end
-						fd.apply_to_associated_form
-					end
-					f.append_to_html (theme, b)
+					f.prepare (Current)
 				end
+
+				f.append_to_html (theme, b)
+
 			end
 			set_main_content (b)
+		end
+
+	edit_form_validate (fd: CMS_FORM_DATA; u: CMS_USER)
+		local
+			fu: detachable CMS_USER
+		do
+			if attached {WSF_STRING} fd.item ("username") as s_username then
+				fu := service.storage.user_by_name (s_username.value)
+				if fu = Void then
+					fd.report_invalid_field ("username", "User does not exist!")
+				end
+			end
+			if attached {WSF_STRING} fd.item ("email") as s_email then
+				fu := service.storage.user_by_email (s_email.value)
+				if fu /= Void and then fu.id /= u.id then
+					fd.report_invalid_field ("email", "Email is already used by another user!")
+				end
+			end
+		end
+
+	edit_form_submit (fd: CMS_FORM_DATA; u: CMS_USER; a_is_editing_current_user: BOOLEAN; b: STRING)
+		local
+			up: detachable CMS_USER_PROFILE
+			l_roles: like {CMS_USER}.roles
+		do
+			debug
+				across
+					fd as c
+				loop
+					b.append ("<li>" +  html_encoded (c.key) + "=")
+					if attached c.item as v then
+						b.append (html_encoded (v.string_representation))
+					end
+					b.append ("</li>")
+				end
+			end
+
+			if attached {WSF_STRING} fd.item ("password") as s_password  and then not s_password.is_empty then
+				u.set_password (s_password.value)
+			end
+			if attached {WSF_STRING} fd.item ("email") as s_email then
+				u.set_email (s_email.value)
+			end
+
+			if attached {WSF_STRING} fd.item ("note") as s_note then
+				up := u.profile
+				if up = Void then
+					create up.make
+				end
+				up.force (s_note.value, "note")
+				u.set_profile (up)
+			end
+			if has_permission ("administer users") then
+				l_roles := u.roles
+				u.clear_roles
+				if attached fd.table_item ("roles") as f_roles and then not f_roles.is_empty then
+					create {ARRAYED_LIST [INTEGER]} l_roles.make (f_roles.count)
+					across
+						f_roles as r
+					loop
+						if attached {WSF_STRING} r.item as s and then attached s.is_integer then
+							u.add_role_by_id (s.integer_value)
+						end
+					end
+				end
+			end
+
+			service.storage.save_user (u)
+			if a_is_editing_current_user and u /= user then
+				set_user (u)
+			end
+			set_redirection (user_url (u))
 		end
 
 	edit_form (u: CMS_USER; a_url: READABLE_STRING_8; a_name: STRING): CMS_FORM
@@ -118,6 +142,8 @@ feature -- Execution
 			tp: CMS_FORM_PASSWORD_INPUT
 			ta: CMS_FORM_TEXTAREA
 			ts: CMS_FORM_SUBMIT_INPUT
+			tset: CMS_FORM_FIELD_SET
+			cb: CMS_FORM_CHECKBOX_INPUT
 		do
 			create f.make (a_url, a_name)
 
@@ -156,6 +182,27 @@ feature -- Execution
 			ta.set_is_required (False)
 			f.extend (ta)
 
+			if has_permission ("administer users") then
+				create tset.make
+				tset.set_legend ("User roles")
+				tset.set_collapsible (True)
+				f.extend (tset)
+				across
+					service.storage.user_roles as r
+				loop
+					if
+						r.item ~ service.storage.anonymous_user_role or
+						r.item ~ service.storage.authenticated_user_role
+					then
+						-- Skip
+					else
+						create cb.make_with_text ("roles[]", r.item.id.out)
+						cb.set_text (r.item.name)
+						cb.set_checked (u /= Void and then u.has_role (r.item))
+						tset.extend (cb)
+					end
+				end
+			end
 			f.extend_text ("<br/>")
 
 			create ts.make ("op")

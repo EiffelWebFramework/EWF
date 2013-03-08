@@ -17,6 +17,17 @@ feature -- Change
 			css_classes := Void
 		end
 
+	add_css_classes (a_classes: detachable ITERABLE [READABLE_STRING_8])
+		do
+			if a_classes /= Void then
+				across
+					a_classes as c
+				loop
+					add_css_class (c.item)
+				end
+			end
+		end
+
 	add_css_class (a_class: READABLE_STRING_8)
 		require
 			is_valid_css_class: is_valid_css_class (a_class)

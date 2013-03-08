@@ -62,6 +62,19 @@ feature -- Change
 			checked := b
 		end
 
+	set_checked_by_value (v: detachable WSF_VALUE)
+		do
+			if attached {WSF_STRING} v as s then
+				if value /= Void then
+					set_checked (is_same_value (s.value))
+				else
+					set_checked (s.value.same_string ("on") or s.value.same_string ("true") or s.value.same_string ("yes") or s.value.same_string ("enabled"))
+				end
+			else
+				set_checked (False)
+			end
+		end
+
 	set_value (v: detachable WSF_VALUE)
 			-- Set value `v' if applicable to Current
 		do
@@ -69,14 +82,10 @@ feature -- Change
 				across
 					lst as c
 				loop
-					if
-						attached {WSF_STRING} c.item as s and then
-						is_same_value (s.value)
-					then
-						set_checked (True)
-					end
+					set_checked_by_value (c.item)
 				end
 			else
+				set_checked_by_value (v)
 				Precursor (v)
 			end
 		end
@@ -91,8 +100,8 @@ feature {NONE} -- Implementation
 				a_html.append (t)
 			elseif attached text as t then
 				a_html.append (a_theme.html_encoded (t))
-			elseif attached value as v then
-				a_html.append (a_theme.html_encoded (v))
+--			elseif attached value as v then
+--				a_html.append (a_theme.html_encoded (v))
 			end
 		end
 

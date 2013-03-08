@@ -14,13 +14,11 @@
 		<setting name="exception_trace" value="true"/>
 
 		<library name="base" location="$ISE_LIBRARY\library\base\base.ecf"/>
-		<library name="default_nino" location="..\..\..\library\server\wsf\default\nino.ecf"/>
 		<library name="encoder" location="..\..\..\library\text\encoder\encoder.ecf" readonly="false"/>
 		<library name="http" location="..\..\..\library\network\protocol\http\http.ecf" readonly="false"/>
-		<library name="nino" location="..\..\..\library\server\ewsgi\connectors\nino\nino.ecf"/>
+		<library name="openid" location="..\..\..\library\security\openid\consumer\openid.ecf" />
 		<library name="process" location="$ISE_LIBRARY\library\process\process.ecf"/>
 		<library name="time" location="$ISE_LIBRARY\library\time\time.ecf"/>
-		<library name="uri_template" location="..\..\..\library\text\parser\uri_template\uri_template.ecf" readonly="false"/>
 		<library name="uuid" location="$ISE_LIBRARY\library\uuid\uuid.ecf"/>
 		<library name="wsf" location="..\..\..\library\server\wsf\wsf.ecf" readonly="false"/>
 		<library name="wsf_session" location="..\..\..\library\server\wsf\wsf_session.ecf" readonly="false"/>

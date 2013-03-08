@@ -6,7 +6,7 @@ class
 	NODE_VIEW_CMS_EXECUTION
 
 inherit
-	CMS_EXECUTION
+	NODE_CMS_EXECUTION
 
 create
 	make

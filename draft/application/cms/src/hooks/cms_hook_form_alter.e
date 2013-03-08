@@ -12,7 +12,7 @@ inherit
 
 feature -- Hook
 
-	form_alter (a_form: CMS_FORM; a_execution: CMS_EXECUTION)
+	form_alter (a_form: CMS_FORM; a_form_data: detachable CMS_FORM_DATA; a_execution: CMS_EXECUTION)
 		deferred
 		end
 

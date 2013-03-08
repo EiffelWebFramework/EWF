@@ -9,6 +9,9 @@ class
 
 inherit
 	CMS_MODULE
+		redefine
+			permissions
+		end
 
 	CMS_HOOK_MENU_ALTER
 
@@ -36,6 +39,7 @@ feature {CMS_SERVICE} -- Registration
 			service := a_service
 			a_service.map_uri ("/admin/", agent handle_admin (a_service, ?, ?))
 			a_service.map_uri ("/admin/users/", agent handle_admin_users (a_service, ?, ?))
+			a_service.map_uri ("/admin/roles/", agent handle_admin_user_roles (a_service, ?, ?))
 			a_service.map_uri ("/admin/blocks/", agent handle_admin_blocks (a_service, ?, ?))
 			a_service.map_uri ("/admin/modules/", agent handle_admin_modules (a_service, ?, ?))
 			a_service.map_uri ("/admin/logs/", agent handle_admin_logs (a_service, ?, ?))
@@ -55,10 +59,16 @@ feature -- Hooks
 			a_menu_system.management_menu.extend (lnk)
 		end
 
-	links: HASH_TABLE [CMS_MODULE_LINK, STRING]
-			-- Link indexed by path
+	permissions (a_service: CMS_SERVICE): LIST [CMS_PERMISSION]
 		do
-			create Result.make (0)
+			Result := Precursor (a_service)
+			Result.extend ("administer")
+			Result.extend ("administer users")
+			Result.extend ("administer user roles")
+			Result.extend ("administer content")
+			Result.extend ("administer logs")
+			Result.extend ("administer blocks")
+			Result.extend ("administer modules")
 		end
 
 feature -- Handler		
@@ -71,6 +81,11 @@ feature -- Handler
 	handle_admin_users (cms: CMS_SERVICE; req: WSF_REQUEST; res: WSF_RESPONSE)
 		do
 			(create {ADMIN_USERS_CMS_EXECUTION}.make (req, res, cms)).execute
+		end
+
+	handle_admin_user_roles (cms: CMS_SERVICE; req: WSF_REQUEST; res: WSF_RESPONSE)
+		do
+			(create {ADMIN_USER_ROLES_CMS_EXECUTION}.make (req, res, cms)).execute
 		end
 
 	handle_admin_blocks (cms: CMS_SERVICE; req: WSF_REQUEST; res: WSF_RESPONSE)

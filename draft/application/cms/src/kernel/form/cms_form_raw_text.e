@@ -8,31 +8,16 @@ class
 	CMS_FORM_RAW_TEXT
 
 inherit
-	CMS_FORM_ITEM
+	CMS_WIDGET_TEXT
+		rename
+			set_text as set_value,
+			make_with_text as make
 		redefine
 			append_to_html
 		end
 
 create
 	make
-
-feature {NONE} -- Initialization
-
-	make (a_text: like text)
-		do
-			text := a_text
-		end
-
-feature -- Access
-
-	text: READABLE_STRING_8
-
-feature -- Element change
-
-	set_value (v: detachable WSF_VALUE)
-		do
-			-- Not applicable
-		end
 
 feature -- Conversion
 
