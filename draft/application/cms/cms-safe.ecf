@@ -18,6 +18,7 @@
 		<library name="openid" location="..\..\..\library\security\openid\consumer\openid-safe.ecf" readonly="false"/>
 		<library name="process" location="$ISE_LIBRARY\library\process\process-safe.ecf"/>
 		<library name="time" location="$ISE_LIBRARY\library\time\time-safe.ecf"/>
+		<library name="uri_template" location="..\..\..\library\text\parser\uri_template\uri_template-safe.ecf"/>
 		<library name="uuid" location="$ISE_LIBRARY\library\uuid\uuid-safe.ecf"/>
 		<library name="wsf" location="..\..\..\library\server\wsf\wsf-safe.ecf" readonly="false"/>
 		<library name="wsf_session" location="..\..\..\library\server\wsf\wsf_session-safe.ecf" readonly="false"/>
