@@ -72,7 +72,7 @@ feature -- Persistence
 					if not f.exists or else f.is_writable then
 						f.create_read_write
 						a_session.data.set_expiration (a_session.expiration)
-						f.general_store (a_session.data)
+						storage.store (a_session.data, create {SED_MEDIUM_READER_WRITER}.make_for_writing (f))
 						f.close
 					end
 				end
@@ -106,6 +106,11 @@ feature -- Persistence
 
 feature {NONE} -- Implementation
 
+	storage: SED_STORABLE_FACILITIES
+		once
+			create Result
+		end
+
 	data_from_file (f: FILE): detachable like session_data
 		require
 			f.is_open_read and f.is_readable
@@ -114,7 +119,7 @@ feature {NONE} -- Implementation
 		do
 			if
 				not rescued and then
-				attached {like session_data} f.retrieved as d
+				attached {like session_data} storage.retrieved (create {SED_MEDIUM_READER_WRITER}.make_for_reading (f), True) as d
 			then
 				Result := d
 			end
@@ -157,4 +162,14 @@ feature {NONE} -- Implementation
 			Result := fn.string
 		end
 
+note
+	copyright: "2011-2013, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
+	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
+	source: "[
+			Eiffel Software
+			5949 Hollister Ave., Goleta, CA 93117 USA
+			Telephone 805-685-1006, Fax 805-685-6869
+			Website http://www.eiffel.com
+			Customer support http://support.eiffel.com
+		]"
 end
