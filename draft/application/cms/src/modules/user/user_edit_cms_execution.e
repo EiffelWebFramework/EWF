@@ -196,8 +196,8 @@ feature -- Execution
 					then
 						-- Skip
 					else
-						create cb.make_with_text ("roles[]", r.item.id.out)
-						cb.set_text (r.item.name)
+						create cb.make_with_value ("roles[]", r.item.id.out)
+						cb.set_title (r.item.name)
 						cb.set_checked (u /= Void and then u.has_role (r.item))
 						tset.extend (cb)
 					end
