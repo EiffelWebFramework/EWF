@@ -92,7 +92,7 @@ feature -- Hooks
 					create fh.make_with_text ("openid-identity", l_openid_identity.to_string_32)
 					a_execution.remove_session_item ("openid.identity")
 					a_form.extend (fh)
-					a_form.extend_text ("The new account will be associated with OpenID %""+ l_openid_identity +"%"")
+					a_form.extend_text ("The new account will be associated with OpenID %""+ a_execution.html_encoded (l_openid_identity) +"%"")
 					if attached {READABLE_STRING_GENERAL} a_execution.session_item ("openid.nickname") as l_openid_nickname then
 						if attached a_form.fields_by_name ("username") as f_lst then
 							across

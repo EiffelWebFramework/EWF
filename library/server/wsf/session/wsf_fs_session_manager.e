@@ -72,7 +72,7 @@ feature -- Persistence
 					if not f.exists or else f.is_writable then
 						f.create_read_write
 						a_session.data.set_expiration (a_session.expiration)
-						storage.store (a_session.data, create {SED_MEDIUM_READER_WRITER}.make_for_writing (f))
+						f.general_store (a_session.data)
 						f.close
 					end
 				end
@@ -106,11 +106,6 @@ feature -- Persistence
 
 feature {NONE} -- Implementation
 
-	storage: SED_STORABLE_FACILITIES
-		once
-			create Result
-		end
-
 	data_from_file (f: FILE): detachable like session_data
 		require
 			f.is_open_read and f.is_readable
@@ -119,7 +114,7 @@ feature {NONE} -- Implementation
 		do
 			if
 				not rescued and then
-				attached {like session_data} storage.retrieved (create {SED_MEDIUM_READER_WRITER}.make_for_reading (f), True) as d
+				attached {like session_data} f.retrieved as d
 			then
 				Result := d
 			end

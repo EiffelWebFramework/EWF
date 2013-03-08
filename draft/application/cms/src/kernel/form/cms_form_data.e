@@ -79,9 +79,9 @@ feature -- Access
 									Result.add_value (t.item, t.item.name)
 								end
 							else
-								p := k.index_of ('[', 1)
+								p := k.index_of_code (91, 1) -- 91 '['
 								if p > 0 then
-									q := k.index_of (']', p + 1)
+									q := k.index_of_code (93, p + 1) -- 93 ']'
 									if q > p then
 										if q = p + 1 then
 											-- []

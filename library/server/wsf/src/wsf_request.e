@@ -429,9 +429,9 @@ feature -- Access: global variables
 				Result := item (a_name)
 			end
 			if Result = Void then
-				p := a_name.index_of ('[', 1)
+				p := a_name.index_of_code (91, 1) -- 91 '['
 				if p > 0 then
-					q := a_name.index_of (']', p + 1)
+					q := a_name.index_of_code (93, p + 1) -- 93 ']'
 					if q > p then
 						n := a_name.substring (1, p - 1)
 						k := a_name.substring (p + 1, q - 1)
