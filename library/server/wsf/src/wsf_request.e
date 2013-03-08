@@ -411,6 +411,48 @@ feature -- Access: global variables
 			Result.keep_head (n - 1)
 		end
 
+	table_item (a_name: READABLE_STRING_GENERAL; f: detachable FUNCTION [ANY, TUPLE [READABLE_STRING_GENERAL], detachable WSF_VALUE]): detachable WSF_VALUE
+			-- Return value associated with table for flat name `a_name'.
+			-- Use function `f' to get the item, this could be agent of `form_parameter' or `query_parameter', ...
+			--     By default, this uses `items'
+			-- For instance "foo[bar]" will return item "bar" from table item "foo" if it exists.
+			-- Note: we could add this flexible behavior directly to `query_parameter' and related ..
+		local
+			p,q: INTEGER
+			n,k: READABLE_STRING_GENERAL
+			v: like table_item
+			val: detachable WSF_VALUE
+		do
+			if f /= Void then
+				Result := f.item ([a_name])
+			else
+				Result := item (a_name)
+			end
+			if Result = Void then
+				p := a_name.index_of ('[', 1)
+				if p > 0 then
+					q := a_name.index_of (']', p + 1)
+					if q > p then
+						n := a_name.substring (1, p - 1)
+						k := a_name.substring (p + 1, q - 1)
+
+						if f /= Void then
+							val := f.item ([n])
+						else
+							val := item (n)
+						end
+						if attached {WSF_TABLE} val as tb then
+							v := tb.value (k)
+							if q = a_name.count then
+								Result := v
+							else
+							end
+						end
+					end
+				end
+			end
+		end
+
 feature -- Helpers: global variables
 
 	items_as_string_items: ITERABLE [TUPLE [name: READABLE_STRING_32; value: detachable READABLE_STRING_32]]
