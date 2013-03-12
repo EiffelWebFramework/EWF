@@ -8,6 +8,15 @@ deferred class
 
 feature {WGI_CONNECTOR, WGI_SERVICE} -- Commit
 
+	push
+			-- Commit and push response
+		do
+			commit
+			if attached post_commit_action as act then
+				act.call (Void)
+			end
+		end
+
 	commit
 			-- Commit the current response
 		deferred
@@ -15,6 +24,21 @@ feature {WGI_CONNECTOR, WGI_SERVICE} -- Commit
 			status_is_set: status_is_set
 			header_committed: header_committed
 			message_committed: message_committed
+		end
+
+feature -- Access: commit
+
+	post_commit_action: detachable PROCEDURE [ANY, TUPLE]
+			-- Action associated with the final `commit' execution
+			-- Note: useful to trigger action just after the
+			--       response is transfered to the client.
+
+feature -- Change: commit
+
+	set_post_commit_action (act: like post_commit_action)
+			-- Assign `act' to `post_commit_action'
+		do
+			post_commit_action := act
 		end
 
 feature -- Status report
@@ -131,7 +155,7 @@ feature -- Error reporting
 		end
 
 note
-	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
+	copyright: "2011-2013, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

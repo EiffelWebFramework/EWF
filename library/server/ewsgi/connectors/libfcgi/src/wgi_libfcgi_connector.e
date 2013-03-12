@@ -65,6 +65,7 @@ feature -- Execution
 				create req.make (vars, a_input, Current)
 				create res.make (a_output, a_output)
 				service.execute (req, res)
+				res.push
 			else
 				if attached (create {EXCEPTION_MANAGER}).last_exception as e and then attached e.exception_trace as l_trace then
 					if res /= Void then
@@ -74,6 +75,7 @@ feature -- Execution
 						if res.message_writable then
 							res.put_string ("<pre>" + l_trace + "</pre>")
 						end
+						res.push
 					end
 				end
 			end
