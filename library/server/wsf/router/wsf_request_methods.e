@@ -65,7 +65,7 @@ feature {NONE} -- Initialization
 	make_from_iterable (v: ITERABLE [READABLE_STRING_8])
 			-- Initialize for all methods named by `v'.
 		require
-			v_all_methods_attached: v /= Void and then True -- Can this be specified using across? It's annoying that ITERABLE doesn't have for_all.
+			v_all_methods_attached: v /= Void and then across v as c all c.item /= Void end
 		do
 			make (1)
 			add_methods (v)
