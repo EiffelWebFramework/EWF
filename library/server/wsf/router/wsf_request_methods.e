@@ -55,17 +55,26 @@ feature {NONE} -- Initialization
 		end
 
 	make (n: INTEGER)
+			-- Initialize with capacity for `n' methods.
+		require
+			valid_number_of_items: n >= 0
 		do
 			create methods.make (n)
 		end
 
 	make_from_iterable (v: ITERABLE [READABLE_STRING_8])
+			-- Initialize for all methods named by `v'.
+		require
+			v_all_methods_attached: v /= Void and then across v as c all c.item /= Void end
 		do
 			make (1)
 			add_methods (v)
 		end
 
 	make_from_string (v: READABLE_STRING_8)
+			-- Initialize from comma-separated methods named in `v'.
+		require
+			v_attached: v /= Void
 		do
 			make_from_iterable (v.split (','))
 		end
@@ -83,6 +92,7 @@ feature -- Status report
 	has (a_method: READABLE_STRING_8): BOOLEAN
 			-- Has `a_method' enabled?
 		require
+			a_method_attached: a_method /= Void
 			a_method_is_uppercase: a_method.same_string (a_method.as_upper)
 		do
 			-- First look for string object itself,
@@ -95,67 +105,71 @@ feature -- Status report
 		end
 
 	has_some_of (a_methods: WSF_REQUEST_METHODS): BOOLEAN
-			-- Has any methods from `a_methods' enabled?
+			-- Have any methods from `a_methods' been enabled?
+		require
+			a_methods_attached: a_methods /= Void
 		do
 			Result := across a_methods as c some has (c.item) end
 		end
 
 	has_all_of (a_methods: WSF_REQUEST_METHODS): BOOLEAN
-			-- Has all methods from `a_methods' enabled?
+			-- Have all methods from `a_methods' been enabled?
+		require
+			a_methods_attached: a_methods /= Void
 		do
 			Result := across a_methods as c all has (c.item) end
 		end
 
 	has_method_get: BOOLEAN
-			-- Has method GET enabled?
+			-- Has method GET been enabled?
 		do
 			Result := has (method_get)
 		end
 
 	has_method_post: BOOLEAN
-			-- Has method POST enabled?
+			-- Has method POST been enabled?
 		do
 			Result := has (method_post)
 		end
 
 	has_method_put: BOOLEAN
-			-- Has method PUT enabled?
+			-- Has method PUT been enabled?
 		do
 			Result := has (method_put)
 		end
 
 	has_method_delete: BOOLEAN
-			-- Has method DELETE enabled?
+			-- Has method DELETE been enabled?
 		do
 			Result := has (method_delete)
 		end
 
 	has_method_options: BOOLEAN
-			-- Has method OPTIONS enabled?
+			-- Has method OPTIONS been enabled?
 		do
 			Result := has (method_options)
 		end
 
 	has_method_head: BOOLEAN
-			-- Has method HEAD enabled?
+			-- Has method HEAD been enabled?
 		do
 			Result := has (method_head)
 		end
 
 	has_method_trace: BOOLEAN
-			-- Has method TRACE enabled?
+			-- Has method TRACE been enabled?
 		do
 			Result := has (method_trace)
 		end
 
 	has_method_connect: BOOLEAN
-			-- Has method CONNECT enabled?
+			-- Has method CONNECT been enabled?
 		do
 			Result := has (method_connect)
 		end
 
 	has_method_patch: BOOLEAN
-			-- Has method PATCH enabled?
+			-- Has method PATCH been enabled?
 		do
 			Result := has (method_patch)
 		end
@@ -384,6 +398,7 @@ feature -- Element change
 	disable_custom (m: READABLE_STRING_8)
 		require
 			is_not_locked: not is_locked
+			m_attached: m /= Void
 			not_blank: not across m as mc some mc.item.is_space end
 			custom_enabled: has (m.as_upper)
 		do
@@ -404,13 +419,17 @@ feature -- Access
 feature {WSF_REQUEST_METHODS} -- Implementation
 
 	add_methods (lst: ITERABLE [READABLE_STRING_8])
-			-- Enable methods from `lst'			
+			-- Enable methods from `lst'.
+		require
+			lst_attached: lst /= Void
 		do
 			if not is_locked then
 				across
 					lst as c
 				loop
-					add_method_using_constant (c.item)
+					if not c.item.is_empty and not has (c.item) then
+						add_method_using_constant (c.item)
+					end
 				end
 			end
 		end
@@ -418,7 +437,11 @@ feature {WSF_REQUEST_METHODS} -- Implementation
 feature {NONE} -- Implementation		
 
 	add_method_using_constant (v: READABLE_STRING_8)
-			-- Add method `v' using method_* constant
+			-- Add method `v' using method_* constant.
+		require
+			v_attached: v /= Void
+			v_not_empty: not v.is_empty
+			new_method: not has (v)
 		do
 			if v.is_case_insensitive_equal (method_get) then
 				enable_get
@@ -446,7 +469,10 @@ feature {NONE} -- Implementation
 		end
 
 	prune_method (v: READABLE_STRING_8)
+			-- Remove method named `v' from `Current'.
+			-- Does nothing if `Current' `is_locked'.
 		require
+			v_attached: v /= Void
 			is_upper_case: v.same_string (v.as_upper)
 		local
 			m: READABLE_STRING_8
@@ -468,10 +494,12 @@ feature {NONE} -- Implementation
 		end
 
 invariant
+
+	methods_attached: methods /= Void
 	methods_are_uppercase: across methods as c all c.item.same_string (c.item.as_upper) end
 
 ;note
-	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
+	copyright: "2011-2013, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

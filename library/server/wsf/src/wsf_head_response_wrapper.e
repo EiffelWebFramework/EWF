@@ -27,6 +27,9 @@ create
 feature {NONE} -- Initialization
 
 	make_from_response (res: WSF_RESPONSE)
+			-- Initialize from `res' (assumed to be a GET response).
+		require
+			res_attached: res /= Void
 		do
 			wsf_response := res
 			make_from_wgi (res.wgi_response)
@@ -65,10 +68,12 @@ feature -- Output operation
 		end
 
 invariant
+
 	transfered_content_length_is_zero: transfered_content_length = 0
+	wsf_response_attached: wsf_response /= Void
 
 note
-	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
+	copyright: "2011-2013, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

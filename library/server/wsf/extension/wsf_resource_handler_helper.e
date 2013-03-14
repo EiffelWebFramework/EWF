@@ -14,6 +14,9 @@ feature -- Execute template
 
 	execute_methods (req: WSF_REQUEST; res: WSF_RESPONSE)
 			-- Execute request and dispatch according to the request method.
+		require
+			req_attached: req /= Void
+			res_attached: res /= Void
 		local
 			m: READABLE_STRING_8
 		do
@@ -43,6 +46,11 @@ feature -- Execute template
 feature -- Method Get
 
 	execute_get (req: WSF_REQUEST; res: WSF_RESPONSE)
+			-- Execute `req' responding into `res'.
+		require
+			req_attached: req /= Void
+			res_attached: res /= Void
+			get_method: req.is_request_method ({HTTP_REQUEST_METHODS}.method_get)
 		do
 			do_get (req, res)
 		end
@@ -52,9 +60,9 @@ feature -- Method Get
 			-- If the GET request is SUCCESS, we respond with
 			-- 200 OK, and a representation of the resource.
 			-- If the GET request is not SUCCESS, we response with
-			-- 404 Resource not found
+			-- 404 Resource not found.
 			-- If is a Condition GET and the resource does not change we send a
-			-- 304, Resource not modifed	
+			-- 304, Resource not modifed.
 		do
 			handle_not_implemented ("Method GET not implemented", req, res)
 		end
@@ -62,6 +70,11 @@ feature -- Method Get
 feature -- Method Post
 
 	execute_post (req: WSF_REQUEST; res: WSF_RESPONSE)
+			-- Execute `req' responding into `res'.
+		require
+			req_attached: req /= Void
+			res_attached: res /= Void
+			post_method: req.is_request_method ({HTTP_REQUEST_METHODS}.method_post)
 		do
 			if req.is_chunked_input then
 				do_post (req, res)
@@ -90,6 +103,11 @@ feature -- Method Post
 feature-- Method Put
 
 	execute_put (req: WSF_REQUEST; res: WSF_RESPONSE)
+			-- Execute `req' responding into `res'.
+		require
+			req_attached: req /= Void
+			res_attached: res /= Void
+			put_method: req.is_request_method ({HTTP_REQUEST_METHODS}.method_put)
 		do
 			if req.is_chunked_input then
 				do_put (req, res)
@@ -110,6 +128,11 @@ feature-- Method Put
 feature -- Method DELETE
 
 	execute_delete (req: WSF_REQUEST; res: WSF_RESPONSE)
+			-- Execute `req' responding into `res'.
+		require
+			req_attached: req /= Void
+			res_attached: res /= Void
+			delete_method: req.is_request_method ({HTTP_REQUEST_METHODS}.method_delete)
 		do
 			do_delete (req, res)
 		end
@@ -126,6 +149,11 @@ feature -- Method DELETE
 feature -- Method CONNECT
 
 	execute_connect (req: WSF_REQUEST; res: WSF_RESPONSE)
+			-- Execute `req' responding into `res'.
+		require
+			req_attached: req /= Void
+			res_attached: res /= Void
+			connect_method: req.is_request_method ({HTTP_REQUEST_METHODS}.method_connect)
 		do
 			do_connect (req, res)
 		end
@@ -138,6 +166,11 @@ feature -- Method CONNECT
 feature -- Method HEAD
 
 	execute_head (req: WSF_REQUEST; res: WSF_RESPONSE)
+			-- Execute `req' responding into `res'.
+		require
+			req_attached: req /= Void
+			res_attached: res /= Void
+			head_method: req.is_request_method ({HTTP_REQUEST_METHODS}.method_head)
 		do
 			do_head (req, res)
 		end
@@ -157,6 +190,11 @@ feature -- Method HEAD
 feature -- Method OPTIONS
 
 	execute_options (req: WSF_REQUEST; res: WSF_RESPONSE)
+			-- Execute `req' responding into `res'.
+		require
+			req_attached: req /= Void
+			res_attached: res /= Void
+			options_method: req.is_request_method ({HTTP_REQUEST_METHODS}.method_options)
 		do
 			do_options (req, res)
 		end
@@ -170,6 +208,11 @@ feature -- Method OPTIONS
 feature -- Method TRACE
 
 	execute_trace (req: WSF_REQUEST; res: WSF_RESPONSE)
+			-- Execute `req' responding into `res'.
+		require
+			req_attached: req /= Void
+			res_attached: res /= Void
+			trace_method: req.is_request_method ({HTTP_REQUEST_METHODS}.method_trace)
 		do
 			do_trace (req, res)
 		end
@@ -183,20 +226,30 @@ feature -- Method TRACE
 feature -- Method Extension Method
 
 	execute_extension_method (req: WSF_REQUEST; res: WSF_RESPONSE)
+			-- Execute `req' responding into `res'.
+		require
+			req_attached: req /= Void
+			res_attached: res /= Void
 		do
 			do_extension_method (req, res)
 		end
 
 	do_extension_method (req: WSF_REQUEST; res: WSF_RESPONSE)
+		-- Execute `req' responding into `res'.
+	require
+		req_attached: req /= Void
+		res_attached: res /= Void
 		do
 			handle_not_implemented ("Method extension-method not implemented", req, res)
 		end
 
 feature -- Retrieve content from WGI_INPUT_STREAM
 
-	retrieve_data  ( req : WSF_REQUEST) : STRING
-			-- retrieve the content from the input stream
-			-- handle differents transfers
+	retrieve_data  (req: WSF_REQUEST): STRING
+			-- Retrieve the content from the input stream.
+			-- Handle different transfers.
+		require
+			req_attached: req /= Void
 		do
 			create Result.make_empty
 			req.read_input_data_into (Result)
@@ -207,15 +260,15 @@ feature -- Handle responses
 	-- The option : Server-driven negotiation: uses request headers to select a variant
 	-- More info : http://www.w3.org/Protocols/rfc2616/rfc2616-sec12.html#sec12
 
---	supported_content_types: detachable ARRAY [READABLE_STRING_8]
---			-- Supported content types
---			-- Can be redefined
---		do
---			Result := Void
---		end
+	-- TODO: review HTTP requirements on `a_description' for each individual error code.
 
 	handle_error (a_description: STRING; a_status_code: INTEGER; req: WSF_REQUEST; res: WSF_RESPONSE)
 			-- Handle an error.
+		require
+			a_description_attached: a_description /= Void
+			a_status_code_valid: a_status_code > 0
+			req_attached: req /= Void
+			res_attached: res /= Void
 		local
 			h: HTTP_HEADER
 		do
@@ -229,55 +282,99 @@ feature -- Handle responses
 		end
 
 	handle_not_implemented (a_description: STRING; req: WSF_REQUEST; res: WSF_RESPONSE)
+			-- Handle error {HTTP_STATUS_CODE}.not_implemented.
+		require
+			a_description_attached: a_description /= Void
+			req_attached: req /= Void
+			res_attached: res /= Void
 		do
 			handle_error (a_description, {HTTP_STATUS_CODE}.not_implemented, req, res)
 		end
 
 	handle_bad_request_response (a_description: STRING; req: WSF_REQUEST; res: WSF_RESPONSE)
+			-- Handle error {HTTP_STATUS_CODE}.bad_request.
+		require
+			a_description_attached: a_description /= Void
+			req_attached: req /= Void
+			res_attached: res /= Void
 		do
 			handle_error (a_description, {HTTP_STATUS_CODE}.bad_request, req, res)
 		end
 
 	handle_resource_not_found_response (a_description: STRING; req: WSF_REQUEST; res: WSF_RESPONSE)
+			-- Handle error {HTTP_STATUS_CODE}.not_found.
+		require
+			a_description_attached: a_description /= Void
+			req_attached: req /= Void
+			res_attached: res /= Void
 		do
 			handle_error (a_description, {HTTP_STATUS_CODE}.not_found, req, res)
 		end
 
 	handle_forbidden (a_description: STRING; req: WSF_REQUEST; res: WSF_RESPONSE)
-			-- Handle forbidden.
+			-- Handle error {HTTP_STATUS_CODE}.forbidden.
+		require
+			a_description_attached: a_description /= Void
+			req_attached: req /= Void
+			res_attached: res /= Void
 		do
 			handle_error (a_description, {HTTP_STATUS_CODE}.forbidden, req, res)
 		end
 
 feature -- Handle responses: others		
 
-	handle_precondition_fail_response (a_description: STRING; req: WSF_REQUEST; res: WSF_RESPONSE )
+	handle_precondition_fail_response (a_description: STRING; req: WSF_REQUEST; res: WSF_RESPONSE)
+			-- Handle error {HTTP_STATUS_CODE}.precondition_failed.
+		require
+			a_description_attached: a_description /= Void
+			req_attached: req /= Void
+			res_attached: res /= Void
 		do
 			handle_error (a_description, {HTTP_STATUS_CODE}.precondition_failed, req, res)
 		end
 
-	handle_internal_server_error (a_description: STRING; req: WSF_REQUEST; res: WSF_RESPONSE )
+	handle_internal_server_error (a_description: STRING; req: WSF_REQUEST; res: WSF_RESPONSE)
+			-- Handle error {HTTP_STATUS_CODE}.internal_server_error.
+		require
+			a_description_attached: a_description /= Void
+			req_attached: req /= Void
+			res_attached: res /= Void
 		do
 			handle_error (a_description, {HTTP_STATUS_CODE}.internal_server_error, req, res)
 		end
 
 	handle_method_not_allowed_response (a_description: STRING; req: WSF_REQUEST; res: WSF_RESPONSE)
+			-- Handle error {HTTP_STATUS_CODE}.method_not_allowed.
+		require
+			a_description_attached: a_description /= Void
+			req_attached: req /= Void
+			res_attached: res /= Void
 		do
 			handle_error (a_description, {HTTP_STATUS_CODE}.method_not_allowed, req, res)
 		end
 
 	handle_resource_not_modified_response (a_description: STRING; req: WSF_REQUEST; res: WSF_RESPONSE)
+			-- Handle error {HTTP_STATUS_CODE}.not_modified.
+		require
+			a_description_attached: a_description /= Void
+			req_attached: req /= Void
+			res_attached: res /= Void
 		do
 			handle_error (a_description, {HTTP_STATUS_CODE}.not_modified, req, res)
 		end
 
 	handle_resource_conflict_response (a_description: STRING; req: WSF_REQUEST; res: WSF_RESPONSE)
+			-- Handle error {HTTP_STATUS_CODE}.conflict.
+		require
+			a_description_attached: a_description /= Void
+			req_attached: req /= Void
+			res_attached: res /= Void
 		do
 			handle_error (a_description, {HTTP_STATUS_CODE}.conflict, req, res)
 		end
 
 note
-	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
+	copyright: "2011-2013, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software
