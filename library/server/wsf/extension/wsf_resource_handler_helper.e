@@ -50,7 +50,7 @@ feature -- Method Get
 		require
 			req_attached: req /= Void
 			res_attached: res /= Void
-			get_method: req.request_method.as_upper.same_string ({HTTP_REQUEST_METHODS}.method_get)
+			get_method: req.is_request_method ({HTTP_REQUEST_METHODS}.method_get)
 		do
 			do_get (req, res)
 		end
@@ -74,7 +74,7 @@ feature -- Method Post
 		require
 			req_attached: req /= Void
 			res_attached: res /= Void
-			post_method: req.request_method.as_upper.same_string ({HTTP_REQUEST_METHODS}.method_post)
+			post_method: req.is_request_method ({HTTP_REQUEST_METHODS}.method_post)
 		do
 			if req.is_chunked_input then
 				do_post (req, res)
@@ -107,7 +107,7 @@ feature-- Method Put
 		require
 			req_attached: req /= Void
 			res_attached: res /= Void
-			put_method: req.request_method.as_upper.same_string ({HTTP_REQUEST_METHODS}.method_put)
+			put_method: req.is_request_method ({HTTP_REQUEST_METHODS}.method_put)
 		do
 			if req.is_chunked_input then
 				do_put (req, res)
@@ -132,7 +132,7 @@ feature -- Method DELETE
 		require
 			req_attached: req /= Void
 			res_attached: res /= Void
-			delete_method: req.request_method.as_upper.same_string ({HTTP_REQUEST_METHODS}.method_delete)
+			delete_method: req.is_request_method ({HTTP_REQUEST_METHODS}.method_delete)
 		do
 			do_delete (req, res)
 		end
@@ -153,7 +153,7 @@ feature -- Method CONNECT
 		require
 			req_attached: req /= Void
 			res_attached: res /= Void
-			connect_method: req.request_method.as_upper.same_string ({HTTP_REQUEST_METHODS}.method_connect)
+			connect_method: req.is_request_method ({HTTP_REQUEST_METHODS}.method_connect)
 		do
 			do_connect (req, res)
 		end
@@ -170,7 +170,7 @@ feature -- Method HEAD
 		require
 			req_attached: req /= Void
 			res_attached: res /= Void
-			head_method: req.request_method.as_upper.same_string ({HTTP_REQUEST_METHODS}.method_head)
+			head_method: req.is_request_method ({HTTP_REQUEST_METHODS}.method_head)
 		do
 			do_head (req, res)
 		end
@@ -194,7 +194,7 @@ feature -- Method OPTIONS
 		require
 			req_attached: req /= Void
 			res_attached: res /= Void
-			options_method: req.request_method.as_upper.same_string ({HTTP_REQUEST_METHODS}.method_options)
+			options_method: req.is_request_method ({HTTP_REQUEST_METHODS}.method_options)
 		do
 			do_options (req, res)
 		end
@@ -212,7 +212,7 @@ feature -- Method TRACE
 		require
 			req_attached: req /= Void
 			res_attached: res /= Void
-			trace_method: req.request_method.as_upper.same_string ({HTTP_REQUEST_METHODS}.method_trace)
+			trace_method: req.is_request_method ({HTTP_REQUEST_METHODS}.method_trace)
 		do
 			do_trace (req, res)
 		end
@@ -259,13 +259,6 @@ feature -- Handle responses
 	-- TODO Handle Content negotiation.
 	-- The option : Server-driven negotiation: uses request headers to select a variant
 	-- More info : http://www.w3.org/Protocols/rfc2616/rfc2616-sec12.html#sec12
-
-	--	supported_content_types: detachable ARRAY [READABLE_STRING_8]
-	--			-- Supported content types
-	--			-- Can be redefined
-	--		do
-	--			Result := Void
-	--		end
 
 	-- TODO: review HTTP requirements on `a_description' for each individual error code.
 

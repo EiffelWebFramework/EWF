@@ -55,7 +55,7 @@ feature {NONE} -- Initialization
 		end
 
 	make (n: INTEGER)
-			-- Initialize with space for `n' methods.
+			-- Initialize with capacity for `n' methods.
 		require
 			valid_number_of_items: n >= 0
 		do
@@ -65,7 +65,7 @@ feature {NONE} -- Initialization
 	make_from_iterable (v: ITERABLE [READABLE_STRING_8])
 			-- Initialize for all methods named by `v'.
 		require
-			v_attached: v /= Void
+			v_all_methods_attached: v /= Void and then True -- Can this be specified using across? It's annoying that ITERABLE doesn't have for_all.
 		do
 			make (1)
 			add_methods (v)
@@ -427,7 +427,9 @@ feature {WSF_REQUEST_METHODS} -- Implementation
 				across
 					lst as c
 				loop
-					add_method_using_constant (c.item)
+					if not c.item.is_empty and not has (c.item) then
+						add_method_using_constant (c.item)
+					end
 				end
 			end
 		end
@@ -438,6 +440,8 @@ feature {NONE} -- Implementation
 			-- Add method `v' using method_* constant.
 		require
 			v_attached: v /= Void
+			v_not_empty: not v.is_empty
+			new_method: not has (v)
 		do
 			if v.is_case_insensitive_equal (method_get) then
 				enable_get

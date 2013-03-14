@@ -134,7 +134,8 @@ feature -- Basic operations
 
 	dispatch_and_return_handler (req: WSF_REQUEST; res: WSF_RESPONSE): detachable WSF_HANDLER
 			-- Dispatch request `req' among the `mappings'
-			-- And return the associated handler (violating CQS) if mapping found and handler executed.
+			-- And return the associated handler if mapping found and handler executed.
+			--| Violates CQS
 		require
 			req_attached: req /= Void
 			res_attached: res /= Void
@@ -157,7 +158,8 @@ feature {NONE} -- Dispatch implementation
 
 	dispatch_and_return_handler_for_request_method (req: WSF_REQUEST; res: WSF_RESPONSE; a_request_method: READABLE_STRING_8): detachable WSF_HANDLER
 			-- Dispatch request `req' among the `mappings'
-			-- And return the associated handler (violating CQS) if mapping found and handler executed.
+			-- And return the associated handler if mapping found and handler executed.
+			--| Violates CQS
 		require
 			req_attached: req /= Void
 			res_attached: res /= Void
