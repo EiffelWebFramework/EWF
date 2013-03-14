@@ -23,7 +23,7 @@ feature {NONE} -- Initialization
 feature -- Access
 
 	associated_resource: READABLE_STRING_8
-			-- Name (URI, or URI template or regular expression) of handled resource
+			-- Name (URI, or URI template or regular expression or ...) of handled resource
 		deferred
 		ensure
 			assciated_resource_not_void: Result /= Void
