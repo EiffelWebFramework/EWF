@@ -421,7 +421,7 @@ feature {WSF_REQUEST_METHODS} -- Implementation
 	add_methods (lst: ITERABLE [READABLE_STRING_8])
 			-- Enable methods from `lst'.
 		require
-			lst_attached: lst /= Void
+			lst_all_attached: lst /= Void and then across lst as c all c.item /= Void end
 		do
 			if not is_locked then
 				across
