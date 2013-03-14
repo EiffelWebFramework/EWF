@@ -36,7 +36,10 @@ feature -- Execution
 
 	execute (req: WSF_REQUEST; res: WSF_RESPONSE)
 			-- Dispatch the request
-			-- and if you dispatch is found, execute the default procedure `execute_default'
+			-- and if handler is not found, execute the default procedure `execute_default'.
+		require
+			req_attached: req /= Void
+			res_attached: res /= Void
 		do
 			if attached router.dispatch_and_return_handler (req, res) as p then
 				-- executed
@@ -46,7 +49,10 @@ feature -- Execution
 		end
 
 	execute_default (req: WSF_REQUEST; res: WSF_RESPONSE)
-			-- Default procedure
+			-- Dispatch requests without a matching handler.
+		require
+			req_attached: req /= Void
+			res_attached: res /= Void
 		local
 			msg: WSF_DEFAULT_ROUTER_RESPONSE
 		do
@@ -62,7 +68,7 @@ feature -- Access
 			-- and associated request methods
 
 ;note
-	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
+	copyright: "2011-2013, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software
