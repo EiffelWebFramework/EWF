@@ -187,9 +187,6 @@ feature -- Header output operation
 			header_not_committed: not header_committed
 			a_text_ends_with_single_crlf: a_text.count > 2 implies not a_text.substring (a_text.count - 2, a_text.count).same_string ("%R%N")
 			a_text_does_not_end_with_double_crlf: a_text.count > 4 implies not a_text.substring (a_text.count - 4, a_text.count).same_string ("%R%N%R%N")
-		local
-			l_text: READABLE_STRING_8
-			l_header: HTTP_HEADER
 		do
 			if header_committed then
 				report_content_already_sent_and_header_ignored

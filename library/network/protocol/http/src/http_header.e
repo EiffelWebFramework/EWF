@@ -320,25 +320,6 @@ feature -- Header change: general
 			end
 		end
 
-	put_header_key_methods (k: READABLE_STRING_8; a_methods: ITERABLE [READABLE_STRING_8])
-			-- Add header `k: a_methods', or replace existing header of same header methods/key
-		local
-			s: STRING_8
-		do
-			create s.make_empty
-			across
-				a_methods as c
-			loop
-				if not s.is_empty then
-					s.append_string (", ")
-				end
-				s.append (c.item)
-			end
-			if not s.is_empty then
-				put_header_key_value (k, s)
-			end
-		end
-
 feature -- Content related header
 
 	put_content_type (t: READABLE_STRING_8)
@@ -540,7 +521,7 @@ feature -- Cross-Origin Resource Sharing
 	put_access_control_allow_methods (a_methods: ITERABLE [READABLE_STRING_8])
 			-- If `a_methods' is not empty, put `Access-Control-Allow-Methods' header with list `a_methods' of methods
 		do
-			put_header_key_methods ({HTTP_HEADER_NAMES}.header_access_control_allow_methods, a_methods)
+			put_header_key_values ({HTTP_HEADER_NAMES}.header_access_control_allow_methods, a_methods, Void)
 		end
 
 	put_access_control_allow_headers (s: READABLE_STRING_8)
