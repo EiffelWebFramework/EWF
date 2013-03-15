@@ -26,14 +26,27 @@ create
 feature {NONE} -- Initialization
 
 	make (a_router: WSF_ROUTER)
+			-- Initialize `router'.
+		require
+			a_router_attached: a_router /= Void
 		do
 			router := a_router
+		ensure
+			router_aliased: router = a_router
+			not_hidden: not is_hidden
 		end
 
 	make_hidden (a_router: WSF_ROUTER)
+			-- Initialize `router'.
+			-- Do not display documentation for `a_router'.
+		require
+			a_router_attached: a_router /= Void
 		do
 			make (a_router)
 			is_hidden := True
+		ensure
+			router_aliased: router = a_router
+			hidden: is_hidden	
 		end
 
 	router: WSF_ROUTER
@@ -46,6 +59,7 @@ feature {NONE} -- Initialization
 feature -- Documentation
 
 	mapping_documentation (m: WSF_ROUTER_MAPPING; a_request_methods: detachable WSF_REQUEST_METHODS): WSF_ROUTER_MAPPING_DOCUMENTATION
+			-- <Precursor>
 		do
 			create Result.make (m)
 			Result.set_is_hidden (is_hidden)
@@ -75,5 +89,9 @@ feature -- Execution
 			end
 			res.send (m)
 		end
+
+invariant
+
+	router_attached: router /= Void
 
 end
