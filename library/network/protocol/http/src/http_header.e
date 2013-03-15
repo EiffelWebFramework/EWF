@@ -69,23 +69,9 @@ feature {NONE} -- Initialization
 
 	make_from_raw_header_data (h: READABLE_STRING_8)
 			-- Create Current from raw header data
-        local
-        	line : detachable STRING
-			lines: LIST [READABLE_STRING_8]
         do
-            lines := h.split ('%N')
-            make_with_count (lines.count)
-            across
-            	lines as c
-            loop
-            	line := c.item
-            	if not line.is_empty then
-            		if line [line.count] = '%R' then
-						line.remove_tail (1)
-            		end
-					add_header (line)
-            	end
-			end
+			make
+			append_raw_header_data (h)
 		end
 
 feature -- Recycle
@@ -171,7 +157,28 @@ feature -- Access
 			Result := headers.new_cursor
 		end
 
-feature -- Header: filling
+feature -- Header: adding
+
+	append_raw_header_data (h: READABLE_STRING_8)
+			-- Append raw header data `h' to Current
+        local
+        	line : detachable STRING
+			lines: LIST [READABLE_STRING_8]
+        do
+            lines := h.split ('%N')
+			headers.grow (headers.count + lines.count)
+            across
+            	lines as c
+            loop
+            	line := c.item
+            	if not line.is_empty then
+            		if line [line.count] = '%R' then
+						line.remove_tail (1)
+            		end
+					add_header (line)
+            	end
+			end
+		end
 
 	append_array (a_headers: ARRAY [TUPLE [key: READABLE_STRING_8; value: READABLE_STRING_8]])
 			-- Append array of key,value headers
@@ -180,7 +187,7 @@ feature -- Header: filling
 			across
 				a_headers as c
 			loop
-				put_header_key_value (c.item.key, c.item.value)
+				add_header_key_value (c.item.key, c.item.value)
 			end
 		end
 
@@ -192,6 +199,54 @@ feature -- Header: filling
 				h.headers as c
 			loop
 				add_header (c.item.string)
+			end
+		end
+
+feature -- Header: merging
+
+	put_raw_header_data (h: READABLE_STRING_8)
+			-- Append raw header data `h' to Current
+			-- Overwrite existing header with same name
+        local
+        	line : detachable STRING
+			lines: LIST [READABLE_STRING_8]
+        do
+            lines := h.split ('%N')
+			headers.grow (headers.count + lines.count)
+            across
+            	lines as c
+            loop
+            	line := c.item
+            	if not line.is_empty then
+            		if line [line.count] = '%R' then
+						line.remove_tail (1)
+            		end
+					put_header (line)
+            	end
+			end
+		end
+
+	put_array (a_headers: ARRAY [TUPLE [key: READABLE_STRING_8; value: READABLE_STRING_8]])
+			-- Append array of key,value headers
+			-- Overwrite existing header with same name
+		do
+			headers.grow (headers.count + a_headers.count)
+			across
+				a_headers as c
+			loop
+				put_header_key_value (c.item.key, c.item.value)
+			end
+		end
+
+	put_header_object (h: HTTP_HEADER)
+			-- Append headers from `h'
+			-- Overwrite existing header with same name
+		do
+			headers.grow (headers.count + h.headers.count)
+			across
+				h.headers as c
+			loop
+				put_header (c.item.string)
 			end
 		end
 
