@@ -15,8 +15,12 @@ feature -- Basic operations
 
 	execute (req: WSF_REQUEST; res: WSF_RESPONSE)
 			-- Execute the filter.
+		local
+			l_header: HTTP_HEADER
 		do
-			res.header.put_access_control_allow_all_origin
+			create l_header.make
+			l_header.put_access_control_allow_all_origin
+			res.put_header_text (l_header.string)
 			execute_next (req, res)
 		end
 
