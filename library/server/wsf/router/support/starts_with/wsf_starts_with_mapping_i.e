@@ -33,7 +33,12 @@ feature -- Access
 feature -- Change
 
 	set_handler	(h: like handler)
+			-- Set `handler' to `h'.
+		require
+			h_attached: h /= Void
 		deferred
+		ensure
+			h_aliased: handler = h
 		end
 
 feature -- Documentation
@@ -72,14 +77,23 @@ feature -- Status
 feature {NONE} -- Execution
 
 	execute_handler (h: like handler; a_start_path: like uri; req: WSF_REQUEST; res: WSF_RESPONSE)
-			-- Execute handler `h' with `req' and `res' for Current mapping
+			-- Execute handler `h' with `req' and `res' for Current mapping.
+		require
+			h_attached: h /= Void
+			a_start_path_attached: a_start_path /= Void
+			req_attached: req /= Void
+			res_attached: res /= Void
+			path_start_with_a_start_path: req.path_info.starts_with (a_start_path)
 		deferred
 		end
 
 feature {NONE} -- Implementation
 
 	based_uri (a_uri: like uri; a_router: WSF_ROUTER): like uri
-			-- `uri' prefixed by the `WSF_ROUTER.base_url' if any
+			-- `a_uri' prefixed by the `WSF_ROUTER.base_url' if any
+		require
+			a_uri_attached: a_uri /= Void
+			a_router_attached: a_router /= Void
 		local
 			s: STRING_8
 		do
@@ -90,7 +104,13 @@ feature {NONE} -- Implementation
 			else
 				Result := a_uri
 			end
+		ensure
+			based_uri_attached: Result /= Void
 		end
+
+invariant
+
+	uri_attached: uri /= Void
 
 note
 	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
