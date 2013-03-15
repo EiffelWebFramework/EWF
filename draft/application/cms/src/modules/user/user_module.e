@@ -9,6 +9,9 @@ class
 
 inherit
 	CMS_MODULE
+		redefine
+			permissions
+		end
 
 	CMS_HOOK_MENU_ALTER
 
@@ -54,6 +57,13 @@ feature {CMS_SERVICE} -- Registration
 		end
 
 feature -- Hooks
+
+	permissions (a_service: CMS_SERVICE): LIST [CMS_PERMISSION]
+		do
+			Result := Precursor (a_service)
+			Result.extend ("register account")
+			Result.extend ("change username")
+		end
 
 	block_list: ITERABLE [like {CMS_BLOCK}.name]
 		do
@@ -104,12 +114,6 @@ feature -- Hooks
 				create lnk.make ("Login", "/user")
 				a_menu_system.user_menu.extend (lnk)
 			end
-		end
-
-	links: HASH_TABLE [CMS_MODULE_LINK, STRING]
-			-- Link indexed by path
-		do
-			create Result.make (0)
 		end
 
 feature -- Handlers		

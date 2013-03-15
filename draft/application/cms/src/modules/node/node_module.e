@@ -9,6 +9,9 @@ class
 
 inherit
 	CMS_MODULE
+		redefine
+			permissions
+		end
 
 	CMS_HOOK_MENU_ALTER
 
@@ -27,6 +30,20 @@ feature {NONE} -- Initialization
 			package := "core"
 
 			enable
+		end
+
+feature -- Access
+
+	permissions (a_service: CMS_SERVICE): LIST [CMS_PERMISSION]
+		do
+			Result := Precursor (a_service)
+			across
+				a_service.content_types as c
+			loop
+				Result.extend ("create " + c.item.name)
+				Result.extend ("edit " + c.item.name)
+				Result.extend ("delete " + c.item.name)
+			end
 		end
 
 feature {CMS_SERVICE} -- Registration
@@ -51,6 +68,7 @@ feature {CMS_SERVICE} -- Registration
 
 			a_service.add_menu_alter_hook (Current)
 			a_service.add_block_hook (Current)
+
 		end
 
 feature -- Hooks
@@ -76,18 +94,19 @@ feature -- Hooks
 	menu_alter (a_menu_system: CMS_MENU_SYSTEM; a_execution: CMS_EXECUTION)
 		local
 			lnk: CMS_LOCAL_LINK
+			perms: detachable ARRAYED_LIST [READABLE_STRING_8]
 		do
-			if a_execution.authenticated then
-				create lnk.make ("Add content", "/node/add/")
-				lnk.set_permission_arguments (<<"authenticated">>)
-				a_menu_system.navigation_menu.extend (lnk)
+			if attached a_execution.service.content_types as lst then
+				create perms.make (lst.count)
+				across
+					lst as c
+				loop
+					perms.force ("create " + c.item.name)
+				end
 			end
-		end
-
-	links: HASH_TABLE [CMS_MODULE_LINK, STRING]
-			-- Link indexed by path
-		do
-			create Result.make (0)
+			create lnk.make ("Add content", "/node/add/")
+			lnk.set_permission_arguments (perms)
+			a_menu_system.navigation_menu.extend (lnk)
 		end
 
 	handle_node_view (cms: CMS_SERVICE; req: WSF_REQUEST; res: WSF_RESPONSE)

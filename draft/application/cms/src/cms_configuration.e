@@ -25,18 +25,7 @@ feature {NONE} -- Initialization
 			make
 			configuration_location := a_filename
 			import (a_filename)
-			resolve
 			analyze
-		end
-
-	resolve
-			-- Resolve options related to variable ${..}
-		do
-			across
-				options as c
-			loop
-				options.replace (resolved_string (c.item), c.key)
-			end
 		end
 
 	analyze
@@ -239,15 +228,24 @@ feature {NONE} -- Implementation
 				loop
 					l := f.last_string
 					l.left_adjust
-					if not l.is_empty and then l[1] /= '#' then
-						p := l.index_of ('=', 1)
-						if p > 1 then
-							v := l.substring (p + 1, l.count)
-							l.keep_head (p - 1)
-							v.left_adjust
-							v.right_adjust
-							l.right_adjust
-							set_option (l.as_lower, v)
+					if not l.is_empty then
+						if l[1] = '#' then
+							-- commented line
+						else
+							p := l.index_of ('=', 1)
+							if p > 1 then
+								v := l.substring (p + 1, l.count)
+								l.keep_head (p - 1)
+								v.left_adjust
+								v.right_adjust
+								l.right_adjust
+
+								if l.is_case_insensitive_equal ("@include") then
+									import (resolved_string (v))
+								else
+									set_option (l.as_lower, resolved_string (v))
+								end
+							end
 						end
 					end
 					f.read_line

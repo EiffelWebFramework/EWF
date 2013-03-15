@@ -81,10 +81,18 @@ feature {NONE} -- Initialization
 			has_no_user: not storage.has_user
 		local
 			u: CMS_USER
+			ur: CMS_USER_ROLE
 		do
 			create u.make_new ("admin")
 			u.set_password ("istrator")
 			storage.save_user (u)
+
+			create ur.make_with_id (1, "anonymous")
+			storage.save_user_role (ur)
+			create ur.make_with_id (2, "authenticated")
+			ur.add_permission ("create page")
+			ur.add_permission ("edit page")
+			storage.save_user_role (ur)
 		end
 
 	initialize_mailer
@@ -159,7 +167,9 @@ feature -- Hook: menu_alter
 				create lst.make (1)
 				menu_alter_hooks := lst
 			end
-			lst.force (h)
+			if not lst.has (h) then
+				lst.force (h)
+			end
 		end
 
 	menu_alter_hooks: detachable ARRAYED_LIST [CMS_HOOK_MENU_ALTER]
@@ -186,18 +196,20 @@ feature -- Hook: form_alter
 				create lst.make (1)
 				form_alter_hooks := lst
 			end
-			lst.force (h)
+			if not lst.has (h) then
+				lst.force (h)
+			end
 		end
 
 	form_alter_hooks: detachable ARRAYED_LIST [CMS_HOOK_FORM_ALTER]
 
-	call_form_alter_hooks (f: CMS_FORM; a_execution: CMS_EXECUTION)
+	call_form_alter_hooks (f: CMS_FORM; a_form_data: detachable CMS_FORM_DATA; a_execution: CMS_EXECUTION)
 		do
 			if attached form_alter_hooks as lst then
 				across
 					lst as c
 				loop
-					c.item.form_alter (f, a_execution)
+					c.item.form_alter (f, a_form_data, a_execution)
 				end
 			end
 		end
@@ -213,7 +225,9 @@ feature -- Hook: block
 				create lst.make (1)
 				block_hooks := lst
 			end
-			lst.force (h)
+			if not lst.has (h) then
+				lst.force (h)
+			end
 		end
 
 	block_hooks: detachable ARRAYED_LIST [CMS_HOOK_BLOCK]

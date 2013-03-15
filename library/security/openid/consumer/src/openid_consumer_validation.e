@@ -32,6 +32,48 @@ feature -- Access
 
 	attributes: HASH_TABLE [READABLE_STRING_32, STRING_8]
 
+feature -- Access: attributes
+
+	email_attribute: detachable READABLE_STRING_32
+		do
+			Result := attributes.item ("contact/email")
+		end
+
+	nickname_attribute: detachable READABLE_STRING_32
+		do
+			Result := attributes.item ("namePerson/friendly")
+		end
+
+	fullname_attribute: detachable READABLE_STRING_32
+		do
+			Result := attributes.item ("namePerson")
+		end
+
+	gender_attribute: detachable READABLE_STRING_32
+		do
+			Result := attributes.item ("person/gender")
+		end
+
+	postcode_attribute: detachable READABLE_STRING_32
+		do
+			Result := attributes.item ("contact/postalCode/home")
+		end
+
+	country_attribute: detachable READABLE_STRING_32
+		do
+			Result := attributes.item ("contact/country/home")
+		end
+
+	language_attribute: detachable READABLE_STRING_32
+		do
+			Result := attributes.item ("pref/language")
+		end
+
+	timezone_attribute: detachable READABLE_STRING_32
+		do
+			Result := attributes.item ("pref/timezone")
+		end
+
 feature -- Basic operation
 
 	validate

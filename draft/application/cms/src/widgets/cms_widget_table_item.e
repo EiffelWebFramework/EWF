@@ -16,6 +16,8 @@ inherit
 
 	WITH_CSS_STYLE
 
+	ITERABLE [CMS_WIDGET]
+
 create
 	make_with_text,
 	make_with_text_and_css,
@@ -48,6 +50,18 @@ feature {NONE} -- Initialization
 feature -- Access
 
 	content: CMS_WIDGET
+
+feature -- Access
+
+	new_cursor: ITERATION_CURSOR [CMS_WIDGET]
+			-- Fresh cursor associated with current structure
+		local
+			lst: ARRAYED_LIST [CMS_WIDGET]
+		do
+			create lst.make (1)
+			lst.extend (content)
+			Result := lst.new_cursor
+		end
 
 feature -- Conversion
 

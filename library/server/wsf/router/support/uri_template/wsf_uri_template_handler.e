@@ -15,6 +15,10 @@ inherit
 feature -- Execution
 
 	execute (req: WSF_REQUEST; res: WSF_RESPONSE)
+			-- Execute `req' responding in `res'.
+		require
+			req_attached: req /= Void
+			res_attached: res /= Void
 		deferred
 		end
 

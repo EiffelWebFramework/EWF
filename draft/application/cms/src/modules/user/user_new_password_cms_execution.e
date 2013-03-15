@@ -22,8 +22,6 @@ feature -- Execution
 			f: CMS_FORM
 			u: detachable CMS_USER
 			fd: detachable CMS_FORM_DATA
-			e: detachable CMS_EMAIL
-			l_uuid: UUID
 		do
 			set_title ("Request new password")
 			create b.make_empty
@@ -45,52 +43,68 @@ feature -- Execution
 			else
 				f := new_password_form (url (request.path_info, Void), "new-password")
 				if request.is_post_request_method then
-					create fd.make (request, f)
-					if attached {WSF_STRING} fd.item ("name") as s_name then
-						u := service.storage.user_by_name (s_name.value)
-						if u = Void then
-							u := service.storage.user_by_email (s_name.value)
-							if u = Void then
-								fd.report_invalid_field ("name", "Sorry, " + html_encoded (s_name.value)+ " is not recognized as a user name or an e-mail address.")
-							end
-						end
-					end
-				end
-				initialize_primary_tabs (u)
-				if fd /= Void and then fd.is_valid and then u /= Void then
-					across
-						fd as c
-					loop
-						b.append ("<li>" +  html_encoded (c.key) + "=")
-						if attached c.item as v then
-							b.append (html_encoded (v.string_representation))
-						end
-						b.append ("</li>")
-					end
-					if attached u.email as l_mail_address then
-						l_uuid := (create {UUID_GENERATOR}).generate_uuid
-						e := new_password_email (u, l_mail_address, l_uuid.out)
-						u.set_data_item ("new_password_extra", l_uuid.out)
-						service.storage.save_user (u)
-						service.mailer.safe_process_email (e)
-						add_success_message ("Further instructions have been sent to your e-mail address.")
-						set_redirection (url ("/user", Void))
-					else
-						add_success_message ("No email is associated with the requested account. Please contact the webmaster for help.")
-						set_redirection (url ("/user", Void))
-					end
-					set_main_content (b)
+					f.validation_actions.extend (agent password_form_validate)
+					f.submit_actions.extend (agent password_form_submit (?, b))
+					f.process (Current)
+					fd := f.last_data
 				else
-					if fd /= Void then
-						if not fd.is_valid then
-							report_form_errors (fd)
-						end
-						fd.apply_to_associated_form
-					end
-					f.append_to_html (theme, b)
+					initialize_primary_tabs (Void)
 				end
+
+				f.append_to_html (theme, b)
 			end
 			set_main_content (b)
+		end
+
+	password_form_validate (fd: CMS_FORM_DATA)
+		local
+			u: detachable CMS_USER
+		do
+			if attached {WSF_STRING} fd.item ("name") as s_name then
+				u := service.storage.user_by_name (s_name.value)
+				if u = Void then
+					u := service.storage.user_by_email (s_name.value)
+					if u = Void then
+						fd.report_invalid_field ("name", "Sorry, " + html_encoded (s_name.value)+ " is not recognized as a user name or an e-mail address.")
+					end
+				end
+			end
+			fd.add_cached_value ("user", u)
+			initialize_primary_tabs (u)
+		end
+
+	password_form_submit (fd: CMS_FORM_DATA; b: STRING)
+		local
+			e: detachable CMS_EMAIL
+			l_uuid: UUID
+		do
+			debug
+				across
+					fd as c
+				loop
+					b.append ("<li>" +  html_encoded (c.key) + "=")
+					if attached c.item as v then
+						b.append (html_encoded (v.string_representation))
+					end
+					b.append ("</li>")
+				end
+			end
+			if attached {CMS_USER} fd.cached_value ("user") as u then
+				if attached u.email as l_mail_address then
+					l_uuid := (create {UUID_GENERATOR}).generate_uuid
+					e := new_password_email (u, l_mail_address, l_uuid.out)
+					u.set_data_item ("new_password_extra", l_uuid.out)
+					service.storage.save_user (u)
+					service.mailer.safe_process_email (e)
+					add_success_message ("Further instructions have been sent to your e-mail address.")
+					set_redirection (url ("/user", Void))
+				else
+					add_error_message ("No email is associated with the requested account. Please contact the webmaster for help.")
+					set_redirection (url ("/user", Void))
+				end
+			else
+				add_error_message ("User not defined!")
+			end
 		end
 
 	new_password_form (a_url: READABLE_STRING_8; a_name: STRING): CMS_FORM

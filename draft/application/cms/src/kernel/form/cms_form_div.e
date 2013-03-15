@@ -10,7 +10,7 @@ class
 inherit
 	CMS_FORM_ITEM
 
-	ITERABLE [CMS_FORM_ITEM]
+	CMS_FORM_COMPOSITE
 
 	WITH_CSS_ID
 
@@ -18,14 +18,16 @@ create
 	make,
 	make_with_item,
 	make_with_items,
-	make_with_text
+	make_with_text,
+	make_with_text_and_css_id,
+	make_with_item_and_css_id
 
 feature {NONE} -- Initialization
 
 	make
 			-- Initialize `Current'.
 		do
-			create items.make (0)
+			initialize_with_count (0)
 		end
 
 	make_with_text (s: READABLE_STRING_8)
@@ -33,15 +35,15 @@ feature {NONE} -- Initialization
 			make_with_item (create {CMS_FORM_RAW_TEXT}.make (s))
 		end
 
-	make_with_item (i: CMS_FORM_ITEM)
+	make_with_item (i: CMS_WIDGET)
 		do
-			create items.make (1)
+			initialize_with_count (1)
 			extend (i)
 		end
 
-	make_with_items (it: ITERABLE [CMS_FORM_ITEM])
+	make_with_items (it: ITERABLE [CMS_WIDGET])
 		do
-			create items.make (2)
+			initialize_with_count (2)
 			across
 				it as c
 			loop
@@ -49,19 +51,16 @@ feature {NONE} -- Initialization
 			end
 		end
 
-feature -- Access
-
-	new_cursor: ITERATION_CURSOR [CMS_FORM_ITEM]
-			-- Fresh cursor associated with current structure
+	make_with_item_and_css_id (i: CMS_WIDGET; a_css_id: READABLE_STRING_8)
 		do
-			Result := items.new_cursor
+			make_with_item (i)
+			set_css_id (a_css_id)
 		end
 
-feature -- Change
-
-	extend (i: CMS_FORM_ITEM)
+	make_with_text_and_css_id (s: READABLE_STRING_8; a_css_id: READABLE_STRING_8)
 		do
-			items.force (i)
+			make_with_text (s)
+			set_css_id (a_css_id)
 		end
 
 feature -- Conversion
@@ -81,9 +80,5 @@ feature -- Conversion
 			end
 			a_html.append ("%N</div>%N")
 		end
-
-feature {NONE} -- Implementation
-
-	items: ARRAYED_LIST [CMS_FORM_ITEM]
 
 end

@@ -1,11 +1,10 @@
 note
-	description: "Summary description for {CMS_WIDGET_TABLE}."
-	author: ""
+	description: "Summary description for {CMS_WIDGET_FILLED_TABLE}."
 	date: "$Date$"
 	revision: "$Revision$"
 
 class
-	CMS_WIDGET_TABLE [G]
+	CMS_WIDGET_TABLE
 
 inherit
 	CMS_WIDGET
@@ -15,6 +14,8 @@ inherit
 	WITH_CSS_CLASS
 
 	WITH_CSS_STYLE
+
+	ITERABLE [CMS_WIDGET_TABLE_ITEM]
 
 create
 	make
@@ -26,14 +27,93 @@ feature {NONE} -- Initialization
 			create columns.make_empty
 		end
 
+	make_from_table (tb: CMS_WIDGET_AGENT_TABLE [detachable ANY])
+		local
+			fct: like {CMS_WIDGET_AGENT_TABLE [detachable ANY]}.compute_item_function
+		do
+			make
+			set_column_count (tb.column_count)
+				-- css classes
+			if attached tb.css_classes as lst then
+				across lst as c loop
+					add_css_class (c.item)
+				end
+			end
+				-- css id
+			set_css_id (tb.css_id)
+
+				-- css style
+			add_css_style (tb.css_style)
+
+				-- columns
+			across
+				tb.columns as c
+			loop
+				columns [c.item.index] := c.item.twin
+			end
+
+				-- rows
+			fct := tb.compute_item_function
+			if fct /= Void then
+				if attached tb.head_data as lst then
+					across lst as d loop
+						add_head_row (fct.item ([d.item]))
+					end
+				end
+				if attached tb.data as lst then
+					across lst as d loop
+						add_row (fct.item ([d.item]))
+					end
+				end
+				if attached tb.foot_data as lst then
+					across lst as d loop
+						add_foot_row (fct.item ([d.item]))
+					end
+				end
+			end
+		end
+
 feature -- Access
+
+	new_cursor: CMS_WIDGET_TABLE_ITERATION_CURSOR
+			-- Fresh cursor associated with current structure
+		do
+			create Result.make (Current)
+		end
 
 	column_count: INTEGER
 		do
 			Result := columns.count
 		end
 
+	head_row_count: INTEGER
+		do
+			if attached head_rows as lst then
+				Result := lst.count
+			end
+		end
+
+	body_row_count: INTEGER
+		do
+			if attached rows as lst then
+				Result := lst.count
+			end
+		end
+
+	foot_row_count: INTEGER
+		do
+			if attached foot_rows as lst then
+				Result := lst.count
+			end
+		end
+
+	row_count: INTEGER
+		do
+			Result := head_row_count + body_row_count + foot_row_count
+		end
+
 	columns: ARRAY [CMS_WIDGET_TABLE_COLUMN]
+
 
 	column (c: INTEGER): CMS_WIDGET_TABLE_COLUMN
 		do
@@ -43,48 +123,85 @@ feature -- Access
 			Result := columns[c]
 		end
 
+	row (r: INTEGER): detachable CMS_WIDGET_TABLE_ROW
+		do
+			if r <= head_row_count then
+				if attached head_rows as lst then
+					Result := lst [r]
+				end
+			elseif r <= head_row_count + body_row_count then
+				if attached rows as lst then
+					Result := lst [r - head_row_count]
+				end
+			elseif r <= row_count then
+				if attached foot_rows as lst then
+					Result := lst [r - head_row_count - body_row_count]
+				end
+			end
+		end
+
 	has_title: BOOLEAN
 		do
 			Result := across columns as c some c.item.title /= Void end
 		end
 
-	head_data: detachable ITERABLE [G]
+	head_rows: detachable ARRAYED_LIST [CMS_WIDGET_TABLE_ROW]
 			-- thead
 
-	foot_data: detachable ITERABLE [G]
+	foot_rows: detachable ARRAYED_LIST [CMS_WIDGET_TABLE_ROW]
 			-- tfoot
 
-	data: detachable ITERABLE [G]
+	rows: detachable ARRAYED_LIST [CMS_WIDGET_TABLE_ROW]
 			-- tbody
-
-	compute_item_function: detachable FUNCTION [ANY, TUPLE [data: G], CMS_WIDGET_TABLE_ROW]
 
 feature -- Change
 
-	set_head_data (d: like head_data)
+	clear_rows
 		do
-			head_data := d
+			head_rows := Void
+			foot_rows := Void
+			rows := Void
 		end
 
-	set_foot_data (d: like foot_data)
+	add_head_row (r: CMS_WIDGET_TABLE_ROW)
+		local
+			lst: like head_rows
 		do
-			foot_data := d
+			lst := head_rows
+			if lst = Void then
+				create {ARRAYED_LIST [CMS_WIDGET_TABLE_ROW]} lst.make (1)
+				head_rows := lst
+			end
+			lst.force (r)
 		end
 
-	set_data (d: like data)
+	add_foot_row (r: CMS_WIDGET_TABLE_ROW)
+		local
+			lst: like foot_rows
 		do
-			data := d
+			lst := foot_rows
+			if lst = Void then
+				create {ARRAYED_LIST [CMS_WIDGET_TABLE_ROW]} lst.make (1)
+				foot_rows := lst
+			end
+			lst.force (r)
 		end
 
-	set_compute_item_function (fct: like compute_item_function)
+	add_row (r: CMS_WIDGET_TABLE_ROW)
+		local
+			lst: like rows
 		do
-			compute_item_function := fct
+			lst := rows
+			if lst = Void then
+				create {ARRAYED_LIST [CMS_WIDGET_TABLE_ROW]} lst.make (1)
+				rows := lst
+			end
+			lst.force (r)
 		end
 
 	set_column_count (nb: INTEGER)
 		do
 			if nb > columns.count then
---				columns.conservative_resize_with_default (create {CMS_WIDGET_TABLE_COLUMN}, 1, nb)
 				from
 				until
 					columns.count = nb
@@ -127,24 +244,24 @@ feature -- Conversion
 				end
 				a_html.append ("</tr>")
 			end
-			if attached head_data as l_head_data then
+			if attached head_rows as l_head_rows then
 				l_use_tbody := True
 				a_html.append ("<thead>")
-				append_data_to_html (l_head_data, a_theme, a_html)
+				append_rows_to_html (l_head_rows, a_theme, a_html)
 				a_html.append ("</thead>")
 			end
-			if attached foot_data as l_foot_data then
+			if attached foot_rows as l_foot_rows then
 				l_use_tbody := True
 				a_html.append ("<tfoot>")
-				append_data_to_html (l_foot_data, a_theme, a_html)
+				append_rows_to_html (l_foot_rows, a_theme, a_html)
 				a_html.append ("</tfoot>")
 			end
 
-			if attached data as l_data then
+			if attached rows as l_rows then
 				if l_use_tbody then
 					a_html.append ("<tbody>")
 				end
-				append_data_to_html (l_data, a_theme, a_html)
+				append_rows_to_html (l_rows, a_theme, a_html)
 				if l_use_tbody then
 					a_html.append ("</tbody>")
 				end
@@ -152,25 +269,12 @@ feature -- Conversion
 			a_html.append ("</table>")
 		end
 
-	append_data_to_html (lst: ITERABLE [G]; a_theme: CMS_THEME; a_html: STRING_8)
-		local
-			fct: like compute_item_function
+	append_rows_to_html (lst: ITERABLE [CMS_WIDGET_TABLE_ROW]; a_theme: CMS_THEME; a_html: STRING_8)
 		do
-			fct := compute_item_function
 			across
-				lst as d
+				lst as r
 			loop
-				if fct /= Void and then attached fct.item ([d.item]) as r then
-					r.append_to_html (a_theme, a_html)
-				else
-					a_html.append ("<tr>")
-					a_html.append ("<td>")
-					if attached d.item as g then
-						a_html.append (g.out)
-					end
-					a_html.append ("</td>")
-					a_html.append ("</tr>")
-				end
+				r.item.append_to_html (a_theme, a_html)
 			end
 		end
 

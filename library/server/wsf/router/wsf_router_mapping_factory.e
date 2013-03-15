@@ -14,6 +14,8 @@ feature {WSF_ROUTER} -- Mapping
 
 	new_mapping (a_uri: READABLE_STRING_8): WSF_ROUTER_MAPPING
 			-- New mapping object
+		require
+			a_uri_attached: a_uri /= Void
 		deferred
 		ensure
 			Result_attached: Result /= Void

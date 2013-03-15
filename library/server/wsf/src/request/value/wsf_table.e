@@ -58,11 +58,11 @@ feature -- Access
 			end
 		end
 
-	values: HASH_TABLE [WSF_VALUE, READABLE_STRING_32]
+	values: HASH_TABLE [WSF_VALUE, STRING_32]
 
-	value (k: READABLE_STRING_32): detachable WSF_VALUE
+	value (k: READABLE_STRING_GENERAL): detachable WSF_VALUE
 		do
-			Result := values.item (k)
+			Result := values.item (k.to_string_32)
 		end
 
 	count: INTEGER
@@ -169,11 +169,11 @@ feature -- Conversion
 
 feature -- Element change
 
-	add_value (a_value: WSF_VALUE; k: READABLE_STRING_32)
+	add_value (a_value: WSF_VALUE; k: READABLE_STRING_GENERAL)
 		require
 			same_name: a_value.name.same_string (name) or else (a_value.name.starts_with (name) and then a_value.name.item (name.count + 1) = '[')
 		do
-			values.force (a_value, k)
+			values.force (a_value, k.to_string_32)
 		end
 
 feature -- Traversing
@@ -217,7 +217,7 @@ feature -- Visitor
 		end
 
 note
-	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
+	copyright: "2011-2013, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

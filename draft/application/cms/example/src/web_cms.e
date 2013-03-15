@@ -101,6 +101,10 @@ feature -- Access
 			create {DEBUG_MODULE} m.make
 			m.enable
 			a_setup.add_module (m)
+
+			create {OPENID_MODULE} m.make
+			m.enable
+			a_setup.add_module (m)
 		end
 
 	setup_storage (a_setup: CMS_SETUP)

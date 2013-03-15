@@ -63,6 +63,41 @@ feature -- Access
 			end
 		end
 
+feature -- Permission
+
+	roles: detachable LIST [INTEGER]
+			-- Associated roles
+			-- Note: does not include "authenticated" and "anonymous".
+
+	has_role (r: CMS_USER_ROLE): BOOLEAN
+		do
+			Result := attached roles as lst and then lst.has (r.id)
+		end
+
+	clear_roles
+		do
+			roles := Void
+		end
+
+	add_role_by_id (r_id: INTEGER)
+		local
+			lst: like roles
+		do
+			lst := roles
+			if r_id <= 2 then -- Anonymous=1 and Authenticated=2
+				lst := roles
+				if lst /= Void and then lst.is_empty then
+					clear_roles
+				end
+			else
+				if lst = Void then
+					create {ARRAYED_SET [INTEGER]} lst.make (1)
+					roles := lst
+				end
+				lst.force (r_id)
+			end
+		end
+
 feature -- Status report
 
 	has_id: BOOLEAN

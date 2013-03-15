@@ -78,12 +78,12 @@ feature -- Control
 		deferred
 		end
 
-	apply_to (h: HTTP_HEADER; a_request: WSF_REQUEST; a_path: detachable READABLE_STRING_8)
+	apply_to (h: HTTP_HEADER; req: WSF_REQUEST; a_path: detachable READABLE_STRING_8)
 		deferred
 		end
 
 note
-	copyright: "Copyright (c) 1984-2012, Eiffel Software and others"
+	copyright: "2011-2013, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

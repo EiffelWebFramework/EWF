@@ -15,6 +15,10 @@ inherit
 feature -- Execution
 
 	execute (req: WSF_REQUEST; res: WSF_RESPONSE)
+			-- Execute handler for `req' and respond in `res'.
+		require
+			req_attached: req /= Void
+			res_attached: res /= Void
 		deferred
 		end
 
@@ -26,7 +30,7 @@ feature {WSF_ROUTER} -- Mapping
 		end
 
 note
-	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
+	copyright: "2011-2013, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

@@ -38,19 +38,6 @@ feature {CMS_SERVICE} -- Registration
 
 feature -- Hooks
 
-	links: HASH_TABLE [CMS_MODULE_LINK, STRING]
-			-- Link indexed by path
-		local
---			lnk: CMS_MODULE_LINK
-		do
-			create Result.make (0)
---			create lnk.make ("Date/time demo")
---			lnk.set_callback (agent process_date_time_demo, <<"arg">>)
---			Result["/demo/date/{arg}"] := lnk
-		end
-
-feature -- Hooks
-
 --	block_list: ITERABLE [like {CMS_BLOCK}.name]
 --		do
 --			Result := <<"debug-info">>

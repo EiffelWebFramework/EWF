@@ -21,11 +21,6 @@ feature -- Execution
 			b: STRING_8
 			f: CMS_FORM
 			fd: detachable CMS_FORM_DATA
-			u: detachable CMS_USER
-			up: detachable CMS_USER_PROFILE
-			e: detachable CMS_EMAIL
-			l_pass: detachable READABLE_STRING_32
-			l_uuid: UUID
 		do
 			set_title ("Create new account")
 			create b.make_empty
@@ -34,79 +29,96 @@ feature -- Execution
 				b.append ("You are already " + link ("signed in", "/user", Void) + ", please " + link ("signout", "/user/logout", Void) + " before trying to " + link ("register a new account", "/account/register", Void) + ".")
 				set_redirection (url ("/user", Void))
 			else
-				f := registration_form (url (request.path_info, Void), "reg")
+				f := registration_form (url (request.path_info, Void), "user-register")
 
 				if request.is_post_request_method then
-					create fd.make (request, f)
-					if attached {WSF_STRING} fd.item ("username") as s_username then
-						u := service.storage.user_by_name (s_username.value)
-						if u /= Void then
-							fd.report_invalid_field ("username", "User already exists!")
-						end
-					end
-					if attached {WSF_STRING} fd.item ("email") as s_email then
-						u := service.storage.user_by_email (s_email.value)
-						if u /= Void then
-							fd.report_invalid_field ("email", "Email is already used!")
-						end
-					end
-					u := Void
+					f.validation_actions.extend (agent registration_form_validate)
+					f.submit_actions.extend (agent registration_form_submitted (?, b))
+
+					f.process (Current)
+					fd := f.last_data
+				else
+					f.prepare (Current)
 				end
 				if fd /= Void and then fd.is_valid then
-					across
-						fd as c
-					loop
-						b.append ("<li>" +  html_encoded (c.key) + "=")
-						if attached c.item as v then
-							b.append (html_encoded (v.string_representation))
-						end
-						b.append ("</li>")
-					end
-					if attached {WSF_STRING} fd.item ("username") as s_username then
-						u := service.storage.user_by_name (s_username.value)
-
-						create u.make_new (s_username.value)
-						if attached {WSF_STRING} fd.item ("password") as s_password then
-							u.set_password (s_password.value)
-							l_pass := u.password
-						end
-						if attached {WSF_STRING} fd.item ("email") as s_email then
-							u.set_email (s_email.value)
-						end
-
-						if attached {WSF_STRING} fd.item ("note") as s_note then
-							create up.make
-							up.force (s_note.value, "note")
-							u.set_profile (up)
-						end
-
-						l_uuid := (create {UUID_GENERATOR}).generate_uuid
-						u.set_data_item ("new_password_extra", l_uuid.out)
-
-						service.storage.save_user (u)
-						if attached u.email as l_mail_address then
-							e := new_registration_email (l_mail_address, u, l_pass, l_uuid.out)
-							service.mailer.safe_process_email (e)
-						end
-						e := new_user_account_email (service.site_email, u)
-						service.mailer.safe_process_email (e)
-
-						login (u, request)
-						set_redirection (url ("/user", Void))
-					end
 					set_main_content (b)
 				else
 					initialize_primary_tabs (user)
-					if fd /= Void then
-						if not fd.is_valid then
-							report_form_errors (fd)
-						end
-						fd.apply_to_associated_form
-					end
 					f.append_to_html (theme, b)
 				end
 			end
 			set_main_content (b)
+		end
+
+	registration_form_validate (fd: CMS_FORM_DATA)
+		local
+			u: detachable CMS_USER
+		do
+			if attached {WSF_STRING} fd.item ("username") as s_username then
+				u := service.storage.user_by_name (s_username.value)
+				if u /= Void then
+					fd.report_invalid_field ("username", "User already exists!")
+				end
+			end
+			if attached {WSF_STRING} fd.item ("email") as s_email then
+				u := service.storage.user_by_email (s_email.value)
+				if u /= Void then
+					fd.report_invalid_field ("email", "Email is already used!")
+				end
+			end
+		end
+
+	registration_form_submitted (fd: CMS_FORM_DATA; buf: STRING)
+		local
+			b: STRING
+			u: detachable CMS_USER
+			up: detachable CMS_USER_PROFILE
+			e: detachable CMS_EMAIL
+			l_pass: detachable READABLE_STRING_32
+			l_uuid: UUID
+		do
+			b := buf
+			across
+				fd as c
+			loop
+				b.append ("<li>" +  html_encoded (c.key) + "=")
+				if attached c.item as v then
+					b.append (html_encoded (v.string_representation))
+				end
+				b.append ("</li>")
+			end
+			if attached {WSF_STRING} fd.item ("username") as s_username then
+				u := service.storage.user_by_name (s_username.value)
+
+				create u.make_new (s_username.value)
+				if attached {WSF_STRING} fd.item ("password") as s_password then
+					u.set_password (s_password.value)
+					l_pass := u.password
+				end
+				if attached {WSF_STRING} fd.item ("email") as s_email then
+					u.set_email (s_email.value)
+				end
+
+				if attached {WSF_STRING} fd.item ("note") as s_note then
+					create up.make
+					up.force (s_note.value, "note")
+					u.set_profile (up)
+				end
+
+				l_uuid := (create {UUID_GENERATOR}).generate_uuid
+				u.set_data_item ("new_password_extra", l_uuid.out)
+
+				service.storage.save_user (u)
+				if attached u.email as l_mail_address then
+					e := new_registration_email (l_mail_address, u, l_pass, l_uuid.out)
+					service.mailer.safe_process_email (e)
+				end
+				e := new_user_account_email (service.site_email, u)
+				service.mailer.safe_process_email (e)
+
+				login (u, request)
+				set_redirection (url ("/user", Void))
+			end
 		end
 
 	registration_form (a_url: READABLE_STRING_8; a_name: STRING): CMS_FORM
