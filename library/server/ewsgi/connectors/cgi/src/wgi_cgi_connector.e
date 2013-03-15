@@ -44,6 +44,7 @@ feature -- Execution
 				create req.make ((create {EXECUTION_ENVIRONMENT}).starting_environment_variables, create {WGI_CGI_INPUT_STREAM}.make, Current)
 				create res.make (create {WGI_CGI_OUTPUT_STREAM}.make, create {WGI_CGI_ERROR_STREAM}.make)
 				service.execute (req, res)
+				res.push
 			else
 				if attached (create {EXCEPTION_MANAGER}).last_exception as e and then attached e.exception_trace as l_trace then
 					if res /= Void then
@@ -53,6 +54,7 @@ feature -- Execution
 						if res.message_writable then
 							res.put_string ("<pre>" + l_trace + "</pre>")
 						end
+						res.push
 					end
 				end
 			end

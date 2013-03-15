@@ -133,10 +133,10 @@ feature -- Server
 			res: detachable WGI_NINO_RESPONSE_STREAM
 		do
 			create req.make (env, create {WGI_NINO_INPUT_STREAM}.make (a_socket), Current)
-			create res.make (create {WGI_NINO_OUTPUT_STREAM}.make (a_socket), Void)
+			create res.make (create {WGI_NINO_OUTPUT_STREAM}.make (a_socket), create {WGI_NINO_ERROR_STREAM}.make_stderr (a_socket.descriptor.out))
 			req.set_meta_string_variable ("RAW_HEADER_DATA", a_headers_text)
 			service.execute (req, res)
-			res.commit
+			res.push
 		end
 
 note

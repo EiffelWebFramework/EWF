@@ -28,15 +28,32 @@ convert
 feature {NONE} -- Initialization
 
 	make_from_wgi (r: WGI_RESPONSE)
+		local
+			wres: detachable WSF_WGI_DELAYED_HEADER_RESPONSE
 		do
 			transfered_content_length := 0
+			create header.make
 			wgi_response := r
+			create wres.make (r, Current)
+			wgi_response := wres
+			set_status_code ({HTTP_STATUS_CODE}.ok) -- Default value
 		end
 
 feature {WSF_RESPONSE_EXPORTER} -- Properties		
 
 	wgi_response: WGI_RESPONSE
-			-- Associated WGI_RESPONSE
+			-- Associated WGI_RESPONSE.
+
+	header: WSF_HEADER
+			-- Associated response header.	
+
+feature {WSF_RESPONSE_EXPORTER} -- Change		
+
+	set_wgi_response (res: WGI_RESPONSE)
+			-- Set associated WGI_RESPONSE
+		do
+			wgi_response := res
+		end
 
 feature -- Status report
 
@@ -76,6 +93,7 @@ feature -- Status setting
 			-- Set response status code
 			-- Should be done before sending any data back to the client
 			--| note: the status is really sent when the header are set
+			--| Default value might be set to 200 {HTTP_HEADER}.ok.
 		require
 			a_code_valid: a_code > 0
 			status_not_set: not status_committed
@@ -112,61 +130,146 @@ feature -- Status setting
 	status_reason_phrase: detachable READABLE_STRING_8
 			-- Custom status reason phrase (optional)
 
+feature {WSF_RESPONSE_EXPORTER} -- Header output operation
+
+	process_header
+		require
+			header_not_committed: not header_committed
+		do
+			if not header_committed then
+					-- commit status code and reason phrase
+				wgi_response.set_status_code (status_code, status_reason_phrase)
+					-- commit header text
+				wgi_response.put_header_text (header.string)
+			end
+		ensure
+			status_committed: status_committed
+			header_committed: header_committed
+		end
+
+	report_content_already_sent_and_header_ignored
+		do
+			put_error ("Content already sent, new header text ignored!")
+		end
+
 feature -- Header output operation
 
-	put_header_text (a_text: READABLE_STRING_8)
-			-- Sent `a_text' and just before send the status code
+	put_header_line (h: READABLE_STRING_8)
+			-- Put header `h'
+			-- Replace any existing value
 		require
-			status_set: status_is_set
+			header_not_committed: not header_committed
+		do
+			if header_committed then
+				report_content_already_sent_and_header_ignored
+			else
+				header.put_header (h)
+			end
+		end
+
+	add_header_line (h: READABLE_STRING_8)
+			-- Add header `h'
+			-- This can lead to duplicated header entries
+		require
+			header_not_committed: not header_committed
+		do
+			if header_committed then
+				report_content_already_sent_and_header_ignored
+			else
+				header.add_header (h)
+			end
+		end
+
+	put_header_text (a_text: READABLE_STRING_8)
+			-- Put the multiline header `a_text'
+			-- Overwite potential existing header
+		require
 			header_not_committed: not header_committed
 			a_text_ends_with_single_crlf: a_text.count > 2 implies not a_text.substring (a_text.count - 2, a_text.count).same_string ("%R%N")
 			a_text_does_not_end_with_double_crlf: a_text.count > 4 implies not a_text.substring (a_text.count - 4, a_text.count).same_string ("%R%N%R%N")
 		do
-			wgi_response.set_status_code (status_code, status_reason_phrase)
-			wgi_response.put_header_text (a_text)
+			if header_committed then
+				report_content_already_sent_and_header_ignored
+			else
+				header.append_raw_header_data (a_text)
+			end
 		ensure
-			status_set: status_is_set
-			status_committed: status_committed
-			header_committed: header_committed
 			message_writable: message_writable
 		end
 
+	add_header_text (a_text: READABLE_STRING_8)
+			-- Add the multiline header `a_text'
+			-- Does not replace existing header with same name
+			-- This could leads to multiple header with the same name
+		require
+			header_not_committed: not header_committed
+			a_text_ends_with_single_crlf: a_text.count > 2 implies not a_text.substring (a_text.count - 2, a_text.count).same_string ("%R%N")
+			a_text_does_not_end_with_double_crlf: a_text.count > 4 implies not a_text.substring (a_text.count - 4, a_text.count).same_string ("%R%N%R%N")
+		do
+			if header_committed then
+				report_content_already_sent_and_header_ignored
+			else
+				header.append_raw_header_data (a_text)
+			end
+		ensure
+			status_set: status_is_set
+			message_writable: message_writable
+		end
+
+feature -- Header output operation: helpers
+
 	put_header (a_status_code: INTEGER; a_headers: detachable ARRAY [TUPLE [name: READABLE_STRING_8; value: READABLE_STRING_8]])
-			-- Send headers with status `a_status', and headers from `a_headers'
+			-- Put headers with status `a_status', and headers from `a_headers'
 		require
 			status_not_committed: not status_committed
 			header_not_committed: not header_committed
 		local
 			h: HTTP_HEADER
 		do
-			set_status_code (a_status_code)
 			if a_headers /= Void then
 				create h.make_from_array (a_headers)
 				put_header_text (h.string)
 			end
 		ensure
 			status_set: status_is_set
-			header_committed: header_committed
+			message_writable: message_writable
+		end
+
+	add_header (a_status_code: INTEGER; a_headers: detachable ARRAY [TUPLE [name: READABLE_STRING_8; value: READABLE_STRING_8]])
+			-- Put headers with status `a_status', and headers from `a_headers'
+		require
+			status_not_committed: not status_committed
+			header_not_committed: not header_committed
+		local
+			h: HTTP_HEADER
+		do
+			if a_headers /= Void then
+				create h.make_from_array (a_headers)
+				add_header_text (h.string)
+			end
+		ensure
+			status_set: status_is_set
 			message_writable: message_writable
 		end
 
 	put_header_lines (a_lines: ITERABLE [TUPLE [name: READABLE_STRING_8; value: READABLE_STRING_8]])
-			-- Send headers from `a_lines'
-		local
-			h: STRING_8
+			-- Put headers from `a_lines'
+		require
+			header_not_committed: not header_committed
 		do
-			create h.make (256)
-			across
-				a_lines as c
-			loop
-				h.append (c.item.name)
-				h.append_character (':')
-				h.append_character (' ')
-				h.append (c.item.value)
-				h.append_character ('%R')
-				h.append_character ('%N')
+			across a_lines as c loop
+				put_header_line (c.item.name + ": " + c.item.value)
 			end
-			put_header_text (h)
+		end
+
+	add_header_lines (a_lines: ITERABLE [TUPLE [name: READABLE_STRING_8; value: READABLE_STRING_8]])
+			-- Add headers from `a_lines'
+		require
+			header_not_committed: not header_committed
+		do
+			across a_lines as c loop
+				add_header_line (c.item.name + ": " + c.item.value)
+			end
 		end
 
 feature -- Output report
@@ -376,7 +479,7 @@ feature -- Error reporting
 		end
 
 note
-	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
+	copyright: "2011-2013, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software
