@@ -31,6 +31,7 @@ feature {NONE} -- Initialization
 		do
 			transfered_content_length := 0
 			wgi_response := r
+			create header.make
 		end
 
 feature {WSF_RESPONSE_EXPORTER} -- Properties		
@@ -114,6 +115,25 @@ feature -- Status setting
 
 feature -- Header output operation
 
+	extend_header (a_text: READABLE_STRING_8)
+			-- Extend `header' with `a_text'
+			-- Do NOT commit the header
+			-- You have to call `put_header_text' to commit the header
+		require
+			header_not_committed: not header_committed
+		local
+			l_header: HTTP_HEADER
+		do
+			create l_header.make_from_raw_header_data (a_text)
+			across
+				l_header as c
+			loop
+				header.put_header (c.item.string)
+			end
+		ensure
+			header_not_committed: not header_committed
+		end
+
 	put_header_text (a_text: READABLE_STRING_8)
 			-- Sent `a_text' and just before send the status code
 		require
@@ -121,9 +141,17 @@ feature -- Header output operation
 			header_not_committed: not header_committed
 			a_text_ends_with_single_crlf: a_text.count > 2 implies not a_text.substring (a_text.count - 2, a_text.count).same_string ("%R%N")
 			a_text_does_not_end_with_double_crlf: a_text.count > 4 implies not a_text.substring (a_text.count - 4, a_text.count).same_string ("%R%N%R%N")
+		local
+			l_text: READABLE_STRING_8
 		do
 			wgi_response.set_status_code (status_code, status_reason_phrase)
-			wgi_response.put_header_text (a_text)
+			if header.is_empty then
+				l_text := a_text
+			else
+				extend_header (a_text)
+				l_text := header.string
+			end
+			wgi_response.put_header_text (l_text)
 		ensure
 			status_set: status_is_set
 			status_committed: status_committed
@@ -176,6 +204,13 @@ feature -- Output report
 			-- `put_chunk', `put_substring'
 
 feature {NONE} -- Implementation
+
+	header: HTTP_HEADER
+			-- Header
+			-- This is useful when we want to fill the `header'
+			-- in multi-pass (i.e. in different classes).
+			-- We first call `extend_header', and
+			-- finally we call `put_header_text'.
 
 	increment_transfered_content_length (n: INTEGER)
 			-- Increment `transfered_content_length' by `n'
@@ -376,7 +411,7 @@ feature -- Error reporting
 		end
 
 note
-	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
+	copyright: "2011-2013, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software
