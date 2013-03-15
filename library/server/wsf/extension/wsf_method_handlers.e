@@ -24,7 +24,12 @@ inherit
 
 	WSF_METHOD_HANDLER
 		rename
-			do_method as do_put
+			do_method as do_post
+		end
+
+	WSF_METHOD_HANDLER
+		rename
+			do_method as do_delete
 		end
 
 	WSF_METHOD_HANDLER
