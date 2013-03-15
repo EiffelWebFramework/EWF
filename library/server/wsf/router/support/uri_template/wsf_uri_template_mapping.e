@@ -21,16 +21,24 @@ feature -- Access
 feature -- Change
 
 	set_handler	(h: like handler)
+			-- <Precursor>
 		do
 			handler := h
+		ensure then
+			h_aliased: handler = h
 		end
 
 feature {NONE} -- Execution
 
 	execute_handler (h: like handler; req: WSF_REQUEST; res: WSF_RESPONSE)
+			-- <Precursor>
 		do
 			h.execute (req, res)
 		end
+
+invariant
+
+	handler_attached: handler /= Void
 
 note
 	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
