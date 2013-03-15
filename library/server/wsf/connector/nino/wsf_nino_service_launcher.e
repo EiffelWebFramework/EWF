@@ -34,7 +34,12 @@ create
 feature {NONE} -- Initialization
 
 	initialize
+		local
+			conn: like connector
 		do
+			create on_launched_actions
+			create on_stopped_actions
+
 			port_number := 80 --| Default, but quite often, this port is already used ...
 			base_url := ""
 
@@ -64,14 +69,15 @@ feature {NONE} -- Initialization
 					verbose := l_verbose_str.as_lower.same_string ("true")
 				end
 			end
-			create connector.make (Current)
-			if attached connector as conn then
-				conn.set_base (base_url)
-				if single_threaded then
-					conn.configuration.set_force_single_threaded (True)
-				end
-				conn.configuration.set_is_verbose (verbose)
+			create conn.make (Current)
+			conn.on_launched_actions.extend (agent on_launched)
+			conn.on_stopped_actions.extend (agent on_stopped)
+			connector := conn
+			conn.set_base (base_url)
+			if single_threaded then
+				conn.configuration.set_force_single_threaded (True)
 			end
+			conn.configuration.set_is_verbose (verbose)
 		end
 
 feature -- Execution
@@ -104,7 +110,25 @@ feature -- Execution
 			end
 		end
 
+feature -- Callback
+
+	on_launched_actions: ACTION_SEQUENCE [TUPLE [WGI_CONNECTOR]]
+			-- Actions triggered when launched
+
+	on_stopped_actions: ACTION_SEQUENCE [TUPLE [WGI_CONNECTOR]]
+			-- Actions triggered when stopped
+
 feature {NONE} -- Implementation
+
+	on_launched (conn: WGI_CONNECTOR)
+		do
+			on_launched_actions.call ([conn])
+		end
+
+	on_stopped (conn: WGI_CONNECTOR)
+		do
+			on_stopped_actions.call ([conn])
+		end
 
 	port_number: INTEGER
 
@@ -123,11 +147,11 @@ feature -- Status report
 
 	launchable: BOOLEAN
 		do
-			Result := Precursor and port_number > 0
+			Result := Precursor and port_number >= 0
 		end
 
 ;note
-	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
+	copyright: "2011-2013, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

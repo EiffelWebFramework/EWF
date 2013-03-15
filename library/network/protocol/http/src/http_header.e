@@ -69,23 +69,9 @@ feature {NONE} -- Initialization
 
 	make_from_raw_header_data (h: READABLE_STRING_8)
 			-- Create Current from raw header data
-        local
-        	line : detachable STRING
-			lines: LIST [READABLE_STRING_8]
         do
-            lines := h.split ('%N')
-            make_with_count (lines.count)
-            across
-            	lines as c
-            loop
-            	line := c.item
-            	if not line.is_empty then
-            		if line [line.count] = '%R' then
-						line.remove_tail (1)
-            		end
-					add_header (line)
-            	end
-			end
+			make
+			append_raw_header_data (h)
 		end
 
 feature -- Recycle
@@ -111,23 +97,19 @@ feature -- Access
 		end
 
 	headers: ARRAYED_LIST [READABLE_STRING_8]
-			-- Header's lines
+			-- Header's lines.
 
 	string: STRING_8
-			-- String representation of the headers
+			-- String representation of the header entries.
 		local
-			l_headers: like headers
+			n: like count
 		do
-			l_headers := headers
-			if not l_headers.is_empty then
-				create Result.make (l_headers.count * 32)
-				across
-					l_headers as c
-				loop
-					append_line_to (c.item, Result)
-				end
-			else
+			n := count
+			if n = 0 then
 				create Result.make_empty
+			else
+				create Result.make (n * 32)
+				append_string_to (Result)
 			end
 		ensure
 			result_has_ending_cr_lf: Result.count >= 2 implies Result.substring (Result.count - 1, Result.count).same_string ("%R%N")
@@ -135,6 +117,7 @@ feature -- Access
 		end
 
 	to_name_value_iterable: ITERABLE [TUPLE [name: READABLE_STRING_8; value: READABLE_STRING_8]]
+			-- Iterable representation of the header entries.
 		local
 			res: ARRAYED_LIST [TUPLE [READABLE_STRING_8, READABLE_STRING_8]]
 		do
@@ -149,15 +132,53 @@ feature -- Access
 			Result := res
 		end
 
+feature -- Conversion
+
+	append_string_to (a_result: STRING_8)
+			-- Append current as string representation to `a_result'
+		local
+			l_headers: like headers
+		do
+			l_headers := headers
+			if not l_headers.is_empty then
+				across
+					l_headers as c
+				loop
+					append_line_to (c.item, a_result)
+				end
+			end
+		end
+
 feature -- Access
 
 	new_cursor: INDEXABLE_ITERATION_CURSOR [READABLE_STRING_8]
-			-- Fresh cursor associated with current structure
+			-- Fresh cursor associated with current structure.
 		do
 			Result := headers.new_cursor
 		end
 
-feature -- Header: filling
+feature -- Header: adding
+
+	append_raw_header_data (h: READABLE_STRING_8)
+			-- Append raw header data `h' to Current
+        local
+        	line : detachable STRING
+			lines: LIST [READABLE_STRING_8]
+        do
+            lines := h.split ('%N')
+			headers.grow (headers.count + lines.count)
+            across
+            	lines as c
+            loop
+            	line := c.item
+            	if not line.is_empty then
+            		if line [line.count] = '%R' then
+						line.remove_tail (1)
+            		end
+					add_header (line)
+            	end
+			end
+		end
 
 	append_array (a_headers: ARRAY [TUPLE [key: READABLE_STRING_8; value: READABLE_STRING_8]])
 			-- Append array of key,value headers
@@ -166,7 +187,7 @@ feature -- Header: filling
 			across
 				a_headers as c
 			loop
-				put_header_key_value (c.item.key, c.item.value)
+				add_header_key_value (c.item.key, c.item.value)
 			end
 		end
 
@@ -178,6 +199,54 @@ feature -- Header: filling
 				h.headers as c
 			loop
 				add_header (c.item.string)
+			end
+		end
+
+feature -- Header: merging
+
+	put_raw_header_data (h: READABLE_STRING_8)
+			-- Append raw header data `h' to Current
+			-- Overwrite existing header with same name
+        local
+        	line : detachable STRING
+			lines: LIST [READABLE_STRING_8]
+        do
+            lines := h.split ('%N')
+			headers.grow (headers.count + lines.count)
+            across
+            	lines as c
+            loop
+            	line := c.item
+            	if not line.is_empty then
+            		if line [line.count] = '%R' then
+						line.remove_tail (1)
+            		end
+					put_header (line)
+            	end
+			end
+		end
+
+	put_array (a_headers: ARRAY [TUPLE [key: READABLE_STRING_8; value: READABLE_STRING_8]])
+			-- Append array of key,value headers
+			-- Overwrite existing header with same name
+		do
+			headers.grow (headers.count + a_headers.count)
+			across
+				a_headers as c
+			loop
+				put_header_key_value (c.item.key, c.item.value)
+			end
+		end
+
+	put_header_object (h: HTTP_HEADER)
+			-- Append headers from `h'
+			-- Overwrite existing header with same name
+		do
+			headers.grow (headers.count + h.headers.count)
+			across
+				h.headers as c
+			loop
+				put_header (c.item.string)
 			end
 		end
 
@@ -203,14 +272,52 @@ feature -- Header change: general
 
 	add_header_key_value (k,v: READABLE_STRING_8)
 			-- Add header `k:v', or replace existing header of same header name/key
+		local
+			s: STRING_8
 		do
-			add_header (k + colon_space + v)
+			create s.make (k.count + 2 + v.count)
+			s.append (k)
+			s.append (colon_space)
+			s.append (v)
+			add_header (s)
 		end
 
 	put_header_key_value (k,v: READABLE_STRING_8)
 			-- Add header `k:v', or replace existing header of same header name/key
+		local
+			s: STRING_8
 		do
-			put_header (k + colon_space + v)
+			create s.make (k.count + 2 + v.count)
+			s.append (k)
+			s.append (colon_space)
+			s.append (v)
+			put_header (s)
+		end
+
+	put_header_key_values (k: READABLE_STRING_8; a_values: ITERABLE [READABLE_STRING_8]; a_separator: detachable READABLE_STRING_8)
+			-- Add header `k: a_values', or replace existing header of same header values/key.
+			-- Use `comma_space' as default separator if `a_separator' is Void or empty.
+		local
+			s: STRING_8
+			l_separator: READABLE_STRING_8
+		do
+			if a_separator /= Void and then not a_separator.is_empty then
+				l_separator := a_separator
+			else
+				l_separator := comma_space
+			end
+			create s.make_empty
+			across
+				a_values as c
+			loop
+				if not s.is_empty then
+					s.append_string (l_separator)
+				end
+				s.append (c.item)
+			end
+			if not s.is_empty then
+				put_header_key_value (k, s)
+			end
 		end
 
 	put_header_key_methods (k: READABLE_STRING_8; a_methods: ITERABLE [READABLE_STRING_8])
@@ -447,7 +554,7 @@ feature -- Method related
 	put_allow (a_methods: ITERABLE [READABLE_STRING_8])
 			-- If `a_methods' is not empty, put `Allow' header with list `a_methods' of methods
 		do
-			put_header_key_methods ({HTTP_HEADER_NAMES}.header_allow, a_methods)
+			put_header_key_values ({HTTP_HEADER_NAMES}.header_allow, a_methods, Void)
 		end
 
 feature -- Date
@@ -552,13 +659,16 @@ feature -- Cookie
 			if
 				domain /= Void and then not domain.same_string ("localhost")
 			then
-				s.append ("; Domain=" + domain)
+				s.append ("; Domain=")
+				s.append (domain)
 			end
 			if path /= Void then
-				s.append ("; Path=" + path)
+				s.append ("; Path=")
+				s.append (path)
 			end
 			if expiration /= Void then
-				s.append ("; Expires=" + expiration)
+				s.append ("; Expires=")
+				s.append (expiration)
 			end
 			if secure then
 				s.append ("; Secure")
@@ -756,8 +866,11 @@ feature {NONE} -- Implementation
 
 	date_to_rfc1123_http_date_format (dt: DATE_TIME): STRING_8
 			-- String representation of `dt' using the RFC 1123
+		local
+			d: HTTP_DATE
 		do
-			Result := dt.formatted_out ("ddd, [0]dd mmm yyyy [0]hh:[0]mi:[0]ss") + " GMT"
+			create d.make_from_date_time (dt)
+			Result := d.string
 		end
 
 feature {NONE} -- Constants
@@ -765,8 +878,20 @@ feature {NONE} -- Constants
 	str_binary: STRING = "binary"
 	str_chunked: STRING = "chunked"
 
-	colon_space: STRING = ": "
-	semi_colon_space: STRING = "; "
+	colon_space: IMMUTABLE_STRING_8
+		once
+			create Result.make_from_string (": ")
+		end
+
+	semi_colon_space: IMMUTABLE_STRING_8
+		once
+			create Result.make_from_string ("; ")
+		end
+
+	comma_space: IMMUTABLE_STRING_8
+		once
+			create Result.make_from_string (", ")
+		end
 
 note
 	copyright: "2011-2013, Jocelyn Fiat, Eiffel Software and others"

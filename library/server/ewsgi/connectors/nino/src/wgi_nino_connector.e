@@ -23,6 +23,10 @@ feature {NONE} -- Initialization
 
 			create cfg.make
 			create server.make (cfg)
+
+				-- Callbacks
+			create on_launched_actions
+			create on_stopped_actions
 		end
 
 	make_with_base (a_service: like service; a_base: like base)
@@ -69,6 +73,14 @@ feature -- Status report
 			-- Listening port.
 			--| 0: not launched			
 
+feature -- Callbacks
+
+	on_launched_actions: ACTION_SEQUENCE [TUPLE [WGI_CONNECTOR]]
+			-- Actions triggered when launched
+
+	on_stopped_actions: ACTION_SEQUENCE [TUPLE [WGI_CONNECTOR]]
+			-- Actions triggered when stopped
+
 feature -- Element change
 
 	on_launched (a_port: INTEGER)
@@ -76,11 +88,13 @@ feature -- Element change
 		do
 			launched := True
 			port := a_port
+			on_launched_actions.call ([Current])
 		end
 
 	on_stopped
 			-- Server stopped
 		do
+			on_stopped_actions.call ([Current])
 			launched := False
 			port := 0
 		end
@@ -119,10 +133,10 @@ feature -- Server
 			res: detachable WGI_NINO_RESPONSE_STREAM
 		do
 			create req.make (env, create {WGI_NINO_INPUT_STREAM}.make (a_socket), Current)
-			create res.make (create {WGI_NINO_OUTPUT_STREAM}.make (a_socket), Void)
+			create res.make (create {WGI_NINO_OUTPUT_STREAM}.make (a_socket), create {WGI_NINO_ERROR_STREAM}.make_stderr (a_socket.descriptor.out))
 			req.set_meta_string_variable ("RAW_HEADER_DATA", a_headers_text)
 			service.execute (req, res)
-			res.commit
+			res.push
 		end
 
 note

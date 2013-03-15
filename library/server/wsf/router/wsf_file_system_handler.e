@@ -203,7 +203,9 @@ feature -- Execution
 			end
 			if
 				attached req.meta_string_variable ("HTTP_IF_MODIFIED_SINCE") as s_if_modified_since and then
-				attached file_date (f) as f_date and then (f_date >= rfc1123_http_date_format_to_date (s_if_modified_since))
+				attached http_date_format_to_date (s_if_modified_since) as l_if_modified_since_date and then
+				attached file_date (f) as f_date and then
+				f_date <= l_if_modified_since_date
 			then
 				process_not_modified (f_date, req, res)
 			else
@@ -425,35 +427,59 @@ feature {NONE} -- Implementation
 
 feature {NONE} -- implementation: date time
 
-	date_time_utility: HTTP_DATE_TIME_UTILITIES
-		once
-			create Result
-		end
-
 	file_date (f: FILE): DATE_TIME
 		do
 			Result := timestamp_to_date (f.date)
 		end
 
-	rfc1123_http_date_format_to_date (s: STRING): DATE_TIME
+	http_date_format_to_date (s: READABLE_STRING_8): detachable DATE_TIME
 			-- String representation of `dt' using the RFC 1123
+			--       HTTP-date    = rfc1123-date | rfc850-date | asctime-date
+			--       rfc1123-date = wkday "," SP date1 SP time SP "GMT"
+			--       rfc850-date  = weekday "," SP date2 SP time SP "GMT"
+			--       asctime-date = wkday SP date3 SP time SP 4DIGIT
+			--       date1        = 2DIGIT SP month SP 4DIGIT
+			--                      ; day month year (e.g., 02 Jun 1982)
+			--       date2        = 2DIGIT "-" month "-" 2DIGIT
+			--                      ; day-month-year (e.g., 02-Jun-82)
+			--       date3        = month SP ( 2DIGIT | ( SP 1DIGIT ))
+			--                      ; month day (e.g., Jun  2)
+			--       time         = 2DIGIT ":" 2DIGIT ":" 2DIGIT
+			--                      ; 00:00:00 - 23:59:59
+			--       wkday        = "Mon" | "Tue" | "Wed"
+			--                    | "Thu" | "Fri" | "Sat" | "Sun"
+			--       weekday      = "Monday" | "Tuesday" | "Wednesday"
+			--                    | "Thursday" | "Friday" | "Saturday" | "Sunday"
+			--       month        = "Jan" | "Feb" | "Mar" | "Apr"
+			--                    | "May" | "Jun" | "Jul" | "Aug"
+			--                    | "Sep" | "Oct" | "Nov" | "Dec"
+			--| Sun, 06 Nov 1994 08:49:37 GMT  ; RFC 822, updated by RFC 1123
+			--| Sunday, 06-Nov-94 08:49:37 GMT ; RFC 850, obsoleted by RFC 1036
+			--| Sun Nov  6 08:49:37 1994       ; ANSI C's asctime() format
+			--| 			
+			--| "ddd, [0]dd mmm yyyy [0]hh:[0]mi:[0]ss.ff2"
+			--| ex: "WED, 30 JAN 2013 21:34:33 "
+		note
+			EIS: "name=RFC2616", "protocol=URI", "src=http://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html"
 		local
-			t: STRING
+			d: HTTP_DATE
 		do
-			t := s
-			if t.ends_with ("GMT") then
-				t := t.substring (1, t.count - 4)
+			create d.make_from_string (s)
+			if not d.has_error then
+				Result := d.date_time
 			end
-			create Result.make_from_string (t, "ddd,[0]dd mmm yyyy [0]hh:[0]mi:[0]ss.ff2")
 		end
 
 	timestamp_to_date (n: INTEGER): DATE_TIME
+		local
+			d: HTTP_DATE
 		do
-			Result := date_time_utility.unix_time_stamp_to_date_time (n)
+			create d.make_from_timestamp (n)
+			Result := d.date_time
 		end
 
 note
-	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
+	copyright: "2011-2013, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

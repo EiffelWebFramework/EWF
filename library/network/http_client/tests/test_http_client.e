@@ -48,7 +48,7 @@ feature -- Test routines
 			res: HTTP_CLIENT_RESPONSE
 			h: STRING
 		do
-			create res.make
+			create res.make ("http://example.com/")
 			create h.make_empty
 			h.append ("normal: NORMAL%R%N")
 			h.append ("concat: ABC%R%N")

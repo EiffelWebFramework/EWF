@@ -21,7 +21,7 @@
 		<library name="dft_connector_cgi" location="..\library\server\wsf\default\cgi-safe.ecf" readonly="false"/>
 		<library name="dft_connector_nino" location="..\library\server\wsf\default\nino-safe.ecf" readonly="false"/>
 		<library name="dft_connector_openshift" location="..\library\server\wsf\default\openshift-safe.ecf" readonly="false"/>
-		<library name="conneg" location="..\library\network\protocol\conneg\conneg-safe.ecf" readonly="false"/>
+		<library name="conneg" location="../library/network/protocol/CONNEG/conneg-safe.ecf" readonly="false"/>
 		<library name="ewsgi" location="..\library\server\ewsgi\ewsgi-safe.ecf" readonly="false"/>
 		<library name="http" location="..\library\network\protocol\http\http-safe.ecf" readonly="false"/>
 		<library name="http_authorization" location="..\library\server\authentication\http_authorization\http_authorization-safe.ecf" readonly="false"/>

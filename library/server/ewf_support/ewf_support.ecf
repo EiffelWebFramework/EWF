@@ -10,6 +10,17 @@
 		<option warning="true" full_class_checking="true" void_safety="none" syntax="standard">
 		</option>
 		<library name="base" location="$ISE_LIBRARY/library/base/base.ecf"/>
-		<cluster name="src" location="./src" recursive="true"/>
+		<cluster name="src" location=".\src\" recursive="false">
+			<cluster name="before_72" location="$|before_72\">
+				<condition>
+					<version type="compiler" max="7.1.9.9999"/>
+				</condition>
+			</cluster>
+			<cluster name="greater_or_72" location="$|greater_or_72\">
+				<condition>
+					<version type="compiler" min="7.2.0.0"/>
+				</condition>
+			</cluster>
+		</cluster>
 	</target>
 </system>
