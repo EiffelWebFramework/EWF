@@ -15,20 +15,27 @@ inherit
 feature {NONE} -- Initialization
 
 	make (s: READABLE_STRING_8; h: like handler)
+			-- <Precursor>
 		do
 			make_from_template (create {URI_TEMPLATE}.make (s), h)
 		end
 
 	make_from_template (tpl: URI_TEMPLATE; h: like handler)
+			-- Create with `h' as the handler for resources matching `tpl'
+		require
+			tpl_attached: tpl /= Void
+			h_attached: h /= Void	
 		do
 			template := tpl
 			set_handler (h)
+		ensure
+			tpl_aliased: template = tpl
 		end
 
 feature -- Access		
 
 	associated_resource: READABLE_STRING_8
-			-- Associated resource
+			-- URI template text of handled resource
 		do
 			Result := template.template
 		end
@@ -38,6 +45,9 @@ feature -- Access
 feature -- Change
 
 	set_handler (h: like handler)
+			-- Set `handler' to `h'.
+		require
+			h_attached: h /= Void
 		deferred
 		end
 
@@ -59,6 +69,7 @@ feature -- Status
 		end
 
 	routed_handler (req: WSF_REQUEST; res: WSF_RESPONSE; a_router: WSF_ROUTER): detachable WSF_HANDLER
+			-- <Precursor>
 		local
 			tpl: URI_TEMPLATE
 			p: READABLE_STRING_32
@@ -88,13 +99,21 @@ feature -- Status
 feature {NONE} -- Execution
 
 	execute_handler (h: like handler; req: WSF_REQUEST; res: WSF_RESPONSE)
-			-- Execute handler `h' with `req' and `res' for Current mapping
+			-- Run `h' to execute `req' responding in `res'.
+		require
+			h_attached: h /= Void
+			req_attached: req /= Void
+			res_attached: res /= Void
 		deferred
 		end
 
 feature {NONE} -- Implementation
 
 	based_uri_template (a_tpl: like template; a_router: WSF_ROUTER): like template
+			-- Version of `a_tpl' using bas URI of `a_router'
+		require
+			a_tpl_attached: a_tpl /= Void
+			a_router_attached: a_router /= Void
 		do
 			if attached a_router.base_url as l_base_url then
 				Result := a_tpl.duplicate
@@ -102,6 +121,8 @@ feature {NONE} -- Implementation
 			else
 				Result := a_tpl
 			end
+		ensure
+			based_uri_template_attached: Result /= Void
 		end
 
 note
