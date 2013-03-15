@@ -17,6 +17,7 @@ feature {NONE} -- Initialization
 	make_with_response (res: WGI_RESPONSE)
 		do
 			wgi_response := res
+			res.set_post_commit_action (agent commit)
 		end
 
 	wgi_response: WGI_RESPONSE
@@ -26,7 +27,7 @@ feature {WGI_CONNECTOR, WGI_SERVICE} -- Commit
 	commit
 			-- Commit the current response
 		do
-			-- do nothing, this will be done internal on the original `wgi_response' object
+			wgi_response.set_post_commit_action (Void)
 		end
 
 feature -- Status report
@@ -129,7 +130,7 @@ feature -- Error reporting
 		end
 
 note
-	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
+	copyright: "2011-2013, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software
