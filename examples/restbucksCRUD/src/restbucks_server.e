@@ -3,20 +3,18 @@ note
 	date        : "$Date$"
 	revision    : "$Revision$"
 
-class
-	RESTBUCKS_SERVER
+class RESTBUCKS_SERVER
 
 inherit
-	ANY
 
-	WSF_URI_TEMPLATE_ROUTED_SERVICE
+	WSF_SKELETON_SERVER
 		redefine
 			execute_default
 		end
 
-	WSF_HANDLER_HELPER
-
 	WSF_DEFAULT_SERVICE
+
+	WSF_HANDLER_HELPER
 
 create
 	make
@@ -53,7 +51,7 @@ feature -- Execution
 		end
 
 note
-	copyright: "2011-2012, Javier Velilla and others"
+	copyright: "2011-2013, Javier Velilla and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software
