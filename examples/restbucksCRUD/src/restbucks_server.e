@@ -10,9 +10,6 @@ inherit
 	ANY
 
 	WSF_URI_TEMPLATE_ROUTED_SERVICE
-		redefine
-			execute_default
-		end
 
 	WSF_HANDLER_HELPER
 
@@ -42,18 +39,9 @@ feature {NONE} -- Initialization
 			router.handle_with_request_methods ("/api/doc", doc, router.methods_GET)
 		end
 
-feature -- Execution
-
-	execute_default (req: WSF_REQUEST; res: WSF_RESPONSE)
-			-- I'm using this method to handle the method not allowed response
-			-- in the case that the given uri does not have a corresponding http method
-			-- to handle it.
-		do
-			Precursor (req, res)
-		end
 
 note
-	copyright: "2011-2012, Javier Velilla and others"
+	copyright: "2011-2013, Javier Velilla and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

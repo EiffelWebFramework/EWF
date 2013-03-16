@@ -41,6 +41,8 @@ feature -- Execution
 			req_attached: req /= Void
 			res_attached: res /= Void
 		do
+			--| When we reach here, the request has already passed check for 400 (Bad request),
+			--|  which is implemented in WSF_REQUEST.make_from_wgi (when it calls `analyze').
 			if unavailable then
 				handle_unavailable (res)
 			elseif maximum_uri_length > 0 and then req.request_uri.count.to_natural_32 > maximum_uri_length then
@@ -60,6 +62,7 @@ feature -- Execution
 		local
 			msg: WSF_DEFAULT_ROUTER_RESPONSE
 		do
+			--| TODO: update this to distinguish between 501, 403 and 404 results.
 			create msg.make_with_router (req, router)
 			msg.set_documentation_included (True)
 			res.send (msg)
