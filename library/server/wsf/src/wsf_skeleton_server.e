@@ -22,6 +22,12 @@ inherit
 			execute
 		end
 
+feature -- Measurement
+
+	maximum_uri_length: NATURAL
+			-- Maximum length in characters (or zero for no limit) permitted
+			-- for {WSF_REQUEST}.request_uri
+
 feature -- Status report
 
 	unavailable: BOOLEAN
@@ -66,6 +72,14 @@ feature -- Status setting
 			unavailable_until_aliased: unavailable_until = a_until
 		end
 
+	set_maximum_uri_length (a_len: NATURAL)
+			-- Set `maximum_uri_length' to `a_len'.
+			-- Can pass zero to mean no restrictions.
+		do
+			maximum_uri_length := a_len
+		ensure
+			maximum_uri_length_set: maximum_uri_length = a_len
+		end
 
 feature -- Execution
 
@@ -75,6 +89,8 @@ feature -- Execution
 		do
 			if unavailable then
 				handle_unavailable (res)
+			elseif maximum_uri_length > 0 and then req.request_uri.count.to_natural_32 > maximum_uri_length then
+				handle_request_uri_too_long (res)
 			elseif attached router.dispatch_and_return_handler (req, res) as p then
 				-- executed
 			else
@@ -111,6 +127,24 @@ feature {NONE} -- Implementation
 				res.put_header_text (h.string)
 				res.put_string (m)
 			end
+		end
+
+	handle_request_uri_too_long (res: WSF_RESPONSE)
+			-- Write "Request URI too long" response to `res'.
+		require
+			res_attached: res /= Void
+		local
+			h: HTTP_HEADER
+			m: READABLE_STRING_8
+		do
+			create h.make
+			h.put_content_type_text_plain		
+			h.put_current_date
+			m := "Maximum permitted length for request URI is " + maximum_uri_length.out + " characters"
+			h.put_content_length (m.count)
+			res.set_status_code ({HTTP_STATUS_CODE}.request_uri_too_long)
+			res.put_header_text (h.string)
+			res.put_string (m)
 		end
 
 invariant
