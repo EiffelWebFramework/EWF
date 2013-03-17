@@ -213,7 +213,7 @@ feature {NONE} -- Implementation
 			method_is_options: req.request_method.as_upper.same_string ({HTTP_REQUEST_METHODS}.method_options)
 			server_options_requested: req.request_uri.same_string ("*")
 		do
-			--| TODO - should first check if forbidden.
+			--| First check if forbidden.
 			--| (N.B. authentication requires an absoluteURI (RFC3617 page 3), and so cannot be used for OPTIONS *.
 			--| Otherwise construct an Allow response automatically from the router.
 			if is_system_options_forbidden (req) then
