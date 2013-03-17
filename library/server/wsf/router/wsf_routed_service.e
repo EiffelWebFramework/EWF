@@ -13,14 +13,16 @@ inherit
 feature -- Initialization
 
 	initialize_router
-			-- Initialize router
+			-- Initialize router.
 		do
 			create_router
 			setup_router
+		ensure
+			router_created: router /= Void
 		end
 
 	create_router
-			-- Create `router'	
+			-- Create `router'.	
 			--| could be redefine to initialize with proper capacity
 		do
 			create router.make (10)
@@ -29,7 +31,7 @@ feature -- Initialization
 		end
 
 	setup_router
-			-- Setup `router'
+			-- Setup `router'.
 		require
 			router_created: router /= Void
 		deferred
@@ -58,6 +60,9 @@ feature -- Execution
 			else
 				execute_default (req, res)
 			end
+		ensure
+			response_status_is_set: res.status_is_set
+			header_sent: res.header_committed and res.message_committed
 		end
 
 	execute_default (req: WSF_REQUEST; res: WSF_RESPONSE)
@@ -68,10 +73,13 @@ feature -- Execution
 		local
 			msg: WSF_DEFAULT_ROUTER_RESPONSE
 		do
-			--| TODO: update this to distinguish between 501, 403 and 404 results.
+			--| TODO (colin-adams): update this to distinguish between 501, 403 and 404 results.
 			create msg.make_with_router (req, router)
 			msg.set_documentation_included (True)
 			res.send (msg)
+		ensure
+			response_status_is_set: res.status_is_set
+			message_sent: res.header_committed and res.message_committed
 		end
 
 feature -- Access
@@ -98,7 +106,7 @@ feature -- Status report
 			-- Delta seconds for service unavailability (0 if not known)
 
 	unavailable_until: detachable DATE_TIME
-			-- Time at which service becomes availabile again (if known)
+			-- Time at which service becomes available again (if known)
 
 feature -- Status setting
 
@@ -168,6 +176,11 @@ feature {NONE} -- Implementation
 				res.put_header_text (h.string)
 				res.put_string (m)
 			end
+		ensure
+			response_status_is_set: res.status_is_set
+			status_is_service_unavailable: res.status_code = {HTTP_STATUS_CODE}.service_unavailable
+			body_sent: res.message_committed and then res.transfered_content_length > 0
+			body_content_was_unavailablity_message: True -- doesn't seem to be any way to check
 		end
 
 	handle_request_uri_too_long (res: WSF_RESPONSE)
@@ -186,9 +199,13 @@ feature {NONE} -- Implementation
 			res.set_status_code ({HTTP_STATUS_CODE}.request_uri_too_long)
 			res.put_header_text (h.string)
 			res.put_string (m)
+		ensure
+			response_status_is_set: res.status_is_set
+			status_is_request_uri_too_long: res.status_code = {HTTP_STATUS_CODE}.request_uri_too_long
+			body_sent: res.message_committed and then res.transfered_content_length > 0
 		end
 
-	handle_server_options (req: WSF_REQUEST; res: WSF_RESPONSE)
+	frozen handle_server_options (req: WSF_REQUEST; res: WSF_RESPONSE)
 			-- Write response to OPTIONS * into `res'.
 		require
 			req_attached: req /= Void
@@ -199,14 +216,19 @@ feature {NONE} -- Implementation
 			--| TODO - should first check if forbidden.
 			--| (N.B. authentication requires an absoluteURI (RFC3617 page 3), and so cannot be used for OPTIONS *.
 			--| Otherwise construct an Allow response automatically from the router.
-			if is_system_options_forbidden then
+			if is_system_options_forbidden (req) then
 				handle_system_options_forbidden (req, res)
 			else
 				handle_system_options (req, res)
 			end
+		ensure
+			response_status_is_set: res.status_is_set
+			valid_response_code: res.status_code = {HTTP_STATUS_CODE}.forbidden or
+				res.status_code = {HTTP_STATUS_CODE}.not_found or res.status_code = {HTTP_STATUS_CODE}.ok
+			header_sent: res.header_committed and res.message_committed
 		end
 
-	handle_system_options_forbidden (req: WSF_REQUEST; res: WSF_RESPONSE)
+	frozen handle_system_options_forbidden (req: WSF_REQUEST; res: WSF_RESPONSE)
 			-- Write a 403 Forbidden or a 404 Not found response into `res'.
 	require
 			req_attached: req /= Void
@@ -234,6 +256,12 @@ feature {NONE} -- Implementation
 				res.set_status_code ({HTTP_STATUS_CODE}.not_found)
 				res.put_header_text (h.string)
 			end
+		ensure
+			response_status_is_set: res.status_is_set
+			valid_response_code: res.status_code = {HTTP_STATUS_CODE}.forbidden or
+				res.status_code = {HTTP_STATUS_CODE}.not_found
+			header_sent: res.header_committed
+			message_sent: res.message_committed			
 		end
 
 	handle_system_options (req: WSF_REQUEST; res: WSF_RESPONSE)
@@ -254,12 +282,18 @@ feature {NONE} -- Implementation
 				h.put_content_length (0)
 				res.set_status_code ({HTTP_STATUS_CODE}.ok)
 				res.put_header_text (h.string)
+		ensure
+			response_status_is_set: res.status_is_set
+			response_code_ok: res.status_code = {HTTP_STATUS_CODE}.ok
+			header_sent: res.header_committed and res.message_committed
+			empty_body: res.transfered_content_length = 0
 		end
 
 invariant
 
-	unavailblity_message_attached: unavailable implies unavailablity_message /= Void
-	unavailablity_duration_xor_unavailable_until: unavailability_duration > 0 implies unavailable_until = Void
+	unavailability_message_attached: unavailable implies attached {READABLE_STRING_8} unavailablity_message as m and then
+		m.count > 0
+	unavailability_duration_xor_unavailable_until: unavailability_duration > 0 implies unavailable_until = Void
 
 ;note
 	copyright: "2011-2013, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
