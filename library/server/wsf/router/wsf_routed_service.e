@@ -4,8 +4,11 @@ note
 	date: "$Date$"
 	revision: "$Revision$"
 
-deferred class
-	WSF_ROUTED_SERVICE
+deferred class	WSF_ROUTED_SERVICE
+
+inherit
+
+	WSF_SYSTEM_OPTIONS_ACCESS_POLICY
 
 feature -- Initialization
 
@@ -47,6 +50,9 @@ feature -- Execution
 				handle_unavailable (res)
 			elseif maximum_uri_length > 0 and then req.request_uri.count.to_natural_32 > maximum_uri_length then
 				handle_request_uri_too_long (res)
+			elseif req.request_method.as_upper.same_string ({HTTP_REQUEST_METHODS}.method_options) and then
+				req.request_uri.same_string ("*") then
+				handle_server_options (req, res)
 			elseif attached router.dispatch_and_return_handler (req, res) as p then
 				-- executed
 			else
@@ -165,7 +171,7 @@ feature {NONE} -- Implementation
 		end
 
 	handle_request_uri_too_long (res: WSF_RESPONSE)
-			-- Write "Request URI too long" response to `res'.
+			-- Write "Request URI too long" response into `res'.
 		require
 			res_attached: res /= Void
 		local
@@ -180,6 +186,74 @@ feature {NONE} -- Implementation
 			res.set_status_code ({HTTP_STATUS_CODE}.request_uri_too_long)
 			res.put_header_text (h.string)
 			res.put_string (m)
+		end
+
+	handle_server_options (req: WSF_REQUEST; res: WSF_RESPONSE)
+			-- Write response to OPTIONS * into `res'.
+		require
+			req_attached: req /= Void
+			res_attached: res /= Void
+			method_is_options: req.request_method.as_upper.same_string ({HTTP_REQUEST_METHODS}.method_options)
+			server_options_requested: req.request_uri.same_string ("*")
+		do
+			--| TODO - should first check if forbidden.
+			--| (N.B. authentication requires an absoluteURI (RFC3617 page 3), and so cannot be used for OPTIONS *.
+			--| Otherwise construct an Allow response automatically from the router.
+			if is_system_options_forbidden then
+				handle_system_options_forbidden (req, res)
+			else
+				handle_system_options (req, res)
+			end
+		end
+
+	handle_system_options_forbidden (req: WSF_REQUEST; res: WSF_RESPONSE)
+			-- Write a 403 Forbidden or a 404 Not found response into `res'.
+	require
+			req_attached: req /= Void
+			res_attached: res /= Void
+			method_is_options: req.request_method.as_upper.same_string ({HTTP_REQUEST_METHODS}.method_options)
+			server_options_requested: req.request_uri.same_string ("*")
+		local
+			m: detachable READABLE_STRING_8
+			h: HTTP_HEADER
+		do
+			m := system_options_forbidden_text (req)
+			if attached {READABLE_STRING_8} m as l_msg then
+				create h.make
+				h.put_content_type_text_plain		
+				h.put_current_date
+				h.put_content_length (l_msg.count)
+				res.set_status_code ({HTTP_STATUS_CODE}.forbidden)
+				res.put_header_text (h.string)
+				res.put_string (l_msg)
+			else
+				create h.make
+				h.put_content_type_text_plain		
+				h.put_current_date
+				h.put_content_length (0)
+				res.set_status_code ({HTTP_STATUS_CODE}.not_found)
+				res.put_header_text (h.string)
+			end
+		end
+
+	handle_system_options (req: WSF_REQUEST; res: WSF_RESPONSE)
+			-- Write response to OPTIONS * into `res'.
+			-- This may be redefined by the user, but normally this will not be necessary.
+	require
+			req_attached: req /= Void
+			res_attached: res /= Void
+			method_is_options: req.request_method.as_upper.same_string ({HTTP_REQUEST_METHODS}.method_options)
+			server_options_requested: req.request_uri.same_string ("*")
+		local
+			h: HTTP_HEADER
+		do
+				create h.make
+				h.put_content_type_text_plain		
+				h.put_current_date
+				--| TODO - add Allow header for all permitted methods.
+				h.put_content_length (0)
+				res.set_status_code ({HTTP_STATUS_CODE}.ok)
+				res.put_header_text (h.string)
 		end
 
 invariant
