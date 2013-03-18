@@ -11,6 +11,8 @@ feature -- Status report
 
 	is_valid_context (req: WSF_REQUEST): BOOLEAN
 			-- Is `req' valid context for current handler?
+		require
+			req_attached: req /= Void
 		do
 			Result := True
 		end
@@ -19,6 +21,8 @@ feature {WSF_ROUTER} -- Mapping
 
 	on_mapped (a_mapping: WSF_ROUTER_MAPPING; a_rqst_methods: detachable WSF_REQUEST_METHODS)
 			-- Callback called when a router map a route to Current handler
+		require
+			a_mapping_attached: a_mapping /= Void
 		do
 		end
 
