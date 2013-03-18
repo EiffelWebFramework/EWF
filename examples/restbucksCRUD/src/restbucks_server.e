@@ -3,16 +3,16 @@ note
 	date        : "$Date$"
 	revision    : "$Revision$"
 
-class
-	RESTBUCKS_SERVER
+class	RESTBUCKS_SERVER
 
 inherit
-	ANY
 
-	WSF_URI_TEMPLATE_ROUTED_SERVICE
+	WSF_ROUTED_SKELETON_SERVICE
 		undefine
 			requires_proxy
 		end
+	
+	WSF_URI_TEMPLATE_HELPER_FOR_ROUTED_SERVICE
 
 	WSF_HANDLER_HELPER
 
