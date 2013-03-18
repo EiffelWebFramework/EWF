@@ -277,6 +277,26 @@ feature -- Status report
 			end
 		end
 
+	all_allowed_methods: WSF_REQUEST_METHODS
+			-- Methods allowed for ALL requests handled by `Current'
+		local
+			l_mapping: WSF_ROUTER_MAPPING
+		do
+			create Result
+			across
+				mappings as c
+			loop
+				if attached c.item.request_methods as m then
+					Result := Result + m
+				end
+				l_mapping := c.item.mapping
+				if attached {WSF_ROUTING_HANDLER} l_mapping.handler as l_routing then
+					Result := Result + l_routing.router.all_allowed_methods
+				end
+				--| not sure if that covers everything - Jocelyn, please comment
+			end
+		end
+
 feature -- Hook
 
 	execute_before (a_mapping: WSF_ROUTER_MAPPING)

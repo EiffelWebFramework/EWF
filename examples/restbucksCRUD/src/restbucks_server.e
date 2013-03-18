@@ -10,10 +10,15 @@ inherit
 	ANY
 
 	WSF_URI_TEMPLATE_ROUTED_SERVICE
+		undefine
+			requires_proxy
+		end
 
 	WSF_HANDLER_HELPER
 
 	WSF_DEFAULT_SERVICE
+
+	WSF_NO_PROXY_POLICY
 
 create
 	make

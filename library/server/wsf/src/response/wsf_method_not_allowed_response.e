@@ -76,25 +76,44 @@ feature {WSF_RESPONSE} -- Output
 
 	send_to (res: WSF_RESPONSE)
 		local
-			s: STRING
+			s, l_html_error_code_text: STRING
 			l_text: detachable READABLE_STRING_GENERAL
 			l_loc: detachable READABLE_STRING_8
 			h: like header
+			l_recognized: BOOLEAN
+			l_messages: HTTP_STATUS_CODE_MESSAGES
 		do
+			create l_messages
 			h := header
-			res.set_status_code ({HTTP_STATUS_CODE}.method_not_allowed)
+			l_recognized := recognized_methods.has (request.request_method.as_upper)
+			if l_recognized then
+				res.set_status_code (l_messages.method_not_allowed)
+			else
+				res.set_status_code (l_messages.not_implemented)
+			end
 
 			if attached suggested_methods as lst and then not lst.is_empty then
 				h.put_allow (lst)
 			end
 
-			s := "Not allowed"
+			if attached l_messages.http_status_code_message (res.status_code) as l_msg then
+				s := l_msg
+			else
+				check
+					impossible: False
+						-- as res.status_code is set to one of the codes that will produce
+						-- a non-void response, even though there is no postcondition to prove it
+				end
+				s := "Bug in server"
+			end
 
+			l_html_error_code_text := html_error_code_text (l_messages, l_recognized)
+			
 			if request.is_content_type_accepted ({HTTP_MIME_TYPES}.text_html) then
 				s := "<html lang=%"en%"><head>"
 				s.append ("<title>")
 				s.append (html_encoder.encoded_string (request.request_uri))
-				s.append ("Error 405 (Method Not Allowed)!!")
+				s.append (l_html_error_code_text + "!!")
 				s.append ("</title>%N")
 				s.append (
 					"[
@@ -111,15 +130,15 @@ feature {WSF_RESPONSE} -- Output
 						</style>
 						</head>
 						<body>
-						<div id="header">Error 405 (Method Not Allowed)!!</div>
+						<div id="header">]" + l_html_error_code_text + "[!!</div>
 					]")
 				s.append ("<div id=%"logo%">")
 				s.append ("<div class=%"outter%"> ")
 				s.append ("<div class=%"inner1%"></div>")
 				s.append ("<div class=%"inner2%"></div>")
 				s.append ("</div>")
-				s.append ("Error 405 (Method Not Allowed)</div>")
-				s.append ("<div id=%"message%">Error 405 (Method Not Allowed): the request method <code>")
+				s.append (l_html_error_code_text + "</div>")
+				s.append ("<div id=%"message%">" + l_html_error_code_text + ": the request method <code>")
 				s.append (request.request_method)
 				s.append ("</code> is inappropriate for the URL for <code>" + html_encoder.encoded_string (request.request_uri) + "</code>.</div>")
 				if attached suggested_methods as lst and then not lst.is_empty then
@@ -180,7 +199,7 @@ feature {WSF_RESPONSE} -- Output
 
 				h.put_content_type_text_html
 			else
-				s := "Error 405 (Method Not Allowed): the request method "
+				s := l_html_error_code_text + ": the request method "
 				s.append (request.request_method)
 				s.append (" is inappropriate for the URL for '" + html_encoder.encoded_string (request.request_uri) + "'.%N")
 				if attached suggested_methods as lst and then not lst.is_empty then
@@ -239,6 +258,53 @@ feature {WSF_RESPONSE} -- Output
 			res.flush
 		end
 
+feature {NONE} -- Implementation
+
+	recognized_methods: WSF_REQUEST_METHODS
+			-- All methods defined in HTTP/1.1 specification
+			--| Should this include CONNECT? It probably shouldn't be recognized by an origin server,
+			--| We will need a way to extend this for additional methods that the server implements. E.g. PATCH.
+		do
+			create Result.make_from_iterable (<<
+				{HTTP_REQUEST_METHODS}.method_head,
+				{HTTP_REQUEST_METHODS}.method_get,
+				{HTTP_REQUEST_METHODS}.method_trace,
+				{HTTP_REQUEST_METHODS}.method_options,
+				{HTTP_REQUEST_METHODS}.method_post,
+				{HTTP_REQUEST_METHODS}.method_put,
+				{HTTP_REQUEST_METHODS}.method_delete
+				>>)
+		ensure
+			recognized_methods_not_void: Result /= Void
+		end
+
+	html_error_code_text (a_messages: HTTP_STATUS_CODE_MESSAGES; a_recognized: BOOLEAN): READABLE_STRING_8
+			-- Message for including in HTML error text according to `a_recognized'
+		require
+			a_messages_attached: a_messages /= Void
+		local
+			l_code: INTEGER
+		do
+			if a_recognized then
+				l_code := a_messages.method_not_allowed
+			else
+				l_code := a_messages.not_implemented
+			end
+			if attached a_messages.http_status_code_message (l_code) as l_msg then
+				Result := "Error " + l_code.out + " (" + l_msg + ")"
+			else
+				check
+					impossible: False
+						-- as res.status_code is set to one of the codes that will produce
+						-- a non-void response, even though there is no postcondition to prove it.
+						-- The postcondition wouldn't be needed if there was a precondition using is_valid_http_status_code
+				end
+				Result := "Bug in server"
+			end
+		ensure
+			html_error_code_text_attached: Result /= Void
+		end
+	
 note
 	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"

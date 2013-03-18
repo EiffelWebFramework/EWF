@@ -10,6 +10,8 @@ inherit
 
 	WSF_SYSTEM_OPTIONS_ACCESS_POLICY
 
+	WSF_PROXY_USE_POLICY
+
 feature -- Initialization
 
 	initialize_router
@@ -50,9 +52,11 @@ feature -- Execution
 			--|  which is implemented in WSF_REQUEST.make_from_wgi (when it calls `analyze').
 			if unavailable then
 				handle_unavailable (res)
+			elseif requires_proxy (req) then
+				handle_use_proxy (req, res)
 			elseif maximum_uri_length > 0 and then req.request_uri.count.to_natural_32 > maximum_uri_length then
 				handle_request_uri_too_long (res)
-			elseif req.request_method.as_upper.same_string ({HTTP_REQUEST_METHODS}.method_options) and then
+			elseif req.is_request_method ({HTTP_REQUEST_METHODS}.method_options) and then
 				req.request_uri.same_string ("*") then
 				handle_server_options (req, res)
 			elseif attached router.dispatch_and_return_handler (req, res) as p then
@@ -73,7 +77,6 @@ feature -- Execution
 		local
 			msg: WSF_DEFAULT_ROUTER_RESPONSE
 		do
-			--| TODO (colin-adams): update this to distinguish between 501, 403 and 404 results.
 			create msg.make_with_router (req, router)
 			msg.set_documentation_included (True)
 			res.send (msg)
@@ -152,26 +155,23 @@ feature {NONE} -- Implementation
 	handle_unavailable (res: WSF_RESPONSE)
 			-- Write "Service unavailable" response to `res'.
 		require
-			unavailable: unavailable = True
+			unavailable: unavailable
 			res_attached: res /= Void
 		local
 			h: HTTP_HEADER
 		do
 			create h.make
 			h.put_content_type_text_plain
-			check attached {READABLE_STRING_8} unavailablity_message as m then
-					-- invariant
+			check attached unavailablity_message as m then
+					-- invariant plus precondition
 				h.put_content_length (m.count)
 				h.put_current_date
 				res.set_status_code ({HTTP_STATUS_CODE}.service_unavailable)
 				if unavailability_duration > 0 then
 					h.put_header_key_value ({HTTP_HEADER_NAMES}.header_retry_after, unavailability_duration.out)
-				elseif unavailable_until /= Void then
-					check attached {DATE_TIME} unavailable_until as u then
-							-- $£#$%#! compiler!
+				elseif attached unavailable_until as u then
 						h.put_header_key_value ({HTTP_HEADER_NAMES}.header_retry_after,
 							h.date_to_rfc1123_http_date_format (u))
-					end
 				end
 				res.put_header_text (h.string)
 				res.put_string (m)
@@ -210,7 +210,7 @@ feature {NONE} -- Implementation
 		require
 			req_attached: req /= Void
 			res_attached: res /= Void
-			method_is_options: req.request_method.as_upper.same_string ({HTTP_REQUEST_METHODS}.method_options)
+			method_is_options: req.is_request_method ({HTTP_REQUEST_METHODS}.method_options)
 			server_options_requested: req.request_uri.same_string ("*")
 		do
 			--| First check if forbidden.
@@ -233,7 +233,7 @@ feature {NONE} -- Implementation
 	require
 			req_attached: req /= Void
 			res_attached: res /= Void
-			method_is_options: req.request_method.as_upper.same_string ({HTTP_REQUEST_METHODS}.method_options)
+			method_is_options: req.is_request_method ({HTTP_REQUEST_METHODS}.method_options)
 			server_options_requested: req.request_uri.same_string ("*")
 		local
 			m: detachable READABLE_STRING_8
@@ -270,18 +270,18 @@ feature {NONE} -- Implementation
 	require
 			req_attached: req /= Void
 			res_attached: res /= Void
-			method_is_options: req.request_method.as_upper.same_string ({HTTP_REQUEST_METHODS}.method_options)
+			method_is_options: req.is_request_method ({HTTP_REQUEST_METHODS}.method_options)
 			server_options_requested: req.request_uri.same_string ("*")
 		local
 			h: HTTP_HEADER
 		do
-				create h.make
-				h.put_content_type_text_plain		
-				h.put_current_date
-				--| TODO - add Allow header for all permitted methods.
-				h.put_content_length (0)
-				res.set_status_code ({HTTP_STATUS_CODE}.ok)
-				res.put_header_text (h.string)
+			create h.make
+			h.put_content_type_text_plain		
+			h.put_current_date
+			h.put_allow (router.all_allowed_methods)
+			h.put_content_length (0)
+			res.set_status_code ({HTTP_STATUS_CODE}.ok)
+			res.put_header_text (h.string)
 		ensure
 			response_status_is_set: res.status_is_set
 			response_code_ok: res.status_code = {HTTP_STATUS_CODE}.ok
@@ -289,9 +289,30 @@ feature {NONE} -- Implementation
 			empty_body: res.transfered_content_length = 0
 		end
 
+	frozen handle_use_proxy (req: WSF_REQUEST; res: WSF_RESPONSE)
+			-- Write response to OPTIONS * into `res'.
+		require
+			res_attached: res /= Void
+			req_attached: req /= Void
+			proxy_required: requires_proxy (req)
+		local
+			h: HTTP_HEADER
+		do
+				create h.make
+				h.put_content_type_text_plain		
+				h.put_current_date
+				h.put_location (proxy_server (req))
+				h.put_content_length (0)
+				res.set_status_code ({HTTP_STATUS_CODE}.use_proxy)
+		ensure
+			response_status_is_set: res.status_is_set
+			response_code_use_proxy: res.status_code = {HTTP_STATUS_CODE}.use_proxy
+			header_sent: res.header_committed and res.message_committed
+		end
+	
 invariant
 
-	unavailability_message_attached: unavailable implies attached {READABLE_STRING_8} unavailablity_message as m and then
+	unavailability_message_attached: unavailable implies attached unavailablity_message as m and then
 		m.count > 0
 	unavailability_duration_xor_unavailable_until: unavailability_duration > 0 implies unavailable_until = Void
 
