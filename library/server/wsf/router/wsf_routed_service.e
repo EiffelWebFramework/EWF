@@ -4,40 +4,18 @@ note
 	date: "$Date$"
 	revision: "$Revision$"
 
-deferred class	WSF_ROUTED_SERVICE
+deferred class	WSF_ROUTED_SKELETON_SERVICE
 
 inherit
+
+	WSF_ROUTED_SERVICE
+		redefine
+			execute
+		end
 
 	WSF_SYSTEM_OPTIONS_ACCESS_POLICY
 
 	WSF_PROXY_USE_POLICY
-
-feature -- Initialization
-
-	initialize_router
-			-- Initialize router.
-		do
-			create_router
-			setup_router
-		ensure
-			router_created: router /= Void
-		end
-
-	create_router
-			-- Create `router'.	
-			--| could be redefine to initialize with proper capacity
-		do
-			create router.make (10)
-		ensure
-			router_created: router /= Void
-		end
-
-	setup_router
-			-- Setup `router'.
-		require
-			router_created: router /= Void
-		deferred
-		end
 
 feature -- Execution
 
