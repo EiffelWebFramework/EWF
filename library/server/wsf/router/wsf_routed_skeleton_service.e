@@ -113,7 +113,7 @@ feature {NONE} -- Implementation
 			create h.make
 			h.put_content_type_text_plain
 			check attached unavailablity_message as m then
-					-- invariant plus precondition
+					-- invariant `unavailability_message_attached' plus precondition `unavailable'
 				h.put_content_length (m.count)
 				h.put_current_date
 				res.set_status_code ({HTTP_STATUS_CODE}.service_unavailable)
@@ -142,7 +142,7 @@ feature {NONE} -- Implementation
 			m: READABLE_STRING_8
 		do
 			create h.make
-			h.put_content_type_text_plain		
+			h.put_content_type_text_plain
 			h.put_current_date
 			m := "Maximum permitted length for request URI is " + maximum_uri_length.out + " characters"
 			h.put_content_length (m.count)
@@ -192,7 +192,7 @@ feature {NONE} -- Implementation
 			m := system_options_forbidden_text (req)
 			if attached {READABLE_STRING_8} m as l_msg then
 				create h.make
-				h.put_content_type_text_plain		
+				h.put_content_type_text_plain
 				h.put_current_date
 				h.put_content_length (l_msg.count)
 				res.set_status_code ({HTTP_STATUS_CODE}.forbidden)
@@ -200,7 +200,7 @@ feature {NONE} -- Implementation
 				res.put_string (l_msg)
 			else
 				create h.make
-				h.put_content_type_text_plain		
+				h.put_content_type_text_plain
 				h.put_current_date
 				h.put_content_length (0)
 				res.set_status_code ({HTTP_STATUS_CODE}.not_found)
@@ -211,7 +211,7 @@ feature {NONE} -- Implementation
 			valid_response_code: res.status_code = {HTTP_STATUS_CODE}.forbidden or
 				res.status_code = {HTTP_STATUS_CODE}.not_found
 			header_sent: res.header_committed
-			message_sent: res.message_committed			
+			message_sent: res.message_committed
 		end
 
 	handle_system_options (req: WSF_REQUEST; res: WSF_RESPONSE)
@@ -226,7 +226,7 @@ feature {NONE} -- Implementation
 			h: HTTP_HEADER
 		do
 			create h.make
-			h.put_content_type_text_plain		
+			h.put_content_type_text_plain
 			h.put_current_date
 			h.put_allow (router.all_allowed_methods)
 			h.put_content_length (0)
@@ -249,7 +249,7 @@ feature {NONE} -- Implementation
 			h: HTTP_HEADER
 		do
 				create h.make
-				h.put_content_type_text_plain		
+				h.put_content_type_text_plain
 				h.put_current_date
 				h.put_location (proxy_server (req))
 				h.put_content_length (0)
@@ -259,7 +259,7 @@ feature {NONE} -- Implementation
 			response_code_use_proxy: res.status_code = {HTTP_STATUS_CODE}.use_proxy
 			header_sent: res.header_committed and res.message_committed
 		end
-	
+
 invariant
 
 	unavailability_message_attached: unavailable implies attached unavailablity_message as m and then
