@@ -10,11 +10,21 @@ class
 inherit
 	ANY
 
-	WSF_FILTERED_SERVICE
-
 	WSF_HANDLER_HELPER
 
 	WSF_DEFAULT_SERVICE
+
+	WSF_ROUTED_SERVICE
+		rename
+			execute as execute_router
+		end
+
+	WSF_FILTERED_SERVICE
+
+	WSF_FILTER
+		rename
+			execute as execute_router
+		end
 
 	SHARED_EJSON
 
@@ -28,7 +38,7 @@ feature {NONE} -- Initialization
 			l_message: STRING
 			l_factory: INET_ADDRESS_FACTORY
 		do
-			create router.make (1)
+			initialize_router
 			initialize_filter
 			initialize_json
 			set_service_option ("port", port)
@@ -45,39 +55,39 @@ feature {NONE} -- Initialization
 
 	create_filter
 			-- Create `filter'
-		local
-			l_cors_filter: WSF_CORS_FILTER
 		do
-			create l_cors_filter
-			filter := l_cors_filter
+			create {WSF_CORS_FILTER} filter
 		end
 
 	setup_filter
 			-- Setup `filter'
 		local
+			l_logging_filter: WSF_LOGGING_FILTER
+		do
+			create l_logging_filter
+			filter.set_next (l_logging_filter)
+			l_logging_filter.set_next (Current)
+		end
+
+	setup_router
+			-- Setup `router'
+		local
 			l_options_filter: WSF_CORS_OPTIONS_FILTER
 			l_authentication_filter: AUTHENTICATION_FILTER
 			l_user_filter: USER_HANDLER
 			l_methods: WSF_REQUEST_METHODS
-			l_routing_filter: WSF_ROUTING_FILTER
-			l_logging_filter: WSF_LOGGING_FILTER
 		do
 			create l_options_filter.make (router)
 			create l_authentication_filter
-			l_options_filter.set_next (l_authentication_filter)
 			create l_user_filter
+
+			l_options_filter.set_next (l_authentication_filter)
 			l_authentication_filter.set_next (l_user_filter)
 
 			create l_methods
 			l_methods.enable_options
 			l_methods.enable_get
 			router.handle_with_request_methods ("/user/{userid}", create {WSF_URI_TEMPLATE_AGENT_HANDLER}.make (agent l_options_filter.execute), l_methods)
-			create l_routing_filter.make (router)
-			l_routing_filter.set_execute_default_action (agent execute_default)
-			filter.set_next (l_routing_filter)
-
-			create l_logging_filter
-			l_routing_filter.set_next (l_logging_filter)
 		end
 
 	initialize_json
@@ -86,29 +96,10 @@ feature {NONE} -- Initialization
 			json.add_converter (create {JSON_USER_CONVERTER}.make)
 		end
 
-feature -- Basic operations
-
-	execute (req: WSF_REQUEST; res: WSF_RESPONSE)
-		do
-			filter.execute (req, res)
-		end
-
-	execute_default (req: WSF_REQUEST; res: WSF_RESPONSE)
-		local
-			l_message: WSF_DEFAULT_ROUTER_RESPONSE
-		do
-			create l_message.make_with_router (req, router)
-			l_message.set_documentation_included (True)
-			res.send (l_message)
-		end
-
 feature {NONE} -- Implementation
 
 	port: INTEGER = 9090
 			-- Port number
-
-	router: WSF_ROUTER;
-			-- Router
 
 note
 	copyright: "2011-2013, Olivier Ligot, Jocelyn Fiat and others"
