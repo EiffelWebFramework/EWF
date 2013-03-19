@@ -504,6 +504,32 @@ feature -- Content-type helpers
 	put_content_type_multipart_encrypted	do put_content_type ({HTTP_MIME_TYPES}.multipart_encrypted) end
 	put_content_type_application_x_www_form_encoded	do put_content_type ({HTTP_MIME_TYPES}.application_x_www_form_encoded) end
 
+feature -- Cross-Origin Resource Sharing
+
+	put_access_control_allow_origin (s: READABLE_STRING_8)
+			-- Put "Access-Control-Allow-Origin" header.
+		do
+			put_header_key_value ({HTTP_HEADER_NAMES}.header_access_control_allow_origin, s)
+		end
+
+	put_access_control_allow_all_origin
+			-- Put "Access-Control-Allow-Origin: *" header.
+		do
+			put_access_control_allow_origin ("*")
+		end
+
+	put_access_control_allow_methods (a_methods: ITERABLE [READABLE_STRING_8])
+			-- If `a_methods' is not empty, put `Access-Control-Allow-Methods' header with list `a_methods' of methods
+		do
+			put_header_key_values ({HTTP_HEADER_NAMES}.header_access_control_allow_methods, a_methods, Void)
+		end
+
+	put_access_control_allow_headers (s: READABLE_STRING_8)
+			-- Put "Access-Control-Allow-Headers" header.
+		do
+			put_header_key_value ({HTTP_HEADER_NAMES}.header_access_control_allow_headers, s)
+		end
+
 feature -- Method related
 
 	put_allow (a_methods: ITERABLE [READABLE_STRING_8])

@@ -194,6 +194,23 @@ feature -- Response header name
 			-- Indicates the authentication scheme that should be used to access the requested entity.
 			--| Example: WWW-Authenticate: Basic
 
+feature -- Cross-Origin Resource Sharing
+
+	header_access_control_allow_origin: STRING = "Access-Control-Allow-Origin"
+			-- Indicates whether a resource can be shared based by returning
+			-- the value of the Origin request header in the response.
+			-- | Example: Access-Control-Allow-Origin: http://example.org
+
+	header_access_control_allow_methods: STRING = "Access-Control-Allow-Methods"
+			-- Indicates, as part of the response to a preflight request,
+			-- which methods can be used during the actual request.
+			-- | Example: Access-Control-Allow-Methods: PUT, DELETE
+
+	header_access_control_allow_headers: STRING = "Access-Control-Allow-Headers"
+			-- Indicates, as part of the response to a preflight request,
+			-- which header field names can be used during the actual request.
+			-- | Example: Access-Control-Allow-Headers: Authorization
+
 feature -- Request or Response header name
 
 	header_cache_control:  STRING = "Cache-Control"
@@ -248,7 +265,7 @@ feature -- MIME related
 	header_content_transfer_encoding: STRING = "Content-Transfer-Encoding"
 
 note
-	copyright: "2011-2012, Jocelyn Fiat, Eiffel Software and others"
+	copyright: "2011-2013, Jocelyn Fiat, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

@@ -598,6 +598,12 @@ feature -- HTTP_*
 		deferred
 		end
 
+	http_access_control_request_headers: detachable READABLE_STRING_8
+			-- Indicates which headers will be used in the actual request
+                        -- as part of the preflight request
+		deferred
+		end
+
 feature -- Extra CGI environment variables
 
 	request_uri: READABLE_STRING_8
