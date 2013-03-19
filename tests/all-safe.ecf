@@ -31,6 +31,7 @@
 		<library name="ewf_support" location="..\library\server\ewf_support\ewf_support-safe.ecf" readonly="false"/>
 		<library name="wsf_extension" location="..\library\server\wsf\wsf_extension-safe.ecf" readonly="false"/>
 		<library name="wsf_session" location="..\library\server\wsf\wsf_session-safe.ecf" readonly="false"/>
+		<library name="wsf_router_context" location="..\library\server\wsf\wsf_router_context-safe.ecf" readonly="false"/>
 		<library name="ex_restbuck" location="..\examples\restbucksCRUD\restbucks-safe.ecf" readonly="false"/>
 		<library name="ex_simple" location="..\examples\simple\simple.ecf" readonly="false"/>
 		<library name="ex_filter" location="..\examples\filter\filter-safe.ecf" readonly="false"/>

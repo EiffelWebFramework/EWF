@@ -18,6 +18,7 @@
 		<library name="http" location="../../library/network/protocol/http/http-safe.ecf" readonly="true"/>
 		<library name="json" location="..\..\contrib\library\text\parser\json\library\json-safe.ecf" readonly="true"/>
 		<library name="wsf" location="..\..\library\server\wsf\wsf-safe.ecf" readonly="true"/>
+		<library name="wsf_router_context" location="..\..\library\server\wsf\wsf_router_context-safe.ecf" readonly="true"/>
 		<library name="wsf_extension" location="..\..\library\server\wsf\wsf_extension-safe.ecf" readonly="true"/>
 		<library name="http_authorization" location="..\..\library\server\authentication\http_authorization\http_authorization-safe.ecf" readonly="true"/>
 		<cluster name="src" location="src\" recursive="true"/>
