@@ -7,35 +7,15 @@ note
 deferred class
 	WSF_URI_ROUTED_SERVICE
 
+obsolete "Inherit from WSF_ROUTED_SERVICE and WSF_URI_ROUTER_HELPER [2013-mar-19]"	
+
 inherit
 	WSF_ROUTED_SERVICE
 
-feature -- Mapping helper: uri
-
-	map_uri (a_uri: READABLE_STRING_8; h: WSF_URI_HANDLER)
-		do
-			map_uri_with_request_methods (a_uri, h, Void)
-		end
-
-	map_uri_with_request_methods (a_uri: READABLE_STRING_8; h: WSF_URI_HANDLER; rqst_methods: detachable WSF_REQUEST_METHODS)
-		do
-			router.map_with_request_methods (create {WSF_URI_MAPPING}.make (a_uri, h), rqst_methods)
-		end
-
-feature -- Mapping helper: uri agent		
-
-	map_uri_agent (a_uri: READABLE_STRING_8; proc: PROCEDURE [ANY, TUPLE [req: WSF_REQUEST; res: WSF_RESPONSE]])
-		do
-			map_uri_agent_with_request_methods (a_uri, proc, Void)
-		end
-
-	map_uri_agent_with_request_methods (a_uri: READABLE_STRING_8; proc: PROCEDURE [ANY, TUPLE [req: WSF_REQUEST; res: WSF_RESPONSE]]; rqst_methods: detachable WSF_REQUEST_METHODS)
-		do
-			map_uri_with_request_methods (a_uri, create {WSF_URI_AGENT_HANDLER}.make (proc), rqst_methods)
-		end
+	WSF_URI_ROUTER_HELPER
 
 note
-	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
+	copyright: "2011-2013, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

@@ -7,35 +7,16 @@ note
 deferred class
 	WSF_URI_CONTEXT_ROUTED_SERVICE [C -> WSF_HANDLER_CONTEXT create make end]
 
+obsolete "Inherit from WSF_ROUTED_SERVICE and WSF_URI_CONTEXT_ROUTER_HELPER [2013-mar-19]"
+
 inherit
 	WSF_ROUTED_SERVICE
 
-feature -- Mapping helper: uri
+	WSF_URI_CONTEXT_ROUTER_HELPER [C]
 
-	map_uri (a_uri: READABLE_STRING_8; h: WSF_URI_CONTEXT_HANDLER [C])
-		do
-			map_uri_with_request_methods (a_uri, h, Void)
-		end
-
-	map_uri_with_request_methods (a_uri: READABLE_STRING_8; h: WSF_URI_CONTEXT_HANDLER [C]; rqst_methods: detachable WSF_REQUEST_METHODS)
-		do
-			router.map_with_request_methods (create {WSF_URI_CONTEXT_MAPPING [C]}.make (a_uri, h), rqst_methods)
-		end
-
-feature -- Mapping helper: uri agent		
-
-	map_uri_agent (a_uri: READABLE_STRING_8; proc: PROCEDURE [ANY, TUPLE [ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE]])
-		do
-			map_uri_agent_with_request_methods (a_uri, proc, Void)
-		end
-
-	map_uri_agent_with_request_methods (a_uri: READABLE_STRING_8; proc: PROCEDURE [ANY, TUPLE [ctx: C; req: WSF_REQUEST; res: WSF_RESPONSE]]; rqst_methods: detachable WSF_REQUEST_METHODS)
-		do
-			map_uri_with_request_methods (a_uri, create {WSF_URI_AGENT_CONTEXT_HANDLER [C] }.make (proc), rqst_methods)
-		end
 
 note
-	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
+	copyright: "2011-2013, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software
