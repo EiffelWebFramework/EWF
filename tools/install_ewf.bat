@@ -77,6 +77,11 @@ echo Install library: http
 echo Install library: http_authorization
 %SAFE_MD% %TMP_CONTRIB_DIR%\library\network\authentication
 %COPYCMD% %TMP_DIR%\library\server\authentication\http_authorization	%TMP_CONTRIB_DIR%\library\network\authentication\http_authorization
+
+echo Install library: openid
+%SAFE_MD% %TMP_CONTRIB_DIR%\library\security
+%COPYCMD% %TMP_DIR%\library\security\openid	%TMP_CONTRIB_DIR%\library\security\openid
+
 echo Install library: uri_template
 %COPYCMD% %TMP_DIR%\library\text\parser\uri_template %TMP_CONTRIB_DIR%\library\text\parser\uri_template
 
