@@ -11,8 +11,6 @@ class
 inherit
 	WSF_FILTER
 
-	WSF_URI_TEMPLATE_HANDLER
-
 create
 	make
 

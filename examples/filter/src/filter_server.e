@@ -71,7 +71,7 @@ feature {NONE} -- Initialization
 			create l_methods
 			l_methods.enable_options
 			l_methods.enable_get
-			router.handle_with_request_methods ("/user/{userid}", l_options_filter, l_methods)
+			router.handle_with_request_methods ("/user/{userid}", create {WSF_URI_TEMPLATE_AGENT_HANDLER}.make (agent l_options_filter.execute), l_methods)
 			create l_routing_filter.make (router)
 			l_routing_filter.set_execute_default_action (agent execute_default)
 			filter.set_next (l_routing_filter)
