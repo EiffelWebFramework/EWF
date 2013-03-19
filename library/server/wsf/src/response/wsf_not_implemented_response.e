@@ -54,7 +54,8 @@ feature {WSF_RESPONSE} -- Output
 			h := header
 			res.set_status_code ({HTTP_STATUS_CODE}.not_implemented)
 
-			s := "Error 501 Not Implemented !"
+			s := "Error 501 Not Implemented ! "
+			s.append (request.request_uri)
 			if attached body as b then
 				s.append ("%N")
 				s.append (b)
