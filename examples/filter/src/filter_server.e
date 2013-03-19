@@ -24,38 +24,60 @@ create
 feature {NONE} -- Initialization
 
 	make
+		local
+			l_message: STRING
+			l_factory: INET_ADDRESS_FACTORY
 		do
+			create router.make (1)
 			initialize_filter
 			initialize_json
-			set_service_option ("port", 9090)
+			set_service_option ("port", port)
+			create l_message.make_empty
+			l_message.append_string ("Launching filter server at ")
+			create l_factory
+			l_message.append_string (l_factory.create_localhost.host_name)
+			l_message.append_string (" port ")
+			l_message.append_integer (port)
+			io.put_string (l_message)
+			io.put_new_line
 			make_and_launch
 		end
 
 	create_filter
 			-- Create `filter'
 		local
-			l_authentication_filter_hdl: AUTHENTICATION_FILTER
-			l_user_filter: USER_HANDLER
-			l_routing_filter: WSF_ROUTING_FILTER
+			l_cors_filter: WSF_CORS_FILTER
 		do
-			create router.make (1)
-			create l_authentication_filter_hdl
-			create l_user_filter
-			l_authentication_filter_hdl.set_next (l_user_filter)
-
-			router.handle_with_request_methods ("/user/{userid}", l_authentication_filter_hdl, router.methods_get)
-			create l_routing_filter.make (router)
-			l_routing_filter.set_execute_default_action (agent execute_default)
-			filter := l_routing_filter
+			create l_cors_filter
+			filter := l_cors_filter
 		end
 
 	setup_filter
 			-- Setup `filter'
 		local
+			l_options_filter: WSF_CORS_OPTIONS_FILTER
+			l_authentication_filter: AUTHENTICATION_FILTER
+			l_user_filter: USER_HANDLER
+			l_methods: WSF_REQUEST_METHODS
+			l_routing_filter: WSF_ROUTING_FILTER
 			l_logging_filter: WSF_LOGGING_FILTER
 		do
+			create l_options_filter.make (router)
+			create l_authentication_filter
+			l_options_filter.set_next (l_authentication_filter)
+			create l_user_filter
+			l_authentication_filter.set_next (l_user_filter)
+
+			create l_methods
+			l_methods.enable_options
+			l_methods.enable_get
+			router.handle_with_request_methods ("/user/{userid}", l_options_filter, l_methods)
+			create l_routing_filter.make (router)
+			l_routing_filter.set_execute_default_action (agent execute_default)
+			filter.set_next (l_routing_filter)
+
 			create l_logging_filter
-			filter.set_next (l_logging_filter)
+			l_routing_filter.set_next (l_logging_filter)
 		end
 
 	initialize_json
@@ -81,6 +103,9 @@ feature -- Basic operations
 		end
 
 feature {NONE} -- Implementation
+
+	port: INTEGER = 9090
+			-- Port number
 
 	router: WSF_ROUTER;
 			-- Router

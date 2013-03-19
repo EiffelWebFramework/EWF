@@ -1041,6 +1041,13 @@ feature -- HTTP_*
 			Result := wgi_request.http_transfer_encoding
 		end
 
+	http_access_control_request_headers: detachable READABLE_STRING_8
+			-- Indicates which headers will be used in the actual request
+                        -- as part of the preflight request
+		do
+			Result := wgi_request.http_access_control_request_headers
+		end
+
 feature -- Extra CGI environment variables
 
 	request_uri: READABLE_STRING_8
