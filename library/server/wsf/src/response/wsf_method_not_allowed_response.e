@@ -1,6 +1,8 @@
 note
 	description: "[
-				This class is used to report a 405 Method not allowed response
+				This class is used to report a 405 Method not allowed response,
+				or a 501 not implemented response, depending upon whether
+				the method is known to the server.
 		]"
 	date: "$Date$"
 	revision: "$Revision$"
@@ -108,7 +110,7 @@ feature {WSF_RESPONSE} -- Output
 			end
 
 			l_html_error_code_text := html_error_code_text (l_messages, l_recognized)
-			
+
 			if request.is_content_type_accepted ({HTTP_MIME_TYPES}.text_html) then
 				s := "<html lang=%"en%"><head>"
 				s.append ("<title>")
@@ -304,9 +306,9 @@ feature {NONE} -- Implementation
 		ensure
 			html_error_code_text_attached: Result /= Void
 		end
-	
+
 note
-	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
+	copyright: "2011-2013, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software
