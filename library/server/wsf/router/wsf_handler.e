@@ -1,6 +1,7 @@
 note
-	description: "Summary description for {WSF_HANDLER}."
-	author: ""
+	description: "[
+			Represents the ancestor of all the WSF_ROUTER handler.
+		]"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -27,7 +28,7 @@ feature {WSF_ROUTER} -- Mapping
 		end
 
 note
-	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
+	copyright: "2011-2013, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software
