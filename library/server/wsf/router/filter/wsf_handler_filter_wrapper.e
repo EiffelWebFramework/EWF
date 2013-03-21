@@ -2,7 +2,6 @@ note
 	description: "[
 				Handler wrapping a filter
 			]"
-	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -18,17 +17,25 @@ create
 feature {NONE} -- Initialization
 
 	make_with_filter (f: WSF_FILTER)
+			-- Build Current with `f'.
+		require
+			f_attached: f /= Void
 		do
 			filter := f
+		ensure
+			filter_set: filter = f
 		end
 
 feature -- Access
 
 	filter: WSF_FILTER
+			-- Associated filter.
 
 feature -- Execution
 
 	execute (req: WSF_REQUEST; res: WSF_RESPONSE)
+			-- Execute handler for `req' and respond in `res'
+			-- by passing through filter `filter'
 		do
 			filter.execute (req, res)
 		end
