@@ -1,31 +1,36 @@
 note
 	description: "[
-				Handler that can also play the role of a filter, i.e. 
-				than can pre-process incoming data and post-process outgoing data.
-		]"
-	author: ""
+				This class represents the processing of a request via a WSF_ROUTER.
+				
+			]"
 	date: "$Date$"
 	revision: "$Revision$"
 
-deferred class
-	WSF_FILTER_HANDLER [G -> WSF_HANDLER]
+class
+	WSF_ROUTER_SESSION
 
-inherit
-	WSF_HANDLER
+feature -- Status report	
+
+	dispatched: BOOLEAN
+			-- Handler dispatched?
+		do
+			Result := dispatched_handler /= Void
+		ensure
+			Result implies dispatched_handler /= Void
+		end
 
 feature -- Access
 
-	next: detachable G
-			-- Next handler
+	dispatched_handler: detachable WSF_HANDLER
+			-- Handler dispatched
 
-feature -- Element change
+feature -- Change
 
-	set_next (a_next: like next)
-			-- Set `next' to `a_next'
+	set_dispatched_handler (h: like dispatched_handler)
 		do
-			next := a_next
+			dispatched_handler := h
 		ensure
-			next_set: next = a_next
+			h_set: dispatched_handler = h
 		end
 
 note

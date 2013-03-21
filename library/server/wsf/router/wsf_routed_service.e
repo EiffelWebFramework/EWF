@@ -40,10 +40,12 @@ feature -- Execution
 		require
 			req_attached: req /= Void
 			res_attached: res /= Void
+		local
+			sess: WSF_ROUTER_SESSION
 		do
-			if attached router.dispatch_and_return_handler (req, res) as p then
-				-- executed
-			else
+			create sess
+			router.dispatch (req, res, sess)
+			if not sess.dispatched then
 				execute_default (req, res)
 			end
 		ensure

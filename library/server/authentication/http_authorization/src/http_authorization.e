@@ -92,5 +92,19 @@ feature -- Access
 
 	http_authorization: detachable IMMUTABLE_STRING_8
 
+feature -- Status report
+
+	is_basic: BOOLEAN
+			-- Is Basic authorization?
+		do
+			if attached type as t then
+				Result := t.same_string ("basic")
+			end
+		end
+
+invariant
+
+	type_is_lower: attached type as t implies t.same_string (t.as_lower)
+
 
 end

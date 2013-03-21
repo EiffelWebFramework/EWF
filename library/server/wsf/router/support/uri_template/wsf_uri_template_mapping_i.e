@@ -24,7 +24,7 @@ feature {NONE} -- Initialization
 			-- Create with `h' as the handler for resources matching `tpl'
 		require
 			tpl_attached: tpl /= Void
-			h_attached: h /= Void	
+			h_attached: h /= Void
 		do
 			template := tpl
 			set_handler (h)
@@ -68,7 +68,7 @@ feature -- Status
 			Result := tpl.match (p) /= Void
 		end
 
-	routed_handler (req: WSF_REQUEST; res: WSF_RESPONSE; a_router: WSF_ROUTER): detachable WSF_HANDLER
+	try (req: WSF_REQUEST; res: WSF_RESPONSE; sess: WSF_ROUTER_SESSION; a_router: WSF_ROUTER)
 			-- <Precursor>
 		local
 			tpl: URI_TEMPLATE
@@ -78,7 +78,7 @@ feature -- Status
 			p := path_from_request (req)
 			tpl := based_uri_template (template, a_router)
 			if attached tpl.match (p) as tpl_res then
-				Result := handler
+				sess.set_dispatched_handler (handler)
 				a_router.execute_before (Current)
 				--| Applied the context to the request
 				--| in practice, this will fill the {WSF_REQUEST}.path_parameters
@@ -126,7 +126,7 @@ feature {NONE} -- Implementation
 		end
 
 note
-	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
+	copyright: "2011-2013, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

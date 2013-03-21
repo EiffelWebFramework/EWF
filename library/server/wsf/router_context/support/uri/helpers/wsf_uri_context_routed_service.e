@@ -1,35 +1,19 @@
 note
-	description: "Summary description for {WSF_URI_AGENT_HANDLER}."
+	description: "Summary description for {WSF_URI_CONTEXT_ROUTED_SERVICE}."
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
-class
-	WSF_URI_AGENT_HANDLER
+deferred class
+	WSF_URI_CONTEXT_ROUTED_SERVICE [C -> WSF_HANDLER_CONTEXT create make end]
+
+obsolete "Inherit from WSF_ROUTED_SERVICE and WSF_URI_CONTEXT_ROUTER_HELPER [2013-mar-19]"
 
 inherit
-	WSF_URI_HANDLER
+	WSF_ROUTED_SERVICE
 
-create
-	make
+	WSF_URI_CONTEXT_ROUTER_HELPER [C]
 
-feature {NONE} -- Initialization
-
-	make (a_action: like action)
-		do
-			action := a_action
-		end
-
-feature -- Access	
-
-	action: PROCEDURE [ANY, TUPLE [request: WSF_REQUEST; response: WSF_RESPONSE]]
-
-feature -- Execution
-
-	execute (req: WSF_REQUEST; res: WSF_RESPONSE)
-		do
-			action.call ([req, res])
-		end
 
 note
 	copyright: "2011-2013, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"

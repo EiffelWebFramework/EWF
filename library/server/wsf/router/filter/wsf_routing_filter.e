@@ -44,10 +44,12 @@ feature -- Basic operations
 
 	execute (req: WSF_REQUEST; res: WSF_RESPONSE)
 			-- Execute the filter
+		local
+			sess: WSF_ROUTER_SESSION
 		do
-			if attached router.dispatch_and_return_handler (req, res) then
-				check router.is_dispatched end
-			else
+			create sess
+			router.dispatch (req, res, sess)
+			if not sess.dispatched then
 				execute_default (req, res)
 			end
 			execute_next (req, res)
@@ -63,7 +65,7 @@ feature -- Basic operations
 		end
 
 note
-	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
+	copyright: "2011-2013, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

@@ -1,34 +1,43 @@
 note
-	description: "Summary description for {WSF_URI_AGENT_HANDLER}."
-	author: ""
+	description: "[
+				Handler wrapping a filter
+			]"
 	date: "$Date$"
 	revision: "$Revision$"
 
 class
-	WSF_URI_AGENT_HANDLER
+	WSF_HANDLER_FILTER_WRAPPER
 
 inherit
-	WSF_URI_HANDLER
+	WSF_HANDLER
 
 create
-	make
+	make_with_filter
 
 feature {NONE} -- Initialization
 
-	make (a_action: like action)
+	make_with_filter (f: WSF_FILTER)
+			-- Build Current with `f'.
+		require
+			f_attached: f /= Void
 		do
-			action := a_action
+			filter := f
+		ensure
+			filter_set: filter = f
 		end
 
-feature -- Access	
+feature -- Access
 
-	action: PROCEDURE [ANY, TUPLE [request: WSF_REQUEST; response: WSF_RESPONSE]]
+	filter: WSF_FILTER
+			-- Associated filter.
 
 feature -- Execution
 
 	execute (req: WSF_REQUEST; res: WSF_RESPONSE)
+			-- Execute handler for `req' and respond in `res'
+			-- by passing through filter `filter'
 		do
-			action.call ([req, res])
+			filter.execute (req, res)
 		end
 
 note

@@ -112,75 +112,84 @@ feature -- Mapping handler
 			map_with_request_methods (f.new_mapping (a_resource), rqst_methods)
 		end
 
-feature -- Access
-
-	is_dispatched: BOOLEAN
-			-- `dispatch' set `is_dispatched' to True
-			-- if mapping was found, and associated handler executed
-
 feature -- Basic operations
 
-	dispatch (req: WSF_REQUEST; res: WSF_RESPONSE)
+	dispatch (req: WSF_REQUEST; res: WSF_RESPONSE; sess: detachable WSF_ROUTER_SESSION)
 			-- Dispatch request `req' among  the `mappings'.
-			-- Set `is_dispatched' if the request were dispatched.
+			-- Set `sess' if the request were dispatched and `sess' attached.
 		require
 			req_attached: req /= Void
 			res_attached: res /= Void
+		local
+			l_sess: detachable WSF_ROUTER_SESSION
 		do
-			if attached dispatch_and_return_handler (req, res) then
-				check is_dispatched: is_dispatched end
+			l_sess := sess
+			if l_sess = Void then
+				create l_sess
 			end
+			router_dispatch (req, res, l_sess)
 		end
 
 	dispatch_and_return_handler (req: WSF_REQUEST; res: WSF_RESPONSE): detachable WSF_HANDLER
 			-- Dispatch request `req' among the `mappings'
 			-- And return the associated handler if mapping found and handler executed.
 			--| Violates CQS
+		obsolete
+			"Use `dispatch' [2013-mar-21]"
 		require
 			req_attached: req /= Void
 			res_attached: res /= Void
+		local
+			sess: WSF_ROUTER_SESSION
+		do
+			create sess
+			router_dispatch (req, res, sess)
+			Result := sess.dispatched_handler
+		end
+
+feature {NONE} -- Dispatch implementation
+
+	router_dispatch (req: WSF_REQUEST; res: WSF_RESPONSE; sess: WSF_ROUTER_SESSION)
+		require
+			req_attached: req /= Void
+			res_attached: res /= Void
+			sess_attached: sess /= Void
+			sess_not_dispatched: not sess.dispatched
 		local
 			l_req_method: READABLE_STRING_8
 			head_res: WSF_HEAD_RESPONSE_WRAPPER
 		do
 			l_req_method := request_method (req)
-			is_dispatched := False
-			Result := dispatch_and_return_handler_for_request_method (req, res, l_req_method)
-			if Result = Void and l_req_method = {HTTP_REQUEST_METHODS}.method_head then
-				check is_not_dispatched: not is_dispatched end
+			router_dispatch_for_request_method (req, res, sess, l_req_method)
+			if not sess.dispatched and l_req_method = {HTTP_REQUEST_METHODS}.method_head then
 				create head_res.make_from_response (res)
 				req.set_request_method ({HTTP_REQUEST_METHODS}.method_GET)
-				Result := dispatch_and_return_handler_for_request_method (req, head_res, {HTTP_REQUEST_METHODS}.method_GET)
+				router_dispatch_for_request_method (req, head_res, sess, {HTTP_REQUEST_METHODS}.method_GET)
 			end
 		end
 
-feature {NONE} -- Dispatch implementation		
-
-	dispatch_and_return_handler_for_request_method (req: WSF_REQUEST; res: WSF_RESPONSE; a_request_method: READABLE_STRING_8): detachable WSF_HANDLER
+	router_dispatch_for_request_method (req: WSF_REQUEST; res: WSF_RESPONSE; sess: WSF_ROUTER_SESSION; a_request_method: READABLE_STRING_8)
 			-- Dispatch request `req' among the `mappings'
 			-- And return the associated handler if mapping found and handler executed.
 			--| Violates CQS
 		require
 			req_attached: req /= Void
 			res_attached: res /= Void
+			sess_attached: sess /= Void
+			sess_not_dispatched: not sess.dispatched
 			a_request_method_attached: a_request_method /= Void
 		local
 			m: WSF_ROUTER_MAPPING
 		do
-			is_dispatched := False
-
 			across
 				mappings as c
 			until
-				Result /= Void
+				sess.dispatched
 			loop
 				if attached c.item as l_info then
 					if is_matching_request_methods (a_request_method, l_info.request_methods) then
 						m := l_info.mapping
-						if attached m.routed_handler (req, res, Current) as r then
-							is_dispatched := True
-							Result := r
-						end
+						m.try (req, res, sess, Current)
 					end
 				end
 			end

@@ -1,0 +1,15 @@
+GOAL: include EWF into your own git repository
+For instance, let's put it under lib/EWF
+
+  git remote add -f _ewf https://github.com/EiffelWebFramework/EWF.git
+  git merge --squash -s ours --no-commit _ewf/master
+  git read-tree --prefix=lib/EWF/ -u _ewf/master
+  git commit -m "Imported EWF into subtree lib/EWF/"
+
+Then to update lib/EWF
+  git pull -X subtree=lib/EWF _ewf master
+
+From another git clone, reconnect this "import"
+  git remote add -f _ewf https://github.com/EiffelWebFramework/EWF.git
+  git merge -s ours --no-commit --squash _ewf/master
+  and then update lib/EWF as described before

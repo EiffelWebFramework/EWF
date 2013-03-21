@@ -19,6 +19,7 @@ feature {NONE} -- Initialization
 
 	make (a_file_name: READABLE_STRING_8)
 		do
+			set_status_code ({HTTP_STATUS_CODE}.ok)
 			file_name := a_file_name
 			get_content_type
 			initialize
@@ -27,6 +28,7 @@ feature {NONE} -- Initialization
 	make_with_content_type (a_content_type: READABLE_STRING_8; a_filename: READABLE_STRING_8)
 			-- Initialize `Current'.
 		do
+			set_status_code ({HTTP_STATUS_CODE}.ok)
 			file_name := a_filename
 			content_type := a_content_type
 			initialize
@@ -279,7 +281,7 @@ feature {NONE} -- Implementation: output
 		end
 
 note
-	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
+	copyright: "2011-2013, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

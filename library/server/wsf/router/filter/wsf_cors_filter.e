@@ -1,34 +1,27 @@
 note
-	description: "Summary description for {WSF_URI_AGENT_HANDLER}."
-	author: ""
+	description: "Cross-Origin Resource Sharing filter."
+	author: "Olivier Ligot"
 	date: "$Date$"
 	revision: "$Revision$"
+	EIS: "name=Cross-Origin Resource Sharing", "src=http://www.w3.org/TR/cors/", "tag=W3C"
 
 class
-	WSF_URI_AGENT_HANDLER
+	WSF_CORS_FILTER
 
 inherit
-	WSF_URI_HANDLER
+	WSF_FILTER
 
-create
-	make
-
-feature {NONE} -- Initialization
-
-	make (a_action: like action)
-		do
-			action := a_action
-		end
-
-feature -- Access	
-
-	action: PROCEDURE [ANY, TUPLE [request: WSF_REQUEST; response: WSF_RESPONSE]]
-
-feature -- Execution
+feature -- Basic operations
 
 	execute (req: WSF_REQUEST; res: WSF_RESPONSE)
+			-- Execute the filter.
+		local
+			l_header: HTTP_HEADER
 		do
-			action.call ([req, res])
+			create l_header.make
+			l_header.put_access_control_allow_all_origin
+			res.put_header_text (l_header.string)
+			execute_next (req, res)
 		end
 
 note

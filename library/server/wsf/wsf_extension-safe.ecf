@@ -12,7 +12,8 @@
 		<library name="base" location="$ISE_LIBRARY/library/base/base-safe.ecf"/>
 		<library name="http" location="../../network/protocol/http/http-safe.ecf"/>
 		<library name="ewsgi" location="..\ewsgi\ewsgi-safe.ecf"/>
-		<library name="wsf-safe" location="wsf-safe.ecf"/>
+		<library name="wsf" location="wsf-safe.ecf"/>
+		<library name="wsf_router_context" location="wsf_router_context-safe.ecf" readonly="true"/>
 		<cluster name="extension" location="./extension" recursive="true"/>
 	</target>
 </system>

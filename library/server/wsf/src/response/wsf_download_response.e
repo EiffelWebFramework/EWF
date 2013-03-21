@@ -19,6 +19,7 @@ feature {NONE} -- Initialization
 
 	make (a_file_name: READABLE_STRING_8)
 		do
+			set_status_code ({HTTP_STATUS_CODE}.ok)
 			file_name := a_file_name
 			base_name := basename (a_file_name)
 			get_content_type
@@ -28,6 +29,7 @@ feature {NONE} -- Initialization
 	make_with_content_type (a_content_type: READABLE_STRING_8; a_filename: READABLE_STRING_8)
 			-- Initialize `Current'.
 		do
+			set_status_code ({HTTP_STATUS_CODE}.ok)
 			file_name := a_filename
 			base_name := basename (a_filename)
 			content_type := a_content_type
@@ -53,6 +55,14 @@ feature {NONE} -- Initialization
 		end
 
 feature -- Element change
+
+	set_base_name (n: like base_name)
+		do
+			base_name := n
+			header.put_content_disposition ("attachment", "filename=%""+ n +"%"")
+		ensure
+			base_name_set: n.same_string (base_name)
+		end
 
 	set_expires (t: INTEGER)
 		do
@@ -91,7 +101,7 @@ feature -- Element change
 	set_status_code (c: like status_code)
 			-- Set `status_code' to `c'.
 		require
-			valid_status_code: status_code > 0
+			valid_status_code: c > 0
 		do
 			status_code := c
 		ensure
@@ -207,8 +217,11 @@ feature -- Implementation: output
 			f.close
 		end
 
+invariant
+	status_code_set: status_code /= 0
+
 note
-	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
+	copyright: "2011-2013, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

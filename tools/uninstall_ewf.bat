@@ -54,10 +54,14 @@ echo Uninstall library: http_client
 %RDCMD% %TMP_CONTRIB_DIR%\library\network\http_client
 echo Uninstall library: http
 %RDCMD% %TMP_CONTRIB_DIR%\library\network\protocol\http
+echo Uninstall library: http_authorization
+%RDCMD% %TMP_CONTRIB_DIR%\library\network\authentication\http_authorization
+echo Uninstall library: security\openid
+%RDCMD% %TMP_CONTRIB_DIR%\library\security\openid
 echo Uninstall library: uri_template
 %RDCMD% %TMP_CONTRIB_DIR%\library\text\parser\uri_template
 
 echo Uninstall contrib library: nino
-%RDCMD% %TMP_CONTRIB_DIR%\contrib\library\network\server\nino
+%RDCMD% %TMP_CONTRIB_DIR%\library\network\server\nino
 
 :end

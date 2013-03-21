@@ -14,7 +14,7 @@ feature -- Access
 
 feature -- Element change
 
-	set_next (a_next: WSF_FILTER)
+	set_next (a_next: like next)
 			-- Set `next' to `a_next'
 		do
 			next := a_next
@@ -26,6 +26,9 @@ feature -- Basic operations
 
 	execute (req: WSF_REQUEST; res: WSF_RESPONSE)
 			-- Execute the filter.
+		require
+			req_attached: req /= Void
+			res_attached: res /= Void
 		deferred
 		end
 
@@ -33,6 +36,9 @@ feature {NONE} -- Implementation
 
 	execute_next (req: WSF_REQUEST; res: WSF_RESPONSE)
 			-- Execute the `next' filter.
+		require
+			req_attached: req /= Void
+			res_attached: res /= Void
 		do
 			if attached next as n then
 				n.execute (req, res)
@@ -40,7 +46,7 @@ feature {NONE} -- Implementation
 		end
 
 note
-	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
+	copyright: "2011-2013, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

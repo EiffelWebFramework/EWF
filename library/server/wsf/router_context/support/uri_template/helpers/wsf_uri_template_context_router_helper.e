@@ -1,14 +1,17 @@
 note
-	description: "Summary description for {WSF_URI_TEMPLATE_CONTEXT_ROUTED_SERVICE}."
+	description: "Summary description for {WSF_URI_TEMPLATE_CONTEXT_ROUTER_HELPER}."
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
 deferred class
-	WSF_URI_TEMPLATE_CONTEXT_ROUTED_SERVICE [C -> WSF_HANDLER_CONTEXT create make end]
+	WSF_URI_TEMPLATE_CONTEXT_ROUTER_HELPER [C -> WSF_HANDLER_CONTEXT create make end]
 
-inherit
-	WSF_ROUTED_SERVICE
+feature -- Access
+
+	router: WSF_ROUTER
+		deferred
+		end
 
 feature -- Mapping helper: uri
 

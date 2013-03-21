@@ -72,10 +72,10 @@ feature -- Status
 			end
 		end
 
-	routed_handler (req: WSF_REQUEST; res: WSF_RESPONSE; a_router: WSF_ROUTER): detachable WSF_HANDLER
+	try (req: WSF_REQUEST; res: WSF_RESPONSE; sess: WSF_ROUTER_SESSION; a_router: WSF_ROUTER)
 		do
 			if is_mapping (req, a_router) then
-				Result := handler
+				sess.set_dispatched_handler (handler)
 				a_router.execute_before (Current)
 				execute_handler (handler, req, res)
 				a_router.execute_after (Current)
@@ -105,7 +105,7 @@ feature {NONE} -- Implementation
 		end
 
 note
-	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
+	copyright: "2011-2013, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

@@ -5,10 +5,13 @@ note
 	revision: "$Revision$"
 
 deferred class
-	WSF_STARTS_WITH_CONTEXT_ROUTED_SERVICE [C -> WSF_HANDLER_CONTEXT create make end]
+	WSF_STARTS_WITH_CONTEXT_ROUTER_HELPER [C -> WSF_HANDLER_CONTEXT create make end]
 
-inherit
-	WSF_ROUTED_SERVICE
+feature -- Access
+
+	router: WSF_ROUTER
+		deferred
+		end
 
 feature -- Mapping helper: starts_with
 
