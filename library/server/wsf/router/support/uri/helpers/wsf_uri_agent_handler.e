@@ -10,13 +10,26 @@ class
 inherit
 	WSF_URI_HANDLER
 
-	WSF_AGENT_HANDLER
-		rename
-			set_action as make
-		end
-
 create
 	make
+
+feature {NONE} -- Initialization
+
+	make (a_action: like action)
+		do
+			action := a_action
+		end
+
+feature -- Access	
+
+	action: PROCEDURE [ANY, TUPLE [request: WSF_REQUEST; response: WSF_RESPONSE]]
+
+feature -- Execution
+
+	execute (req: WSF_REQUEST; res: WSF_RESPONSE)
+		do
+			action.call ([req, res])
+		end
 
 note
 	copyright: "2011-2013, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
