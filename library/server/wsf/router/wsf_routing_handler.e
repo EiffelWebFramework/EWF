@@ -54,16 +54,18 @@ feature -- Execution
 
 	execute (req: WSF_REQUEST; res: WSF_RESPONSE)
 			-- Execute request handler
+		local
+			sess: WSF_ROUTER_SESSION
 		do
-			if attached router.dispatch_and_return_handler (req, res) as h then
-				check is_dispatched: router.is_dispatched end
-			else
+			create sess
+			router.dispatch (req, res, sess)
+			if not sess.dispatched then
 				res.put_header ({HTTP_STATUS_CODE}.not_found, <<[{HTTP_HEADER_NAMES}.header_content_length, "0"]>>)
 			end
 		end
 
 note
-	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
+	copyright: "2011-2013, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

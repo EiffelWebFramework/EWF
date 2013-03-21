@@ -58,7 +58,7 @@ feature -- Status
 			Result := p.starts_with (s)
 		end
 
-	routed_handler (req: WSF_REQUEST; res: WSF_RESPONSE; a_router: WSF_ROUTER): detachable WSF_HANDLER
+	try (req: WSF_REQUEST; res: WSF_RESPONSE; sess: WSF_ROUTER_SESSION; a_router: WSF_ROUTER)
 			-- Return the handler if Current matches the request `req'.
 		local
 			p: READABLE_STRING_8
@@ -67,7 +67,7 @@ feature -- Status
 			p := path_from_request (req)
 			s := based_uri (uri, a_router)
 			if p.starts_with (s) then
-				Result := handler
+				sess.set_dispatched_handler (handler)
 				a_router.execute_before (Current)
 				execute_handler (handler, s, req, res)
 				a_router.execute_after (Current)
@@ -113,7 +113,7 @@ invariant
 	uri_attached: uri /= Void
 
 note
-	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
+	copyright: "2011-2013, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software
