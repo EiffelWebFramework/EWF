@@ -21,6 +21,7 @@ feature {WGI_CONNECTOR, WGI_SERVICE} -- Commit
 			-- Commit the current response
 		deferred
 		ensure
+			status_is_set: status_is_set
 			status_committed: status_committed
 			header_committed: header_committed
 			message_committed: message_committed
