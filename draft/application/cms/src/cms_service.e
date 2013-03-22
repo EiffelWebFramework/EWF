@@ -438,11 +438,12 @@ feature -- Core Execution
 			-- Default request handler if no other are relevant
 		local
 			e: CMS_EXECUTION
+			sess: WSF_ROUTER_SESSION
 		do
 			initialize_urls (req)
-			if attached router.dispatch_and_return_handler (req, res) as p then
-				-- ok
-			else
+			create sess
+			router.dispatch (req, res, sess)
+			if not sess.dispatched then
 				create {NOT_FOUND_CMS_EXECUTION} e.make (req, res, Current)
 				e.execute
 			end
