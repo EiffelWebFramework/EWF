@@ -18,7 +18,7 @@ feature {NONE} -- Initialization
 
 	make (a_url_location: like url_location)
 		do
-			status_code := {HTTP_STATUS_CODE}.ok
+			status_code := {HTTP_STATUS_CODE}.found
 			url_location := a_url_location
 			create header.make
 		end
@@ -100,7 +100,7 @@ feature {WSF_RESPONSE} -- Output
 		end
 
 note
-	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
+	copyright: "2011-2013, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

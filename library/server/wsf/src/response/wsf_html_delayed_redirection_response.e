@@ -26,7 +26,7 @@ feature {NONE} -- Initialization
 			url_location := a_url_location
 			delay := a_delay_in_seconds
 			make_html
-			set_status_code ({HTTP_STATUS_CODE}.found)
+			status_code := {HTTP_STATUS_CODE}.found
 		end
 
 feature -- Header
@@ -65,7 +65,7 @@ feature {NONE} -- Output
 		end
 
 note
-	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
+	copyright: "2011-2013, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software
