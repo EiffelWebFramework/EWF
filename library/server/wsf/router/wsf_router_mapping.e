@@ -24,14 +24,14 @@ feature {NONE} -- Initialization
 feature -- Access
 
 	associated_resource: READABLE_STRING_8
-			-- Name (URI, or URI template or regular expression or ...) of handled resource.
+			-- Name (URI, or URI template or regular expression or ...) of handled resource
 		deferred
 		ensure
 			assciated_resource_not_void: Result /= Void
 		end
 
 	handler: WSF_HANDLER
-			-- Handler associated with `Current' mapping.
+			-- Handler associated with `Current' mapping
 		deferred
 		ensure
 			handler_attached: Result /= Void
@@ -40,7 +40,7 @@ feature -- Access
 feature -- Documentation
 
 	description: READABLE_STRING_32
-			-- Short description of associated mapping.
+			-- Short description of associated mapping
 		deferred
 		ensure
 			description_attached: Result /= Void
@@ -78,7 +78,7 @@ feature -- Status
 feature -- Helper
 
 	path_from_request (req: WSF_REQUEST): READABLE_STRING_32
-			-- Path used by `Current' to check that mapping matches request `req'.
+			-- Path used by `Current' to check that mapping matches request `req'
 		require
 			req_attached: req /= Void
 		do

@@ -158,10 +158,18 @@ feature {WSF_RESPONSE} -- Output
 				if doc_url_supported then
 					l_description.append ("<a href=%""+ doc_url ("") + "%">Index</a><br/>")
 				end
-				if attached router.item_associated_with_resource (l_api_resource, Void) as l_api_item then
-					l_description.append ("<h2>Information related to <code>" + l_api_resource + "</code></h2><ul class=%"mapping%">")
-					append_documentation_to (l_description, l_api_item.mapping, l_api_item.request_methods)
-					l_description.append ("</ul>")
+				if
+					attached router.items_associated_with_resource (l_api_resource, Void) as l_api_items and then
+					not l_api_items.is_empty
+				then
+					l_description.append ("<h2>Information related to <code>" + l_api_resource + "</code></h2>")
+					across
+						l_api_items as c
+					loop
+						l_description.append ("<ul class=%"mapping%">")
+						append_documentation_to (l_description, c.item.mapping, c.item.request_methods)
+						l_description.append ("</ul>")
+					end
 				end
 			else
 				l_description.append ("<h2>Router</h2><ul class=%"mapping%">")
@@ -304,4 +312,14 @@ feature {NONE} -- Implementation
 			create Result
 		end
 
+note
+	copyright: "2011-2013, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
+	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
+	source: "[
+			Eiffel Software
+			5949 Hollister Ave., Goleta, CA 93117 USA
+			Telephone 805-685-1006, Fax 805-685-6869
+			Website http://www.eiffel.com
+			Customer support http://support.eiffel.com
+		]"
 end

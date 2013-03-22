@@ -73,6 +73,7 @@ feature -- Status
 		end
 
 	try (req: WSF_REQUEST; res: WSF_RESPONSE; sess: WSF_ROUTER_SESSION; a_router: WSF_ROUTER)
+			-- <Precursor>
 		do
 			if is_mapping (req, a_router) then
 				sess.set_dispatched_handler (handler)

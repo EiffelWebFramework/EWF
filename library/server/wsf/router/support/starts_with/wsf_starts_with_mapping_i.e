@@ -59,7 +59,7 @@ feature -- Status
 		end
 
 	try (req: WSF_REQUEST; res: WSF_RESPONSE; sess: WSF_ROUTER_SESSION; a_router: WSF_ROUTER)
-			-- Return the handler if Current matches the request `req'.
+			-- <Precursor>
 		local
 			p: READABLE_STRING_8
 			s: like based_uri

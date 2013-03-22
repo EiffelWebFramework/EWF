@@ -15,6 +15,7 @@
 		<library name="connector_libfcgi" location="..\library\server\ewsgi\connectors\libfcgi\libfcgi-safe.ecf" readonly="false"/>
 		<library name="connector_nino" location="..\library\server\ewsgi\connectors\nino\nino-safe.ecf" readonly="false"/>
 		<library name="connector_null" location="..\library\server\ewsgi\connectors\null\null-safe.ecf" readonly="false"/>
+		<library name="encoder" location="..\library\text\encoder\encoder-safe.ecf" readonly="false"/>
 		<library name="wsf_connector_nino" location="..\library\server\wsf\connector\nino-safe.ecf" readonly="false"/>
 		<library name="wsf_connector_openshift" location="..\library\server\wsf\connector\openshift-safe.ecf" readonly="false"/>
 		<library name="dft_connector_libfcgi" location="..\library\server\wsf\default\libfcgi-safe.ecf" readonly="false"/>
@@ -35,6 +36,8 @@
 		<library name="ex_restbuck" location="..\examples\restbucksCRUD\restbucks-safe.ecf" readonly="false"/>
 		<library name="ex_simple" location="..\examples\simple\simple.ecf" readonly="false"/>
 		<library name="ex_filter" location="..\examples\filter\filter-safe.ecf" readonly="false"/>
+		<library name="cms" location="..\draft\application\cms\cms-safe.ecf" readonly="false"/>
+		<library name="css" location="..\draft\library\text\css\css-safe.ecf" readonly="false"/>
 	</target>
 	<target name="all_windows" extends="all">
 		<description>Compiling as Windows , on other platforms than Windows</description>
