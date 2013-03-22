@@ -120,33 +120,51 @@ feature {NONE} -- Implementation
 			Result := Precursor (req)
 			if documentation_included then
 				create vis
-				vis.on_item_actions.extend (agent (i: WSF_ROUTER_ITEM; r: WSF_NOT_FOUND_RESPONSE)
+				vis.on_item_actions.extend (agent (i: WSF_ROUTER_ITEM; r: WSF_NOT_FOUND_RESPONSE; m: detachable READABLE_STRING_8)
 						local
 							l_is_hidden: BOOLEAN
 							s: STRING_32
+							ok: BOOLEAN
 						do
 							if attached {WSF_SELF_DOCUMENTED_ROUTER_MAPPING} i.mapping as l_doc_mapping then
 								l_is_hidden := l_doc_mapping.documentation (i.request_methods).is_hidden
 							end
 							if not l_is_hidden then
+								ok := True
 								create s.make_from_string (i.mapping.associated_resource)
 								if attached i.request_methods as mtds then
+									ok := False
 									s.append (" [ ")
 									across
-										mtds as mtds_c
+										mtds as c
 									loop
-										s.append (mtds_c.item)
+										if m = Void or else m.is_case_insensitive_equal (c.item) then
+											ok := True
+										end
+										s.append (c.item)
 										s.append_character (' ')
 									end
 									s.append ("]")
 								else
 									s.append (" [*]")
 								end
-								r.add_suggested_text (s, Void)
+								if ok then
+									r.add_suggested_text (s, Void)
+								end
 							end
-						end (?, Result))
+						end (?, Result, req.request_method))
 				vis.process_router (router)
 			end
 		end
 
+note
+	copyright: "2011-2013, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
+	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
+	source: "[
+			Eiffel Software
+			5949 Hollister Ave., Goleta, CA 93117 USA
+			Telephone 805-685-1006, Fax 805-685-6869
+			Website http://www.eiffel.com
+			Customer support http://support.eiffel.com
+		]"
 end
