@@ -14,7 +14,8 @@ inherit
 			put_string,
 			put_substring,
 			flush,
-			message_writable
+			message_writable,
+			message_committed
 		end
 
 	WSF_RESPONSE_EXPORTER
@@ -36,10 +37,10 @@ feature {NONE} -- Implementation
 
 	commit
 		do
-			Precursor
 			if not header_committed then
 				process_header
 			end
+			Precursor
 		end
 
 	process_header
@@ -64,6 +65,12 @@ feature -- Status report
 
 	message_writable: BOOLEAN = True
 			-- Can message be written?
+
+	message_committed: BOOLEAN
+			-- <Precursor>
+		do
+			Result := header_committed
+		end
 
 feature -- Output operation
 

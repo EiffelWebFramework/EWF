@@ -252,23 +252,23 @@ feature -- Header output operation: helpers
 			message_writable: message_writable
 		end
 
-	put_header_lines (a_lines: ITERABLE [TUPLE [name: READABLE_STRING_8; value: READABLE_STRING_8]])
+	put_header_lines (a_lines: ITERABLE [READABLE_STRING_8])
 			-- Put headers from `a_lines'
 		require
 			header_not_committed: not header_committed
 		do
 			across a_lines as c loop
-				put_header_line (c.item.name + ": " + c.item.value)
+				put_header_line (c.item)
 			end
 		end
 
-	add_header_lines (a_lines: ITERABLE [TUPLE [name: READABLE_STRING_8; value: READABLE_STRING_8]])
+	add_header_lines (a_lines: ITERABLE [READABLE_STRING_8])
 			-- Add headers from `a_lines'
 		require
 			header_not_committed: not header_committed
 		do
 			across a_lines as c loop
-				add_header_line (c.item.name + ": " + c.item.value)
+				add_header_line (c.item)
 			end
 		end
 
@@ -409,8 +409,7 @@ feature -- Response object
 		do
 			a_message.send_to (Current)
 		ensure
-			status_committed: status_committed
-			header_committed: header_committed
+			status_committed: status_is_set
 		end
 
 feature -- Redirect
