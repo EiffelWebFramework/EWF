@@ -60,10 +60,10 @@ feature -- Hooks
 			end
 		end
 
-	form_alter (a_form: CMS_FORM; a_form_data: detachable CMS_FORM_DATA; a_execution: CMS_EXECUTION)
+	form_alter (a_form: CMS_FORM; a_form_data: detachable WSF_FORM_DATA; a_execution: CMS_EXECUTION)
 		local
-			i: CMS_FORM_DIV
-			fh: CMS_FORM_HIDDEN_INPUT
+			i: WSF_FORM_DIV
+			fh: WSF_FORM_HIDDEN_INPUT
 		do
 			if a_form.id.same_string ("openid-login") then
 				create i.make_with_text_and_css_id (
@@ -82,7 +82,7 @@ feature -- Hooks
 							,
 					"openid"
 					)
-				if attached a_form.items_by_type ({CMS_WIDGET_TEXT}) as lst and then not lst.is_empty then
+				if attached a_form.items_by_type ({WSF_WIDGET_TEXT}) as lst and then not lst.is_empty then
 					a_form.insert_before (i, lst.last)
 				else
 					a_form.extend (i)
@@ -98,7 +98,7 @@ feature -- Hooks
 							across
 								f_lst as c
 							loop
-								if attached {CMS_FORM_TEXT_INPUT} c.item as txt then
+								if attached {WSF_FORM_TEXT_INPUT} c.item as txt then
 									txt.set_text_value (l_openid_nickname.to_string_32)
 								end
 							end
@@ -110,7 +110,7 @@ feature -- Hooks
 							across
 								f_lst as c
 							loop
-								if attached {CMS_FORM_TEXT_INPUT} c.item as txt then
+								if attached {WSF_FORM_TEXT_INPUT} c.item as txt then
 									txt.set_text_value (l_openid_email.to_string_32)
 								end
 							end
@@ -122,7 +122,7 @@ feature -- Hooks
 			end
 		end
 
-	openid_user_register_submitted (a_form_data: CMS_FORM_DATA)
+	openid_user_register_submitted (a_form_data: WSF_FORM_DATA)
 		do
 
 		end

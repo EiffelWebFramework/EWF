@@ -203,7 +203,7 @@ feature -- Hook: form_alter
 
 	form_alter_hooks: detachable ARRAYED_LIST [CMS_HOOK_FORM_ALTER]
 
-	call_form_alter_hooks (f: CMS_FORM; a_form_data: detachable CMS_FORM_DATA; a_execution: CMS_EXECUTION)
+	call_form_alter_hooks (f: CMS_FORM; a_form_data: detachable WSF_FORM_DATA; a_execution: CMS_EXECUTION)
 		do
 			if attached form_alter_hooks as lst then
 				across

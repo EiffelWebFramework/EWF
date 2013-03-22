@@ -20,7 +20,7 @@ feature -- Execution
 		local
 			b: STRING_8
 			f: CMS_FORM
-			fd: detachable CMS_FORM_DATA
+			fd: detachable WSF_FORM_DATA
 			u: detachable CMS_USER
 			l_is_editing_current_user: BOOLEAN
 		do
@@ -63,7 +63,7 @@ feature -- Execution
 			set_main_content (b)
 		end
 
-	edit_form_validate (fd: CMS_FORM_DATA; u: CMS_USER)
+	edit_form_validate (fd: WSF_FORM_DATA; u: CMS_USER)
 		local
 			fu: detachable CMS_USER
 		do
@@ -81,7 +81,7 @@ feature -- Execution
 			end
 		end
 
-	edit_form_submit (fd: CMS_FORM_DATA; u: CMS_USER; a_is_editing_current_user: BOOLEAN; b: STRING)
+	edit_form_submit (fd: WSF_FORM_DATA; u: CMS_USER; a_is_editing_current_user: BOOLEAN; b: STRING)
 		local
 			up: detachable CMS_USER_PROFILE
 			l_roles: like {CMS_USER}.roles
@@ -138,12 +138,12 @@ feature -- Execution
 	edit_form (u: CMS_USER; a_url: READABLE_STRING_8; a_name: STRING): CMS_FORM
 		local
 			f: CMS_FORM
-			ti: CMS_FORM_TEXT_INPUT
-			tp: CMS_FORM_PASSWORD_INPUT
-			ta: CMS_FORM_TEXTAREA
-			ts: CMS_FORM_SUBMIT_INPUT
-			tset: CMS_FORM_FIELD_SET
-			cb: CMS_FORM_CHECKBOX_INPUT
+			ti: WSF_FORM_TEXT_INPUT
+			tp: WSF_FORM_PASSWORD_INPUT
+			ta: WSF_FORM_TEXTAREA
+			ts: WSF_FORM_SUBMIT_INPUT
+			tset: WSF_FORM_FIELD_SET
+			cb: WSF_FORM_CHECKBOX_INPUT
 		do
 			create f.make (a_url, a_name)
 

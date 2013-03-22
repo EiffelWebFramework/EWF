@@ -12,7 +12,7 @@ inherit
 
 feature -- Form	
 
-	edit_form_validate (fd: CMS_FORM_DATA; b: STRING)
+	edit_form_validate (fd: WSF_FORM_DATA; b: STRING)
 		local
 			l_preview: BOOLEAN
 			l_format: detachable CMS_FORMAT
@@ -39,7 +39,7 @@ feature -- Form
 			end
 		end
 
-	edit_form_submit (fd: CMS_FORM_DATA; a_node: detachable CMS_NODE; a_type: CMS_CONTENT_TYPE; b: STRING)
+	edit_form_submit (fd: WSF_FORM_DATA; a_node: detachable CMS_NODE; a_type: CMS_CONTENT_TYPE; b: STRING)
 		local
 			l_preview: BOOLEAN
 			l_node: detachable CMS_NODE
@@ -77,7 +77,7 @@ feature -- Form
 			end
 		end
 
---	edit_form_submit (fd: CMS_FORM_DATA; a_type: CMS_CONTENT_TYPE; b: STRING)
+--	edit_form_submit (fd: WSF_FORM_DATA; a_type: CMS_CONTENT_TYPE; b: STRING)
 --		local
 --			l_preview: BOOLEAN
 --		do
@@ -110,8 +110,8 @@ feature -- Form
 	edit_form (a_node: detachable CMS_NODE; a_url: READABLE_STRING_8; a_name: STRING; a_type: CMS_CONTENT_TYPE): CMS_FORM
 		local
 			f: CMS_FORM
-			ts: CMS_FORM_SUBMIT_INPUT
-			th: CMS_FORM_HIDDEN_INPUT
+			ts: WSF_FORM_SUBMIT_INPUT
+			th: WSF_FORM_HIDDEN_INPUT
 		do
 			create f.make (a_url, a_name)
 

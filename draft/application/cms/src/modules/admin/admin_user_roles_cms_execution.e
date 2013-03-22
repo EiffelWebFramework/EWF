@@ -81,7 +81,7 @@ feature -- Execution
 
 feature -- Forms
 
-	edit_form_submit (fd: CMS_FORM_DATA; a_roles: LIST [CMS_USER_ROLE])
+	edit_form_submit (fd: WSF_FORM_DATA; a_roles: LIST [CMS_USER_ROLE])
 		local
 			l_role: CMS_USER_ROLE
 		do
@@ -120,9 +120,9 @@ feature -- Forms
 	new_edit_form (a_action: READABLE_STRING_8; a_roles: LIST [CMS_USER_ROLE]; a_use_data: BOOLEAN): CMS_FORM
 		local
 			perms: ARRAYED_SET [READABLE_STRING_8]
-			tb: CMS_WIDGET_AGENT_TABLE [READABLE_STRING_8]
+			tb: WSF_WIDGET_AGENT_TABLE [READABLE_STRING_8]
 			i: INTEGER
-			tf: CMS_FORM_TEXT_INPUT
+			tf: WSF_FORM_TEXT_INPUT
 		do
 			create perms.make (10)
 			perms.compare_objects
@@ -158,10 +158,10 @@ feature -- Forms
 
 			tb.add_css_style ("border: solid 1px #999;")
 			tb.set_data (perms)
-			tb.set_compute_item_function (agent (p: READABLE_STRING_8; ia_roles: LIST [CMS_USER_ROLE]; ia_use_data: BOOLEAN): CMS_WIDGET_TABLE_ROW
+			tb.set_compute_item_function (agent (p: READABLE_STRING_8; ia_roles: LIST [CMS_USER_ROLE]; ia_use_data: BOOLEAN): WSF_WIDGET_TABLE_ROW
 				local
-					it: CMS_WIDGET_TABLE_ITEM
-					cb: CMS_FORM_CHECKBOX_INPUT
+					it: WSF_WIDGET_TABLE_ITEM
+					cb: WSF_FORM_CHECKBOX_INPUT
 				do
 					create Result.make (1 + ia_roles.count)
 					create it.make_with_text (p)
@@ -188,21 +188,21 @@ feature -- Forms
 			create Result.make (a_action, "edit-user-roles")
 			Result.set_method_post
 			Result.extend (tb.to_computed_table)
-			Result.extend (create {CMS_FORM_SUBMIT_INPUT}.make_with_text ("op", "Apply"))
+			Result.extend (create {WSF_FORM_SUBMIT_INPUT}.make_with_text ("op", "Apply"))
 
 			create tf.make ("new-role")
 			tf.add_css_class ("horizontal")
 			tf.set_size (24)
 			tf.set_label ("New user role")
 			Result.extend (tf)
-			Result.extend (create {CMS_FORM_SUBMIT_INPUT}.make_with_text ("op", "Add role"))
+			Result.extend (create {WSF_FORM_SUBMIT_INPUT}.make_with_text ("op", "Add role"))
 
 			create tf.make ("new-permission")
 			tf.add_css_class ("horizontal")
 			tf.set_size (24)
 			tf.set_label ("New permission")
 			Result.extend (tf)
-			Result.extend (create {CMS_FORM_SUBMIT_INPUT}.make_with_text ("op", "Add permission"))
+			Result.extend (create {WSF_FORM_SUBMIT_INPUT}.make_with_text ("op", "Add permission"))
 
 
 

@@ -41,11 +41,11 @@ feature -- Factory
 
 	fill_edit_form (f: CMS_FORM; a_node: detachable CMS_NODE)
 		local
-			ti: CMS_FORM_TEXT_INPUT
-			fset: CMS_FORM_FIELD_SET
-			ta: CMS_FORM_TEXTAREA
-			tselect: CMS_FORM_SELECT
-			opt: CMS_FORM_SELECT_OPTION
+			ti: WSF_FORM_TEXT_INPUT
+			fset: WSF_FORM_FIELD_SET
+			ta: WSF_FORM_TEXTAREA
+			tselect: WSF_FORM_SELECT
+			opt: WSF_FORM_SELECT_OPTION
 		do
 			create ti.make ("title")
 			ti.set_label ("Title")
@@ -96,7 +96,7 @@ feature -- Factory
 
 		end
 
-	change_node	(a_execution: CMS_EXECUTION; fd: CMS_FORM_DATA; a_node: like new_node)
+	change_node	(a_execution: CMS_EXECUTION; fd: WSF_FORM_DATA; a_node: like new_node)
 		local
 			b: detachable READABLE_STRING_8
 			f: detachable CMS_FORMAT
@@ -123,7 +123,7 @@ feature -- Factory
 			end
 		end
 
-	new_node (a_execution: CMS_EXECUTION; fd: CMS_FORM_DATA; a_node: detachable like new_node): CMS_PAGE
+	new_node (a_execution: CMS_EXECUTION; fd: WSF_FORM_DATA; a_node: detachable like new_node): CMS_PAGE
 			-- <Precursor>
 		local
 			b: detachable READABLE_STRING_8
