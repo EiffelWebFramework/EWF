@@ -1,11 +1,11 @@
 note
-	description: "Summary description for {CMS_CSS}."
+	description: "Summary description for {CSS_TEXT}."
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
 class
-	CMS_CSS
+	CSS_TEXT
 
 create
 	make
@@ -19,11 +19,21 @@ feature {NONE} -- Initialization
 
 feature -- Access
 
-	items: ARRAYED_LIST [TUPLE [selectors: ITERABLE [CMS_CSS_SELECTOR]; style: CMS_CSS_STYLE]]
+	items: ARRAYED_LIST [TUPLE [selectors: ITERABLE [CSS_SELECTOR]; style: CSS_STYLE]]
+
+	add_selector_style (a_selector: CSS_SELECTOR; a_style: CSS_STYLE)
+		do
+			items.force ([<<a_selector>>, a_style])
+		end
+
+	add_selectors_style (a_selectors: ITERABLE [CSS_SELECTOR]; a_style: CSS_STYLE)
+		do
+			items.force ([a_selectors, a_style])
+		end
 
 feature -- Conversion
 
-	string: READABLE_STRING_8
+	string: STRING_8
 		local
 			s: STRING_8
 		do

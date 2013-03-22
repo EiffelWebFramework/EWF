@@ -15,6 +15,7 @@
 
 		<library name="base" location="$ISE_LIBRARY\library\base\base.ecf"/>
 		<library name="encoder" location="..\..\..\library\text\encoder\encoder.ecf" readonly="false"/>
+		<library name="css" location="..\..\library\text\css\css.ecf" readonly="false"/>
 		<library name="http" location="..\..\..\library\network\protocol\http\http.ecf" readonly="false"/>
 		<library name="openid" location="..\..\..\library\security\openid\consumer\openid.ecf" />
 		<library name="process" location="$ISE_LIBRARY\library\process\process.ecf"/>

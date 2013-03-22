@@ -1,11 +1,11 @@
 note
-	description: "Summary description for {CMS_CSS_STYLE}."
+	description: "Summary description for {CSS_STYLE}."
 	date: "$Date$"
 	revision: "$Revision$"
 	EIS: "name=CSS reference", "protocol=URI", "src=http://www.w3schools.com/cssref/"
 
 class
-	CMS_CSS_STYLE
+	CSS_STYLE
 
 inherit
 	ITERABLE [READABLE_STRING_8]
@@ -16,7 +16,7 @@ create
 	make_with_items
 
 convert
-	make_with_string ({READABLE_STRING_8, STRING_8})
+	make_with_string ({READABLE_STRING_8, STRING_8, IMMUTABLE_STRING_8})
 
 feature {NONE} -- Initialization
 
@@ -58,7 +58,7 @@ feature -- Access
 
 feature -- Element change
 
-	plus alias "+" (a_other: CMS_CSS_STYLE): like Current
+	plus alias "+" (a_other: CSS_STYLE): like Current
 			-- <Precursor>
 		local
 			lst: ARRAYED_LIST [READABLE_STRING_8]
@@ -73,7 +73,7 @@ feature -- Element change
 			create Result.make_with_items (lst)
 		end
 
-	append (a_other: CMS_CSS_STYLE)
+	append (a_other: CSS_STYLE)
 			-- Append style from `a_other' into Current
 		do
 			across

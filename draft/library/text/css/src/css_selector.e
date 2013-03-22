@@ -1,14 +1,17 @@
 note
-	description: "Summary description for {CMS_CSS_SELECTOR}."
+	description: "Summary description for {CSS_SELECTOR}."
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
 class
-	CMS_CSS_SELECTOR
+	CSS_SELECTOR
 
 create
 	make_from_string
+
+convert
+	make_from_string ({READABLE_STRING_8, STRING_8, IMMUTABLE_STRING_8})
 
 feature {NONE} -- Initialization
 
