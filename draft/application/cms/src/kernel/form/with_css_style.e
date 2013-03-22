@@ -8,7 +8,7 @@ deferred class
 
 feature -- Status report
 
-	css_style: detachable CMS_CSS_STYLE
+	css_style: detachable CSS_STYLE
 
 feature -- Change
 
