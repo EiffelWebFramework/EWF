@@ -240,7 +240,7 @@ feature {NONE} -- Implementation
 		end
 
 	frozen handle_use_proxy (req: WSF_REQUEST; res: WSF_RESPONSE)
-			-- Write response to OPTIONS * into `res'.
+			-- Write Use Proxy response `res'.
 		require
 			res_attached: res /= Void
 			req_attached: req /= Void
