@@ -54,7 +54,7 @@ feature -- Input
 		do
 			src := source
 			last_string.wipe_out
-			if src.socket_ok then
+			if src.readable then
 				src.read_stream_thread_aware (nb)
 				last_string.append_string (src.last_string)
 			end
