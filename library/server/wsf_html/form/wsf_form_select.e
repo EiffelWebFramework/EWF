@@ -12,6 +12,8 @@ inherit
 
 	WSF_FORM_UTILITY
 
+	WSF_WITH_HTML_ATTRIBUTE
+
 create
 	make
 
@@ -115,6 +117,7 @@ feature -- Conversion
 			append_css_class_to (a_html, Void)
 			append_css_id_to (a_html)
 			append_css_style_to (a_html)
+			append_html_attributes_to (a_html)
 
 			if is_readonly then
 				a_html.append (" readonly=%"readonly%" />")
