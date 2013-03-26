@@ -11,33 +11,33 @@
 		<option warning="true" full_class_checking="true" is_attached_by_default="true" void_safety="all" syntax="standard">
 		</option>
 		<library name="base" location="$ISE_LIBRARY\library\base\base-safe.ecf"/>
+		<library name="cms" location="..\draft\application\cms\cms-safe.ecf" readonly="false"/>
 		<library name="connector_cgi" location="..\library\server\ewsgi\connectors\cgi\cgi-safe.ecf" readonly="false"/>
 		<library name="connector_libfcgi" location="..\library\server\ewsgi\connectors\libfcgi\libfcgi-safe.ecf" readonly="false"/>
 		<library name="connector_nino" location="..\library\server\ewsgi\connectors\nino\nino-safe.ecf" readonly="false"/>
 		<library name="connector_null" location="..\library\server\ewsgi\connectors\null\null-safe.ecf" readonly="false"/>
-		<library name="encoder" location="..\library\text\encoder\encoder-safe.ecf" readonly="false"/>
-		<library name="wsf_connector_nino" location="..\library\server\wsf\connector\nino-safe.ecf" readonly="false"/>
-		<library name="wsf_connector_openshift" location="..\library\server\wsf\connector\openshift-safe.ecf" readonly="false"/>
-		<library name="dft_connector_libfcgi" location="..\library\server\wsf\default\libfcgi-safe.ecf" readonly="false"/>
+		<library name="conneg" location="..\library\network\protocol\CONNEG\conneg-safe.ecf" readonly="false"/>
 		<library name="dft_connector_cgi" location="..\library\server\wsf\default\cgi-safe.ecf" readonly="false"/>
+		<library name="dft_connector_libfcgi" location="..\library\server\wsf\default\libfcgi-safe.ecf" readonly="false"/>
 		<library name="dft_connector_nino" location="..\library\server\wsf\default\nino-safe.ecf" readonly="false"/>
 		<library name="dft_connector_openshift" location="..\library\server\wsf\default\openshift-safe.ecf" readonly="false"/>
-		<library name="conneg" location="../library/network/protocol/CONNEG/conneg-safe.ecf" readonly="false"/>
+		<library name="encoder" location="..\library\text\encoder\encoder-safe.ecf" readonly="false"/>
+		<library name="ewf_support" location="..\library\server\ewf_support\ewf_support-safe.ecf" readonly="false"/>
 		<library name="ewsgi" location="..\library\server\ewsgi\ewsgi-safe.ecf" readonly="false"/>
+		<library name="ex_filter" location="..\examples\filter\filter-safe.ecf" readonly="false"/>
+		<library name="ex_restbuck" location="..\examples\restbucksCRUD\restbucks-safe.ecf" readonly="false"/>
+		<library name="ex_simple" location="..\examples\simple\simple.ecf" readonly="false"/>
 		<library name="http" location="..\library\network\protocol\http\http-safe.ecf" readonly="false"/>
 		<library name="http_authorization" location="..\library\server\authentication\http_authorization\http_authorization-safe.ecf" readonly="false"/>
 		<library name="http_client" location="..\library\network\http_client\http_client-safe.ecf" readonly="false"/>
 		<library name="thread" location="$ISE_LIBRARY\library\thread\thread-safe.ecf"/>
 		<library name="wsf" location="..\library\server\wsf\wsf-safe.ecf" readonly="false"/>
-		<library name="ewf_support" location="..\library\server\ewf_support\ewf_support-safe.ecf" readonly="false"/>
+		<library name="wsf_connector_nino" location="..\library\server\wsf\connector\nino-safe.ecf" readonly="false"/>
+		<library name="wsf_connector_openshift" location="..\library\server\wsf\connector\openshift-safe.ecf" readonly="false"/>
 		<library name="wsf_extension" location="..\library\server\wsf\wsf_extension-safe.ecf" readonly="false"/>
-		<library name="wsf_session" location="..\library\server\wsf\wsf_session-safe.ecf" readonly="false"/>
-		<library name="wsf_router_context" location="..\library\server\wsf\wsf_router_context-safe.ecf" readonly="false"/>
-		<library name="ex_restbuck" location="..\examples\restbucksCRUD\restbucks-safe.ecf" readonly="false"/>
-		<library name="ex_simple" location="..\examples\simple\simple.ecf" readonly="false"/>
-		<library name="ex_filter" location="..\examples\filter\filter-safe.ecf" readonly="false"/>
-		<library name="cms" location="..\draft\application\cms\cms-safe.ecf" readonly="false"/>
 		<library name="wsf_html" location="..\library\server\wsf_html\wsf_html-safe.ecf" readonly="false"/>
+		<library name="wsf_router_context" location="..\library\server\wsf\wsf_router_context-safe.ecf" readonly="false"/>
+		<library name="wsf_session" location="..\library\server\wsf\wsf_session-safe.ecf" readonly="false"/>
 	</target>
 	<target name="all_windows" extends="all">
 		<description>Compiling as Windows , on other platforms than Windows</description>
@@ -49,5 +49,4 @@
 		<root all_classes="true"/>
 		<setting name="platform" value="unix"/>
 	</target>
-
 </system>
