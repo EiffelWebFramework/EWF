@@ -1,6 +1,5 @@
 note
-	description : "Objects that ..."
-	author      : "$Author$"
+	description : "Objects that represent a form filled with data from request."
 	date        : "$Date$"
 	revision    : "$Revision$"
 
@@ -33,6 +32,9 @@ feature -- Status
 		do
 			Result := errors = Void
 		end
+
+	is_applied_to_associated_form: BOOLEAN
+			-- Data already applied to `form'?
 
 feature -- Access
 
@@ -158,25 +160,28 @@ feature -- Basic operation
 
 	apply_to_associated_form
 		do
-			if attached errors as errs then
-				across
-					errs as e
-				loop
-					if attached e.item as err then
-						if attached err.field as e_field then
-							set_fields_invalid (True, e_field.name)
+			if not is_applied_to_associated_form then
+				if attached errors as errs then
+					across
+						errs as e
+					loop
+						if attached e.item as err then
+							if attached err.field as e_field then
+								set_fields_invalid (True, e_field.name)
+							end
 						end
 					end
 				end
-			end
-			across
-				items as c
-			loop
 				across
-					form as i
+					items as c
 				loop
-					apply_to_associated_form_item (c.key, c.item, i.item)
+					across
+						form as i
+					loop
+						apply_to_associated_form_item (c.key, c.item, i.item)
+					end
 				end
+				is_applied_to_associated_form := True
 			end
 		end
 

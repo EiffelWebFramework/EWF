@@ -11,9 +11,11 @@
 		</option>
 		<library name="base" location="$ISE_LIBRARY/library/base/base-safe.ecf"/>
 		<library name="encoder" location="../../text/encoder/encoder-safe.ecf"/>
+		<library name="uri_template" location="../../text/parser/uri_template/uri_template-safe.ecf"/>
 		<library name="wsf" location="../wsf/wsf-safe.ecf"/>
 		<cluster name="form" location="./form" recursive="true"/>
 		<cluster name="widget" location="./widget" recursive="true"/>
 		<cluster name="css" location="./css" recursive="true"/>
+		<cluster name="api" location="./api" recursive="true"/>
 	</target>
 </system>
