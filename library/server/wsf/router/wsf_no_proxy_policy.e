@@ -26,10 +26,11 @@ feature -- Access
 		do
 		end
 
-	proxy_server (req: WSF_REQUEST): READABLE_STRING_8  -- We can't currently use UT_URI
+	proxy_server (req: WSF_REQUEST): URI
 			-- Absolute URI of proxy server which `req' must use
 		do
-			Result := "" -- doesn't meet the postcondition, but the precondition is never true.
+			create Result.make_from_string ("")
+				-- doesn't meet the postcondition, but the precondition is never true.
 		end
 
 end

@@ -251,7 +251,7 @@ feature {NONE} -- Implementation
 				create h.make
 				h.put_content_type_text_plain
 				h.put_current_date
-				h.put_location (proxy_server (req))
+				h.put_location (proxy_server (req).string)
 				h.put_content_length (0)
 				res.set_status_code ({HTTP_STATUS_CODE}.use_proxy)
 		ensure

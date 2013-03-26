@@ -7,7 +7,7 @@ note
 						The default policy implemented here is to require
 						 use of the proxy for HTTP/1.0 clients (only) for all requests.
 						]"
-	
+
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -25,16 +25,18 @@ feature -- Access
 			end
 		end
 
-	proxy_server (req: WSF_REQUEST): READABLE_STRING_8  -- We can't currently use UT_URI
+	proxy_server (req: WSF_REQUEST): URI
 			-- Absolute URI of proxy server which `req' must use
-			--| An alternative design would allow a relative URI (relative to the server host),
-			--|  which will only work if both the server and the proxy use the default ports.
 		require
 			req_attached: req /= Void
 			proxy_required: requires_proxy (req)
 		deferred
 		ensure
-			absolute_uri: True -- We can't currently use UT_URI to check this. Have we got another class?
+			proxy_server_attached: Result /= Void
+			valid_uri: Result.is_valid
+			absolute_uri: not Result.scheme.is_empty
+			http_or_https: Result.scheme.is_case_insensitive_equal ("http") or
+				Result.scheme.is_case_insensitive_equal ("https")
 		end
 
 	is_http_1_0 (req: WSF_REQUEST): BOOLEAN
@@ -73,4 +75,14 @@ feature -- Access
 			end
 		end
 
+note
+	copyright: "2011-2013, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
+	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
+	source: "[
+			Eiffel Software
+			5949 Hollister Ave., Goleta, CA 93117 USA
+			Telephone 805-685-1006, Fax 805-685-6869
+			Website http://www.eiffel.com
+			Customer support http://support.eiffel.com
+		]"
 end
