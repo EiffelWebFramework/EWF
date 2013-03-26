@@ -8,6 +8,12 @@ deferred class
 	CMS_THEME
 
 inherit
+	WSF_THEME
+		undefine
+			url_encoded,
+			html_encoded
+		end
+
 	CMS_COMMON_API
 
 feature {NONE} -- Access

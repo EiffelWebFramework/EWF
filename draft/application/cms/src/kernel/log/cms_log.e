@@ -91,7 +91,7 @@ feature -- Change
 
 feature -- Conversion
 
-	to_html (a_theme: CMS_THEME): STRING_8
+	to_html (a_theme: WSF_THEME): STRING_8
 		do
 			Result := "<div class=%"log " + category + " " + level_name + "%" id=%"log-" + id.out + "%">"
 			Result.append ("<div class=%"inner%">")

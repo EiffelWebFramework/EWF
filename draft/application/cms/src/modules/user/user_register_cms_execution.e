@@ -20,7 +20,7 @@ feature -- Execution
 		local
 			b: STRING_8
 			f: CMS_FORM
-			fd: detachable CMS_FORM_DATA
+			fd: detachable WSF_FORM_DATA
 		do
 			set_title ("Create new account")
 			create b.make_empty
@@ -50,7 +50,7 @@ feature -- Execution
 			set_main_content (b)
 		end
 
-	registration_form_validate (fd: CMS_FORM_DATA)
+	registration_form_validate (fd: WSF_FORM_DATA)
 		local
 			u: detachable CMS_USER
 		do
@@ -68,7 +68,7 @@ feature -- Execution
 			end
 		end
 
-	registration_form_submitted (fd: CMS_FORM_DATA; buf: STRING)
+	registration_form_submitted (fd: WSF_FORM_DATA; buf: STRING)
 		local
 			b: STRING
 			u: detachable CMS_USER
@@ -124,17 +124,17 @@ feature -- Execution
 	registration_form (a_url: READABLE_STRING_8; a_name: STRING): CMS_FORM
 		local
 			f: CMS_FORM
-			ti: CMS_FORM_TEXT_INPUT
-			tp: CMS_FORM_PASSWORD_INPUT
-			ta: CMS_FORM_TEXTAREA
-			ts: CMS_FORM_SUBMIT_INPUT
+			ti: WSF_FORM_TEXT_INPUT
+			tp: WSF_FORM_PASSWORD_INPUT
+			ta: WSF_FORM_TEXTAREA
+			ts: WSF_FORM_SUBMIT_INPUT
 		do
 			create f.make (a_url, a_name)
 
 			create ti.make ("username")
 			ti.set_label ("Username")
 			ti.set_is_required (True)
-			ti.set_validation_action (agent (fd: CMS_FORM_DATA)
+			ti.set_validation_action (agent (fd: WSF_FORM_DATA)
 					do
 						if attached {WSF_STRING} fd.item ("username") as f_username and then f_username.value.count >= 5 then
 						else

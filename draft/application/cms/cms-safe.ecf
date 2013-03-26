@@ -14,7 +14,7 @@
 		<setting name="concurrency" value="thread"/>
 		<library name="base" location="$ISE_LIBRARY\library\base\base-safe.ecf"/>
 		<library name="encoder" location="..\..\..\library\text\encoder\encoder-safe.ecf" readonly="false"/>
-		<library name="css" location="..\..\library\text\css\css-safe.ecf" readonly="false"/>
+		<library name="wsf_html" location="..\..\..\library\server\wsf_html\wsf_html-safe.ecf" readonly="false"/>
 		<library name="http" location="..\..\..\library\network\protocol\http\http-safe.ecf" readonly="false"/>
 		<library name="openid" location="..\..\..\library\security\openid\consumer\openid-safe.ecf" readonly="false"/>
 		<library name="process" location="$ISE_LIBRARY\library\process\process-safe.ecf"/>

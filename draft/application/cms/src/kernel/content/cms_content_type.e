@@ -34,14 +34,14 @@ feature -- Factory
 		deferred
 		end
 
-	change_node	(a_execution: CMS_EXECUTION; a_form_data: CMS_FORM_DATA; a_node: like new_node)
+	change_node	(a_execution: CMS_EXECUTION; a_form_data: WSF_FORM_DATA; a_node: like new_node)
 			-- Apply data from `a_form_data' to a_node
 		require
 			a_node.has_id
 		deferred
 		end
 
-	new_node (a_execution: CMS_EXECUTION; a_form_data: CMS_FORM_DATA; a_node: detachable like new_node): CMS_NODE
+	new_node (a_execution: CMS_EXECUTION; a_form_data: WSF_FORM_DATA; a_node: detachable like new_node): CMS_NODE
 			-- New content created with `a_form_data'
 		deferred
 		ensure

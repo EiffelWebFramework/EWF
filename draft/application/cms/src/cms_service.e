@@ -203,7 +203,7 @@ feature -- Hook: form_alter
 
 	form_alter_hooks: detachable ARRAYED_LIST [CMS_HOOK_FORM_ALTER]
 
-	call_form_alter_hooks (f: CMS_FORM; a_form_data: detachable CMS_FORM_DATA; a_execution: CMS_EXECUTION)
+	call_form_alter_hooks (f: CMS_FORM; a_form_data: detachable WSF_FORM_DATA; a_execution: CMS_EXECUTION)
 		do
 			if attached form_alter_hooks as lst then
 				across
@@ -438,11 +438,12 @@ feature -- Core Execution
 			-- Default request handler if no other are relevant
 		local
 			e: CMS_EXECUTION
+			sess: WSF_ROUTER_SESSION
 		do
 			initialize_urls (req)
-			if attached router.dispatch_and_return_handler (req, res) as p then
-				-- ok
-			else
+			create sess
+			router.dispatch (req, res, sess)
+			if not sess.dispatched then
 				create {NOT_FOUND_CMS_EXECUTION} e.make (req, res, Current)
 				e.execute
 			end

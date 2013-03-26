@@ -18,7 +18,7 @@ feature -- Execution
 		local
 			b: STRING_8
 			f: like edit_form
-			fd: detachable CMS_FORM_DATA
+			fd: detachable WSF_FORM_DATA
 		do
 			create b.make_empty
 			if attached non_empty_string_path_parameter ("type") as s_type then

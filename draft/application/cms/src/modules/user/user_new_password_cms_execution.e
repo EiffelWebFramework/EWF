@@ -21,7 +21,7 @@ feature -- Execution
 			b: STRING_8
 			f: CMS_FORM
 			u: detachable CMS_USER
-			fd: detachable CMS_FORM_DATA
+			fd: detachable WSF_FORM_DATA
 		do
 			set_title ("Request new password")
 			create b.make_empty
@@ -56,7 +56,7 @@ feature -- Execution
 			set_main_content (b)
 		end
 
-	password_form_validate (fd: CMS_FORM_DATA)
+	password_form_validate (fd: WSF_FORM_DATA)
 		local
 			u: detachable CMS_USER
 		do
@@ -73,7 +73,7 @@ feature -- Execution
 			initialize_primary_tabs (u)
 		end
 
-	password_form_submit (fd: CMS_FORM_DATA; b: STRING)
+	password_form_submit (fd: WSF_FORM_DATA; b: STRING)
 		local
 			e: detachable CMS_EMAIL
 			l_uuid: UUID
@@ -113,9 +113,9 @@ feature -- Execution
 		local
 			u: like user
 			f: CMS_FORM
-			ti: CMS_FORM_TEXT_INPUT
-			th: CMS_FORM_HIDDEN_INPUT
-			ts: CMS_FORM_SUBMIT_INPUT
+			ti: WSF_FORM_TEXT_INPUT
+			th: WSF_FORM_HIDDEN_INPUT
+			ts: WSF_FORM_SUBMIT_INPUT
 			err: BOOLEAN
 		do
 			create f.make (a_url, a_name)

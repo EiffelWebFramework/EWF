@@ -250,6 +250,85 @@ feature -- Header: merging
 			end
 		end
 
+feature -- Status report
+
+	has, has_header_named (a_name: READABLE_STRING_8): BOOLEAN
+			-- Has header item for `n'?
+		do
+			Result := across headers as c some has_same_header_name (c.item, a_name) end
+		end
+
+	has_content_length: BOOLEAN
+			-- Has header "Content-Length"
+		do
+			Result := has_header_named ({HTTP_HEADER_NAMES}.header_content_length)
+		end
+
+	has_content_type: BOOLEAN
+			-- Has header "Content-Type"
+		do
+			Result := has_header_named ({HTTP_HEADER_NAMES}.header_content_type)
+		end
+
+	has_transfer_encoding_chunked: BOOLEAN
+			-- Has "Transfer-Encoding: chunked" header
+		do
+			if has_header_named ({HTTP_HEADER_NAMES}.header_transfer_encoding) then
+				Result := attached header_named_value ({HTTP_HEADER_NAMES}.header_transfer_encoding) as v and then v.same_string (str_chunked)
+			end
+		end
+
+feature -- Access
+
+	header_named_value (a_name: READABLE_STRING_8): detachable STRING_8
+			-- First header item found for `a_name' if any
+		require
+			has_header: has_header_named (a_name)
+		local
+			c: like headers.new_cursor
+			n: INTEGER
+			l_line: READABLE_STRING_8
+		do
+			from
+				n := a_name.count
+				c := headers.new_cursor
+			until
+				c.after or Result /= Void
+			loop
+				l_line := c.item
+				if has_same_header_name (l_line, a_name) then
+					Result := l_line.substring (n + 2, l_line.count)
+					Result.left_adjust
+					Result.right_adjust
+				end
+				c.forth
+			end
+		end
+
+feature -- Removal
+
+	remove_header_named (a_name: READABLE_STRING_8)
+			-- Remove any header line related to name `a_name'.
+		local
+			lst: like headers
+		do
+			from
+				lst := headers
+				lst.start
+			until
+				lst.after
+			loop
+				if has_same_header_name (lst.item, a_name) then
+						-- remove
+					lst.remove
+				else
+					lst.forth
+				end
+			end
+		ensure
+			removed: not has_header_named (a_name)
+		end
+
 feature -- Header change: general
 
 	add_header (h: READABLE_STRING_8)
@@ -280,6 +359,8 @@ feature -- Header change: general
 			s.append (colon_space)
 			s.append (v)
 			add_header (s)
+		ensure
+			added: has_header_named (k)
 		end
 
 	put_header_key_value (k,v: READABLE_STRING_8)
@@ -292,6 +373,8 @@ feature -- Header change: general
 			s.append (colon_space)
 			s.append (v)
 			put_header (s)
+		ensure
+			added: has_header_named (k)
 		end
 
 	put_header_key_values (k: READABLE_STRING_8; a_values: ITERABLE [READABLE_STRING_8]; a_separator: detachable READABLE_STRING_8)
@@ -318,6 +401,8 @@ feature -- Header change: general
 			if not s.is_empty then
 				put_header_key_value (k, s)
 			end
+		ensure
+			added: has_header_named (k)
 		end
 
 feature -- Content related header
@@ -607,6 +692,12 @@ feature -- Others
 
 feature -- Redirection
 
+	remove_location
+			-- Remove any location header line.
+		do
+			remove_header_named ({HTTP_HEADER_NAMES}.header_location)
+		end
+
 	put_location (a_location: READABLE_STRING_8)
 			-- Tell the client the new location `a_location'
 		require
@@ -669,82 +760,17 @@ feature -- Cookie
 			put_cookie (key, value, date_to_rfc1123_http_date_format (expiration), path, domain, secure, http_only)
 		end
 
-feature -- Status report
-
-	header_named_value (a_name: READABLE_STRING_8): detachable STRING_8
-			-- Has header item for `n'?
-		require
-			has_header: has_header_named (a_name)
-		local
-			c: like headers.new_cursor
-			n: INTEGER
-			l_line: READABLE_STRING_8
-		do
-			from
-				n := a_name.count
-				c := headers.new_cursor
-			until
-				c.after or Result /= Void
-			loop
-				l_line := c.item
-				if l_line.starts_with (a_name) then
-					if l_line.valid_index (n + 1) then
-						if l_line [n + 1] = ':' then
-							Result := l_line.substring (n + 2, l_line.count)
-							Result.left_adjust
-							Result.right_adjust
-						end
-					end
-				end
-				c.forth
-			end
-		end
-
-	has_header_named (a_name: READABLE_STRING_8): BOOLEAN
-			-- Has header item for `n'?
-		local
-			c: like headers.new_cursor
-			n: INTEGER
-			l_line: READABLE_STRING_8
-		do
-			from
-				n := a_name.count
-				c := headers.new_cursor
-			until
-				c.after or Result
-			loop
-				l_line := c.item
-				if l_line.starts_with (a_name) then
-					if l_line.valid_index (n + 1) then
-						Result := l_line [n + 1] = ':'
-					end
-				end
-				c.forth
-			end
-		end
-
-	has_content_length: BOOLEAN
-			-- Has header "Content-Length"
-		do
-			Result := has_header_named ({HTTP_HEADER_NAMES}.header_content_length)
-		end
-
-	has_content_type: BOOLEAN
-			-- Has header "Content-Type"
-		do
-			Result := has_header_named ({HTTP_HEADER_NAMES}.header_content_type)
-		end
-
-	has_transfer_encoding_chunked: BOOLEAN
-			-- Has "Transfer-Encoding: chunked" header
-		do
-			if has_header_named ({HTTP_HEADER_NAMES}.header_transfer_encoding) then
-				Result := attached header_named_value ({HTTP_HEADER_NAMES}.header_transfer_encoding) as v and then v.same_string (str_chunked)
-			end
-		end
-
-
 feature {NONE} -- Implementation: Header
+
+	has_same_header_name (h: READABLE_STRING_8; a_name: READABLE_STRING_8): BOOLEAN
+			-- Header line `h' has same name as `a_name' ?
+		do
+			if h.starts_with (a_name) then
+				if h.valid_index (a_name.count + 1) then
+					Result := h[a_name.count + 1] = ':'
+				end
+			end
+		end
 
 	force_header_by_name (n: detachable READABLE_STRING_8; h: READABLE_STRING_8)
 			-- Add header `h' or replace existing header of same header name `n'

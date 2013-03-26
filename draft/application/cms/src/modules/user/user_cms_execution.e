@@ -94,7 +94,7 @@ feature -- Execution
 			l_url: detachable READABLE_STRING_8
 			b: STRING_8
 			f: CMS_FORM
-			fd: detachable CMS_FORM_DATA
+			fd: detachable WSF_FORM_DATA
 		do
 			if
 				attached {WSF_STRING} request.item ("destination") as s_dest
@@ -134,7 +134,7 @@ feature -- Execution
 			end
 		end
 
-	on_form_submitted (fd: CMS_FORM_DATA)
+	on_form_submitted (fd: WSF_FORM_DATA)
 		local
 			u: detachable CMS_USER
 		do
@@ -159,12 +159,12 @@ feature -- Execution
 
 	login_form (a_action: READABLE_STRING_8; a_form_name: READABLE_STRING_8; a_destination: READABLE_STRING_8): CMS_FORM
 		local
-			th: CMS_FORM_HIDDEN_INPUT
-			ti: CMS_FORM_TEXT_INPUT
-			tp: CMS_FORM_PASSWORD_INPUT
-			ts: CMS_FORM_SUBMIT_INPUT
-			l_logo: CMS_FORM_RAW_TEXT
-			d: CMS_FORM_DIV
+			th: WSF_FORM_HIDDEN_INPUT
+			ti: WSF_FORM_TEXT_INPUT
+			tp: WSF_FORM_PASSWORD_INPUT
+			ts: WSF_FORM_SUBMIT_INPUT
+			l_logo: WSF_FORM_RAW_TEXT
+			d: WSF_FORM_DIV
 		do
 			create Result.make (a_action, a_form_name)
 

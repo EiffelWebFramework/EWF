@@ -204,6 +204,7 @@ feature {WSF_RESPONSE} -- Output
 			l_url: detachable STRING_8
 			l_base_url: detachable READABLE_STRING_8
 			l_doc: detachable WSF_ROUTER_MAPPING_DOCUMENTATION
+			l_first: BOOLEAN
 		do
 			if attached {WSF_SELF_DOCUMENTED_ROUTER_MAPPING} m as l_doc_mapping then
 				l_doc := l_doc_mapping.documentation (meths)
@@ -256,7 +257,17 @@ feature {WSF_RESPONSE} -- Output
 
 				if l_doc /= Void and then not l_doc.is_empty then
 					s.append ("%N<ul class=%"handlerdoc%">")
-					s.append (html_encoder.encoded_string (l_doc.description))
+					l_first := True
+					across
+						l_doc.descriptions as c
+					loop
+						if not l_first then
+							s.append ("<br/>")
+						else
+							l_first := False
+						end
+						s.append (html_encoder.general_encoded_string (c.item))
+					end
 					s.append ("%N</ul>%N")
 				else
 					debug

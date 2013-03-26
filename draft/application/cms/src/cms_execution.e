@@ -264,7 +264,7 @@ feature -- Message
 			add_message (a_msg, "success")
 		end
 
-	report_form_errors (fd: CMS_FORM_DATA)
+	report_form_errors (fd: WSF_FORM_DATA)
 		require
 			has_error: not fd.is_valid
 		do

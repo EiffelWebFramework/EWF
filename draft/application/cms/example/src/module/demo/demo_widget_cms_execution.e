@@ -35,9 +35,9 @@ feature -- Execution
 			set_main_content (s)
 		end
 
-	new_table: CMS_WIDGET_AGENT_TABLE [READABLE_STRING_8]
+	new_table: WSF_WIDGET_AGENT_TABLE [READABLE_STRING_8]
 		local
-			l_table: CMS_WIDGET_AGENT_TABLE [READABLE_STRING_8]
+			l_table: WSF_WIDGET_AGENT_TABLE [READABLE_STRING_8]
 		do
 			create l_table.make
 			l_table.add_css_style ("width: 85%%; border: solid 1px #999; padding: 2px;")
@@ -53,10 +53,10 @@ feature -- Execution
 
 			l_table.set_data (<<"foo", "bar", "foobar">>)
 			l_table.set_foot_data (<<"abc", "def">>)
-			l_table.set_compute_item_function (agent (d: READABLE_STRING_8): CMS_WIDGET_TABLE_ROW
+			l_table.set_compute_item_function (agent (d: READABLE_STRING_8): WSF_WIDGET_TABLE_ROW
 				local
 					i: INTEGER
-					w: CMS_WIDGET_TABLE_ITEM
+					w: WSF_WIDGET_TABLE_ITEM
 				do
 					create Result.make (d.count)
 					if d.is_case_insensitive_equal ("bar") then

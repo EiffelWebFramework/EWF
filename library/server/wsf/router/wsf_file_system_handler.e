@@ -13,8 +13,11 @@ inherit
 			execute as execute_starts_with
 		end
 
+	WSF_SELF_DOCUMENTED_HANDLER
+
 create
-	make
+	make,
+	make_hidden
 
 feature {NONE} -- Initialization
 
@@ -32,6 +35,29 @@ feature {NONE} -- Initialization
 			end
 		ensure
 			not document_root.is_empty and then not document_root.ends_with (operating_environment.directory_separator.out)
+		end
+
+	make_hidden (d: like document_root)
+		require
+			valid_d: (d /= Void and then not d.is_empty) implies not d.ends_with (operating_environment.directory_separator.out)
+		do
+			make (d)
+			is_hidden := True
+		ensure
+			hidden: is_hidden
+		end
+
+	is_hidden: BOOLEAN
+			-- Current mapped handler should be hidden from self documentation		
+
+feature -- Documentation
+
+	mapping_documentation (m: WSF_ROUTER_MAPPING; a_request_methods: detachable WSF_REQUEST_METHODS): WSF_ROUTER_MAPPING_DOCUMENTATION
+			-- <Precursor>
+		do
+			create Result.make (m)
+			Result.set_is_hidden (is_hidden)
+			Result.add_description ("File service")
 		end
 
 feature -- Access		
