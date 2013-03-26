@@ -52,12 +52,6 @@ feature -- Access
 
 feature -- Conversion
 
-	to_html (a_theme: WSF_THEME): STRING_8
-		do
-			create Result.make (1024)
-			append_to_html (a_theme, Result)
-		end
-
 	append_to_html (a_theme: WSF_THEME; a_html: STRING_8)
 		local
 			l_step: INTEGER
