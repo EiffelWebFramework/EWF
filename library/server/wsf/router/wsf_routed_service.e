@@ -50,7 +50,7 @@ feature -- Execution
 			end
 		ensure
 			response_status_is_set: res.status_is_set
-			header_sent: res.header_committed and res.message_committed
+			header_sent: res.header_committed
 		end
 
 	execute_default (req: WSF_REQUEST; res: WSF_RESPONSE)
