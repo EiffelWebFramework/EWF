@@ -22,6 +22,8 @@ feature -- Execution
 	execute (req: WSF_REQUEST; res: WSF_RESPONSE)
 			-- If the service is available, and request URI is not too long, dispatch the request
 			-- and if handler is not found, execute the default procedure `execute_default'.
+		local
+			l_sess: WSF_ROUTER_SESSION
 		do
 			--| When we reach here, the request has already passed check for 400 (Bad request),
 			--|  which is implemented in WSF_REQUEST.make_from_wgi (when it calls `analyze').
@@ -34,10 +36,12 @@ feature -- Execution
 			elseif req.is_request_method ({HTTP_REQUEST_METHODS}.method_options) and then
 				req.request_uri.same_string ("*") then
 				handle_server_options (req, res)
-			elseif attached router.dispatch_and_return_handler (req, res) as p then
-				-- executed
 			else
-				execute_default (req, res)
+				create l_sess
+				router.dispatch (req, res, l_sess)
+				if not l_sess.dispatched then
+					execute_default (req, res)
+				end
 			end
 		end
 
@@ -180,7 +184,7 @@ feature {NONE} -- Implementation
 
 	frozen handle_system_options_forbidden (req: WSF_REQUEST; res: WSF_RESPONSE)
 			-- Write a 403 Forbidden or a 404 Not found response into `res'.
-	require
+		require
 			req_attached: req /= Void
 			res_attached: res /= Void
 			method_is_options: req.is_request_method ({HTTP_REQUEST_METHODS}.method_options)
@@ -217,7 +221,7 @@ feature {NONE} -- Implementation
 	handle_system_options (req: WSF_REQUEST; res: WSF_RESPONSE)
 			-- Write response to OPTIONS * into `res'.
 			-- This may be redefined by the user, but normally this will not be necessary.
-	require
+		require
 			req_attached: req /= Void
 			res_attached: res /= Void
 			method_is_options: req.is_request_method ({HTTP_REQUEST_METHODS}.method_options)

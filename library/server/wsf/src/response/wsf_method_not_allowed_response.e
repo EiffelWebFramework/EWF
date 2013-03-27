@@ -82,17 +82,18 @@ feature {WSF_RESPONSE} -- Output
 			l_text: detachable READABLE_STRING_GENERAL
 			l_loc: detachable READABLE_STRING_8
 			h: like header
-			l_recognized: BOOLEAN
+			--l_recognized: BOOLEAN
 			l_messages: HTTP_STATUS_CODE_MESSAGES
 		do
 			create l_messages
 			h := header
-			l_recognized := recognized_methods.has (request.request_method.as_upper)
-			if l_recognized then
-				res.set_status_code (l_messages.method_not_allowed)
-			else
-				res.set_status_code (l_messages.not_implemented)
-			end
+			-- To be considered later
+			--l_recognized := recognized_methods.has (request.request_method.as_upper)
+			--if l_recognized then
+			res.set_status_code (l_messages.method_not_allowed)
+			--else
+			--	res.set_status_code (l_messages.not_implemented)
+			--end
 
 			if attached suggested_methods as lst and then not lst.is_empty then
 				h.put_allow (lst)
@@ -109,7 +110,7 @@ feature {WSF_RESPONSE} -- Output
 				s := "Bug in server"
 			end
 
-			l_html_error_code_text := html_error_code_text (l_messages, l_recognized)
+			l_html_error_code_text := html_error_code_text (l_messages, True)
 
 			if request.is_content_type_accepted ({HTTP_MIME_TYPES}.text_html) then
 				s := "<html lang=%"en%"><head>"
@@ -262,23 +263,24 @@ feature {WSF_RESPONSE} -- Output
 
 feature {NONE} -- Implementation
 
-	recognized_methods: WSF_REQUEST_METHODS
+	-- To be discussed later...
+	--recognized_methods: WSF_REQUEST_METHODS
 			-- All methods defined in HTTP/1.1 specification
 			--| Should this include CONNECT? It probably shouldn't be recognized by an origin server,
 			--| We will need a way to extend this for additional methods that the server implements. E.g. PATCH.
-		do
-			create Result.make_from_iterable (<<
-				{HTTP_REQUEST_METHODS}.method_head,
-				{HTTP_REQUEST_METHODS}.method_get,
-				{HTTP_REQUEST_METHODS}.method_trace,
-				{HTTP_REQUEST_METHODS}.method_options,
-				{HTTP_REQUEST_METHODS}.method_post,
-				{HTTP_REQUEST_METHODS}.method_put,
-				{HTTP_REQUEST_METHODS}.method_delete
-				>>)
-		ensure
-			recognized_methods_not_void: Result /= Void
-		end
+	--	do
+	--		create Result.make_from_iterable (<<
+	--			{HTTP_REQUEST_METHODS}.method_head,
+	--			{HTTP_REQUEST_METHODS}.method_get,
+	--			{HTTP_REQUEST_METHODS}.method_trace,
+	--			{HTTP_REQUEST_METHODS}.method_options,
+	--			{HTTP_REQUEST_METHODS}.method_post,
+	--			{HTTP_REQUEST_METHODS}.method_put,
+	--			{HTTP_REQUEST_METHODS}.method_delete
+	--			>>)
+	--	ensure
+	--		recognized_methods_not_void: Result /= Void
+	--	end
 
 	html_error_code_text (a_messages: HTTP_STATUS_CODE_MESSAGES; a_recognized: BOOLEAN): READABLE_STRING_8
 			-- Message for including in HTML error text according to `a_recognized'
