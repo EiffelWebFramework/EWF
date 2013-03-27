@@ -49,6 +49,9 @@ echo Install library: ewf/wsf
 COPYCMD $TMP_DIR/library/server/wsf	$TMP_CONTRIB_DIR/library/web/framework/ewf/wsf
 echo Install library: ewf/wsf_extension
 COPYCMD $TMP_DIR/library/server/wsf_extension	$TMP_CONTRIB_DIR/library/web/framework/ewf/wsf_extension
+echo Install library: ewf/wsf_html
+COPYCMD $TMP_DIR/library/server/wsf_html	$TMP_CONTRIB_DIR/library/web/framework/ewf/wsf_html
+
 echo Install library: ewf/encoder
 mkdir -p $TMP_CONTRIB_DIR/library/web/framework/ewf/text
 COPYCMD $TMP_DIR/library/text/encoder	$TMP_CONTRIB_DIR/library/web/framework/ewf/text/encoder
