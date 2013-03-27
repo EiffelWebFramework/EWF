@@ -871,6 +871,8 @@ feature {NONE} -- Implementation
 			h.append_character ('%N')
 		end
 
+feature -- Access
+
 	date_to_rfc1123_http_date_format (dt: DATE_TIME): STRING_8
 			-- String representation of `dt' using the RFC 1123
 		local

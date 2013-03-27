@@ -7,9 +7,17 @@ class
 	APPLICATION
 
 inherit
-	WSF_URI_TEMPLATE_ROUTED_SERVICE
+
+	WSF_ROUTED_SKELETON_SERVICE
+		undefine
+			requires_proxy
+		end
+	
+	WSF_URI_TEMPLATE_HELPER_FOR_ROUTED_SERVICE
 
 	WSF_SERVICE
+
+	WSF_NO_PROXY_POLICY
 
 create
 	make_and_launch
