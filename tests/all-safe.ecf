@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<system xmlns="http://www.eiffel.com/developers/xml/configuration-1-10-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eiffel.com/developers/xml/configuration-1-10-0 http://www.eiffel.com/developers/xml/configuration-1-10-0.xsd" name="all" uuid="1172C52C-6979-4293-8F01-80FADA5A2B69">
+	<description>Integration project including many lib</description>
+	<target name="all">
+		<root all_classes="true"/>
+		<file_rule>
+			<exclude>/.git$</exclude>
+			<exclude>/EIFGENs$</exclude>
+			<exclude>/.svn$</exclude>
+		</file_rule>
+		<option warning="true" full_class_checking="true" is_attached_by_default="true" void_safety="all" syntax="standard">
+		</option>
+		<library name="curl" location="..\contrib\ise_library\cURL-safe.ecf" readonly="false"/>
+		<library name="curl-1" location="..\contrib\ise_library\cURL\cURL-safe.ecf" readonly="false"/>
+		<library name="uri" location="..\contrib\ise_library\text\uri\uri-safe.ecf" readonly="false"/>
+		<library name="nino" location="..\contrib\library\network\server\nino\nino-safe.ecf" readonly="false"/>
+		<library name="json" location="..\contrib\library\text\parser\json\library\json-safe.ecf" readonly="false"/>
+		<library name="cms" location="..\draft\application\cms\cms-safe.ecf" readonly="false"/>
+		<library name="demo" location="..\draft\application\cms\example\cms_demo-safe.ecf" readonly="false"/>
+		<library name="atom" location="..\draft\library\protocol\syndication\atom\atom-safe.ecf" readonly="false"/>
+		<library name="rss" location="..\draft\library\protocol\syndication\rss\rss-safe.ecf" readonly="false"/>
+		<library name="oauth" location="..\draft\library\security\oauth\oauth-safe.ecf" readonly="false"/>
+		<library name="filter" location="..\examples\filter\filter-safe.ecf" readonly="false"/>
+		<library name="restbucks" location="..\examples\restbucksCRUD\restbucks-safe.ecf" readonly="false"/>
+		<library name="client" location="..\examples\restbucksCRUD\client\client-safe.ecf" readonly="false"/>
+		<library name="upload_image" location="..\examples\upload_image\upload_image-safe.ecf" readonly="false"/>
+		<library name="http_client" location="..\library\network\http_client\http_client-safe.ecf" readonly="false"/>
+		<library name="conneg" location="..\library\network\protocol\CONNEG\conneg-safe.ecf" readonly="false"/>
+		<library name="http" location="..\library\network\protocol\http\http-safe.ecf" readonly="false"/>
+		<library name="openid" location="..\library\security\openid\consumer\openid-safe.ecf" readonly="false"/>
+		<library name="demo-1" location="..\library\security\openid\consumer\demo\demo-safe.ecf" readonly="false"/>
+		<library name="http_authorization" location="..\library\server\authentication\http_authorization\http_authorization-safe.ecf" readonly="false"/>
+		<library name="ewf_support" location="..\library\server\ewf_support\ewf_support-safe.ecf" readonly="false"/>
+		<library name="ewsgi" location="..\library\server\ewsgi\ewsgi-safe.ecf" readonly="false"/>
+		<library name="ewsgi_spec" location="..\library\server\ewsgi\ewsgi_spec-safe.ecf" readonly="false"/>
+		<library name="connector_cgi" location="..\library\server\ewsgi\connectors\cgi\cgi-safe.ecf" readonly="false"/>
+		<library name="connector_libfcgi" location="..\library\server\ewsgi\connectors\libfcgi\libfcgi-safe.ecf" readonly="false"/>
+		<library name="connector_nino" location="..\library\server\ewsgi\connectors\nino\nino-safe.ecf" readonly="false"/>
+		<library name="connector_null" location="..\library\server\ewsgi\connectors\null\null-safe.ecf" readonly="false"/>
+		<library name="hello_world" location="..\library\server\ewsgi\examples\hello_world\hello-safe.ecf" readonly="false"/>
+		<library name="libfcgi" location="..\library\server\libfcgi\libfcgi-safe.ecf" readonly="false"/>
+		<library name="wsf" location="..\library\server\wsf\wsf-safe.ecf" readonly="false"/>
+		<library name="wsf_extension" location="..\library\server\wsf\wsf_extension-safe.ecf" readonly="false"/>
+		<library name="wsf_router_context" location="..\library\server\wsf\wsf_router_context-safe.ecf" readonly="false"/>
+		<library name="wsf_session" location="..\library\server\wsf\wsf_session-safe.ecf" readonly="false"/>
+		<library name="wsf_all" location="..\library\server\wsf\connector\all-safe.ecf" readonly="false"/>
+		<library name="wsf_cgi" location="..\library\server\wsf\connector\cgi-safe.ecf" readonly="false"/>
+		<library name="wsf_libfcgi" location="..\library\server\wsf\connector\libfcgi-safe.ecf" readonly="false"/>
+		<library name="wsf_nino" location="..\library\server\wsf\connector\nino-safe.ecf" readonly="false"/>
+		<library name="wsf_openshift" location="..\library\server\wsf\connector\openshift-safe.ecf" readonly="false"/>
+		<library name="default_cgi" location="..\library\server\wsf\default\cgi-safe.ecf" readonly="false"/>
+		<library name="default_libfcgi" location="..\library\server\wsf\default\libfcgi-safe.ecf" readonly="false"/>
+		<library name="default_nino" location="..\library\server\wsf\default\nino-safe.ecf" readonly="false"/>
+		<library name="default_openshift" location="..\library\server\wsf\default\openshift-safe.ecf" readonly="false"/>
+		<library name="wsf_html" location="..\library\server\wsf_html\wsf_html-safe.ecf" readonly="false"/>
+		<library name="encoder" location="..\library\text\encoder\encoder-safe.ecf" readonly="false"/>
+		<library name="uri_template" location="..\library\text\parser\uri_template\uri_template-safe.ecf" readonly="false"/>
+		<library name="error" location="..\library\utility\general\error\error-safe.ecf" readonly="false"/>
+		<library name="precomp_wsf-mt" location="..\precomp\wsf-mt-safe.ecf" readonly="false"/>
+		<library name="precomp_wsf" location="..\precomp\wsf-safe.ecf" readonly="false"/>
+		<library name="precomp_wsf-scoop-safe" location="..\precomp\wsf-scoop-safe.ecf" readonly="false"/>
+		<library name="wizard" location="..\tools\ise_wizard\ewf_ise_wizard-safe.ecf" readonly="false"/>
+	</target>
+	<target name="all_windows" extends="all">
+		<description>Compiling as Windows , on other platforms than Windows</description>
+		<root all_classes="true"/>
+		<setting name="platform" value="windows"/>
+	</target>
+	<target name="all_unix" extends="all">
+		<description>Compiling as UNIX , on other platforms than Unix</description>
+		<root all_classes="true"/>
+		<setting name="platform" value="unix"/>
+	</target>
+</system>
