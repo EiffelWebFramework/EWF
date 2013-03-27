@@ -4,22 +4,10 @@ note
 	date: "$Date$"
 	revision: "$Revision$"
 
-class
-	ORDER_HANDLER
+class	ORDER_HANDLER
 inherit
-	WSF_URI_HANDLER
-		rename
-			execute as uri_execute,
-			new_mapping as new_uri_mapping
-		end
 
 	WSF_URI_TEMPLATE_HANDLER
-		rename
-			execute as uri_template_execute,
-			new_mapping as new_uri_template_mapping
-		select
-			new_uri_template_mapping
-		end
 
 	WSF_RESOURCE_HANDLER_HELPER
 		redefine
@@ -28,22 +16,20 @@ inherit
 			do_put,
 			do_delete
 		end
+
 	SHARED_DATABASE_API
+
 	SHARED_EJSON
+
 	REFACTORING_HELPER
+
 	SHARED_ORDER_VALIDATION
 
 	WSF_SELF_DOCUMENTED_HANDLER
 
-feature -- execute
+feature -- Execute
 
-	uri_execute (req: WSF_REQUEST; res: WSF_RESPONSE)
-			-- Execute request handler	
-		do
-			execute_methods (req, res)
-		end
-
-	uri_template_execute (req: WSF_REQUEST; res: WSF_RESPONSE)
+	execute (req: WSF_REQUEST; res: WSF_RESPONSE)
 			-- Execute request handler	
 		do
 			execute_methods (req, res)

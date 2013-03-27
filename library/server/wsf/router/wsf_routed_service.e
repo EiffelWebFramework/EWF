@@ -48,6 +48,9 @@ feature -- Execution
 			if not sess.dispatched then
 				execute_default (req, res)
 			end
+		ensure
+			response_status_is_set: res.status_is_set
+			header_sent: res.header_committed
 		end
 
 	execute_default (req: WSF_REQUEST; res: WSF_RESPONSE)
