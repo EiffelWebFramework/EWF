@@ -7,12 +7,12 @@ note
 deferred class
 	WSF_URI_TEMPLATE_ROUTED_SERVICE
 
-obsolete "Inherit from WSF_ROUTED_SERVICE and WSF_URI_ROUTER_HELPER [2013-mar-19]"
+obsolete "Inherit from WSF_ROUTED_SERVICE and WSF_URI_TEMPLATE_HELPER_FOR_ROUTED_SERVICE [2013-mar-19]"
 
 inherit
 	WSF_ROUTED_SERVICE
 
-	WSF_URI_TEMPLATE_ROUTER_HELPER
+	WSF_URI_TEMPLATE_HELPER_FOR_ROUTED_SERVICE
 
 note
 	copyright: "2011-2013, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"

@@ -3,7 +3,7 @@ note
 	date        : "$Date$"
 	revision    : "$Revision$"
 
-class	RESTBUCKS_SERVER
+class RESTBUCKS_SERVER
 
 inherit
 
