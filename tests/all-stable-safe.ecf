@@ -10,17 +10,8 @@
 		</file_rule>
 		<option warning="true" full_class_checking="true" is_attached_by_default="true" void_safety="all" syntax="standard">
 		</option>
-		<library name="curl" location="..\contrib\ise_library\cURL-safe.ecf" readonly="false"/>
-		<library name="curl-1" location="..\contrib\ise_library\cURL\cURL-safe.ecf" readonly="false"/>
-		<library name="uri" location="..\contrib\ise_library\text\uri\uri-safe.ecf" readonly="false"/>
-		<library name="nino" location="..\contrib\library\network\server\nino\nino-safe.ecf" readonly="false"/>
-		<library name="json" location="..\contrib\library\text\parser\json\library\json-safe.ecf" readonly="false"/>
 		<library name="cms" location="..\draft\application\cms\cms-safe.ecf" readonly="false"/>
 		<library name="demo" location="..\draft\application\cms\example\cms_demo-safe.ecf" readonly="false"/>
-		<library name="atom" location="..\draft\library\protocol\syndication\atom\atom-safe.ecf" readonly="false"/>
-		<library name="rss" location="..\draft\library\protocol\syndication\rss\rss-safe.ecf" readonly="false"/>
-		<library name="oauth" location="..\draft\library\security\oauth\oauth-safe.ecf" readonly="false"/>
-		<library name="filter" location="..\examples\filter\filter-safe.ecf" readonly="false"/>
 		<library name="restbucks" location="..\examples\restbucksCRUD\restbucks-safe.ecf" readonly="false"/>
 		<library name="client" location="..\examples\restbucksCRUD\client\client-safe.ecf" readonly="false"/>
 		<library name="upload_image" location="..\examples\upload_image\upload_image-safe.ecf" readonly="false"/>
