@@ -19,8 +19,16 @@ feature -- Access
 			-- Does `req' require use of `proxy_server'?
 		require
 			req_attached: req /= Void
+		local
+			l_version: WSF_HTTP_PROTOCOL_VERSION
 		do
-			if is_http_1_0 (req) then
+			--| This default version just replies True for HTTP/1.0.
+			--| For HTTP/0.9 or other protocols, we hope
+			--| that the connector has already rejected the request. Anyway, a
+			--| proxy server won't help us (? - is that correct?)
+			create l_version.make (req.server_protocol)
+			if l_version.is_valid and then l_version.major = 1 and then
+			 l_version.minor = 0 then
 				Result := True
 			end
 		end
@@ -37,42 +45,6 @@ feature -- Access
 			absolute_uri: not Result.scheme.is_empty
 			http_or_https: Result.scheme.is_case_insensitive_equal ("http") or
 				Result.scheme.is_case_insensitive_equal ("https")
-		end
-
-	is_http_1_0 (req: WSF_REQUEST): BOOLEAN
-			-- Does `req' come from an HTTP/1.0 client?
-		require
-			req_attached: req /= Void
-		local
-			l_protocol: READABLE_STRING_8
-			l_tokens: LIST [READABLE_STRING_8]
-			l_protocol_name, l_protocol_version, l_major, l_minor: STRING_8
-		do
-			l_protocol := req.server_protocol
-			l_tokens := l_protocol.split ('/')
-			if l_tokens.count = 2 then
-				l_protocol_name := l_tokens [1].as_string_8
-				l_protocol_name.left_adjust
-				l_protocol_name.right_adjust
-				if l_protocol_name.is_case_insensitive_equal ({HTTP_CONSTANTS}.http_version_1_0.substring (1, 4)) then
-					l_protocol_version := l_tokens [2].as_string_8
-					l_protocol_version.left_adjust
-					l_protocol_version.right_adjust
-					l_tokens := l_protocol_version.split ('.')
-					if l_tokens.count = 2 then
-						l_major := l_tokens [1].as_string_8
-						l_major.left_adjust
-						l_major.right_adjust
-						l_minor := l_tokens [2].as_string_8
-						l_minor.left_adjust
-						l_minor.right_adjust
-						if l_major.is_integer and then l_major.to_integer = 1 and then
-							l_minor.is_integer and then l_minor.to_integer = 0 then
-							Result := True
-						end
-					end
-				end
-			end
 		end
 
 note
