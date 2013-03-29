@@ -21,7 +21,7 @@ feature {NONE} -- Initialization
 	default_create
 		do
 			Precursor
-			make_with_name (".maintenance_fn")
+			make_with_name (".maintenance")
 		end
 
 	make_with_name (fn: like maintenance_fn)
