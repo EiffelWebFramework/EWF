@@ -49,6 +49,17 @@ feature -- Status report
 				Result.append (n)
 				Result.append_character ('%"')
 			end
+			Result.append (" filename=%"")
+			Result.append (filename)
+			Result.append ("%"")
+
+			Result.append (" content-type=%"")
+			Result.append (content_type)
+			Result.append ("%"")
+
+			Result.append (" size=%"")
+			Result.append_integer (size)
+			Result.append ("%"")
 		end
 
 feature -- Element change
