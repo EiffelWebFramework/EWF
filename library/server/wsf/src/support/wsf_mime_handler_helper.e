@@ -42,8 +42,9 @@ feature {NONE} -- Implementation
 						Result.append_string (t)
 					end
 				end
-
 			end
+		ensure
+			same_content_length: a_content_length > 0 implies Result.count = a_content_length.as_integer_32
 		end
 
 	add_string_value_to_table (a_name: READABLE_STRING_8; a_value: READABLE_STRING_8; a_table: HASH_TABLE [WSF_VALUE, READABLE_STRING_GENERAL])
