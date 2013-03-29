@@ -10,6 +10,9 @@ class
 
 inherit
 	WSF_VALUE
+		redefine
+			debug_output
+		end
 
 create
 	make
@@ -30,6 +33,23 @@ feature -- Access
 	name: READABLE_STRING_32
 
 	url_encoded_name: READABLE_STRING_8
+
+feature -- Status report
+
+	debug_output: STRING
+			-- String that should be displayed in debugger to represent `Current'.
+		do
+			Result := Precursor
+			if
+				exists and then
+				attached tmp_name as n
+			then
+				Result.append_character (' ')
+				Result.append_character ('%"')
+				Result.append (n)
+				Result.append_character ('%"')
+			end
+		end
 
 feature -- Element change
 

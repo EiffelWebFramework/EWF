@@ -52,6 +52,7 @@ feature {NONE} -- Implementation: Form analyzer
 		require
 			a_content_type_valid: a_content_type /= Void and not a_content_type.has_error
 			s_attached: s /= Void
+			same_content_length: req.content_length_value = s.count
 			vars_attached: vars /= Void
 		local
 			p,i,next_b: INTEGER
@@ -233,7 +234,7 @@ feature {NONE} -- Implementation: Form analyzer
 			-- Default content type		
 
 note
-	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
+	copyright: "2011-2013, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software
