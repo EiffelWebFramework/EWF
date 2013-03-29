@@ -49,7 +49,7 @@ feature -- Input
 			is_open_read: is_open_read
 			not_end_of_input: not end_of_input
 			a_string_not_void: a_string /= Void
-			valid_position: a_string.valid_index (pos)
+			valid_position: pos > 0 and pos <= a_string.capacity
 			nb_large_enough: nb > 0
 			nb_small_enough: nb <= a_string.capacity - pos + 1
 		local
