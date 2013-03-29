@@ -173,7 +173,9 @@ feature -- Basic operation
 
 	move_to (a_destination: STRING): BOOLEAN
 			-- Move current uploaded file to `a_destination'
+			--| Violates CQS principle.
 		require
+			a_destination_not_empty: not a_destination.is_empty
 			has_no_error: not has_error
 		local
 			f: RAW_FILE
@@ -182,9 +184,12 @@ feature -- Basic operation
 				create f.make (n)
 				if f.exists then
 					f.change_name (a_destination)
+					set_tmp_name (f.name)
 					Result := True
 				end
 			end
+		ensure
+			exists: old exists implies exists
 		end
 
 feature --  Status
@@ -198,6 +203,16 @@ feature --  Status
 	error: INTEGER
 			-- Eventual error code
 			--| no error => 0
+
+	exists: BOOLEAN
+		local
+			f: PLAIN_TEXT_FILE
+		do
+			if attached tmp_name as n then
+				create f.make (n)
+				Result := f.exists
+			end
+		end
 
 feature -- Element change
 
@@ -220,7 +235,7 @@ feature -- Element change
 		end
 
 note
-	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
+	copyright: "2011-2013, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software
