@@ -52,7 +52,7 @@ feature {NONE} -- Implementation: Form analyzer
 		require
 			a_content_type_valid: a_content_type /= Void and not a_content_type.has_error
 			s_attached: s /= Void
-			same_content_length: req.content_length_value = s.count
+			same_content_length: req.content_length_value > 0 implies req.content_length_value.as_integer_32 = s.count
 			vars_attached: vars /= Void
 		local
 			p,i,next_b: INTEGER
@@ -93,9 +93,29 @@ feature {NONE} -- Implementation: Form analyzer
 							m := s.substring (i, next_b - 1 - 1) --| 1 = LF = %N														
 						end
 						analyze_multipart_form_input (req, m, vars)
-						i := next_b + l_boundary_len + 1
-						if is_crlf then
-							i := i + 1 --| +1 = CR = %R
+						if s.valid_index (next_b + l_boundary_len + 1) then
+							if is_crlf then
+								if s[next_b + l_boundary_len] = '%R' and s[next_b + l_boundary_len + 1] = '%N' then
+									-- continue
+								else
+									i := 0 -- reached the end
+								end
+							else
+								if s[next_b + l_boundary_len + 1] = '%N' then
+									-- continue
+								else
+									i := 0 -- reached the end
+								end
+							end
+						else
+							i := 0 -- missing end ?
+							req.error_handler.add_custom_error (0, "Invalid form data", "Invalid ending for form data from input")
+						end
+						if i > 0 then
+							i := next_b + l_boundary_len + 1
+							if is_crlf then
+								i := i + 1 --| +1 = CR = %R
+							end
 						end
 					else
 						if is_crlf then
@@ -103,7 +123,7 @@ feature {NONE} -- Implementation: Form analyzer
 						end
 						m := s.substring (i - 1, s.count)
 						m.right_adjust
-						if not l_boundary_prefix.same_string (m) then
+						if i >= s.count and not l_boundary_prefix.same_string (m) then
 							req.error_handler.add_custom_error (0, "Invalid form data", "Invalid ending for form data from input")
 						end
 						i := next_b

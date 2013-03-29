@@ -11,31 +11,38 @@ feature {NONE} -- Implementation
 
 	full_input_data (req: WSF_REQUEST): READABLE_STRING_8
 		do
-			Result := read_input_data (req.input)
+			Result := read_input_data (req.input, req.content_length_value)
 		end
 
-	read_input_data (a_input: WGI_INPUT_STREAM): STRING_8
+	read_input_data (a_input: WGI_INPUT_STREAM; a_content_length: NATURAL_64): STRING_8
 			-- All data from input form
 		local
 			n: INTEGER
 			t: STRING
 		do
-			from
-				n := 8_192
-				create Result.make (n)
-			until
-				n = 0
-			loop
-				a_input.read_string (n)
-				t := a_input.last_string
-				if t.count = 0 then
-					n := 0
-				else
-					if t.count < n then
+			if a_content_length > 0 then
+				create Result.make (a_content_length.as_integer_32)
+				n := a_input.read_to_string (Result, 1, Result.capacity)
+				check n = a_content_length end
+			else
+				from
+					n := 8_192
+					create Result.make (n)
+				until
+					n = 0
+				loop
+					a_input.read_string (n)
+					t := a_input.last_string
+					if t.count = 0 then
 						n := 0
+					else
+						if t.count < n then
+							n := 0
+						end
+						Result.append_string (t)
 					end
-					Result.append_string (t)
 				end
+
 			end
 		end
 
@@ -146,7 +153,7 @@ feature {NONE} -- Implementation
 		end
 
 note
-	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
+	copyright: "2011-2013, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software
