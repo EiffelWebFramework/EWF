@@ -52,7 +52,7 @@ feature {NONE} -- Implementation: Form analyzer
 		require
 			a_content_type_valid: a_content_type /= Void and not a_content_type.has_error
 			s_attached: s /= Void
-			same_content_length: req.content_length_value > 0 implies req.content_length_value.as_integer_32 = s.count
+			same_content_length: req.content_length_value > 0 implies req.content_length_value.as_integer_32 <= s.count
 			vars_attached: vars /= Void
 		local
 			p,i,next_b: INTEGER

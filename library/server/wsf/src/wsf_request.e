@@ -211,22 +211,16 @@ feature -- Access: Input
 					until
 						n = 0
 					loop
-						l_input.read_string (n)
-						s := l_input.last_string
-						if s.count = 0 then
+						l_input.append_to_string (buf, n)
+						if l_input.last_appended_count < n then
 							n := 0
-						else
-							if s.count < n then
-								n := 0
-							end
-							buf.append (s)
 						end
 					end
 				else
 					n := content_length_value.as_integer_32
 					if n > 0 then
-						buf.resize (buf.count + n)
-						n := l_input.read_to_string (buf, buf.count + 1, n)
+						l_input.append_to_string (buf, n)
+						n := l_input.last_appended_count
 						check n = content_length_value.as_integer_32 end
 					end
 				end

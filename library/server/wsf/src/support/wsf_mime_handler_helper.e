@@ -9,42 +9,10 @@ deferred class
 
 feature {NONE} -- Implementation
 
-	full_input_data (req: WSF_REQUEST): READABLE_STRING_8
+	full_input_data (req: WSF_REQUEST): STRING_8
 		do
-			Result := read_input_data (req.input, req.content_length_value)
-		end
-
-	read_input_data (a_input: WGI_INPUT_STREAM; a_content_length: NATURAL_64): STRING_8
-			-- All data from input form
-		local
-			n: INTEGER
-			t: STRING
-		do
-			if a_content_length > 0 then
-				create Result.make (a_content_length.as_integer_32)
-				n := a_input.read_to_string (Result, 1, Result.capacity)
-				check n = a_content_length end
-			else
-				from
-					n := 8_192
-					create Result.make (n)
-				until
-					n = 0
-				loop
-					a_input.read_string (n)
-					t := a_input.last_string
-					if t.count = 0 then
-						n := 0
-					else
-						if t.count < n then
-							n := 0
-						end
-						Result.append_string (t)
-					end
-				end
-			end
-		ensure
-			same_content_length: a_content_length > 0 implies Result.count = a_content_length.as_integer_32
+			create Result.make (0)
+			req.read_input_data_into (Result)
 		end
 
 	add_string_value_to_table (a_name: READABLE_STRING_8; a_value: READABLE_STRING_8; a_table: HASH_TABLE [WSF_VALUE, READABLE_STRING_GENERAL])
