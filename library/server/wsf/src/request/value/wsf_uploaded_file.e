@@ -204,12 +204,12 @@ feature -- Basic operation
 				create f.make (n)
 				if f.exists then
 					f.change_name (a_destination)
-					set_tmp_name (f.name)
 					Result := True
 				end
 			end
 		ensure
-			exists: old exists implies exists
+			removed: not exists
+			moved: old exists implies (create {FILE_UTILITIES}).file_exists (a_destination)
 		end
 
 feature --  Status
