@@ -158,13 +158,19 @@ feature {NONE} -- Dispatch implementation
 		local
 			l_req_method: READABLE_STRING_8
 			head_res: WSF_HEAD_RESPONSE_WRAPPER
+			l_cors: WSF_CORS_OPTIONS_RESPONSE
 		do
 			l_req_method := request_method (req)
 			router_dispatch_for_request_method (req, res, sess, l_req_method)
-			if not sess.dispatched and l_req_method = {HTTP_REQUEST_METHODS}.method_head then
-				create head_res.make_from_response (res)
-				req.set_request_method ({HTTP_REQUEST_METHODS}.method_GET)
-				router_dispatch_for_request_method (req, head_res, sess, {HTTP_REQUEST_METHODS}.method_GET)
+			if not sess.dispatched then
+				if l_req_method = {HTTP_REQUEST_METHODS}.method_options and allowed_methods_for_request (req).has_method_options then
+					create l_cors.make (req, Current)
+					res.send (l_cors)
+				elseif l_req_method = {HTTP_REQUEST_METHODS}.method_head and allowed_methods_for_request (req).has_method_head then
+					create head_res.make_from_response (res)
+					req.set_request_method ({HTTP_REQUEST_METHODS}.method_GET)
+					router_dispatch_for_request_method (req, head_res, sess, {HTTP_REQUEST_METHODS}.method_GET)
+				end
 			end
 		end
 
