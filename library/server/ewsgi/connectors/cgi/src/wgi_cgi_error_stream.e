@@ -23,7 +23,7 @@ feature {NONE} -- Initialization
 
 	make
 		do
-			make_open_stdout ("stderr")
+			make_open_stderr ("stderr")
 		end
 
 feature -- Error
