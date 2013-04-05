@@ -1,13 +1,12 @@
 note
-	description: "Summary description for {WSF_ROUTED_SERVICE}."
-	author: ""
+	description: "Summary description for {WSF_ROUTED_SKELETON_SERVICE}."
 	date: "$Date$"
 	revision: "$Revision$"
 
-deferred class	WSF_ROUTED_SKELETON_SERVICE
+deferred class
+	WSF_ROUTED_SKELETON_SERVICE
 
 inherit
-
 	WSF_ROUTED_SERVICE
 		redefine
 			execute
@@ -252,12 +251,12 @@ feature {NONE} -- Implementation
 		local
 			h: HTTP_HEADER
 		do
-				create h.make
-				h.put_content_type_text_plain
-				h.put_current_date
-				h.put_location (proxy_server (req).string)
-				h.put_content_length (0)
-				res.set_status_code ({HTTP_STATUS_CODE}.use_proxy)
+			create h.make
+			h.put_content_type_text_plain
+			h.put_current_date
+			h.put_location (proxy_server (req).string)
+			h.put_content_length (0)
+			res.set_status_code ({HTTP_STATUS_CODE}.use_proxy)
 		ensure
 			response_status_is_set: res.status_is_set
 			response_code_use_proxy: res.status_code = {HTTP_STATUS_CODE}.use_proxy

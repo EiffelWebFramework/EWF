@@ -22,13 +22,16 @@ feature -- Access
 		local
 			l_version: WSF_HTTP_PROTOCOL_VERSION
 		do
-			--| This default version just replies True for HTTP/1.0.
-			--| For HTTP/0.9 or other protocols, we hope
-			--| that the connector has already rejected the request. Anyway, a
-			--| proxy server won't help us (? - is that correct?)
+				--| This default version just replies True for HTTP/1.0.
+				--| For HTTP/0.9 or other protocols, we hope
+				--| that the connector has already rejected the request. Anyway, a
+				--| proxy server won't help us (? - is that correct?)
 			create l_version.make (req.server_protocol)
-			if l_version.is_valid and then l_version.major = 1 and then
-			 l_version.minor = 0 then
+			if
+				l_version.is_valid and then
+				l_version.major = 1 and then
+			 	l_version.minor = 0
+			then
 				Result := True
 			end
 		end
