@@ -22,6 +22,9 @@ class
 create {WSF_TO_WGI_SERVICE}
 	make_from_wgi
 
+create {WSF_RESPONSE}
+	make_from_wsf
+
 convert
 	make_from_wgi ({WGI_RESPONSE})
 
@@ -34,12 +37,25 @@ feature {NONE} -- Initialization
 			transfered_content_length := 0
 			create header.make
 			wgi_response := r
-			create wres.make (r, Current)
+			if attached {WSF_WGI_DELAYED_HEADER_RESPONSE} r as r_delayed then
+				wres := r_delayed
+				wres.update_wsf_response (Current)
+			else
+				create wres.make (r, Current)
+			end
 			wgi_response := wres
 			set_status_code ({HTTP_STATUS_CODE}.ok) -- Default value
 		end
 
-feature {WSF_RESPONSE_EXPORTER} -- Properties		
+	make_from_wsf (res: WSF_RESPONSE)
+		do
+			transfered_content_length := 0
+			wgi_response := res.wgi_response
+			header := res.header
+			set_status_code ({HTTP_STATUS_CODE}.ok) -- Default value
+		end
+
+feature {WSF_RESPONSE, WSF_RESPONSE_EXPORTER} -- Properties		
 
 	wgi_response: WGI_RESPONSE
 			-- Associated WGI_RESPONSE.

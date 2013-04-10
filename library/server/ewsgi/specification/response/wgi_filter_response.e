@@ -22,6 +22,20 @@ feature {NONE} -- Initialization
 
 	wgi_response: WGI_RESPONSE
 
+
+feature {WGI_FILTER_RESPONSE} -- Change		
+
+	update_wgi_response (res: WGI_RESPONSE)
+			-- Set `wgi_response' with `res'.
+		do
+			if wgi_response /= res then
+				res.set_post_commit_action (wgi_response.post_commit_action)
+				wgi_response.set_post_commit_action (Void)
+			else
+				-- Same response object
+			end
+		end
+
 feature {WGI_CONNECTOR, WGI_SERVICE} -- Commit
 
 	commit

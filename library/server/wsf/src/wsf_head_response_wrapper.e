@@ -11,7 +11,10 @@ class
 
 inherit
 	WSF_RESPONSE
+		rename
+			make_from_wsf as make_from_response
 		redefine
+			make_from_response,
 			put_character,
 			put_string,
 			put_substring,
@@ -27,12 +30,9 @@ create
 feature {NONE} -- Initialization
 
 	make_from_response (res: WSF_RESPONSE)
-			-- Initialize from `res' (assumed to be a GET response).
-		require
-			res_attached: res /= Void
 		do
 			wsf_response := res
-			make_from_wgi (res.wgi_response)
+			Precursor (res)
 		end
 
 feature {WSF_RESPONSE} -- Access

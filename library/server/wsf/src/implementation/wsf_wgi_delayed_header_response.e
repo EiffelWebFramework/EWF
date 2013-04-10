@@ -31,11 +31,23 @@ feature {NONE} -- Initialization
 			make_with_response (r)
 		end
 
+feature {WSF_RESPONSE} -- Change
+
+	update_wsf_response (res: WSF_RESPONSE)
+			-- Set `wsf_response' with `res'.
+		do
+			wsf_response := res
+		ensure
+			wsf_response_set: wsf_response = res
+		end
+
 feature {NONE} -- Implementation		
 
 	wsf_response: WSF_RESPONSE
+			-- Origin WSF response
 
 	commit
+			-- <Precursor/>
 		do
 			if not header_committed then
 				process_header
@@ -44,6 +56,7 @@ feature {NONE} -- Implementation
 		end
 
 	process_header
+			-- <Precursor/>	
 		require
 			header_not_committed: not header_committed
 		do
