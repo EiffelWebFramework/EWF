@@ -47,7 +47,7 @@ feature {NONE} -- Implementation
 			-- Origin WSF response
 
 	commit
-			-- <Precursor/>
+			-- Send the delayed header is not yet done.
 		do
 			if not header_committed then
 				process_header
@@ -56,7 +56,7 @@ feature {NONE} -- Implementation
 		end
 
 	process_header
-			-- <Precursor/>	
+			-- Process the delayed header, i.e send it to the client.
 		require
 			header_not_committed: not header_committed
 		do
