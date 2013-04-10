@@ -260,7 +260,6 @@ feature {NONE} -- Implementation
 		ensure
 			response_status_is_set: res.status_is_set
 			response_code_use_proxy: res.status_code = {HTTP_STATUS_CODE}.use_proxy
-			header_sent: res.header_committed and res.message_committed
 		end
 
 invariant
