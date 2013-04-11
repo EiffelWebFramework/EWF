@@ -47,12 +47,12 @@ feature -- Execution
 	execute: HTTP_CLIENT_RESPONSE
 		local
 			l_result: INTEGER
-			l_curl_string: CURL_STRING
+			l_curl_string: detachable CURL_STRING
 			l_url: READABLE_STRING_8
 			l_form: detachable CURL_FORM
 			l_last: CURL_FORM
 			l_upload_file: detachable RAW_FILE
-			l_uploade_file_read_function: detachable LIBCURL_UPLOAD_FILE_READ_FUNCTION
+			l_custom_function: detachable LIBCURL_CUSTOM_FUNCTION
 			curl: detachable CURL_EXTERNALS
 			curl_easy: detachable CURL_EASY_EXTERNALS
 			curl_handle: POINTER
@@ -178,10 +178,12 @@ feature -- Execution
 
 							curl_easy.setopt_integer (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_infilesize, l_upload_file.count)
 								-- specify callback read function for upload file
-							create l_uploade_file_read_function.make_with_file (l_upload_file)
+							if l_custom_function = Void then
+								create l_custom_function.make
+							end
+							l_custom_function.set_file_to_read (l_upload_file)
 							l_upload_file.open_read
-							curl_easy.set_curl_function (l_uploade_file_read_function)
-							curl_easy.set_read_function (curl_handle)
+							curl_easy.set_curl_function (l_custom_function)
 						end
 					else
 						check no_upload_data: l_upload_data = Void and l_upload_filename = Void end
@@ -197,6 +199,7 @@ feature -- Execution
 				p_slist := curl.slist_append (p_slist, "Expect:")
 				curl_easy.setopt_slist (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_httpheader, p_slist)
 
+
 				--| Execution
 				curl_easy.set_read_function (curl_handle)
 				curl_easy.set_write_function (curl_handle)
@@ -204,8 +207,29 @@ feature -- Execution
 					curl_easy.set_debug_function (curl_handle)
 					curl_easy.setopt_integer (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_verbose, 1)
 				end
-				create l_curl_string.make_empty
-				curl_easy.setopt_curl_string (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_writedata, l_curl_string)
+
+				--| Write options
+
+				if ctx /= Void and then ctx.has_write_option then
+					if l_custom_function = Void then
+						create l_custom_function.make
+					end
+					if attached ctx.write_agent as l_write_agent then
+						l_custom_function.set_write_procedure (l_write_agent)
+					elseif attached ctx.output_content_file as l_output_content_file then
+						create l_curl_string.make_empty
+						l_custom_function.set_write_procedure (new_write_content_data_to_file_agent (l_output_content_file, l_curl_string))
+						-- l_curl_string will contain the raw header, used to fill `Result'
+					elseif attached ctx.output_file as l_output_file then
+						create l_curl_string.make_empty
+						l_custom_function.set_write_procedure (new_write_data_to_file_agent (l_output_file, l_curl_string))
+						-- l_curl_string will contain the raw header, used to fill `Result'
+					end
+					curl_easy.set_curl_function (l_custom_function)
+				else
+					create l_curl_string.make_empty
+					curl_easy.setopt_curl_string (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_writedata, l_curl_string)
+				end
 
 				create Result.make (l_url)
 				l_result := curl_easy.perform (curl_handle)
@@ -213,7 +237,9 @@ feature -- Execution
 				--| Result
 				if l_result = {CURL_CODES}.curle_ok then
 					Result.status := response_status_code (curl_easy, curl_handle)
-					set_header_and_body_to (l_curl_string.string, Result)
+					if l_curl_string /= Void then
+						Result.set_response_message (l_curl_string.string, ctx)
+					end
 				else
 					Result.set_error_message ("Error: cURL Error[" + l_result.out + "]")
 					Result.status := response_status_code (curl_easy, curl_handle)
@@ -326,35 +352,41 @@ feature {NONE} -- Implementation
 			end
 		end
 
-
-	set_header_and_body_to (a_source: READABLE_STRING_8; res: HTTP_CLIENT_RESPONSE)
-			-- Parse `a_source' response
-			-- and set `header' and `body' from HTTP_CLIENT_RESPONSE `res'
-		local
-			pos, l_start : INTEGER
+	new_write_data_to_file_agent (f: FILE; h: detachable STRING): PROCEDURE [ANY, TUPLE [READABLE_STRING_8]]
+			-- Write all downloaded header and content data into `f'
+			-- and write raw header into `h' if attached.
 		do
-			l_start := a_source.substring_index ("%R%N", 1)
-			if l_start > 0 then
-					--| Skip first line which is the status line
-					--| ex: HTTP/1.1 200 OK%R%N
-				l_start := l_start + 2
-			end
-			if l_start = 0 or else 
-				(l_start < a_source.count and then 
-					a_source[l_start] = '%R' and a_source[l_start + 1] = '%N' 
-				)
-			then
-				res.set_body (a_source)
-			else
-				pos := a_source.substring_index ("%R%N%R%N", l_start)
-				if pos > 0 then
-					res.set_raw_header (a_source.substring (l_start, pos + 1)) --| Keep the last %R%N
-					res.set_body (a_source.substring (pos + 4, a_source.count))
-				else
-					res.set_body (a_source)
-				end
-			end
+			Result := agent (s: READABLE_STRING_8; ia_header: detachable STRING; ia_file: FILE; ia_header_fetched: CELL [BOOLEAN])
+							do
+								ia_file.put_string (s)
+								if ia_header /= Void and not ia_header_fetched.item then
+									ia_header.append (s)
+									if s.starts_with ("%R%N") then
+										ia_header_fetched.replace (True)
+									end
+								end
+							end (?, h, f, create {CELL [BOOLEAN]}.put (False))
 		end
+
+	new_write_content_data_to_file_agent (f: FILE; h: STRING): PROCEDURE [ANY, TUPLE [READABLE_STRING_8]]
+			-- Write all downloaded content data into `f' (without raw header)
+			-- and write raw header into `h' if attached.
+		do
+			Result := agent (s: READABLE_STRING_8; ia_header: detachable STRING; ia_file: FILE; ia_header_fetched: CELL [BOOLEAN])
+							do
+								if ia_header_fetched.item then
+									ia_file.put_string (s)
+								else
+									if ia_header /= Void then
+										ia_header.append (s)
+									end
+									if s.starts_with ("%R%N") then
+										ia_header_fetched.replace (True)
+									end
+								end
+							end (?, h, f, create {CELL [BOOLEAN]}.put (False))
+		end
+
 note
 	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"

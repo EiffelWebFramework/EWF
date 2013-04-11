@@ -8,6 +8,9 @@ note
 class
 	LIBCURL_UPLOAD_FILE_READ_FUNCTION
 
+obsolete
+	"Use LIBCURL_CUSTOM_FUNCTION [2013-apr-04]"
+
 inherit
 	LIBCURL_DEFAULT_FUNCTION
 		redefine
