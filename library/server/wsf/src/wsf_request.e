@@ -1045,7 +1045,7 @@ feature -- HTTP_*
 	http_if_match: detachable READABLE_STRING_8
 			-- Existence check on resource
 		do
-			Result := meta_string_variable ({WGI_META_NAMES}.http_if_match)
+			Result := wgi_request.http_if_match
 		end
 
 feature -- Extra CGI environment variables

@@ -604,6 +604,11 @@ feature -- HTTP_*
 		deferred
 		end
 
+	http_if_match: detachable READABLE_STRING_8
+			-- Existance check on resource
+		deferred
+		end
+
 feature -- Extra CGI environment variables
 
 	request_uri: READABLE_STRING_8
