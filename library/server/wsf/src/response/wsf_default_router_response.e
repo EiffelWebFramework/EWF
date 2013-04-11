@@ -58,8 +58,20 @@ feature {WSF_RESPONSE} -- Output
 			if req.is_request_method ({HTTP_REQUEST_METHODS}.method_trace) then
 				msg := trace_message (req)
 			elseif attached method_not_allowed_message (req) as not_allowed then
+				--| We give this precedence over 412 Precondition Failed or 404 Not Found,
+				--| as we assume the existence of a handler for at least one method
+				--| indicates existence of the resource. This is obviously not the
+				--| case if the only method allowed is POST, but the handler ought
+				--| to handle the 404 Not Found and 412 Precondition Failed cases in that case.
+				--| Ditto for template URI handlers where not all template variable
+				--| values map to existing resources.
 				msg := not_allowed
+			elseif attached req.http_if_match as l_match and then l_match.same_string ("*") then
+				msg := precondition_failed_message (req)
 			else
+				--| Other response codes are possible, such as 301 Moved permananently,
+				--| 302 Found and 410 Gone. But these require handlers to implement,
+				--| so no other code can be given at this point. 
 				msg := not_found_message (req)
 			end
 			res.send (msg)
@@ -67,7 +79,17 @@ feature {WSF_RESPONSE} -- Output
 
 feature {NONE} -- Implementation
 
+	precondition_failed_message (req: WSF_REQUEST): WSF_PRECONDITION_FAILED_MESSAGE
+			-- Automatically generated response for 412 Precondition Failed response
+		require
+			req_attached: req /= Void
+		do
+			create Result.make (req)
+		end
+	
 	method_not_allowed_message (req: WSF_REQUEST): detachable WSF_METHOD_NOT_ALLOWED_RESPONSE
+		require
+			req_attached: req /= Void
 		local
 			vis: WSF_ROUTER_AGENT_ITERATOR
 		do
@@ -114,6 +136,8 @@ feature {NONE} -- Implementation
 		end
 
 	not_found_message (req: WSF_REQUEST): WSF_NOT_FOUND_RESPONSE
+		require
+			req_attached: req /= Void
 		local
 			vis: WSF_ROUTER_AGENT_ITERATOR
 		do

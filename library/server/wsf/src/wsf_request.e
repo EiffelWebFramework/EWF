@@ -1042,6 +1042,12 @@ feature -- HTTP_*
 			Result := wgi_request.http_access_control_request_headers
 		end
 
+	http_if_match: detachable READABLE_STRING_8
+			-- Existence check on resource
+		do
+			Result := meta_string_variable ({WGI_META_NAMES}.http_if_match)
+		end
+
 feature -- Extra CGI environment variables
 
 	request_uri: READABLE_STRING_8
