@@ -136,8 +136,6 @@ feature {NONE} -- Implementation
 		end
 
 	not_found_message (req: WSF_REQUEST): WSF_NOT_FOUND_RESPONSE
-		require
-			req_attached: req /= Void
 		local
 			vis: WSF_ROUTER_AGENT_ITERATOR
 		do
