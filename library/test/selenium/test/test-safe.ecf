@@ -8,7 +8,7 @@
 		<setting name="console_application" value="true"/>
 		<library name="base" location="$ISE_LIBRARY\library\base\base-safe.ecf"/>
 		<library name="http_client" location="$EIFFEL_LIBRARY\EWF\library\network\http_client\http_client-safe.ecf"/>
-		<library name="selenium" location="C:\home\Eiffel\projects\SeleniumEiffel\selenium-safe.ecf"/>
+		<library name="selenium" location="..\selenium-safe.ecf"/>
 		<cluster name="test" location=".\" recursive="true">
 			<file_rule>
 				<exclude>/EIFGENs$</exclude>

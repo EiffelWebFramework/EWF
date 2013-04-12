@@ -7,7 +7,7 @@
 		</option>
 		<library name="base" location="$ISE_LIBRARY\library\base\base-safe.ecf"/>
 		<library name="http_client" location="$EIFFEL_LIBRARY\EWF\library\network\http_client\http_client-safe.ecf"/>
-		<library name="json" location="C:\home\Eiffel\projects\EWF\contrib\library\text\parser\json\library\json-safe.ecf"/>
+		<library name="json" location="$EIFFEL_LIBRARY\EWF\contrib\library\text\parser\json\library\json-safe.ecf"/>
 		<cluster name="src" location=".\src\" recursive="true">
 			<file_rule>
 				<exclude>/EIFGENs$</exclude>
