@@ -605,7 +605,37 @@ feature -- HTTP_*
 		end
 
 	http_if_match: detachable READABLE_STRING_8
-			-- Existance check on resource
+			-- Existence check on resource
+		deferred
+		end
+
+	http_if_modified_since: detachable READABLE_STRING_8
+			-- Modification check on resource
+		deferred
+		end
+
+	http_if_none_match: detachable READABLE_STRING_8
+			-- Existence check on resource
+		deferred
+		end
+
+	http_if_range: detachable READABLE_STRING_8
+			-- Range check on resource
+		deferred
+		end
+
+	http_if_unmodified_since: detachable READABLE_STRING_8
+			-- Modification check on resource
+		deferred
+		end
+
+	http_last_modified: detachable READABLE_STRING_8
+			-- Modification time of resource
+		deferred
+		end
+
+	http_range: detachable READABLE_STRING_8
+			-- Requested byte-range of resource
 		deferred
 		end
 
