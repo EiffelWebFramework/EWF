@@ -27,7 +27,7 @@ feature -- Access
 		do
 			initialize_converters (json)
 			create parser.make_parser (str)
-			if attached parser.parse_object as st and parser.is_parsed then
+			if attached parser.parse as st and parser.is_parsed then
 				Result := st
 			end
 		end
@@ -68,5 +68,6 @@ feature -- Access
 			j.add_converter (create {SE_STATUS_VALUE_JSON_CONVERTER}.make)
 			j.add_converter (create {SE_CAPABILITIES_JSON_CONVERTER}.make)
 			j.add_converter (create {SE_RESPONSE_JSON_CONVERTER}.make)
+			j.add_converter (create {SE_TIMEOUT_TYPE_JSON_CONVERTER}.make)
 		end
 end

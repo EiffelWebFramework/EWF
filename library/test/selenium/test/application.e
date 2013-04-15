@@ -24,12 +24,15 @@ feature {NONE} -- Initialization
 			if attached web_driver.status as l_status  then
 				print (l_status)
 
-				-- retrieve sessions
-				if attached web_driver.sessions as l_session then
-					across l_session as item loop
-						print (item)
-					end
+
+
+				-- create a new session
+				create capabilities.make
+				capabilities.set_browser_name ("chrome")
+				if attached web_driver.create_session_with_desired_capabilities (capabilities) as l_session then
+					print ("%NSessionId:" + l_session.session_id)
 				end
+
 
 				-- create a new session
 				create capabilities.make
@@ -41,8 +44,8 @@ feature {NONE} -- Initialization
 
 				-- retrieve sessions
 				if attached web_driver.sessions as l_session then
-					across l_session as item loop
-						print (item)
+					across l_session as l_item loop
+						print (l_item)
 					end
 				end
 

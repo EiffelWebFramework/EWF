@@ -14,7 +14,7 @@ inherit
 		end
 
 feature -- Access
-	status: detachable STRING_32
+	status: INTEGER_32
     session_id: detachable STRING_32
 	state: detachable STRING_32
     class_name: detachable STRING_32
@@ -22,7 +22,7 @@ feature -- Access
     hash_code: detachable STRING_32
 
 feature -- Change Element
-	set_status (a_status : STRING_32)
+	set_status (a_status : INTEGER_32)
 		do
 			status := a_status
 		end
@@ -55,12 +55,11 @@ feature -- Change Element
 	out : STRING
 		do
 			create Result.make_from_string ("Response : ")
-			if attached status as l_satus then
-				Result.append ("[Status:")
-				Result.append (l_satus.out)
-				Result.append ("]")
-				Result.append (" ")
-			end
+			Result.append ("[Status:")
+			Result.append (status.out)
+			Result.append ("]")
+			Result.append (" ")
+
 			if attached session_id as l_session_id then
 				Result.append ("[SessionId:")
 				Result.append (l_session_id.out)

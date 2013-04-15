@@ -29,8 +29,8 @@ feature -- Conversion
 	from_json (j: like to_json): detachable like object
 		do
 			create Result
-			if attached {INTEGER_8} json_to_object (j.item (status_key), Void) as l_ucs then
-				Result.set_status (l_ucs.out)
+			if attached {INTEGER_32} json_to_object (j.item (status_key), Void) as l_ucs then
+				Result.set_status (l_ucs)
 			end
 			if attached {STRING_32} json_to_object (j.item (session_id_key), Void) as l_ucs then
 				Result.set_session_id (l_ucs)

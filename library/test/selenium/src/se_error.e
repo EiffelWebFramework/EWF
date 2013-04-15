@@ -21,4 +21,13 @@ feature -- Access
 	code : INTEGER_32
 	summary : STRING_32
 	detail : STRING_32
+
+feature -- Report
+	full_message : STRING_32
+		-- Full error description
+	do
+		create Result.make_empty
+		Result.append ("code : " + code.out + "  -  summary:" + summary + "  -  detail:" + detail)
+	end
+
 end

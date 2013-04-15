@@ -6,5 +6,21 @@ note
 
 class
 	WEB_ELEMENT
+create
+		make
+feature
+		make
+			do
 
+			end
+feature -- Access
+	element : detachable STRING_32
+		--The opaque ID assigned to the element by the server.
+		--This ID should be used in all subsequent commands issued against the element.
+
+feature -- Change Element
+	set_element (an_element : STRING)
+		do
+			element := an_element
+		end
 end

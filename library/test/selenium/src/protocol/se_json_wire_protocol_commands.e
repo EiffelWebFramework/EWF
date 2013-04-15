@@ -19,25 +19,148 @@ feature
 			--POST	/session	 Create a new session.
 		cmd_sessions : STRING = "sessions"
 			--GET	/sessions	 Returns a list of the currently active sessions.
---GET		/session/:sessionId	 Retrieve the capabilities of the specified session.
---DELETE	/session/:sessionId	 Delete the session.
---POST	/session/:sessionId/timeouts	 Configure the amount of time that a particular type of operation can execute for before they are aborted and a |Timeout| error is returned to the client.
---POST	/session/:sessionId/timeouts/async_script	 Set the amount of time, in milliseconds, that asynchronous scripts executed by /session/:sessionId/execute_async are permitted to run before they are aborted and a |Timeout| error is returned to the client.
---POST	/session/:sessionId/timeouts/implicit_wait	 Set the amount of time the driver should wait when searching for elements.
---GET		/session/:sessionId/window_handle	 Retrieve the current window handle.
---GET		/session/:sessionId/window_handles	 Retrieve the list of all window handles available to the session.
---GET		/session/:sessionId/url	 Retrieve the URL of the current page.
---POST	/session/:sessionId/url	 Navigate to a new URL.
---POST	/session/:sessionId/forward	 Navigate forwards in the browser history, if possible.
---POST	/session/:sessionId/back	 Navigate backwards in the browser history, if possible.
---POST	/session/:sessionId/refresh	 Refresh the current page.
+
+		cmd_session_by_id_tmpl : STRING ="session/$id"
+
+		cmd_session_by_id (id: STRING_32): STRING_32
+			do
+				create Result.make_from_string (cmd_session_by_id_tmpl)
+				Result.replace_substring_all ("$id", id)
+			end
+
+
+		cmd_session_timeouts_tmpl : STRING ="session/$id/timeouts"
+
+		cmd_session_timeouts (id: STRING_32): STRING_32
+			do
+				create Result.make_from_string (cmd_session_timeouts_tmpl)
+				Result.replace_substring_all ("$id", id)
+			end
+
+		cmd_session_timeouts_async_script_tmpl : STRING ="session/$id/timeouts/async_script"
+
+		cmd_session_timeouts_async_script (id: STRING_32): STRING_32
+			do
+				create Result.make_from_string (cmd_session_timeouts_async_script_tmpl)
+				Result.replace_substring_all ("$id", id)
+			end
+
+		cmd_session_timeouts_implicit_wait_tmpl : STRING ="/session/$id/timeouts/implicit_wait"
+
+		cmd_session_timeouts_implicit_wait (id: STRING_32): STRING_32
+			do
+				create Result.make_from_string (cmd_session_timeouts_implicit_wait_tmpl)
+				Result.replace_substring_all ("$id", id)
+			end
+
+
+		cmd_session_window_handle_tmpl : STRING ="/session/$id/window_handle"
+
+		cmd_session_window_handle (id: STRING_32): STRING_32
+			do
+				create Result.make_from_string (cmd_session_window_handle_tmpl)
+				Result.replace_substring_all ("$id", id)
+			end
+
+		cmd_session_window_handles_tmpl : STRING ="/session/$id/window_handles"
+
+		cmd_session_window_handles (id: STRING_32): STRING_32
+			do
+				create Result.make_from_string (cmd_session_window_handles_tmpl)
+				Result.replace_substring_all ("$id", id)
+			end
+
+		cmd_session_url_tmpl : STRING ="/session/$id/url"
+
+		cmd_session_url (id: STRING_32): STRING_32
+			do
+				create Result.make_from_string (cmd_session_url_tmpl)
+				Result.replace_substring_all ("$id", id)
+			end
+
+
+
+		cmd_session_forward_tmpl : STRING ="/session/$id/forward"
+
+		cmd_session_forward (id: STRING_32): STRING_32
+			do
+				create Result.make_from_string (cmd_session_forward_tmpl)
+				Result.replace_substring_all ("$id", id)
+			end
+
+		cmd_session_back_tmpl : STRING ="/session/$id/back"
+
+		cmd_session_back (id: STRING_32): STRING_32
+			do
+				create Result.make_from_string (cmd_session_back_tmpl)
+				Result.replace_substring_all ("$id", id)
+			end
+
+
+		cmd_session_refresh_tmpl : STRING ="/session/$id/refresh"
+
+		cmd_session_refresh (id: STRING_32): STRING_32
+			do
+				create Result.make_from_string (cmd_session_refresh_tmpl)
+				Result.replace_substring_all ("$id", id)
+			end
+
+
 --POST	/session/:sessionId/execute	 Inject a snippet of JavaScript into the page for execution in the context of the currently selected frame.
 --POST	/session/:sessionId/execute_async	 Inject a snippet of JavaScript into the page for execution in the context of the currently selected frame.
---GET		/session/:sessionId/screenshot	 Take a screenshot of the current page.
---GET		/session/:sessionId/ime/available_engines	 List all available engines on the machine.
---GET		/session/:sessionId/ime/active_engine	 Get the name of the active IME engine.
---GET		/session/:sessionId/ime/activated	 Indicates whether IME input is active at the moment (not if it's available.
---POST	/session/:sessionId/ime/deactivate	 De-activates the currently-active IME engine.
+
+
+		cmd_session_screenshot_tmpl : STRING ="/session/$id/screenshot"
+
+		cmd_session_screenshot (id: STRING_32): STRING_32
+			do
+				create Result.make_from_string (cmd_session_screenshot_tmpl)
+				Result.replace_substring_all ("$id", id)
+			end
+
+
+		cmd_session_ime_available_engines_tmpl : STRING ="/session/$id/ime/available_engines"
+
+		cmd_session_ime_available (id: STRING_32): STRING_32
+			do
+				create Result.make_from_string (cmd_session_ime_available_engines_tmpl)
+				Result.replace_substring_all ("$id", id)
+			end
+
+		cmd_session_ime_active_engine_tmpl : STRING ="/session/$id/ime/active_engine"
+
+		cmd_session_ime_active_engine (id: STRING_32): STRING_32
+			do
+				create Result.make_from_string (cmd_session_ime_active_engine_tmpl)
+				Result.replace_substring_all ("$id", id)
+			end
+
+		cmd_session_ime_activated_tmpl : STRING ="/session/$id/ime/activated"
+
+		cmd_session_ime_activated (id: STRING_32): STRING_32
+			do
+				create Result.make_from_string (cmd_session_ime_activated_tmpl)
+				Result.replace_substring_all ("$id", id)
+			end
+
+		cmd_session_ime_deactivate_tmpl : STRING ="/session/$id/ime/deactivate"
+
+		cmd_session_ime_deactivate (id: STRING_32): STRING_32
+			do
+				create Result.make_from_string (cmd_session_ime_deactivate_tmpl)
+				Result.replace_substring_all ("$id", id)
+			end
+
+		cmd_session_ime_activate_tmpl : STRING ="/session/$id/ime/activate"
+
+		cmd_session_ime_activate (id: STRING_32): STRING_32
+			do
+				create Result.make_from_string (cmd_session_ime_activate_tmpl)
+				Result.replace_substring_all ("$id", id)
+			end
+
+
+
 --POST	/session/:sessionId/ime/activate	 Make an engines that is available (appears on the listreturned by getAvailableEngines) active.
 --POST	/session/:sessionId/frame	 Change focus to another frame on the page.
 --POST	/session/:sessionId/window	 Change focus to another window.
