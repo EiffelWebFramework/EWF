@@ -7,8 +7,8 @@ note
 class
 	SE_JSON_WIRE_PROTOCOL_COMMANDS
 
-
 feature
+
 		cmd_ping : STRING = ""
 			--GET	/ expected a 200 ok
 
@@ -29,12 +29,14 @@ feature
 			end
 
 
-		cmd_session_timeouts_tmpl : STRING ="session/$id/timeouts"
+		cmd_session_timeouts_tmpl : STRING_32 ="[
+						session/$id/timeouts
+						]"
 
-		cmd_session_timeouts (id: STRING_32): STRING_32
+		cmd_session_timeouts (id: STRING_32):STRING_32
 			do
 				create Result.make_from_string (cmd_session_timeouts_tmpl)
-				Result.replace_substring_all ("$id", id)
+				Result.replace_substring_all ("$id",id)
 			end
 
 		cmd_session_timeouts_async_script_tmpl : STRING ="session/$id/timeouts/async_script"

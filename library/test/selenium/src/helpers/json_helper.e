@@ -58,6 +58,19 @@ feature -- Access
 			end
 		end
 
+	json_to_se_response (post: STRING_32): detachable SE_RESPONSE
+		local
+			parser: JSON_PARSER
+		do
+			initialize_converters (json)
+			create parser.make_parser (post)
+			if attached parser.parse_object as st and parser.is_parsed then
+				if attached {SE_RESPONSE} json.object (st, "SE_RESPONSE") as l_response then
+					Result := l_response
+				end
+			end
+		end
+
 	initialize_converters (j: like json)
 			-- Initialize json converters
 		do

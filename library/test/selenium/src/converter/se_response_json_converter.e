@@ -31,7 +31,7 @@ feature -- Conversion
 			if attached {STRING_32} json_to_object (j.item (session_key), Void) as l_item then
 				Result.set_session_id(l_item)
 			end
-			if attached {INTEGER_32} json_to_object (j.item (status_key), Void) as l_item then
+			if attached {INTEGER_8} json_to_object (j.item (status_key), Void) as l_item then
 				Result.set_status(l_item)
 			end
 			if attached {JSON_VALUE}  j.item (value_key) as l_item then

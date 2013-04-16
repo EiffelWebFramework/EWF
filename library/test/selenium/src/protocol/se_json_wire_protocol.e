@@ -96,7 +96,7 @@ feature -- Commands
 					check_response (response)
 					if not has_error then
 						if attached response.json_response as r_value then
-							Result := build_session (r_value, "session")
+							Result := new_session (r_value, "session")
 						end
 					end
 				end
@@ -127,7 +127,7 @@ feature -- Commands
 							index > l_json_array.count
 						loop
 							if attached {JSON_OBJECT} l_json_array.i_th (index) as json_obj then
-								if attached build_session (json_obj.representation, "sessions") as l_session then
+								if attached new_session (json_obj.representation, "sessions") as l_session then
 									Result.force (l_session)
 								end
 							end
@@ -153,7 +153,7 @@ feature -- Commands
 				check_response (response)
 				if not has_error then
 					if attached response.json_response as r_value then
-						Result := build_session (r_value, "session")
+						Result := new_session (r_value, "session")
 					end
 				end
 			end
@@ -1602,18 +1602,24 @@ feature {NONE} -- Implementation
 
 	commnad_executor: COMMAND_EXECUTOR
 
-	build_session (value: STRING_32; to: STRING_32): detachable SE_SESSION
+	new_session (value: STRING_32; to: STRING_32): detachable SE_SESSION
+		local
+			l_rep : STRING_32
 		do
 			if to.is_case_insensitive_equal ("session") then
 				if attached {JSON_OBJECT} string_to_json (value) as l_value then
 					if attached l_value.item ("sessionId") as ls and then attached l_value.item ("value") as lv and then attached json_to_se_capabilities (lv.representation) as lc then
-						create Result.make (ls.representation, lc)
+						l_rep := ls.representation
+						l_rep.replace_substring_all ("%"", "")
+						create Result.make (l_rep, lc)
 					end
 				end
 			elseif to.is_case_insensitive_equal ("sessions") then
 				if attached {JSON_OBJECT} string_to_json (value) as l_value then
 					if attached l_value.item ("id") as ls and then attached l_value.item ("capabilities") as lv and then attached json_to_se_capabilities (lv.representation) as lc then
-						create Result.make (ls.representation, lc)
+						l_rep := ls.representation
+						l_rep.replace_substring_all ("%"", "")
+						create Result.make (l_rep, lc)
 					end
 				end
 			end

@@ -18,6 +18,7 @@ feature {NONE} -- Initialization
 		local
 			web_driver: SE_JSON_WIRE_PROTOCOL
 			capabilities : SE_CAPABILITIES
+			timeout : SE_TIMEOUT_TYPE
 		do
 			-- check if the selenium Remote WebDriver is up and running.
 			create web_driver.make
@@ -39,6 +40,8 @@ feature {NONE} -- Initialization
 				capabilities.set_browser_name ("chrome")
 				if attached web_driver.create_session_with_desired_capabilities (capabilities) as l_session then
 					print ("%NSessionId:" + l_session.session_id)
+					create timeout.make_empty
+					web_driver.set_session_timeouts (l_session.session_id, timeout)
 				end
 
 

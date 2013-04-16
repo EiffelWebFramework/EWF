@@ -52,7 +52,7 @@ feature -- Commands
 			create Result.make_empty
 			resp := execute_get (cmd_status)
 			if attached resp.body as l_body then
-				Result := build_response (l_body)
+				Result := new_response (l_body)
 			end
 		end
 
@@ -64,10 +64,16 @@ feature -- Commands
 		do
 			create Result.make_empty
 			resp := execute_post (cmd_new_session, capabilities)
-			if attached resp.header ("Location") as l_location then
-				resp := http_new_session (l_location).get ("", context_executor)
+			if not (resp.status >= 400) then
+				if attached resp.header ("Location") as l_location then
+					resp := http_new_session (l_location).get ("", context_executor)
+					if attached resp.body as l_body then
+						Result := new_response (l_body)
+					end
+				end
+			else
 				if attached resp.body as l_body then
-					Result := build_response (l_body)
+					Result := new_response (l_body)
 				end
 			end
 		end
@@ -81,7 +87,7 @@ feature -- Commands
 			create Result.make_empty
 			resp := execute_get (cmd_sessions)
 			if attached resp.body as l_body then
-				Result := build_response (l_body)
+				Result := new_response (l_body)
 			end
 		end
 
@@ -94,7 +100,7 @@ feature -- Commands
 			create Result.make_empty
 			resp := execute_get (cmd_session_by_id (session_id))
 			if attached resp.body as l_body then
-				Result := build_response (l_body)
+				Result := new_response (l_body)
 			end
 		end
 
@@ -105,13 +111,13 @@ feature -- Commands
 			resp: HTTP_CLIENT_RESPONSE
 		do
 			create Result.make_empty
-			resp := execute_delete (cmd_session_by_id (cmd_session_by_id (session_id)))
+			resp := execute_delete (cmd_session_by_id ( session_id ))
 			if resp.status = 204 then
 				Result.set_status (0)
 				Result.set_session_id (session_id)
 			else
 				if attached resp.body as l_body then
-					Result := build_response (l_body)
+					Result := new_response (l_body)
 				end
 			end
 		end
@@ -129,7 +135,7 @@ feature -- Commands
 				Result.set_session_id (a_session_id)
 			else
 				if attached resp.body as l_body then
-					Result := build_response (l_body)
+					Result := new_response (l_body)
 				end
 			end
 		end
@@ -147,7 +153,7 @@ feature -- Commands
 				Result.set_session_id (a_session_id)
 			else
 				if attached resp.body as l_body then
-					Result := build_response (l_body)
+					Result := new_response (l_body)
 				end
 			end
 
@@ -166,7 +172,7 @@ feature -- Commands
 				Result.set_session_id (a_session_id)
 			else
 				if attached resp.body as l_body then
-					Result := build_response (l_body)
+					Result := new_response (l_body)
 				end
 			end
 
@@ -181,7 +187,7 @@ feature -- Commands
 			create Result.make_empty
 			resp := execute_get (cmd_session_window_handle (session_id))
 			if attached resp.body as l_body then
-				Result := build_response (l_body)
+				Result := new_response (l_body)
 			end
 		end
 
@@ -194,7 +200,7 @@ feature -- Commands
 			create Result.make_empty
 			resp := execute_get (cmd_session_window_handles (session_id))
 			if attached resp.body as l_body then
-				Result := build_response (l_body)
+				Result := new_response (l_body)
 			end
 		end
 
@@ -207,7 +213,7 @@ feature -- Commands
 			create Result.make_empty
 			resp := execute_get (cmd_session_url (session_id))
 			if attached resp.body as l_body then
-				Result := build_response (l_body)
+				Result := new_response (l_body)
 			end
 		end
 
@@ -224,7 +230,7 @@ feature -- Commands
 				Result.set_session_id (a_session_id)
 			else
 				if attached resp.body as l_body then
-					Result := build_response (l_body)
+					Result := new_response (l_body)
 				end
 			end
 		end
@@ -242,7 +248,7 @@ feature -- Commands
 				Result.set_session_id (a_session_id)
 			else
 				if attached resp.body as l_body then
-					Result := build_response (l_body)
+					Result := new_response (l_body)
 				end
 			end
 		end
@@ -260,7 +266,7 @@ feature -- Commands
 				Result.set_session_id (a_session_id)
 			else
 				if attached resp.body as l_body then
-					Result := build_response (l_body)
+					Result := new_response (l_body)
 				end
 			end
 		end
@@ -278,7 +284,7 @@ feature -- Commands
 				Result.set_session_id (a_session_id)
 			else
 				if attached resp.body as l_body then
-					Result := build_response (l_body)
+					Result := new_response (l_body)
 				end
 			end
 		end
@@ -310,7 +316,7 @@ feature -- Commands
 			create Result.make_empty
 			resp := execute_get (cmd_session_screenshot (session_id))
 			if attached resp.body as l_body then
-				Result := build_response (l_body)
+				Result := new_response (l_body)
 			end
 		end
 
@@ -323,7 +329,7 @@ feature -- Commands
 			create Result.make_empty
 			resp := execute_get (cmd_session_ime_available (session_id))
 			if attached resp.body as l_body then
-				Result := build_response (l_body)
+				Result := new_response (l_body)
 			end
 		end
 
@@ -336,7 +342,7 @@ feature -- Commands
 			create Result.make_empty
 			resp := execute_get (cmd_session_ime_active_engine (session_id))
 			if attached resp.body as l_body then
-				Result := build_response (l_body)
+				Result := new_response (l_body)
 			end
 		end
 
@@ -349,7 +355,7 @@ feature -- Commands
 			create Result.make_empty
 			resp := execute_get (cmd_session_ime_activated (session_id))
 			if attached resp.body as l_body then
-				Result := build_response (l_body)
+				Result := new_response (l_body)
 			end
 		end
 
@@ -366,7 +372,7 @@ feature -- Commands
 				Result.set_session_id (a_session_id)
 			else
 				if attached resp.body as l_body then
-					Result := build_response (l_body)
+					Result := new_response (l_body)
 				end
 			end
 		end
@@ -384,7 +390,7 @@ feature -- Commands
 				Result.set_session_id (a_session_id)
 			else
 				if attached resp.body as l_body then
-					Result := build_response (l_body)
+					Result := new_response (l_body)
 				end
 			end
 
@@ -407,11 +413,10 @@ feature {NONE} -- Implementation
 			Result := http_session.delete (command_name, context_executor)
 		end
 
-	build_response (a_message: STRING_32): SE_RESPONSE
+	new_response (a_message: STRING_32): SE_RESPONSE
 		do
 			create Result.make_empty
-			initialize_converters (json)
-			if attached {SE_RESPONSE} json.object_from_json (a_message, "SE_RESPONSE") as l_response then
+			if attached json_to_se_response(a_message) as l_response then
 				Result := l_response
 			end
 			Result.set_json_response (a_message)
