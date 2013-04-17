@@ -7,6 +7,7 @@ note
 class
 	SE_TIMEOUT_TYPE
 
+-- TODO add contracts to validate the timeout types.
 create
 	make,
 	make_empty
@@ -22,7 +23,7 @@ feature -- Initialization
 		do
 
 		end
-		
+
 feature -- Access
 	type : detachable STRING_32
 		-- The type of operation to set the timeout for.

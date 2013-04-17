@@ -114,6 +114,166 @@ feature -- Test routines
 --			assert ("After delete Pre sesssion - 1 is equal to post_session", (pre_session - 1) = post_session)
 		end
 
+	test_valid_session_timeouts
+		local
+			l_timeout :SE_TIMEOUT_TYPE
+			capabilities : SE_CAPABILITIES
+		do
+			create l_timeout.make ("script", 1)
+			create capabilities.make
+			capabilities.set_browser_name ("chrome")
+			if attached wire_protocol.create_session_with_desired_capabilities (capabilities) as l_session then
+				assert ("No error", not wire_protocol.has_error)
+				wire_protocol.set_session_timeouts (l_session.session_id, l_timeout)
+				assert ("Has no error", not wire_protocol.has_error)
+			end
+		end
+
+	test_invalid_session_timeouts
+		local
+			l_timeout :SE_TIMEOUT_TYPE
+			capabilities : SE_CAPABILITIES
+		do
+			create l_timeout.make ("tes", 1)
+			create capabilities.make
+			capabilities.set_browser_name ("chrome")
+			if attached wire_protocol.create_session_with_desired_capabilities (capabilities) as l_session then
+				assert ("No error", not wire_protocol.has_error)
+				wire_protocol.set_session_timeouts (l_session.session_id, l_timeout)
+				assert ("Has error", wire_protocol.has_error)
+			end
+
+		end
+
+	test_valid_session_async_script_timeouts
+		local
+			capabilities : SE_CAPABILITIES
+		do
+			create capabilities.make
+			capabilities.set_browser_name ("chrome")
+			if attached wire_protocol.create_session_with_desired_capabilities (capabilities) as l_session then
+				assert ("No error", not wire_protocol.has_error)
+				wire_protocol.set_session_timeouts_async_script (l_session.session_id, 1)
+				assert ("Has no error", not wire_protocol.has_error)
+			end
+		end
+
+
+	test_valid_session_implicit_wait_timeouts
+		local
+			capabilities : SE_CAPABILITIES
+		do
+			create capabilities.make
+			capabilities.set_browser_name ("chrome")
+			if attached wire_protocol.create_session_with_desired_capabilities (capabilities) as l_session then
+				assert ("No error", not wire_protocol.has_error)
+				wire_protocol.set_session_timeouts_implicit_wait (l_session.session_id, 1)
+				assert ("Has no error", not wire_protocol.has_error)
+			end
+		end
+
+
+	test_retrieve_window_handle
+		local
+			capabilities : SE_CAPABILITIES
+			window_handle : detachable STRING_32
+		do
+			create capabilities.make
+			capabilities.set_browser_name ("chrome")
+			if attached wire_protocol.create_session_with_desired_capabilities (capabilities) as l_session then
+				assert ("No error", not wire_protocol.has_error)
+				window_handle := wire_protocol.retrieve_window_handle (l_session.session_id)
+				assert ("Has no error", not wire_protocol.has_error)
+				assert ("Windows handle not void", attached window_handle = True)
+			end
+		end
+
+
+	test_retrieve_window_handles
+		local
+			capabilities : SE_CAPABILITIES
+			window_handles : detachable LIST[STRING_32]
+		do
+			create capabilities.make
+			capabilities.set_browser_name ("chrome")
+			if attached wire_protocol.create_session_with_desired_capabilities (capabilities) as l_session then
+				assert ("No error", not wire_protocol.has_error)
+				window_handles := wire_protocol.retrieve_window_handles (l_session.session_id)
+				assert ("Has no error", not wire_protocol.has_error)
+				assert ("Windows handleS not void", attached window_handles = True)
+			end
+		end
+
+	test_retrieve_url
+		local
+			capabilities : SE_CAPABILITIES
+			url : detachable STRING_32
+		do
+			create capabilities.make
+			capabilities.set_browser_name ("chrome")
+			if attached wire_protocol.create_session_with_desired_capabilities (capabilities) as l_session then
+				assert ("No error", not wire_protocol.has_error)
+				url := wire_protocol.retrieve_url (session_id)
+				assert ("Has no error", not wire_protocol.has_error)
+				assert ("url not void", attached url = True)
+			end
+		end
+
+	test_navigate_to_url
+		local
+			capabilities : SE_CAPABILITIES
+		do
+			create capabilities.make
+			capabilities.set_browser_name ("chrome")
+			if attached wire_protocol.create_session_with_desired_capabilities (capabilities) as l_session then
+				assert ("No error", not wire_protocol.has_error)
+				wire_protocol.navigate_to_url (session_id,"http://www.google.com/")
+				assert ("Has no error", not wire_protocol.has_error)
+				if attached wire_protocol.retrieve_url (session_id) as l_url then
+					assert("Expected url", "http://www.google.com/" ~ l_url.out)
+				end
+			end
+		end
+
+
+	test_back_and_forward
+		local
+			capabilities : SE_CAPABILITIES
+		do
+			create capabilities.make
+			capabilities.set_browser_name ("chrome")
+			capabilities.set_takes_screenshot (True)
+			if attached wire_protocol.create_session_with_desired_capabilities (capabilities) as l_session then
+				assert ("No error", not wire_protocol.has_error)
+				wire_protocol.navigate_to_url (l_session.session_id,"http://www.google.com/")
+				assert ("Has no error", not wire_protocol.has_error)
+				wire_protocol.navigate_to_url (l_session.session_id,"http://www.infoq.com/")
+				assert ("Has no error", not wire_protocol.has_error)
+				wire_protocol.navigate_to_url (l_session.session_id,"http://www.yahoo.com/")
+				assert ("Has no error", not wire_protocol.has_error)
+
+				--back
+				wire_protocol.back (l_session.session_id)
+				assert ("Has no error", not wire_protocol.has_error)
+
+				if attached wire_protocol.retrieve_url (l_session.session_id) as l_back_url then
+					assert ("Has no error", not wire_protocol.has_error)
+					assert ("Expected infoq", "http://www.infoq.com/" ~ l_back_url.out)
+				end
+
+				-- forward
+				wire_protocol.forward (l_session.session_id)
+				assert ("Has no error", not wire_protocol.has_error)
+
+				if attached wire_protocol.retrieve_url (l_session.session_id) as l_forward_url then
+					assert ("Has no error", not wire_protocol.has_error)
+					assert ("Expected yahoo", "http://www.yahoo.com/" ~ l_forward_url.out)
+				end
+
+			end
+		end
+
+
 feature {NONE}-- Implementation
 	wire_protocol: SE_JSON_WIRE_PROTOCOL
 		once

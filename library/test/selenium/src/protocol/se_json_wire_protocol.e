@@ -328,7 +328,7 @@ feature -- Commands
 			resp: SE_RESPONSE
 		do
 			l_json := "[
-				{ "url": $url }
+				{ "url": "$url" }
 			]"
 			l_json.replace_substring_all ("$url", an_url)
 			if commnad_executor.is_available then

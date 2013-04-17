@@ -47,7 +47,7 @@ feature
 				Result.replace_substring_all ("$id", id)
 			end
 
-		cmd_session_timeouts_implicit_wait_tmpl : STRING ="/session/$id/timeouts/implicit_wait"
+		cmd_session_timeouts_implicit_wait_tmpl : STRING ="session/$id/timeouts/implicit_wait"
 
 		cmd_session_timeouts_implicit_wait (id: STRING_32): STRING_32
 			do
@@ -56,7 +56,7 @@ feature
 			end
 
 
-		cmd_session_window_handle_tmpl : STRING ="/session/$id/window_handle"
+		cmd_session_window_handle_tmpl : STRING ="session/$id/window_handle"
 
 		cmd_session_window_handle (id: STRING_32): STRING_32
 			do
@@ -64,7 +64,7 @@ feature
 				Result.replace_substring_all ("$id", id)
 			end
 
-		cmd_session_window_handles_tmpl : STRING ="/session/$id/window_handles"
+		cmd_session_window_handles_tmpl : STRING ="session/$id/window_handles"
 
 		cmd_session_window_handles (id: STRING_32): STRING_32
 			do
@@ -72,7 +72,7 @@ feature
 				Result.replace_substring_all ("$id", id)
 			end
 
-		cmd_session_url_tmpl : STRING ="/session/$id/url"
+		cmd_session_url_tmpl : STRING ="session/$id/url"
 
 		cmd_session_url (id: STRING_32): STRING_32
 			do
@@ -82,7 +82,7 @@ feature
 
 
 
-		cmd_session_forward_tmpl : STRING ="/session/$id/forward"
+		cmd_session_forward_tmpl : STRING ="session/$id/forward"
 
 		cmd_session_forward (id: STRING_32): STRING_32
 			do
@@ -90,7 +90,7 @@ feature
 				Result.replace_substring_all ("$id", id)
 			end
 
-		cmd_session_back_tmpl : STRING ="/session/$id/back"
+		cmd_session_back_tmpl : STRING ="session/$id/back"
 
 		cmd_session_back (id: STRING_32): STRING_32
 			do
@@ -99,7 +99,7 @@ feature
 			end
 
 
-		cmd_session_refresh_tmpl : STRING ="/session/$id/refresh"
+		cmd_session_refresh_tmpl : STRING ="session/$id/refresh"
 
 		cmd_session_refresh (id: STRING_32): STRING_32
 			do
@@ -112,7 +112,7 @@ feature
 --POST	/session/:sessionId/execute_async	 Inject a snippet of JavaScript into the page for execution in the context of the currently selected frame.
 
 
-		cmd_session_screenshot_tmpl : STRING ="/session/$id/screenshot"
+		cmd_session_screenshot_tmpl : STRING ="session/$id/screenshot"
 
 		cmd_session_screenshot (id: STRING_32): STRING_32
 			do
@@ -121,7 +121,7 @@ feature
 			end
 
 
-		cmd_session_ime_available_engines_tmpl : STRING ="/session/$id/ime/available_engines"
+		cmd_session_ime_available_engines_tmpl : STRING ="session/$id/ime/available_engines"
 
 		cmd_session_ime_available (id: STRING_32): STRING_32
 			do
@@ -129,7 +129,7 @@ feature
 				Result.replace_substring_all ("$id", id)
 			end
 
-		cmd_session_ime_active_engine_tmpl : STRING ="/session/$id/ime/active_engine"
+		cmd_session_ime_active_engine_tmpl : STRING ="session/$id/ime/active_engine"
 
 		cmd_session_ime_active_engine (id: STRING_32): STRING_32
 			do
@@ -137,7 +137,7 @@ feature
 				Result.replace_substring_all ("$id", id)
 			end
 
-		cmd_session_ime_activated_tmpl : STRING ="/session/$id/ime/activated"
+		cmd_session_ime_activated_tmpl : STRING ="session/$id/ime/activated"
 
 		cmd_session_ime_activated (id: STRING_32): STRING_32
 			do
@@ -145,7 +145,7 @@ feature
 				Result.replace_substring_all ("$id", id)
 			end
 
-		cmd_session_ime_deactivate_tmpl : STRING ="/session/$id/ime/deactivate"
+		cmd_session_ime_deactivate_tmpl : STRING ="session/$id/ime/deactivate"
 
 		cmd_session_ime_deactivate (id: STRING_32): STRING_32
 			do
@@ -153,7 +153,7 @@ feature
 				Result.replace_substring_all ("$id", id)
 			end
 
-		cmd_session_ime_activate_tmpl : STRING ="/session/$id/ime/activate"
+		cmd_session_ime_activate_tmpl : STRING ="session/$id/ime/activate"
 
 		cmd_session_ime_activate (id: STRING_32): STRING_32
 			do
