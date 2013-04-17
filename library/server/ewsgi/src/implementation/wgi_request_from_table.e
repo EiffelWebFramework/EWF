@@ -249,7 +249,7 @@ feature -- Access: HTTP_* CGI meta parameters - 1.1
 		end
 
 	http_if_match: detachable READABLE_STRING_8
-			-- Existance check on resource
+			-- Existence check on resource
 		do
 			Result := meta_string_variable ({WGI_META_NAMES}.http_if_match)
 		end

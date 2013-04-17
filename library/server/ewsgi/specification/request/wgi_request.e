@@ -605,7 +605,7 @@ feature -- HTTP_*
 		end
 
 	http_if_match: detachable READABLE_STRING_8
-			-- Existance check on resource
+			-- Existence check on resource
 		deferred
 		end
 

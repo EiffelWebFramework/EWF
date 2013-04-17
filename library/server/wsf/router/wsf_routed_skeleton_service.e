@@ -256,7 +256,7 @@ feature {NONE} -- Implementation
 			h.put_current_date
 			h.put_location (proxy_server (req).string)
 			h.put_content_length (0)
-			res.put_header_text (h.string)
+			res.put_header_lines (h)
 			res.set_status_code ({HTTP_STATUS_CODE}.use_proxy)
 		ensure
 			response_status_is_set: res.status_is_set
