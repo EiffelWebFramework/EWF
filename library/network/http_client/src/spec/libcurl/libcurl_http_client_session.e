@@ -33,20 +33,22 @@ feature -- Status report
 
 feature -- Basic operation
 
-	get (a_path: READABLE_STRING_8; ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT): HTTP_CLIENT_RESPONSE
+	custom (a_method: READABLE_STRING_8; a_path: READABLE_STRING_8; ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT): HTTP_CLIENT_RESPONSE
 		local
 			req: HTTP_CLIENT_REQUEST
 		do
-			create {LIBCURL_HTTP_CLIENT_REQUEST} req.make (base_url + a_path, "GET", Current, ctx)
+			create {LIBCURL_HTTP_CLIENT_REQUEST} req.make (base_url + a_path, a_method, Current, ctx)
 			Result := req.execute
 		end
 
-	head (a_path: READABLE_STRING_8; ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT): HTTP_CLIENT_RESPONSE
-		local
-			req: HTTP_CLIENT_REQUEST
+	get (a_path: READABLE_STRING_8; ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT): HTTP_CLIENT_RESPONSE
 		do
-			create {LIBCURL_HTTP_CLIENT_REQUEST} req.make (base_url + a_path, "HEAD", Current, ctx)
-			Result := req.execute
+			Result := custom ("GET", a_path, ctx)
+		end
+
+	head (a_path: READABLE_STRING_8; ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT): HTTP_CLIENT_RESPONSE
+		do
+			Result := custom ("HEAD", a_path, ctx)
 		end
 
 	post (a_path: READABLE_STRING_8; a_ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT; data: detachable READABLE_STRING_8): HTTP_CLIENT_RESPONSE
@@ -87,8 +89,7 @@ feature -- Basic operation
 					ctx.set_upload_filename (f.name)
 				end
 			end
-			create {LIBCURL_HTTP_CLIENT_REQUEST} req.make (base_url + a_path, "PUT", Current, ctx)
-			Result := req.execute
+			Result := custom ("PUT", a_path, ctx)
 			if f /= Void then
 				f.delete
 			end
@@ -100,7 +101,6 @@ feature -- Basic operation
 
 	put_file (a_path: READABLE_STRING_8; a_ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT; fn: detachable READABLE_STRING_8): HTTP_CLIENT_RESPONSE
 		local
-			req: HTTP_CLIENT_REQUEST
 			ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT
 		do
 			ctx := a_ctx
@@ -110,16 +110,12 @@ feature -- Basic operation
 				end
 				ctx.set_upload_filename (fn)
 			end
-			create {LIBCURL_HTTP_CLIENT_REQUEST} req.make (base_url + a_path, "PUT", Current, ctx)
-			Result := req.execute
+			Result := custom ("PUT", a_path, ctx)
 		end
 
 	delete (a_path: READABLE_STRING_8; ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT): HTTP_CLIENT_RESPONSE
-		local
-			req: HTTP_CLIENT_REQUEST
 		do
-			create {LIBCURL_HTTP_CLIENT_REQUEST} req.make (base_url + a_path, "DELETE", Current, ctx)
-			Result := req.execute
+			Result := custom ("DELETE", a_path, ctx)
 		end
 
 feature {NONE} -- Implementation

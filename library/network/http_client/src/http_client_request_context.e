@@ -113,6 +113,27 @@ feature -- Element change
 			headers.force (v, k)
 		end
 
+	add_header_line (s: READABLE_STRING_8)
+		local
+			i: INTEGER
+		do
+			i := s.index_of (':', 1)
+			if i > 0 then
+				add_header (s.substring (1, i - 1), s.substring (i + 1, s.count))
+			end
+		end
+
+	add_header_lines (lst: ITERABLE [READABLE_STRING_8])
+		local
+			i: INTEGER
+		do
+			across
+				lst as c
+			loop
+				add_header_line (c.item)
+			end
+		end
+
 	add_query_parameter (k: READABLE_STRING_32; v: READABLE_STRING_32)
 		do
 			query_parameters.force (v, k)
