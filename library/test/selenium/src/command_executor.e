@@ -396,6 +396,342 @@ feature -- Commands
 
 		end
 
+	change_focus_window (a_session_id: STRING_32; a_data: STRING_32): SE_RESPONSE
+		require
+			selinum_server_available: is_available
+		local
+			resp: HTTP_CLIENT_RESPONSE
+		do
+			create Result.make_empty
+			resp := execute_post (cmd_session_window (a_session_id), a_data)
+			if resp.status = 204 then
+				Result.set_status (0)
+				Result.set_session_id (a_session_id)
+			else
+				if attached resp.body as l_body then
+					Result := new_response (l_body)
+				end
+			end
+		end
+
+
+	close_window (a_session_id: STRING_32): SE_RESPONSE
+		require
+			selinum_server_available: is_available
+		local
+			resp: HTTP_CLIENT_RESPONSE
+		do
+			create Result.make_empty
+			resp := execute_delete (cmd_session_window (a_session_id))
+			if resp.status = 204 then
+				Result.set_status (0)
+				Result.set_session_id (a_session_id)
+			else
+				if attached resp.body as l_body then
+					Result := new_response (l_body)
+				end
+			end
+
+		end
+
+	change_size_window (a_session_id: STRING_32; a_window_handle : STRING_32;a_data: STRING_32): SE_RESPONSE
+		require
+			selinum_server_available: is_available
+		local
+			resp: HTTP_CLIENT_RESPONSE
+		do
+			create Result.make_empty
+			resp := execute_post (cmd_session_window_size (a_session_id,a_window_handle), a_data)
+			if resp.status = 204 then
+				Result.set_status (0)
+				Result.set_session_id (a_session_id)
+			else
+				if attached resp.body as l_body then
+					Result := new_response (l_body)
+				end
+			end
+		end
+
+	size_window (a_session_id: STRING_32; a_window_handle : STRING_32) : SE_RESPONSE
+		require
+			selinum_server_available: is_available
+		local
+			resp: HTTP_CLIENT_RESPONSE
+		do
+			create Result.make_empty
+			resp := execute_get (cmd_session_window_size (a_session_id,a_window_handle))
+			if resp.status = 204 then
+				Result.set_status (0)
+				Result.set_session_id (a_session_id)
+			else
+				if attached resp.body as l_body then
+					Result := new_response (l_body)
+				end
+			end
+		end
+
+	change_window_position (a_session_id: STRING_32; a_window_handle : STRING_32;a_data: STRING_32): SE_RESPONSE
+		require
+			selinum_server_available: is_available
+		local
+			resp: HTTP_CLIENT_RESPONSE
+		do
+			create Result.make_empty
+			resp := execute_post (cmd_session_window_position (a_session_id,a_window_handle), a_data)
+			if resp.status = 204 then
+				Result.set_status (0)
+				Result.set_session_id (a_session_id)
+			else
+				if attached resp.body as l_body then
+					Result := new_response (l_body)
+				end
+			end
+		end
+
+	window_position (a_session_id: STRING_32; a_window_handle : STRING_32) : SE_RESPONSE
+		require
+			selinum_server_available: is_available
+		local
+			resp: HTTP_CLIENT_RESPONSE
+		do
+			create Result.make_empty
+			resp := execute_get (cmd_session_window_size (a_session_id,a_window_handle))
+			if resp.status = 204 then
+				Result.set_status (0)
+				Result.set_session_id (a_session_id)
+			else
+				if attached resp.body as l_body then
+					Result := new_response (l_body)
+				end
+			end
+		end
+
+	window_maximize (a_session_id: STRING_32; a_window_handle : STRING_32) : SE_RESPONSE
+		require
+			selinum_server_available: is_available
+		local
+			resp: HTTP_CLIENT_RESPONSE
+		do
+			create Result.make_empty
+			resp := execute_post (cmd_session_window_maximize (a_session_id,a_window_handle), Void)
+			if resp.status = 204 then
+				Result.set_status (0)
+				Result.set_session_id (a_session_id)
+			else
+				if attached resp.body as l_body then
+					Result := new_response (l_body)
+				end
+			end
+		end
+
+
+	retrieve_cookies (a_session_id: STRING_32) : SE_RESPONSE
+		require
+			selinum_server_available: is_available
+		local
+			resp: HTTP_CLIENT_RESPONSE
+		do
+			create Result.make_empty
+			resp := execute_get (cmd_session_cookie (a_session_id))
+			if resp.status = 204 then
+				Result.set_status (0)
+				Result.set_session_id (a_session_id)
+			else
+				if attached resp.body as l_body then
+					Result := new_response (l_body)
+				end
+			end
+		end
+
+	set_cookie (a_session_id: STRING_32; a_data : STRING_32) : SE_RESPONSE
+		require
+			selinum_server_available: is_available
+		local
+			resp: HTTP_CLIENT_RESPONSE
+		do
+			create Result.make_empty
+			resp := execute_post (cmd_session_cookie (a_session_id),a_data)
+			if resp.status = 204 then
+				Result.set_status (0)
+				Result.set_session_id (a_session_id)
+			else
+				if attached resp.body as l_body then
+					Result := new_response (l_body)
+				end
+			end
+		end
+
+	delete_cookies (a_session_id: STRING_32) : SE_RESPONSE
+		require
+			selinum_server_available: is_available
+		local
+			resp: HTTP_CLIENT_RESPONSE
+		do
+			create Result.make_empty
+			resp := execute_delete (cmd_session_cookie (a_session_id))
+			if resp.status = 204 then
+				Result.set_status (0)
+				Result.set_session_id (a_session_id)
+			else
+				if attached resp.body as l_body then
+					Result := new_response (l_body)
+				end
+			end
+		end
+
+	delete_cookie_by_name (a_session_id: STRING_32; a_name : STRING_32) : SE_RESPONSE
+		require
+			selinum_server_available: is_available
+		local
+			resp: HTTP_CLIENT_RESPONSE
+		do
+			create Result.make_empty
+			resp := execute_delete (cmd_session_cookie_delete (a_session_id,a_name))
+			if resp.status = 204 then
+				Result.set_status (0)
+				Result.set_session_id (a_session_id)
+			else
+				if attached resp.body as l_body then
+					Result := new_response (l_body)
+				end
+			end
+		end
+
+	page_source (a_session_id: STRING_32) : SE_RESPONSE
+		require
+			selinum_server_available: is_available
+		local
+			resp: HTTP_CLIENT_RESPONSE
+		do
+			create Result.make_empty
+			resp := execute_get (cmd_session_source (a_session_id))
+			if resp.status = 204 then
+				Result.set_status (0)
+				Result.set_session_id (a_session_id)
+			else
+				if attached resp.body as l_body then
+					Result := new_response (l_body)
+				end
+			end
+		end
+
+
+	page_title (a_session_id: STRING_32) : SE_RESPONSE
+		require
+			selinum_server_available: is_available
+		local
+			resp: HTTP_CLIENT_RESPONSE
+		do
+			create Result.make_empty
+			resp := execute_get (cmd_session_title (a_session_id))
+			if resp.status = 204 then
+				Result.set_status (0)
+				Result.set_session_id (a_session_id)
+			else
+				if attached resp.body as l_body then
+					Result := new_response (l_body)
+				end
+			end
+		end
+
+
+	search_element (a_session_id: STRING_32; a_data :STRING_32) : SE_RESPONSE
+		require
+			selinum_server_available: is_available
+		local
+			resp: HTTP_CLIENT_RESPONSE
+		do
+			create Result.make_empty
+			resp := execute_post (cmd_session_element (a_session_id),a_data)
+			if resp.status = 204 then
+				Result.set_status (0)
+				Result.set_session_id (a_session_id)
+			else
+				if attached resp.body as l_body then
+					Result := new_response (l_body)
+				end
+			end
+		end
+
+
+	search_element_id_element (a_session_id: STRING_32; id : STRING_32; a_data :STRING_32) : SE_RESPONSE
+		require
+			selinum_server_available: is_available
+		local
+			resp: HTTP_CLIENT_RESPONSE
+		do
+			create Result.make_empty
+			resp := execute_post (cmd_session_element_id_element (a_session_id,id),a_data)
+			if resp.status = 204 then
+				Result.set_status (0)
+				Result.set_session_id (a_session_id)
+			else
+				if attached resp.body as l_body then
+					Result := new_response (l_body)
+				end
+			end
+		end
+
+
+	search_elements (a_session_id: STRING_32; a_data :STRING_32) : SE_RESPONSE
+		require
+			selinum_server_available: is_available
+		local
+			resp: HTTP_CLIENT_RESPONSE
+		do
+			create Result.make_empty
+			resp := execute_post (cmd_session_elements (a_session_id),a_data)
+			if resp.status = 204 then
+				Result.set_status (0)
+				Result.set_session_id (a_session_id)
+			else
+				if attached resp.body as l_body then
+					Result := new_response (l_body)
+				end
+			end
+		end
+
+
+
+	element_active (a_session_id: STRING_32) : SE_RESPONSE
+		require
+			selinum_server_available: is_available
+		local
+			resp: HTTP_CLIENT_RESPONSE
+		do
+			create Result.make_empty
+			resp := execute_get (cmd_session_element_active (a_session_id))
+			if resp.status = 204 then
+				Result.set_status (0)
+				Result.set_session_id (a_session_id)
+			else
+				if attached resp.body as l_body then
+					Result := new_response (l_body)
+				end
+			end
+		end
+
+
+	search_element_id_elements (a_session_id: STRING_32; id : STRING_32; a_data :STRING_32) : SE_RESPONSE
+		require
+			selinum_server_available: is_available
+		local
+			resp: HTTP_CLIENT_RESPONSE
+		do
+			create Result.make_empty
+			resp := execute_post (cmd_session_element_id_elements (a_session_id,id),a_data)
+			if resp.status = 204 then
+				Result.set_status (0)
+				Result.set_session_id (a_session_id)
+			else
+				if attached resp.body as l_body then
+					Result := new_response (l_body)
+				end
+			end
+		end
+
+
+
 feature {NONE} -- Implementation
 
 	execute_get (command_name: STRING_32): HTTP_CLIENT_RESPONSE

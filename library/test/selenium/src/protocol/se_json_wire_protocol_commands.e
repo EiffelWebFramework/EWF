@@ -163,26 +163,137 @@ feature
 
 
 
---POST	/session/:sessionId/ime/activate	 Make an engines that is available (appears on the listreturned by getAvailableEngines) active.
 --POST	/session/:sessionId/frame	 Change focus to another frame on the page.
---POST	/session/:sessionId/window	 Change focus to another window.
---DELETE	/session/:sessionId/window	 Close the current window.
---POST	/session/:sessionId/window/:windowHandle/size	 Change the size of the specified window.
---GET		/session/:sessionId/window/:windowHandle/size	 Get the size of the specified window.
---POST	/session/:sessionId/window/:windowHandle/position	 Change the position of the specified window.
---GET		/session/:sessionId/window/:windowHandle/position	 Get the position of the specified window.
---POST	/session/:sessionId/window/:windowHandle/maximize	 Maximize the specified window if not already maximized.
---GET		/session/:sessionId/cookie	 Retrieve all cookies visible to the current page.
---POST	/session/:sessionId/cookie	 Set a cookie.
---DELETE	/session/:sessionId/cookie	 Delete all cookies visible to the current page.
---DELETE	/session/:sessionId/cookie/:name	 Delete the cookie with the given name.
---GET		/session/:sessionId/source	 Get the current page source.
---GET		/session/:sessionId/title	 Get the current page title.
---POST	/session/:sessionId/element	 Search for an element on the page, starting from the document root.
---POST	/session/:sessionId/elements	 Search for multiple elements on the page, starting from the document root.
---POST	/session/:sessionId/element/active	 Get the element on the page that currently has focus.
+
+		cmd_session_window_tmpl : STRING ="session/$id/window"
+
+		cmd_session_window (id: STRING_32): STRING_32
+			do
+				create Result.make_from_string (cmd_session_window_tmpl)
+				Result.replace_substring_all ("$id", id)
+			end
+
+
+		cmd_session_window_size_tmpl : STRING ="session/$id/window/$windowHandle/size"
+
+		cmd_session_window_size (id: STRING_32; window_handle: STRING_32): STRING_32
+			do
+				create Result.make_from_string (cmd_session_window_size_tmpl)
+				Result.replace_substring_all ("$id", id)
+				Result.replace_substring_all ("$windowHandle", window_handle)
+			end
+
+		cmd_session_window_position_tmpl : STRING ="session/$id/window/$windowHandle/position"
+
+		cmd_session_window_position (id: STRING_32; window_handle: STRING_32): STRING_32
+			do
+				create Result.make_from_string (cmd_session_window_position_tmpl)
+				Result.replace_substring_all ("$id", id)
+				Result.replace_substring_all ("$windowHandle", window_handle)
+			end
+
+		cmd_session_window_maximize_tmpl : STRING ="session/$id/window/$windowHandle/maximize"
+
+		cmd_session_window_maximize (id: STRING_32; window_handle: STRING_32): STRING_32
+			do
+				create Result.make_from_string (cmd_session_window_maximize_tmpl)
+				Result.replace_substring_all ("$id", id)
+				Result.replace_substring_all ("$windowHandle", window_handle)
+			end
+
+
+
+		cmd_session_cookie_tmpl : STRING ="session/$id/cookie"
+
+		cmd_session_cookie (id: STRING_32): STRING_32
+			do
+				create Result.make_from_string (cmd_session_cookie_tmpl)
+				Result.replace_substring_all ("$id", id)
+			end
+
+
+		cmd_session_cookie_delte_tmpl : STRING ="session/$id/cookie/$name"
+
+		cmd_session_cookie_delete (id: STRING_32;name : STRING_32): STRING_32
+			do
+				create Result.make_from_string (cmd_session_cookie_delte_tmpl)
+				Result.replace_substring_all ("$id", id)
+				Result.replace_substring_all ("$name", name)
+			end
+
+		cmd_session_source_tmpl : STRING ="session/$id/source"
+
+		cmd_session_source (id: STRING_32): STRING_32
+			do
+				create Result.make_from_string (cmd_session_source_tmpl)
+				Result.replace_substring_all ("$id", id)
+			end
+
+		cmd_session_title_tmpl : STRING ="session/$id/title"
+
+		cmd_session_title (id: STRING_32): STRING_32
+			do
+				create Result.make_from_string (cmd_session_source_tmpl)
+				Result.replace_substring_all ("$id", id)
+			end
+
+		cmd_session_element_tmpl : STRING ="session/$id/element"
+
+		cmd_session_element (id: STRING_32): STRING_32
+			do
+				create Result.make_from_string (cmd_session_element_tmpl)
+				Result.replace_substring_all ("$id", id)
+			end
+
+		cmd_session_elements_tmpl : STRING ="session/$id/elements"
+
+		cmd_session_elements (id: STRING_32): STRING_32
+			do
+				create Result.make_from_string (cmd_session_elements_tmpl)
+				Result.replace_substring_all ("$id", id)
+			end
+
+		cmd_session_element_active_tmpl : STRING ="session/$id/element/active"
+
+		cmd_session_element_active (id: STRING_32): STRING_32
+			do
+				create Result.make_from_string (cmd_session_element_active_tmpl)
+				Result.replace_substring_all ("$id", id)
+			end
+
+
+		cmd_session_element_id_tmpl : STRING ="session/$sessionId/element/$id"
+
+		cmd_session_element_id (sessionId: STRING_32; id : STRING_32 ): STRING_32
+			do
+				create Result.make_from_string (cmd_session_element_id_tmpl)
+				Result.replace_substring_all ("$sessionId", sessionId)
+				Result.replace_substring_all ("$id", id)
+			end
+
+
 --GET		/session/:sessionId/element/:id	 Describe the identified element.
---POST	/session/:sessionId/element/:id/element	 Search for an element on the page, starting from the identified element.
+
+		cmd_session_element_id_element_tmpl : STRING ="session/$sessionId/element/$id/element"
+
+		cmd_session_element_id_element (sessionId: STRING_32; id : STRING_32 ): STRING_32
+			do
+				create Result.make_from_string (cmd_session_element_id_element_tmpl)
+				Result.replace_substring_all ("$sessionId", sessionId)
+				Result.replace_substring_all ("$id", id)
+			end
+
+		cmd_session_element_id_elements_tmpl : STRING ="session/$sessionId/element/$id/elements"
+
+		cmd_session_element_id_elements (sessionId: STRING_32; id : STRING_32 ): STRING_32
+			do
+				create Result.make_from_string (cmd_session_element_id_elements_tmpl)
+				Result.replace_substring_all ("$sessionId", sessionId)
+				Result.replace_substring_all ("$id", id)
+			end
+
+
+
 --POST	/session/:sessionId/element/:id/elements	 Search for multiple elements on the page, starting from the identified element.
 --POST	/session/:sessionId/element/:id/click	 Click on an element.
 --POST	/session/:sessionId/element/:id/submit	 Submit a FORM element.

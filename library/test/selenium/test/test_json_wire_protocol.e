@@ -273,6 +273,23 @@ feature -- Test routines
 			end
 		end
 
+	test_ime_available_engines
+		local
+			capabilities : SE_CAPABILITIES
+		do
+			if attached wire_protocol.ime_available_engines (session_id) as l_ime_available_engines then
+				assert ("Has no error", not wire_protocol.has_error)
+				across l_ime_available_engines as item loop
+					print (item)
+				end
+			else
+				assert ("Has error :", wire_protocol.has_error)
+				if attached wire_protocol.last_error as l_error then
+					assert ("Status 13", l_error.code = 13)
+				end
+			end
+		end
+
 
 feature {NONE}-- Implementation
 	wire_protocol: SE_JSON_WIRE_PROTOCOL

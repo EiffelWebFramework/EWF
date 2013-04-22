@@ -71,6 +71,20 @@ feature -- Access
 			end
 		end
 
+
+	json_to_se_cookie (post: STRING_32): detachable SE_COOKIE
+		local
+			parser: JSON_PARSER
+		do
+			initialize_converters (json)
+			create parser.make_parser (post)
+			if attached parser.parse_object as st and parser.is_parsed then
+				if attached {SE_COOKIE} json.object (st, "SE_COOKIE") as l_cookie then
+					Result := l_cookie
+				end
+			end
+		end
+
 	initialize_converters (j: like json)
 			-- Initialize json converters
 		do
@@ -82,5 +96,6 @@ feature -- Access
 			j.add_converter (create {SE_CAPABILITIES_JSON_CONVERTER}.make)
 			j.add_converter (create {SE_RESPONSE_JSON_CONVERTER}.make)
 			j.add_converter (create {SE_TIMEOUT_TYPE_JSON_CONVERTER}.make)
+			j.add_converter (create {SE_COOKIE_JSON_CONVERTER}.make)
 		end
 end

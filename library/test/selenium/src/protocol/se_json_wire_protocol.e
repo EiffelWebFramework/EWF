@@ -3,7 +3,7 @@ note
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
-	EIS: "name=SELINIUM", "protocol=http", "src=https://code.google.com/p/selenium/wiki/JsonWireProtocol"
+	EIS: "name=SELINIUM", "protocol=selenium", "src=https://code.google.com/p/selenium/wiki/JsonWireProtocol"
 
 class
 	SE_JSON_WIRE_PROTOCOL
@@ -67,7 +67,7 @@ feature -- Commands
 					if attached response.json_response as l_response then
 						Result := json_to_se_status (l_response)
 					end
-			    end
+				end
 			end
 		end
 
@@ -146,7 +146,7 @@ feature -- Commands
 			--	Returns:
 			--		{object} An object describing the session's capabilities.
 		local
-			response : SE_RESPONSE
+			response: SE_RESPONSE
 		do
 			if commnad_executor.is_available then
 				response := commnad_executor.retrieve_session (a_session_id)
@@ -587,7 +587,6 @@ feature -- Commands
 			--		NoSuchWindow - If the currently selected window has been closed.
 			--		NoSuchFrame - If the frame specified by id cannot be found.
 		do
-				-- TODO
 		end
 
 	change_focus_window (a_session_id: STRING_32; a_name: STRING_32)
@@ -599,8 +598,18 @@ feature -- Commands
 			--		name - {string} The window to change focus to.
 			--	Potential Errors:
 			--		NoSuchWindow - If the window specified by name cannot be found.
+		local
+			l_json: STRING_32
+			resp: SE_RESPONSE
 		do
-				-- TODO
+			l_json := "[
+				{ "name": "$name" }
+			]"
+			l_json.replace_substring_all ("$name", a_name)
+			if commnad_executor.is_available then
+				resp := commnad_executor.change_focus_window (a_session_id, l_json)
+				check_response (resp)
+			end
 		end
 
 	close_window (a_session_id: STRING_32)
@@ -610,11 +619,16 @@ feature -- Commands
 			--		:sessionId - ID of the session to route the command to.
 			--	Potential Errors:
 			--		NoSuchWindow - If the currently selected window is already closed
+		local
+			resp: SE_RESPONSE
 		do
-				--TODO
+			if commnad_executor.is_available then
+				resp := commnad_executor.close_window (a_session_id)
+				check_response (resp)
+			end
 		end
 
-	change_size_window (a_session_id: STRING_32; a_window_handle: STRING_32)
+	change_size_window (a_session_id: STRING_32; a_window_handle: STRING_32; a_width: NATURAL_32; a_height: NATURAL_32)
 			--	POST /session/:sessionId/window/:windowHandle/size
 			--	Change the size of the specified window. If the :windowHandle URL parameter is "current", the currently active window will be resized.
 			--	URL Parameters:
@@ -622,10 +636,24 @@ feature -- Commands
 			--	JSON Parameters:
 			--		width - {number} The new window width.
 			--		height - {number} The new window height.
+		local
+			l_json: STRING_32
+			resp: SE_RESPONSE
 		do
+			l_json := "[
+				{ "width": $width,
+				  "height": $height
+				}
+			]"
+			l_json.replace_substring_all ("$width", a_width.out)
+			l_json.replace_substring_all ("$height", a_height.out)
+			if commnad_executor.is_available then
+				resp := commnad_executor.change_size_window (a_session_id, a_window_handle, l_json)
+				check_response (resp)
+			end
 		end
 
-	size_window (a_session_id: STRING_32; a_window_handle: STRING_32)
+	size_window (a_session_id: STRING_32; a_window_handle: STRING_32): SE_WINDOW
 			--	GET /session/:sessionId/window/:windowHandle/size
 			--	Get the size of the specified window. If the :windowHandle URL parameter is "current", the size of the currently active window will be returned.
 			--	URL Parameters:
@@ -634,11 +662,27 @@ feature -- Commands
 			--		{width: number, height: number} The size of the window.
 			--	Potential Errors:
 			--		NoSuchWindow - If the specified window cannot be found.
+		local
+			resp: SE_RESPONSE
 		do
-				--TODO
+			create Result
+			if commnad_executor.is_available then
+				resp := commnad_executor.size_window (a_session_id, a_window_handle)
+				check_response (resp)
+				if not has_error then
+					if attached resp.value as l_value and then attached {JSON_OBJECT} string_to_json (l_value) as l_json_object then
+						if attached l_json_object.item ("width") as l_width then
+							Result.set_width (l_width.representation.to_natural_32)
+						end
+						if attached l_json_object.item ("height") as l_height then
+							Result.set_width (l_height.representation.to_natural_32)
+						end
+					end
+				end
+			end
 		end
 
-	change_window_position (a_session_id: STRING_32; a_window_handle: STRING_32)
+	change_window_position (a_session_id: STRING_32; a_window_handle: STRING_32; an_x: INTEGER_32; an_y: INTEGER_32)
 			--	POST /session/:sessionId/window/:windowHandle/position
 			--	Change the position of the specified window. If the :windowHandle URL parameter is "current", the currently active window will be moved.
 			--	URL Parameters:
@@ -648,11 +692,24 @@ feature -- Commands
 			--		y - {number} The Y coordinate to position the window at, relative to the upper left corner of the screen.
 			--	Potential Errors:
 			--		NoSuchWindow - If the specified window cannot be found.
+		local
+			l_json: STRING_32
+			resp: SE_RESPONSE
 		do
-				-- TODO
+			l_json := "[
+				{ "x": $x,
+				  "y": $y
+				}
+			]"
+			l_json.replace_substring_all ("$x", an_x.out)
+			l_json.replace_substring_all ("$y", an_y.out)
+			if commnad_executor.is_available then
+				resp := commnad_executor.change_window_position (a_session_id, a_window_handle, l_json)
+				check_response (resp)
+			end
 		end
 
-	window_position (a_sesion_id: STRING_32; a_window_handle: STRING_32)
+	window_position (a_session_id: STRING_32; a_window_handle: STRING_32): SE_WINDOW
 			--	GET /session/:sessionId/window/:windowHandle/position
 			--	Get the position of the specified window. If the :windowHandle URL parameter is "current", the position of the currently active window will be returned.
 			--	URL Parameters:
@@ -661,21 +718,43 @@ feature -- Commands
 			--		{x: number, y: number} The X and Y coordinates for the window, relative to the upper left corner of the screen.
 			--	Potential Errors:
 			--		NoSuchWindow - If the specified window cannot be found.
+		local
+			resp: SE_RESPONSE
 		do
-				--TODO
+			create Result
+			if commnad_executor.is_available then
+				resp := commnad_executor.window_position (a_session_id, a_window_handle)
+				check_response (resp)
+				if not has_error then
+					if attached resp.value as l_value and then attached {JSON_OBJECT} string_to_json (l_value) as l_json_object then
+						if attached l_json_object.item ("x") as l_x then
+							Result.set_x (l_x.representation.to_integer_32)
+						end
+						if attached l_json_object.item ("y") as l_y then
+							Result.set_y (l_y.representation.to_integer_32)
+						end
+					end
+				end
+			end
 		end
 
-	window_maximize (a_session_id: STRING_32; a_window_haNdle: STRING_32)
+	window_maximize (a_session_id: STRING_32; a_window_handle: STRING_32)
 			--	POST /session/:sessionId/window/:windowHandle/maximize
 			--	Maximize the specified window if not already maximized. If the :windowHandle URL parameter is "current", the currently active window will be maximized.
 			--	URL Parameters:
 			--		:sessionId - ID of the session to route the command to.
 			--	Potential Errors:
 			--		NoSuchWindow - If the specified window cannot be found.
+		local
+			resp: SE_RESPONSE
 		do
+			if commnad_executor.is_available then
+				resp := commnad_executor.window_maximize (a_session_id, a_window_handle)
+				check_response (resp)
+			end
 		end
 
-	retrieve_cookies (a_session_id: STRING_32)
+	retrieve_cookies (a_session_id: STRING_32): detachable LIST [SE_COOKIE]
 			--	GET /session/:sessionId/cookie
 			--	Retrieve all cookies visible to the current page.
 			--	URL Parameters:
@@ -684,18 +763,55 @@ feature -- Commands
 			--		{Array.<object>} A list of cookies.
 			--	Potential Errors:
 			--		NoSuchWindow - If the currently selected window has been closed.
+		local
+			resp: SE_RESPONSE
+			index: INTEGER
 		do
+				-- Check the format of internal json object
+			if commnad_executor.is_available then
+				resp := commnad_executor.retrieve_cookies (a_session_id)
+				check_response (resp)
+				if not has_error then
+					if attached resp.value as l_value and then attached {JSON_ARRAY} string_to_json (l_value) as l_json_array then
+						create {ARRAYED_LIST [SE_COOKIE]} Result.make (10)
+						from
+							index := 1
+						until
+							index > l_json_array.count
+						loop
+							if attached {JSON_VALUE} l_json_array.i_th (index) as json_str then
+								if attached json_to_se_cookie (json_str.representation) as l_item then
+									Result.force (l_item)
+								end
+							end
+							index := index + 1
+						end
+					end
+				end
+			end
 		end
 
-	set_cookie (a_session_id: STRING_32)
+	set_cookie (a_session_id: STRING_32; a_cookie: SE_COOKIE)
 			--	POST /session/:sessionId/cookie
 			--	Set a cookie. If the cookie path is not specified, it should be set to "/". Likewise, if the domain is omitted, it should default to the current page's domain.
 			--	URL Parameters:
 			--		:sessionId - ID of the session to route the command to.
 			--	JSON Parameters:
 			--		cookie - {object} A JSON object defining the cookie to add.
+		local
+			l_data: STRING_32
+			response: SE_RESPONSE
 		do
-				-- TODO
+			l_data := "[
+				{ "cookie":	$cookie}
+			]"
+			if commnad_executor.is_available then
+				if attached to_json (a_cookie) as l_json then
+					l_data.replace_substring_all ("$cookie", l_json.representation)
+					response := commnad_executor.set_cookie (a_session_id, l_data)
+					check_response (response)
+				end
+			end
 		end
 
 	delete_cookies (a_session_id: STRING_32)
@@ -707,8 +823,13 @@ feature -- Commands
 			--		InvalidCookieDomain - If the cookie's domain is not visible from the current page.
 			--		NoSuchWindow - If the currently selected window has been closed.
 			--		UnableToSetCookie - If attempting to set a cookie on a page that does not support cookies (e.g. pages with mime-type text/plain).
+		local
+			response: SE_RESPONSE
 		do
-				-- TODO
+			if commnad_executor.is_available then
+				response := commnad_executor.delete_cookies (a_session_id)
+				check_response (response)
+			end
 		end
 
 	delete_cookie_by_name (a_session_id: STRING_32; a_name: STRING_32)
@@ -719,11 +840,16 @@ feature -- Commands
 			--		:name - The name of the cookie to delete.
 			--	Potential Errors:
 			--		NoSuchWindow - If the currently selected window has been closed.
+		local
+			response: SE_RESPONSE
 		do
-				-- TODO
+			if commnad_executor.is_available then
+				response := commnad_executor.delete_cookie_by_name (a_session_id, a_name)
+				check_response (response)
+			end
 		end
 
-	page_source (a_session_id: STRING_32)
+	page_source (a_session_id: STRING_32): detachable STRING_32
 			--	GET /session/:sessionId/source
 			--	Get the current page source.
 			--	URL Parameters:
@@ -732,10 +858,21 @@ feature -- Commands
 			--		{string} The current page source.
 			--	Potential Errors:
 			--		NoSuchWindow - If the currently selected window has been closed.
+		local
+			resp: SE_RESPONSE
 		do
+			if commnad_executor.is_available then
+				resp := commnad_executor.page_source (a_session_id)
+				check_response (resp)
+				if not has_error then
+					if attached resp.value as l_value then
+						Result := l_value
+					end
+				end
+			end
 		end
 
-	page_title (a_session_id: STRING_32)
+	page_title (a_session_id: STRING_32): detachable STRING_32
 			--	GET /session/:sessionId/title
 			--	Get the current page title.
 			--	URL Parameters:
@@ -744,11 +881,21 @@ feature -- Commands
 			--		{string} The current page title.
 			--	Potential Errors:
 			--		NoSuchWindow - If the currently selected window has been closed.
+		local
+			resp: SE_RESPONSE
 		do
-				-- TODO
+			if commnad_executor.is_available then
+				resp := commnad_executor.page_title (a_session_id)
+				check_response (resp)
+				if not has_error then
+					if attached resp.value as l_value then
+						Result := l_value
+					end
+				end
+			end
 		end
 
-	search_element (a_session_id: STRING_32)
+	search_element (a_session_id: STRING_32; strategy: STRING_32): detachable WEB_ELEMENT
 			-- POST /session/:sessionId/element
 			-- Search for an element on the page, starting from the document root. The located element will be returned as a
 			-- WebElement JSON object. The table below lists the locator strategies that each server should support.
@@ -775,11 +922,23 @@ feature -- Commands
 			--		NoSuchWindow - If the currently selected window has been closed.
 			--		NoSuchElement - If the element cannot be found.
 			--		XPathLookupError - If using XPath and the input expression is invalid.
+		require
+				has_valid_strategy : (create {SE_BY}).is_valid_strategy (strategy)
+		local
+			resp: SE_RESPONSE
 		do
-				-- TODO
+			if commnad_executor.is_available then
+				resp := commnad_executor.search_element (a_session_id, strategy)
+				check_response (resp)
+				if not has_error then
+					if attached {JSON_OBJECT} resp.value as l_value and then attached l_value.item ("ELEMENT") as l_elem then
+						create Result.make (l_elem.representation)
+					end
+				end
+			end
 		end
 
-	search_elements (a_session_id: STRING_32)
+	search_elements (a_session_id: STRING_32; strategy: STRING_32): detachable LIST [WEB_ELEMENT]
 			--	POST /session/:sessionId/elements
 			--	Search for multiple elements on the page, starting from the document root. The located elements will be returned as a WebElement JSON objects. The table below lists the locator strategies that each server should support. Elements should be returned in the order located in the DOM.
 			--
@@ -803,10 +962,34 @@ feature -- Commands
 			--	Potential Errors:
 			--		NoSuchWindow - If the currently selected window has been closed.
 			--		XPathLookupError - If using XPath and the input expression is invalid.
+		require
+					has_valid_strategy : (create {SE_BY}).is_valid_strategy (strategy)
+		local
+			resp: SE_RESPONSE
+			index: INTEGER
 		do
+			if commnad_executor.is_available then
+				resp := commnad_executor.search_elements (a_session_id, strategy)
+				check_response (resp)
+				if not has_error then
+					if attached resp.value as l_value and then attached {JSON_ARRAY} string_to_json (l_value) as l_json_array then
+						create {ARRAYED_LIST [WEB_ELEMENT]} Result.make (10)
+						from
+							index := 1
+						until
+							index > l_json_array.count
+						loop
+							if attached {JSON_OBJECT} l_json_array.i_th (index) as json_str and then attached json_str.item ("ELEMENT") as l_elem then
+								Result.force (create {WEB_ELEMENT}.make (l_elem.representation))
+							end
+							index := index + 1
+						end
+					end
+				end
+			end
 		end
 
-	element_active (a_session_id: STRING_32)
+	element_active (a_session_id: STRING_32): detachable WEB_ELEMENT
 			--	POST /session/:sessionId/element/active
 			--	Get the element on the page that currently has focus. The element will be returned as a WebElement JSON object.
 			--	URL Parameters:
@@ -815,24 +998,35 @@ feature -- Commands
 			--		{ELEMENT:string} A WebElement JSON object for the active element.
 			--	Potential Errors:
 			--		NoSuchWindow - If the currently selected window has been closed.
+		local
+			resp : SE_RESPONSE
 		do
+			if commnad_executor.is_available then
+				resp := commnad_executor.element_active (a_session_id)
+				check_response (resp)
+				if not has_error then
+					if attached {JSON_OBJECT} resp.value as l_value and then attached l_value.item ("ELEMENT") as l_elem then
+						create Result.make (l_elem.representation)
+					end
+				end
+			end
 		end
 
-	element_id (a_session_id: STRING_32)
-			--	GET /session/:sessionId/element/:id
-			--	Describe the identified element.
-			--	Note: This command is reserved for future use; its return type is currently undefined.
+--	element_id (a_session_id: STRING_32; )
+--			--	GET /session/:sessionId/element/:id
+--			--	Describe the identified element.
+--			--	Note: This command is reserved for future use; its return type is currently undefined.
 
-			--	URL Parameters:
-			--		:sessionId - ID of the session to route the command to.
-			--		:id - ID of the element to route the command to.
-			--	Potential Errors:
-			--		NoSuchWindow - If the currently selected window has been closed.
-			--		StaleElementReference - If the element referenced by :id is no longer attached to the page's DOM.
-		do
-		end
+--			--	URL Parameters:
+--			--		:sessionId - ID of the session to route the command to.
+--			--		:id - ID of the element to route the command to.
+--			--	Potential Errors:
+--			--		NoSuchWindow - If the currently selected window has been closed.
+--			--		StaleElementReference - If the element referenced by :id is no longer attached to the page's DOM.
+--		do
+--		end
 
-	search_element_id (a_session_id: STRING_32; an_id: STRING_32)
+	search_element_id_element (a_session_id: STRING_32; an_id: STRING_32; strategy : STRING_32) : detachable WEB_ELEMENT
 			--	POST /session/:sessionId/element/:id/element
 			--	Search for an element on the page, starting from the identified element.
 			--	The located element will be returned as a WebElement JSON object.
@@ -862,10 +1056,24 @@ feature -- Commands
 			--		StaleElementReference - If the element referenced by :id is no longer attached to the page's DOM.
 			--		NoSuchElement - If the element cannot be found.
 			--		XPathLookupError - If using XPath and the input expression is invalid.
+		require
+				has_valid_strategy : (create {SE_BY}).is_valid_strategy (strategy)
+		local
+			resp: SE_RESPONSE
 		do
+			if commnad_executor.is_available then
+				resp := commnad_executor.search_element_id_element (a_session_id,an_id,strategy)
+				check_response (resp)
+				if not has_error then
+					if attached {JSON_OBJECT} resp.value as l_value and then attached l_value.item ("ELEMENT") as l_elem then
+						create Result.make (l_elem.representation)
+					end
+				end
+			end
 		end
 
-	search_elements_id (a_session_id: STRING_32; an_id: STRING_32)
+
+	search_elements_id (a_session_id: STRING_32; an_id: STRING_32; strategy : STRING_32) : detachable LIST[WEB_ELEMENT]
 			--	POST /session/:sessionId/element/:id/elements
 			--	Search for multiple elements on the page, starting from the identified element.
 			--	The located elements will be returned as a WebElement JSON objects.
@@ -894,7 +1102,21 @@ feature -- Commands
 			--		NoSuchWindow - If the currently selected window has been closed.
 			--		StaleElementReference - If the element referenced by :id is no longer attached to the page's DOM.
 			--		XPathLookupError - If using XPath and the input expression is invalid.
+		require
+					has_valid_strategy : (create {SE_BY}).is_valid_strategy (strategy)
+		local
+			resp : SE_RESPONSE
 		do
+			if commnad_executor.is_available then
+				resp := commnad_executor.search_element_id_elements (a_session_id,an_id,strategy)
+				check_response (resp)
+				if not has_error then
+--					if attached {JSON_OBJECT} resp.value as l_value and then attached l_value.item ("ELEMENT") as l_elem then
+--						create Result.make (l_elem.representation)
+--					end
+				end
+			end
+
 		end
 
 	element_click (a_session_id: STRING_32; an_id: STRING_32)
@@ -1604,7 +1826,7 @@ feature {NONE} -- Implementation
 
 	new_session (value: STRING_32; to: STRING_32): detachable SE_SESSION
 		local
-			l_rep : STRING_32
+			l_rep: STRING_32
 		do
 			if to.is_case_insensitive_equal ("session") then
 				if attached {JSON_OBJECT} string_to_json (value) as l_value then

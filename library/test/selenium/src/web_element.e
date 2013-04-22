@@ -9,17 +9,17 @@ class
 create
 		make
 feature
-		make
+		make ( an_element : STRING_32)
 			do
-
+				set_element (an_element)
 			end
 feature -- Access
-	element : detachable STRING_32
+	element : STRING_32
 		--The opaque ID assigned to the element by the server.
 		--This ID should be used in all subsequent commands issued against the element.
 
 feature -- Change Element
-	set_element (an_element : STRING)
+	set_element (an_element : STRING_32)
 		do
 			element := an_element
 		end
