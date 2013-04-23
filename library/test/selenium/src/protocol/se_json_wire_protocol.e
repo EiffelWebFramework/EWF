@@ -923,7 +923,7 @@ feature -- Commands
 			--		NoSuchElement - If the element cannot be found.
 			--		XPathLookupError - If using XPath and the input expression is invalid.
 		require
-				has_valid_strategy : (create {SE_BY}).is_valid_strategy (strategy)
+			has_valid_strategy: (create {SE_BY}).is_valid_strategy (strategy)
 		local
 			resp: SE_RESPONSE
 		do
@@ -963,7 +963,7 @@ feature -- Commands
 			--		NoSuchWindow - If the currently selected window has been closed.
 			--		XPathLookupError - If using XPath and the input expression is invalid.
 		require
-					has_valid_strategy : (create {SE_BY}).is_valid_strategy (strategy)
+			has_valid_strategy: (create {SE_BY}).is_valid_strategy (strategy)
 		local
 			resp: SE_RESPONSE
 			index: INTEGER
@@ -999,7 +999,7 @@ feature -- Commands
 			--	Potential Errors:
 			--		NoSuchWindow - If the currently selected window has been closed.
 		local
-			resp : SE_RESPONSE
+			resp: SE_RESPONSE
 		do
 			if commnad_executor.is_available then
 				resp := commnad_executor.element_active (a_session_id)
@@ -1012,21 +1012,21 @@ feature -- Commands
 			end
 		end
 
---	element_id (a_session_id: STRING_32; )
---			--	GET /session/:sessionId/element/:id
---			--	Describe the identified element.
---			--	Note: This command is reserved for future use; its return type is currently undefined.
+		--	element_id (a_session_id: STRING_32; )
+		--			--	GET /session/:sessionId/element/:id
+		--			--	Describe the identified element.
+		--			--	Note: This command is reserved for future use; its return type is currently undefined.
 
---			--	URL Parameters:
---			--		:sessionId - ID of the session to route the command to.
---			--		:id - ID of the element to route the command to.
---			--	Potential Errors:
---			--		NoSuchWindow - If the currently selected window has been closed.
---			--		StaleElementReference - If the element referenced by :id is no longer attached to the page's DOM.
---		do
---		end
+		--			--	URL Parameters:
+		--			--		:sessionId - ID of the session to route the command to.
+		--			--		:id - ID of the element to route the command to.
+		--			--	Potential Errors:
+		--			--		NoSuchWindow - If the currently selected window has been closed.
+		--			--		StaleElementReference - If the element referenced by :id is no longer attached to the page's DOM.
+		--		do
+		--		end
 
-	search_element_id_element (a_session_id: STRING_32; an_id: STRING_32; strategy : STRING_32) : detachable WEB_ELEMENT
+	search_element_id_element (a_session_id: STRING_32; an_id: STRING_32; strategy: STRING_32): detachable WEB_ELEMENT
 			--	POST /session/:sessionId/element/:id/element
 			--	Search for an element on the page, starting from the identified element.
 			--	The located element will be returned as a WebElement JSON object.
@@ -1057,12 +1057,12 @@ feature -- Commands
 			--		NoSuchElement - If the element cannot be found.
 			--		XPathLookupError - If using XPath and the input expression is invalid.
 		require
-				has_valid_strategy : (create {SE_BY}).is_valid_strategy (strategy)
+			has_valid_strategy: (create {SE_BY}).is_valid_strategy (strategy)
 		local
 			resp: SE_RESPONSE
 		do
 			if commnad_executor.is_available then
-				resp := commnad_executor.search_element_id_element (a_session_id,an_id,strategy)
+				resp := commnad_executor.search_element_id_element (a_session_id, an_id, strategy)
 				check_response (resp)
 				if not has_error then
 					if attached {JSON_OBJECT} resp.value as l_value and then attached l_value.item ("ELEMENT") as l_elem then
@@ -1072,8 +1072,7 @@ feature -- Commands
 			end
 		end
 
-
-	search_elements_id (a_session_id: STRING_32; an_id: STRING_32; strategy : STRING_32) : detachable LIST[WEB_ELEMENT]
+	search_elements_id (a_session_id: STRING_32; an_id: STRING_32; strategy: STRING_32): detachable LIST [WEB_ELEMENT]
 			--	POST /session/:sessionId/element/:id/elements
 			--	Search for multiple elements on the page, starting from the identified element.
 			--	The located elements will be returned as a WebElement JSON objects.
@@ -1103,15 +1102,15 @@ feature -- Commands
 			--		StaleElementReference - If the element referenced by :id is no longer attached to the page's DOM.
 			--		XPathLookupError - If using XPath and the input expression is invalid.
 		require
-					has_valid_strategy : (create {SE_BY}).is_valid_strategy (strategy)
+			has_valid_strategy: (create {SE_BY}).is_valid_strategy (strategy)
 		local
-			resp : SE_RESPONSE
-			index : INTEGER
+			resp: SE_RESPONSE
+			index: INTEGER
 		do
 			if commnad_executor.is_available then
-				resp := commnad_executor.search_element_id_elements (a_session_id,an_id,strategy)
+				resp := commnad_executor.search_element_id_elements (a_session_id, an_id, strategy)
 				check_response (resp)
-					if not has_error then
+				if not has_error then
 					if attached resp.value as l_value and then attached {JSON_ARRAY} string_to_json (l_value) as l_json_array then
 						create {ARRAYED_LIST [WEB_ELEMENT]} Result.make (10)
 						from
@@ -1127,7 +1126,6 @@ feature -- Commands
 					end
 				end
 			end
-
 		end
 
 	element_click (a_session_id: STRING_32; an_id: STRING_32)
@@ -1141,12 +1139,12 @@ feature -- Commands
 			--		StaleElementReference - If the element referenced by :id is no longer attached to the page's DOM.
 			--		ElementNotVisible - If the referenced element is not visible on the page (either is hidden by CSS, has 0-width, or has 0-height)
 		local
-				resp: SE_RESPONSE
+			resp: SE_RESPONSE
 		do
-				if commnad_executor.is_available then
-					resp := commnad_executor.element_click (a_session_id,an_id)
-					check_response (resp)
-				end
+			if commnad_executor.is_available then
+				resp := commnad_executor.element_click (a_session_id, an_id)
+				check_response (resp)
+			end
 		end
 
 	element_submit (a_session_id: STRING_32; an_id: STRING_32)
@@ -1159,15 +1157,15 @@ feature -- Commands
 			--		NoSuchWindow - If the currently selected window has been closed.
 			--		StaleElementReference - If the element referenced by :id is no longer attached to the page's DOM.
 		local
-			resp : SE_RESPONSE
+			resp: SE_RESPONSE
 		do
 			if commnad_executor.is_available then
-				resp := commnad_executor.element_submit (a_session_id,an_id)
+				resp := commnad_executor.element_submit (a_session_id, an_id)
 				check_response (resp)
 			end
 		end
 
-	element_text (a_session_id: STRING_32; an_id: STRING_32) : detachable STRING_32
+	element_text (a_session_id: STRING_32; an_id: STRING_32): detachable STRING_32
 			--	GET /session/:sessionId/element/:id/text
 			--	Returns the visible text for the element.
 			--	URL Parameters:
@@ -1190,7 +1188,7 @@ feature -- Commands
 			end
 		end
 
-	send_event (a_session_id: STRING_32; an_id: STRING_32; events : ARRAY[STRING_32])
+	send_event (a_session_id: STRING_32; an_id: STRING_32; events: ARRAY [STRING_32])
 			--	POST /session/:sessionId/element/:id/value
 			--	Send a sequence of key strokes to an element.
 			--	Any UTF-8 character may be specified, however, if the server does not support native key events,
@@ -1227,23 +1225,23 @@ feature -- Commands
 			--		NoSuchWindow - If the currently selected window has been closed.
 			--		StaleElementReference - If the element referenced by :id is no longer attached to the page's DOM.
 			--		ElementNotVisible - If the referenced element is not visible on the page (either is hidden by CSS, has 0-width, or has 0-height)
-			local
-				resp: SE_RESPONSE
-				l_json : STRING_32
-			do
-				l_json := "[
-							{"value":$array}
-							]"
-				if commnad_executor.is_available then
-					if attached json.value (create {ARRAYED_LIST[STRING_32]}.make_from_array(events)) as l_array then
-						l_json.replace_substring_all ("$array", l_array.representation)
-						resp := commnad_executor.send_events (a_session_id, an_id, l_json)
-						check_response (resp)
-					end
+		local
+			resp: SE_RESPONSE
+			l_json: STRING_32
+		do
+			l_json := "[
+				{"value":$array}
+			]"
+			if commnad_executor.is_available then
+				if attached json.value (create {ARRAYED_LIST [STRING_32]}.make_from_array (events)) as l_array then
+					l_json.replace_substring_all ("$array", l_array.representation)
+					resp := commnad_executor.send_events (a_session_id, an_id, l_json)
+					check_response (resp)
 				end
 			end
+		end
 
-	send_key_strokes (a_session_id: STRING_32 ; keys : ARRAY[STRING_32])
+	send_key_strokes (a_session_id: STRING_32; keys: ARRAY [STRING_32])
 			--	POST /session/:sessionId/keys
 			--	Send a sequence of key strokes to the active element. This command is similar to the send keys command in every aspect except the implicit termination: The modifiers are not released at the end of the call. Rather, the state of the modifier keys is kept between calls, so mouse interactions can be performed while modifier keys are depressed.
 			--	URL Parameters:
@@ -1253,22 +1251,22 @@ feature -- Commands
 			--	Potential Errors:
 			--		NoSuchWindow - If the currently selected window has been closed.
 		local
-				resp: SE_RESPONSE
-				l_json : STRING_32
-			do
-				l_json := "[
-							{"value":$array}
-							]"
-				if commnad_executor.is_available then
-					if attached json.value (create {ARRAYED_LIST[STRING_32]}.make_from_array(keys)) as l_array then
-						l_json.replace_substring_all ("$array", l_array.representation)
-						resp := commnad_executor.send_key_strokes (a_session_id, l_json)
-						check_response (resp)
-					end
+			resp: SE_RESPONSE
+			l_json: STRING_32
+		do
+			l_json := "[
+				{"value":$array}
+			]"
+			if commnad_executor.is_available then
+				if attached json.value (create {ARRAYED_LIST [STRING_32]}.make_from_array (keys)) as l_array then
+					l_json.replace_substring_all ("$array", l_array.representation)
+					resp := commnad_executor.send_key_strokes (a_session_id, l_json)
+					check_response (resp)
 				end
 			end
+		end
 
-	query_by_tag_name (a_session_id: STRING_32; an_id: STRING_32) : detachable STRING_32
+	query_by_tag_name (a_session_id: STRING_32; an_id: STRING_32): detachable STRING_32
 			-- 	GET /session/:sessionId/element/:id/name
 			-- 	Query for an element's tag name.
 			-- 	URL Parameters:
@@ -1313,7 +1311,7 @@ feature -- Commands
 			end
 		end
 
-	is_selected (a_session_id: STRING_32; an_id: STRING_32) : BOOLEAN
+	is_selected (a_session_id: STRING_32; an_id: STRING_32): BOOLEAN
 			--	GET /session/:sessionId/element/:id/selected
 			--	Determine if an OPTION element, or an INPUT element of type checkbox or radiobutton is currently selected.
 			--	URL Parameters:
@@ -1324,10 +1322,21 @@ feature -- Commands
 			--	Potential Errors:
 			--		NoSuchWindow - If the currently selected window has been closed.
 			--		StaleElementReference - If the element referenced by :id is no longer attached to the page's DOM.
+		local
+			resp: SE_RESPONSE
 		do
+			if commnad_executor.is_available then
+				resp := commnad_executor.is_selected (a_session_id, an_id)
+				check_response (resp)
+				if not has_error then
+					if attached {JSON_BOOLEAN} resp.value as l_value then
+						Result := (l_value.item)
+					end
+				end
+			end
 		end
 
-	is_enabled (a_session_id: STRING_32; an_id: STRING_32) : BOOLEAN
+	is_enabled (a_session_id: STRING_32; an_id: STRING_32): BOOLEAN
 			--	GET /session/:sessionId/element/:id/enabled
 			--	Determine if an element is currently enabled.
 			--	URL Parameters:
@@ -1338,10 +1347,21 @@ feature -- Commands
 			--	Potential Errors:
 			--		NoSuchWindow - If the currently selected window has been closed.
 			--		StaleElementReference - If the element referenced by :id is no longer attached to the page's DOM.
+		local
+			resp: SE_RESPONSE
 		do
+			if commnad_executor.is_available then
+				resp := commnad_executor.is_enabled (a_session_id, an_id)
+				check_response (resp)
+				if not has_error then
+					if attached {JSON_BOOLEAN} resp.value as l_value then
+						Result := (l_value.item)
+					end
+				end
+			end
 		end
 
-	element_value (a_session_id: STRING_32; an_id: STRING_32; a_name: STRING_32) : detachable STRING_32
+	element_value (a_session_id: STRING_32; an_id: STRING_32; a_name: STRING_32): detachable STRING_32
 			--	GET /session/:sessionId/element/:id/attribute/:name
 			--	Get the value of an element's attribute.
 			--	URL Parameters:
@@ -1352,10 +1372,21 @@ feature -- Commands
 			--	Potential Errors:
 			--		NoSuchWindow - If the currently selected window has been closed.
 			--		StaleElementReference - If the element referenced by :id is no longer attached to the page's DOM.
+		local
+			resp: SE_RESPONSE
 		do
+			if commnad_executor.is_available then
+				resp := commnad_executor.element_value (a_session_id, an_id, a_name)
+				check_response (resp)
+				if not has_error then
+					if attached resp.value as l_value then
+						Result := l_value
+					end
+				end
+			end
 		end
 
-	elements_equals (a_session_id: STRING_32; an_id: STRING_32; an_other: STRING_32) : BOOLEAN
+	elements_equals (a_session_id: STRING_32; an_id: STRING_32; an_other: STRING_32): BOOLEAN
 			--	GET /session/:sessionId/element/:id/equals/:other
 			--	Test if two element IDs refer to the same DOM element.
 			--	URL Parameters:
@@ -1367,10 +1398,21 @@ feature -- Commands
 			--	Potential Errors:
 			--		NoSuchWindow - If the currently selected window has been closed.
 			--		StaleElementReference - If either the element refered to by :id or :other is no longer attached to the page's DOM.
+		local
+			resp: SE_RESPONSE
 		do
+			if commnad_executor.is_available then
+				resp := commnad_executor.element_equals (a_session_id, an_id, an_other)
+				check_response (resp)
+				if not has_error then
+					if attached {JSON_BOOLEAN} resp.value as l_value then
+						Result := (l_value.item)
+					end
+				end
+			end
 		end
 
-	is_displayed (a_session_id: STRING_32; an_id: STRING_32)
+	is_displayed (a_session_id: STRING_32; an_id: STRING_32): BOOLEAN
 			--	GET /session/:sessionId/element/:id/displayed
 			--	Determine if an element is currently displayed.
 			--	URL Parameters:
@@ -1381,7 +1423,18 @@ feature -- Commands
 			--	Potential Errors:
 			--		NoSuchWindow - If the currently selected window has been closed.
 			--		StaleElementReference - If the element referenced by :id is no longer attached to the page's DOM.
+		local
+			resp: SE_RESPONSE
 		do
+			if commnad_executor.is_available then
+				resp := commnad_executor.is_displayed (a_session_id, an_id)
+				check_response (resp)
+				if not has_error then
+					if attached {JSON_BOOLEAN} resp.value as l_value then
+						Result := (l_value.item)
+					end
+				end
+			end
 		end
 
 	element_location (a_session_id: STRING_32; an_id: STRING_32)

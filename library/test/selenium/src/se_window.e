@@ -19,15 +19,21 @@ feature -- Initialization
 		end
 
 feature -- Access
-	--width: number, height: number} The size of the window.
+	--{ width: number, height: number} The size of the window.
 	width : NATURAL_32
 	height : NATURAL_32
+		-- The width and height of the element, in pixels.
+
 	x,y : INTEGER_32
+		-- The X and Y coordinates for the element.
 
 feature -- Change Element
 	set_width (a_width : NATURAL_32)
+			--Set width to `a_width'
 		do
 			width := a_width
+		ensure
+			width_set : width = a_width
 		end
 
 	set_height (a_height : NATURAL_32)

@@ -360,12 +360,56 @@ feature
 			end
 
 
+		cmd_session_element_selected_tmpl : STRING ="session/$sessionId/element/$id/selected"
+
+		cmd_session_element_selected (sessionId: STRING_32; id : STRING_32 ): STRING_32
+			do
+				create Result.make_from_string (cmd_session_element_selected_tmpl)
+				Result.replace_substring_all ("$sessionId", sessionId)
+				Result.replace_substring_all ("$id", id)
+			end
 
 
---GET		/session/:sessionId/element/:id/selected	 Determine if an OPTION element, or an INPUT element of type checkbox or radiobutton is currently selected.
---GET		/session/:sessionId/element/:id/enabled	 Determine if an element is currently enabled.
---GET		/session/:sessionId/element/:id/attribute/:name	 Get the value of an element's attribute.
---GET		/session/:sessionId/element/:id/equals/:other	 Test if two element IDs refer to the same DOM element.
+		cmd_session_element_enabled_tmpl : STRING ="session/$sessionId/element/$id/enabled"
+
+		cmd_session_element_enabled (sessionId: STRING_32; id : STRING_32 ): STRING_32
+			do
+				create Result.make_from_string (cmd_session_element_enabled_tmpl)
+				Result.replace_substring_all ("$sessionId", sessionId)
+				Result.replace_substring_all ("$id", id)
+			end
+
+
+		cmd_session_element_attribute_name_tmpl : STRING ="session/$sessionId/element/$id/attribute/$name"
+
+		cmd_session_element_attribute_name (sessionId: STRING_32; id : STRING_32; name : STRING_32 ): STRING_32
+			do
+				create Result.make_from_string (cmd_session_element_attribute_name_tmpl)
+				Result.replace_substring_all ("$sessionId", sessionId)
+				Result.replace_substring_all ("$id", id)
+				Result.replace_substring_all ("$name", name)
+			end
+
+		cmd_session_element_equals_tmpl : STRING ="session/$sessionId/element/$id/equals/$other"
+
+		cmd_session_element_equals (sessionId: STRING_32; id : STRING_32; other : STRING_32 ): STRING_32
+			do
+				create Result.make_from_string (cmd_session_element_equals_tmpl)
+				Result.replace_substring_all ("$sessionId", sessionId)
+				Result.replace_substring_all ("$id", id)
+				Result.replace_substring_all ("$other", other)
+			end
+
+		cmd_session_element_displayed_tmpl : STRING ="session/$sessionId/element/$id/displayed"
+
+		cmd_session_element_displayed (sessionId: STRING_32; id : STRING_32): STRING_32
+			do
+				create Result.make_from_string (cmd_session_element_displayed_tmpl)
+				Result.replace_substring_all ("$sessionId", sessionId)
+				Result.replace_substring_all ("$id", id)
+			end
+
+
 --GET		/session/:sessionId/element/:id/displayed	 Determine if an element is currently displayed.
 --GET		/session/:sessionId/element/:id/location	 Determine an element's location on the page.
 --GET		/session/:sessionId/element/:id/location_in_view	 Determine an element's location on the screen once it has been scrolled into view.

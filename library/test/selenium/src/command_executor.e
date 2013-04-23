@@ -859,6 +859,98 @@ feature -- Commands
 				end
 			end
 		end
+
+	is_enabled (a_session_id: STRING_32; id : STRING_32) : SE_RESPONSE
+		require
+			selinum_server_available: is_available
+		local
+			resp: HTTP_CLIENT_RESPONSE
+		do
+			create Result.make_empty
+			resp := execute_get (cmd_session_element_enabled (a_session_id,id))
+			if resp.status = 204 then
+				Result.set_status (0)
+				Result.set_session_id (a_session_id)
+			else
+				if attached resp.body as l_body then
+					Result := new_response (l_body)
+				end
+			end
+		end
+
+	is_selected (a_session_id: STRING_32; id : STRING_32) : SE_RESPONSE
+		require
+			selinum_server_available: is_available
+		local
+			resp: HTTP_CLIENT_RESPONSE
+		do
+			create Result.make_empty
+			resp := execute_get (cmd_session_element_selected (a_session_id,id))
+			if resp.status = 204 then
+				Result.set_status (0)
+				Result.set_session_id (a_session_id)
+			else
+				if attached resp.body as l_body then
+					Result := new_response (l_body)
+				end
+			end
+		end
+
+	element_value (a_session_id: STRING_32; id : STRING_32; name : STRING_32) : SE_RESPONSE
+		require
+			selinum_server_available: is_available
+		local
+			resp: HTTP_CLIENT_RESPONSE
+		do
+			create Result.make_empty
+			resp := execute_get (cmd_session_element_attribute_name (a_session_id,id,name))
+			if resp.status = 204 then
+				Result.set_status (0)
+				Result.set_session_id (a_session_id)
+			else
+				if attached resp.body as l_body then
+					Result := new_response (l_body)
+				end
+			end
+		end
+
+	element_equals (a_session_id: STRING_32; id : STRING_32; other : STRING_32) : SE_RESPONSE
+		require
+			selinum_server_available: is_available
+		local
+			resp: HTTP_CLIENT_RESPONSE
+		do
+			create Result.make_empty
+			resp := execute_get (cmd_session_element_equals (a_session_id,id,other))
+			if resp.status = 204 then
+				Result.set_status (0)
+				Result.set_session_id (a_session_id)
+			else
+				if attached resp.body as l_body then
+					Result := new_response (l_body)
+				end
+			end
+		end
+
+	is_displayed (a_session_id: STRING_32; id : STRING_32) : SE_RESPONSE
+		require
+			selinum_server_available: is_available
+		local
+			resp: HTTP_CLIENT_RESPONSE
+		do
+			create Result.make_empty
+			resp := execute_get (cmd_session_element_displayed (a_session_id,id))
+			if resp.status = 204 then
+				Result.set_status (0)
+				Result.set_session_id (a_session_id)
+			else
+				if attached resp.body as l_body then
+					Result := new_response (l_body)
+				end
+			end
+		end
+
+
 feature {NONE} -- Implementation
 
 	execute_get (command_name: STRING_32): HTTP_CLIENT_RESPONSE
