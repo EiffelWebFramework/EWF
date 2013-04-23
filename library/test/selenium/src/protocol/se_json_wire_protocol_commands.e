@@ -293,15 +293,75 @@ feature
 			end
 
 
+		cmd_session_element_click_tmpl : STRING ="session/$sessionId/element/$id/click"
 
---POST	/session/:sessionId/element/:id/elements	 Search for multiple elements on the page, starting from the identified element.
---POST	/session/:sessionId/element/:id/click	 Click on an element.
---POST	/session/:sessionId/element/:id/submit	 Submit a FORM element.
---GET		/session/:sessionId/element/:id/text	 Returns the visible text for the element.
---POST	/session/:sessionId/element/:id/value	 Send a sequence of key strokes to an element.
---POST	/session/:sessionId/keys	 Send a sequence of key strokes to the active element.
---GET		/session/:sessionId/element/:id/name	 Query for an element's tag name.
---POST	/session/:sessionId/element/:id/clear	 Clear a TEXTAREA or text INPUT element's value.
+		cmd_session_element_click (sessionId: STRING_32; id : STRING_32 ): STRING_32
+			do
+				create Result.make_from_string (cmd_session_element_click_tmpl)
+				Result.replace_substring_all ("$sessionId", sessionId)
+				Result.replace_substring_all ("$id", id)
+			end
+
+
+		cmd_session_element_submit_tmpl : STRING ="session/$sessionId/element/$id/submit"
+
+		cmd_session_element_submit (sessionId: STRING_32; id : STRING_32 ): STRING_32
+			do
+				create Result.make_from_string (cmd_session_element_submit_tmpl)
+				Result.replace_substring_all ("$sessionId", sessionId)
+				Result.replace_substring_all ("$id", id)
+			end
+
+
+
+		cmd_session_element_text_tmpl : STRING ="session/$sessionId/element/$id/text"
+
+		cmd_session_element_text (sessionId: STRING_32; id : STRING_32 ): STRING_32
+			do
+				create Result.make_from_string (cmd_session_element_text_tmpl)
+				Result.replace_substring_all ("$sessionId", sessionId)
+				Result.replace_substring_all ("$id", id)
+			end
+
+		cmd_session_element_event_tmpl : STRING ="session/$sessionId/element/$id/value"
+
+		cmd_session_element_event (sessionId: STRING_32; id : STRING_32 ): STRING_32
+			do
+				create Result.make_from_string (cmd_session_element_event_tmpl)
+				Result.replace_substring_all ("$sessionId", sessionId)
+				Result.replace_substring_all ("$id", id)
+			end
+
+		cmd_session_keys_tmpl : STRING ="session/$sessionId/keys"
+
+		cmd_session_keys (sessionId: STRING_32 ): STRING_32
+			do
+				create Result.make_from_string (cmd_session_keys_tmpl)
+				Result.replace_substring_all ("$sessionId", sessionId)
+			end
+
+		cmd_session_element_name_tmpl : STRING ="session/$sessionId/element/$id/name"
+
+		cmd_session_element_name (sessionId: STRING_32; id : STRING_32 ): STRING_32
+			do
+				create Result.make_from_string (cmd_session_element_name_tmpl)
+				Result.replace_substring_all ("$sessionId", sessionId)
+				Result.replace_substring_all ("$id", id)
+			end
+
+
+		cmd_session_element_clear_tmpl : STRING ="session/$sessionId/element/$id/clear"
+
+		cmd_session_element_clear (sessionId: STRING_32; id : STRING_32 ): STRING_32
+			do
+				create Result.make_from_string (cmd_session_element_name_tmpl)
+				Result.replace_substring_all ("$sessionId", sessionId)
+				Result.replace_substring_all ("$id", id)
+			end
+
+
+
+
 --GET		/session/:sessionId/element/:id/selected	 Determine if an OPTION element, or an INPUT element of type checkbox or radiobutton is currently selected.
 --GET		/session/:sessionId/element/:id/enabled	 Determine if an element is currently enabled.
 --GET		/session/:sessionId/element/:id/attribute/:name	 Get the value of an element's attribute.

@@ -1106,14 +1106,25 @@ feature -- Commands
 					has_valid_strategy : (create {SE_BY}).is_valid_strategy (strategy)
 		local
 			resp : SE_RESPONSE
+			index : INTEGER
 		do
 			if commnad_executor.is_available then
 				resp := commnad_executor.search_element_id_elements (a_session_id,an_id,strategy)
 				check_response (resp)
-				if not has_error then
---					if attached {JSON_OBJECT} resp.value as l_value and then attached l_value.item ("ELEMENT") as l_elem then
---						create Result.make (l_elem.representation)
---					end
+					if not has_error then
+					if attached resp.value as l_value and then attached {JSON_ARRAY} string_to_json (l_value) as l_json_array then
+						create {ARRAYED_LIST [WEB_ELEMENT]} Result.make (10)
+						from
+							index := 1
+						until
+							index > l_json_array.count
+						loop
+							if attached {JSON_OBJECT} l_json_array.i_th (index) as json_str and then attached json_str.item ("ELEMENT") as l_elem then
+								Result.force (create {WEB_ELEMENT}.make (l_elem.representation))
+							end
+							index := index + 1
+						end
+					end
 				end
 			end
 
@@ -1129,7 +1140,13 @@ feature -- Commands
 			--		NoSuchWindow - If the currently selected window has been closed.
 			--		StaleElementReference - If the element referenced by :id is no longer attached to the page's DOM.
 			--		ElementNotVisible - If the referenced element is not visible on the page (either is hidden by CSS, has 0-width, or has 0-height)
+		local
+				resp: SE_RESPONSE
 		do
+				if commnad_executor.is_available then
+					resp := commnad_executor.element_click (a_session_id,an_id)
+					check_response (resp)
+				end
 		end
 
 	element_submit (a_session_id: STRING_32; an_id: STRING_32)
@@ -1141,10 +1158,16 @@ feature -- Commands
 			--	Potential Errors:
 			--		NoSuchWindow - If the currently selected window has been closed.
 			--		StaleElementReference - If the element referenced by :id is no longer attached to the page's DOM.
+		local
+			resp : SE_RESPONSE
 		do
+			if commnad_executor.is_available then
+				resp := commnad_executor.element_submit (a_session_id,an_id)
+				check_response (resp)
+			end
 		end
 
-	element_text (a_session_id: STRING_32; an_id: STRING_32)
+	element_text (a_session_id: STRING_32; an_id: STRING_32) : detachable STRING_32
 			--	GET /session/:sessionId/element/:id/text
 			--	Returns the visible text for the element.
 			--	URL Parameters:
@@ -1153,10 +1176,21 @@ feature -- Commands
 			--	Potential Errors:
 			--		NoSuchWindow - If the currently selected window has been closed.
 			--		StaleElementReference - If the element referenced by :id is no longer attached to the page's DOM.
+		local
+			resp: SE_RESPONSE
 		do
+			if commnad_executor.is_available then
+				resp := commnad_executor.element_text (a_session_id, an_id)
+				check_response (resp)
+				if not has_error then
+					if attached resp.value as l_value then
+						Result := l_value
+					end
+				end
+			end
 		end
 
-	send_event (a_session_id: STRING_32; an_id: STRING_32)
+	send_event (a_session_id: STRING_32; an_id: STRING_32; events : ARRAY[STRING_32])
 			--	POST /session/:sessionId/element/:id/value
 			--	Send a sequence of key strokes to an element.
 			--	Any UTF-8 character may be specified, however, if the server does not support native key events,
@@ -1193,22 +1227,48 @@ feature -- Commands
 			--		NoSuchWindow - If the currently selected window has been closed.
 			--		StaleElementReference - If the element referenced by :id is no longer attached to the page's DOM.
 			--		ElementNotVisible - If the referenced element is not visible on the page (either is hidden by CSS, has 0-width, or has 0-height)
-		do
-		end
+			local
+				resp: SE_RESPONSE
+				l_json : STRING_32
+			do
+				l_json := "[
+							{"value":$array}
+							]"
+				if commnad_executor.is_available then
+					if attached json.value (create {ARRAYED_LIST[STRING_32]}.make_from_array(events)) as l_array then
+						l_json.replace_substring_all ("$array", l_array.representation)
+						resp := commnad_executor.send_events (a_session_id, an_id, l_json)
+						check_response (resp)
+					end
+				end
+			end
 
-	send_key_strokes (a_session_id: STRING_32)
+	send_key_strokes (a_session_id: STRING_32 ; keys : ARRAY[STRING_32])
 			--	POST /session/:sessionId/keys
 			--	Send a sequence of key strokes to the active element. This command is similar to the send keys command in every aspect except the implicit termination: The modifiers are not released at the end of the call. Rather, the state of the modifier keys is kept between calls, so mouse interactions can be performed while modifier keys are depressed.
 			--	URL Parameters:
 			--		:sessionId - ID of the session to route the command to.
 			--	JSON Parameters:
-			--		value - {Array.<string>} The keys sequence to be sent. The sequence is defined in thesend keys command.
+			--		value - {Array.<string>} The keys sequence to be sent. The sequence is defined in the send keys command.
 			--	Potential Errors:
 			--		NoSuchWindow - If the currently selected window has been closed.
-		do
-		end
+		local
+				resp: SE_RESPONSE
+				l_json : STRING_32
+			do
+				l_json := "[
+							{"value":$array}
+							]"
+				if commnad_executor.is_available then
+					if attached json.value (create {ARRAYED_LIST[STRING_32]}.make_from_array(keys)) as l_array then
+						l_json.replace_substring_all ("$array", l_array.representation)
+						resp := commnad_executor.send_key_strokes (a_session_id, l_json)
+						check_response (resp)
+					end
+				end
+			end
 
-	query_by_tag_name (a_session_id: STRING_32; an_id: STRING_32)
+	query_by_tag_name (a_session_id: STRING_32; an_id: STRING_32) : detachable STRING_32
 			-- 	GET /session/:sessionId/element/:id/name
 			-- 	Query for an element's tag name.
 			-- 	URL Parameters:
@@ -1219,10 +1279,21 @@ feature -- Commands
 			-- 	Potential Errors:
 			--		NoSuchWindow - If the currently selected window has been closed.
 			--		StaleElementReference - If the element referenced by :id is no longer attached to the page's DOM.
+		local
+			resp: SE_RESPONSE
 		do
+			if commnad_executor.is_available then
+				resp := commnad_executor.query_by_tag_name (a_session_id, an_id)
+				check_response (resp)
+				if not has_error then
+					if attached resp.value as l_value then
+						Result := l_value
+					end
+				end
+			end
 		end
 
-	clear (a_session_id: STRING_32; an_id: STRING_32)
+	clear_element (a_session_id: STRING_32; an_id: STRING_32)
 			--	POST /session/:sessionId/element/:id/clear
 			--	Clear a TEXTAREA or text INPUT element's value.
 			--	URL Parameters:
@@ -1233,10 +1304,16 @@ feature -- Commands
 			--		StaleElementReference - If the element referenced by :id is no longer attached to the page's DOM.
 			--		ElementNotVisible - If the referenced element is not visible on the page (either is hidden by CSS, has 0-width, or has 0-height)
 			--		InvalidElementState - If the referenced element is disabled.
+		local
+			resp: SE_RESPONSE
 		do
+			if commnad_executor.is_available then
+				resp := commnad_executor.clear_element (a_session_id, an_id)
+				check_response (resp)
+			end
 		end
 
-	is_selected (a_session_id: STRING_32; an_id: STRING_32)
+	is_selected (a_session_id: STRING_32; an_id: STRING_32) : BOOLEAN
 			--	GET /session/:sessionId/element/:id/selected
 			--	Determine if an OPTION element, or an INPUT element of type checkbox or radiobutton is currently selected.
 			--	URL Parameters:
@@ -1250,7 +1327,7 @@ feature -- Commands
 		do
 		end
 
-	is_enabled (a_session_id: STRING_32; an_id: STRING_32)
+	is_enabled (a_session_id: STRING_32; an_id: STRING_32) : BOOLEAN
 			--	GET /session/:sessionId/element/:id/enabled
 			--	Determine if an element is currently enabled.
 			--	URL Parameters:
@@ -1264,7 +1341,7 @@ feature -- Commands
 		do
 		end
 
-	element_value (a_session_id: STRING_32; an_id: STRING_32; a_name: STRING_32)
+	element_value (a_session_id: STRING_32; an_id: STRING_32; a_name: STRING_32) : detachable STRING_32
 			--	GET /session/:sessionId/element/:id/attribute/:name
 			--	Get the value of an element's attribute.
 			--	URL Parameters:
@@ -1278,7 +1355,7 @@ feature -- Commands
 		do
 		end
 
-	elements_equals (a_session_id: STRING_32; an_id: STRING_32; an_other: STRING_32)
+	elements_equals (a_session_id: STRING_32; an_id: STRING_32; an_other: STRING_32) : BOOLEAN
 			--	GET /session/:sessionId/element/:id/equals/:other
 			--	Test if two element IDs refer to the same DOM element.
 			--	URL Parameters:

@@ -730,8 +730,135 @@ feature -- Commands
 			end
 		end
 
+	element_click (a_session_id: STRING_32; id : STRING_32) : SE_RESPONSE
+		require
+			selinum_server_available: is_available
+		local
+			resp: HTTP_CLIENT_RESPONSE
+		do
+			create Result.make_empty
+			resp := execute_post (cmd_session_element_click (a_session_id,id),Void)
+			if resp.status = 204 then
+				Result.set_status (0)
+				Result.set_session_id (a_session_id)
+			else
+				if attached resp.body as l_body then
+					Result := new_response (l_body)
+				end
+			end
+		end
 
 
+	element_submit (a_session_id: STRING_32; id : STRING_32) : SE_RESPONSE
+		require
+			selinum_server_available: is_available
+		local
+			resp: HTTP_CLIENT_RESPONSE
+		do
+			create Result.make_empty
+			resp := execute_post (cmd_session_element_submit (a_session_id,id),Void)
+			if resp.status = 204 then
+				Result.set_status (0)
+				Result.set_session_id (a_session_id)
+			else
+				if attached resp.body as l_body then
+					Result := new_response (l_body)
+				end
+			end
+		end
+
+
+	element_text (a_session_id: STRING_32; id : STRING_32) : SE_RESPONSE
+		require
+			selinum_server_available: is_available
+		local
+			resp: HTTP_CLIENT_RESPONSE
+		do
+			create Result.make_empty
+			resp := execute_get (cmd_session_element_text (a_session_id,id))
+			if resp.status = 204 then
+				Result.set_status (0)
+				Result.set_session_id (a_session_id)
+			else
+				if attached resp.body as l_body then
+					Result := new_response (l_body)
+				end
+			end
+		end
+
+	send_events (a_session_id: STRING_32; id : STRING_32; data : STRING_32) : SE_RESPONSE
+		require
+			selinum_server_available: is_available
+		local
+			resp: HTTP_CLIENT_RESPONSE
+		do
+			create Result.make_empty
+			resp := execute_post (cmd_session_element_event (a_session_id,id),data)
+			if resp.status = 204 then
+				Result.set_status (0)
+				Result.set_session_id (a_session_id)
+			else
+				if attached resp.body as l_body then
+					Result := new_response (l_body)
+				end
+			end
+		end
+
+
+	send_key_strokes (a_session_id: STRING_32; data : STRING_32) : SE_RESPONSE
+		require
+			selinum_server_available: is_available
+		local
+			resp: HTTP_CLIENT_RESPONSE
+		do
+			create Result.make_empty
+			resp := execute_post (cmd_session_keys (a_session_id),data)
+			if resp.status = 204 then
+				Result.set_status (0)
+				Result.set_session_id (a_session_id)
+			else
+				if attached resp.body as l_body then
+					Result := new_response (l_body)
+				end
+			end
+		end
+
+	query_by_tag_name (a_session_id: STRING_32; id : STRING_32) : SE_RESPONSE
+		require
+			selinum_server_available: is_available
+		local
+			resp: HTTP_CLIENT_RESPONSE
+		do
+			create Result.make_empty
+			resp := execute_get (cmd_session_element_name (a_session_id,id))
+			if resp.status = 204 then
+				Result.set_status (0)
+				Result.set_session_id (a_session_id)
+			else
+				if attached resp.body as l_body then
+					Result := new_response (l_body)
+				end
+			end
+		end
+
+
+	clear_element (a_session_id: STRING_32; id : STRING_32) : SE_RESPONSE
+		require
+			selinum_server_available: is_available
+		local
+			resp: HTTP_CLIENT_RESPONSE
+		do
+			create Result.make_empty
+			resp := execute_post (cmd_session_element_clear (a_session_id,id), Void)
+			if resp.status = 204 then
+				Result.set_status (0)
+				Result.set_session_id (a_session_id)
+			else
+				if attached resp.body as l_body then
+					Result := new_response (l_body)
+				end
+			end
+		end
 feature {NONE} -- Implementation
 
 	execute_get (command_name: STRING_32): HTTP_CLIENT_RESPONSE
