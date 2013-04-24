@@ -52,6 +52,8 @@ feature -- Access
 
 	http_access_control_request_headers: STRING = "HTTP_ACCESS_CONTROL_REQUEST_HEADERS"
 
+	http_if_match: STRING = "HTTP_IF_MATCH"
+	
 	gateway_interface: STRING = "GATEWAY_INTERFACE"
 
 	auth_type: STRING = "AUTH_TYPE"
