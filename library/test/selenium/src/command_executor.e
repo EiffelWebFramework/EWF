@@ -51,9 +51,7 @@ feature -- Commands
 		do
 			create Result.make_empty
 			resp := execute_get (cmd_status)
-			if attached resp.body as l_body then
-				Result := new_response (l_body)
-			end
+			Result := new_response ("", resp)
 		end
 
 	new_session (capabilities: STRING_32): SE_RESPONSE
@@ -64,17 +62,14 @@ feature -- Commands
 		do
 			create Result.make_empty
 			resp := execute_post (cmd_new_session, capabilities)
+			-- TODO move this scenario to feature new_response
 			if not (resp.status >= 400) then
 				if attached resp.header ("Location") as l_location then
 					resp := http_new_session (l_location).get ("", context_executor)
-					if attached resp.body as l_body then
-						Result := new_response (l_body)
-					end
+					Result := new_response ("", resp)
 				end
 			else
-				if attached resp.body as l_body then
-					Result := new_response (l_body)
-				end
+				Result := new_response ("", resp)
 			end
 		end
 
@@ -86,9 +81,7 @@ feature -- Commands
 		do
 			create Result.make_empty
 			resp := execute_get (cmd_sessions)
-			if attached resp.body as l_body then
-				Result := new_response (l_body)
-			end
+			Result := new_response ("", resp)
 		end
 
 	retrieve_session (session_id: STRING_32): SE_RESPONSE
@@ -99,9 +92,7 @@ feature -- Commands
 		do
 			create Result.make_empty
 			resp := execute_get (cmd_session_by_id (session_id))
-			if attached resp.body as l_body then
-				Result := new_response (l_body)
-			end
+			Result := new_response (session_id, resp)
 		end
 
 	delete_session (session_id: STRING_32): SE_RESPONSE
@@ -112,14 +103,7 @@ feature -- Commands
 		do
 			create Result.make_empty
 			resp := execute_delete (cmd_session_by_id ( session_id ))
-			if resp.status = 204 then
-				Result.set_status (0)
-				Result.set_session_id (session_id)
-			else
-				if attached resp.body as l_body then
-					Result := new_response (l_body)
-				end
-			end
+			Result := new_response (session_id, resp)
 		end
 
 	set_session_timeouts (a_session_id: STRING_32; a_data_timeout: STRING_32): SE_RESPONSE
@@ -130,14 +114,7 @@ feature -- Commands
 		do
 			create Result.make_empty
 			resp := execute_post (cmd_session_timeouts (a_session_id), a_data_timeout)
-			if resp.status = 204 then
-				Result.set_status (0)
-				Result.set_session_id (a_session_id)
-			else
-				if attached resp.body as l_body then
-					Result := new_response (l_body)
-				end
-			end
+			Result := new_response (a_session_id, resp)
 		end
 
 	set_session_timeouts_async_script (a_session_id: STRING_32; a_data_timeout: STRING_32): SE_RESPONSE
@@ -148,15 +125,7 @@ feature -- Commands
 		do
 			create Result.make_empty
 			resp := execute_post (cmd_session_timeouts_async_script (a_session_id), a_data_timeout)
-			if resp.status = 204 then
-				Result.set_status (0)
-				Result.set_session_id (a_session_id)
-			else
-				if attached resp.body as l_body then
-					Result := new_response (l_body)
-				end
-			end
-
+			Result := new_response (a_session_id, resp)
 		end
 
 	set_session_timeouts_implicit_wait (a_session_id: STRING_32; a_data_timeout: STRING_32): SE_RESPONSE
@@ -167,15 +136,7 @@ feature -- Commands
 		do
 			create Result.make_empty
 			resp := execute_post (cmd_session_timeouts_implicit_wait (a_session_id), a_data_timeout)
-			if resp.status = 204 then
-				Result.set_status (0)
-				Result.set_session_id (a_session_id)
-			else
-				if attached resp.body as l_body then
-					Result := new_response (l_body)
-				end
-			end
-
+			Result := new_response (a_session_id, resp)
 		end
 
 	retrieve_window_handle (session_id: STRING_32): SE_RESPONSE
@@ -186,9 +147,7 @@ feature -- Commands
 		do
 			create Result.make_empty
 			resp := execute_get (cmd_session_window_handle (session_id))
-			if attached resp.body as l_body then
-				Result := new_response (l_body)
-			end
+			Result := new_response (session_id, resp)
 		end
 
 	retrieve_window_handles (session_id: STRING_32): SE_RESPONSE
@@ -199,9 +158,7 @@ feature -- Commands
 		do
 			create Result.make_empty
 			resp := execute_get (cmd_session_window_handles (session_id))
-			if attached resp.body as l_body then
-				Result := new_response (l_body)
-			end
+			Result := new_response (session_id, resp)
 		end
 
 	retrieve_url (session_id: STRING_32): SE_RESPONSE
@@ -212,9 +169,7 @@ feature -- Commands
 		do
 			create Result.make_empty
 			resp := execute_get (cmd_session_url (session_id))
-			if attached resp.body as l_body then
-				Result := new_response (l_body)
-			end
+			Result := new_response (session_id, resp)
 		end
 
 	navigate_to_url (a_session_id: STRING_32; a_url: STRING_32): SE_RESPONSE
@@ -225,14 +180,7 @@ feature -- Commands
 		do
 			create Result.make_empty
 			resp := execute_post (cmd_session_url (a_session_id), a_url)
-			if resp.status = 204 then
-				Result.set_status (0)
-				Result.set_session_id (a_session_id)
-			else
-				if attached resp.body as l_body then
-					Result := new_response (l_body)
-				end
-			end
+			Result := new_response (a_session_id, resp)
 		end
 
 	forward (a_session_id: STRING_32): SE_RESPONSE
@@ -243,14 +191,7 @@ feature -- Commands
 		do
 			create Result.make_empty
 			resp := execute_post (cmd_session_forward (a_session_id), Void)
-			if resp.status = 204 then
-				Result.set_status (0)
-				Result.set_session_id (a_session_id)
-			else
-				if attached resp.body as l_body then
-					Result := new_response (l_body)
-				end
-			end
+			Result := new_response (a_session_id, resp)
 		end
 
 	back (a_session_id: STRING_32): SE_RESPONSE
@@ -261,14 +202,7 @@ feature -- Commands
 		do
 			create Result.make_empty
 			resp := execute_post (cmd_session_back (a_session_id), Void)
-			if resp.status = 204 then
-				Result.set_status (0)
-				Result.set_session_id (a_session_id)
-			else
-				if attached resp.body as l_body then
-					Result := new_response (l_body)
-				end
-			end
+			Result := new_response (a_session_id, resp)
 		end
 
 	refresh (a_session_id: STRING_32): SE_RESPONSE
@@ -279,14 +213,7 @@ feature -- Commands
 		do
 			create Result.make_empty
 			resp := execute_post (cmd_session_refresh (a_session_id), Void)
-			if resp.status = 204 then
-				Result.set_status (0)
-				Result.set_session_id (a_session_id)
-			else
-				if attached resp.body as l_body then
-					Result := new_response (l_body)
-				end
-			end
+			Result := new_response (a_session_id, resp)
 		end
 
 	execute
@@ -315,9 +242,7 @@ feature -- Commands
 		do
 			create Result.make_empty
 			resp := execute_get (cmd_session_screenshot (session_id))
-			if attached resp.body as l_body then
-				Result := new_response (l_body)
-			end
+			Result := new_response (session_id, resp)
 		end
 
 	ime_available_engines (session_id: STRING_32): SE_RESPONSE
@@ -328,9 +253,7 @@ feature -- Commands
 		do
 			create Result.make_empty
 			resp := execute_get (cmd_session_ime_available (session_id))
-			if attached resp.body as l_body then
-				Result := new_response (l_body)
-			end
+			Result := new_response (session_id, resp)
 		end
 
 	ime_active_engine (session_id: STRING_32): SE_RESPONSE
@@ -341,9 +264,7 @@ feature -- Commands
 		do
 			create Result.make_empty
 			resp := execute_get (cmd_session_ime_active_engine (session_id))
-			if attached resp.body as l_body then
-				Result := new_response (l_body)
-			end
+			Result := new_response (session_id, resp)
 		end
 
 	ime_activated (session_id: STRING_32): SE_RESPONSE
@@ -354,9 +275,7 @@ feature -- Commands
 		do
 			create Result.make_empty
 			resp := execute_get (cmd_session_ime_activated (session_id))
-			if attached resp.body as l_body then
-				Result := new_response (l_body)
-			end
+			Result := new_response (session_id, resp)
 		end
 
 	ime_deactivate (a_session_id: STRING_32): SE_RESPONSE
@@ -367,14 +286,7 @@ feature -- Commands
 		do
 			create Result.make_empty
 			resp := execute_post (cmd_session_ime_deactivate (a_session_id), Void)
-			if resp.status = 204 then
-				Result.set_status (0)
-				Result.set_session_id (a_session_id)
-			else
-				if attached resp.body as l_body then
-					Result := new_response (l_body)
-				end
-			end
+			Result := new_response (a_session_id, resp)
 		end
 
 	ime_activate (a_session_id: STRING_32; an_engine: STRING_32): SE_RESPONSE
@@ -385,15 +297,7 @@ feature -- Commands
 		do
 			create Result.make_empty
 			resp := execute_post (cmd_session_ime_activate (a_session_id), an_engine)
-			if resp.status = 204 then
-				Result.set_status (0)
-				Result.set_session_id (a_session_id)
-			else
-				if attached resp.body as l_body then
-					Result := new_response (l_body)
-				end
-			end
-
+			Result := new_response (a_session_id, resp)
 		end
 
 	change_focus_window (a_session_id: STRING_32; a_data: STRING_32): SE_RESPONSE
@@ -404,14 +308,7 @@ feature -- Commands
 		do
 			create Result.make_empty
 			resp := execute_post (cmd_session_window (a_session_id), a_data)
-			if resp.status = 204 then
-				Result.set_status (0)
-				Result.set_session_id (a_session_id)
-			else
-				if attached resp.body as l_body then
-					Result := new_response (l_body)
-				end
-			end
+			Result := new_response (a_session_id, resp)
 		end
 
 
@@ -423,15 +320,7 @@ feature -- Commands
 		do
 			create Result.make_empty
 			resp := execute_delete (cmd_session_window (a_session_id))
-			if resp.status = 204 then
-				Result.set_status (0)
-				Result.set_session_id (a_session_id)
-			else
-				if attached resp.body as l_body then
-					Result := new_response (l_body)
-				end
-			end
-
+			Result := new_response (a_session_id, resp)
 		end
 
 	change_size_window (a_session_id: STRING_32; a_window_handle : STRING_32;a_data: STRING_32): SE_RESPONSE
@@ -442,14 +331,7 @@ feature -- Commands
 		do
 			create Result.make_empty
 			resp := execute_post (cmd_session_window_size (a_session_id,a_window_handle), a_data)
-			if resp.status = 204 then
-				Result.set_status (0)
-				Result.set_session_id (a_session_id)
-			else
-				if attached resp.body as l_body then
-					Result := new_response (l_body)
-				end
-			end
+			Result := new_response (a_session_id, resp)
 		end
 
 	size_window (a_session_id: STRING_32; a_window_handle : STRING_32) : SE_RESPONSE
@@ -460,14 +342,7 @@ feature -- Commands
 		do
 			create Result.make_empty
 			resp := execute_get (cmd_session_window_size (a_session_id,a_window_handle))
-			if resp.status = 204 then
-				Result.set_status (0)
-				Result.set_session_id (a_session_id)
-			else
-				if attached resp.body as l_body then
-					Result := new_response (l_body)
-				end
-			end
+			Result := new_response (a_session_id, resp)
 		end
 
 	change_window_position (a_session_id: STRING_32; a_window_handle : STRING_32;a_data: STRING_32): SE_RESPONSE
@@ -478,14 +353,7 @@ feature -- Commands
 		do
 			create Result.make_empty
 			resp := execute_post (cmd_session_window_position (a_session_id,a_window_handle), a_data)
-			if resp.status = 204 then
-				Result.set_status (0)
-				Result.set_session_id (a_session_id)
-			else
-				if attached resp.body as l_body then
-					Result := new_response (l_body)
-				end
-			end
+			Result := new_response (a_session_id, resp)
 		end
 
 	window_position (a_session_id: STRING_32; a_window_handle : STRING_32) : SE_RESPONSE
@@ -496,14 +364,7 @@ feature -- Commands
 		do
 			create Result.make_empty
 			resp := execute_get (cmd_session_window_size (a_session_id,a_window_handle))
-			if resp.status = 204 then
-				Result.set_status (0)
-				Result.set_session_id (a_session_id)
-			else
-				if attached resp.body as l_body then
-					Result := new_response (l_body)
-				end
-			end
+			Result := new_response (a_session_id, resp)
 		end
 
 	window_maximize (a_session_id: STRING_32; a_window_handle : STRING_32) : SE_RESPONSE
@@ -514,14 +375,7 @@ feature -- Commands
 		do
 			create Result.make_empty
 			resp := execute_post (cmd_session_window_maximize (a_session_id,a_window_handle), Void)
-			if resp.status = 204 then
-				Result.set_status (0)
-				Result.set_session_id (a_session_id)
-			else
-				if attached resp.body as l_body then
-					Result := new_response (l_body)
-				end
-			end
+			Result := new_response (a_session_id, resp)
 		end
 
 
@@ -533,14 +387,7 @@ feature -- Commands
 		do
 			create Result.make_empty
 			resp := execute_get (cmd_session_cookie (a_session_id))
-			if resp.status = 204 then
-				Result.set_status (0)
-				Result.set_session_id (a_session_id)
-			else
-				if attached resp.body as l_body then
-					Result := new_response (l_body)
-				end
-			end
+			Result := new_response (a_session_id, resp)
 		end
 
 	set_cookie (a_session_id: STRING_32; a_data : STRING_32) : SE_RESPONSE
@@ -551,14 +398,7 @@ feature -- Commands
 		do
 			create Result.make_empty
 			resp := execute_post (cmd_session_cookie (a_session_id),a_data)
-			if resp.status = 204 then
-				Result.set_status (0)
-				Result.set_session_id (a_session_id)
-			else
-				if attached resp.body as l_body then
-					Result := new_response (l_body)
-				end
-			end
+			Result := new_response (a_session_id, resp)
 		end
 
 	delete_cookies (a_session_id: STRING_32) : SE_RESPONSE
@@ -569,14 +409,7 @@ feature -- Commands
 		do
 			create Result.make_empty
 			resp := execute_delete (cmd_session_cookie (a_session_id))
-			if resp.status = 204 then
-				Result.set_status (0)
-				Result.set_session_id (a_session_id)
-			else
-				if attached resp.body as l_body then
-					Result := new_response (l_body)
-				end
-			end
+			Result := new_response (a_session_id, resp)
 		end
 
 	delete_cookie_by_name (a_session_id: STRING_32; a_name : STRING_32) : SE_RESPONSE
@@ -587,14 +420,7 @@ feature -- Commands
 		do
 			create Result.make_empty
 			resp := execute_delete (cmd_session_cookie_delete (a_session_id,a_name))
-			if resp.status = 204 then
-				Result.set_status (0)
-				Result.set_session_id (a_session_id)
-			else
-				if attached resp.body as l_body then
-					Result := new_response (l_body)
-				end
-			end
+			Result := new_response (a_session_id, resp)
 		end
 
 	page_source (a_session_id: STRING_32) : SE_RESPONSE
@@ -605,14 +431,7 @@ feature -- Commands
 		do
 			create Result.make_empty
 			resp := execute_get (cmd_session_source (a_session_id))
-			if resp.status = 204 then
-				Result.set_status (0)
-				Result.set_session_id (a_session_id)
-			else
-				if attached resp.body as l_body then
-					Result := new_response (l_body)
-				end
-			end
+			Result := new_response (a_session_id, resp)
 		end
 
 
@@ -624,14 +443,7 @@ feature -- Commands
 		do
 			create Result.make_empty
 			resp := execute_get (cmd_session_title (a_session_id))
-			if resp.status = 204 then
-				Result.set_status (0)
-				Result.set_session_id (a_session_id)
-			else
-				if attached resp.body as l_body then
-					Result := new_response (l_body)
-				end
-			end
+			Result := new_response (a_session_id, resp)
 		end
 
 
@@ -643,14 +455,7 @@ feature -- Commands
 		do
 			create Result.make_empty
 			resp := execute_post (cmd_session_element (a_session_id),a_data)
-			if resp.status = 204 then
-				Result.set_status (0)
-				Result.set_session_id (a_session_id)
-			else
-				if attached resp.body as l_body then
-					Result := new_response (l_body)
-				end
-			end
+			Result := new_response (a_session_id, resp)
 		end
 
 
@@ -662,14 +467,7 @@ feature -- Commands
 		do
 			create Result.make_empty
 			resp := execute_post (cmd_session_element_id_element (a_session_id,id),a_data)
-			if resp.status = 204 then
-				Result.set_status (0)
-				Result.set_session_id (a_session_id)
-			else
-				if attached resp.body as l_body then
-					Result := new_response (l_body)
-				end
-			end
+			Result := new_response (a_session_id, resp)
 		end
 
 
@@ -681,14 +479,7 @@ feature -- Commands
 		do
 			create Result.make_empty
 			resp := execute_post (cmd_session_elements (a_session_id),a_data)
-			if resp.status = 204 then
-				Result.set_status (0)
-				Result.set_session_id (a_session_id)
-			else
-				if attached resp.body as l_body then
-					Result := new_response (l_body)
-				end
-			end
+			Result := new_response (a_session_id, resp)
 		end
 
 
@@ -701,14 +492,7 @@ feature -- Commands
 		do
 			create Result.make_empty
 			resp := execute_get (cmd_session_element_active (a_session_id))
-			if resp.status = 204 then
-				Result.set_status (0)
-				Result.set_session_id (a_session_id)
-			else
-				if attached resp.body as l_body then
-					Result := new_response (l_body)
-				end
-			end
+			Result := new_response (a_session_id, resp)
 		end
 
 
@@ -720,14 +504,7 @@ feature -- Commands
 		do
 			create Result.make_empty
 			resp := execute_post (cmd_session_element_id_elements (a_session_id,id),a_data)
-			if resp.status = 204 then
-				Result.set_status (0)
-				Result.set_session_id (a_session_id)
-			else
-				if attached resp.body as l_body then
-					Result := new_response (l_body)
-				end
-			end
+			Result := new_response (a_session_id, resp)
 		end
 
 	element_click (a_session_id: STRING_32; id : STRING_32) : SE_RESPONSE
@@ -738,14 +515,7 @@ feature -- Commands
 		do
 			create Result.make_empty
 			resp := execute_post (cmd_session_element_click (a_session_id,id),Void)
-			if resp.status = 204 then
-				Result.set_status (0)
-				Result.set_session_id (a_session_id)
-			else
-				if attached resp.body as l_body then
-					Result := new_response (l_body)
-				end
-			end
+			Result := new_response (a_session_id, resp)
 		end
 
 
@@ -757,14 +527,7 @@ feature -- Commands
 		do
 			create Result.make_empty
 			resp := execute_post (cmd_session_element_submit (a_session_id,id),Void)
-			if resp.status = 204 then
-				Result.set_status (0)
-				Result.set_session_id (a_session_id)
-			else
-				if attached resp.body as l_body then
-					Result := new_response (l_body)
-				end
-			end
+			Result := new_response (a_session_id, resp)
 		end
 
 
@@ -776,14 +539,7 @@ feature -- Commands
 		do
 			create Result.make_empty
 			resp := execute_get (cmd_session_element_text (a_session_id,id))
-			if resp.status = 204 then
-				Result.set_status (0)
-				Result.set_session_id (a_session_id)
-			else
-				if attached resp.body as l_body then
-					Result := new_response (l_body)
-				end
-			end
+			Result := new_response (a_session_id, resp)
 		end
 
 	send_events (a_session_id: STRING_32; id : STRING_32; data : STRING_32) : SE_RESPONSE
@@ -794,14 +550,7 @@ feature -- Commands
 		do
 			create Result.make_empty
 			resp := execute_post (cmd_session_element_event (a_session_id,id),data)
-			if resp.status = 204 then
-				Result.set_status (0)
-				Result.set_session_id (a_session_id)
-			else
-				if attached resp.body as l_body then
-					Result := new_response (l_body)
-				end
-			end
+			Result := new_response (a_session_id, resp)
 		end
 
 
@@ -813,14 +562,7 @@ feature -- Commands
 		do
 			create Result.make_empty
 			resp := execute_post (cmd_session_keys (a_session_id),data)
-			if resp.status = 204 then
-				Result.set_status (0)
-				Result.set_session_id (a_session_id)
-			else
-				if attached resp.body as l_body then
-					Result := new_response (l_body)
-				end
-			end
+			Result := new_response (a_session_id, resp)
 		end
 
 	query_by_tag_name (a_session_id: STRING_32; id : STRING_32) : SE_RESPONSE
@@ -831,14 +573,7 @@ feature -- Commands
 		do
 			create Result.make_empty
 			resp := execute_get (cmd_session_element_name (a_session_id,id))
-			if resp.status = 204 then
-				Result.set_status (0)
-				Result.set_session_id (a_session_id)
-			else
-				if attached resp.body as l_body then
-					Result := new_response (l_body)
-				end
-			end
+			Result := new_response (a_session_id, resp)
 		end
 
 
@@ -850,14 +585,7 @@ feature -- Commands
 		do
 			create Result.make_empty
 			resp := execute_post (cmd_session_element_clear (a_session_id,id), Void)
-			if resp.status = 204 then
-				Result.set_status (0)
-				Result.set_session_id (a_session_id)
-			else
-				if attached resp.body as l_body then
-					Result := new_response (l_body)
-				end
-			end
+			Result := new_response (a_session_id, resp)
 		end
 
 	is_enabled (a_session_id: STRING_32; id : STRING_32) : SE_RESPONSE
@@ -868,14 +596,7 @@ feature -- Commands
 		do
 			create Result.make_empty
 			resp := execute_get (cmd_session_element_enabled (a_session_id,id))
-			if resp.status = 204 then
-				Result.set_status (0)
-				Result.set_session_id (a_session_id)
-			else
-				if attached resp.body as l_body then
-					Result := new_response (l_body)
-				end
-			end
+			Result := new_response (a_session_id, resp)
 		end
 
 	is_selected (a_session_id: STRING_32; id : STRING_32) : SE_RESPONSE
@@ -886,14 +607,7 @@ feature -- Commands
 		do
 			create Result.make_empty
 			resp := execute_get (cmd_session_element_selected (a_session_id,id))
-			if resp.status = 204 then
-				Result.set_status (0)
-				Result.set_session_id (a_session_id)
-			else
-				if attached resp.body as l_body then
-					Result := new_response (l_body)
-				end
-			end
+			Result := new_response (a_session_id, resp)
 		end
 
 	element_value (a_session_id: STRING_32; id : STRING_32; name : STRING_32) : SE_RESPONSE
@@ -904,14 +618,7 @@ feature -- Commands
 		do
 			create Result.make_empty
 			resp := execute_get (cmd_session_element_attribute_name (a_session_id,id,name))
-			if resp.status = 204 then
-				Result.set_status (0)
-				Result.set_session_id (a_session_id)
-			else
-				if attached resp.body as l_body then
-					Result := new_response (l_body)
-				end
-			end
+			Result := new_response (a_session_id, resp)
 		end
 
 	element_equals (a_session_id: STRING_32; id : STRING_32; other : STRING_32) : SE_RESPONSE
@@ -922,14 +629,7 @@ feature -- Commands
 		do
 			create Result.make_empty
 			resp := execute_get (cmd_session_element_equals (a_session_id,id,other))
-			if resp.status = 204 then
-				Result.set_status (0)
-				Result.set_session_id (a_session_id)
-			else
-				if attached resp.body as l_body then
-					Result := new_response (l_body)
-				end
-			end
+			Result := new_response (a_session_id, resp)
 		end
 
 	is_displayed (a_session_id: STRING_32; id : STRING_32) : SE_RESPONSE
@@ -940,15 +640,89 @@ feature -- Commands
 		do
 			create Result.make_empty
 			resp := execute_get (cmd_session_element_displayed (a_session_id,id))
-			if resp.status = 204 then
-				Result.set_status (0)
-				Result.set_session_id (a_session_id)
-			else
-				if attached resp.body as l_body then
-					Result := new_response (l_body)
-				end
-			end
+			Result := new_response (a_session_id, resp)
 		end
+
+	element_location (a_session_id: STRING_32; id : STRING_32) : SE_RESPONSE
+		require
+			selinum_server_available: is_available
+		local
+			resp: HTTP_CLIENT_RESPONSE
+		do
+			create Result.make_empty
+			resp := execute_get (cmd_session_element_location (a_session_id,id))
+			Result := new_response (a_session_id, resp)
+		end
+
+	location_in_view (a_session_id: STRING_32; id : STRING_32) : SE_RESPONSE
+		require
+			selinum_server_available: is_available
+		local
+			resp: HTTP_CLIENT_RESPONSE
+		do
+			create Result.make_empty
+			resp := execute_get (cmd_session_element_location_in_view (a_session_id,id))
+			Result := new_response (a_session_id, resp)
+		end
+
+
+	element_size (a_session_id: STRING_32; id : STRING_32) : SE_RESPONSE
+		require
+			selinum_server_available: is_available
+		local
+			resp: HTTP_CLIENT_RESPONSE
+		do
+			create Result.make_empty
+			resp := execute_get (cmd_session_element_size (a_session_id,id))
+			Result := new_response (a_session_id, resp)
+		end
+
+	element_css_value (a_session_id: STRING_32; id : STRING_32; property_name : STRING_32) : SE_RESPONSE
+		require
+			selinum_server_available: is_available
+		local
+			resp: HTTP_CLIENT_RESPONSE
+		do
+			create Result.make_empty
+			resp := execute_get (cmd_session_element_css_value (a_session_id,id, property_name))
+			Result := new_response (a_session_id, resp)
+		end
+
+
+	retrieve_browser_orientation (a_session_id: STRING_32) : SE_RESPONSE
+		require
+			selinum_server_available: is_available
+		local
+			resp: HTTP_CLIENT_RESPONSE
+		do
+			create Result.make_empty
+			resp := execute_get (cmd_session_browser_orientation (a_session_id))
+			Result := new_response (a_session_id, resp)
+		end
+
+
+	set_browser_orientation (a_session_id: STRING_32; data : STRING_32) : SE_RESPONSE
+		require
+			selinum_server_available: is_available
+		local
+			resp: HTTP_CLIENT_RESPONSE
+		do
+			create Result.make_empty
+			resp := execute_post (cmd_session_browser_orientation (a_session_id), data)
+			Result := new_response (a_session_id, resp)
+		end
+
+	retrieve_alert_text (a_session_id: STRING_32) : SE_RESPONSE
+		require
+			selinum_server_available: is_available
+		local
+			resp: HTTP_CLIENT_RESPONSE
+		do
+			create Result.make_empty
+			resp := execute_get (cmd_session_alert_text (a_session_id))
+			Result := new_response (a_session_id, resp)
+		end
+
 
 
 feature {NONE} -- Implementation
@@ -968,13 +742,22 @@ feature {NONE} -- Implementation
 			Result := http_session.delete (command_name, context_executor)
 		end
 
-	new_response (a_message: STRING_32): SE_RESPONSE
+	new_response (a_session_id : STRING_32; resp: HTTP_CLIENT_RESPONSE): SE_RESPONSE
+		-- Create a new Selenium Response based on  `resp' HTTP_RESPONSE
+		-- todo improve it!!!
 		do
 			create Result.make_empty
-			if attached json_to_se_response(a_message) as l_response then
-				Result := l_response
+			if resp.status = 204 then
+				Result.set_status (0)
+				Result.set_session_id (a_session_id)
+			else
+				if attached resp.body as l_body then
+					if attached json_to_se_response(l_body) as l_response then
+						Result := l_response
+					end
+					Result.set_json_response (l_body)
+				end
 			end
-			Result.set_json_response (a_message)
 		end
 
 	context_executor: HTTP_CLIENT_REQUEST_CONTEXT

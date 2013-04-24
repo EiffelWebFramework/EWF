@@ -1437,7 +1437,7 @@ feature -- Commands
 			end
 		end
 
-	element_location (a_session_id: STRING_32; an_id: STRING_32)
+	element_location (a_session_id: STRING_32; an_id: STRING_32): SE_WINDOW
 			--	GET /session/:sessionId/element/:id/location
 			--	Determine an element's location on the page. The point (0, 0) refers to the upper-left corner of the page.
 			-- 	The element's coordinates are returned as a JSON object with x and y properties.
@@ -1449,10 +1449,27 @@ feature -- Commands
 			--	Potential Errors:
 			--		NoSuchWindow - If the currently selected window has been closed.
 			--		StaleElementReference - If the element referenced by :id is no longer attached to the page's DOM.
+		local
+			resp: SE_RESPONSE
 		do
+			create Result
+			if commnad_executor.is_available then
+				resp := commnad_executor.element_location (a_session_id, an_id)
+				check_response (resp)
+				if not has_error then
+					if attached resp.value as l_value and then attached {JSON_OBJECT} string_to_json (l_value) as l_json_object then
+						if attached l_json_object.item ("x") as l_x then
+							Result.set_x (l_x.representation.to_integer_32)
+						end
+						if attached l_json_object.item ("y") as l_y then
+							Result.set_y (l_y.representation.to_integer_32)
+						end
+					end
+				end
+			end
 		end
 
-	is_location_in_view (a_session_id: STRING_32; an_id: STRING_32)
+	location_in_view (a_session_id: STRING_32; an_id: STRING_32): SE_WINDOW
 			--	GET /session/:sessionId/element/:id/location_in_view
 			--	Determine an element's location on the screen once it has been scrolled into view.
 			--	Note: This is considered an internal command and should only be used to determine an element's
@@ -1465,10 +1482,27 @@ feature -- Commands
 			--	Potential Errors:
 			--		NoSuchWindow - If the currently selected window has been closed.
 			--		StaleElementReference - If the element referenced by :id is no longer attached to the page's DOM.
+		local
+			resp: SE_RESPONSE
 		do
+			create Result
+			if commnad_executor.is_available then
+				resp := commnad_executor.location_in_view (a_session_id, an_id)
+				check_response (resp)
+				if not has_error then
+					if attached resp.value as l_value and then attached {JSON_OBJECT} string_to_json (l_value) as l_json_object then
+						if attached l_json_object.item ("x") as l_x then
+							Result.set_x (l_x.representation.to_integer_32)
+						end
+						if attached l_json_object.item ("y") as l_y then
+							Result.set_y (l_y.representation.to_integer_32)
+						end
+					end
+				end
+			end
 		end
 
-	element_size (a_session_id: STRING_32; an_id: STRING_32)
+	element_size (a_session_id: STRING_32; an_id: STRING_32): SE_WINDOW
 			--	GET /session/:sessionId/element/:id/size
 			--	Determine an element's size in pixels. The size will be returned as a JSON object with width and height properties.
 			--	URL Parameters:
@@ -1479,10 +1513,27 @@ feature -- Commands
 			--	Potential Errors:
 			--		NoSuchWindow - If the currently selected window has been closed.
 			--		StaleElementReference - If the element referenced by :id is no longer attached to the page's DOM.
+		local
+			resp: SE_RESPONSE
 		do
+			create Result
+			if commnad_executor.is_available then
+				resp := commnad_executor.element_size (a_session_id, an_id)
+				check_response (resp)
+				if not has_error then
+					if attached resp.value as l_value and then attached {JSON_OBJECT} string_to_json (l_value) as l_json_object then
+						if attached l_json_object.item ("width") as l_width then
+							Result.set_width (l_width.representation.to_natural)
+						end
+						if attached l_json_object.item ("height") as l_height then
+							Result.set_height (l_height.representation.to_natural)
+						end
+					end
+				end
+			end
 		end
 
-	element_css_value (a_session_id: STRING_32; an_id: STRING_32; a_property_name: STRING_32)
+	element_css_value (a_session_id: STRING_32; an_id: STRING_32; a_property_name: STRING_32): detachable STRING_32
 			--	GET /session/:sessionId/element/:id/css/:propertyName
 			--	Query the value of an element's computed CSS property. The CSS property to query should be specified using the CSS property name, not the JavaScript property name (e.g. background-color instead of backgroundColor).
 			--	URL Parameters:
@@ -1493,10 +1544,21 @@ feature -- Commands
 			--	Potential Errors:
 			--		NoSuchWindow - If the currently selected window has been closed.
 			--		StaleElementReference - If the element referenced by :id is no longer attached to the page's DOM.
+		local
+			resp: SE_RESPONSE
 		do
+			if commnad_executor.is_available then
+				resp := commnad_executor.element_css_value (a_session_id, an_id, a_property_name)
+				check_response (resp)
+				if not has_error then
+					if attached resp.value as l_value then
+						Result := l_value
+					end
+				end
+			end
 		end
 
-	retrieve_browser_orientation (a_session_id: STRING_32)
+	retrieve_browser_orientation (a_session_id: STRING_32): detachable STRING_32
 			--	GET /session/:sessionId/orientation
 			--	Get the current browser orientation. The server should return a valid orientation value as defined in ScreenOrientation: {LANDSCAPE|PORTRAIT}.
 			--	URL Parameters:
@@ -1505,10 +1567,24 @@ feature -- Commands
 			--		{string} The current browser orientation corresponding to a value defined in ScreenOrientation: {LANDSCAPE|PORTRAIT}.
 			--	Potential Errors:
 			--		NoSuchWindow - If the currently selected window has been closed.
+		local
+			resp: SE_RESPONSE
 		do
+			if commnad_executor.is_available then
+				resp := commnad_executor.retrieve_browser_orientation (a_session_id)
+				check_response (resp)
+				if not has_error then
+					if attached resp.value as l_value then
+						Result := l_value
+					end
+				end
+			end
+				--ensure
+				--	 if not has_error, has_valid_orientation (LANDSCAPE|PORTRAIT)
+				-- not_has_error : not has_error implies has_valid_orientation ()
 		end
 
-	set_browser_orientation (a_session_id: STRING_32)
+	set_browser_orientation (a_session_id: STRING_32; orientation: STRING_32)
 			--	POST /session/:sessionId/orientation
 			--	Set the browser orientation. The orientation should be specified as defined in ScreenOrientation: {LANDSCAPE|PORTRAIT}.
 			--	URL Parameters:
@@ -1517,10 +1593,23 @@ feature -- Commands
 			--		orientation - {string} The new browser orientation as defined in ScreenOrientation: {LANDSCAPE|PORTRAIT}.
 			--	Potential Errors:
 			--		NoSuchWindow - If the currently selected window has been closed.
+		require
+			valid_orientation: orientation.is_case_insensitive_equal ("LANDSCAPE") or else orientation.is_case_insensitive_equal ("PORTRAIT")
+		local
+			resp: SE_RESPONSE
+			l_json: STRING_32
 		do
+			l_json := "[
+				{"orientation" : "$orientation"}
+			]"
+			if commnad_executor.is_available then
+				l_json.replace_substring_all ("$orientation", orientation)
+				resp := commnad_executor.set_browser_orientation (a_session_id, l_json)
+				check_response (resp)
+			end
 		end
 
-	retrieve_alert_text (a_session_id: STRING_32)
+	retrieve_alert_text (a_session_id: STRING_32): detachable STRING_32
 			--	GET /session/:sessionId/alert_text
 			--	Gets the text of the currently displayed JavaScript alert(), confirm(), or prompt() dialog.
 			--	URL Parameters:
@@ -1529,7 +1618,18 @@ feature -- Commands
 			--		{string} The text of the currently displayed alert.
 			--	Potential Errors:
 			--		NoAlertPresent - If there is no alert displayed.
+		local
+			resp: SE_RESPONSE
 		do
+			if commnad_executor.is_available then
+				resp := commnad_executor.retrieve_alert_text (a_session_id)
+				check_response (resp)
+				if not has_error then
+					if attached resp.value as l_value then
+						Result := l_value
+					end
+				end
+			end
 		end
 
 	send_alert_text (a_session_id: STRING_32)

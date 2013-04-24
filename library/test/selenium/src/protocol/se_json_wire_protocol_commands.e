@@ -409,16 +409,61 @@ feature
 				Result.replace_substring_all ("$id", id)
 			end
 
+		cmd_session_element_location_tmpl : STRING ="session/$sessionId/element/$id/location"
 
---GET		/session/:sessionId/element/:id/displayed	 Determine if an element is currently displayed.
---GET		/session/:sessionId/element/:id/location	 Determine an element's location on the page.
---GET		/session/:sessionId/element/:id/location_in_view	 Determine an element's location on the screen once it has been scrolled into view.
---GET		/session/:sessionId/element/:id/size	 Determine an element's size in pixels.
---GET		/session/:sessionId/element/:id/css/:propertyName	 Query the value of an element's computed CSS property.
---GET		/session/:sessionId/orientation	 Get the current browser orientation.
---POST	/session/:sessionId/orientation	 Set the browser orientation.
---GET		/session/:sessionId/alert_text	 Gets the text of the currently displayed JavaScript alert(), confirm(), or prompt() dialog.
---POST	/session/:sessionId/alert_text	 Sends keystrokes to a JavaScript prompt() dialog.
+		cmd_session_element_location (sessionId: STRING_32; id : STRING_32): STRING_32
+			do
+				create Result.make_from_string (cmd_session_element_location_tmpl)
+				Result.replace_substring_all ("$sessionId", sessionId)
+				Result.replace_substring_all ("$id", id)
+			end
+
+		cmd_session_element_location_in_view_tmpl : STRING ="session/$sessionId/element/$id/location_in_view"
+
+		cmd_session_element_location_in_view (sessionId: STRING_32; id : STRING_32): STRING_32
+			do
+				create Result.make_from_string (cmd_session_element_location_in_view_tmpl)
+				Result.replace_substring_all ("$sessionId", sessionId)
+				Result.replace_substring_all ("$id", id)
+			end
+
+
+		cmd_session_element_size_tmpl : STRING ="session/$sessionId/element/$id/size"
+
+		cmd_session_element_size (sessionId: STRING_32; id : STRING_32): STRING_32
+			do
+				create Result.make_from_string (cmd_session_element_size_tmpl)
+				Result.replace_substring_all ("$sessionId", sessionId)
+				Result.replace_substring_all ("$id", id)
+			end
+
+		cmd_session_element_css_value_tmpl : STRING ="session/$sessionId/element/$id/css/$propertyName"
+
+		cmd_session_element_css_value (sessionId: STRING_32; id : STRING_32; property_name : STRING_32): STRING_32
+			do
+				create Result.make_from_string (cmd_session_element_css_value_tmpl)
+				Result.replace_substring_all ("$sessionId", sessionId)
+				Result.replace_substring_all ("$id", id)
+				Result.replace_substring_all ("$propertyName", property_name)
+			end
+
+		cmd_session_browser_orientation_tmpl : STRING ="session/$sessionId/orientation"
+
+		cmd_session_browser_orientation (sessionId: STRING_32): STRING_32
+			do
+				create Result.make_from_string (cmd_session_browser_orientation_tmpl)
+				Result.replace_substring_all ("$sessionId", sessionId)
+			end
+
+		cmd_session_alert_text_tmpl : STRING ="session/$sessionId/alert_text"
+
+		cmd_session_alert_text (sessionId: STRING_32): STRING_32
+				do
+					create Result.make_from_string (cmd_session_alert_text_tmpl)
+					Result.replace_substring_all ("$sessionId", sessionId)
+				end
+
+
 --POST	/session/:sessionId/accept_alert	 Accepts the currently displayed alert dialog.
 --POST	/session/:sessionId/dismiss_alert	 Dismisses the currently displayed alert dialog.
 --POST	/session/:sessionId/moveto	 Move the mouse by an offset of the specificed element.
