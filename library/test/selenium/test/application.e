@@ -115,6 +115,7 @@ feature {NONE} -- Initialization
 				print ("The selenium server is not accesible")
 			end
 		end
+
 	test_back_forward_refesh
 		local
 			web_driver: SE_JSON_WIRE_PROTOCOL
@@ -184,6 +185,8 @@ feature {NONE} -- Initialization
 					end
 				end
 		end
+
+		
 	test_session
 		local
 			h: LIBCURL_HTTP_CLIENT

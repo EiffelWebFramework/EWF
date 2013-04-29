@@ -576,7 +576,7 @@ feature -- Commands
 			end
 		end
 
-	frame (a_session_id: STRING_32)
+	frame (a_session_id: STRING_32;  arg : detachable STRING_32)
 			--	POST /session/:sessionId/frame
 			--	Change focus to another frame on the page. If the frame id is null, the server should switch to the page's default content.
 			--	URL Parameters:
@@ -586,7 +586,23 @@ feature -- Commands
 			--	Potential Errors:
 			--		NoSuchWindow - If the currently selected window has been closed.
 			--		NoSuchFrame - If the frame specified by id cannot be found.
+		local
+			l_json: STRING_32
+			resp: SE_RESPONSE
 		do
+			l_json := "[
+				{ "id": $id }
+			]"
+			if attached arg as l_arg then
+				l_json.replace_substring_all ("$id", l_arg)
+			else
+				l_json.replace_substring_all ("$id", "null")
+			end
+
+			if commnad_executor.is_available then
+				resp := commnad_executor.frame (a_session_id, l_json)
+				check_response (resp)
+			end
 		end
 
 	change_focus_window (a_session_id: STRING_32; a_name: STRING_32)
@@ -653,7 +669,7 @@ feature -- Commands
 			end
 		end
 
-	size_window (a_session_id: STRING_32; a_window_handle: STRING_32): SE_WINDOW
+	size_window (a_session_id: STRING_32; a_window_handle: STRING_32): SE_DIMENSION
 			--	GET /session/:sessionId/window/:windowHandle/size
 			--	Get the size of the specified window. If the :windowHandle URL parameter is "current", the size of the currently active window will be returned.
 			--	URL Parameters:
@@ -709,7 +725,7 @@ feature -- Commands
 			end
 		end
 
-	window_position (a_session_id: STRING_32; a_window_handle: STRING_32): SE_WINDOW
+	window_position (a_session_id: STRING_32; a_window_handle: STRING_32): SE_POINT
 			--	GET /session/:sessionId/window/:windowHandle/position
 			--	Get the position of the specified window. If the :windowHandle URL parameter is "current", the position of the currently active window will be returned.
 			--	URL Parameters:
@@ -931,8 +947,8 @@ feature -- Commands
 				resp := commnad_executor.search_element (a_session_id, strategy)
 				check_response (resp)
 				if not has_error then
-					if attached {JSON_OBJECT} resp.value as l_value and then attached l_value.item ("ELEMENT") as l_elem then
-						create Result.make (l_elem.representation)
+					if attached resp.value as l_value and then attached {JSON_OBJECT} string_to_json (l_value) as ll_value and then attached {JSON_STRING} ll_value.item ("ELEMENT") as l_elem then
+						create Result.make (l_elem.item)
 					end
 				end
 			end
@@ -1437,7 +1453,7 @@ feature -- Commands
 			end
 		end
 
-	element_location (a_session_id: STRING_32; an_id: STRING_32): SE_WINDOW
+	element_location (a_session_id: STRING_32; an_id: STRING_32): SE_POINT
 			--	GET /session/:sessionId/element/:id/location
 			--	Determine an element's location on the page. The point (0, 0) refers to the upper-left corner of the page.
 			-- 	The element's coordinates are returned as a JSON object with x and y properties.
@@ -1469,7 +1485,7 @@ feature -- Commands
 			end
 		end
 
-	location_in_view (a_session_id: STRING_32; an_id: STRING_32): SE_WINDOW
+	location_in_view (a_session_id: STRING_32; an_id: STRING_32): SE_POINT
 			--	GET /session/:sessionId/element/:id/location_in_view
 			--	Determine an element's location on the screen once it has been scrolled into view.
 			--	Note: This is considered an internal command and should only be used to determine an element's
@@ -1502,7 +1518,7 @@ feature -- Commands
 			end
 		end
 
-	element_size (a_session_id: STRING_32; an_id: STRING_32): SE_WINDOW
+	element_size (a_session_id: STRING_32; an_id: STRING_32): SE_DIMENSION
 			--	GET /session/:sessionId/element/:id/size
 			--	Determine an element's size in pixels. The size will be returned as a JSON object with width and height properties.
 			--	URL Parameters:
@@ -1632,7 +1648,7 @@ feature -- Commands
 			end
 		end
 
-	send_alert_text (a_session_id: STRING_32)
+	send_alert_text (a_session_id: STRING_32; text : STRING_32)
 			--	POST /session/:sessionId/alert_text
 			--	Sends keystrokes to a JavaScript prompt() dialog.
 			--	URL Parameters:
@@ -1641,7 +1657,19 @@ feature -- Commands
 			--		text - {string} Keystrokes to send to the prompt() dialog.
 			--	Potential Errors:
 			--		NoAlertPresent - If there is no alert displayed.
+		local
+			resp : SE_RESPONSE
+			l_json : STRING_32
 		do
+			 l_json := "[
+			 { "text":"$text" }
+			 ]"
+
+			 if commnad_executor.is_available then
+			 	l_json.replace_substring_all ("$text", text)
+			 	resp := commnad_executor.send_alert_text (a_session_id, l_json)
+			 	check_response (resp)
+			 end
 		end
 
 	accept_alert (a_session_id: STRING_32)
@@ -1651,7 +1679,13 @@ feature -- Commands
 			--		:sessionId - ID of the session to route the command to.
 			--	Potential Errors:
 			--		NoAlertPresent - If there is no alert displayed.
+		local
+			resp : SE_RESPONSE
 		do
+			if commnad_executor.is_available then
+				resp :=  commnad_executor.accept_alert (a_session_id)
+				check_response (resp)
+			end
 		end
 
 	dismiss_alert (a_session_id: STRING_32)
@@ -1661,57 +1695,131 @@ feature -- Commands
 			--		:sessionId - ID of the session to route the command to.
 			--	Potential Errors:
 			--		NoAlertPresent - If there is no alert displayed.
+		local
+			resp : SE_RESPONSE
 		do
+			if commnad_executor.is_available then
+				resp :=  commnad_executor.dismiss_alert (a_session_id)
+				check_response (resp)
+			end
 		end
 
-	move_to (a_session_id: STRING_32)
+	move_to (a_session_id: STRING_32; web_element : WEB_ELEMENT; xoffset : NATURAL; yoffset:NATURAL)
 			--	POST /session/:sessionId/moveto
-			--	Move the mouse by an offset of the specificed element. If no element is specified, the move is relative to the current mouse cursor. If an element is provided but no offset, the mouse will be moved to the center of the element. If the element is not visible, it will be scrolled into view.
+			--	Move the mouse by an offset of the specificed element.
+			--  If no element is specified, the move is relative to the current mouse cursor.
+			--  If an element is provided but no offset, the mouse will be moved to the center of the element.
+			--  If the element is not visible, it will be scrolled into view.
 			--	URL Parameters:
 			--		:sessionId - ID of the session to route the command to.
 			--	JSON Parameters:
 			--		element - {string} Opaque ID assigned to the element to move to, as described in the WebElement JSON Object. If not specified or is null, the offset is relative to current position of the mouse.
 			--		xoffset - {number} X offset to move to, relative to the top-left corner of the element. If not specified, the mouse will move to the middle of the element.
 			--		yoffset - {number} Y offset to move to, relative to the top-left corner of the element. If not specified, the mouse will move to the middle of the element.
+		local
+			resp : SE_RESPONSE
+			l_json : STRING_32
+
 		do
+			l_json := "[
+				{ "element" : "$element",
+				  "yoffset" : $yoffset,
+				  "xoffset" : $xoffset	
+				}
+			]"
+			if commnad_executor.is_available then
+				l_json.replace_substring_all ("$element", web_element.element)
+				l_json.replace_substring_all ("$yoffset", yoffset.out)
+				l_json.replace_substring_all ("$xoffset", xoffset.out)
+				resp := commnad_executor.move_to (a_session_id, l_json)
+				check_response (resp)
+			end
 		end
 
-	click (a_session_id: STRING_32)
+	click (a_session_id: STRING_32; button : SE_BUTTON )
 			--	POST /session/:sessionId/click
 			--	Click any mouse button (at the coordinates set by the last moveto command). Note that calling this command after calling buttondown and before calling button up (or any out-of-order interactions sequence) will yield undefined behaviour).
 			--	URL Parameters:
 			--		:sessionId - ID of the session to route the command to.
 			--	JSON Parameters:
 			--		button - {number} Which button, enum: {LEFT = 0, MIDDLE = 1 , RIGHT = 2}. Defaults to the left mouse button if not specified.
+		local
+			resp : SE_RESPONSE
+			l_json : STRING_32
 		do
+			l_json := "[
+					{
+					"button" : $number
+				}
+			]"
+			if commnad_executor.is_available then
+				l_json.replace_substring_all ("$number", button.value.out)
+				resp := commnad_executor.click (a_session_id, l_json)
+				check_response (resp)
+			end
 		end
 
-	button_down (a_session_id: STRING_32)
+	button_down (a_session_id: STRING_32; button : SE_BUTTON)
 			--	POST /session/:sessionId/buttondown
-			--	Click and hold the left mouse button (at the coordinates set by the last moveto command). Note that the next mouse-related command that should follow is buttonup . Any other mouse command (such as click or another call to buttondown) will yield undefined behaviour.
+			--	Click and hold the left mouse button (at the coordinates set by the last moveto command).
+			--  Note that the next mouse-related command that should follow is buttonup .
+			--  Any other mouse command (such as click or another call to buttondown) will yield undefined behaviour.
 			--	URL Parameters:
 			--		:sessionId - ID of the session to route the command to.
 			--	JSON Parameters:
-			--		button - {number} Which button, enum: {LEFT = 0, MIDDLE = 1 , RIGHT = 2}. Defaults to the left mouse button if not specified.
+			--		button - {number} Which button, enum: {LEFT = 0, MIDDLE = 1 , RIGHT = 2}.
+			--		Defaults to the left mouse button if not specified.
+		local
+			resp : SE_RESPONSE
+			l_json : STRING_32
 		do
+			l_json := "[
+					{
+					"button" : $number
+				}
+			]"
+			if commnad_executor.is_available then
+				l_json.replace_substring_all ("$number", button.value.out)
+				resp := commnad_executor.button_down (a_session_id, l_json)
+				check_response (resp)
+			end
 		end
 
-	button_up (a_session_id: STRING_32)
+	button_up (a_session_id: STRING_32; button : SE_BUTTON)
 			--	POST /session/:sessionId/buttonup
 			--	Releases the mouse button previously held (where the mouse is currently at). Must be called once for every buttondown command issued. See the note in click and buttondown about implications of out-of-order commands.
 			--	URL Parameters:
 			--		:sessionId - ID of the session to route the command to.
 			--	JSON Parameters:
-			--		button - {number} Which button, enum: {LEFT = 0, MIDDLE = 1 , RIGHT = 2}. Defaults to the left mouse button if not specified.
+			--		button - {number} Which button, enum: {LEFT = 0, MIDDLE = 1 , RIGHT = 2}.
+			--		Defaults to the left mouse button if not specified.
+		local
+			resp : SE_RESPONSE
+			l_json : STRING_32
 		do
+			l_json := "[
+					{
+					"button" : $number
+				}
+			]"
+			if commnad_executor.is_available then
+				l_json.replace_substring_all ("$number", button.value.out)
+				resp := commnad_executor.button_up (a_session_id, l_json)
+				check_response (resp)
+			end
 		end
-
 	double_click (a_session_id: STRING_32)
 			--	POST /session/:sessionId/doubleclick
 			--	Double-clicks at the current mouse coordinates (set by moveto).
 			--	URL Parameters:
 			--		:sessionId - ID of the session to route the command to.
+		local
+			resp : SE_RESPONSE
 		do
+			if commnad_executor.is_available then
+				resp := commnad_executor.double_click (a_session_id)
+				check_response (resp)
+			end
 		end
 
 	touch_click (a_session_id: STRING_32)

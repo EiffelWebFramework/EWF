@@ -202,22 +202,24 @@ feature -- Commands
 			Result := new_response (a_session_id, resp)
 		end
 
-	execute
+	execute (a_session_id : STRING_32; data : STRING_32) : SE_RESPONSE
 		require
 			selinum_server_available: is_available
 		local
 			resp: HTTP_CLIENT_RESPONSE
 		do
-				-- TODO
+			resp := execute_post (cmd_session_execute (a_session_id), data)
+			Result := new_response (a_session_id, resp)
 		end
 
-	execute_async
+	execute_async (a_session_id : STRING_32; data : STRING_32) : SE_RESPONSE
 		require
 			selinum_server_available: is_available
 		local
 			resp: HTTP_CLIENT_RESPONSE
 		do
-				-- TODO
+			resp := execute_post (cmd_session_execute_async (a_session_id),data)
+			Result := new_response (a_session_id, resp)
 		end
 
 	screenshot (session_id: STRING_32): SE_RESPONSE
@@ -277,6 +279,17 @@ feature -- Commands
 			resp: HTTP_CLIENT_RESPONSE
 		do
 			resp := execute_post (cmd_session_ime_activate (a_session_id), an_engine)
+			Result := new_response (a_session_id, resp)
+		end
+
+
+	frame (a_session_id: STRING_32; a_data: STRING_32): SE_RESPONSE
+		require
+			selinum_server_available: is_available
+		local
+			resp: HTTP_CLIENT_RESPONSE
+		do
+			resp := execute_post (cmd_session_frame (a_session_id), a_data)
 			Result := new_response (a_session_id, resp)
 		end
 

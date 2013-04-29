@@ -13,7 +13,7 @@ inherit
 create default_create
 
 feature -- Access
-	id (an_id : STRING_32; value : STRING_32 ) : STRING_32
+	id ( value : STRING_32 ) : STRING_32
 			-- return a STRING representing a JSON
 			-- with strategy by `id' and value `value'
 			--	{ "using" : "id", "value":value }
@@ -25,7 +25,7 @@ feature -- Access
 			has_id_strategy : has_correct_stategy (Result, se_id)
 		end
 
-	name (an_id : STRING_32; value : STRING_32 ) : STRING_32
+	name ( value : STRING_32 ) : STRING_32
 			-- return a STRING representing a JSON
 			-- with strategy by `name' and value `value'
 			--	{ "using" : "name", "value":value }
@@ -37,7 +37,7 @@ feature -- Access
 			has_name_strategy : has_correct_stategy (Result, se_name)
 		end
 
-	class_name (an_id : STRING_32; value : STRING_32 ) : STRING_32
+	class_name ( value : STRING_32 ) : STRING_32
 			-- return a STRING representing a JSON
 			-- with strategy by `class name' and value `value'
 			--	{ "using" : "class name", "value":value }
@@ -50,7 +50,7 @@ feature -- Access
 		end
 
 
-	css_selector (an_id : STRING_32; value : STRING_32 ) : STRING_32
+	css_selector ( value : STRING_32 ) : STRING_32
 			-- return a STRING representing a JSON
 			-- with strategy by `css selector' and value `value'
 			--	{ "using" : "css selector", "value":value }
@@ -62,7 +62,7 @@ feature -- Access
 			has_css_selector_strategy : has_correct_stategy (Result, se_css_selector)
 		end
 
-	link_text (an_id : STRING_32; value : STRING_32 ) : STRING_32
+	link_text ( value : STRING_32 ) : STRING_32
 			-- return a STRING representing a JSON
 			-- with strategy by `link text' and value `value'
 			--	{ "using" : "link text", "value":value }
@@ -75,7 +75,7 @@ feature -- Access
 		end
 
 
-	partial_link_text (an_id : STRING_32; value : STRING_32 ) : STRING_32
+	partial_link_text ( value : STRING_32 ) : STRING_32
 			-- return a STRING representing a JSON
 			-- with strategy by `partial link text' and value `value'
 			--	{ "using" : "partial link text", "value":value }
@@ -87,7 +87,7 @@ feature -- Access
 			has_partial_link_text_strategy : has_correct_stategy (Result, se_partial_link_text)
 		end
 
-	tag_name (an_id : STRING_32; value : STRING_32 ) : STRING_32
+	tag_name ( value : STRING_32 ) : STRING_32
 			-- return a STRING representing a JSON
 			-- with strategy by `tag name' and value `value'
 			--	{ "using" : "tag name", "value":value }
@@ -100,7 +100,7 @@ feature -- Access
 		end
 
 
-	xpath (an_id : STRING_32; value : STRING_32 ) : STRING_32
+	xpath ( value : STRING_32 ) : STRING_32
 			-- return a STRING representing a JSON
 			-- with strategy by `xpath' and value `value'
 			--	{ "using" : "xpath", "value":value }

@@ -1,5 +1,5 @@
 note
-	description: "bject that describe a cookie. When returning Cookie objects, the server should only omit an optional field if it is incapable of providing the information."
+	description: "Objects that describe a cookie. When returning Cookie objects, the server should only omit an optional field if it is incapable of providing the information."
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"

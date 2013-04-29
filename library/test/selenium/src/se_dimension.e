@@ -1,11 +1,11 @@
 note
-	description: "Summary description for {SE_WINDOW}."
+	description: "Summary description for {SE_DIMENSION}."
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
 class
-	SE_WINDOW
+	SE_DIMENSION
 create
 	default_create,
 	make_with_values
@@ -24,8 +24,6 @@ feature -- Access
 	height : NATURAL_32
 		-- The width and height of the element, in pixels.
 
-	x,y : INTEGER_32
-		-- The X and Y coordinates for the element.
 
 feature -- Change Element
 	set_width (a_width : NATURAL_32)
@@ -41,14 +39,6 @@ feature -- Change Element
 			height := a_height
 		end
 
-	set_x (an_x : INTEGER_32)
-		do
-			x := an_x
-		end
 
-	set_y (an_y : INTEGER_32)
-		do
-			y := an_y
-		end
 
 end

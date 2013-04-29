@@ -103,8 +103,21 @@ feature
 			Result.replace_substring_all ("$id", id)
 		end
 
-		--POST	/session/:sessionId/execute	 Inject a snippet of JavaScript into the page for execution in the context of the currently selected frame.
-		--POST	/session/:sessionId/execute_async	 Inject a snippet of JavaScript into the page for execution in the context of the currently selected frame.
+	cmd_session_execute_tmpl: STRING = "session/$id/execute"
+
+	cmd_session_execute (id: STRING_32): STRING_32
+		do
+			create Result.make_from_string (cmd_session_execute_tmpl)
+			Result.replace_substring_all ("$id", id)
+		end
+
+	cmd_session_execute_async_tmpl: STRING = "session/$id/execute_async"
+
+	cmd_session_execute_async (id: STRING_32): STRING_32
+		do
+			create Result.make_from_string (cmd_session_execute_async_tmpl)
+			Result.replace_substring_all ("$id", id)
+		end
 
 	cmd_session_screenshot_tmpl: STRING = "session/$id/screenshot"
 
@@ -155,6 +168,15 @@ feature
 		end
 
 		--POST	/session/:sessionId/frame	 Change focus to another frame on the page.
+
+	cmd_session_frame_tmpl: STRING = "session/$id/frame"
+
+	cmd_session_frame (id: STRING_32): STRING_32
+		do
+			create Result.make_from_string (cmd_session_frame_tmpl)
+			Result.replace_substring_all ("$id", id)
+		end
+
 
 	cmd_session_window_tmpl: STRING = "session/$id/window"
 
@@ -220,7 +242,7 @@ feature
 
 	cmd_session_title (id: STRING_32): STRING_32
 		do
-			create Result.make_from_string (cmd_session_source_tmpl)
+			create Result.make_from_string (cmd_session_title_tmpl)
 			Result.replace_substring_all ("$id", id)
 		end
 
@@ -611,7 +633,7 @@ feature
 
 	cmd_session_storage_size_tmpl: STRING = "session/$sessionId/session_storage/size"
 
-	cmd_session_storage_size (sessionId: STRING_32; key : STRING_32): STRING_32
+	cmd_session_storage_size (sessionId: STRING_32): STRING_32
 		do
 			create Result.make_from_string (cmd_session_storage_size_tmpl)
 			Result.replace_substring_all ("$sessionId", sessionId)
