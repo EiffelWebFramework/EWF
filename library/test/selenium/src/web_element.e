@@ -7,21 +7,15 @@ note
 class
 	WEB_ELEMENT
 create
-		make,
-		make2
+		make
 feature
-		make2 ( an_element : STRING_32 ; an_api : like api; a_session_id : STRING_32)
+		make ( an_element : STRING_32 ; an_api : like api; a_session_id : STRING_32)
 			do
 				set_element (an_element)
 				api := an_api
 				session_id := a_session_id
 			end
-		make ( an_element : STRING_32)
-			do
-				set_element (an_element)
-				create api.make
-				session_id := ""
-			end
+	
 feature -- Access
 	element : STRING_32
 		--The opaque ID assigned to the element by the server.

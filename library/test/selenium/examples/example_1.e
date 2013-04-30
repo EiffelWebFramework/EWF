@@ -12,7 +12,7 @@ feature -- Access
 		local
 			web_driver: SE_JSON_WIRE_PROTOCOL
 			capabilities: SE_CAPABILITIES
-			l_session : SE_SESSION
+			l_session : detachable SE_SESSION
 		do
 			create web_driver.make
 			if attached web_driver.status as l_status then

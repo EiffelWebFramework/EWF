@@ -948,7 +948,7 @@ feature -- Commands
 				check_response (resp)
 				if not has_error then
 					if attached resp.value as l_value and then attached {JSON_OBJECT} string_to_json (l_value) as ll_value and then attached {JSON_STRING} ll_value.item ("ELEMENT") as l_elem then
-						create Result.make (l_elem.item)
+						create Result.make (l_elem.item, Current, a_session_id)
 					end
 				end
 			end
@@ -996,7 +996,7 @@ feature -- Commands
 							index > l_json_array.count
 						loop
 							if attached {JSON_OBJECT} l_json_array.i_th (index) as json_str and then attached json_str.item ("ELEMENT") as l_elem then
-								Result.force (create {WEB_ELEMENT}.make (l_elem.representation))
+								Result.force (create {WEB_ELEMENT}.make (l_elem.representation, Current, a_session_id))
 							end
 							index := index + 1
 						end
@@ -1022,7 +1022,7 @@ feature -- Commands
 				check_response (resp)
 				if not has_error then
 					if attached {JSON_OBJECT} resp.value as l_value and then attached l_value.item ("ELEMENT") as l_elem then
-						create Result.make (l_elem.representation)
+						create Result.make (l_elem.representation, Current, a_session_id)
 					end
 				end
 			end
@@ -1082,7 +1082,7 @@ feature -- Commands
 				check_response (resp)
 				if not has_error then
 					if attached {JSON_OBJECT} resp.value as l_value and then attached l_value.item ("ELEMENT") as l_elem then
-						create Result.make (l_elem.representation)
+						create Result.make (l_elem.representation, Current, a_session_id)
 					end
 				end
 			end
@@ -1135,7 +1135,7 @@ feature -- Commands
 							index > l_json_array.count
 						loop
 							if attached {JSON_OBJECT} l_json_array.i_th (index) as json_str and then attached json_str.item ("ELEMENT") as l_elem then
-								Result.force (create {WEB_ELEMENT}.make (l_elem.representation))
+								Result.force (create {WEB_ELEMENT}.make (l_elem.representation,Current, a_session_id))
 							end
 							index := index + 1
 						end
