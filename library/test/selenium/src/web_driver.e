@@ -441,6 +441,14 @@ feature -- Common
 		end
 
 
+feature {WEB_DRIVER, WEB_DRIVER_WAIT}
+	session_wait (duration : INTEGER_64)
+		do
+			if attached session as l_session then
+				 api.set_session_timeouts_async_script (l_session.session_id, duration.as_integer_32)
+			end
+		end
+
 feature {NONE} -- Implementation
 
 	session: detachable SE_SESSION

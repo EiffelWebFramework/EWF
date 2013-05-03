@@ -11,6 +11,7 @@ feature -- Example
 	search
 		local
 			web_driver : WEB_DRIVER
+			wait : WEB_DRIVER_WAIT
 		do
 			--Create a new instance of a Web driver
        		create web_driver.make
@@ -31,9 +32,15 @@ feature -- Example
      			l_element.submit
 
 		     end
+			 if attached web_driver.get_page_tile as l_title then
+		     	print ("%NPage title is:" + l_title)
+		     end
+			 create wait.make (web_driver,0)
+			 wait.wait ("Eiffel Room")
 
-		     if attached web_driver.get_page_tile as l_title then
-		     	print ("Page title is:" + l_title)
+
+			  if attached web_driver.get_page_tile as l_title then
+		     	print ("%NPage title is:" + l_title)
 		     end
 
 			-- close the window
