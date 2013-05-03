@@ -207,7 +207,7 @@ feature -- Header output operation
 			if header_committed then
 				report_content_already_sent_and_header_ignored
 			else
-				header.append_raw_header_data (a_text)
+				header.put_raw_header_data (a_text)
 			end
 		ensure
 			message_writable: message_writable
