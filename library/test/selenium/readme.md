@@ -76,6 +76,7 @@ WebDriver is a tool for automating web application testing, and in particular to
 
 	
 ### Selenium-WebDriver API Commands and Operations
+To learn more go to [Selenium documentation] (http://docs.seleniumhq.org/docs/03_webdriver.jsp#introducing-the-selenium-webdriver-api-by-example) 
 ##### Fetching a Page
 	The first thing you are likely to want to do with WebDriver is navigate to a page. 
 	
