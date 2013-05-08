@@ -3,7 +3,7 @@ note
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
-	EIS: "name=SELINIUM", "protocol=JSONWireProtocol", "src=https://code.google.com/p/selenium/wiki/JsonWireProtocol#Commands"
+	EIS: "name=SELINIUM", "protocol=uri", "src=https://code.google.com/p/selenium/wiki/JsonWireProtocol#Commands"
 
 class
 	COMMAND_EXECUTOR

@@ -6,7 +6,8 @@ note
 
 class
 	WEB_DRIVER_WAIT
-
+inherit
+	SHARED_EXECUTION_ENVIRONMENT
 create
 	make
 feature {NONE} -- Initialization
@@ -21,25 +22,34 @@ feature {NONE} -- Initialization
 		end
 
 feature -- Access
-	wait (condition : STRING)
-
+	-- create another feature to accept a predicate
+	until_when (condition : STRING)
+		--Evaluate the condition until it's true or timing out .
 		local
 			found : BOOLEAN
+			l_time1, l_time2 : TIME
+			l_duration : TIME_DURATION
 		do
+
+			create l_time1.make_now
+			create l_duration.make_by_seconds (duration.as_integer_32)
+
 			condition.to_lower
 			from
+				create l_time2.make_now
 				if attached {STRING_32} web_driver.get_page_tile as l_title then
 					l_title.to_lower
 					found := l_title.has_substring (condition)
 				end
 			until
-				found
+				found or
+				l_time2.relative_duration (l_time1).fine_seconds_count > l_duration.fine_seconds_count
 			loop
 				if attached web_driver.get_page_tile as l_title then
 					l_title.to_lower
 					found := l_title.has_substring (condition)
-
 				end
+				create l_time2.make_now
 			end
 		end
 

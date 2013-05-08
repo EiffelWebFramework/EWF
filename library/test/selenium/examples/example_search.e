@@ -35,8 +35,11 @@ feature -- Example
 			 if attached web_driver.get_page_tile as l_title then
 		     	print ("%NPage title is:" + l_title)
 		     end
-			 create wait.make (web_driver,0)
-			 wait.wait ("Eiffel Room")
+
+		    -- Google's search is rendered dynamically with JavaScript.
+        	-- Wait for the page to load, timeout after 10 seconds
+		   	 create wait.make (web_driver,10)
+			 wait.until_when ("Eiffel Room")
 
 
 			  if attached web_driver.get_page_tile as l_title then
@@ -45,7 +48,5 @@ feature -- Example
 
 			-- close the window
 			web_driver.window_close
-
-
 		end
 end
