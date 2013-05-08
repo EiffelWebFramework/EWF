@@ -91,6 +91,82 @@ Eiffel Code
     
     web_driver.find_element ((create{SE_BY}).id ("head"))
     
+
+###### By Name
+
+Example of how to find an element that looks like this:
+
+    <input name="cheese" type="text"/>
+
+Eiffel Code
+    
+    web_driver.find_element ((create{SE_BY}).name ("cheese"))
+
+###### By Class Name
+
+Example of how to find an element that looks like this:
+
+    <div class="cheese"><span>Cheddar</span></div><div class="cheese"><span>Gouda</span></div>
+
+Eiffel Code
+    
+    web_driver.find_element ((create{SE_BY}).class_name ("cheese"))
+
+###### By CSS Selector
+
+Example of how to find an element that looks like this:
+
+    <div id="food"><span class="dairy">milk</span><span class="dairy aged">cheese</span></div>
+
+Eiffel Code
+    
+    web_driver.find_element ((create{SE_BY}).css_selector ("#food span.dairy.aged"))
+
+###### By Link Text
+
+Example of how to find an element that looks like this:
+
+    <a href="http://www.google.com/search?q=EWF">EWF</a>>
+
+Eiffel Code
+    
+    web_driver.find_element ((create{SE_BY}).link_text ("EWF"))
+
+
+###### By Partial Link Text
+
+Example of how to find an element that looks like this:
+
+    <a href="http://www.google.com/search?q=ewf">search for ewf</a>>
+
+Eiffel Code
+    
+    web_driver.find_element ((create{SE_BY}).partial_link_text ("ewf"))
+
+
+###### By Tag Name
+
+Example of how to find an element that looks like this:
+
+    <iframe src="..."></iframe>
+
+Eiffel Code
+    
+    web_driver.find_element ((create{SE_BY}).tag_name ("iframe"))
+
+
+###### By XPath
+
+
+Example of how to find an element that looks like this:
+
+    <input type="text" name="example" />
+
+Eiffel Code
+    
+    web_driver.find_element ((create{SE_BY}).xpath ("//input"))
+
+
 ### Locating Elements
 
 
