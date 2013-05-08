@@ -88,6 +88,7 @@ Example of how to find an element that looks like this:
     <div id="head">...</div>
 
 Eiffel Code
+    
     web_driver.find_element ((create{SE_BY}).id ("head"))
     
 ### Locating Elements
