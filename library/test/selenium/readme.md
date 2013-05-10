@@ -20,7 +20,8 @@ WARNING this API is still under development, and maybe it will change
 		java -jar selenium-server-standalone-2.32.0.jar  
 		-Dwebdriver.chrome.driver=%PATH_TO%\chromedriver.exe  -Dwebdriver.ie.driver=%PATH_TO%\IEDriverServer.exe 
 		
-##  Getting Started Selenium-WebDriver API (Eiffel binding only support (for now) RemoteWebDriver) 
+##  Getting Started Selenium-WebDriver API 
+(Eiffel binding only support (for now) RemoteWebDriver) 
 The examples and guide are based on http://docs.seleniumhq.org/docs/03_webdriver.jsp#introducing-the-selenium-webdriver-api-by-example
 
 WebDriver is a tool for automating web application testing, and in particular to verify that they work as expected. 
@@ -75,12 +76,98 @@ WebDriver is a tool for automating web application testing, and in particular to
 
 	
 ### Selenium-WebDriver API Commands and Operations
-	Fetching a Page
-	The first thing you’re likely to want to do with WebDriver is navigate to a page. 
+To learn more go to [Selenium documentation] (http://docs.seleniumhq.org/docs/03_webdriver.jsp#introducing-the-selenium-webdriver-api-by-example) 
+##### Fetching a Page
+	The first thing you are likely to want to do with WebDriver is navigate to a page. 
 	
 		web_driver.to_url ("http://www.google.com/")
-	
-	
+
+##### Locating UI Elements (WebElements)
+###### By ID
+Example of how to find an element that looks like this:
+
+    <div id="head">...</div>
+
+Eiffel Code
+    
+    web_driver.find_element ((create{SE_BY}).id ("head"))
+    
+
+###### By Name
+
+Example of how to find an element that looks like this:
+
+    <input name="cheese" type="text"/>
+
+Eiffel Code
+    
+    web_driver.find_element ((create{SE_BY}).name ("cheese"))
+
+###### By Class Name
+
+Example of how to find an element that looks like this:
+
+    <div class="cheese"><span>Cheddar</span></div><div class="cheese"><span>Gouda</span></div>
+
+Eiffel Code
+    
+    web_driver.find_element ((create{SE_BY}).class_name ("cheese"))
+
+###### By CSS Selector
+
+Example of how to find an element that looks like this:
+
+    <div id="food"><span class="dairy">milk</span><span class="dairy aged">cheese</span></div>
+
+Eiffel Code
+    
+    web_driver.find_element ((create{SE_BY}).css_selector ("#food span.dairy.aged"))
+
+###### By Link Text
+
+Example of how to find an element that looks like this:
+
+    <a href="http://www.google.com/search?q=EWF">EWF</a>>
+
+Eiffel Code
+    
+    web_driver.find_element ((create{SE_BY}).link_text ("EWF"))
+
+
+###### By Partial Link Text
+
+Example of how to find an element that looks like this:
+
+    <a href="http://www.google.com/search?q=ewf">search for ewf</a>>
+
+Eiffel Code
+    
+    web_driver.find_element ((create{SE_BY}).partial_link_text ("ewf"))
+
+
+###### By Tag Name
+
+Example of how to find an element that looks like this:
+
+    <iframe src="..."></iframe>
+
+Eiffel Code
+    
+    web_driver.find_element ((create{SE_BY}).tag_name ("iframe"))
+
+
+###### By XPath
+
+
+Example of how to find an element that looks like this:
+
+    <input type="text" name="example" />
+
+Eiffel Code
+    
+    web_driver.find_element ((create{SE_BY}).xpath ("//input"))
+
+
 ### Locating Elements
 
 
