@@ -45,6 +45,7 @@ feature {NONE} -- Initialization
 	initialize
 		local
 			h: like header
+			d: HTTP_DATE
 		do
 			create h.make
 			header := h
@@ -52,6 +53,9 @@ feature {NONE} -- Initialization
 			h.put_transfer_encoding_binary
 			h.put_content_length (filesize (file_name))
 			h.put_content_disposition ("attachment", "filename=%""+ base_name +"%"")
+			if attached filedate (file_name) as dt then
+				h.put_last_modified (dt)
+			end
 		end
 
 feature -- Element change
@@ -135,6 +139,19 @@ feature {NONE} -- Implementation: file system helper
 			create f.make (fn)
 			if f.exists then
 				Result := f.count
+			end
+		end
+
+	filedate (fn: STRING): detachable DATE_TIME
+			-- Size of the file `fn'.
+		local
+			f: RAW_FILE
+			d: HTTP_DATE
+		do
+			create f.make (fn)
+			if f.exists then
+				create d.make_from_timestamp (f.date)
+				Result := d.date_time
 			end
 		end
 

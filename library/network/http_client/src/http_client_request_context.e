@@ -71,7 +71,17 @@ feature -- Access
 
 	upload_filename: detachable READABLE_STRING_8
 			-- Upload data read from `upload_filename'
-			--| Note: make sure to precise the Content-Type header		
+			--| Note: make sure to precise the Content-Type header
+
+	write_agent: detachable PROCEDURE [ANY, TUPLE [READABLE_STRING_8]]
+			-- Use this agent to hook the write of the response.
+			--| could be used to save the response directly in a file		
+
+	output_file: detachable FILE
+			-- Optional output file to get downloaded content and header
+
+	output_content_file: detachable FILE
+			-- Optional output file to get downloaded content			
 
 feature -- Status report
 
@@ -90,11 +100,38 @@ feature -- Status report
 			Result := attached upload_filename as fn and then not fn.is_empty
 		end
 
+	has_write_option: BOOLEAN
+			-- Has non default write behavior?
+		do
+			Result := write_agent /= Void or output_file /= Void or output_content_file /= Void
+		end
+
 feature -- Element change
 
 	add_header (k: READABLE_STRING_8; v: READABLE_STRING_8)
 		do
 			headers.force (v, k)
+		end
+
+	add_header_line (s: READABLE_STRING_8)
+		local
+			i: INTEGER
+		do
+			i := s.index_of (':', 1)
+			if i > 0 then
+				add_header (s.substring (1, i - 1), s.substring (i + 1, s.count))
+			end
+		end
+
+	add_header_lines (lst: ITERABLE [READABLE_STRING_8])
+		local
+			i: INTEGER
+		do
+			across
+				lst as c
+			loop
+				add_header_line (c.item)
+			end
 		end
 
 	add_query_parameter (k: READABLE_STRING_32; v: READABLE_STRING_32)
@@ -124,6 +161,25 @@ feature -- Element change
 			has_no_upload_filename: not has_upload_filename
 		do
 			upload_filename := a_fn
+		end
+
+	set_write_agent (agt: like write_agent)
+		do
+			write_agent := agt
+		end
+
+	set_output_file (f: FILE)
+		require
+			f_is_open_write: f.is_open_write
+		do
+			output_file := f
+		end
+
+	set_output_content_file (f: FILE)
+		require
+			f_is_open_write: f.is_open_write
+		do
+			output_content_file := f
 		end
 
 feature -- Status setting

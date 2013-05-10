@@ -76,6 +76,11 @@ feature -- Basic operation
 			end
 		end
 
+	custom (a_method: READABLE_STRING_8; a_path: READABLE_STRING_8; ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT): HTTP_CLIENT_RESPONSE
+			-- Response for `a_method' request based on Current, `a_path' and `ctx'.	
+		deferred
+		end
+
 	get (a_path: READABLE_STRING_8; ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT): HTTP_CLIENT_RESPONSE
 			-- Response for GET request based on Current, `a_path' and `ctx'.
 		deferred
@@ -124,7 +129,7 @@ feature -- Status report
 			-- Is interface usable?
 		deferred
 		end
-			
+
 feature -- Settings
 
 	timeout: INTEGER

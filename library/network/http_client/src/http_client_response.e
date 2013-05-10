@@ -52,8 +52,13 @@ feature -- Access
 	status: INTEGER assign set_status
 			-- Status code of the response.
 
+	status_line: detachable READABLE_STRING_8
+
 	raw_header: READABLE_STRING_8
 			-- Raw http header of the response.	
+
+	redirections: detachable ARRAYED_LIST [TUPLE [status_line: detachable READABLE_STRING_8; raw_header: READABLE_STRING_8; body: detachable READABLE_STRING_8]]
+			-- Header of previous redirection if any.
 
 	header (a_name: READABLE_STRING_8): detachable READABLE_STRING_8
 			-- Header entry value related to `a_name'
@@ -150,6 +155,39 @@ feature -- Access
 	body: detachable READABLE_STRING_8 assign set_body
 			-- Content of the response
 
+	response_message_source (a_include_redirection: BOOLEAN): STRING_8
+			-- Full message source including redirection if any
+		do
+			create Result.make (1_024)
+			if
+				a_include_redirection and then
+				attached redirections as lst
+			then
+				across
+					lst as c
+				loop
+					if attached c.item.status_line as s then
+						Result.append (s)
+						Result.append ("%R%N")
+					end
+					Result.append (c.item.raw_header)
+					Result.append ("%R%N")
+					if attached c.item.body as l_body then
+						Result.append (l_body)
+					end
+				end
+			end
+			if attached status_line as s then
+				Result.append (s)
+				Result.append ("%R%N")
+			end
+			Result.append (raw_header)
+			Result.append ("%R%N")
+			if attached body as l_body then
+				Result.append (l_body)
+			end
+		end
+
 feature -- Change
 
 	set_status (s: INTEGER)
@@ -158,12 +196,104 @@ feature -- Change
 			status := s
 		end
 
+	set_response_message (a_source: READABLE_STRING_8; ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT)
+			-- Parse `a_source' response message
+			-- and set `header' and `body'.
+			--| ctx is the context associated with the request
+			--| it might be useful to deal with redirection customization...
+		local
+			i, j, pos: INTEGER
+			l_has_location: BOOLEAN
+			l_content_length: INTEGER
+			s: READABLE_STRING_8
+			l_status_line,h: detachable STRING_8
+		do
+			from
+				i := 1
+				j := 1
+				pos := 1
+
+				i := a_source.substring_index ("%R%N", i)
+			until
+				i = 0 or i > a_source.count
+			loop
+				s := a_source.substring (j, i - 1)
+				if s.starts_with ("HTTP/") then
+					--| Skip first line which is the status line
+					--| ex: HTTP/1.1 200 OK%R%N
+					j := i + 2
+					l_status_line := s
+					pos := j
+				elseif s.is_empty then
+					-- End of header  %R%N%R%N
+					if attached raw_header as l_raw_header and then not l_raw_header.is_empty then
+						add_redirection (status_line, l_raw_header, body)
+					end
+
+					h := a_source.substring (pos, i - 1)
+
+					j := i + 2
+					pos := j
+					status_line := l_status_line
+					set_raw_header (h)
+
+--					libcURL does not cache redirection content.
+--					FIXME: check if this is customizable
+--					if l_has_location then
+--						if l_content_length > 0 then
+--							j := pos + l_content_length - 1
+--							l_body := a_source.substring (pos, j)
+--							pos := j
+--						else
+--							l_body := Void
+--						end
+--						set_body (l_body)
+--					end
+					if not l_has_location then
+						i := 0 -- exit loop
+					end
+					l_content_length := 0
+					l_status_line := Void
+					l_has_location := False
+				else
+					if s.starts_with ("Location:") then
+						l_has_location := True
+					elseif s.starts_with ("Content-Length:") then
+						s := s.substring (16, s.count)
+						if s.is_integer then
+							l_content_length := s.to_integer
+						end
+					end
+					j := i + 2
+				end
+				if i > 0 then
+					i := a_source.substring_index ("%R%N", j)
+				end
+			end
+			set_body (a_source.substring (pos, a_source.count))
+		ensure
+			parsed: response_message_source (True).count = a_source.count
+		end
+
 	set_raw_header (h: READABLE_STRING_8)
 			-- Set http header `raw_header' to `h'
 		do
 			raw_header := h
 				--| Reset internal headers
 			internal_headers := Void
+		end
+
+	add_redirection (s: detachable READABLE_STRING_8; h: READABLE_STRING_8; a_body: detachable READABLE_STRING_8)
+			-- Add redirection with status line `s' and raw header `h' and body `a_body' if any
+		local
+			lst: like redirections
+		do
+			lst := redirections
+			if lst = Void then
+				create lst.make (1)
+				redirections := lst
+			end
+			lst.force ([s,h, a_body])
 		end
 
 	set_body (s: like body)
