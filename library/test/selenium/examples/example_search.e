@@ -39,7 +39,7 @@ feature -- Example
 		    -- Google's search is rendered dynamically with JavaScript.
         	-- Wait for the page to load, timeout after 10 seconds
 		   	 create wait.make (web_driver,10)
-			 wait.until_when ("Eiffel Room")
+			 wait.until_when (agent expected_title (web_driver, "Eiffel Room"))
 
 
 			  if attached web_driver.get_page_tile as l_title then
@@ -49,4 +49,12 @@ feature -- Example
 			-- close the window
 			web_driver.window_close
 		end
+
+	expected_title (driver : WEB_DRIVER; title : STRING_32) : BOOLEAN
+		do
+			if attached {STRING_32} driver.get_page_tile as l_title and then l_title.has_substring (title) then
+				Result := True
+			end
+		end
+
 end

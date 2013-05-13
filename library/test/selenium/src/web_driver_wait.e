@@ -23,7 +23,7 @@ feature {NONE} -- Initialization
 
 feature -- Access
 	-- create another feature to accept a predicate
-	until_when (condition : STRING)
+	until_when (condition : PREDICATE[ANY, TUPLE])
 		--Evaluate the condition until it's true or timing out .
 		local
 			found : BOOLEAN
@@ -34,20 +34,17 @@ feature -- Access
 			create l_time1.make_now
 			create l_duration.make_by_seconds (duration.as_integer_32)
 
-			condition.to_lower
 			from
 				create l_time2.make_now
-				if attached {STRING_32} web_driver.get_page_tile as l_title then
-					l_title.to_lower
-					found := l_title.has_substring (condition)
+				if condition.item([]) then
+					found := True
 				end
 			until
 				found or
 				l_time2.relative_duration (l_time1).fine_seconds_count > l_duration.fine_seconds_count
 			loop
-				if attached web_driver.get_page_tile as l_title then
-					l_title.to_lower
-					found := l_title.has_substring (condition)
+				if condition.item([]) then
+					found := True
 				end
 				create l_time2.make_now
 			end
