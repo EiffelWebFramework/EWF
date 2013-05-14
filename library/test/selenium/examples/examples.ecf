@@ -18,4 +18,16 @@
 		<root class="EXAMPLE_SEARCH" feature="default_create"/>
 		<cluster name="src" location=".\" recursive="true"/>
 	</target>
+	<target name="findElementById" extends="selenium_example">
+		<root class="FIND_ELEMENT_ID" feature="default_create"/>
+		<cluster name="src" location=".\" recursive="true"/>
+	</target>
+	<target name="findElementByName" extends="selenium_example">
+		<root class="FIND_ELEMENT_NAME" feature="default_create"/>
+		<cluster name="src" location=".\" recursive="true"/>
+	</target>
+	<target name="findElementByClass" extends="selenium_example">
+		<root class="FIND_ELEMENT_CLASS" feature="default_create"/>
+		<cluster name="src" location=".\" recursive="true"/>
+	</target>
 </system>

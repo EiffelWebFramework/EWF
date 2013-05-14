@@ -6,7 +6,16 @@ note
 
 class
 	EXAMPLE_SEARCH
-
+	inherit
+		ANY
+		redefine
+			default_create
+		end
+feature
+		default_create
+		do
+			search
+		end
 feature -- Example
 	search
 		local
