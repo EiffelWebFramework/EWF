@@ -63,7 +63,6 @@ feature -- Basic operation
 
 	put (a_path: READABLE_STRING_8; a_ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT; data: detachable READABLE_STRING_8): HTTP_CLIENT_RESPONSE
 		local
-			req: HTTP_CLIENT_REQUEST
 			ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT
 			f: detachable RAW_FILE
 			l_data: detachable READABLE_STRING_8
