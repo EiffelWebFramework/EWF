@@ -486,6 +486,14 @@ feature -- Helpers: global variables
 
 feature -- Execution variables
 
+	has_execution_variable (a_name: READABLE_STRING_GENERAL): BOOLEAN
+			-- Has execution variable related to `a_name'?
+		require
+			a_name_valid: a_name /= Void and then not a_name.is_empty
+		do
+			Result := execution_variables_table.has (a_name)
+		end
+
 	execution_variable (a_name: READABLE_STRING_GENERAL): detachable ANY
 			-- Execution variable related to `a_name'
 		require
