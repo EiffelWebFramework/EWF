@@ -7,45 +7,19 @@ deferred class
 	WSF_DEFAULT_SERVICE_I [G -> WSF_SERVICE_LAUNCHER create make_and_launch end]
 
 inherit
-	WSF_SERVICE
+	WSF_LAUNCHABLE_SERVICE
 
 feature {NONE} -- Initialization
 
-	frozen make_and_launch
+	launch (a_service: WSF_SERVICE; opts: detachable WSF_SERVICE_LAUNCHER_OPTIONS)
 		local
 			l_launcher: G
 		do
-			initialize
-			create l_launcher.make_and_launch (Current, service_options)
-		end
-
-	initialize
-			-- Initialize current service
-			--| Could be redefine to set custom service option(s)
-		do
-		end
-
-	service_options: detachable WSF_SERVICE_LAUNCHER_OPTIONS
-
-feature -- Default service options
-
-	set_service_option (a_name: READABLE_STRING_GENERAL; a_value: detachable ANY)
-			-- Set options related to WSF_DEFAULT_SERVICE
-		local
-			opts: like service_options
-		do
-			opts := service_options
-			if opts = Void then
-				create opts.make
-				service_options := opts
-			end
-			opts.set_option (a_name, a_value)
-		ensure
-			attached service_options as l_options and then l_options.option (a_name) = a_value
+			create l_launcher.make_and_launch (a_service, opts)
 		end
 
 note
-	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
+	copyright: "2011-2013, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software
