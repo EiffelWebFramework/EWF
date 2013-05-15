@@ -199,7 +199,6 @@ feature -- Access: Input
 		local
 			l_input: WGI_INPUT_STREAM
 			n: INTEGER
-			s: STRING
 		do
 			if raw_input_data_recorded and then attached raw_input_data as d then
 				buf.copy (d)
