@@ -1735,7 +1735,7 @@ feature {WSF_MIME_HANDLER} -- Temporary File handling
 					l_safe_name := a_up_file.safe_filename
 					from
 						create fn.make_from_string (dn)
-						bn := "tmp-" + l_safe_name
+						bn := "EWF_tmp-" + l_safe_name
 						fn.set_file_name (bn)
 						create f.make (fn.string)
 						n := 0
@@ -1745,7 +1745,7 @@ feature {WSF_MIME_HANDLER} -- Temporary File handling
 					loop
 						n := n + 1
 						fn.make_from_string (dn)
-						bn := "tmp-" + n.out + "-" + l_safe_name
+						bn := "EWF_tmp-" + n.out + "-" + l_safe_name
 						fn.set_file_name (bn)
 						f.make (fn.string)
 					end
