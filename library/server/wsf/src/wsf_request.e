@@ -1686,7 +1686,7 @@ feature -- Element change
 			error_handler := ehdl
 		end
 
-feature {WSF_MIME_HANDLER} -- Temporary File handling		
+feature {WSF_MIME_HANDLER} -- Temporary File handling
 
 	delete_uploaded_file (uf: WSF_UPLOADED_FILE)
 			-- Delete file `a_filename'
@@ -1724,8 +1724,12 @@ feature {WSF_MIME_HANDLER} -- Temporary File handling
 			rescued: BOOLEAN
 		do
 			if not rescued then
-				-- FIXME: should it be configured somewhere?
-				dn := (create {EXECUTION_ENVIRONMENT}).current_working_directory
+				if attached uploaded_file_path as p then
+					dn := p
+				else
+					-- FIXME: should it be configured somewhere?
+					dn := (create {EXECUTION_ENVIRONMENT}).current_working_directory
+				end
 				create d.make (dn)
 				if d.exists and then d.is_writable then
 					l_safe_name := a_up_file.safe_filename
@@ -1765,6 +1769,19 @@ feature {WSF_MIME_HANDLER} -- Temporary File handling
 		rescue
 			rescued := True
 			retry
+		end
+
+feature {WSF_REQUEST_EXPORTER} -- Settings
+
+	uploaded_file_path: detachable READABLE_STRING_8
+			-- Optional folder path used to store uploaded files
+
+	set_uploaded_file_path (p: like uploaded_file_path)
+			-- Set `uploaded_file_path' to `p'.
+		require
+			path_exists: p /= Void implies (create {DIRECTORY}.make (p)).exists
+		do
+			uploaded_file_path := p
 		end
 
 feature {NONE} -- Internal value
