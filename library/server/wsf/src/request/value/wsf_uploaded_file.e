@@ -136,8 +136,8 @@ feature -- Conversion
 						s := f.last_string
 						if s.is_empty then
 							done := True
-							a_target.append (s)
 						else
+							a_target.append (s)
 							done := f.exhausted or f.end_of_file
 						end
 					end
