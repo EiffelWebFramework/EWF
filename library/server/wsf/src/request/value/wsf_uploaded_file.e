@@ -116,6 +116,41 @@ feature -- Access: Uploaded File
 
 feature -- Conversion
 
+	append_content_to_string (a_target: STRING)
+			-- Append the content of the uploaded file to `a_target'.
+		local
+			f: RAW_FILE
+			s: STRING
+			done: BOOLEAN
+			retried: BOOLEAN
+		do
+			if not retried and attached tmp_name as fn then
+				create f.make_with_name (fn)
+				if f.exists then
+					f.open_read
+					from
+					until
+						done
+					loop
+						f.read_stream_thread_aware (1_024)
+						s := f.last_string
+						if s.is_empty then
+							done := True
+							a_target.append (s)
+						else
+							done := f.exhausted or f.end_of_file
+						end
+					end
+					f.close
+				end
+			end
+		rescue
+			retried := True
+			retry
+		end
+
+feature -- Implementation		
+
 	safe_filename: STRING
 		local
 			fn: like filename
