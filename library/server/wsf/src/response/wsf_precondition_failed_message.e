@@ -53,8 +53,6 @@ feature {WSF_RESPONSE} -- Output
 	send_to (res: WSF_RESPONSE)
 		local
 			s: STRING
-			l_text: detachable READABLE_STRING_GENERAL
-			l_loc: detachable READABLE_STRING_8
 			h: like header
 		do
 			h := header
@@ -68,9 +66,9 @@ feature {WSF_RESPONSE} -- Output
 				s.append ("</title>%N")
 				s.append ("[
 						<style type="text/css">
-						div#header {color: #fff; background-color: #000; padding: 20px; width: 100%; text-align: center; font-size: 2em; font-weight: bold;}
-						div#message { margin: 40px; width: 100%; text-align: center; font-size: 1.5em; }
-						div#footer {color: #999; background-color: #eee; padding: 10px; width: 100%; text-align: center; }
+						div#header {color: #fff; background-color: #000; padding: 20px; text-align: center; font-size: 2em; font-weight: bold;}
+						div#message { margin: 40px; text-align: center; font-size: 1.5em; }
+						div#footer {color: #999; background-color: #eee; padding: 10px; text-align: center; }
 						div#logo { float: right; margin: 20px; width: 60px height: auto; font-size: 0.8em; text-align: center; }
 						div#logo div.outter { padding: 6px; width: 60px; border: solid 3px #500; background-color: #b00;}
 						div#logo div.outter div.inner1 { display: block; margin: 10px 15px;  width: 30px; height: 50px; color: #fff; background-color: #fff; border: solid 2px #900; }
@@ -117,8 +115,8 @@ feature {WSF_RESPONSE} -- Output
 		end
 
 note
-	
-	copyright: "2013, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
+
+	copyright: "2011-2013, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

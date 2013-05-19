@@ -199,7 +199,6 @@ feature -- Access: Input
 		local
 			l_input: WGI_INPUT_STREAM
 			n: INTEGER
-			s: STRING
 		do
 			if raw_input_data_recorded and then attached raw_input_data as d then
 				buf.copy (d)
@@ -485,6 +484,14 @@ feature -- Helpers: global variables
 		end
 
 feature -- Execution variables
+
+	has_execution_variable (a_name: READABLE_STRING_GENERAL): BOOLEAN
+			-- Has execution variable related to `a_name'?
+		require
+			a_name_valid: a_name /= Void and then not a_name.is_empty
+		do
+			Result := execution_variables_table.has (a_name)
+		end
 
 	execution_variable (a_name: READABLE_STRING_GENERAL): detachable ANY
 			-- Execution variable related to `a_name'
@@ -1678,7 +1685,7 @@ feature -- Element change
 			error_handler := ehdl
 		end
 
-feature {WSF_MIME_HANDLER} -- Temporary File handling		
+feature {WSF_MIME_HANDLER} -- Temporary File handling
 
 	delete_uploaded_file (uf: WSF_UPLOADED_FILE)
 			-- Delete file `a_filename'
@@ -1716,14 +1723,18 @@ feature {WSF_MIME_HANDLER} -- Temporary File handling
 			rescued: BOOLEAN
 		do
 			if not rescued then
-				-- FIXME: should it be configured somewhere?
-				dn := (create {EXECUTION_ENVIRONMENT}).current_working_directory
+				if attached uploaded_file_path as p then
+					dn := p
+				else
+					-- FIXME: should it be configured somewhere?
+					dn := (create {EXECUTION_ENVIRONMENT}).current_working_directory
+				end
 				create d.make (dn)
 				if d.exists and then d.is_writable then
 					l_safe_name := a_up_file.safe_filename
 					from
 						create fn.make_from_string (dn)
-						bn := "tmp-" + l_safe_name
+						bn := "EWF_tmp-" + l_safe_name
 						fn.set_file_name (bn)
 						create f.make (fn.string)
 						n := 0
@@ -1733,7 +1744,7 @@ feature {WSF_MIME_HANDLER} -- Temporary File handling
 					loop
 						n := n + 1
 						fn.make_from_string (dn)
-						bn := "tmp-" + n.out + "-" + l_safe_name
+						bn := "EWF_tmp-" + n.out + "-" + l_safe_name
 						fn.set_file_name (bn)
 						f.make (fn.string)
 					end
@@ -1757,6 +1768,19 @@ feature {WSF_MIME_HANDLER} -- Temporary File handling
 		rescue
 			rescued := True
 			retry
+		end
+
+feature {WSF_REQUEST_EXPORTER} -- Settings
+
+	uploaded_file_path: detachable READABLE_STRING_8
+			-- Optional folder path used to store uploaded files
+
+	set_uploaded_file_path (p: like uploaded_file_path)
+			-- Set `uploaded_file_path' to `p'.
+		require
+			path_exists: p /= Void implies (create {DIRECTORY}.make (p)).exists
+		do
+			uploaded_file_path := p
 		end
 
 feature {NONE} -- Internal value
