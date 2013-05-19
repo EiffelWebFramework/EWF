@@ -15,7 +15,7 @@ feature
 				api := an_api
 				session_id := a_session_id
 			end
-	
+
 feature -- Access
 	element : STRING_32
 		--The opaque ID assigned to the element by the server.
@@ -40,16 +40,16 @@ feature -- Web Element API
 			api.element_click (session_id, element)
 		end
 
-	find_element (by : SE_BY) : detachable WEB_ELEMENT
+	find_element (by : STRING_32) : detachable WEB_ELEMENT
 		-- Find the first WebElement using the given method.
 		do
-			Result := api.search_element (session_id,"")
+			Result := api.search_element (session_id,by)
 		end
 
-	find_elementS (by : SE_BY) : detachable LIST[WEB_ELEMENT]
+	find_elements (by : STRING_32) : detachable LIST[WEB_ELEMENT]
 		-- Find all elements within the current context using the given mechanism.
 		do
-			Result := api.search_elements (session_id,"")
+			Result := api.search_elements (session_id,by)
 		end
 
 	get_attribute (name : STRING_32) : detachable STRING_32

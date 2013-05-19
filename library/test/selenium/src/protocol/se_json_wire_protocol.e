@@ -995,8 +995,8 @@ feature -- Commands
 						until
 							index > l_json_array.count
 						loop
-							if attached {JSON_OBJECT} l_json_array.i_th (index) as json_str and then attached json_str.item ("ELEMENT") as l_elem then
-								Result.force (create {WEB_ELEMENT}.make (l_elem.representation, Current, a_session_id))
+							if attached {JSON_OBJECT} l_json_array.i_th (index) as json_str and then attached {JSON_STRING} json_str.item ("ELEMENT") as l_elem then
+								Result.force (create {WEB_ELEMENT}.make (l_elem.item, Current, a_session_id))
 							end
 							index := index + 1
 						end

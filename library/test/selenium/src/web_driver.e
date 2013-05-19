@@ -7,17 +7,21 @@ note
 class
 	WEB_DRIVER
 
+inherit
+
+	EXCEPTIONS
 
 create
 	make, make_with_host
 
-feature	-- Initialization
+feature -- Initialization
+
 	make
 		do
 			create api.make
 		end
 
-	make_with_host (a_host : STRING)
+	make_with_host (a_host: STRING)
 		do
 			create api.make_with_host (a_host)
 		end
@@ -43,19 +47,46 @@ feature -- Initialize Session
 	start_session_chrome
 		local
 			l_capabilities: SE_CAPABILITIES
+			env: EXECUTION_ENVIRONMENT
+			retried: BOOLEAN
 		do
 			create l_capabilities.make
 			l_capabilities.set_browser_name ("chrome")
-			if attached api.create_session_with_desired_capabilities (l_capabilities) as l_session then
-				session := l_session
+			if not retried then
+				session := api.create_session_with_desired_capabilities (l_capabilities)
+				if not is_session_active then
+					raise ("Session not active")
+				end
+			else
+				session := api.create_session_with_desired_capabilities (l_capabilities)
 			end
+		rescue
+			retried := true
+			create env
+			env.sleep (1000)
+			retry
 		end
 
 	start_session_chrome_with_desired_capabilities (a_desired_capabilities: SE_CAPABILITIES)
 		require
 			browser_name_chrome: attached a_desired_capabilities.browser_name as l_browser_name and then l_browser_name ~ "chrome"
+		local
+			env: EXECUTION_ENVIRONMENT
+			retried: BOOLEAN
 		do
-			session := api.create_session_with_desired_capabilities (a_desired_capabilities)
+			if not retried then
+				session := api.create_session_with_desired_capabilities (a_desired_capabilities)
+				if not is_session_active then
+					raise ("Session not active")
+				end
+			else
+				session := api.create_session_with_desired_capabilities (a_desired_capabilities)
+			end
+		rescue
+			retried := true
+			create env
+			env.sleep (1000)
+			retry
 		end
 
 	start_session_ie
@@ -366,91 +397,91 @@ feature -- Common
 			end
 		end
 
-	find_element (by: STRING_32) : detachable WEB_ELEMENT
-		-- Find the first WebElement using the given strategy.
+	find_element (by: STRING_32): detachable WEB_ELEMENT
+			-- Find the first WebElement using the given strategy.
 		require
-			exist_session : is_session_active
-			valid_strategy  : (create {SE_BY}).is_valid_strategy (by)
+			exist_session: is_session_active
+			valid_strategy: (create {SE_BY}).is_valid_strategy (by)
 		do
 			if attached session as l_session then
 				Result := api.search_element (l_session.session_id, by)
 			end
 		end
 
-	find_elements (by: STRING_32) : detachable LIST[WEB_ELEMENT]
-		-- Find all elements within the current page using the given mechanism..
+	find_elements (by: STRING_32): detachable LIST [WEB_ELEMENT]
+			-- Find all elements within the current page using the given mechanism..
 		require
-			exist_session : is_session_active
-			valid_strategy  : (create {SE_BY}).is_valid_strategy (by)
+			exist_session: is_session_active
+			valid_strategy: (create {SE_BY}).is_valid_strategy (by)
 		do
 			if attached session as l_session then
 				Result := api.search_elements (l_session.session_id, by)
 			end
 		end
 
-
-
-	get_current_url : detachable STRING_32
-		-- Retrieve the URL of the current page.
+	get_current_url: detachable STRING_32
+			-- Retrieve the URL of the current page.
 		require
-			exist_session : is_session_active
+			exist_session: is_session_active
 		do
 			if attached session as l_session then
 				Result := api.retrieve_url (l_session.session_id)
 			end
 		end
 
-	get_page_source : detachable STRING_32
-		-- Get the current page source.
+	get_page_source: detachable STRING_32
+			-- Get the current page source.
 		require
-			exist_session : is_session_active
+			exist_session: is_session_active
 		do
 			if attached session as l_session then
 				Result := api.page_source (l_session.session_id)
 			end
 		end
 
-	get_page_tile : detachable STRING_32
-		--Get the current page title
+	get_page_tile: detachable STRING_32
+			--Get the current page title
 		require
-			exist_session : is_session_active
+			exist_session: is_session_active
 		do
 			if attached session as l_session then
 				Result := api.page_title (l_session.session_id)
 			end
 		end
 
-
-
-	get_window_handle : detachable STRING_32
+	get_window_handle: detachable STRING_32
 		require
-			exist_session : is_session_active
+			exist_session: is_session_active
 		do
 			if attached session as l_session then
 				Result := api.retrieve_window_handle (l_session.session_id)
 			end
 		end
 
-	get_window_handles : detachable LIST[STRING_32]
+	get_window_handles: detachable LIST [STRING_32]
 		require
-			exist_session : is_session_active
+			exist_session: is_session_active
 		do
 			if attached session as l_session then
 				Result := api.retrieve_window_handles (l_session.session_id)
 			end
 		end
 
-
 feature {WEB_DRIVER, WEB_DRIVER_WAIT}
-	session_wait (duration : INTEGER_64)
+
+	session_wait (duration: INTEGER_64)
 		do
 			if attached session as l_session then
-				 api.set_session_timeouts_async_script (l_session.session_id, duration.as_integer_32)
+				api.set_session_timeouts_async_script (l_session.session_id, duration.as_integer_32)
 			end
 		end
 
 feature {NONE} -- Implementation
 
 	session: detachable SE_SESSION
-	api : SE_JSON_WIRE_PROTOCOL
+
+	status: BOOLEAN
+
+	api: SE_JSON_WIRE_PROTOCOL
+
 end

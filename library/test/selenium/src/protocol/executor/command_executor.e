@@ -64,7 +64,7 @@ feature -- Commands
 			-- TODO move this scenario to feature new_response
 			if not (resp.status >= 400) then
 				if attached resp.header ("Location") as l_location then
-					resp := http_new_session (l_location).get ("", context_executor)
+					resp := http_session.get (l_location.substring ((host.count+1),l_location.count), context_executor)
 					Result := new_response ("", resp)
 				end
 			else

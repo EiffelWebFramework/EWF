@@ -30,4 +30,28 @@
 		<root class="FIND_ELEMENT_CLASS" feature="default_create"/>
 		<cluster name="src" location=".\" recursive="true"/>
 	</target>
+	<target name="findElementChild" extends="selenium_example">
+		<root class="FIND_ELEMENT_CHILD" feature="default_create"/>
+		<cluster name="src" location=".\" recursive="true"/>
+	</target>
+		<target name="findElementsLinks" extends="selenium_example">
+		<root class="FIND_ELEMENTS_LINKS" feature="default_create"/>
+		<cluster name="src" location=".\" recursive="true"/>
+	</target>
+	<target name="findElementsLinksByText" extends="selenium_example">
+		<root class="FIND_ELEMENTS_LINKS_BY_TEXT" feature="default_create"/>
+		<cluster name="src" location=".\" recursive="true"/>
+	</target>
+	<target name="findElementsLinksByPartialText" extends="selenium_example">
+		<root class="FIND_ELEMENTS_LINKS_BY_PARTIAL_TEXT" feature="default_create"/>
+		<cluster name="src" location=".\" recursive="true"/>
+	</target>
+	<target name="findElementCssSelector" extends="selenium_example">
+		<root class="FIND_ELEMENT_CSS_SELECTOR" feature="default_create"/>
+		<cluster name="src" location=".\" recursive="true"/>
+	</target>
+
+	
+
+
 </system>

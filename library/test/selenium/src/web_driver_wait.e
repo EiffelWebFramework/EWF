@@ -46,7 +46,7 @@ feature -- Access
 				if condition.item([]) then
 					found := True
 				end
-				create l_time2.make_now
+				l_time2.make_now
 			end
 		end
 
