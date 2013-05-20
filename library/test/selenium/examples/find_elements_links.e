@@ -44,7 +44,7 @@ feature -- Search by id
 
 
 				-- Find links
-			if attached {ARRAYED_LIST[WEB_ELEMENT]}web_driver.find_elements ((create {SE_BY}).tag_name("a")) as l_links  then
+			if attached web_driver.find_elements ((create {SE_BY}).tag_name("a")) as l_links  then
 				from
 					l_links.start
 				until
@@ -62,4 +62,11 @@ feature -- Search by id
 			web_driver.window_close
 		end
 
+
+	expected_title (driver : WEB_DRIVER; title : STRING_32) : BOOLEAN
+		do
+			if attached {STRING_32} driver.get_page_tile as l_title and then l_title.has_substring (title) then
+				Result := True
+			end
+		end
 end

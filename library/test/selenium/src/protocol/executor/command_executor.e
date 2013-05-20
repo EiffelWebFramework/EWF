@@ -29,6 +29,7 @@ feature -- Initialization
 			host := a_host
 			create h.make
 			http_session := h.new_session (a_host)
+			http_session.set_timeout (5)
 				--	http_session.set_is_debug (True)
 				--	http_session.set_proxy ("127.0.0.1", 8888)
 		end
@@ -61,12 +62,8 @@ feature -- Commands
 		do
 			create Result.make_empty
 			resp := execute_post (cmd_new_session, capabilities)
-			-- TODO move this scenario to feature new_response
 			if not (resp.status >= 400) then
-				if attached resp.header ("Location") as l_location then
-					resp := http_session.get (l_location.substring ((host.count+1),l_location.count), context_executor)
-					Result := new_response ("", resp)
-				end
+				Result := new_response ("", resp)
 			else
 				Result := new_response ("", resp)
 			end
@@ -815,8 +812,6 @@ feature -- Commands
 	touch_scroll	(a_session_id: STRING_32; data : STRING_32) : SE_RESPONSE
 		require
 			selinum_server_available: is_available
-		local
-			resp: HTTP_CLIENT_RESPONSE
 		do
 			Result := start_touch_scroll (a_session_id, data)
 		end
@@ -856,8 +851,6 @@ feature -- Commands
 	touch_flick (a_session_id: STRING_32; data : STRING_32) : SE_RESPONSE
 		require
 			selinum_server_available: is_available
-		local
-			resp: HTTP_CLIENT_RESPONSE
 		do
 			Result := start_touch_flick (a_session_id, data)
 		end
