@@ -14,9 +14,10 @@ inherit
 
 	SE_JSON_WIRE_PROTOCOL_COMMANDS
 
--- TODO
--- clean and improve the code
--- handle response from the server in a smart way
+	-- TODO
+	-- clean and improve the code
+	-- handle response from the server in a smart way
+
 create
 	make
 
@@ -29,7 +30,7 @@ feature -- Initialization
 			host := a_host
 			create h.make
 			http_session := h.new_session (a_host)
-			http_session.set_timeout (5)
+				--  http_session.set_timeout (5)
 				--	http_session.set_is_debug (True)
 				--	http_session.set_proxy ("127.0.0.1", 8888)
 		end
@@ -95,7 +96,7 @@ feature -- Commands
 		local
 			resp: HTTP_CLIENT_RESPONSE
 		do
-			resp := execute_delete (cmd_session_by_id ( session_id ))
+			resp := execute_delete (cmd_session_by_id (session_id))
 			Result := new_response (session_id, resp)
 		end
 
@@ -199,7 +200,7 @@ feature -- Commands
 			Result := new_response (a_session_id, resp)
 		end
 
-	execute (a_session_id : STRING_32; data : STRING_32) : SE_RESPONSE
+	execute (a_session_id: STRING_32; data: STRING_32): SE_RESPONSE
 		require
 			selinum_server_available: is_available
 		local
@@ -209,13 +210,13 @@ feature -- Commands
 			Result := new_response (a_session_id, resp)
 		end
 
-	execute_async (a_session_id : STRING_32; data : STRING_32) : SE_RESPONSE
+	execute_async (a_session_id: STRING_32; data: STRING_32): SE_RESPONSE
 		require
 			selinum_server_available: is_available
 		local
 			resp: HTTP_CLIENT_RESPONSE
 		do
-			resp := execute_post (cmd_session_execute_async (a_session_id),data)
+			resp := execute_post (cmd_session_execute_async (a_session_id), data)
 			Result := new_response (a_session_id, resp)
 		end
 
@@ -279,7 +280,6 @@ feature -- Commands
 			Result := new_response (a_session_id, resp)
 		end
 
-
 	frame (a_session_id: STRING_32; a_data: STRING_32): SE_RESPONSE
 		require
 			selinum_server_available: is_available
@@ -300,7 +300,6 @@ feature -- Commands
 			Result := new_response (a_session_id, resp)
 		end
 
-
 	close_window (a_session_id: STRING_32): SE_RESPONSE
 		require
 			selinum_server_available: is_available
@@ -311,58 +310,57 @@ feature -- Commands
 			Result := new_response (a_session_id, resp)
 		end
 
-	change_size_window (a_session_id: STRING_32; a_window_handle : STRING_32;a_data: STRING_32): SE_RESPONSE
+	change_size_window (a_session_id: STRING_32; a_window_handle: STRING_32; a_data: STRING_32): SE_RESPONSE
 		require
 			selinum_server_available: is_available
 		local
 			resp: HTTP_CLIENT_RESPONSE
 		do
-			resp := execute_post (cmd_session_window_size (a_session_id,a_window_handle), a_data)
+			resp := execute_post (cmd_session_window_size (a_session_id, a_window_handle), a_data)
 			Result := new_response (a_session_id, resp)
 		end
 
-	size_window (a_session_id: STRING_32; a_window_handle : STRING_32) : SE_RESPONSE
+	size_window (a_session_id: STRING_32; a_window_handle: STRING_32): SE_RESPONSE
 		require
 			selinum_server_available: is_available
 		local
 			resp: HTTP_CLIENT_RESPONSE
 		do
-			resp := execute_get (cmd_session_window_size (a_session_id,a_window_handle))
+			resp := execute_get (cmd_session_window_size (a_session_id, a_window_handle))
 			Result := new_response (a_session_id, resp)
 		end
 
-	change_window_position (a_session_id: STRING_32; a_window_handle : STRING_32;a_data: STRING_32): SE_RESPONSE
+	change_window_position (a_session_id: STRING_32; a_window_handle: STRING_32; a_data: STRING_32): SE_RESPONSE
 		require
 			selinum_server_available: is_available
 		local
 			resp: HTTP_CLIENT_RESPONSE
 		do
-			resp := execute_post (cmd_session_window_position (a_session_id,a_window_handle), a_data)
+			resp := execute_post (cmd_session_window_position (a_session_id, a_window_handle), a_data)
 			Result := new_response (a_session_id, resp)
 		end
 
-	window_position (a_session_id: STRING_32; a_window_handle : STRING_32) : SE_RESPONSE
+	window_position (a_session_id: STRING_32; a_window_handle: STRING_32): SE_RESPONSE
 		require
 			selinum_server_available: is_available
 		local
 			resp: HTTP_CLIENT_RESPONSE
 		do
-			resp := execute_get (cmd_session_window_size (a_session_id,a_window_handle))
+			resp := execute_get (cmd_session_window_size (a_session_id, a_window_handle))
 			Result := new_response (a_session_id, resp)
 		end
 
-	window_maximize (a_session_id: STRING_32; a_window_handle : STRING_32) : SE_RESPONSE
+	window_maximize (a_session_id: STRING_32; a_window_handle: STRING_32): SE_RESPONSE
 		require
 			selinum_server_available: is_available
 		local
 			resp: HTTP_CLIENT_RESPONSE
 		do
-			resp := execute_post (cmd_session_window_maximize (a_session_id,a_window_handle), Void)
+			resp := execute_post (cmd_session_window_maximize (a_session_id, a_window_handle), Void)
 			Result := new_response (a_session_id, resp)
 		end
 
-
-	retrieve_cookies (a_session_id: STRING_32) : SE_RESPONSE
+	retrieve_cookies (a_session_id: STRING_32): SE_RESPONSE
 		require
 			selinum_server_available: is_available
 		local
@@ -372,17 +370,17 @@ feature -- Commands
 			Result := new_response (a_session_id, resp)
 		end
 
-	set_cookie (a_session_id: STRING_32; a_data : STRING_32) : SE_RESPONSE
+	set_cookie (a_session_id: STRING_32; a_data: STRING_32): SE_RESPONSE
 		require
 			selinum_server_available: is_available
 		local
 			resp: HTTP_CLIENT_RESPONSE
 		do
-			resp := execute_post (cmd_session_cookie (a_session_id),a_data)
+			resp := execute_post (cmd_session_cookie (a_session_id), a_data)
 			Result := new_response (a_session_id, resp)
 		end
 
-	delete_cookies (a_session_id: STRING_32) : SE_RESPONSE
+	delete_cookies (a_session_id: STRING_32): SE_RESPONSE
 		require
 			selinum_server_available: is_available
 		local
@@ -392,17 +390,17 @@ feature -- Commands
 			Result := new_response (a_session_id, resp)
 		end
 
-	delete_cookie_by_name (a_session_id: STRING_32; a_name : STRING_32) : SE_RESPONSE
+	delete_cookie_by_name (a_session_id: STRING_32; a_name: STRING_32): SE_RESPONSE
 		require
 			selinum_server_available: is_available
 		local
 			resp: HTTP_CLIENT_RESPONSE
 		do
-			resp := execute_delete (cmd_session_cookie_delete (a_session_id,a_name))
+			resp := execute_delete (cmd_session_cookie_delete (a_session_id, a_name))
 			Result := new_response (a_session_id, resp)
 		end
 
-	page_source (a_session_id: STRING_32) : SE_RESPONSE
+	page_source (a_session_id: STRING_32): SE_RESPONSE
 		require
 			selinum_server_available: is_available
 		local
@@ -412,8 +410,7 @@ feature -- Commands
 			Result := new_response (a_session_id, resp)
 		end
 
-
-	page_title (a_session_id: STRING_32) : SE_RESPONSE
+	page_title (a_session_id: STRING_32): SE_RESPONSE
 		require
 			selinum_server_available: is_available
 		local
@@ -423,42 +420,37 @@ feature -- Commands
 			Result := new_response (a_session_id, resp)
 		end
 
-
-	search_element (a_session_id: STRING_32; a_data :STRING_32) : SE_RESPONSE
+	search_element (a_session_id: STRING_32; a_data: STRING_32): SE_RESPONSE
 		require
 			selinum_server_available: is_available
 		local
 			resp: HTTP_CLIENT_RESPONSE
 		do
-			resp := execute_post (cmd_session_element (a_session_id),a_data)
+			resp := execute_post (cmd_session_element (a_session_id), a_data)
 			Result := new_response (a_session_id, resp)
 		end
 
-
-	search_element_id_element (a_session_id: STRING_32; id : STRING_32; a_data :STRING_32) : SE_RESPONSE
+	search_element_id_element (a_session_id: STRING_32; id: STRING_32; a_data: STRING_32): SE_RESPONSE
 		require
 			selinum_server_available: is_available
 		local
 			resp: HTTP_CLIENT_RESPONSE
 		do
-			resp := execute_post (cmd_session_element_id_element (a_session_id,id),a_data)
+			resp := execute_post (cmd_session_element_id_element (a_session_id, id), a_data)
 			Result := new_response (a_session_id, resp)
 		end
 
-
-	search_elements (a_session_id: STRING_32; a_data :STRING_32) : SE_RESPONSE
+	search_elements (a_session_id: STRING_32; a_data: STRING_32): SE_RESPONSE
 		require
 			selinum_server_available: is_available
 		local
 			resp: HTTP_CLIENT_RESPONSE
 		do
-			resp := execute_post (cmd_session_elements (a_session_id),a_data)
+			resp := execute_post (cmd_session_elements (a_session_id), a_data)
 			Result := new_response (a_session_id, resp)
 		end
 
-
-
-	element_active (a_session_id: STRING_32) : SE_RESPONSE
+	element_active (a_session_id: STRING_32): SE_RESPONSE
 		require
 			selinum_server_available: is_available
 		local
@@ -468,184 +460,177 @@ feature -- Commands
 			Result := new_response (a_session_id, resp)
 		end
 
-
-	search_element_id_elements (a_session_id: STRING_32; id : STRING_32; a_data :STRING_32) : SE_RESPONSE
+	search_element_id_elements (a_session_id: STRING_32; id: STRING_32; a_data: STRING_32): SE_RESPONSE
 		require
 			selinum_server_available: is_available
 		local
 			resp: HTTP_CLIENT_RESPONSE
 		do
-			resp := execute_post (cmd_session_element_id_elements (a_session_id,id),a_data)
+			resp := execute_post (cmd_session_element_id_elements (a_session_id, id), a_data)
 			Result := new_response (a_session_id, resp)
 		end
 
-	element_click (a_session_id: STRING_32; id : STRING_32) : SE_RESPONSE
+	element_click (a_session_id: STRING_32; id: STRING_32): SE_RESPONSE
 		require
 			selinum_server_available: is_available
 		local
 			resp: HTTP_CLIENT_RESPONSE
 		do
-			resp := execute_post (cmd_session_element_click (a_session_id,id),Void)
+			resp := execute_post (cmd_session_element_click (a_session_id, id), Void)
 			Result := new_response (a_session_id, resp)
 		end
 
-
-	element_submit (a_session_id: STRING_32; id : STRING_32) : SE_RESPONSE
+	element_submit (a_session_id: STRING_32; id: STRING_32): SE_RESPONSE
 		require
 			selinum_server_available: is_available
 		local
 			resp: HTTP_CLIENT_RESPONSE
 		do
-			resp := execute_post (cmd_session_element_submit (a_session_id,id),Void)
+			resp := execute_post (cmd_session_element_submit (a_session_id, id), Void)
 			Result := new_response (a_session_id, resp)
 		end
 
-
-	element_text (a_session_id: STRING_32; id : STRING_32) : SE_RESPONSE
+	element_text (a_session_id: STRING_32; id: STRING_32): SE_RESPONSE
 		require
 			selinum_server_available: is_available
 		local
 			resp: HTTP_CLIENT_RESPONSE
 		do
-			resp := execute_get (cmd_session_element_text (a_session_id,id))
+			resp := execute_get (cmd_session_element_text (a_session_id, id))
 			Result := new_response (a_session_id, resp)
 		end
 
-	send_events (a_session_id: STRING_32; id : STRING_32; data : STRING_32) : SE_RESPONSE
+	send_events (a_session_id: STRING_32; id: STRING_32; data: STRING_32): SE_RESPONSE
 		require
 			selinum_server_available: is_available
 		local
 			resp: HTTP_CLIENT_RESPONSE
 		do
-			resp := execute_post (cmd_session_element_event (a_session_id,id),data)
+			resp := execute_post (cmd_session_element_event (a_session_id, id), data)
 			Result := new_response (a_session_id, resp)
 		end
 
-
-	send_key_strokes (a_session_id: STRING_32; data : STRING_32) : SE_RESPONSE
+	send_key_strokes (a_session_id: STRING_32; data: STRING_32): SE_RESPONSE
 		require
 			selinum_server_available: is_available
 		local
 			resp: HTTP_CLIENT_RESPONSE
 		do
-			resp := execute_post (cmd_session_keys (a_session_id),data)
+			resp := execute_post (cmd_session_keys (a_session_id), data)
 			Result := new_response (a_session_id, resp)
 		end
 
-	query_by_tag_name (a_session_id: STRING_32; id : STRING_32) : SE_RESPONSE
+	query_by_tag_name (a_session_id: STRING_32; id: STRING_32): SE_RESPONSE
 		require
 			selinum_server_available: is_available
 		local
 			resp: HTTP_CLIENT_RESPONSE
 		do
-			resp := execute_get (cmd_session_element_name (a_session_id,id))
+			resp := execute_get (cmd_session_element_name (a_session_id, id))
 			Result := new_response (a_session_id, resp)
 		end
 
-
-	clear_element (a_session_id: STRING_32; id : STRING_32) : SE_RESPONSE
+	clear_element (a_session_id: STRING_32; id: STRING_32): SE_RESPONSE
 		require
 			selinum_server_available: is_available
 		local
 			resp: HTTP_CLIENT_RESPONSE
 		do
-			resp := execute_post (cmd_session_element_clear (a_session_id,id), Void)
+			resp := execute_post (cmd_session_element_clear (a_session_id, id), Void)
 			Result := new_response (a_session_id, resp)
 		end
 
-	is_enabled (a_session_id: STRING_32; id : STRING_32) : SE_RESPONSE
+	is_enabled (a_session_id: STRING_32; id: STRING_32): SE_RESPONSE
 		require
 			selinum_server_available: is_available
 		local
 			resp: HTTP_CLIENT_RESPONSE
 		do
-			resp := execute_get (cmd_session_element_enabled (a_session_id,id))
+			resp := execute_get (cmd_session_element_enabled (a_session_id, id))
 			Result := new_response (a_session_id, resp)
 		end
 
-	is_selected (a_session_id: STRING_32; id : STRING_32) : SE_RESPONSE
+	is_selected (a_session_id: STRING_32; id: STRING_32): SE_RESPONSE
 		require
 			selinum_server_available: is_available
 		local
 			resp: HTTP_CLIENT_RESPONSE
 		do
-			resp := execute_get (cmd_session_element_selected (a_session_id,id))
+			resp := execute_get (cmd_session_element_selected (a_session_id, id))
 			Result := new_response (a_session_id, resp)
 		end
 
-	element_value (a_session_id: STRING_32; id : STRING_32; name : STRING_32) : SE_RESPONSE
+	element_value (a_session_id: STRING_32; id: STRING_32; name: STRING_32): SE_RESPONSE
 		require
 			selinum_server_available: is_available
 		local
 			resp: HTTP_CLIENT_RESPONSE
 		do
-			resp := execute_get (cmd_session_element_attribute_name (a_session_id,id,name))
+			resp := execute_get (cmd_session_element_attribute_name (a_session_id, id, name))
 			Result := new_response (a_session_id, resp)
 		end
 
-	element_equals (a_session_id: STRING_32; id : STRING_32; other : STRING_32) : SE_RESPONSE
+	element_equals (a_session_id: STRING_32; id: STRING_32; other: STRING_32): SE_RESPONSE
 		require
 			selinum_server_available: is_available
 		local
 			resp: HTTP_CLIENT_RESPONSE
 		do
-			resp := execute_get (cmd_session_element_equals (a_session_id,id,other))
+			resp := execute_get (cmd_session_element_equals (a_session_id, id, other))
 			Result := new_response (a_session_id, resp)
 		end
 
-	is_displayed (a_session_id: STRING_32; id : STRING_32) : SE_RESPONSE
+	is_displayed (a_session_id: STRING_32; id: STRING_32): SE_RESPONSE
 		require
 			selinum_server_available: is_available
 		local
 			resp: HTTP_CLIENT_RESPONSE
 		do
-			resp := execute_get (cmd_session_element_displayed (a_session_id,id))
+			resp := execute_get (cmd_session_element_displayed (a_session_id, id))
 			Result := new_response (a_session_id, resp)
 		end
 
-	element_location (a_session_id: STRING_32; id : STRING_32) : SE_RESPONSE
+	element_location (a_session_id: STRING_32; id: STRING_32): SE_RESPONSE
 		require
 			selinum_server_available: is_available
 		local
 			resp: HTTP_CLIENT_RESPONSE
 		do
-			resp := execute_get (cmd_session_element_location (a_session_id,id))
+			resp := execute_get (cmd_session_element_location (a_session_id, id))
 			Result := new_response (a_session_id, resp)
 		end
 
-	location_in_view (a_session_id: STRING_32; id : STRING_32) : SE_RESPONSE
+	location_in_view (a_session_id: STRING_32; id: STRING_32): SE_RESPONSE
 		require
 			selinum_server_available: is_available
 		local
 			resp: HTTP_CLIENT_RESPONSE
 		do
-			resp := execute_get (cmd_session_element_location_in_view (a_session_id,id))
+			resp := execute_get (cmd_session_element_location_in_view (a_session_id, id))
 			Result := new_response (a_session_id, resp)
 		end
 
-
-	element_size (a_session_id: STRING_32; id : STRING_32) : SE_RESPONSE
+	element_size (a_session_id: STRING_32; id: STRING_32): SE_RESPONSE
 		require
 			selinum_server_available: is_available
 		local
 			resp: HTTP_CLIENT_RESPONSE
 		do
-			resp := execute_get (cmd_session_element_size (a_session_id,id))
+			resp := execute_get (cmd_session_element_size (a_session_id, id))
 			Result := new_response (a_session_id, resp)
 		end
 
-	element_css_value (a_session_id: STRING_32; id : STRING_32; property_name : STRING_32) : SE_RESPONSE
+	element_css_value (a_session_id: STRING_32; id: STRING_32; property_name: STRING_32): SE_RESPONSE
 		require
 			selinum_server_available: is_available
 		local
 			resp: HTTP_CLIENT_RESPONSE
 		do
-			resp := execute_get (cmd_session_element_css_value (a_session_id,id, property_name))
+			resp := execute_get (cmd_session_element_css_value (a_session_id, id, property_name))
 			Result := new_response (a_session_id, resp)
 		end
 
-
-	retrieve_browser_orientation (a_session_id: STRING_32) : SE_RESPONSE
+	retrieve_browser_orientation (a_session_id: STRING_32): SE_RESPONSE
 		require
 			selinum_server_available: is_available
 		local
@@ -655,8 +640,7 @@ feature -- Commands
 			Result := new_response (a_session_id, resp)
 		end
 
-
-	set_browser_orientation (a_session_id: STRING_32; data : STRING_32) : SE_RESPONSE
+	set_browser_orientation (a_session_id: STRING_32; data: STRING_32): SE_RESPONSE
 		require
 			selinum_server_available: is_available
 		local
@@ -666,7 +650,7 @@ feature -- Commands
 			Result := new_response (a_session_id, resp)
 		end
 
-	retrieve_alert_text (a_session_id: STRING_32) : SE_RESPONSE
+	retrieve_alert_text (a_session_id: STRING_32): SE_RESPONSE
 		require
 			selinum_server_available: is_available
 		local
@@ -676,187 +660,181 @@ feature -- Commands
 			Result := new_response (a_session_id, resp)
 		end
 
-	send_alert_text (a_session_id: STRING_32; data : STRING_32) : SE_RESPONSE
+	send_alert_text (a_session_id: STRING_32; data: STRING_32): SE_RESPONSE
 		require
 			selinum_server_available: is_available
 		local
 			resp: HTTP_CLIENT_RESPONSE
 		do
-			resp := execute_post (cmd_session_alert_text (a_session_id),data)
+			resp := execute_post (cmd_session_alert_text (a_session_id), data)
 			Result := new_response (a_session_id, resp)
 		end
 
-	accept_alert (a_session_id: STRING_32) : SE_RESPONSE
+	accept_alert (a_session_id: STRING_32): SE_RESPONSE
 		require
 			selinum_server_available: is_available
 		local
 			resp: HTTP_CLIENT_RESPONSE
 		do
-			resp := execute_post (cmd_session_accept_alert (a_session_id),Void)
+			resp := execute_post (cmd_session_accept_alert (a_session_id), Void)
 			Result := new_response (a_session_id, resp)
 		end
 
-	dismiss_alert (a_session_id: STRING_32) : SE_RESPONSE
+	dismiss_alert (a_session_id: STRING_32): SE_RESPONSE
 		require
 			selinum_server_available: is_available
 		local
 			resp: HTTP_CLIENT_RESPONSE
 		do
-			resp := execute_post (cmd_session_dismiss_alert (a_session_id),Void)
+			resp := execute_post (cmd_session_dismiss_alert (a_session_id), Void)
 			Result := new_response (a_session_id, resp)
 		end
 
-	move_to	(a_session_id: STRING_32; data : STRING_32) : SE_RESPONSE
+	move_to (a_session_id: STRING_32; data: STRING_32): SE_RESPONSE
 		require
 			selinum_server_available: is_available
 		local
 			resp: HTTP_CLIENT_RESPONSE
 		do
-			resp := execute_post (cmd_session_move_to (a_session_id),data)
+			resp := execute_post (cmd_session_move_to (a_session_id), data)
 			Result := new_response (a_session_id, resp)
 		end
 
-
-	click	(a_session_id: STRING_32; data : STRING_32) : SE_RESPONSE
+	click (a_session_id: STRING_32; data: STRING_32): SE_RESPONSE
 		require
 			selinum_server_available: is_available
 		local
 			resp: HTTP_CLIENT_RESPONSE
 		do
-			resp := execute_post (cmd_session_click (a_session_id),data)
+			resp := execute_post (cmd_session_click (a_session_id), data)
 			Result := new_response (a_session_id, resp)
 		end
 
-	button_down	(a_session_id: STRING_32; data : STRING_32) : SE_RESPONSE
+	button_down (a_session_id: STRING_32; data: STRING_32): SE_RESPONSE
 		require
 			selinum_server_available: is_available
 		local
 			resp: HTTP_CLIENT_RESPONSE
 		do
-			resp := execute_post (cmd_session_buttondown (a_session_id),data)
+			resp := execute_post (cmd_session_buttondown (a_session_id), data)
 			Result := new_response (a_session_id, resp)
 		end
 
-	button_up	(a_session_id: STRING_32; data : STRING_32) : SE_RESPONSE
+	button_up (a_session_id: STRING_32; data: STRING_32): SE_RESPONSE
 		require
 			selinum_server_available: is_available
 		local
 			resp: HTTP_CLIENT_RESPONSE
 		do
-			resp := execute_post (cmd_session_buttonup (a_session_id),data)
+			resp := execute_post (cmd_session_buttonup (a_session_id), data)
 			Result := new_response (a_session_id, resp)
 		end
 
-	double_click (a_session_id: STRING_32) : SE_RESPONSE
+	double_click (a_session_id: STRING_32): SE_RESPONSE
 		require
 			selinum_server_available: is_available
 		local
 			resp: HTTP_CLIENT_RESPONSE
 		do
-			resp := execute_post (cmd_session_double_click (a_session_id),Void)
+			resp := execute_post (cmd_session_double_click (a_session_id), Void)
 			Result := new_response (a_session_id, resp)
 		end
 
-
-	touch_click (a_session_id: STRING_32; data : STRING_32) : SE_RESPONSE
+	touch_click (a_session_id: STRING_32; data: STRING_32): SE_RESPONSE
 		require
 			selinum_server_available: is_available
 		local
 			resp: HTTP_CLIENT_RESPONSE
 		do
-			resp := execute_post (cmd_session_touch_click (a_session_id),data)
+			resp := execute_post (cmd_session_touch_click (a_session_id), data)
 			Result := new_response (a_session_id, resp)
 		end
 
-	touch_down (a_session_id: STRING_32; data : STRING_32) : SE_RESPONSE
+	touch_down (a_session_id: STRING_32; data: STRING_32): SE_RESPONSE
 		require
 			selinum_server_available: is_available
 		local
 			resp: HTTP_CLIENT_RESPONSE
 		do
-			resp := execute_post (cmd_session_touch_down (a_session_id),data)
+			resp := execute_post (cmd_session_touch_down (a_session_id), data)
 			Result := new_response (a_session_id, resp)
 		end
 
-	touch_up (a_session_id: STRING_32; data : STRING_32) : SE_RESPONSE
+	touch_up (a_session_id: STRING_32; data: STRING_32): SE_RESPONSE
 		require
 			selinum_server_available: is_available
 		local
 			resp: HTTP_CLIENT_RESPONSE
 		do
-			resp := execute_post (cmd_session_touch_up (a_session_id),data)
+			resp := execute_post (cmd_session_touch_up (a_session_id), data)
 			Result := new_response (a_session_id, resp)
 		end
 
-	touch_move (a_session_id: STRING_32; data : STRING_32) : SE_RESPONSE
+	touch_move (a_session_id: STRING_32; data: STRING_32): SE_RESPONSE
 		require
 			selinum_server_available: is_available
 		local
 			resp: HTTP_CLIENT_RESPONSE
 		do
-			resp := execute_post (cmd_session_touch_move (a_session_id),data)
+			resp := execute_post (cmd_session_touch_move (a_session_id), data)
 			Result := new_response (a_session_id, resp)
 		end
 
-	start_touch_scroll	(a_session_id: STRING_32; data : STRING_32) : SE_RESPONSE
+	start_touch_scroll (a_session_id: STRING_32; data: STRING_32): SE_RESPONSE
 		require
 			selinum_server_available: is_available
 		local
 			resp: HTTP_CLIENT_RESPONSE
 		do
-			resp := execute_post (cmd_session_touch_scroll (a_session_id),data)
+			resp := execute_post (cmd_session_touch_scroll (a_session_id), data)
 			Result := new_response (a_session_id, resp)
 		end
 
-
-	touch_scroll	(a_session_id: STRING_32; data : STRING_32) : SE_RESPONSE
+	touch_scroll (a_session_id: STRING_32; data: STRING_32): SE_RESPONSE
 		require
 			selinum_server_available: is_available
 		do
 			Result := start_touch_scroll (a_session_id, data)
 		end
 
-	touch_double_click	(a_session_id: STRING_32; data : STRING_32) : SE_RESPONSE
+	touch_double_click (a_session_id: STRING_32; data: STRING_32): SE_RESPONSE
 		require
 			selinum_server_available: is_available
 		local
 			resp: HTTP_CLIENT_RESPONSE
 		do
-			resp := execute_post (cmd_session_touch_double_click (a_session_id),data)
+			resp := execute_post (cmd_session_touch_double_click (a_session_id), data)
 			Result := new_response (a_session_id, resp)
 		end
 
-
-	touch_long_click (a_session_id: STRING_32; data : STRING_32) : SE_RESPONSE
+	touch_long_click (a_session_id: STRING_32; data: STRING_32): SE_RESPONSE
 		require
 			selinum_server_available: is_available
 		local
 			resp: HTTP_CLIENT_RESPONSE
 		do
-			resp := execute_post (cmd_session_touch_long_click (a_session_id),data)
+			resp := execute_post (cmd_session_touch_long_click (a_session_id), data)
 			Result := new_response (a_session_id, resp)
 		end
 
-	start_touch_flick (a_session_id: STRING_32; data : STRING_32) : SE_RESPONSE
+	start_touch_flick (a_session_id: STRING_32; data: STRING_32): SE_RESPONSE
 		require
 			selinum_server_available: is_available
 		local
 			resp: HTTP_CLIENT_RESPONSE
 		do
-			resp := execute_post (cmd_session_touch_flick (a_session_id),data)
+			resp := execute_post (cmd_session_touch_flick (a_session_id), data)
 			Result := new_response (a_session_id, resp)
 		end
 
-
-	touch_flick (a_session_id: STRING_32; data : STRING_32) : SE_RESPONSE
+	touch_flick (a_session_id: STRING_32; data: STRING_32): SE_RESPONSE
 		require
 			selinum_server_available: is_available
 		do
 			Result := start_touch_flick (a_session_id, data)
 		end
 
-
-	retrieve_geo_location  (a_session_id: STRING_32) : SE_RESPONSE
+	retrieve_geo_location (a_session_id: STRING_32): SE_RESPONSE
 		require
 			selinum_server_available: is_available
 		local
@@ -866,17 +844,17 @@ feature -- Commands
 			Result := new_response (a_session_id, resp)
 		end
 
-	set_geo_location (a_session_id: STRING_32; data : STRING_32) : SE_RESPONSE
+	set_geo_location (a_session_id: STRING_32; data: STRING_32): SE_RESPONSE
 		require
 			selinum_server_available: is_available
 		local
 			resp: HTTP_CLIENT_RESPONSE
 		do
-			resp := execute_post (cmd_session_geo_location (a_session_id),data)
+			resp := execute_post (cmd_session_geo_location (a_session_id), data)
 			Result := new_response (a_session_id, resp)
 		end
 
-	retrieve_local_storage  (a_session_id: STRING_32) : SE_RESPONSE
+	retrieve_local_storage (a_session_id: STRING_32): SE_RESPONSE
 		require
 			selinum_server_available: is_available
 		local
@@ -886,17 +864,17 @@ feature -- Commands
 			Result := new_response (a_session_id, resp)
 		end
 
-	set_location_storage (a_session_id: STRING_32; data : STRING_32) : SE_RESPONSE
+	set_location_storage (a_session_id: STRING_32; data: STRING_32): SE_RESPONSE
 		require
 			selinum_server_available: is_available
 		local
 			resp: HTTP_CLIENT_RESPONSE
 		do
-			resp := execute_post (cmd_session_local_storage (a_session_id),data)
+			resp := execute_post (cmd_session_local_storage (a_session_id), data)
 			Result := new_response (a_session_id, resp)
 		end
 
-	delete_local_storage (a_session_id: STRING_32) : SE_RESPONSE
+	delete_local_storage (a_session_id: STRING_32): SE_RESPONSE
 		require
 			selinum_server_available: is_available
 		local
@@ -906,27 +884,27 @@ feature -- Commands
 			Result := new_response (a_session_id, resp)
 		end
 
-	retrieve_storage_by_key (a_session_id: STRING_32; key : STRING_32) : SE_RESPONSE
+	retrieve_storage_by_key (a_session_id: STRING_32; key: STRING_32): SE_RESPONSE
 		require
 			selinum_server_available: is_available
 		local
 			resp: HTTP_CLIENT_RESPONSE
 		do
-			resp := execute_get (cmd_session_local_storage_key (a_session_id,key))
+			resp := execute_get (cmd_session_local_storage_key (a_session_id, key))
 			Result := new_response (a_session_id, resp)
 		end
 
-	delete_storage_by_key (a_session_id: STRING_32; key : STRING_32) : SE_RESPONSE
+	delete_storage_by_key (a_session_id: STRING_32; key: STRING_32): SE_RESPONSE
 		require
 			selinum_server_available: is_available
 		local
 			resp: HTTP_CLIENT_RESPONSE
 		do
-			resp := execute_delete (cmd_session_local_storage_key (a_session_id,key))
+			resp := execute_delete (cmd_session_local_storage_key (a_session_id, key))
 			Result := new_response (a_session_id, resp)
 		end
 
-	local_storage_size 	(a_session_id: STRING_32) : SE_RESPONSE
+	local_storage_size (a_session_id: STRING_32): SE_RESPONSE
 		require
 			selinum_server_available: is_available
 		local
@@ -936,7 +914,7 @@ feature -- Commands
 			Result := new_response (a_session_id, resp)
 		end
 
-	session_storage_keys (a_session_id: STRING_32) : SE_RESPONSE
+	session_storage_keys (a_session_id: STRING_32): SE_RESPONSE
 		require
 			selinum_server_available: is_available
 		local
@@ -946,17 +924,17 @@ feature -- Commands
 			Result := new_response (a_session_id, resp)
 		end
 
-	set_session_storage (a_session_id: STRING_32; data : STRING_32) : SE_RESPONSE
+	set_session_storage (a_session_id: STRING_32; data: STRING_32): SE_RESPONSE
 		require
 			selinum_server_available: is_available
 		local
 			resp: HTTP_CLIENT_RESPONSE
 		do
-			resp := execute_post (cmd_session_storage (a_session_id),data)
+			resp := execute_post (cmd_session_storage (a_session_id), data)
 			Result := new_response (a_session_id, resp)
 		end
 
-	delete_session_storage (a_session_id: STRING_32) : SE_RESPONSE
+	delete_session_storage (a_session_id: STRING_32): SE_RESPONSE
 		require
 			selinum_server_available: is_available
 		local
@@ -966,27 +944,27 @@ feature -- Commands
 			Result := new_response (a_session_id, resp)
 		end
 
-	retrive_storage_item_by_key (a_session_id: STRING_32; key : STRING_32) : SE_RESPONSE
+	retrive_storage_item_by_key (a_session_id: STRING_32; key: STRING_32): SE_RESPONSE
 		require
 			selinum_server_available: is_available
 		local
 			resp: HTTP_CLIENT_RESPONSE
 		do
-			resp := execute_get (cmd_session_storage_key (a_session_id,key))
+			resp := execute_get (cmd_session_storage_key (a_session_id, key))
 			Result := new_response (a_session_id, resp)
 		end
 
-	remove_storage_item_by_key (a_session_id: STRING_32; key : STRING_32) : SE_RESPONSE
+	remove_storage_item_by_key (a_session_id: STRING_32; key: STRING_32): SE_RESPONSE
 		require
 			selinum_server_available: is_available
 		local
 			resp: HTTP_CLIENT_RESPONSE
 		do
-			resp := execute_delete (cmd_session_storage_key (a_session_id,key))
+			resp := execute_delete (cmd_session_storage_key (a_session_id, key))
 			Result := new_response (a_session_id, resp)
 		end
 
-	session_storage_size  (a_session_id: STRING_32) : SE_RESPONSE
+	session_storage_size (a_session_id: STRING_32): SE_RESPONSE
 		require
 			selinum_server_available: is_available
 		local
@@ -996,17 +974,17 @@ feature -- Commands
 			Result := new_response (a_session_id, resp)
 		end
 
-	log (a_session_id: STRING_32; data : STRING_32) : SE_RESPONSE
+	log (a_session_id: STRING_32; data: STRING_32): SE_RESPONSE
 		require
 			selinum_server_available: is_available
 		local
 			resp: HTTP_CLIENT_RESPONSE
 		do
-			resp := execute_post (cmd_session_log (a_session_id),data)
+			resp := execute_post (cmd_session_log (a_session_id), data)
 			Result := new_response (a_session_id, resp)
 		end
 
-	available_log_types (a_session_id: STRING_32) : SE_RESPONSE
+	available_log_types (a_session_id: STRING_32): SE_RESPONSE
 		require
 			selinum_server_available: is_available
 		local
@@ -1016,7 +994,7 @@ feature -- Commands
 			Result := new_response (a_session_id, resp)
 		end
 
-	application_cache_status (a_session_id: STRING_32) : SE_RESPONSE
+	application_cache_status (a_session_id: STRING_32): SE_RESPONSE
 		require
 			selinum_server_available: is_available
 		local
@@ -1043,9 +1021,9 @@ feature {NONE} -- Implementation
 			Result := http_session.delete (command_name, context_executor)
 		end
 
-	new_response (a_session_id : STRING_32; resp: HTTP_CLIENT_RESPONSE): SE_RESPONSE
-		-- Create a new Selenium Response based on  `resp' HTTP_RESPONSE
-		-- todo improve it!!!
+	new_response (a_session_id: STRING_32; resp: HTTP_CLIENT_RESPONSE): SE_RESPONSE
+			-- Create a new Selenium Response based on  `resp' HTTP_RESPONSE
+			-- todo improve it!!!
 		do
 			create Result.make_empty
 			if resp.status = 204 then
@@ -1053,7 +1031,7 @@ feature {NONE} -- Implementation
 				Result.set_session_id (a_session_id)
 			else
 				if attached resp.body as l_body then
-					if attached json_to_se_response(l_body) as l_response then
+					if attached json_to_se_response (l_body) as l_response then
 						Result := l_response
 					end
 					Result.set_json_response (l_body)

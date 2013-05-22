@@ -46,6 +46,16 @@ feature -- Search by id
 			if attached web_driver.get_page_tile as l_title then
 				print ("%NPage title is:" + l_title)
 			end
+
+				-- Find the user name, password element by its id and submit
+			if attached {WEB_ELEMENT} web_driver.find_element ((create {SE_BY}).id ("edit-name")) as l_user and then attached {WEB_ELEMENT} web_driver.find_element ((create {SE_BY}).id ("edit-pass")) as l_pass and then attached {WEB_ELEMENT} web_driver.find_element ((create {SE_BY}).id ("edit-submit")) as l_form then
+					if attached l_user.get_css_value ("width") as l_width then
+						print ("%NCss value:" + l_width)
+					end
+
+			end
+
+			io.read_line
 				-- close the window
 			web_driver.window_close
 		end

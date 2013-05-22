@@ -50,6 +50,12 @@
 		<root class="FIND_ELEMENT_CSS_SELECTOR" feature="default_create"/>
 		<cluster name="src" location=".\" recursive="true"/>
 	</target>
+	<target name="findElementXPath" extends="selenium_example">
+		<root class="FIND_ELEMENT_XPATH" feature="default_create"/>
+		<cluster name="src" location=".\" recursive="true"/>
+	</target>
+
+	
 
 	
 
