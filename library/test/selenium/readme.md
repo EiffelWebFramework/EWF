@@ -26,19 +26,19 @@ The examples and guide are based on http://docs.seleniumhq.org/docs/03_webdriver
 
 WebDriver is a tool for automating web application testing, and in particular to verify that they work as expected. 
 
-   class
-	EXAMPLE_SEARCH
-	inherit
-		ANY
-		redefine
+	class
+		EXAMPLE_SEARCH
+	   inherit
+			ANY
+			redefine
+				default_create
+			end
+	   feature
 			default_create
-		end
-	feature
-		default_create
-		do
-			search
-		end
-	feature -- Example
+			do
+				search
+			end
+	   feature -- Example
 		search
 			local
 				web_driver : WEB_DRIVER
