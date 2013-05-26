@@ -182,7 +182,7 @@ feature {NONE} -- Constants
 			create Result
 		end
 
-	K_input_bufsize: INTEGER = 1024_000
+	K_input_bufsize: INTEGER = 1_024_000
 
 feature {NONE} -- Implementation: Environment
 
@@ -208,7 +208,9 @@ feature {NONE} -- Implementation: Environment
 		do
 			j := a_var.count
 			from
+				done := False
 				i := 1
+				j := 0
 			until
 				i > j or done
 			loop
@@ -220,11 +222,13 @@ feature {NONE} -- Implementation: Environment
 			end
 			if i > 1 and then i < j then
 				Result := [a_var.substring (i + 1, j), a_var.substring (1, i - 1)]
+			else
+				Result := Void
 			end
 		end
 
 note
-	copyright: "Copyright (c) 1984-2011, Eiffel Software and others"
+	copyright: "Copyright (c) 1984-2013, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software
