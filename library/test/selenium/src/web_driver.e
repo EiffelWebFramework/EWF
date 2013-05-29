@@ -476,12 +476,11 @@ feature {WEB_DRIVER, WEB_DRIVER_WAIT}
 			end
 		end
 
-feature {NONE} -- Implementation
+feature {SE_KEYBOARD} -- Implementation
 
 	session: detachable SE_SESSION
 
 	status: BOOLEAN
-
 	api: SE_JSON_WIRE_PROTOCOL
 
 end

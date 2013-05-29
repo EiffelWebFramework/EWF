@@ -485,6 +485,15 @@ feature
 			Result.replace_substring_all ("$sessionId", sessionId)
 		end
 
+
+	cmd_session_modifier_tmpl : STRING = "/session/$sessionId/modifier"
+	cmd_session_modifier (sessionId: STRING_32): STRING_32
+		do
+			create Result.make_from_string (cmd_session_modifier_tmpl)
+			Result.replace_substring_all ("$sessionId", sessionId)
+		end
+
+
 	cmd_session_click_tmpl: STRING = "session/$sessionId/click"
 
 	cmd_session_click (sessionId: STRING_32): STRING_32

@@ -1736,6 +1736,21 @@ feature -- Commands
 			end
 		end
 
+
+	modifier (a_session_id: STRING_32; data: STRING)
+			--	POST /session/:sessionId/modifier
+			-- Not documented
+			-- For info look
+			-- http://grepcode.com/file/repo1.maven.org/maven2/org.seleniumhq.selenium/selenium-remote-driver/2.0.0/org/openqa/selenium/remote/HttpCommandExecutor.java?av=h#HttpCommandExecutor
+		local
+			resp : SE_RESPONSE
+		do
+			if commnad_executor.is_available then
+				resp := commnad_executor.modifier (a_session_id, data)
+				check_response (resp)
+			end
+		end
+
 	click (a_session_id: STRING_32; button : SE_BUTTON )
 			--	POST /session/:sessionId/click
 			--	Click any mouse button (at the coordinates set by the last moveto command). Note that calling this command after calling buttondown and before calling button up (or any out-of-order interactions sequence) will yield undefined behaviour).

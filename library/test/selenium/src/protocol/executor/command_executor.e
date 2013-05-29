@@ -700,6 +700,17 @@ feature -- Commands
 			Result := new_response (a_session_id, resp)
 		end
 
+	modifier (a_session_id: STRING_32; data: STRING_32): SE_RESPONSE
+		require
+			selinum_server_available: is_available
+		local
+			resp: HTTP_CLIENT_RESPONSE
+		do
+			resp := execute_post (cmd_session_modifier (a_session_id), data)
+			Result := new_response (a_session_id, resp)
+		end
+
+
 	click (a_session_id: STRING_32; data: STRING_32): SE_RESPONSE
 		require
 			selinum_server_available: is_available
