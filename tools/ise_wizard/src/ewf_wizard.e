@@ -10,6 +10,11 @@ class
 inherit
 	WIZARD
 
+	SHARED_EXECUTION_ENVIRONMENT
+		export
+			{NONE} all
+		end
+
 create
 	make
 
@@ -27,7 +32,14 @@ feature {NONE} -- Initialization
 
 feature -- Access
 
-	project_directory_name: detachable READABLE_STRING_8
+	project_directory_name: detachable READABLE_STRING_32
+
+	project_directory_path: detachable PATH
+		do
+			if attached project_directory_name as n then
+				create Result.make_from_string (n)
+			end
+		end
 
 	projet_name: detachable READABLE_STRING_8
 
@@ -43,8 +55,8 @@ feature -- Form
 		local
 			e: EXECUTION_ENVIRONMENT
 		do
-			create e
-			project_directory_name := e.get ("ISE_PROJECTS")
+			e := execution_environment
+			project_directory_name := e.item ("ISE_PROJECTS")
 			if
 				attached project_directory_name as pdn and then
 				attached string_question ("Project directory (default=" + pdn + ")? ", <<["q", Void]>>, pdn, False) as r_pdn
@@ -94,11 +106,11 @@ feature -- Form
 			is_valid
 		local
 			d: DIRECTORY
-			dn: DIRECTORY_NAME
-			tfn: FILE_NAME
+			dn: PATH
+			tfn: PATH
 			res: WIZARD_SUCCEED_RESPONSE
 		do
-			if attached project_directory_name as pdn then
+			if attached project_directory_path as pdn then
 				if attached projet_name as pn then
 					variables.force (pn, "TARGET_NAME")
 					variables.force (new_uuid, "UUID")
@@ -108,40 +120,31 @@ feature -- Form
 					end
 					variables.force ("9999", "EWF_NINO_PORT")
 
-					create dn.make_from_string (pdn)
-					dn.extend (pn)
-					create d.make (dn.string)
+					dn := pdn.extended (pn)
+					create d.make_with_path (dn)
 					if not d.exists then
 						d.recursive_create_dir
 					end
-					create tfn.make_from_string (dn.string)
-					tfn.set_file_name (pn)
-					tfn.add_extension ("ecf")
-					copy_resource_template ("template.ecf", tfn.string)
+					tfn := dn.extended (pn).appended_with_extension ("ecf")
+					copy_resource_template ("template.ecf", tfn.name)
 
-					create res.make (tfn.string, d.name)
+					create res.make (tfn, d.path)
 
-					create tfn.make_from_string (dn.string)
+					tfn := dn.extended ("ewf").appended_with_extension ("ini")
+					copy_resource_template ("ewf.ini", tfn.name)
 
-					tfn.set_file_name ("ewf")
-					tfn.add_extension ("ini")
-					copy_resource_template ("ewf.ini", tfn.string)
-
-					create dn.make_from_string (pdn)
-					dn.extend (pn)
-					dn.extend ("src")
-					create d.make (dn.string)
+					dn := pdn.extended (pn).extended ("src")
+					create d.make_with_path (dn)
 					if not d.exists then
 						d.recursive_create_dir
 					end
-					create tfn.make_from_string (dn.string)
-					tfn.set_file_name ("ewf_application")
-					tfn.add_extension ("e")
+
+					tfn := dn.extended ("ewf_application").appended_with_extension ("e")
 					if attached router_type as rt then
 						check rt.same_string ("uri-template") end
-						copy_resource_template ("ewf_application-"+ rt +".e", tfn.string)
+						copy_resource_template ("ewf_application-"+ rt +".e", tfn.name)
 					else
-						copy_resource_template ("ewf_application.e", tfn.string)
+						copy_resource_template ("ewf_application.e", tfn.name)
 					end
 
 

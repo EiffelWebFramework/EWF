@@ -45,7 +45,6 @@ feature -- Conversion
 			i: INTEGER
 			n: INTEGER
 			in_tag: BOOLEAN
-			t: READABLE_STRING_8
 			p1, p2: INTEGER
 		do
 			create l_new.make (a_text.count)

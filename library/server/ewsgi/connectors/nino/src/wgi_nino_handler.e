@@ -14,6 +14,8 @@ inherit
 			on_stopped
 		end
 
+	SHARED_EXECUTION_ENVIRONMENT
+
 create
 	make_with_callback
 
@@ -61,47 +63,44 @@ feature -- Request processing
 	process_request (a_handler: HTTP_CONNECTION_HANDLER; a_socket: TCP_STREAM_SOCKET)
 			-- Process request ...
 		local
-			env: HASH_TABLE [STRING, STRING]
+			env: STRING_TABLE [READABLE_STRING_GENERAL]
 			p: INTEGER
 			l_request_uri, l_script_name, l_query_string, l_path_info: STRING
 			l_server_name, l_server_port: detachable STRING
-			a_headers_map: HASH_TABLE [STRING, STRING]
-			vn: STRING
-
-			e: EXECUTION_ENVIRONMENT
+			l_headers_map: HASH_TABLE [STRING, STRING]
+			vn: STRING_32
 		do
 			l_request_uri := a_handler.uri
-			a_headers_map := a_handler.request_header_map
-			create e
-			if attached e.starting_environment_variables as vars then
-				create env.make (vars.count)
+			l_headers_map := a_handler.request_header_map
+			if attached execution_environment.starting_environment as vars then
+				create env.make_equal (vars.count)
 				across
 					vars as c
 				loop
-					env.force (c.item.to_string_8, c.key.to_string_8)
+					env.force (c.item, c.key)
 				end
 			else
-				create env.make (0)
+				create env.make_equal (0)
 			end
 
 			--| for Any Abc-Def-Ghi add (or replace) the HTTP_ABC_DEF_GHI variable to `env'
 			from
-				a_headers_map.start
+				l_headers_map.start
 			until
-				a_headers_map.after
+				l_headers_map.after
 			loop
-				create vn.make_from_string (a_headers_map.key_for_iteration.as_upper)
-				vn.replace_substring_all ("-", "_")
+				create vn.make_from_string (l_headers_map.key_for_iteration.as_upper)
+				vn.replace_substring_all ({STRING_32} "-", {STRING_32} "_")
 				if
-					vn.starts_with ("CONTENT_") and then
+					vn.starts_with ({STRING_32} "CONTENT_") and then
 					(vn.same_string_general ({WGI_META_NAMES}.content_type) or vn.same_string_general ({WGI_META_NAMES}.content_length))
 				then
 					--| Keep this name
 				else
-					vn.prepend ("HTTP_")
+					vn.prepend ({STRING_32} "HTTP_")
 				end
-				add_environment_variable (a_headers_map.item_for_iteration, vn, env)
-				a_headers_map.forth
+				add_environment_variable (l_headers_map.item_for_iteration, vn, env)
+				l_headers_map.forth
 			end
 
 			--| Specific cases
@@ -114,7 +113,7 @@ feature -- Request processing
 				l_script_name := l_request_uri.string
 				l_query_string := ""
 			end
-			if attached a_headers_map.item ("Host") as l_host then
+			if attached l_headers_map.item ("Host") as l_host then
 				check has_host: env.has ("HTTP_HOST") end
 --				set_environment_variable (l_host, "HTTP_HOST", env)
 				p := l_host.index_of (':', 1)
@@ -129,7 +128,7 @@ feature -- Request processing
 				check host_available: False end
 			end
 
-			if attached a_headers_map.item ("Authorization") as l_authorization then
+			if attached l_headers_map.item ("Authorization") as l_authorization then
 				check has_authorization: env.has ("HTTP_AUTHORIZATION") end
 --				set_environment_variable (l_authorization, "HTTP_AUTHORIZATION", env)
 				p := l_authorization.index_of (' ', 1)
@@ -174,7 +173,7 @@ feature -- Request processing
 			callback.process_request (env, a_handler.request_header, a_socket)
 		end
 
-	add_environment_variable (a_value: detachable STRING; a_var_name: STRING; env: HASH_TABLE [STRING, STRING])
+	add_environment_variable (a_value: detachable READABLE_STRING_32; a_var_name: READABLE_STRING_GENERAL; env: STRING_TABLE [READABLE_STRING_GENERAL])
 			-- Add variable `a_var_name => a_value' to `env'
 		do
 			if a_value /= Void then
@@ -188,7 +187,7 @@ feature -- Request processing
 			end
 		end
 
-	set_environment_variable (a_value: detachable STRING; a_var_name: STRING; env: HASH_TABLE [STRING, STRING])
+	set_environment_variable (a_value: detachable READABLE_STRING_GENERAL; a_var_name: READABLE_STRING_GENERAL; env: STRING_TABLE [READABLE_STRING_GENERAL])
 			-- Add variable `a_var_name => a_value' to `env'
 		do
 			if a_value /= Void then
@@ -197,7 +196,7 @@ feature -- Request processing
 		end
 
 note
-	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
+	copyright: "2011-2013, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

@@ -10,22 +10,22 @@ class
 inherit
 	CMS_MAILER
 
---	SHARED_EXECUTION_ENVIRONMENT
+	SHARED_EXECUTION_ENVIRONMENT
 
 create
 	make
 
 feature {NONE} -- Initialization
 
-	make (a_exe: like executable_path; args: detachable ITERABLE [READABLE_STRING_8])
+	make (a_exe: READABLE_STRING_GENERAL; args: detachable ITERABLE [READABLE_STRING_GENERAL])
 			-- Initialize `Current'.
 		do
-			set_parameters (a_exe, args)
+			set_parameters (create {PATH}.make_from_string (a_exe), args)
 		end
 
-	executable_path: READABLE_STRING_8
+	executable_path: PATH
 
-	arguments: detachable ARRAYED_LIST [STRING_8]
+	arguments: detachable ARRAYED_LIST [READABLE_STRING_GENERAL]
 
 	stdin_mode_set: BOOLEAN
 			-- Use `stdin' to pass email message, rather than using local file?
@@ -41,18 +41,18 @@ feature -- Status
 		local
 			f: RAW_FILE
 		do
-			create f.make (executable_path)
+			create f.make_with_path (executable_path)
 			Result := f.exists
 		end
 
 feature -- Change
 
-	set_parameters (cmd: like executable_path; args: detachable ITERABLE [READABLE_STRING_8])
+	set_parameters (p: like executable_path; args: detachable ITERABLE [READABLE_STRING_GENERAL])
 			-- Set parameters `executable_path' and associated `arguments'
 		local
 			l_args: like arguments
 		do
-			executable_path := cmd
+			executable_path := p
 			if args = Void then
 				arguments := Void
 			else
@@ -86,7 +86,7 @@ feature -- Basic operation
 			if retried = 0 then
 				create l_factory
 				if stdin_mode_set then
-					p := l_factory.process_launcher (executable_path, arguments, Void)
+					p := l_factory.process_launcher (executable_path.name, arguments, Void)
 					p.set_hidden (True)
 					p.set_separate_console (False)
 
@@ -107,10 +107,10 @@ feature -- Basic operation
 							f.put_string (a_email.message)
 							f.close
 							create args.make (1)
-							args.force (f.name)
+							args.force (f.path.name)
 						end
 					end
-					p := l_factory.process_launcher (executable_path, args, Void)
+					p := l_factory.process_launcher (executable_path.name, args, Void)
 					p.set_hidden (True)
 					p.set_separate_console (False)
 
@@ -140,34 +140,35 @@ feature -- Basic operation
 
 feature {NONE} -- Implementation
 
-	new_temporary_file (a_extension: detachable STRING_8): RAW_FILE
+	new_temporary_file (a_extension: detachable READABLE_STRING_GENERAL): RAW_FILE
 			-- Create file with temporary name.
 			-- With concurrent execution, noting ensures that {FILE_NAME}.make_temporary_name is unique
 			-- So using `a_extension' may help
 		local
-			fn: FILE_NAME
-			s: like {FILE_NAME}.string
+			tmp: FILE_NAME
+			fn: PATH
+			s: STRING
 			f: detachable like new_temporary_file
 			i: INTEGER
 		do
 				-- With concurrent execution, nothing ensures that {FILE_NAME}.make_temporary_name is unique
 				-- So let's try to find
 			from
+				create tmp.make_temporary_name
 			until
 				f /= Void or i > 1000
 			loop
-				create fn.make_temporary_name
-				s := fn.string
+				create fn.make_from_string (tmp.string)
 				if i > 0 then
+					create s.make (3)
 					s.append_character ('-')
 					s.append_integer (i)
-					create fn.make_from_string (s)
+					fn := fn.appended (s)
 				end
 				if a_extension /= Void then
-					fn.add_extension (a_extension)
+					fn := fn.appended_with_extension (a_extension)
 				end
-				s := fn.string
-				create f.make (fn.string)
+				create f.make_with_path (fn)
 				if f.exists then
 					i := i + 1
 					f := Void
@@ -184,14 +185,5 @@ feature {NONE} -- Implementation
 			not_result_exists: not Result.exists
 			result_creatable: Result.is_creatable
 		end
-
-feature {NONE} -- Environment
-
-	Execution_environment: EXECUTION_ENVIRONMENT
-		once
-			create Result
-		end
-
-invariant
 
 end

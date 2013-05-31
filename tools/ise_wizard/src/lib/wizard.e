@@ -10,6 +10,8 @@ deferred class
 inherit
 	ARGUMENTS
 
+	LOCALIZED_PRINTER
+
 feature {NONE} -- Initialization
 
 	initialize
@@ -92,7 +94,7 @@ feature -- Response
 			f: RAW_FILE
 		do
 			if attached layout as lay then
-				create f.make (lay.callback_file_name)
+				create f.make_with_path (lay.callback_file_name)
 				if not f.exists or else f.is_writable then
 					f.open_write
 					res.send (f)
@@ -196,13 +198,13 @@ feature {NONE} -- Implementation
 			end
 		end
 
-	copy_file (a_src, a_target: READABLE_STRING_8)
+	copy_file (a_src, a_target: READABLE_STRING_GENERAL)
 		local
 			f,t: RAW_FILE
 		do
-			create f.make (a_src)
+			create f.make_with_name (a_src)
 			if f.exists and f.is_readable then
-				create t.make (a_target)
+				create t.make_with_name (a_target)
 				if not t.exists or else t.is_writable then
 					f.open_read
 					t.open_write
@@ -223,21 +225,21 @@ feature {NONE} -- Implementation
 
 feature -- Resources
 
-	copy_resource (a_res: READABLE_STRING_8; a_target: READABLE_STRING_8)
+	copy_resource (a_res: READABLE_STRING_GENERAL; a_target: READABLE_STRING_GENERAL)
 		do
 			if attached layout as lay then
 				copy_file (lay.resource (a_res), a_target)
 			end
 		end
 
-	copy_resource_template (a_res: READABLE_STRING_8; a_target: READABLE_STRING_8)
+	copy_resource_template (a_res: READABLE_STRING_GENERAL; a_target: READABLE_STRING_GENERAL)
 		local
 			f,t: RAW_FILE
 		do
 			if attached layout as lay then
-				create f.make (lay.resource (a_res))
+				create f.make_with_name (lay.resource (a_res))
 				if f.exists and f.is_readable then
-					create t.make (a_target)
+					create t.make_with_name (a_target)
 					if not t.exists or else t.is_writable then
 						f.open_read
 						t.create_read_write

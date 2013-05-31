@@ -11,6 +11,7 @@ inherit
 	WSF_FILE_SYSTEM_HANDLER
 
 create
-	make
+	make,
+	make_with_path
 
 end

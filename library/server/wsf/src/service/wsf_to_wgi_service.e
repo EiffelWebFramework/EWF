@@ -35,22 +35,30 @@ feature {WGI_CONNECTOR} -- Implementation: Execution
 		local
 			w_res: detachable WSF_RESPONSE
 			w_req: detachable WSF_REQUEST
+			retried: INTEGER
 		do
-			create w_res.make_from_wgi (res)
-			create w_req.make_from_wgi (req)
-			service.execute (w_req, w_res)
-			w_req.destroy
-		rescue
-			if w_res /= Void then
+			if retried = 0 then
+				create w_res.make_from_wgi (res)
+				create w_req.make_from_wgi (req)
+				service.execute (w_req, w_res)
 				w_res.flush
+			elseif retried = 1 then
+				if w_res /= Void then
+					w_res.flush
+				end
 			end
 			if w_req /= Void then
 				w_req.destroy
 			end
+		rescue
+			if retried <= 1 then
+				retried := retried + 1
+				retry
+			end
 		end
 
 note
-	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
+	copyright: "2011-2013, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

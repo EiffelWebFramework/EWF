@@ -12,38 +12,27 @@ create
 
 feature {NONE} -- Initialization
 
-	make (d: like wizard_directory_name; cb: like callback_file_name)
+	make (d: READABLE_STRING_GENERAL; cb: READABLE_STRING_GENERAL)
 		do
-			wizard_directory_name := d
-			callback_file_name := cb
+			create wizard_directory_name.make_from_string (d)
+			create callback_file_name.make_from_string (cb)
 		end
 
 feature -- Access
 
-	wizard_directory_name: READABLE_STRING_8
+	wizard_directory_name: PATH
 
-	resource (a_name: READABLE_STRING_8): STRING_8
-		local
-			fn: FILE_NAME
+	callback_file_name: PATH
+
+	resource (a_name: READABLE_STRING_GENERAL): STRING_32
 		do
-			create fn.make_from_string (wizard_directory_name)
-			fn.extend ("resources")
-			fn.set_file_name (a_name)
-			Result := fn.string
+			Result := wizard_directory_name.extended ("resources").extended (a_name).name
 		end
 
-	pixmap_png_filename (a_name: READABLE_STRING_8): STRING_8
-		local
-			fn: FILE_NAME
+	pixmap_png_filename (a_name: READABLE_STRING_GENERAL): STRING_32
 		do
-			create fn.make_from_string (wizard_directory_name)
-			fn.extend ("pixmaps")
-			fn.set_file_name (a_name)
-			fn.add_extension ("png")
-			Result := fn.string
+			Result := wizard_directory_name.extended ("pixmaps").extended (a_name).appended_with_extension ("png").name
 		end
-
-	callback_file_name: READABLE_STRING_8
 
 invariant
 end

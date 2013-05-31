@@ -15,31 +15,48 @@ inherit
 
 	WSF_SELF_DOCUMENTED_HANDLER
 
+	SHARED_HTML_ENCODER
+
+	SHARED_UTF8_URL_ENCODER
+
+	SHARED_EXECUTION_ENVIRONMENT
+		export
+			{NONE} all
+		end
+
 create
+	make_with_path,
+	make_hidden_with_path,
 	make,
 	make_hidden
 
 feature {NONE} -- Initialization
 
-	make (d: like document_root)
-		require
-			valid_d: (d /= Void and then not d.is_empty) implies not d.ends_with (operating_environment.directory_separator.out)
-		local
-			e: EXECUTION_ENVIRONMENT
+	make_with_path (d: like document_root)
 		do
 			if d.is_empty then
-				create e
-				document_root := e.current_working_directory
+				document_root := execution_environment.current_working_path
 			else
 				document_root := d
 			end
 		ensure
-			not document_root.is_empty and then not document_root.ends_with (operating_environment.directory_separator.out)
+			not document_root.is_empty
 		end
 
-	make_hidden (d: like document_root)
-		require
-			valid_d: (d /= Void and then not d.is_empty) implies not d.ends_with (operating_environment.directory_separator.out)
+	make_hidden_with_path (d: like document_root)
+		do
+			make_with_path (d)
+			is_hidden := True
+		ensure
+			hidden: is_hidden
+		end
+
+	make (d: READABLE_STRING_GENERAL)
+		do
+			make_with_path (create {PATH}.make_from_string (d))
+		end
+
+	make_hidden (d: READABLE_STRING_GENERAL)
 		do
 			make (d)
 			is_hidden := True
@@ -60,9 +77,10 @@ feature -- Documentation
 			Result.add_description ("File service")
 		end
 
-feature -- Access		
+feature -- Access	
 
-	document_root: STRING
+	document_root: PATH
+
 	max_age: INTEGER
 
 	index_disabled: BOOLEAN
@@ -137,10 +155,10 @@ feature -- Execution
 	process_uri (uri: READABLE_STRING_8; req: WSF_REQUEST; res: WSF_RESPONSE)
 		local
 			f: RAW_FILE
-			fn: READABLE_STRING_8
+			fn: like resource_filename
 		do
 			fn := resource_filename (uri)
-			create f.make (fn)
+			create f.make_with_path (fn)
 			if f.exists then
 				if f.is_readable then
 					if f.is_directory then
@@ -160,14 +178,15 @@ feature -- Execution
 			end
 		end
 
-	process_index (a_uri: READABLE_STRING_8; dn: READABLE_STRING_8; req: WSF_REQUEST; res: WSF_RESPONSE)
+	process_index (a_uri: READABLE_STRING_8; dn: PATH; req: WSF_REQUEST; res: WSF_RESPONSE)
 		local
 			h: HTTP_HEADER
 			uri, s: STRING_8
 			d: DIRECTORY
-			l_files: LIST [STRING_8]
+			l_files: LIST [PATH]
 		do
-			create d.make_open_read (dn)
+			create d.make_with_path (dn)
+			d.open_read
 			if attached directory_index_file (d) as f then
 				process_file (f, req, res)
 			else
@@ -187,12 +206,16 @@ feature -- Execution
 				s.replace_substring_all ("$URI", uri)
 
 				from
-					l_files := d.linear_representation
+					l_files := d.entries
 					l_files.start
 				until
 					l_files.after
 				loop
-					s.append ("<li><a href=%"" + uri + l_files.item_for_iteration + "%">" + l_files.item_for_iteration + "</a></li>%N")
+					s.append ("<li><a href=%"" + uri)
+					s.append (url_encoder.encoded_string (l_files.item.name))
+					s.append ("%">")
+					s.append (html_encoder.encoded_string (l_files.item.name))
+					s.append ("</a></li>%N")
 					l_files.forth
 				end
 				s.append ("[
@@ -217,12 +240,12 @@ feature -- Execution
 
 	process_file (f: FILE; req: WSF_REQUEST; res: WSF_RESPONSE)
 		local
-			ext: READABLE_STRING_8
+			ext: READABLE_STRING_32
 			ct: detachable READABLE_STRING_8
 			fres: WSF_FILE_RESPONSE
 			dt: DATE_TIME
 		do
-			ext := extension (f.name)
+			ext := extension (f.path.name)
 			ct := extension_mime_mapping.mime_type (ext)
 			if ct = Void then
 				ct := {HTTP_MIME_TYPES}.application_force_download
@@ -235,7 +258,7 @@ feature -- Execution
 			then
 				process_not_modified (f_date, req, res)
 			else
-				create fres.make_with_content_type (ct, f.name)
+				create fres.make_with_content_type (ct, f.path.name)
 				fres.set_status_code ({HTTP_STATUS_CODE}.ok)
 
 				-- cache control
@@ -341,7 +364,7 @@ feature {NONE} -- Implementation
 	directory_index_file (d: DIRECTORY): detachable FILE
 		local
 			f: detachable RAW_FILE
-			fn: FILE_NAME
+			fn: PATH
 		do
 			if attached directory_index as default_index then
 				across
@@ -350,12 +373,11 @@ feature {NONE} -- Implementation
 					Result /= Void
 				loop
 					if d.has_entry (c.item) then
-						create fn.make_from_string (d.name)
-						fn.set_file_name (c.item)
+						fn := d.path.extended (c.item)
 						if f = Void then
-							create f.make (fn.string)
+							create f.make_with_path (fn)
 						else
-							f.make (fn.string)
+							f.make_with_path (fn)
 						end
 						if f.exists and then f.is_readable then
 							Result := f
@@ -365,9 +387,15 @@ feature {NONE} -- Implementation
 			end
 		end
 
-	resource_filename (uri: READABLE_STRING_8): READABLE_STRING_8
+	resource_filename (uri: READABLE_STRING_8): PATH
+		local
+			s: like uri_path_to_filename
 		do
-			Result := real_filename (document_root + operating_environment.directory_separator.out + real_filename (uri))
+			Result := document_root
+			s := uri_path_to_filename (uri)
+			if not s.is_empty then
+				Result := Result.extended (s)
+			end
 		end
 
 	dirname (uri: READABLE_STRING_8): READABLE_STRING_8
@@ -394,7 +422,7 @@ feature {NONE} -- Implementation
 			end
 		end
 
-	extension (uri: READABLE_STRING_8): READABLE_STRING_8
+	extension (uri: READABLE_STRING_32): READABLE_STRING_32
 		local
 			p: INTEGER
 		do
@@ -402,50 +430,44 @@ feature {NONE} -- Implementation
 			if p > 0 then
 				Result := uri.substring (p + 1, uri.count)
 			else
-				create {STRING_8} Result.make_empty
+				create {STRING_32} Result.make_empty
 			end
 		end
 
-	real_filename (fn: STRING): STRING
+	uri_path_to_filename (fn: STRING_32): STRING_32
 			-- Real filename from url-path `fn'
 			--| Find a better design for this piece of code
 			--| Eventually in a spec/$ISE_PLATFORM/ specific cluster
+		local
+			n: INTEGER
 		do
-			if fn.is_empty then
-				Result := fn
-			else
+			n := fn.count
+			create Result.make_from_string (fn)
+			if n > 0 and then Result.item (Result.count) = '/' then
+				Result.remove_tail (1)
+				n := n - 1
+			end
+			if n > 0 and then Result.item (1) = '/' then
+				Result.remove_head (1)
+				n := n - 1
+			end
+
+			if n > 0 then
 				if {PLATFORM}.is_windows then
-					create Result.make_from_string (fn)
-					Result.replace_substring_all ("/", "\")
-					if Result [Result.count] = '\' then
-						Result.remove_tail (1)
-					end
-				else
-					Result := fn
-					if Result [Result.count] = '/' then
-						Result.remove_tail (1)
-					end
+					Result.replace_substring_all ({STRING_32} "/", {STRING_32} "\")
 				end
 			end
 		end
 
 feature {NONE} -- Implementation
 
-	node_exists (p: READABLE_STRING_8): BOOLEAN
-		local
-			f: RAW_FILE
-		do
-			create f.make (p)
-			Result := f.exists
-		end
-
 	extension_mime_mapping: HTTP_FILE_EXTENSION_MIME_MAPPING
 		local
 			f: RAW_FILE
 		once
-			create f.make ("mime.types")
+			create f.make_with_name ("mime.types")
 			if f.exists and then f.is_readable then
-				create Result.make_from_file (f.name)
+				create Result.make_from_file (f.path.name)
 			else
 				create Result.make_default
 			end

@@ -56,7 +56,7 @@ feature -- Basic operation
 			Result := impl_post (a_path, a_ctx, data, Void)
 		end
 
-	post_file (a_path: READABLE_STRING_8; a_ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT; fn: detachable READABLE_STRING_8): HTTP_CLIENT_RESPONSE
+	post_file (a_path: READABLE_STRING_8; a_ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT; fn: detachable READABLE_STRING_GENERAL): HTTP_CLIENT_RESPONSE
 		do
 			Result := impl_post (a_path, a_ctx, Void, fn)
 		end
@@ -85,7 +85,7 @@ feature -- Basic operation
 				f.close
 				check ctx /= Void then
 					ctx.set_upload_data (Void)
-					ctx.set_upload_filename (f.name)
+					ctx.set_upload_filename (f.path.name)
 				end
 			end
 			Result := custom ("PUT", a_path, ctx)
@@ -98,7 +98,7 @@ feature -- Basic operation
 			end
 		end
 
-	put_file (a_path: READABLE_STRING_8; a_ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT; fn: detachable READABLE_STRING_8): HTTP_CLIENT_RESPONSE
+	put_file (a_path: READABLE_STRING_8; a_ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT; fn: detachable READABLE_STRING_GENERAL): HTTP_CLIENT_RESPONSE
 		local
 			ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT
 		do
@@ -119,7 +119,7 @@ feature -- Basic operation
 
 feature {NONE} -- Implementation
 
-	impl_post (a_path: READABLE_STRING_8; a_ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT; data: detachable READABLE_STRING_8; fn: detachable READABLE_STRING_8): HTTP_CLIENT_RESPONSE
+	impl_post (a_path: READABLE_STRING_8; a_ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT; data: detachable READABLE_STRING_8; fn: detachable READABLE_STRING_GENERAL): HTTP_CLIENT_RESPONSE
 		local
 			req: HTTP_CLIENT_REQUEST
 			ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT
@@ -151,7 +151,7 @@ feature {LIBCURL_HTTP_CLIENT_REQUEST} -- Curl implementation
 
 
 ;note
-	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
+	copyright: "2011-2013, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software
