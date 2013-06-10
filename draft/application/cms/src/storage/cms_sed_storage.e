@@ -16,16 +16,16 @@ create
 
 feature {NONE} -- Initialization
 
-	make (dn: STRING)
+	make (dn: READABLE_STRING_GENERAL)
 			-- Initialize `Current'.
 		do
-			directory_name := dn
-			ensure_directory_exists (dn)
+			create directory_name.make_from_string (dn)
+			ensure_directory_exists (directory_name)
 			create sed
 			initialize
 		end
 
-	directory_name: STRING
+	directory_name: PATH
 
 	sed: SED_STORABLE_FACILITIES
 
@@ -49,18 +49,14 @@ feature {NONE} -- Initialization
 
 	save_object_with_id (obj: ANY; a_id: INTEGER; a_type: STRING)
 		local
-			dn: STRING
-			fn: FILE_NAME
+			fn: PATH
 			f: RAW_FILE
 		do
-			create fn.make_from_string (directory_name)
-			fn.extend (a_type)
-			dn := fn.string
-			ensure_directory_exists (dn)
-			create fn.make_from_string (dn)
-			fn.set_file_name (a_id.out)
---			fn.add_extension ("txt")
-			create f.make (fn.string)
+			fn := directory_name.extended (a_type)
+			ensure_directory_exists (fn)
+			fn := fn.extended (a_id.out)
+--			.appended_with_extension ("txt")
+			create f.make_with_path (fn)
 --			check not f.exists end
 			f.create_read_write
 			sed_file_store (obj, f)
@@ -69,18 +65,14 @@ feature {NONE} -- Initialization
 
 	object_with_id (a_id: INTEGER; a_type: STRING): detachable ANY
 		local
-			dn: STRING
-			fn: FILE_NAME
+			fn: PATH
 			f: RAW_FILE
 		do
-			create fn.make_from_string (directory_name)
-			fn.extend (a_type)
-			dn := fn.string
-			ensure_directory_exists (dn)
-			create fn.make_from_string (dn)
-			fn.set_file_name (a_id.out)
---			fn.add_extension ("txt")
-			create f.make (fn.string)
+			fn := directory_name.extended (a_type)
+			ensure_directory_exists (fn)
+			fn := fn.extended (a_id.out)
+--			.append_with_extension ("txt")
+			create f.make_with_path (fn)
 			if f.exists and f.is_readable then
 				f.open_read
 				Result := sed_file_retrieved (f)
@@ -261,30 +253,24 @@ feature -- Email
 
 	save_email (a_email: CMS_EMAIL)
 		local
-			dn: STRING
-			fn: FILE_NAME
+			dn: PATH
+			fn: PATH
 			f: RAW_FILE
 			ts: INTEGER_64
 			i: INTEGER
 		do
-			create fn.make_from_string (directory_name)
-			fn.extend ("emails")
-			dn := fn.string
+			dn := directory_name.extended ("emails")
 			ensure_directory_exists (dn)
 			ts := (create {HTTP_DATE_TIME_UTILITIES}).unix_time_stamp (a_email.date)
 			from
-				create fn.make_from_string (dn)
-				fn.set_file_name (ts.out)
-				fn.add_extension ("txt")
-				create f.make (fn.string)
+				fn := dn.extended (ts.out).appended_with_extension ("txt")
+				create f.make_with_path (fn)
 			until
 				not f.exists
 			loop
 				i := i + 1
-				create fn.make_from_string (dn)
-				fn.set_file_name (ts.out + "-" + i.out)
-				fn.add_extension ("txt")
-				f.make (fn.string)
+				fn := dn.extended (ts.out + "-" + i.out).appended_with_extension ("txt")
+				f.make_with_path (fn)
 			end
 			f.create_read_write
 			f.put_string (a_email.message)
@@ -388,13 +374,11 @@ feature {NONE} -- Implementation
 
 	last_sequence (a_type: STRING): INTEGER
 		local
-			fn: FILE_NAME
+			fn: PATH
 			f: RAW_FILE
 		do
-			create fn.make_from_string (directory_name)
-			fn.set_file_name (a_type)
-			fn.add_extension ("last_id")
-			create f.make (fn.string)
+			fn := directory_name.extended (a_type).appended_with_extension ("last_id")
+			create f.make_with_path (fn)
 			if f.exists and then f.is_readable then
 				f.open_read
 				f.read_line
@@ -409,13 +393,11 @@ feature {NONE} -- Implementation
 
 	next_sequence (a_type: STRING): INTEGER
 		local
-			fn: FILE_NAME
+			fn: PATH
 			f: RAW_FILE
 		do
-			create fn.make_from_string (directory_name)
-			fn.set_file_name (a_type)
-			fn.add_extension ("last_id")
-			create f.make (fn.string)
+			fn := directory_name.extended (a_type).appended_with_extension ("last_id")
+			create f.make_with_path (fn)
 			if f.exists and then f.is_readable then
 				f.open_read
 				f.read_line
@@ -439,13 +421,12 @@ feature {NONE} -- Implementation
 				]
 		local
 			f: RAW_FILE
-			fn: FILE_NAME
+			fn: PATH
 			res: detachable like users_index
 			retried: INTEGER
 		do
-			create fn.make_from_string (directory_name)
-			fn.set_file_name ("users.db")
-			create f.make (fn.string)
+			fn := directory_name.extended ("users.db")
+			create f.make_with_path (fn)
 			if retried = 0 then
 				if f.exists and then f.is_readable then
 					f.open_read
@@ -469,11 +450,10 @@ feature {NONE} -- Implementation
 	store_users_index (a_users_index: like users_index)
 		local
 			f: RAW_FILE
-			fn: FILE_NAME
+			fn: PATH
 		do
-			create fn.make_from_string (directory_name)
-			fn.set_file_name ("users.db")
-			create f.make (fn.string)
+			fn := directory_name.extended ("users.db")
+			create f.make_with_path (fn)
 			if not f.exists or else f.is_writable then
 				f.open_write
 				sed_file_store (a_users_index, f)
@@ -612,12 +592,12 @@ feature -- Misc
 
 feature {NONE} -- Implementation		
 
-	ensure_directory_exists (dn: STRING)
+	ensure_directory_exists (dn: PATH)
 		local
 			d: DIRECTORY
 		do
 			d := tmp_dir
-			d.make (dn)
+			d.make_with_path (dn)
 			if not d.exists then
 				d.recursive_create_dir
 			end
@@ -627,7 +607,7 @@ feature {NONE} -- Implementation
 
 	tmp_dir: DIRECTORY
 		once
-			create Result.make (directory_name)
+			create Result.make_with_path (directory_name)
 		end
 
 invariant

@@ -21,6 +21,11 @@ inherit
 
 	WSF_DEFAULT_SERVICE
 
+	SHARED_EXECUTION_ENVIRONMENT
+		export
+			{NONE} all
+		end
+
 create
 	make
 
@@ -45,7 +50,7 @@ feature {NONE} -- Initialization
 		do
 			map_uri_template_agent ("/upload{?nb}", agent execute_upload)
 
-			create www.make (document_root)
+			create www.make_with_path (document_root)
 			www.set_directory_index (<<"index.html">>)
 			www.set_not_found_handler (agent execute_not_found)
 			router.handle_with_request_methods ("", www, router.methods_GET)
@@ -53,31 +58,16 @@ feature {NONE} -- Initialization
 
 feature -- Configuration		
 
-	document_root: READABLE_STRING_8
+	document_root: PATH
 			-- Document root to look for files or directories
-		local
-			e: EXECUTION_ENVIRONMENT
-			dn: DIRECTORY_NAME
 		once
-			create e
-			create dn.make_from_string (e.current_working_directory)
-			dn.extend ("htdocs")
-			Result := dn.string
-			if Result [Result.count] = Operating_environment.directory_separator then
-				Result := Result.substring (1, Result.count - 1)
-			end
-		ensure
-			not Result.ends_with (Operating_environment.directory_separator.out)
+			Result := execution_environment.current_working_path.extended ("htdocs")
 		end
 
-	files_root: READABLE_STRING_8
+	files_root: PATH
 			-- Uploaded files will be stored in `files_root' folder
-		local
-			dn: DIRECTORY_NAME
 		once
-			create dn.make_from_string (document_root)
-			dn.extend ("files")
-			Result := dn.string
+			Result := document_root.extended ("files")
 		end
 
 feature -- Execution
@@ -95,7 +85,7 @@ feature -- Execution
 		local
 			l_body: STRING_8
 			l_safe_filename: STRING_8
-			fn: FILE_NAME
+			fn: PATH
 			page: WSF_HTML_PAGE_RESPONSE
 			n: INTEGER
 		do
@@ -113,9 +103,8 @@ feature -- Execution
 					n := 1
 				end
 				if attached {WSF_STRING} req.query_parameter ("demo") as p_demo then
-					create fn.make_from_string (document_root)
-					fn.set_file_name (p_demo.value)
-					l_body.append ("File: <input type=%"file%" name=%"uploaded_file[]%" size=%"60%" value=%""+ html_encode (fn.string) +"%"></br>%N")
+					fn := document_root.extended (p_demo.value)
+					l_body.append ("File: <input type=%"file%" name=%"uploaded_file[]%" size=%"60%" value=%""+ html_encode (fn.name) +"%"></br>%N")
 				end
 
 				from
@@ -136,10 +125,9 @@ feature -- Execution
 				loop
 					l_body.append ("<li>")
 					l_body.append ("<div>" + c.item.name + "=" + html_encode (c.item.filename) + " size=" + c.item.size.out + " type=" + c.item.content_type + "</div>")
-					create fn.make_from_string (files_root)
 					l_safe_filename := c.item.safe_filename
-					fn.set_file_name (l_safe_filename)
-					if c.item.move_to (fn.string) then
+					fn := files_root.extended (l_safe_filename)
+					if c.item.move_to (fn.name) then
 						if c.item.content_type.starts_with ("image") then
 							l_body.append ("%N<a href=%"../files/" + url_encode (l_safe_filename) + "%"><img src=%"../files/"+ l_safe_filename +"%" /></a>")
 						else

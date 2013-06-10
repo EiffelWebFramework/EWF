@@ -61,7 +61,7 @@ feature -- Execution
 			retried: BOOLEAN
 			l_form_data: detachable HASH_TABLE [READABLE_STRING_32, READABLE_STRING_32]
 			l_upload_data: detachable READABLE_STRING_8
-			l_upload_filename: detachable READABLE_STRING_8
+			l_upload_filepath: detachable PATH
 			l_headers: like headers
 		do
 			if not retried then
@@ -117,13 +117,13 @@ feature -- Execution
 					if ctx.has_upload_data then
 						l_upload_data := ctx.upload_data
 					end
-					if ctx.has_upload_filename then
-						l_upload_filename := ctx.upload_filename
+					if ctx.has_upload_file then
+						l_upload_filepath := ctx.upload_file
 					end
 					if ctx.has_form_data then
 						l_form_data := ctx.form_parameters
 						check non_empty_form_data: not l_form_data.is_empty end
-						if l_upload_data = Void and l_upload_filename = Void then
+						if l_upload_data = Void and l_upload_filepath = Void then
 							-- Send as form-urlencoded
 							if
 								l_headers.has_key ("Content-Type") and then
@@ -166,13 +166,13 @@ feature -- Execution
 
 						curl_easy.setopt_string (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_postfields, l_upload_data)
 						curl_easy.setopt_integer (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_postfieldsize, l_upload_data.count)
-					elseif l_upload_filename /= Void then
+					elseif l_upload_filepath /= Void then
 						check
 							post_or_put_request_method:	request_method.is_case_insensitive_equal ("POST")
 														or request_method.is_case_insensitive_equal ("PUT")
 						end
 
-						create l_upload_file.make (l_upload_filename)
+						create l_upload_file.make_with_path (l_upload_filepath)
 						if l_upload_file.exists and then l_upload_file.is_readable then
 							curl_easy.setopt_integer (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_upload, 1)
 
@@ -186,7 +186,7 @@ feature -- Execution
 							curl_easy.set_curl_function (l_custom_function)
 						end
 					else
-						check no_upload_data: l_upload_data = Void and l_upload_filename = Void end
+						check no_upload_data: l_upload_data = Void and l_upload_filepath = Void end
 					end
 				end -- ctx /= Void
 
@@ -388,7 +388,7 @@ feature {NONE} -- Implementation
 		end
 
 note
-	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
+	copyright: "2011-2013, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

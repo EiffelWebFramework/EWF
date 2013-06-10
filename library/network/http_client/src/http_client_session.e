@@ -97,7 +97,7 @@ feature -- Basic operation
 		deferred
 		end
 
-	post_file (a_path: READABLE_STRING_8; ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT; fn: detachable READABLE_STRING_8): HTTP_CLIENT_RESPONSE
+	post_file (a_path: READABLE_STRING_8; ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT; fn: detachable READABLE_STRING_GENERAL): HTTP_CLIENT_RESPONSE
 			-- Response for POST request based on Current, `a_path' and `ctx'
 			-- with uploaded data file `fn'	
 		deferred
@@ -109,7 +109,7 @@ feature -- Basic operation
 		deferred
 		end
 
-	put_file (a_path: READABLE_STRING_8; ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT; fn: detachable READABLE_STRING_8): HTTP_CLIENT_RESPONSE
+	put_file (a_path: READABLE_STRING_8; ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT; fn: detachable READABLE_STRING_GENERAL): HTTP_CLIENT_RESPONSE
 			-- Response for PUT request based on Current, `a_path' and `ctx'
 			-- with uploaded file `fn'	
 		deferred
@@ -281,7 +281,7 @@ feature -- Element change
 		end
 
 note
-	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
+	copyright: "2011-2013, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

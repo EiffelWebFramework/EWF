@@ -5,7 +5,7 @@ note
 					- headers
 					- query_parameters
 					- form parameters
-					- upload_data or upload_filename
+					- upload_data or upload_file
 				And in addition it has 
 					- credentials_required
 					- proxy
@@ -16,8 +16,8 @@ note
 				Warning: for now [2012-May], you can have only one of the following data
 						- form_parameters
 						- or upload_data 
-						- or upload_filename 
-						If you set more than one, the priority is then upload_data, then upload_filename, then form_parameters
+						- or upload_file 
+						If you set more than one, the priority is then upload_data, then upload_file, then form_parameters
 			]"
 	date: "$Date$"
 	revision: "$Revision$"
@@ -69,8 +69,19 @@ feature -- Access
 			-- Upload data
 			--| Note: make sure to precise the Content-Type header
 
-	upload_filename: detachable READABLE_STRING_8
+	upload_filename: detachable READABLE_STRING_32
 			-- Upload data read from `upload_filename'
+			--| Note: make sure to precise the Content-Type header
+		obsolete
+			"Use `upload_file' [2013-may]"
+		do
+			if attached upload_file as p then
+				Result := p.name
+			end
+		end
+
+	upload_file: detachable PATH
+			-- Upload data read from `upload_file'
 			--| Note: make sure to precise the Content-Type header
 
 	write_agent: detachable PROCEDURE [ANY, TUPLE [READABLE_STRING_8]]
@@ -95,9 +106,14 @@ feature -- Status report
 			Result := attached upload_data as d and then not d.is_empty
 		end
 
+	has_upload_file: BOOLEAN
+		do
+			Result := attached upload_file as fn and then not fn.is_empty
+		end
+
 	has_upload_filename: BOOLEAN
 		do
-			Result := attached upload_filename as fn and then not fn.is_empty
+			Result := has_upload_file
 		end
 
 	has_write_option: BOOLEAN
@@ -154,11 +170,22 @@ feature -- Element change
 			upload_data := a_data
 		end
 
-	set_upload_filename (a_fn: like upload_filename)
+	set_upload_file (a_fn: like upload_file)
+		require
+			has_no_upload_file: a_fn /= Void implies not has_upload_file
+		do
+			upload_file := a_fn
+		end
+
+	set_upload_filename (a_fn: detachable READABLE_STRING_GENERAL)
 		require
 			has_no_upload_filename: a_fn /= Void implies not has_upload_filename
 		do
-			upload_filename := a_fn
+			if a_fn = Void then
+				set_upload_file (Void)
+			else
+				set_upload_file (create {PATH}.make_from_string (a_fn))
+			end
 		end
 
 	set_write_agent (agt: like write_agent)
