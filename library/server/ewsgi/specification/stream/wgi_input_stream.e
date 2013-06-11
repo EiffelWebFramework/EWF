@@ -123,6 +123,54 @@ feature -- Input
 			character_read: not end_of_input implies last_appended_count > 0
 		end
 
+	append_to_file (a_file: FILE; nb: INTEGER)
+			-- Append at most `nb' characters read from input stream
+			-- to `a_file'
+			-- Set `last_appended_count' to the number of characters actually read.
+			-- (Note that even if at least `nb' characters are available
+			-- in the input stream, there is no guarantee that they
+			-- will all be read.)
+		require
+			is_open_read: is_open_read
+			not_end_of_input: not end_of_input
+			a_file_attached: a_file /= Void
+			a_file_is_open_write: a_file.is_open_write
+			nb_large_enough: nb > 0
+		local
+			s: like last_string
+			i, end_pos: INTEGER
+			l_count: INTEGER
+			n: INTEGER
+			l_remaining: INTEGER
+		do
+			from
+				n := nb.min (2_048)
+				l_remaining := nb - n
+			until
+				l_remaining = 0 or n = 0
+			loop
+				read_string (n)
+				s := last_string
+				a_file.put_string (s)
+				if end_of_input or s.count < n then
+					n := s.count
+						-- no more data
+					l_remaining := l_remaining - n
+					n := 0
+				else
+					n := s.count
+					l_remaining := l_remaining - n
+				end
+			end
+			last_appended_count := nb - l_remaining
+				-- Clean `last_string'
+			last_string.wipe_out
+		ensure
+			nb_char_read_large_enough: last_appended_count >= 0
+			nb_char_read_small_enough: last_appended_count <= nb
+			character_read: not end_of_input implies last_appended_count > 0
+		end
+
 feature -- Access
 
 	last_string: STRING_8
@@ -166,7 +214,7 @@ feature -- Status report
 		end
 
 note
-	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
+	copyright: "2011-2013, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software
