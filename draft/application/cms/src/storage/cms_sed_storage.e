@@ -259,7 +259,7 @@ feature -- Change: user_role
 
 feature -- Email		
 
-	save_email (a_email: CMS_EMAIL)
+	save_email (a_email: NOTIFICATION_EMAIL)
 		local
 			dn: STRING
 			fn: FILE_NAME

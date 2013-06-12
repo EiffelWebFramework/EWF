@@ -1,14 +1,14 @@
 note
-	description: "Summary description for {CMS_CHAIN_MAILER}."
+	description: "Summary description for {NOTIFICATION_CHAIN_MAILER}."
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
 class
-	CMS_CHAIN_MAILER
+	NOTIFICATION_CHAIN_MAILER
 
 inherit
-	CMS_MAILER
+	NOTIFICATION_MAILER
 
 create
 	make
@@ -22,9 +22,9 @@ feature {NONE} -- Initialization
 
 feature -- Access
 
-	active: CMS_MAILER
+	active: NOTIFICATION_MAILER
 
-	next: detachable CMS_MAILER
+	next: detachable NOTIFICATION_MAILER
 
 feature -- Status
 
@@ -45,7 +45,7 @@ feature -- Change
 
 feature -- Basic operation
 
-	process_email (a_email: CMS_EMAIL)
+	process_email (a_email: NOTIFICATION_EMAIL)
 		do
 			if active.is_available then
 				active.process_email (a_email)
