@@ -57,7 +57,7 @@ feature -- Access
 	auth_engine: CMS_AUTH_ENGINE
 			-- CMS Authentication engine
 
-	mailer: CMS_MAILER
+	mailer: NOTIFICATION_MAILER
 
 feature {NONE} -- Initialization		
 
@@ -115,12 +115,12 @@ feature {NONE} -- Initialization
 
 	build_mailer
 		local
-			ch_mailer: CMS_CHAIN_MAILER
+			ch_mailer: NOTIFICATION_CHAIN_MAILER
 			st_mailer: CMS_STORAGE_MAILER
 		do
 			create st_mailer.make (storage)
 			create ch_mailer.make (st_mailer)
-			ch_mailer.set_next (create {CMS_SENDMAIL_MAILER})
+			ch_mailer.set_next (create {NOTIFICATION_SENDMAIL_MAILER})
 			mailer := ch_mailer
 		end
 

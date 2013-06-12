@@ -413,7 +413,7 @@ feature -- Content type
 
 feature -- Notification
 
-	mailer: CMS_MAILER
+	mailer: NOTIFICATION_MAILER
 
 feature -- Core Execution
 
