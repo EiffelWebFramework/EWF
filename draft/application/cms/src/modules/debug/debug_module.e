@@ -13,6 +13,11 @@ inherit
 
 	CMS_HOOK_AUTO_REGISTER
 
+	SHARED_EXECUTION_ENVIRONMENT
+		export
+			{NONE} all
+		end
+
 create
 	make
 
@@ -68,22 +73,22 @@ feature -- Handler
 
 				if attached cms.configuration as cfg and then attached cfg.configuration_location as l_loc then
 					s.append ("<hr/>")
-					append_info_to ("Configuration file", l_loc, e, s)
+					append_info_to ("Configuration file", l_loc.name, e, s)
 				end
 
 				s.append ("<hr/>")
 
-				append_info_to ("Current dir", (create {EXECUTION_ENVIRONMENT}).current_working_directory, e, s)
+				append_info_to ("Current dir", execution_environment.current_working_path.utf_8_name, e, s)
 				append_info_to ("Base url", cms.base_url, e, s)
 				append_info_to ("Script url", cms.script_url, e, s)
 				s.append ("<hr/>")
-				append_info_to ("Dir", cms.site_dir, e, s)
-				append_info_to ("Var dir", cms.site_var_dir, e, s)
+				append_info_to ("Dir", cms.site_dir.utf_8_name, e, s)
+				append_info_to ("Var dir", cms.site_var_dir.utf_8_name, e, s)
 				s.append ("<hr/>")
 				append_info_to ("Theme", cms.theme_name, e, s)
-				append_info_to ("Theme location", cms.theme_resource_location, e, s)
+				append_info_to ("Theme location", cms.theme_resource_location.utf_8_name, e, s)
 				s.append ("<hr/>")
-				append_info_to ("Files location", cms.files_location, e, s)
+				append_info_to ("Files location", cms.files_location.utf_8_name, e, s)
 				s.append ("<hr/>")
 
 				append_info_to ("Url", e.url ("/", Void), e, s)

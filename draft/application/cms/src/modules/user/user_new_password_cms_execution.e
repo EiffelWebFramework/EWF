@@ -75,7 +75,7 @@ feature -- Execution
 
 	password_form_submit (fd: WSF_FORM_DATA; b: STRING)
 		local
-			e: detachable NOTIFICATION_EMAIL
+			e: detachable CMS_EMAIL
 			l_uuid: UUID
 		do
 			debug
@@ -144,7 +144,7 @@ feature -- Execution
 			Result := f
 		end
 
-	new_password_email (u: CMS_USER; a_mail_address: STRING; a_extra: READABLE_STRING_8): NOTIFICATION_EMAIL
+	new_password_email (u: CMS_USER; a_mail_address: STRING; a_extra: READABLE_STRING_8): CMS_EMAIL
 		local
 			b: STRING
 			opts: CMS_URL_API_OPTIONS

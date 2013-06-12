@@ -20,8 +20,8 @@ feature {NONE} -- Initialization
 
 	initialize
 		local
-			args: ARGUMENTS
-			cfg: detachable STRING
+			args: ARGUMENTS_32
+			cfg: detachable READABLE_STRING_32
 			i,n: INTEGER
 		do
 				--| Arguments
@@ -33,7 +33,7 @@ feature {NONE} -- Initialization
 				i > n or cfg /= Void
 			loop
 				if attached args.argument (i) as s then
-					if s.same_string ("--config") or s.same_string ("-c") then
+					if s.same_string_general ("--config") or s.same_string_general ("-c") then
 						if i < n then
 							cfg := args.argument (i + 1)
 						end
@@ -43,7 +43,7 @@ feature {NONE} -- Initialization
 			end
 			if cfg = Void then
 				if file_exists ("cms.ini") then
-					cfg := "cms.ini"
+					cfg := {STRING_32} "cms.ini"
 				end
 			end
 
@@ -55,7 +55,7 @@ feature {NONE} -- Initialization
 			launch_cms (cms_setup (cfg))
 		end
 
-	cms_setup (a_cfg_fn: detachable READABLE_STRING_8): CMS_CUSTOM_SETUP
+	cms_setup (a_cfg_fn: detachable READABLE_STRING_GENERAL): CMS_CUSTOM_SETUP
 		do
 			if a_cfg_fn /= Void then
 				create Result.make_from_file (a_cfg_fn)
@@ -124,11 +124,11 @@ feature -- Event
 
 feature -- Helper		
 
-	file_exists (fn: STRING): BOOLEAN
+	file_exists (fn: READABLE_STRING_GENERAL): BOOLEAN
 		local
 			f: RAW_FILE
 		do
-			create f.make (fn)
+			create f.make_with_name (fn)
 			Result := f.exists and then f.is_readable
 		end
 

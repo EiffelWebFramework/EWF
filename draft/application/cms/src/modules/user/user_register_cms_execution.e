@@ -73,7 +73,7 @@ feature -- Execution
 			b: STRING
 			u: detachable CMS_USER
 			up: detachable CMS_USER_PROFILE
-			e: detachable NOTIFICATION_EMAIL
+			e: detachable CMS_EMAIL
 			l_pass: detachable READABLE_STRING_32
 			l_uuid: UUID
 		do
@@ -174,7 +174,7 @@ feature -- Execution
 			Result := f
 		end
 
-	new_registration_email (a_mail_address: STRING; u: CMS_USER; a_password: detachable like {CMS_USER}.password; a_extra: READABLE_STRING_8): NOTIFICATION_EMAIL
+	new_registration_email (a_mail_address: STRING; u: CMS_USER; a_password: detachable like {CMS_USER}.password; a_extra: READABLE_STRING_8): CMS_EMAIL
 		require
 			has_clear_password: u.password /= Void or else a_password /= Void
 		local
@@ -202,7 +202,7 @@ feature -- Execution
 			create Result.make (service.site_email, a_mail_address, "Account details for " + u.name + " at " + service.site_name, b)
 		end
 
-	new_user_account_email (a_mail_address: STRING; u: CMS_USER): NOTIFICATION_EMAIL
+	new_user_account_email (a_mail_address: STRING; u: CMS_USER): CMS_EMAIL
 		local
 			b: STRING
 			opts: CMS_URL_API_OPTIONS

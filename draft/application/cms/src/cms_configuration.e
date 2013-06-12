@@ -7,6 +7,14 @@ note
 class
 	CMS_CONFIGURATION
 
+inherit
+	ANY
+
+	SHARED_EXECUTION_ENVIRONMENT
+		export
+			{NONE} all
+		end
+
 create
 	make,
 	make_from_file
@@ -15,16 +23,19 @@ feature {NONE} -- Initialization
 
 	make
 		do
-			create options.make (10)
+			create options.make_equal (10)
 			analyze
 		end
 
-	make_from_file (a_filename: READABLE_STRING_32)
+	make_from_file (a_filename: READABLE_STRING_GENERAL)
 			-- Initialize `Current'.
+		local
+			p: PATH
 		do
 			make
-			configuration_location := a_filename
-			import (a_filename)
+			create p.make_from_string (a_filename)
+			configuration_location := p
+			import_from_path (p)
 			analyze
 		end
 
@@ -38,52 +49,54 @@ feature {NONE} -- Initialization
 
 feature -- Access
 
-	configuration_location: detachable READABLE_STRING_8
+	configuration_location: detachable PATH
 
 	option (a_name: READABLE_STRING_GENERAL): detachable ANY
 		do
-			Result := options.item (a_name.as_string_8.as_lower)
+			Result := options.item (a_name)
 		end
 
-	options: HASH_TABLE [STRING, STRING]
+	options: STRING_TABLE [STRING_32]
 
 feature -- Conversion
 
 	append_to_string (s: STRING)
+		local
+			utf: UTF_CONVERTER
 		do
 			s.append ("Options:%N")
 			across
 				options as c
 			loop
-				s.append (c.key)
+				s.append (c.key.to_string_8)
 				s.append_character ('=')
-				s.append (c.key)
+				utf.string_32_into_utf_8_string_8 (c.item, s)
 				s.append_character ('%N')
 			end
 
 			s.append ("Specific:%N")
-			s.append ("root_location=" + root_location + "%N")
-			s.append ("var_location=" + var_location + "%N")
-			s.append ("files_location=" + files_location + "%N")
-			s.append ("themes_location=" + themes_location + "%N")
+			s.append ("root_location=" + root_location.utf_8_name + "%N")
+			s.append ("var_location=" + var_location.utf_8_name + "%N")
+			s.append ("files_location=" + files_location.utf_8_name + "%N")
+			s.append ("themes_location=" + themes_location.utf_8_name + "%N")
 		end
 
 feature -- Element change
 
-	set_option (a_name: READABLE_STRING_GENERAL; a_value: STRING)
+	set_option (a_name: READABLE_STRING_GENERAL; a_value: STRING_32)
 		do
 			options.force (a_value, a_name.as_string_8)
 		end
 
 feature -- Access
 
-	var_location: READABLE_STRING_8
+	var_location: PATH
 
-	root_location: READABLE_STRING_8
+	root_location: PATH
 
-	files_location: STRING
+	files_location: PATH
 
-	themes_location: STRING
+	themes_location: PATH
 
 	theme_name (dft: detachable like theme_name): READABLE_STRING_8
 		do
@@ -158,67 +171,63 @@ feature -- Change
 
 	get_var_location
 		local
-			res: STRING_32
+			utf: UTF_CONVERTER
 		do
 			if attached options.item ("var-dir") as s then
-				res := s
+				create var_location.make_from_string (utf.utf_8_string_8_to_escaped_string_32 (s))
 			else
-				res := execution_environment.current_working_directory
+				var_location := execution_environment.current_working_path
 			end
-			if res.ends_with ("/") then
-				res.remove_tail (1)
-			end
-			var_location := res
 		end
 
 	get_root_location
 		local
-			res: STRING_32
+			utf: UTF_CONVERTER
 		do
 			if attached options.item ("root-dir") as s then
-				res := s
+				create root_location.make_from_string (utf.utf_8_string_8_to_escaped_string_32 (s))
 			else
-				res := execution_environment.current_working_directory
+				root_location := execution_environment.current_working_path
 			end
-			if res.ends_with ("/") then
-				res.remove_tail (1)
-			end
-			root_location := res
 		end
 
 	get_files_location
+		local
+			utf: UTF_CONVERTER
 		do
 			if attached options.item ("files-dir") as s then
-				files_location := s
+				create files_location.make_from_string (utf.utf_8_string_8_to_escaped_string_32 (s))
 			else
-				files_location := "files"
+				create files_location.make_from_string ("files")
 			end
 		end
 
 	get_themes_location
 		local
-			dn: DIRECTORY_NAME
+			utf: UTF_CONVERTER
 		do
 			if attached options.item ("themes-dir") as s then
-				themes_location := s
+				create themes_location.make_from_string (utf.utf_8_string_8_to_escaped_string_32 (s))
 			else
-				create dn.make_from_string (root_location)
-				dn.extend ("themes")
-				themes_location := dn.string
+				themes_location := root_location.extended ("themes")
 			end
 		end
 
 feature {NONE} -- Implementation
 
-	import (a_filename: READABLE_STRING_32)
+	import_from_file (fn: READABLE_STRING_GENERAL)
+		do
+			import_from_path (create {PATH}.make_from_string (fn))
+		end
+
+	import_from_path (a_filename: PATH)
 			-- Import ini file content
 		local
 			f: PLAIN_TEXT_FILE
 			l,v: STRING_8
 			p: INTEGER
 		do
-			--FIXME: handle unicode filename here.
-			create f.make (a_filename)
+			create f.make_with_path (a_filename)
 			if f.exists and f.is_readable then
 				f.open_read
 				from
@@ -241,7 +250,7 @@ feature {NONE} -- Implementation
 								l.right_adjust
 
 								if l.is_case_insensitive_equal ("@include") then
-									import (resolved_string (v))
+									import_from_file (resolved_string (v))
 								else
 									set_option (l.as_lower, resolved_string (v))
 								end
@@ -256,12 +265,7 @@ feature {NONE} -- Implementation
 
 feature {NONE} -- Environment
 
-	Execution_environment: EXECUTION_ENVIRONMENT
-		once
-			create Result
-		end
-
-	resolved_string	(s: READABLE_STRING_8): STRING
+	resolved_string	(s: READABLE_STRING_8): STRING_32
 			-- Resolved `s' using `options' or else environment variables.
 		local
 			i,n,b,e: INTEGER
@@ -280,9 +284,13 @@ feature {NONE} -- Environment
 					if e > 0 then
 						k := s.substring (b, e)
 						if attached option (k) as v then
-							Result.append (v.out)
+							if attached {READABLE_STRING_32} v as s32 then
+								Result.append (s32)
+							else
+								Result.append (v.out)
+							end
 							i := e + 1
-						elseif attached execution_environment.get (k) as v then
+						elseif attached execution_environment.item (k) as v then
 							Result.append (v)
 							i := e + 1
 						else

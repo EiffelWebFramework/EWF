@@ -110,7 +110,6 @@ feature {NONE} -- Initialization
 		local
 --			h: CMS_HANDLER
 			file_hdl: CMS_FILE_SYSTEM_HANDLER
-			dn: DIRECTORY_NAME
 		do
 			create router.make (10)
 			router.set_base_url (base_url)
@@ -118,13 +117,12 @@ feature {NONE} -- Initialization
 			router.map (create {WSF_URI_MAPPING}.make ("/", create {CMS_HANDLER}.make (agent handle_home)))
 			router.map (create {WSF_URI_MAPPING}.make ("/favicon.ico", create {CMS_HANDLER}.make (agent handle_favicon)))
 
-			create file_hdl.make (files_location)
+			create file_hdl.make_with_path (files_location)
 			file_hdl.disable_index
 			file_hdl.set_max_age (8*60*60)
 			router.map (create {WSF_STARTS_WITH_MAPPING}.make ("/files/", file_hdl))
 
-			create dn.make_from_string (theme_resource_location)
-			create file_hdl.make (theme_resource_location)
+			create file_hdl.make_with_path (theme_resource_location)
 			file_hdl.set_max_age (8*60*60)
 			router.map (create {WSF_STARTS_WITH_MAPPING}.make ("/theme/", file_hdl))
 		end
@@ -257,25 +255,20 @@ feature -- Router
 
 	site_url: READABLE_STRING_8
 
-	site_dir: READABLE_STRING_8
+	site_dir: PATH
 
-	site_var_dir: READABLE_STRING_8
+	site_var_dir: PATH
 
-	files_location: READABLE_STRING_8
+	files_location: PATH
 
-	themes_location: READABLE_STRING_8
+	themes_location: PATH
 
 	compute_theme_resource_location
-		local
-			dn: DIRECTORY_NAME
 		do
-			create dn.make_from_string (themes_location)
-			dn.extend (theme_name)
-			dn.extend ("res")
-			theme_resource_location := dn.string
+			theme_resource_location := themes_location.extended (theme_name).extended ("res")
 		end
 
-	theme_resource_location: READABLE_STRING_8
+	theme_resource_location: PATH
 
 	theme_name: READABLE_STRING_32
 
@@ -420,11 +413,8 @@ feature -- Core Execution
 	handle_favicon (req: WSF_REQUEST; res: WSF_RESPONSE)
 		local
 			fres: WSF_FILE_RESPONSE
-			fn: FILE_NAME
 		do
-			create fn.make_from_string (theme_resource_location)
-			fn.set_file_name ("favicon.ico")
-			create fres.make (fn.string)
+			create fres.make_with_path (theme_resource_location.extended ("favicon.ico"))
 			fres.set_expires_in_seconds (7 * 24 * 60 * 60) -- 7 jours
 			res.send (fres)
 		end

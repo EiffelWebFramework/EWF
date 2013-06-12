@@ -26,7 +26,7 @@ feature {NONE} -- Initialization
 			default_create
 		end
 
-	make_from_file (fn: READABLE_STRING_8)
+	make_from_file (fn: READABLE_STRING_GENERAL)
 		local
 			cfg: CMS_CONFIGURATION
 		do
@@ -83,29 +83,27 @@ feature {NONE} -- Initialization
 
 	build_storage
 		local
-			dn: DIRECTORY_NAME
+			dn: PATH
 		do
 			if attached configuration as cfg and then attached cfg.var_location as l_site_var_dir then
-				create dn.make_from_string (l_site_var_dir)
+				dn := l_site_var_dir
 			else
-				create dn.make
+				create dn.make_current
 			end
-			dn.extend ("_storage_")
-			create {CMS_SED_STORAGE} storage.make (dn.string)
+			create {CMS_SED_STORAGE} storage.make (dn.extended ("_storage_").name)
 		end
 
 	build_session_manager
 		local
-			dn: DIRECTORY_NAME
+			dn: PATH
 		do
 			if attached configuration as cfg and then attached cfg.var_location as l_site_var_dir then
-				create dn.make_from_string (l_site_var_dir)
+				dn := l_site_var_dir
 			else
-				create dn.make
+				create dn.make_empty
 			end
-			dn.extend ("_storage_")
-			dn.extend ("_sessions_")
-			create {WSF_FS_SESSION_MANAGER} session_manager.make_with_folder (dn.string)
+			dn := dn.extended ("_storage_").extended ("_sessions_")
+			create {WSF_FS_SESSION_MANAGER} session_manager.make_with_folder (dn.name)
 		end
 
 	build_auth_engine

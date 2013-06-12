@@ -1,6 +1,6 @@
 note
 	description : "[
-			Component representing an email for the CMS
+			Component representing an email
 			]"
 	author      : "$Author$"
 	date        : "$Date$"
