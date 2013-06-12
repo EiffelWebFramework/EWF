@@ -24,7 +24,7 @@
 		<library name="uri_template" location="..\..\..\library\text\parser\uri_template\uri_template.ecf"/>
 		<library name="wsf" location="..\..\..\library\server\wsf\wsf.ecf" readonly="false"/>
 		<library name="wsf_session" location="..\..\..\library\server\wsf\wsf_session.ecf" readonly="false"/>
-		<library name="notification" location="..\..\..\library\runtime\process\notification\notification.ecf"/>
+		<library name="notification_email" location="..\..\..\library\runtime\process\notification_email\notification_email.ecf"/>
 		<cluster name="src" location=".\src\" recursive="true">
 		</cluster>
 	</target>

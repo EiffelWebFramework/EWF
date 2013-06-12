@@ -23,7 +23,7 @@
 		<library name="wsf" location="..\..\..\library\server\wsf\wsf-safe.ecf" readonly="false"/>
 		<library name="wsf_html" location="..\..\..\library\server\wsf_html\wsf_html-safe.ecf" readonly="false"/>
 		<library name="wsf_session" location="..\..\..\library\server\wsf\wsf_session-safe.ecf" readonly="false"/>
-		<library name="notification" location="..\..\..\library\runtime\process\notification\notification-safe.ecf"/>
+		<library name="notification_email" location="..\..\..\library\runtime\process\notification_email\notification_email-safe.ecf"/>
 		<cluster name="src" location=".\src\" recursive="true"/>
 	</target>
 </system>
