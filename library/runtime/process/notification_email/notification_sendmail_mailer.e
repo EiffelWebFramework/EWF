@@ -1,16 +1,16 @@
 note
 	description : "[
-			CMS_MAILER using sendmail as mailtool
+			NOTIFICATION_MAILER using sendmail as mailtool
 			]"
 	author      : "$Author$"
 	date        : "$Date$"
 	revision    : "$Revision$"
 
 class
-	CMS_SENDMAIL_MAILER
+	NOTIFICATION_SENDMAIL_MAILER
 
 inherit
-	CMS_EXTERNAL_MAILER
+	NOTIFICATION_EXTERNAL_MAILER
 		redefine
 			default_create
 		end

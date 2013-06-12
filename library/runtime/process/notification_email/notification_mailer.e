@@ -7,7 +7,7 @@ note
 	revision    : "$Revision$"
 
 deferred class
-	CMS_MAILER
+	NOTIFICATION_MAILER
 
 feature -- Status
 
@@ -18,7 +18,7 @@ feature -- Status
 
 feature -- Basic operation
 
-	process_emails (lst: ITERABLE [CMS_EMAIL])
+	process_emails (lst: ITERABLE [NOTIFICATION_EMAIL])
 			-- Process set of emails `lst'
 		require
 			is_available
@@ -30,7 +30,7 @@ feature -- Basic operation
 			end
 		end
 
-	safe_process_email (a_email: CMS_EMAIL)
+	safe_process_email (a_email: NOTIFICATION_EMAIL)
 			-- Same as `process_email', but include the check of `is_available'
 		do
 			if is_available then
@@ -38,7 +38,7 @@ feature -- Basic operation
 			end
 		end
 
-	process_email (a_email: CMS_EMAIL)
+	process_email (a_email: NOTIFICATION_EMAIL)
 			-- Process the sending of `a_email'
 		require
 			is_available

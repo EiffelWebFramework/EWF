@@ -7,7 +7,7 @@ note
 	revision    : "$Revision$"
 
 class
-	CMS_EMAIL
+	NOTIFICATION_EMAIL
 
 create
 	make

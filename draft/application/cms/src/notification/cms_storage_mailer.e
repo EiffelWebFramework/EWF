@@ -8,7 +8,7 @@ class
 	CMS_STORAGE_MAILER
 
 inherit
-	CMS_MAILER
+	NOTIFICATION_MAILER
 
 create
 	make
@@ -30,7 +30,7 @@ feature -- Status
 
 feature -- Basic operation
 
-	process_email (a_email: CMS_EMAIL)
+	process_email (a_email: NOTIFICATION_EMAIL)
 		do
 			storage.save_email (a_email)
 		end

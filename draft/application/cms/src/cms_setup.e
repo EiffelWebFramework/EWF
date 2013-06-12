@@ -32,7 +32,7 @@ feature -- Access
 		deferred
 		end
 
-	mailer: CMS_MAILER
+	mailer: NOTIFICATION_MAILER
 			-- CMS email engine
 		deferred
 		end

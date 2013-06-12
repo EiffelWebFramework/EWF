@@ -5,10 +5,10 @@ note
 	revision    : "$Revision$"
 
 class
-	CMS_EXTERNAL_MAILER
+	NOTIFICATION_EXTERNAL_MAILER
 
 inherit
-	CMS_MAILER
+	NOTIFICATION_MAILER
 
 --	SHARED_EXECUTION_ENVIRONMENT
 
@@ -76,7 +76,7 @@ feature -- Change
 
 feature -- Basic operation
 
-	process_email (a_email: CMS_EMAIL)
+	process_email (a_email: NOTIFICATION_EMAIL)
 		local
 			l_factory: PROCESS_FACTORY
 			args: like arguments
