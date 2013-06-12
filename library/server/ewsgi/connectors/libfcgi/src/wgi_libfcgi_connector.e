@@ -55,7 +55,7 @@ feature -- Server
 
 feature -- Execution
 
-	process_fcgi_request (vars: HASH_TABLE [STRING, STRING]; a_input: like input; a_output: like output)
+	process_fcgi_request (vars: STRING_TABLE [READABLE_STRING_8]; a_input: like input; a_output: like output)
 		local
 			req: WGI_REQUEST_FROM_TABLE
 			res: detachable WGI_RESPONSE_STREAM
@@ -82,8 +82,10 @@ feature -- Execution
 				end
 			end
 		rescue
-			rescued := True
-			retry
+			if not rescued then
+				rescued := True
+				retry
+			end
 		end
 
 feature -- Input/Output

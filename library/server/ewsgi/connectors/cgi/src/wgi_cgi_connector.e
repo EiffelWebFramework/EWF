@@ -61,8 +61,10 @@ feature -- Execution
 				end
 			end
 		rescue
-			rescued := True
-			retry
+			if not rescued then
+				rescued := True
+				retry
+			end
 		end
 
 note
