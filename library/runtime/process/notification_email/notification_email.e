@@ -55,17 +55,24 @@ feature -- Conversion
 	message: STRING_8
 		do
 			Result := header
-			Result.append ("%N")
+			Result.append_character ('%N')
 			Result.append (body)
-			Result.append ("%N")
-			Result.append ("%N")
+			Result.append_character ('%N')
+			Result.append_character ('%N')
 		end
 
 	header: STRING_8
+		local
+			hdate: HTTP_DATE
 		do
 			create Result.make (20)
-			Result.append ("From: " + from_address + "%N")
-			Result.append ("Date: " + date_to_rfc1123_http_date_format (date) + " GMT%N")
+			Result.append ("From: ")
+			Result.append (from_address)
+			Result.append_character ('%N')
+			Result.append ("Date: ")
+			create hdate.make_from_date_time (date)
+			hdate.append_to_rfc1123_string (Result)
+			Result.append (" GMT%N")
 			Result.append ("To: ")
 			across
 				to_addresses as c
@@ -74,24 +81,24 @@ feature -- Conversion
 				Result.append_character (';')
 			end
 			Result.append_character ('%N')
-			Result.append ("Subject: " + subject + "%N")
+			Result.append ("Subject: ")
+			Result.append (subject)
+			Result.append_character ('%N')
 		ensure
 			Result.ends_with ("%N")
-		end
-
-
-feature {NONE} -- Implementation
-
-	date_to_rfc1123_http_date_format (dt: DATE_TIME): STRING_8
-			-- String representation of `dt' using the RFC 1123
-		local
-			d: HTTP_DATE
-		do
-			create d.make_from_date_time (dt)
-			Result := d.rfc1123_string
 		end
 
 invariant
 --	invariant_clause: True
 
+note
+	copyright: "2011-2013, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
+	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
+	source: "[
+			Eiffel Software
+			5949 Hollister Ave., Goleta, CA 93117 USA
+			Telephone 805-685-1006, Fax 805-685-6869
+			Website http://www.eiffel.com
+			Customer support http://support.eiffel.com
+		]"
 end

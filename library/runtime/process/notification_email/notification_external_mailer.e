@@ -1,8 +1,11 @@
 note
-	description : "Objects that ..."
-	author      : "$Author$"
-	date        : "$Date$"
-	revision    : "$Revision$"
+	description: "[
+			Component responsible to send email using an external mailer
+			i.e: an external tool such as sendmail or a script, ...
+			]"
+	author: "$Author$"
+	date: "$Date$"
+	revision: "$Revision$"
 
 class
 	NOTIFICATION_EXTERNAL_MAILER
@@ -10,27 +13,30 @@ class
 inherit
 	NOTIFICATION_MAILER
 
---	SHARED_EXECUTION_ENVIRONMENT
+	SHARED_EXECUTION_ENVIRONMENT
+		export
+			{NONE} all
+		end
 
 create
 	make
 
 feature {NONE} -- Initialization
 
-	make (a_exe: like executable_path; args: detachable ITERABLE [READABLE_STRING_8])
+	make (a_exe: READABLE_STRING_GENERAL; args: detachable ITERABLE [READABLE_STRING_GENERAL])
 			-- Initialize `Current'.
 		do
 			set_parameters (a_exe, args)
 		end
 
-	executable_path: READABLE_STRING_8
+	executable_path: PATH
 
-	arguments: detachable ARRAYED_LIST [STRING_8]
+	arguments: detachable ARRAYED_LIST [READABLE_STRING_GENERAL]
 
 	stdin_mode_set: BOOLEAN
 			-- Use `stdin' to pass email message, rather than using local file?
 
-	stdin_termination_sequence: detachable STRING
+	stdin_termination_sequence: detachable READABLE_STRING_8
 			-- Termination sequence for the stdin mode
 			--| If any, this tells the executable all the data has been provided
 			--| For instance, using sendmail, you should have "%N.%N%N"
@@ -41,18 +47,18 @@ feature -- Status
 		local
 			f: RAW_FILE
 		do
-			create f.make (executable_path)
+			create f.make_with_path (executable_path)
 			Result := f.exists
 		end
 
 feature -- Change
 
-	set_parameters (cmd: like executable_path; args: detachable ITERABLE [READABLE_STRING_8])
+	set_parameters (cmd: READABLE_STRING_GENERAL; args: detachable ITERABLE [READABLE_STRING_GENERAL])
 			-- Set parameters `executable_path' and associated `arguments'
 		local
 			l_args: like arguments
 		do
-			executable_path := cmd
+			create executable_path.make_from_string (cmd)
 			if args = Void then
 				arguments := Void
 			else
@@ -86,7 +92,7 @@ feature -- Basic operation
 			if retried = 0 then
 				create l_factory
 				if stdin_mode_set then
-					p := l_factory.process_launcher (executable_path, arguments, Void)
+					p := l_factory.process_launcher (executable_path.name, arguments, Void)
 					p.set_hidden (True)
 					p.set_separate_console (False)
 
@@ -110,7 +116,7 @@ feature -- Basic operation
 							args.force (f.name)
 						end
 					end
-					p := l_factory.process_launcher (executable_path, args, Void)
+					p := l_factory.process_launcher (executable_path.name, args, Void)
 					p.set_hidden (True)
 					p.set_separate_console (False)
 
@@ -140,34 +146,36 @@ feature -- Basic operation
 
 feature {NONE} -- Implementation
 
-	new_temporary_file (a_extension: detachable STRING_8): RAW_FILE
+	new_temporary_file (a_extension: detachable READABLE_STRING_8): RAW_FILE
 			-- Create file with temporary name.
 			-- With concurrent execution, noting ensures that {FILE_NAME}.make_temporary_name is unique
 			-- So using `a_extension' may help
 		local
-			fn: FILE_NAME
-			s: like {FILE_NAME}.string
+			bn: STRING_32
+			fn: PATH
+			s: STRING_32
 			f: detachable like new_temporary_file
 			i: INTEGER
 		do
 				-- With concurrent execution, nothing ensures that {FILE_NAME}.make_temporary_name is unique
 				-- So let's try to find
 			from
+				create bn.make_from_string_general ((create {FILE_NAME}.make_temporary_name).string)
+				create s.make_empty
 			until
 				f /= Void or i > 1000
 			loop
-				create fn.make_temporary_name
-				s := fn.string
+				create fn.make_from_string (bn)
+				s.make_empty
 				if i > 0 then
 					s.append_character ('-')
 					s.append_integer (i)
-					create fn.make_from_string (s)
+					fn := fn.appended (s)
 				end
 				if a_extension /= Void then
-					fn.add_extension (a_extension)
+					fn := fn.appended_with_extension (a_extension)
 				end
-				s := fn.string
-				create f.make (fn.string)
+				create f.make_with_path (fn)
 				if f.exists then
 					i := i + 1
 					f := Void
@@ -185,13 +193,16 @@ feature {NONE} -- Implementation
 			result_creatable: Result.is_creatable
 		end
 
-feature {NONE} -- Environment
-
-	Execution_environment: EXECUTION_ENVIRONMENT
-		once
-			create Result
-		end
-
 invariant
 
+note
+	copyright: "2011-2013, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
+	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
+	source: "[
+			Eiffel Software
+			5949 Hollister Ave., Goleta, CA 93117 USA
+			Telephone 805-685-1006, Fax 805-685-6869
+			Website http://www.eiffel.com
+			Customer support http://support.eiffel.com
+		]"
 end
