@@ -51,6 +51,7 @@
 		<library name="precomp_wsf" location="..\precomp\wsf-safe.ecf" readonly="false"/>
 		<library name="precomp_wsf-scoop-safe" location="..\precomp\wsf-scoop-safe.ecf" readonly="false"/>
 		<library name="wizard" location="..\tools\ise_wizard\ewf_ise_wizard-safe.ecf" readonly="false"/>
+		<library name="notification_email" location="..\library\runtime\process\notification_email\notification_email-safe.ecf" readonly="false"/>
 	</target>
 	<target name="all_windows" extends="all">
 		<description>Compiling as Windows , on other platforms than Windows</description>

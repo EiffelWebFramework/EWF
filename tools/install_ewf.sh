@@ -79,7 +79,9 @@ COPYCMD $TMP_DIR/library/security/openid	$TMP_CONTRIB_DIR/library/security/openi
 echo Install library: uri_template
 mkdir -p $TMP_CONTRIB_DIR/library/text/parser
 COPYCMD $TMP_DIR/library/text/parser/uri_template $TMP_CONTRIB_DIR/library/text/parser/uri_template
-
+echo Install library: notification_email
+mkdir -p $TMP_CONTRIB_DIR/library/runtime/process
+COPYCMD $TMP_DIR/library/runtime/process/notification_email $TMP_CONTRIB_DIR/library/runtime/process/notification_email
 echo Install contrib library: nino
 mkdir -p $TMP_CONTRIB_DIR/library/network/server
 COPYCMD $TMP_DIR/contrib/library/network/server/nino	$TMP_CONTRIB_DIR/library/network/server/nino
