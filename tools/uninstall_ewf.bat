@@ -60,6 +60,8 @@ echo Uninstall library: security\openid
 %RDCMD% %TMP_CONTRIB_DIR%\library\security\openid
 echo Uninstall library: uri_template
 %RDCMD% %TMP_CONTRIB_DIR%\library\text\parser\uri_template
+echo Uninstall library: runtime\process\notification_email
+%RDCMD% %TMP_CONTRIB_DIR%\library\runtime\process\notification_email
 
 echo Uninstall contrib library: nino
 %RDCMD% %TMP_CONTRIB_DIR%\library\network\server\nino
