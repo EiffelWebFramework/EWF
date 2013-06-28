@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<system xmlns="http://www.eiffel.com/developers/xml/configuration-1-11-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eiffel.com/developers/xml/configuration-1-11-0 http://www.eiffel.com/developers/xml/configuration-1-11-0.xsd" name="all" uuid="1172C52C-6979-4293-8F01-80FADA5A2B69">
+<system xmlns="http://www.eiffel.com/developers/xml/configuration-1-10-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eiffel.com/developers/xml/configuration-1-10-0 http://www.eiffel.com/developers/xml/configuration-1-10-0.xsd" name="all" uuid="1172C52C-6979-4293-8F01-80FADA5A2B69">
 	<description>Integration project including many lib</description>
 	<target name="all">
 		<root all_classes="true"/>
@@ -8,7 +8,7 @@
 			<exclude>/EIFGENs$</exclude>
 			<exclude>/.svn$</exclude>
 		</file_rule>
-		<option warning="true" full_class_checking="true" is_attached_by_default="true" void_safety="transitional" syntax="standard">
+		<option warning="true" full_class_checking="true" is_attached_by_default="true" void_safety="all" syntax="standard">
 		</option>
 		<library name="atom" location="..\draft\library\protocol\syndication\atom\atom-safe.ecf" readonly="false"/>
 		<library name="client" location="..\examples\restbucksCRUD\client\client-safe.ecf" readonly="false"/>
@@ -26,7 +26,6 @@
 		<library name="demo-1" location="..\library\security\openid\consumer\demo\demo-safe.ecf" readonly="false"/>
 		<library name="encoder" location="..\library\text\encoder\encoder-safe.ecf" readonly="false"/>
 		<library name="error" location="..\library\utility\general\error\error-safe.ecf" readonly="false"/>
-		<library name="ewf_support" location="..\library\server\ewf_support\ewf_support-safe.ecf" readonly="false"/>
 		<library name="ewsgi" location="..\library\server\ewsgi\ewsgi-safe.ecf" readonly="false"/>
 		<library name="ewsgi_spec" location="..\library\server\ewsgi\ewsgi_spec-safe.ecf" readonly="false"/>
 		<library name="filter" location="..\examples\filter\filter-safe.ecf" readonly="false"/>
@@ -37,6 +36,7 @@
 		<library name="json" location="..\contrib\library\text\parser\json\library\json-safe.ecf" readonly="false"/>
 		<library name="libfcgi" location="..\library\server\libfcgi\libfcgi-safe.ecf" readonly="false"/>
 		<library name="nino" location="..\contrib\library\network\server\nino\nino-safe.ecf" readonly="false"/>
+		<library name="notification_email" location="..\library\runtime\process\notification_email\notification_email-safe.ecf" readonly="false"/>
 		<library name="oauth" location="..\draft\library\security\oauth\oauth-safe.ecf" readonly="false"/>
 		<library name="openid" location="..\library\security\openid\consumer\openid-safe.ecf" readonly="false"/>
 		<library name="precomp_wsf" location="..\precomp\wsf-safe.ecf" readonly="false"/>
@@ -57,7 +57,6 @@
 		<library name="wsf_openshift" location="..\library\server\wsf\connector\openshift-safe.ecf" readonly="false"/>
 		<library name="wsf_router_context" location="..\library\server\wsf\wsf_router_context-safe.ecf" readonly="false"/>
 		<library name="wsf_session" location="..\library\server\wsf\wsf_session-safe.ecf" readonly="false"/>
-		<library name="notification_email" location="..\library\runtime\process\notification_email\notification_email-safe.ecf" readonly="false"/>
 	</target>
 	<target name="all_windows" extends="all">
 		<description>Compiling as Windows , on other platforms than Windows</description>
