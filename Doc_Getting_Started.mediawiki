@@ -1,1 +1,24 @@
+Menu :: [[Doc_Getting_Started|Getting Started]] :: [[Doc_Community|Community]]
+
 = Getting Started =
+This page will help you to get started with EWF. We will first see how to install EWF and then how to compile and run the venerable Hello World example.
+
+== Installation ==
+=== EiffelStudio 7.2 ===
+EWF is already included in EiffelStudio 7.2: you don't have to do anything in this case! This is the recommanded solution if you are a new developer or are new to Eiffel.
+
+=== Other EiffelStudio versions ===
+If you have another version of EiffelStudio than 7.2, you have to
+
+* dowload EWF
+* create a directory where you will put your custum Eiffel libraries
+* extract EWF in the newly created directory
+* define the environment variable EIFFEL_LIBRARY to point to the newly created directory
+
+=== Source code ===
+The source code is available on Github. You can get it by running the command:
+
+:    git clone git://github.com/EiffelWebFramework/EWF.git
+
+
+
