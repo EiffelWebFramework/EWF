@@ -30,7 +30,6 @@ Once the project is compiled, we will adapt the root class to point to port numb
 
 To do this, we will redefine the feature initialize as follows:
 
-<code lang="eiffel">
   class
   	APPLICATION
   
@@ -51,7 +50,7 @@ To do this, we will redefine the feature initialize as follows:
   			set_service_option ("port", 9090)
   		end
   end
-</code>
+
 
 After one more compile, you can now launch the application and point your browser to [http://localhost:9090]. 
 You should now see a simple page with Hello World.
