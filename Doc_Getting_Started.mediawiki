@@ -31,26 +31,26 @@ Once the project is compiled, we will adapt the root class to point to port numb
 To do this, we will redefine the feature initialize as follows:
 
 <code lang="eiffel">
-class
-	APPLICATION
-
-inherit
-	WSF_DEFAULT_SERVICE
-		redefine
-			initialize
-		end
-
-create
-	make_and_launch
-
-feature {NONE} -- Initialization
-
-	initialize
-			-- Initialize current service
-		do
-			set_service_option ("port", 9090)
-		end
-end
+  class
+  	APPLICATION
+  
+  inherit
+  	WSF_DEFAULT_SERVICE
+  		redefine
+  			initialize
+  		end
+  
+  create
+  	make_and_launch
+  
+  feature {NONE} -- Initialization
+  
+  	initialize
+  			-- Initialize current service
+  		do
+  			set_service_option ("port", 9090)
+  		end
+  end
 </code>
 
 After one more compile, you can now launch the application and point your browser to [http://localhost:9090]. 
