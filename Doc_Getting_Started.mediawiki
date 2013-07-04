@@ -30,6 +30,7 @@ Once the project is compiled, we will adapt the root class to point to port numb
 
 To do this, we will redefine the feature initialize as follows:
 
+  
   class
   	APPLICATION
   
