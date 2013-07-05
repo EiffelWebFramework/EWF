@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<system xmlns="http://www.eiffel.com/developers/xml/configuration-1-8-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eiffel.com/developers/xml/configuration-1-8-0 http://www.eiffel.com/developers/xml/configuration-1-8-0.xsd" name="gewf" uuid="2D4957D5-77D3-4EC7-BF80-E4E6AC7A3EF3">
+	<target name="gewf">
+		<root class="GEWF" feature="make"/>
+		<file_rule>
+			<exclude>/.git$</exclude>
+			<exclude>/EIFGENs$</exclude>
+			<exclude>/.svn$</exclude>
+		</file_rule>
+		<option warning="true" full_class_checking="true" is_attached_by_default="true" void_safety="all" syntax="standard">
+		</option>
+		<setting name="concurrency" value="none"/>
+		<library name="base" location="$ISE_LIBRARY/library/base/base-safe.ecf"/>
+		<cluster name="src" location="src" recursive="true"/>
+	</target>
+</system>
