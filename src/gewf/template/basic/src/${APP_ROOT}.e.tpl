@@ -6,7 +6,7 @@ note
 	revision: "$Revision$"
 
 class
-	APPLICATION
+	${APP_ROOT}
 
 inherit
 	WSF_LAUNCHABLE_SERVICE
@@ -34,7 +34,6 @@ feature {NONE} -- Initialization
 	setup_router
 			-- Setup `router'
 		local
-			doc: WSF_ROUTER_SELF_DOCUMENTATION_HANDLER
 			fhdl: WSF_FILE_SYSTEM_HANDLER
 		do
 			router.handle_with_request_methods ("/doc", create {WSF_ROUTER_SELF_DOCUMENTATION_HANDLER}.make (router), router.methods_GET)
