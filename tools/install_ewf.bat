@@ -87,6 +87,11 @@ echo Install library: openid
 echo Install library: uri_template
 %COPYCMD% %TMP_DIR%\library\text\parser\uri_template %TMP_CONTRIB_DIR%\library\text\parser\uri_template
 
+echo Install library: notification_email
+%SAFE_MD% %TMP_CONTRIB_DIR%\library\runtime
+%SAFE_MD% %TMP_CONTRIB_DIR%\library\runtime\process
+%COPYCMD% %TMP_DIR%\library\runtime\process\notification_email %TMP_CONTRIB_DIR%\library\runtime\process\notification_email
+
 echo Install contrib library: nino
 %COPYCMD% %TMP_DIR%\contrib\library\network\server\nino	%TMP_CONTRIB_DIR%\library\network\server\nino
 rem remove fonts folder from nino examples

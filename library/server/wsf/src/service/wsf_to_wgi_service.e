@@ -42,6 +42,9 @@ feature {WGI_CONNECTOR} -- Implementation: Execution
 			w_req.destroy
 		rescue
 			if w_res /= Void then
+				if not (w_res.status_committed or w_res.header_committed) then
+					w_res.set_status_code ({HTTP_STATUS_CODE}.internal_server_error)
+				end
 				w_res.flush
 			end
 			if w_req /= Void then

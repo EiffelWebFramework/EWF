@@ -36,17 +36,17 @@ feature -- Access
 
 feature -- Status report
 
-	debug_output: STRING
+	debug_output: STRING_32
 			-- String that should be displayed in debugger to represent `Current'.
 		do
 			Result := Precursor
 			if
 				exists and then
-				attached tmp_name as n
+				attached tmp_path as p
 			then
 				Result.append_character (' ')
 				Result.append_character ('%"')
-				Result.append (n)
+				Result.append (p.name)
 				Result.append_character ('%"')
 			end
 			Result.append (" filename=%"")
@@ -108,13 +108,55 @@ feature -- Access: Uploaded File
 	size: INTEGER
 			-- Size of uploaded file
 
-	tmp_name: detachable STRING
+	tmp_path: detachable PATH
 			-- Filename of tmp file
+
+	tmp_name: detachable READABLE_STRING_GENERAL
+		do
+			if attached tmp_path as p then
+				Result := p.name
+			end
+		end
 
 	tmp_basename: detachable STRING
 			-- Basename of tmp file
 
 feature -- Conversion
+
+	append_content_to_string (a_target: STRING)
+			-- Append the content of the uploaded file to `a_target'.
+		local
+			f: RAW_FILE
+			s: STRING
+			done: BOOLEAN
+			retried: BOOLEAN
+		do
+			if not retried and attached tmp_name as fn then
+				create f.make_with_name (fn)
+				if f.exists then
+					f.open_read
+					from
+					until
+						done
+					loop
+						f.read_stream_thread_aware (1_024)
+						s := f.last_string
+						if s.is_empty then
+							done := True
+						else
+							a_target.append (s)
+							done := f.exhausted or f.end_of_file
+						end
+					end
+					f.close
+				end
+			end
+		rescue
+			retried := True
+			retry
+		end
+
+feature -- Implementation		
 
 	safe_filename: STRING
 		local
@@ -202,7 +244,7 @@ feature -- Conversion
 
 feature -- Basic operation
 
-	move_to (a_destination: STRING): BOOLEAN
+	move_to (a_destination: READABLE_STRING_GENERAL): BOOLEAN
 			-- Move current uploaded file to `a_destination'
 			--| Violates CQS principle.
 		require
@@ -211,10 +253,10 @@ feature -- Basic operation
 		local
 			f: RAW_FILE
 		do
-			if attached tmp_name as n then
-				create f.make (n)
+			if attached tmp_path as p then
+				create f.make_with_path (p)
 				if f.exists then
-					f.change_name (a_destination)
+					f.rename_file (a_destination)
 					Result := True
 				end
 			end
@@ -239,8 +281,8 @@ feature --  Status
 		local
 			f: PLAIN_TEXT_FILE
 		do
-			if attached tmp_name as n then
-				create f.make (n)
+			if attached tmp_path as p then
+				create f.make_with_path (p)
 				Result := f.exists
 			end
 		end
@@ -253,10 +295,19 @@ feature -- Element change
 			error := e
 		end
 
+	set_tmp_path (p: like tmp_path)
+		do
+			tmp_path := p
+		end
+
 	set_tmp_name (n: like tmp_name)
 			-- Set `tmp_name' to `n'
 		do
-			tmp_name := n
+			if n /= Void then
+				set_tmp_path (create {PATH}.make_from_string (n))
+			else
+				set_tmp_path (Void)
+			end
 		end
 
 	set_tmp_basename (n: like tmp_basename)
