@@ -53,8 +53,6 @@ feature {WSF_RESPONSE} -- Output
 	send_to (res: WSF_RESPONSE)
 		local
 			s: STRING
-			l_text: detachable READABLE_STRING_GENERAL
-			l_loc: detachable READABLE_STRING_8
 			h: like header
 		do
 			h := header
@@ -117,8 +115,8 @@ feature {WSF_RESPONSE} -- Output
 		end
 
 note
-	
-	copyright: "2013, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
+
+	copyright: "2011-2013, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software
