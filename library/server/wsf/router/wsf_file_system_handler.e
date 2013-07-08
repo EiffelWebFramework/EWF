@@ -15,31 +15,53 @@ inherit
 
 	WSF_SELF_DOCUMENTED_HANDLER
 
+	SHARED_HTML_ENCODER
+
+	SHARED_WSF_PERCENT_ENCODER
+		rename
+			percent_encoder as url_encoder
+		export
+			{NONE} all
+		end
+
+	SHARED_EXECUTION_ENVIRONMENT
+		export
+			{NONE} all
+		end
+
 create
+	make_with_path,
+	make_hidden_with_path,
 	make,
 	make_hidden
 
 feature {NONE} -- Initialization
 
-	make (d: like document_root)
-		require
-			valid_d: (d /= Void and then not d.is_empty) implies not d.ends_with (operating_environment.directory_separator.out)
-		local
-			e: EXECUTION_ENVIRONMENT
+	make_with_path (d: like document_root)
 		do
 			if d.is_empty then
-				create e
-				document_root := e.current_working_directory
+				document_root := execution_environment.current_working_path
 			else
 				document_root := d
 			end
 		ensure
-			not document_root.is_empty and then not document_root.ends_with (operating_environment.directory_separator.out)
+			not document_root.is_empty
 		end
 
-	make_hidden (d: like document_root)
-		require
-			valid_d: (d /= Void and then not d.is_empty) implies not d.ends_with (operating_environment.directory_separator.out)
+	make_hidden_with_path (d: like document_root)
+		do
+			make_with_path (d)
+			is_hidden := True
+		ensure
+			hidden: is_hidden
+		end
+
+	make (d: READABLE_STRING_GENERAL)
+		do
+			make_with_path (create {PATH}.make_from_string (d))
+		end
+
+	make_hidden (d: READABLE_STRING_GENERAL)
 		do
 			make (d)
 			is_hidden := True
@@ -60,16 +82,21 @@ feature -- Documentation
 			Result.add_description ("File service")
 		end
 
-feature -- Access		
+feature -- Access	
 
-	document_root: STRING
+	document_root: PATH
+
 	max_age: INTEGER
 
 	index_disabled: BOOLEAN
 			-- Index disabled?
 
+	index_ignores_function: detachable FUNCTION [ANY, TUPLE [PATH], BOOLEAN]
+			-- Function to evaluate if a path is ignored or not during autoindex.
+			-- If `index_ignores' is Void and `index_ignores_function' is Void, use default ignore rules.
+
 	directory_index: detachable ARRAY [READABLE_STRING_8]
-			-- File serve if a directory index is requested
+			-- File serve if a directory index is requested.
 
 	not_found_handler: detachable PROCEDURE [ANY, TUPLE [uri: READABLE_STRING_8; req: WSF_REQUEST; res: WSF_RESPONSE]]
 
@@ -114,14 +141,52 @@ feature -- Element change
 			access_denied_handler := h
 		end
 
+	set_default_index_ignores
+			-- Use default auto index ignores behavior.
+		do
+			index_ignores_function := Void
+		end
+
+	set_index_ignores_function (fct: attached like index_ignores_function)
+			-- Use `fct' to compute auto index ignores behavior.
+		do
+			index_ignores_function := fct
+		end
+
+feature -- Status report
+
+	ignoring_index_entry (p: PATH): BOOLEAN
+			-- Ignoring path `p' for auto index?
+		local
+			e: detachable PATH
+			n: READABLE_STRING_32
+		do
+			if attached index_ignores_function as fct then
+				Result := fct.item ([p])
+			else
+				-- default
+				e := p.entry
+				if e = Void then
+					e := p
+				end
+				if e.is_parent_symbol then
+				else
+					n := e.name
+					Result := n.starts_with ({STRING_32} ".")
+						or n.ends_with ({STRING_32} "~")
+						or n.ends_with ({STRING_32} ".swp")
+				end
+			end
+		end
+
 feature -- Execution
 
 	execute (a_start_path: READABLE_STRING_8; req: WSF_REQUEST; res: WSF_RESPONSE)
 		local
-			p: STRING
+			p: STRING_32
 		do
-			p := req.path_info
-			if p.starts_with (a_start_path) then
+			create p.make_from_string (req.path_info)
+			if p.starts_with_general (a_start_path) then
 				p.remove_head (a_start_path.count)
 			else
 				check starts_with_base: False end
@@ -131,16 +196,16 @@ feature -- Execution
 
 	execute_starts_with (a_start_path: READABLE_STRING_8; req: WSF_REQUEST; res: WSF_RESPONSE)
 		do
-			execute (a_start_path,req, res)
+			execute (a_start_path, req, res)
 		end
 
-	process_uri (uri: READABLE_STRING_8; req: WSF_REQUEST; res: WSF_RESPONSE)
+	process_uri (uri: READABLE_STRING_32; req: WSF_REQUEST; res: WSF_RESPONSE)
 		local
 			f: RAW_FILE
-			fn: READABLE_STRING_8
+			fn: like resource_filename
 		do
 			fn := resource_filename (uri)
-			create f.make (fn)
+			create f.make_with_path (fn)
 			if f.exists then
 				if f.is_readable then
 					if f.is_directory then
@@ -160,14 +225,20 @@ feature -- Execution
 			end
 		end
 
-	process_index (a_uri: READABLE_STRING_8; dn: READABLE_STRING_8; req: WSF_REQUEST; res: WSF_RESPONSE)
+	process_index (a_uri: READABLE_STRING_8; dn: PATH; req: WSF_REQUEST; res: WSF_RESPONSE)
 		local
 			h: HTTP_HEADER
 			uri, s: STRING_8
 			d: DIRECTORY
-			l_files: LIST [STRING_8]
+			l_files: LIST [PATH]
+			p: PATH
+			n: READABLE_STRING_32
+			httpdate: HTTP_DATE
+			pf: RAW_FILE
+			l_is_dir: BOOLEAN
 		do
-			create d.make_open_read (dn)
+			create d.make_with_path (dn)
+			d.open_read
 			if attached directory_index_file (d) as f then
 				process_file (f, req, res)
 			else
@@ -178,25 +249,73 @@ feature -- Execution
 				s := "[
 					<html>
 						<head>
-							<title>Index for folder: $URI</title>
+							<title>Index of $URI</title>
+							<style>
+								td { padding-left: 10px;}
+							</style>
 						</head>
 						<body>
-							<h1>Index for $URI</h1>
-							<ul>
+							<h1>Index of $URI</h1>
+							<table>
+							<tr><th/><th>Name</th><th>Last modified</th><th>Size</th></tr>
+							<tr><th colspan="4"><hr></th></tr>
 					]"
 				s.replace_substring_all ("$URI", uri)
 
 				from
-					l_files := d.linear_representation
+					l_files := d.entries
 					l_files.start
 				until
 					l_files.after
 				loop
-					s.append ("<li><a href=%"" + uri + l_files.item_for_iteration + "%">" + l_files.item_for_iteration + "</a></li>%N")
+					p := l_files.item
+					if ignoring_index_entry (p) then
+
+					else
+						n := p.name
+						create pf.make_with_path (p)
+						if pf.is_directory then
+							l_is_dir := True
+						else
+							l_is_dir := False
+						end
+
+						s.append ("<tr><td>")
+						if l_is_dir then
+							s.append ("[dir]")
+						else
+							s.append ("&nbsp;")
+						end
+						s.append ("</td>")
+						s.append ("<td><a href=%"" + uri)
+						url_encoder.append_percent_encoded_string_to (n, s)
+						s.append ("%">")
+						if p.is_parent_symbol then
+							s.append ("[Parent Directory] ..")
+						else
+							s.append (html_encoder.encoded_string (n))
+						end
+						if l_is_dir then
+							s.append ("/")
+						end
+
+						s.append ("</td>")
+						s.append ("<td>")
+						create httpdate.make_from_date_time (file_date (pf))
+						httpdate.append_to_rfc1123_string (s)
+						s.append ("</td>")
+						s.append ("<td>")
+						if not l_is_dir then
+							s.append_integer (file_size (pf))
+						end
+						s.append ("</td>")
+						s.append ("</tr>")
+					end
 					l_files.forth
 				end
 				s.append ("[
-							</ul>
+							<tr><th colspan="4"><hr></th></tr>				
+							</table>
 						</body>
 					</html>
 					]"
@@ -217,12 +336,12 @@ feature -- Execution
 
 	process_file (f: FILE; req: WSF_REQUEST; res: WSF_RESPONSE)
 		local
-			ext: READABLE_STRING_8
+			ext: READABLE_STRING_32
 			ct: detachable READABLE_STRING_8
 			fres: WSF_FILE_RESPONSE
 			dt: DATE_TIME
 		do
-			ext := extension (f.name)
+			ext := extension (f.path.name)
 			ct := extension_mime_mapping.mime_type (ext)
 			if ct = Void then
 				ct := {HTTP_MIME_TYPES}.application_force_download
@@ -235,7 +354,7 @@ feature -- Execution
 			then
 				process_not_modified (f_date, req, res)
 			else
-				create fres.make_with_content_type (ct, f.name)
+				create fres.make_with_content_type (ct, f.path.name)
 				fres.set_status_code ({HTTP_STATUS_CODE}.ok)
 
 				-- cache control
@@ -341,7 +460,7 @@ feature {NONE} -- Implementation
 	directory_index_file (d: DIRECTORY): detachable FILE
 		local
 			f: detachable RAW_FILE
-			fn: FILE_NAME
+			fn: PATH
 		do
 			if attached directory_index as default_index then
 				across
@@ -350,12 +469,11 @@ feature {NONE} -- Implementation
 					Result /= Void
 				loop
 					if d.has_entry (c.item) then
-						create fn.make_from_string (d.name)
-						fn.set_file_name (c.item)
+						fn := d.path.extended (c.item)
 						if f = Void then
-							create f.make (fn.string)
+							create f.make_with_path (fn)
 						else
-							f.make (fn.string)
+							f.make_with_path (fn)
 						end
 						if f.exists and then f.is_readable then
 							Result := f
@@ -365,28 +483,34 @@ feature {NONE} -- Implementation
 			end
 		end
 
-	resource_filename (uri: READABLE_STRING_8): READABLE_STRING_8
-		do
-			Result := real_filename (document_root + operating_environment.directory_separator.out + real_filename (uri))
-		end
-
-	dirname (uri: READABLE_STRING_8): READABLE_STRING_8
+	resource_filename (uri: READABLE_STRING_32): PATH
 		local
-			p: INTEGER
+			s: like uri_path_to_filename
 		do
-			p := uri.last_index_of ('/', uri.count)
-			if p > 0 then
-				Result := uri.substring (1, p - 1)
-			else
-				create {STRING_8} Result.make_empty
+			Result := document_root
+			s := uri_path_to_filename (uri)
+			if not s.is_empty then
+				Result := Result.extended (s)
 			end
 		end
 
-	filename (uri: READABLE_STRING_8): READABLE_STRING_8
+	dirname (uri: READABLE_STRING_32): READABLE_STRING_32
 		local
 			p: INTEGER
 		do
-			p := uri.last_index_of ('/', uri.count)
+			p := uri.last_index_of ({CHARACTER_32} '/', uri.count)
+			if p > 0 then
+				Result := uri.substring (1, p - 1)
+			else
+				create {STRING_32} Result.make_empty
+			end
+		end
+
+	filename (uri: READABLE_STRING_32): READABLE_STRING_32
+		local
+			p: INTEGER
+		do
+			p := uri.last_index_of ({CHARACTER_32} '/', uri.count)
 			if p > 0 then
 				Result := uri.substring (p + 1, uri.count)
 			else
@@ -394,64 +518,63 @@ feature {NONE} -- Implementation
 			end
 		end
 
-	extension (uri: READABLE_STRING_8): READABLE_STRING_8
+	extension (uri: READABLE_STRING_32): READABLE_STRING_32
 		local
 			p: INTEGER
 		do
-			p := uri.last_index_of ('.', uri.count)
+			p := uri.last_index_of ({CHARACTER_32} '.', uri.count)
 			if p > 0 then
 				Result := uri.substring (p + 1, uri.count)
 			else
-				create {STRING_8} Result.make_empty
+				create {STRING_32} Result.make_empty
 			end
 		end
 
-	real_filename (fn: STRING): STRING
+	uri_path_to_filename (fn: READABLE_STRING_32): STRING_32
 			-- Real filename from url-path `fn'
 			--| Find a better design for this piece of code
 			--| Eventually in a spec/$ISE_PLATFORM/ specific cluster
+		local
+			n: INTEGER
 		do
-			if fn.is_empty then
-				Result := fn
-			else
+			n := fn.count
+			create Result.make_from_string (fn)
+			if n > 0 and then Result.item (Result.count) = {CHARACTER_32} '/' then
+				Result.remove_tail (1)
+				n := n - 1
+			end
+			if n > 0 and then Result.item (1) = {CHARACTER_32} '/' then
+				Result.remove_head (1)
+				n := n - 1
+			end
+
+			if n > 0 then
 				if {PLATFORM}.is_windows then
-					create Result.make_from_string (fn)
-					Result.replace_substring_all ("/", "\")
-					if Result [Result.count] = '\' then
-						Result.remove_tail (1)
-					end
-				else
-					Result := fn
-					if Result [Result.count] = '/' then
-						Result.remove_tail (1)
-					end
+					Result.replace_substring_all ({STRING_32} "/", {STRING_32} "\")
 				end
 			end
 		end
 
 feature {NONE} -- Implementation
 
-	node_exists (p: READABLE_STRING_8): BOOLEAN
-		local
-			f: RAW_FILE
-		do
-			create f.make (p)
-			Result := f.exists
-		end
-
 	extension_mime_mapping: HTTP_FILE_EXTENSION_MIME_MAPPING
 		local
 			f: RAW_FILE
 		once
-			create f.make ("mime.types")
+			create f.make_with_name ("mime.types")
 			if f.exists and then f.is_readable then
-				create Result.make_from_file (f.name)
+				create Result.make_from_file (f.path.name)
 			else
 				create Result.make_default
 			end
 		end
 
 feature {NONE} -- implementation: date time
+
+	file_size (f: FILE): INTEGER
+		do
+			Result := f.count
+		end
 
 	file_date (f: FILE): DATE_TIME
 		do

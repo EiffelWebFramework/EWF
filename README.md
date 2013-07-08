@@ -59,10 +59,6 @@ An alternative to the last 2 instructions is to use the script from tools folder
 ### text
 * __encoder__: Various simpler encoders: base64, url-encoder, xml entities, html entities [read more](library/text/encoder)
 
-### crypto
-* eel
-* eapml
-
 ### Others
 * error: very simple/basic library to handle error
 

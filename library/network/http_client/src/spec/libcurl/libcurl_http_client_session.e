@@ -63,7 +63,6 @@ feature -- Basic operation
 
 	put (a_path: READABLE_STRING_8; a_ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT; data: detachable READABLE_STRING_8): HTTP_CLIENT_RESPONSE
 		local
-			req: HTTP_CLIENT_REQUEST
 			ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT
 			f: detachable RAW_FILE
 			l_data: detachable READABLE_STRING_8
@@ -86,7 +85,7 @@ feature -- Basic operation
 				f.close
 				check ctx /= Void then
 					ctx.set_upload_data (Void)
-					ctx.set_upload_filename (f.name)
+					ctx.set_upload_filename (f.path.name)
 				end
 			end
 			Result := custom ("PUT", a_path, ctx)
@@ -152,7 +151,7 @@ feature {LIBCURL_HTTP_CLIENT_REQUEST} -- Curl implementation
 
 
 ;note
-	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
+	copyright: "2011-2013, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

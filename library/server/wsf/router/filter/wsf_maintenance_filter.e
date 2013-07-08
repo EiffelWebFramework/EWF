@@ -68,10 +68,6 @@ feature -- Basic operations
 			end
 		end
 
-feature -- Constants
-
-	Date_time_format: STRING = "[0]dd/[0]mm/yyyy [0]hh:[0]mi:[0]ss"
-
 note
 	copyright: "2011-2013, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
