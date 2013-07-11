@@ -12,7 +12,6 @@
 		</option>
 		<library name="atom" location="..\draft\library\protocol\syndication\atom\atom-safe.ecf" readonly="false"/>
 		<library name="client" location="..\examples\restbucksCRUD\client\client-safe.ecf" readonly="false"/>
-		<library name="cms" location="..\draft\application\cms\cms-safe.ecf" readonly="false"/>
 		<library name="connector_cgi" location="..\library\server\ewsgi\connectors\cgi\cgi-safe.ecf" readonly="false"/>
 		<library name="connector_libfcgi" location="..\library\server\ewsgi\connectors\libfcgi\libfcgi-safe.ecf" readonly="false"/>
 		<library name="connector_nino" location="..\library\server\ewsgi\connectors\nino\nino-safe.ecf" readonly="false"/>
@@ -22,7 +21,6 @@
 		<library name="default_libfcgi" location="..\library\server\wsf\default\libfcgi-safe.ecf" readonly="false"/>
 		<library name="default_nino" location="..\library\server\wsf\default\nino-safe.ecf" readonly="false"/>
 		<library name="default_openshift" location="..\library\server\wsf\default\openshift-safe.ecf" readonly="false"/>
-		<library name="demo" location="..\draft\application\cms\example\cms_demo-safe.ecf" readonly="false"/>
 		<library name="demo-1" location="..\library\security\openid\consumer\demo\demo-safe.ecf" readonly="false"/>
 		<library name="encoder" location="..\library\text\encoder\encoder-safe.ecf" readonly="false"/>
 		<library name="error" location="..\library\utility\general\error\error-safe.ecf" readonly="false"/>
