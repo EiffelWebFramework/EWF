@@ -156,7 +156,6 @@ feature -- Destroy
 			raw_input_data_recorded := False
 			request_method := empty_string_8
 			set_uploaded_file_path (Void)
---			wgi_request
 		end
 
 feature -- Status report
@@ -1127,7 +1126,7 @@ feature -- HTTP_*
 
 	http_access_control_request_headers: detachable READABLE_STRING_8
 			-- Indicates which headers will be used in the actual request
-								-- as part of the preflight request
+			-- as part of the preflight request
 		do
 			Result := wgi_request.http_access_control_request_headers
 		end
