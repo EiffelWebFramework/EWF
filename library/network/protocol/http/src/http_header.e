@@ -509,6 +509,18 @@ feature -- Content related header
 			put_header_key_value ({HTTP_HEADER_NAMES}.header_content_transfer_encoding, a_mechanism)
 		end
 
+	put_content_language (a_enc: READABLE_STRING_8)
+			-- Put "Content-Language" header of value `a_enc'.
+		do
+			put_header_key_value ({HTTP_HEADER_NAMES}.header_content_language, a_enc)
+		end
+
+	put_content_encoding (a_enc: READABLE_STRING_8)
+			-- Put "Content-Encoding" header of value `a_enc'.
+		do
+			put_header_key_value ({HTTP_HEADER_NAMES}.header_content_encoding, a_enc)
+		end
+
 	put_transfer_encoding (a_enc: READABLE_STRING_8)
 			-- Put "Transfer-Encoding" header with for instance "chunked"
 		do
