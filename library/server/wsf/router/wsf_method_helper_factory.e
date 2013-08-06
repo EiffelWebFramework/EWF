@@ -18,7 +18,13 @@ feature -- Factory
 		do
 			if a_method.is_case_insensitive_equal ({HTTP_REQUEST_METHODS}.method_get) or
 				a_method.is_case_insensitive_equal ({HTTP_REQUEST_METHODS}.method_head) then
-				create {WSF_GET_HELPER} Result
+				create Result
+			elseif a_method.is_case_insensitive_equal ({HTTP_REQUEST_METHODS}.method_put) then
+				create {WSF_PUT_HELPER} Result
+			elseif a_method.is_case_insensitive_equal ({HTTP_REQUEST_METHODS}.method_post) then
+				create {WSF_POST_HELPER} Result
+			elseif a_method.is_case_insensitive_equal ({HTTP_REQUEST_METHODS}.method_delete) then
+				create {WSF_DELETE_HELPER} Result
 			end
 		end
 	
