@@ -18,6 +18,7 @@
 		<library name="time" location="$ISE_LIBRARY\library\time\time-safe.ecf"/>
 		<library name="uri" location="$ISE_LIBRARY\library\text\uri\uri-safe.ecf"/>
 		<library name="uri_template" location="..\..\text\parser\uri_template\uri_template-safe.ecf"/>
+		<library name="conneg" location="../../network/protocol/CONNEG/conneg-safe.ecf"/>
 		<cluster name="router" location=".\router\" recursive="true"/>
 		<cluster name="src" location=".\src\" recursive="true"/>
 	</target>
