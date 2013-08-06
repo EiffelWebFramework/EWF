@@ -311,16 +311,42 @@ feature -- Helper
 			Result := request_method.is_case_insensitive_equal (m.as_string_8)
 		end
 
+	is_put_request_method: BOOLEAN
+			-- Is Current a PUT request method?
+		do
+			Result := request_method.is_case_insensitive_equal ({HTTP_REQUEST_METHODS}.method_put)
+		end
+
 	is_post_request_method: BOOLEAN
 			-- Is Current a POST request method?
 		do
 			Result := request_method.is_case_insensitive_equal ({HTTP_REQUEST_METHODS}.method_post)
 		end
 
+	is_delete_request_method: BOOLEAN
+			-- Is Current a DELETE request method?
+		do
+			Result := request_method.is_case_insensitive_equal ({HTTP_REQUEST_METHODS}.method_delete)
+		end
+
 	is_get_request_method: BOOLEAN
 			-- Is Current a GET request method?
 		do
 			Result := request_method.is_case_insensitive_equal ({HTTP_REQUEST_METHODS}.method_get)
+		end
+
+	is_get_head_request_method: BOOLEAN
+			-- Is Current a GET or a HEAD request method?
+		do
+			Result := request_method.is_case_insensitive_equal ({HTTP_REQUEST_METHODS}.method_get) or
+				request_method.is_case_insensitive_equal ({HTTP_REQUEST_METHODS}.method_head)
+		end
+
+	is_put_post_request_method: BOOLEAN
+			-- Is Current a PUT or a POST request method?
+		do
+			Result := request_method.is_case_insensitive_equal ({HTTP_REQUEST_METHODS}.method_put) or
+				request_method.is_case_insensitive_equal ({HTTP_REQUEST_METHODS}.method_post)
 		end
 
 	is_content_type_accepted (a_content_type: READABLE_STRING_GENERAL): BOOLEAN
