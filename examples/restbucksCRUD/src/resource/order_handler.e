@@ -5,18 +5,11 @@ note
 	revision: "$Revision$"
 
 class	ORDER_HANDLER
+
 inherit
 
-	WSF_URI_TEMPLATE_HANDLER
-
-	WSF_RESOURCE_HANDLER_HELPER
-		redefine
-			do_get,
-			do_post,
-			do_put,
-			do_delete
-		end
-
+	WSF_SKELETON_HANDLER
+	
 	SHARED_DATABASE_API
 
 	SHARED_EJSON
@@ -25,153 +18,393 @@ inherit
 
 	SHARED_ORDER_VALIDATION
 
-	WSF_SELF_DOCUMENTED_HANDLER
-
-feature -- Execute
-
-	execute (req: WSF_REQUEST; res: WSF_RESPONSE)
-			-- Execute request handler	
-		do
-			execute_methods (req, res)
+	WSF_RESOURCE_HANDLER_HELPER
+		rename
+			execute_options as helper_execute_options,
+			handle_internal_server_error as helper_handle_internal_server_error
 		end
+
+create
+
+	make_with_router
 
 feature -- API DOC
 
-	api_doc : STRING = "URI:/order METHOD: POST%N URI:/order/{orderid} METHOD: GET, PUT, DELETE%N"
+	api_doc : STRING = "URI:/order METHOD: POST%N URI:/order/{orderid} METHOD: GET, HEAD, PUT, DELETE%N"
 
+feature -- Access
 
-feature -- Documentation
-
-	mapping_documentation (m: WSF_ROUTER_MAPPING; a_request_methods: detachable WSF_REQUEST_METHODS): WSF_ROUTER_MAPPING_DOCUMENTATION
+	is_chunking (req: WSF_REQUEST): BOOLEAN
+		-- Will the response to `req' using chunked transfer encoding?
 		do
-			create Result.make (m)
-			if a_request_methods /= Void then
-				if a_request_methods.has_method_post then
-					Result.add_description ("URI:/order METHOD: POST")
-				elseif
-					a_request_methods.has_method_get
-					or a_request_methods.has_method_put
-					or a_request_methods.has_method_delete
-				then
-					Result.add_description ("URI:/order/{orderid} METHOD: GET, PUT, DELETE")
+			-- No.
+		end
+
+	includes_response_entity (req: WSF_REQUEST): BOOLEAN
+			-- Does the response to `req' include an entity?
+			-- Method will be DELETE, POST, PUT or an extension method.
+		do
+			Result := False
+			-- At present, there is no support for this except for DELETE.
+		end
+
+	conneg (req: WSF_REQUEST): CONNEG_SERVER_SIDE
+			-- Content negotiatior for all requests
+		once
+			create Result.make ({HTTP_MIME_TYPES}.application_json, "en", "UTF-8", "identity")
+		end
+
+	mime_types_supported (req: WSF_REQUEST): LIST [STRING]
+			-- All values for Accept header that `Current' can serve
+		do
+			create {ARRAYED_LIST [STRING]} Result.make_from_array (<<{HTTP_MIME_TYPES}.application_json>>)
+			Result.compare_objects
+		end
+
+	languages_supported (req: WSF_REQUEST): LIST [STRING]
+			-- All values for Accept-Language header that `Current' can serve
+		do
+			create {ARRAYED_LIST [STRING]} Result.make_from_array (<<"en">>)
+			Result.compare_objects
+		end
+
+	charsets_supported (req: WSF_REQUEST): LIST [STRING]
+			-- All values for Accept-Charset header that `Current' can serve
+		do
+			create {ARRAYED_LIST [STRING]} Result.make_from_array (<<"UTF-8">>)
+			Result.compare_objects
+		end
+
+	encodings_supported (req: WSF_REQUEST): LIST [STRING]
+			-- All values for Accept-Encoding header that `Current' can serve
+		do
+			create {ARRAYED_LIST [STRING]} Result.make_from_array (<<"identity">>)
+			Result.compare_objects
+		end
+
+	previous_location (req: WSF_REQUEST): LIST [URI]
+			-- Previous location(s) for resource named by `req';
+		do
+			-- precondition is never met but we need a non-void Result to satisfy the compiler in Void-safe mode:
+			create {LINKED_LIST [URI]} Result.make
+		end
+
+	age (req: WSF_REQUEST): NATURAL
+			-- Maximum age in seconds before response to `req` is considered stale;
+			-- This is used to generate a Cache-Control: max-age header.
+			-- Return 0 to indicate already expired.
+			-- Return (365 * 1440 = 1 year) to indicate never expires.
+		do
+			-- All our responses are considered stale.
+		end
+
+	is_freely_cacheable (req: WSF_REQUEST): BOOLEAN
+			-- Should the response to `req' be freely cachable in shared caches?
+			-- If `True', then a Cache-Control: public header will be generated.
+		do
+			-- definitely not!
+		end
+
+	private_headers (req: WSF_REQUEST): detachable LIST [READABLE_STRING_8]
+			-- Header names intended for a single user.
+			-- If non-Void, then a Cache-Control: private header will be generated.
+			-- Returning an empty list prevents the entire response from being served from a shared cache.
+		do
+			create {ARRAYED_LIST [READABLE_STRING_8]} Result.make (0)
+		end
+
+	non_cacheable_headers (req: WSF_REQUEST): detachable LIST [READABLE_STRING_8]
+			-- Header names that will not be sent from a cache without revalidation;
+			-- If non-Void, then a Cache-Control: no-cache header will be generated.
+			-- Returning an empty list prevents the response being served from a cache
+			--  without revalidation.
+		do
+			create {ARRAYED_LIST [READABLE_STRING_8]} Result.make (0)
+		end
+
+	is_sensitive (req: WSF_REQUEST): BOOLEAN
+			-- Is the response to `req' of a sensitive nature?
+			-- If `True' then a Cache-Control: no-store header will be generated.
+		do
+			Result := True
+			-- since it's commercial data.
+		end
+
+	matching_etag (req: WSF_REQUEST; a_etag: READABLE_STRING_32; a_strong: BOOLEAN): BOOLEAN
+			-- Is `a_etag' a match for resource requested in `req'?
+			-- If `a_strong' then the strong comparison function must be used.
+		local
+			l_id: STRING
+			l_etag_util: ETAG_UTILS			
+		do
+			l_id := order_id_from_request (req)
+			if db_access.orders.has_key (l_id) then
+				check attached db_access.orders.item (l_id) as l_order then
+						-- postcondition of `has_key'
+					create l_etag_util
+					Result := a_etag.same_string (l_etag_util.md5_digest (l_order.out).as_string_32)
 				end
 			end
 		end
 
+	etag (req: WSF_REQUEST; a_media_type, a_language_type, a_character_type, a_compression_type: READABLE_STRING_8): detachable READABLE_STRING_8
+			-- Optional Etag for `req' in the requested variant
+		local
+			l_etag_utils: ETAG_UTILS
+		do
+			create l_etag_utils
+			if attached {ORDER} req.execution_variable ("ORDER") as l_order then
+				Result := l_etag_utils.md5_digest (l_order.out)
+			end		
+		end			
+
+	modified_since (req: WSF_REQUEST; a_date_time: DATE_TIME): BOOLEAN
+			-- Has resource requested in `req' been modified since `a_date_time' (UTC)?
+		do
+			-- We don't track this information. It is safe to always say yes.
+			Result := True
+		end
+	
+feature -- Measurement
+
+	content_length (req: WSF_REQUEST): NATURAL
+			-- Length of entity-body of the response to `req'
+		do
+			check attached {READABLE_STRING_8} req.execution_variable ("GENERATED_CONTENT") as l_response then
+					-- postcondition generated_content_set_for_get_head of `ensure_content_available'
+					-- We only call this for GET/HEAD in this example.
+				Result := l_response.count.as_natural_32
+			end
+		end
+
+	allow_post_to_missing_resource (req: WSF_REQUEST): BOOLEAN
+			-- The resource named in `req' does not exist, and this is a POST. Do we allow it?
+		do
+			-- No.
+		end
+
+feature -- Status report
+
+	finished (req: WSF_REQUEST): BOOLEAN
+			-- Has the last chunk been generated for `req'?
+		do
+			-- precondition is never met
+		end
+
+feature -- Execution
+
+	check_resource_exists (req: WSF_REQUEST; a_helper: WSF_METHOD_HELPER)
+			-- Call `a_helper.set_resource_exists' to indicate that `req.path_translated'
+			--  is the name of an existing resource.
+			-- We also put the order into `req.execution_variable ("ORDER")' for GET or HEAD responses.
+		local
+			l_id: STRING
+		do
+			if req.is_post_request_method then
+				a_helper.set_resource_exists
+				-- because only /order is defined to this handler for POST
+			else
+				-- the request is of the form /order/{orderid}
+				l_id := order_id_from_request (req)
+				if db_access.orders.has_key (l_id) then
+					a_helper.set_resource_exists
+					if req.is_get_head_request_method then
+						check attached db_access.orders.item (l_id) as l_order then
+								-- postcondition `item_if_found' of `has_key'
+							req.set_execution_variable ("ORDER", l_order)
+						end
+					end
+				end
+			end
+		ensure then
+			order_saved_only_for_get_head: req.is_get_head_request_method =
+				attached {ORDER} req.execution_variable ("ORDER")
+		end
+	
+feature -- GET/HEAD content
+
+	ensure_content_available (req: WSF_REQUEST;
+		a_media_type, a_language_type, a_character_type, a_compression_type: READABLE_STRING_8)
+			-- Commence generation of response text (entity-body).
+			-- If not chunked, then this will create the entire entity-body so as to be available
+			--  for a subsequent call to `content'.
+			-- If chunked, only the first chunk will be made available to `next_chunk'. If chunk extensions
+			--  are used, then this will also generate the chunk extension for the first chunk.
+			-- We save the text in `req.execution_variable ("GENERATED_CONTENT")'
+		do
+			check attached {ORDER} req.execution_variable ("ORDER") as l_order then
+					-- precondition get_or_head and postcondition order_saved_only_for_get_head of `check_resource_exists' and
+				if attached {JSON_VALUE} json.value (l_order) as jv then
+					req.set_execution_variable ("GENERATED_CONTENT", jv.representation)
+				else
+					req.set_execution_variable ("GENERATED_CONTENT", "")
+				end
+			end
+		ensure then
+			generated_content_set_for_get_head: req.is_get_head_request_method implies
+				 attached {READABLE_STRING_8} req.execution_variable ("GENERATED_CONTENT")
+		end
+
+	content (req: WSF_REQUEST; a_media_type, a_language_type, a_character_type, a_compression_type: READABLE_STRING_8): READABLE_STRING_8
+			-- Non-chunked entity body in response to `req';
+			-- We only call this for GET/HEAD in this example.
+		do
+			check attached {READABLE_STRING_8} req.execution_variable ("GENERATED_CONTENT") as l_response then
+					-- postcondition generated_content_set_for_get_head of `ensure_content_available'
+				Result := l_response
+			end
+		end
+	
+		next_chunk (req: WSF_REQUEST; a_media_type, a_language_type, a_character_type, a_compression_type: READABLE_STRING_8): TUPLE [a_check: READABLE_STRING_8; a_extension: detachable READABLE_STRING_8]
+			-- Next chunk of entity body in response to `req';
+			-- The second field of the result is an optional chunk extension.
+		do
+			-- precondition `is_chunking' is never met, but we need a dummy `Result'
+			-- to satisfy the compiler in void-safe mode
+			Result := ["", Void]
+		end
+
+	generate_next_chunk (req: WSF_REQUEST; a_media_type, a_language_type, a_character_type, a_compression_type: READABLE_STRING_8)
+			-- Prepare next chunk (including optional chunk extension) of entity body in response to `req'.
+			-- This is not called for the first chunk.
+		do
+			-- precondition `is_chunking' is never met
+		end
+	
+feature -- DELETE
+
+	delete (req: WSF_REQUEST)
+			-- Delete resource named in `req' or set an error on `req.error_handler'.
+		local
+			l_id: STRING
+		do
+			l_id := order_id_from_request (req)
+			if db_access.orders.has_key (l_id) then
+				if is_valid_to_delete (l_id) then
+					delete_order (l_id)
+				else
+					req.error_handler.add_custom_error ({HTTP_STATUS_CODE}.method_not_allowed, "DELETE not valid",
+						"There is conflict while trying to delete the order, the order could not be deleted in the current state")
+				end
+			else
+				req.error_handler.add_custom_error ({HTTP_STATUS_CODE}.not_found, "DELETE not valid",
+					"There is no such order to delete")
+			end
+		end
+
+	deleted (req: WSF_REQUEST): BOOLEAN
+			-- Has resource named by `req' been deleted?
+		do
+			if not req.error_handler.has_error then
+				Result := True
+			end
+		end
+
+	delete_queued (req: WSF_REQUEST): BOOLEAN
+			-- Has resource named by `req' been queued for deletion?
+		do
+			-- No
+		end
+
+
+feature -- PUT/POST
+
+	is_entity_too_large (req: WSF_REQUEST): BOOLEAN
+			-- Is the entity stored in `req.execution_variable ("REQUEST_ENTITY")' too large for the application?
+		do
+			-- No. We don't care for this example.
+		end
+
+		check_content_headers (req: WSF_REQUEST)
+			-- Check we can support all content headers on request entity.
+			-- Set `req.execution_variable ("CONTENT_CHECK_CODE")' to {NATURAL} zero if OK, or 415 or 501 if not.
+		do
+			-- We don't bother for this example. Note that this is equivalent to setting zero.
+		end
+
+	create_resource (req: WSF_REQUEST; res: WSF_RESPONSE)
+			-- Create new resource in response to a PUT request when `check_resource_exists' returns `False'.
+			-- Implementor must set error code of 200 OK or 500 Server Error.
+		do
+			-- We don't support creating a new resource with PUT. But this can't happen
+			-- with our router mappings, so we don't bother to set a 500 response.
+		end
+
+	append_resource (req: WSF_REQUEST; res: WSF_RESPONSE)
+			-- Create new resource in response to a POST request.
+			-- Implementor must set error code of 200 OK or 204 No Content or 303 See Other or 500 Server Error.
+		do
+			if attached {ORDER} req.execution_variable ("EXTRACTED_ORDER") as l_order then			
+				save_order (l_order)
+				compute_response_post (req, res, l_order)
+			else
+				handle_bad_request_response ("Not a valid order", req, res)
+			end
+		end
+	
+	check_conflict (req: WSF_REQUEST; res: WSF_RESPONSE)
+			-- Check we can support all content headers on request entity.
+			-- Set `req.execution_variable ("CONFLICT_CHECK_CODE")' to {NATURAL} zero if OK, or 409 if not.
+			-- In the latter case, write the full error response to `res'.
+		do
+			if attached {ORDER} req.execution_variable ("EXTRACTED_ORDER") as l_order then
+				if not is_valid_to_update (l_order)	then
+					req.set_execution_variable ("CONFLICT_CHECK_CODE", {NATURAL} 409)
+					--| FIXME: Here we need to define the Allow methods
+					handle_resource_conflict_response (l_order.out +"%N There is conflict while trying to update the order, the order could not be update in the current state", req, res)
+				end
+			else
+				req.set_execution_variable ("CONFLICT_CHECK_CODE", {NATURAL} 409)
+				--| FIXME: Here we need to define the Allow methods
+				--| This ought to be a 500, as if attached should probably be check attached. But as yet I lack a proof. TODO.
+				handle_resource_conflict_response ("There is conflict while trying to update the order, the order could not be update in the current state", req, res)
+			end
+		end
+	
+	check_request (req: WSF_REQUEST; res: WSF_RESPONSE)
+			-- Check that the request entity is a valid request.
+			-- The entity is available as `req.execution_variable ("REQUEST_ENTITY")'.
+			-- Set `req.execution_variable ("REQUEST_CHECK_CODE")' to {NATURAL} zero if OK, or 400 if not.
+			-- In the latter case, write the full error response to `res'.
+		local
+			l_order: detachable ORDER
+			l_id: STRING
+		do
+			if attached {READABLE_STRING_8} req.execution_variable ("REQUEST_ENTITY") as l_request then
+				l_order := extract_order_request (l_request)
+				if req.is_put_request_method then
+					l_id := order_id_from_request (req)
+					if l_order /= Void  and then db_access.orders.has_key (l_id) then
+						l_order.set_id (l_id)
+						req.set_execution_variable ("REQUEST_CHECK_CODE", {NATURAL} 0)
+						req.set_execution_variable ("EXTRACTED_ORDER", l_order)
+					else
+						req.set_execution_variable ("REQUEST_CHECK_CODE", {NATURAL} 400)
+						handle_bad_request_response (l_request +"%N is not a valid ORDER, maybe the order does not exist in the system", req, res)
+					end
+				else
+					req.set_execution_variable ("REQUEST_CHECK_CODE", {NATURAL} 0)
+					req.set_execution_variable ("EXTRACTED_ORDER", l_order)					
+				end
+			else
+				req.set_execution_variable ("REQUEST_CHECK_CODE", {NATURAL} 400)
+				handle_bad_request_response ("Request is not a valid ORDER", req, res)
+			end
+		end
+
+	update_resource (req: WSF_REQUEST; res: WSF_RESPONSE)
+			-- Perform the update requested in `req'.
+			-- Write a response to `res' with a code of 204 or 500.
+		do
+			if attached {ORDER} req.execution_variable ("EXTRACTED_ORDER") as l_order then			
+				update_order (l_order)
+				compute_response_put (req, res, l_order)
+			else
+				handle_internal_server_error (res)
+			end
+		end
+	
 feature -- HTTP Methods
-
-	do_get (req: WSF_REQUEST; res: WSF_RESPONSE)
-			-- <Precursor>
-		local
-			id:  STRING
-		do
-			if attached req.orig_path_info as orig_path then
-				id := get_order_id_from_path (orig_path)
-				if attached retrieve_order (id) as l_order then
-					if is_conditional_get (req, l_order) then
-						handle_resource_not_modified_response ("The resource" + orig_path + "does not change", req, res)
-					else
-						compute_response_get (req, res, l_order)
-					end
-				else
-					handle_resource_not_found_response ("The following resource" + orig_path + " is not found ", req, res)
-				end
-			end
-		end
-
-	is_conditional_get (req : WSF_REQUEST; l_order : ORDER) : BOOLEAN
-			-- Check if If-None-Match is present and then if there is a representation that has that etag
-			-- if the representation hasn't changed, we return TRUE
-			-- then the response is a 304 with no entity body returned.
-		local
-			etag_util : ETAG_UTILS
-		do
-			if attached req.meta_string_variable ("HTTP_IF_NONE_MATCH") as if_none_match then
-				create etag_util
-				if if_none_match.same_string (etag_util.md5_digest (l_order.out).as_string_32) then
-					Result := True
-				end
-			end
-		end
-
-	compute_response_get (req: WSF_REQUEST; res: WSF_RESPONSE; l_order: ORDER)
-		local
-			h: HTTP_HEADER
-			l_msg : STRING
-			etag_utils : ETAG_UTILS
-		do
-			create h.make
-			create etag_utils
-			h.put_content_type_application_json
-			if attached {JSON_VALUE} json.value (l_order) as jv then
-				l_msg := jv.representation
-				h.put_content_length (l_msg.count)
-				if attached req.request_time as time then
-					h.add_header ("Date:" + time.formatted_out ("ddd,[0]dd mmm yyyy [0]hh:[0]mi:[0]ss.ff2") + " GMT")
-				end
-				h.add_header ("etag:" + etag_utils.md5_digest (l_order.out))
-				res.set_status_code ({HTTP_STATUS_CODE}.ok)
-				res.put_header_text (h.string)
-				res.put_string (l_msg)
-			end
-		end
-
-	do_put (req: WSF_REQUEST; res: WSF_RESPONSE)
-		-- Updating a resource with PUT
-		-- A successful PUT request will not create a new resource, instead it will
-		-- change the state of the resource identified by the current uri.
-		-- If success we response with 200 and the updated order.
-		-- 404 if the order is not found
-		-- 400 in case of a bad request
-		-- 500 internal server error
-		-- If the request is a Conditional PUT, and it does not mat we response
-		-- 415, precondition failed.
-		local
-			l_put: STRING
-			l_order : detachable ORDER
-			id :  STRING
-		do
-			if attached req.orig_path_info as orig_path then
-				id := get_order_id_from_path (orig_path)
-				l_put := retrieve_data (req)
-				l_order := extract_order_request(l_put)
-				if  l_order /= Void and then db_access.orders.has_key (id) then
-					l_order.set_id (id)
-					if is_valid_to_update(l_order) then
-						if is_conditional_put (req, l_order) then
-							update_order( l_order)
-							compute_response_put (req, res, l_order)
-						else
-							handle_precondition_fail_response ("", req, res)
-						end
-					else
-						--| FIXME: Here we need to define the Allow methods
-						handle_resource_conflict_response (l_put +"%N There is conflict while trying to update the order, the order could not be update in the current state", req, res)
-					end
-				else
-					handle_bad_request_response (l_put +"%N is not a valid ORDER, maybe the order does not exist in the system", req, res)
-				end
-			end
-		end
-
-	is_conditional_put (req : WSF_REQUEST; order : ORDER) : BOOLEAN
-		-- Check if If-Match is present and then if there is a representation that has that etag
-		-- if the representation hasn't changed, we return TRUE
-		local
-			etag_util : ETAG_UTILS
-		do
-			if attached retrieve_order (order.id) as l_order then
-				if attached req.meta_string_variable ("HTTP_IF_MATCH") as if_match then
-						create etag_util
-						if if_match.same_string (etag_util.md5_digest (l_order.out).as_string_32) then
-							Result := True
-						end
-				else
-					Result := True
-				end
-			end
-		end
-
 
 	compute_response_put (req: WSF_REQUEST; res: WSF_RESPONSE; l_order : ORDER)
 		local
@@ -195,67 +428,6 @@ feature -- HTTP Methods
 				res.set_status_code ({HTTP_STATUS_CODE}.ok)
 				res.put_header_text (h.string)
 				res.put_string (jv.representation)
-			end
-		end
-
-
-	do_delete (req: WSF_REQUEST; res: WSF_RESPONSE)
-		-- Here we use DELETE to cancel an order, if that order is in state where
-		-- it can still be canceled.
-		-- 200 if is ok
-		-- 404 Resource not found
-		-- 405 if consumer and service's view of the resouce state is inconsisent
-		-- 500 if we have an internal server error
-		local
-			id: STRING
-		do
-			if  attached req.orig_path_info as orig_path then
-				id := get_order_id_from_path (orig_path)
-				if db_access.orders.has_key (id) then
-					if is_valid_to_delete (id) then
-						delete_order( id)
-						compute_response_delete (req, res)
-					else
-						--| FIXME: Here we need to define the Allow methods
-						handle_method_not_allowed_response (orig_path + "%N There is conflict while trying to delete the order, the order could not be deleted in the current state", req, res)
-					end
-				else
-					handle_resource_not_found_response (orig_path + " not found in this server", req, res)
-				end
-			end
-		end
-
-	compute_response_delete (req: WSF_REQUEST; res: WSF_RESPONSE)
-		local
-			h : HTTP_HEADER
-		do
-			create h.make
-			h.put_content_type_application_json
-			if attached req.request_time as time then
-				h.put_utc_date (time)
-			end
-			res.set_status_code ({HTTP_STATUS_CODE}.no_content)
-			res.put_header_text (h.string)
-		end
-
-	do_post (req: WSF_REQUEST; res: WSF_RESPONSE)
-			-- Here the convention is the following.
-			-- POST is used for creation and the server determines the URI
-			-- of the created resource.
-			-- If the request post is SUCCESS, the server will create the order and will response with
-			-- HTTP_RESPONSE 201 CREATED, the Location header will contains the newly created order's URI
-			-- if the request post is not SUCCESS, the server will response with
-			-- HTTP_RESPONSE 400 BAD REQUEST, the client send a bad request
-			-- HTTP_RESPONSE 500 INTERNAL_SERVER_ERROR, when the server can deliver the request
-		local
-			l_post: STRING
-		do
-			l_post := retrieve_data (req)
-			if attached extract_order_request (l_post) as l_order then
-				save_order (l_order)
-				compute_response_post (req, res, l_order)
-			else
-				handle_bad_request_response (l_post +"%N is not a valid ORDER", req, res)
 			end
 		end
 
@@ -290,9 +462,16 @@ feature -- HTTP Methods
 
 feature {NONE} -- URI helper methods
 
-	get_order_id_from_path (a_path: READABLE_STRING_32) : STRING
+	order_id_from_request (req: WSF_REQUEST): STRING
+			-- Value of "orderid" template URI variable in `req'
+		require
+			req_attached: req /= Void
 		do
-			Result := a_path.split ('/').at (3)
+			if attached {WSF_VALUE} req.path_parameter ("orderid") as l_value then
+				Result := l_value.as_string.value.as_string_8
+			else
+				Result := ""
+			end
 		end
 
 feature {NONE} -- Implementation Repository Layer
