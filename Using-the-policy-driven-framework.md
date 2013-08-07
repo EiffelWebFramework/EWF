@@ -22,3 +22,5 @@ is_system_options_forbidden.
 ## Declaring your policy on requiring use of a proxy server
 
 WSF_ROUTED_SKELETON_SERVICE also inherits from WSF_PROXY_USE_POLICY. This determines if the server will require clients to use a proxy server. By default, it will do so for HTTP/1.0 clients. This is a sensible default, as the framework assumes an HTTP/1.1 client throughout. If you are sure that you will only ever have HTTP/1.1 clients, then you can instead inherit from WSF_NO_PROXY_POLICY, as RESTBUCKS_SERVER does. If not, then you need to implement proxy_server.
+
+Next you have to [write your handler(s)](./Writing-the-handlers)
