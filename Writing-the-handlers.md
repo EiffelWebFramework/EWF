@@ -8,7 +8,7 @@ TODO
 
 ## Implementing the policies
 
-* WSF_OPTIONS_POLICY
+* [WSF_OPTIONS_POLICY](edit this)
 * WSF_PREVIOUS_POLICY
 * WSF_CACHING_POLICY
 
