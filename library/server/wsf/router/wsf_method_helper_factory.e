@@ -18,7 +18,7 @@ feature -- Factory
 		do
 			if a_method.is_case_insensitive_equal ({HTTP_REQUEST_METHODS}.method_get) or
 				a_method.is_case_insensitive_equal ({HTTP_REQUEST_METHODS}.method_head) then
-				create Result
+				create {WSF_GET_HELPER} Result
 			elseif a_method.is_case_insensitive_equal ({HTTP_REQUEST_METHODS}.method_put) then
 				create {WSF_PUT_HELPER} Result
 			elseif a_method.is_case_insensitive_equal ({HTTP_REQUEST_METHODS}.method_post) then
@@ -27,5 +27,15 @@ feature -- Factory
 				create {WSF_DELETE_HELPER} Result
 			end
 		end
-	
+
+note
+	copyright: "2011-2013, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
+	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
+	source: "[
+			Eiffel Software
+			5949 Hollister Ave., Goleta, CA 93117 USA
+			Telephone 805-685-1006, Fax 805-685-6869
+			Website http://www.eiffel.com
+			Customer support http://support.eiffel.com
+		]"
 end

@@ -376,6 +376,8 @@ feature -- Helper
 					end
 				end
 				Result := l_accept.has_substring (a_content_type)
+			else
+				Result := True
 			end
 		end
 

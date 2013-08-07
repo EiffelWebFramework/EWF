@@ -11,11 +11,8 @@ class WSF_POST_HELPER
 inherit
 
 	WSF_METHOD_HELPER
-		rename
-			send_get_response as do_post
 		redefine
-			execute_new_resource,
-			do_post
+			execute_new_resource
 		end
 
 feature -- Basic operations
@@ -23,48 +20,54 @@ feature -- Basic operations
 	execute_new_resource (req: WSF_REQUEST; res: WSF_RESPONSE; a_handler: WSF_SKELETON_HANDLER)
 			-- Write response to non-existing resource requested by  `req.' into `res'.
 			-- Policy routines are available in `a_handler'.
-		local
-			l_etags: LIST [READABLE_STRING_32]
-			l_failed: BOOLEAN
 		do
 			if a_handler.allow_post_to_missing_resource (req) then
 				handle_content_negotiation (req, res, a_handler, True)
 			else
-				-- TODO 404 Not Found
+				res.send (create {WSF_NOT_FOUND_RESPONSE}.make(req))
 			end
 		end
 
-	
+
 feature {NONE} -- Implementation
 
-	do_post (req: WSF_REQUEST; res: WSF_RESPONSE; a_handler: WSF_SKELETON_HANDLER; a_header: HTTP_HEADER;
+	send_response (req: WSF_REQUEST; res: WSF_RESPONSE; a_handler: WSF_SKELETON_HANDLER; a_header: HTTP_HEADER;
 		a_media_type, a_language_type, a_character_type, a_compression_type: detachable READABLE_STRING_8; a_new_resource: BOOLEAN)
 			-- Write response to `req' into `res' in accordance with `a_media_type' etc. as a new URI.
+		local
+			l_code: NATURAL
 		do
 			a_handler.read_entity (req)
 			if a_handler.is_entity_too_large (req) then
 				handle_request_entity_too_large (req, res, a_handler)
 			else
 				a_handler.check_content_headers (req)
-				if a_handler.content_check_code (req) /= 0 then
-					-- TODO - 415 or 501
+				l_code := a_handler.content_check_code (req)
+				if l_code /= 0 then
+					if l_code = 415 then
+						handle_unsupported_media_type (req, res)
+					else
+						handle_not_implemented (req, res)
+					end
 				else
 					a_handler.check_request (req, res)
 					if a_handler.request_check_code (req) = 0 then
 						a_handler.append_resource (req, res)
 						-- 200 or 204 or 303 or 500 (add support for this?)
-						-- TODO: more support, such as includes_response_entity
+						-- FIXME: more support, such as includes_response_entity
 					end
 				end
 			end
 		end
 
-	handle_request_entity_too_large (req: WSF_REQUEST; res: WSF_RESPONSE; a_handler: WSF_SKELETON_HANDLER)
-			-- TODO.
-		require
-			-- TODO
-		do
-			-- Need to check if condition is temporary.
-		end
-	
+note
+	copyright: "2011-2013, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
+	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
+	source: "[
+			Eiffel Software
+			5949 Hollister Ave., Goleta, CA 93117 USA
+			Telephone 805-685-1006, Fax 805-685-6869
+			Website http://www.eiffel.com
+			Customer support http://support.eiffel.com
+		]"
 end

@@ -11,15 +11,10 @@ class WSF_DELETE_HELPER
 inherit
 
 	WSF_METHOD_HELPER
-		rename
-			send_get_response as handle_delete
-		redefine
-			handle_delete
-		end
 
 feature {NONE} -- Implementation
 	
-	handle_delete (req: WSF_REQUEST; res: WSF_RESPONSE; a_handler: WSF_SKELETON_HANDLER; a_header: HTTP_HEADER;
+	send_response (req: WSF_REQUEST; res: WSF_RESPONSE; a_handler: WSF_SKELETON_HANDLER; a_header: HTTP_HEADER;
 		a_media_type, a_language_type, a_character_type, a_compression_type: detachable READABLE_STRING_8; a_new_resource: BOOLEAN)
 			-- Write response to deletion of resource named by `req' into `res' in accordance with `a_media_type' etc.
 		local

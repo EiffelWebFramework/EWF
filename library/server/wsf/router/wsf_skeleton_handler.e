@@ -24,6 +24,8 @@ inherit
 
 	WSF_METHOD_HELPER_FACTORY
 
+	WSF_SELF_DOCUMENTED_HANDLER
+
 feature -- Access
 
 	is_chunking (req: WSF_REQUEST): BOOLEAN
@@ -42,7 +44,7 @@ feature -- Access
 		end
 
 	conneg (req: WSF_REQUEST): CONNEG_SERVER_SIDE
-			-- Content negotiatior for `req';
+			-- Content negotiation for `req';
 			-- This would normally be a once object, ignoring `req'.
 		require
 			req_attached: req /= Void
@@ -159,6 +161,25 @@ feature -- Status report
 			req_attached: req /= Void
 			chunked: is_chunking (req)
 		deferred
+		end
+
+
+feature -- Documentation
+
+	mapping_documentation (m: WSF_ROUTER_MAPPING; a_request_methods: detachable WSF_REQUEST_METHODS): WSF_ROUTER_MAPPING_DOCUMENTATION
+			-- Documentation associated with Current handler, in the context of the mapping `m' and methods `a_request_methods'
+			--| `m' and `a_request_methods' are useful to produce specific documentation when the handler is used for multiple mapping.
+		do
+			create Result.make (m)
+			Result.add_description (description)
+		end
+
+	description: READABLE_STRING_GENERAL
+			-- General description for self-generated documentation;
+			-- The specific URI templates supported will be described automatically
+		deferred
+		ensure
+			description_attached: Result /= Void
 		end
 
 feature -- DELETE

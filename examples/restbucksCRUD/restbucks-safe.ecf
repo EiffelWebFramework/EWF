@@ -18,7 +18,7 @@
 				<debug name="nino" enabled="true"/>
 			</option>
 		</library>
-		<library name="conneg" location="\home\colin\EWF\library\network\protocol\CONNEG\conneg-safe.ecf"/>
+		<library name="conneg" location="..\..\library\network\protocol\CONNEG\conneg-safe.ecf"/>
 		<library name="default_nino" location="..\..\library\server\wsf\default\nino-safe.ecf" readonly="false"/>
 		<library name="eel" location="$ISE_LIBRARY\contrib\library\text\encryption\eel\eel-safe.ecf" readonly="false"/>
 		<library name="encoder" location="..\..\library\text\encoder\encoder-safe.ecf" readonly="false"/>

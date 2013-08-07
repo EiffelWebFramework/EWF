@@ -10,16 +10,20 @@ deferred class WSF_CACHING_POLICY
 
 feature -- Access
 
+	Never_expires: NATURAL = 525600
+		-- 525600 = 365 * 24 * 60 * 60 = (almost) 1 year;
+		-- See http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.21 for an explanation of why this means never expire
+
 	age (req: WSF_REQUEST): NATURAL
 			-- Maximum age in seconds before response to `req` is considered stale;
 			-- This is used to generate a Cache-Control: max-age header.
 			-- Return 0 to indicate already expired.
-			-- Return (365 * 1440 = 1 year) to indicate never expires.
+			-- Return `Never_expires' to indicate never expires.
 		require
 			req_attached: req /= Void
 		deferred
 		ensure
-			not_more_than_1_year: Result <= (365 * 1440).as_natural_32
+			not_more_than_1_year: Result <= Never_expires
 		end
 
 	shared_age (req: WSF_REQUEST): NATURAL
@@ -27,13 +31,13 @@ feature -- Access
 			-- This is used to generate a Cache-Control: s-maxage header.
 			-- If you wish to have different expiry ages for shared and provate caches, redefine this routine.
 			-- Return 0 to indicate already expired.
-			-- Return (365 * 1440 = 1 year) to indicate never expires.
+			-- Return `Never_expires' to indicate never expires.
 		require
 			req_attached: req /= Void
 		do
 			Result := age (req)
 		ensure
-			not_more_than_1_year: Result <= (365 * 1440).as_natural_32
+			not_more_than_1_year: Result <= Never_expires
 		end
 
 	http_1_0_age (req: WSF_REQUEST): NATURAL
@@ -41,7 +45,7 @@ feature -- Access
 			-- This is used to generate an Expires header, which HTTP/1.0 caches understand.
 			-- If you wish to generate a different age for HTTP/1.0 caches, then redefine this routine.
 			-- Return 0 to indicate already expired.
-			-- Return (365 * 1440 = 1 year) to indicate never expires. Note this will
+			-- Return `Never_expires' to indicate never expires. Note this will
 			--  make a result cachecable that would not normally be cacheable (such as as response
 			--  to a POST), unless overriden by cache-control headers, so be sure to check `req.request_method'.
 		require
@@ -49,7 +53,7 @@ feature -- Access
 		do
 			Result := age (req)
 		ensure
-			not_more_than_1_year: Result <= (365 * 1440).as_natural_32
+			not_more_than_1_year: Result <= Never_expires
 		end
 
 	is_freely_cacheable (req: WSF_REQUEST): BOOLEAN
@@ -81,7 +85,6 @@ feature -- Access
 			--  Redefine to force revalidation.
 		end
 
-	
 	must_proxy_revalidate (req: WSF_REQUEST): BOOLEAN
 			-- If a shared cache is configured to ignore server's expiration time,
 			--  should we force revalidation anyway?
@@ -92,7 +95,6 @@ feature -- Access
 			--  Redefine to force revalidation.
 		end
 
-		
 	private_headers (req: WSF_REQUEST): detachable LIST [READABLE_STRING_8]
 			-- Header names intended for a single user.
 			-- If non-Void, then a Cache-Control: private header will be generated.
@@ -122,4 +124,14 @@ feature -- Access
 		deferred
 		end
 
+note
+	copyright: "2011-2013, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
+	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
+	source: "[
+			Eiffel Software
+			5949 Hollister Ave., Goleta, CA 93117 USA
+			Telephone 805-685-1006, Fax 805-685-6869
+			Website http://www.eiffel.com
+			Customer support http://support.eiffel.com
+		]"
 end

@@ -2,12 +2,19 @@ note
 
 	description: "[
 						Policy-driven helpers to implement a method.
-                  This implementation is suitable for GET and HEAD.
+
 					  ]"
 	date: "$Date$"
 	revision: "$Revision$"
 
-class WSF_METHOD_HELPER
+deferred class WSF_METHOD_HELPER
+
+inherit
+
+	HTTP_STATUS_CODE_MESSAGES
+	
+	SHARED_HTML_ENCODER
+		export {NONE} all end
 
 feature -- Access
 
@@ -42,17 +49,17 @@ feature -- Basic operations
 			if a_handler.resource_previously_existed (req) then
 				if a_handler.resource_moved_permanently (req) then
 					l_locs := a_handler.previous_location (req)
-					-- TODO 301 Moved permanently response
+					handle_redirection_error (req, res, l_locs, {HTTP_STATUS_CODE}.moved_permanently)
 				elseif a_handler.resource_moved_temporarily (req) then
 					l_locs := a_handler.previous_location (req)
-					-- TODO := 302 Found response
+					handle_redirection_error (req, res, l_locs, {HTTP_STATUS_CODE}.found)
 				else
 					create h.make
 					h.put_content_type_text_plain
 					h.put_current_date
 					h.put_content_length (0)
 					res.set_status_code ({HTTP_STATUS_CODE}.gone)
-					res.put_header_text (h.string)
+					res.put_header_lines (h)
 				end
 			else
 				create h.make
@@ -60,7 +67,7 @@ feature -- Basic operations
 				h.put_current_date
 				h.put_content_length (0)
 				res.set_status_code ({HTTP_STATUS_CODE}.not_found)
-				res.put_header_text (h.string)
+				res.put_header_lines (h)
 			end
 		end
 
@@ -78,7 +85,7 @@ feature -- Basic operations
 			l_date: HTTP_DATE
 		do
 			if attached req.http_if_match as l_if_match then
-				-- TODO - also if-range when we add support for range requests
+				-- also if-range when we add support for range requests
 				if not l_if_match.same_string ("*") then
 					l_etags := l_if_match.split (',')
 					l_failed := not across l_etags as i_etags some a_handler.matching_etag (req, i_etags.item, True) end
@@ -105,14 +112,14 @@ feature -- Basic operations
 							across l_etags as i_etags some a_handler.matching_etag (req, i_etags.item, False) end
 					end
 					if l_failed then
-						handle_if_none_match_failed (req, res)
+						handle_if_none_match_failed (req, res, a_handler)
 					else
 						if attached req.http_if_modified_since as l_if_modified_since then
 							if l_if_modified_since.is_string_8 then
 								create l_date.make_from_string (l_if_modified_since.as_string_8)
 								if not l_date.has_error then
 									if not a_handler.modified_since (req, l_date.date_time) then
-										handle_not_modified (req, res)
+										handle_not_modified (req, res, a_handler)
 										l_failed := True
 									end
 								end
@@ -121,13 +128,13 @@ feature -- Basic operations
 					end
 					if not l_failed then
 						handle_content_negotiation (req, res, a_handler, False)
-					end	
+					end
 				end
 			end
 		end
 
 feature {NONE} -- Implementation
-	
+
 	handle_content_negotiation (req: WSF_REQUEST; res: WSF_RESPONSE;
 		a_handler: WSF_SKELETON_HANDLER; a_new_resource: BOOLEAN)
 			-- Negotiate acceptable content for, then write, response requested by `req' into `res'.
@@ -163,7 +170,7 @@ feature {NONE} -- Implementation
 				h.add_header_key_value ({HTTP_HEADER_NAMES}.header_vary, l_media_variant)
 			end
 			if not l_media.is_acceptable then
-				handle_not_accepted ("None of the requested ContentTypes were acceptable", req, res)
+				handle_not_acceptable ("None of the requested ContentTypes were acceptable", l_mime_types, req, res)
 			else
 				l_langs := a_handler.languages_supported (req)
 				l_lang := l_conneg.language_preference (l_langs, req.http_accept_language)
@@ -171,7 +178,7 @@ feature {NONE} -- Implementation
 					h.add_header_key_value ({HTTP_HEADER_NAMES}.header_vary, l_lang_variant)
 				end
 				if not l_lang.is_acceptable then
-					handle_not_accepted ("None of the requested languages were acceptable", req, res)
+					handle_not_acceptable ("None of the requested languages were acceptable", l_langs, req, res)
 				else
 					if attached l_lang.language_type as l_language_type then
 						h.put_content_language (l_language_type)
@@ -182,7 +189,7 @@ feature {NONE} -- Implementation
 						h.add_header_key_value ({HTTP_HEADER_NAMES}.header_vary, l_charset_variant)
 					end
 					if not l_charset.is_acceptable then
-						handle_not_accepted ("None of the requested character encodings were acceptable", req, res)
+						handle_not_acceptable ("None of the requested character encodings were acceptable", l_charsets, req, res)
 					else
 						if attached l_media.media_type as l_media_type and attached l_charset.character_type as l_character_type  then
 							h.put_content_type (l_media_type + "; charset=" + l_character_type)
@@ -193,13 +200,13 @@ feature {NONE} -- Implementation
 							h.add_header_key_value ({HTTP_HEADER_NAMES}.header_vary, l_encoding_variant)
 						end
 						if not l_encoding.is_acceptable then
-							handle_not_accepted ("None of the requested transfer encodings were acceptable", req, res)
+							handle_not_acceptable ("None of the requested transfer encodings were acceptable", l_encodings, req, res)
 						else
 							if attached l_encoding.compression_type as l_compression_type then
 								h.put_content_encoding (l_compression_type)
 							end
 							-- We do not support multiple choices, so
-							send_get_response (req, res, a_handler, h,
+							send_response (req, res, a_handler, h,
 								l_media.media_type, l_lang.language_type, l_charset.character_type, l_encoding.compression_type, a_new_resource)
 						end
 					end
@@ -207,52 +214,19 @@ feature {NONE} -- Implementation
 			end
 		end
 
-	send_get_response (req: WSF_REQUEST; res: WSF_RESPONSE; a_handler: WSF_SKELETON_HANDLER; a_header: HTTP_HEADER;
+	send_response (req: WSF_REQUEST; res: WSF_RESPONSE; a_handler: WSF_SKELETON_HANDLER; a_header: HTTP_HEADER;
 		a_media_type, a_language_type, a_character_type, a_compression_type: detachable READABLE_STRING_8; a_new_resource: BOOLEAN)
 			-- Write response to `req' into `res' in accordance with `a_media_type' etc.
 		require
 			req_attached: req /= Void
 			res_attached: res /= Void
 			a_handler_attached: a_handler /= Void
-			a_header_attached: a_header /= Void			
+			a_header_attached: a_header /= Void
 			a_media_type_attached: a_media_type /= Void
 			a_language_type_attached: a_language_type /= Void
 			a_character_type_attached: a_character_type /= Void
 			a_compression_type_attached: a_compression_type /= Void
-		local
-			l_chunked, l_ok: BOOLEAN
-			l_dt: STRING
-		do
-			a_handler.ensure_content_available (req, a_media_type, a_language_type, a_character_type, a_compression_type)
-			l_chunked := a_handler.is_chunking (req)
-			if l_chunked then
-				a_header.put_transfer_encoding_chunked
-			else
-				a_header.put_content_length (a_handler.content_length (req).as_integer_32)
-			end
-			if attached req.request_time as l_time then
-				l_dt := (create {HTTP_DATE}.make_from_date_time (l_time)).rfc1123_string
-				a_header.put_header_key_value ({HTTP_HEADER_NAMES}.header_date, l_dt)
-				generate_cache_headers (req, a_handler, a_header, l_time)
-			end
-			l_ok := a_handler.response_ok (req)
-			if l_ok then
-				res.set_status_code ({HTTP_STATUS_CODE}.ok)
-			else
-				-- TODO - req.error_handler.has_error = True
-				--handle_internal_server_error (a_handler.last_error (req), req, res)
-			end
-			if attached a_handler.etag (req, a_media_type, a_language_type, a_character_type, a_compression_type) as l_etag then
-				a_header.put_header_key_value ({HTTP_HEADER_NAMES}.header_etag, l_etag)
-			end
-			res.put_header_text (a_header.string)
-			if l_ok then
-				if l_chunked then
-					send_chunked_response (req, res, a_handler, a_header, a_media_type, a_language_type, a_character_type, a_compression_type)
-				else
-					res.put_string (a_handler.content (req, a_media_type, a_language_type, a_character_type, a_compression_type))
-				end
-			end
+		deferred
 		end
 
 	send_chunked_response (req: WSF_REQUEST; res: WSF_RESPONSE; a_handler: WSF_SKELETON_HANDLER; a_header: HTTP_HEADER;
@@ -265,7 +239,7 @@ feature {NONE} -- Implementation
 			a_media_type_attached: a_media_type /= Void
 			a_language_type_attached: a_language_type /= Void
 			a_character_type_attached: a_character_type /= Void
-			a_compression_type_attached: a_compression_type /= Void			
+			a_compression_type_attached: a_compression_type /= Void
 		local
 			l_chunk: TUPLE [a_chunk: READABLE_STRING_8; a_extension: detachable READABLE_STRING_8]
 		do
@@ -290,11 +264,11 @@ feature {NONE} -- Implementation
 				end
 			end
 			if a_handler.finished (req) then
-				-- TODO - support for trailers
+				-- In future, add support for trailers
 				res.put_chunk_end
 			end
 		end
-	
+
 	generate_cache_headers (req: WSF_REQUEST; a_handler: WSF_SKELETON_HANDLER; a_header: HTTP_HEADER; a_request_time: DATE_TIME)
 			-- Write headers affecting caching for `req' into `a_header'.
 		require
@@ -343,7 +317,7 @@ feature {NONE} -- Implementation
 			end
 			if a_handler.must_proxy_revalidate (req) then
 				a_header.add_header_key_value ({HTTP_HEADER_NAMES}.header_cache_control, "proxy-revalidate")
-			end			
+			end
 		end
 
 	append_field_name (a_field_names: STRING; a_fields: LIST [READABLE_STRING_8])
@@ -362,36 +336,139 @@ feature {NONE} -- Implementation
 
 feature -- Basic operations
 
-	handle_not_accepted (a_message: READABLE_STRING_8; req: WSF_REQUEST; res: WSF_RESPONSE)
-			-- Write a Not Accepted response to `res'.
+	handle_redirection_error (req: WSF_REQUEST; res: WSF_RESPONSE; a_locations: LIST [URI]; a_status_code: INTEGER)
+			-- Write `a_status_code' error to `res'.
+			-- Include all of `a_locations' in the headers, and hyperlink to the first one in the body.
+		require
+			res_attached: res /= Void
+			req_attached: req /= Void
+			a_locations_attached: a_locations /= Void
+			a_location_not_empty: not a_locations.is_empty
+			a_status_code_code: is_valid_http_status_code (a_status_code)
+		local
+			h: HTTP_HEADER
+			s: STRING
+		do
+			if attached http_status_code_message (a_status_code) as l_msg then
+				create h.make
+				across a_locations as i_location loop
+					h.add_header_key_value ({HTTP_HEADER_NAMES}.header_location, i_location.item.string)
+				end
+				if req.is_content_type_accepted ({HTTP_MIME_TYPES}.text_html) then
+					s := "<html lang=%"en%"><head>"
+					s.append ("<title>")
+					s.append (html_encoder.encoded_string (req.request_uri))
+					s.append ("Error " + a_status_code.out + " (" + l_msg + ")")
+					s.append ("</title>%N")
+					s.append ("[
+						<style type="text/css">
+						div#header {color: #fff; background-color: #000; padding: 20px; text-align: center; font-size: 2em; font-weight: bold;}
+						div#message { margin: 40px; text-align: center; font-size: 1.5em; }
+						div#suggestions { margin: auto; width: 60%;}
+						div#suggestions ul { }
+						div#footer {color: #999; background-color: #eee; padding: 10px; text-align: center; }
+						div#logo { float: right; margin: 20px; width: 60px height: auto; font-size: 0.8em; text-align: center; }
+						div#logo div.outer { padding: 6px; width: 60px; border: solid 3px #500; background-color: #b00;}
+						div#logo div.outer div.inner1 { display: block; margin: 10px 15px;  width: 30px; height: 50px; color: #fff; background-color: #fff; border: solid 2px #900; }
+						div#logo div.outer div.inner2 { margin: 10px 15px; width: 30px; height: 15px; color: #fff; background-color: #fff; border: solid 2px #900; }
+						</style>
+						</head>
+						<body>
+					]")
+					s.append ("<div id=%"header%">Error " + a_status_code.out + " (" + l_msg + ")</div>")
+					s.append ("<div id=%"logo%">")
+					s.append ("<div class=%"outer%"> ")
+					s.append ("<div class=%"inner1%"></div>")
+					s.append ("<div class=%"inner2%"></div>")
+					s.append ("</div>")
+					s.append ("The current location for this resource is <a href=%"" + a_locations.first.string + "%">here</a>")
+					s.append ("Error " + a_status_code.out + " (" + l_msg + ")</div>")
+					s.append ("<div id=%"message%">Error " + a_status_code.out + " (" + l_msg + "): <code>" + html_encoder.encoded_string (req.request_uri) + "</code></div>")
+					s.append ("<div id=%"footer%"></div>")
+					s.append ("</body>%N")
+					s.append ("</html>%N")
+					
+					h.put_content_type_text_html
+				else
+					s := "Error " + a_status_code.out + " (" + l_msg + "): "
+					s.append (req.request_uri)
+					s.append_character ('%N')
+					s.append ("The current location for this resource is " + a_locations.first.string)
+					h.put_content_type_text_plain
+				end
+				h.put_content_length (s.count)
+				res.put_header_lines (h)
+				res.put_string (s)
+				res.flush
+			end
+		end
+
+	handle_not_acceptable (a_message: READABLE_STRING_8; a_supported: LIST [STRING]; req: WSF_REQUEST; res: WSF_RESPONSE)
+			-- Write a Not Acceptable response to `res'.
 		require
 			req_attached: req /= Void
 			res_attached: res /= Void
 			a_message_attached: a_message /= Void
+			a_supported_attached: a_supported /= Void
+		local
+			h: HTTP_HEADER
+			s: STRING
 		do
-			-- TODO: flag this if it gets to code review.
+			create h.make
+			h.put_content_type_text_plain
+			h.put_current_date
+			s := a_message
+			s.append_character ('%N')
+			s.append_character ('%N')
+			s.append_string ("We accept the following:%N%N")
+			across a_supported as i_supported loop
+				s.append_string (i_supported.item)
+				s.append_character ('%N')
+			end
+			h.put_content_length (s.count)
+			res.set_status_code ({HTTP_STATUS_CODE}.not_acceptable)
+			res.put_header_lines (h)
+			res.put_string (s)
+			res.flush
 		end
 
-	handle_if_none_match_failed (req: WSF_REQUEST; res: WSF_RESPONSE)
-			-- Write a Precondition Failed response to `res'.
+	handle_if_none_match_failed (req: WSF_REQUEST; res: WSF_RESPONSE; a_handler: WSF_SKELETON_HANDLER)
+			-- Write a Not Modified response to `res'.
 		require
 			req_attached: req /= Void
 			res_attached: res /= Void
+			a_handler_attached: a_handler /= Void
 		do
-			-- TODO: flag this if it gets to code review. Why not just handle_precondition_failed?
+			handle_not_modified (req, res, a_handler)
 		end
 
-	handle_not_modified (req: WSF_REQUEST; res: WSF_RESPONSE)
-			-- Write a Precondition Failed response to `res'.
+	handle_not_modified (req: WSF_REQUEST; res: WSF_RESPONSE; a_handler: WSF_SKELETON_HANDLER)
+			-- Write a Not Modified response to `res'.
 		require
 			req_attached: req /= Void
 			res_attached: res /= Void
+			a_handler_attached: a_handler /= Void
+		local
+			h: HTTP_HEADER
 		do
-			-- TODO: flag this if it gets to code review. Why not just handle_precondition_failed?
+			create h.make
+			h.put_content_type_text_plain
+			h.put_content_length (0)
+			if attached a_handler.etag (req, "", "", "", "") as l_etag then
+				-- FIXME: We aren't strictly conformant here, as we have not conducted content negotiation yet,
+				--  so we might not get an identical etag as for a successful (200 OK) request.
+				-- So we should conduct content negotiation at this point (and if not acceptable, we don't include an etag).
+				-- Add add any Vary header that might result.
+				-- Also, when we add support for the Content-Location header in responses, we need to send that here too.
+				h.put_header_key_value ({HTTP_HEADER_NAMES}.header_etag, l_etag)
+			end
+			generate_cache_headers (req, a_handler, h, create {DATE_TIME}.make_now_utc)
+			res.set_status_code ({HTTP_STATUS_CODE}.not_modified)
+			res.put_header_lines (h)
 		end
 
 	handle_precondition_failed  (req: WSF_REQUEST; res: WSF_RESPONSE)
-			-- Write a precondition failed response for `req' to `res'.
+			-- Write a Precondition Failed response for `req' to `res'.
 		require
 			req_attached: req /= Void
 			res_attached: res /= Void
@@ -403,7 +480,59 @@ feature -- Basic operations
 			h.put_current_date
 			h.put_content_length (0)
 			res.set_status_code ({HTTP_STATUS_CODE}.precondition_failed)
-			res.put_header_text (h.string)
+			res.put_header_lines (h)
+		end
+
+	handle_unsupported_media_type (req: WSF_REQUEST; res: WSF_RESPONSE)
+			-- Write a Unsupported Media Type response for `req' to `res'.
+		require
+			req_attached: req /= Void
+			res_attached: res /= Void
+		local
+			h: HTTP_HEADER
+		do
+			create h.make
+			h.put_content_type_text_plain
+			h.put_current_date
+			h.put_content_length (0)
+			res.set_status_code ({HTTP_STATUS_CODE}.unsupported_media_type)
+			res.put_header_lines (h)
+		end
+
+	handle_not_implemented (req: WSF_REQUEST; res: WSF_RESPONSE)
+			-- Write a Not Implemented response for `req' to `res'.
+		require
+			req_attached: req /= Void
+			res_attached: res /= Void
+		local
+			h: HTTP_HEADER
+		do
+			create h.make
+			h.put_content_type_text_plain
+			h.put_current_date
+			h.put_content_length (0)
+			res.set_status_code ({HTTP_STATUS_CODE}.not_implemented)
+			res.put_header_lines (h)
+		end
+	
+	handle_request_entity_too_large (req: WSF_REQUEST; res: WSF_RESPONSE; a_handler: WSF_SKELETON_HANDLER)
+			-- Write a Request Entity Too Large response for `req' to `res'.
+		require
+			req_attached: req /= Void
+			res_attached: res /= Void
+			a_handler_attached: a_handler /= Void
+		local
+			h: HTTP_HEADER
+		do
+			create h.make
+			h.put_content_type_text_plain
+			h.put_current_date
+			h.put_content_length (0)
+			res.set_status_code ({HTTP_STATUS_CODE}.request_entity_too_large)
+			res.put_header_lines (h)
+			-- FIXME: Need to check if condition is temporary. This needs a new query
+			-- on the handler. For now we can claim compliance by saying the condition
+			-- is always permenent :-) - author's might not like this though.
 		end
 
 note

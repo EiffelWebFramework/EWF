@@ -9,7 +9,7 @@ class	ORDER_HANDLER
 inherit
 
 	WSF_SKELETON_HANDLER
-	
+
 	SHARED_DATABASE_API
 
 	SHARED_EJSON
@@ -28,9 +28,14 @@ create
 
 	make_with_router
 
-feature -- API DOC
+feature -- Documentation
 
-	api_doc : STRING = "URI:/order METHOD: POST%N URI:/order/{orderid} METHOD: GET, HEAD, PUT, DELETE%N"
+	description: READABLE_STRING_GENERAL
+			-- General description for self-generated documentation;
+			-- The specific URI templates supported will be described automatically
+		do
+			Result :=  "Create, Read, Update or Delete an ORDER."
+		end
 
 feature -- Access
 
@@ -93,7 +98,7 @@ feature -- Access
 			-- Maximum age in seconds before response to `req` is considered stale;
 			-- This is used to generate a Cache-Control: max-age header.
 			-- Return 0 to indicate already expired.
-			-- Return (365 * 1440 = 1 year) to indicate never expires.
+			-- Return Never_expires to indicate never expires.
 		do
 			-- All our responses are considered stale.
 		end
@@ -135,7 +140,7 @@ feature -- Access
 			-- If `a_strong' then the strong comparison function must be used.
 		local
 			l_id: STRING
-			l_etag_util: ETAG_UTILS			
+			l_etag_util: ETAG_UTILS
 		do
 			l_id := order_id_from_request (req)
 			if db_access.orders.has_key (l_id) then
@@ -155,8 +160,8 @@ feature -- Access
 			create l_etag_utils
 			if attached {ORDER} req.execution_variable ("ORDER") as l_order then
 				Result := l_etag_utils.md5_digest (l_order.out)
-			end		
-		end			
+			end
+		end
 
 	modified_since (req: WSF_REQUEST; a_date_time: DATE_TIME): BOOLEAN
 			-- Has resource requested in `req' been modified since `a_date_time' (UTC)?
@@ -164,7 +169,7 @@ feature -- Access
 			-- We don't track this information. It is safe to always say yes.
 			Result := True
 		end
-	
+
 feature -- Measurement
 
 	content_length (req: WSF_REQUEST): NATURAL
@@ -220,7 +225,7 @@ feature -- Execution
 			order_saved_only_for_get_head: req.is_get_head_request_method =
 				attached {ORDER} req.execution_variable ("ORDER")
 		end
-	
+
 feature -- GET/HEAD content
 
 	ensure_content_available (req: WSF_REQUEST;
@@ -254,7 +259,7 @@ feature -- GET/HEAD content
 				Result := l_response
 			end
 		end
-	
+
 		next_chunk (req: WSF_REQUEST; a_media_type, a_language_type, a_character_type, a_compression_type: READABLE_STRING_8): TUPLE [a_check: READABLE_STRING_8; a_extension: detachable READABLE_STRING_8]
 			-- Next chunk of entity body in response to `req';
 			-- The second field of the result is an optional chunk extension.
@@ -270,7 +275,7 @@ feature -- GET/HEAD content
 		do
 			-- precondition `is_chunking' is never met
 		end
-	
+
 feature -- DELETE
 
 	delete (req: WSF_REQUEST)
@@ -315,7 +320,7 @@ feature -- PUT/POST
 			-- No. We don't care for this example.
 		end
 
-		check_content_headers (req: WSF_REQUEST)
+	check_content_headers (req: WSF_REQUEST)
 			-- Check we can support all content headers on request entity.
 			-- Set `req.execution_variable ("CONTENT_CHECK_CODE")' to {NATURAL} zero if OK, or 415 or 501 if not.
 		do
@@ -334,14 +339,14 @@ feature -- PUT/POST
 			-- Create new resource in response to a POST request.
 			-- Implementor must set error code of 200 OK or 204 No Content or 303 See Other or 500 Server Error.
 		do
-			if attached {ORDER} req.execution_variable ("EXTRACTED_ORDER") as l_order then			
+			if attached {ORDER} req.execution_variable ("EXTRACTED_ORDER") as l_order then
 				save_order (l_order)
 				compute_response_post (req, res, l_order)
 			else
 				handle_bad_request_response ("Not a valid order", req, res)
 			end
 		end
-	
+
 	check_conflict (req: WSF_REQUEST; res: WSF_RESPONSE)
 			-- Check we can support all content headers on request entity.
 			-- Set `req.execution_variable ("CONFLICT_CHECK_CODE")' to {NATURAL} zero if OK, or 409 if not.
@@ -350,17 +355,15 @@ feature -- PUT/POST
 			if attached {ORDER} req.execution_variable ("EXTRACTED_ORDER") as l_order then
 				if not is_valid_to_update (l_order)	then
 					req.set_execution_variable ("CONFLICT_CHECK_CODE", {NATURAL} 409)
-					--| FIXME: Here we need to define the Allow methods
 					handle_resource_conflict_response (l_order.out +"%N There is conflict while trying to update the order, the order could not be update in the current state", req, res)
 				end
 			else
 				req.set_execution_variable ("CONFLICT_CHECK_CODE", {NATURAL} 409)
-				--| FIXME: Here we need to define the Allow methods
-				--| This ought to be a 500, as if attached should probably be check attached. But as yet I lack a proof. TODO.
+				--| This ought to be a 500, as if attached should probably be check attached. But as yet I lack a proof.
 				handle_resource_conflict_response ("There is conflict while trying to update the order, the order could not be update in the current state", req, res)
 			end
 		end
-	
+
 	check_request (req: WSF_REQUEST; res: WSF_RESPONSE)
 			-- Check that the request entity is a valid request.
 			-- The entity is available as `req.execution_variable ("REQUEST_ENTITY")'.
@@ -384,7 +387,7 @@ feature -- PUT/POST
 					end
 				else
 					req.set_execution_variable ("REQUEST_CHECK_CODE", {NATURAL} 0)
-					req.set_execution_variable ("EXTRACTED_ORDER", l_order)					
+					req.set_execution_variable ("EXTRACTED_ORDER", l_order)
 				end
 			else
 				req.set_execution_variable ("REQUEST_CHECK_CODE", {NATURAL} 400)
@@ -396,14 +399,14 @@ feature -- PUT/POST
 			-- Perform the update requested in `req'.
 			-- Write a response to `res' with a code of 204 or 500.
 		do
-			if attached {ORDER} req.execution_variable ("EXTRACTED_ORDER") as l_order then			
+			if attached {ORDER} req.execution_variable ("EXTRACTED_ORDER") as l_order then
 				update_order (l_order)
 				compute_response_put (req, res, l_order)
 			else
 				handle_internal_server_error (res)
 			end
 		end
-	
+
 feature -- HTTP Methods
 
 	compute_response_put (req: WSF_REQUEST; res: WSF_RESPONSE; l_order : ORDER)
@@ -553,6 +556,6 @@ feature {NONE} -- Implementation Repository Layer
 		end
 
 note
-	copyright: "2011-2012, Javier Velilla and others"
+	copyright: "2011-2013, Javier Velilla and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 end
