@@ -225,7 +225,7 @@ feature -- GET/HEAD content
 			--  are used, then this will also generate the chunk extension for the first chunk.
 		require
 			req_attached: req /= Void
-			get_or_head: req.is_get_head_request_method
+			get_or_head_or_delete: req.is_get_head_request_method or req.is_delete_request_method
 			a_media_type_attached: a_media_type /= Void
 			a_language_type_attached: a_language_type /= Void
 			a_character_type_attached: a_character_type /= Void
@@ -347,7 +347,7 @@ feature -- PUT/POST
 		end
 
 	check_conflict (req: WSF_REQUEST; res: WSF_RESPONSE)
-			-- Check we can support all content headers on request entity.
+			-- Check to see if updating the resource is problematic due to the current state of the resource.
 			-- Set `req.execution_variable ("CONFLICT_CHECK_CODE")' to {NATURAL} zero if OK, or 409 if not.
 			-- In the latter case, write the full error response to `res'.
 		require
