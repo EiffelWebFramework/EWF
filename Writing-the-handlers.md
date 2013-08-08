@@ -148,6 +148,30 @@ In this routine you have the responsibilities of:
 1. Creating the resource using the entity in REQUEST_ENTITY (or some decoded version that you have stored elsewhere).
 1. Writing the entire response yourself (as I said before, support for PUT and POST processing is poor at present), including setting the status code of 201 Created or 303 See Other or 500 Internal server error).
 
+### append_resource
+
+This routine is called for POST requests on an existing resource (normal usage).
+
+In this routine you have the responsibilities of:
+
+1. Storing the entity from REQUEST_ENTITY (or some decoded version that you have stored elsewhere), or whatever other action is appropriate for the semantics of POST requests to this URI.
+1. Writing the entire response yourself (as I said before, support for PUT and POST processing is poor at present), including setting the status code of 200 OK, 204 No Content, 303 See Other or 500 Internal server error).
+
+### check_conflict
+
+This is called for a normal (updating) PUT request. You have to check to see if the current state of the resource makes updating impossible. If so, then you need to write the entire response with a status code of 409 Conflict, and set the execution variable CONFLICT_CHECK_CODE to 409.
+Otherwise you just set the execution variable CONFLICT_CHECK_CODE to 0.
+
+See [the HTTP/1.1 specification](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.10) for when you are allowed to use the 409 response, and what to write in the response entity. If this is not appropriate then a 500 Internal server error would be more appropriate (and set CONFLICT_CHECK_CODE to 500 - the framework only tests for non-zero).
+
+### conflict_check_code
+
+This is implemented to check CONFLICT_CHECK_CODE from the previous routine. If you choose to use a different mechanism, then you need to redefine this.
+
+### check_request
+
+This is called for PUT and POST requests. You need to check that the request entity (available in the execution variable REQUEST_ENTITY) is valid for the semantics of the request URI. You should set the execution variable REQUEST_CHECK_CODE to 0 if it is OK. If not, set it to 400 and write the full response, including a status code of 400 Bad Request.
+
 ## Implementing the policies
 
 * [WSF_OPTIONS_POLICY](./WSF_OPTIONS_POLICY)
