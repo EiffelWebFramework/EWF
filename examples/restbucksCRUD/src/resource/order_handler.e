@@ -297,14 +297,6 @@ feature -- DELETE
 			end
 		end
 
-	deleted (req: WSF_REQUEST): BOOLEAN
-			-- Has resource named by `req' been deleted?
-		do
-			if not req.error_handler.has_error then
-				Result := True
-			end
-		end
-
 	delete_queued (req: WSF_REQUEST): BOOLEAN
 			-- Has resource named by `req' been queued for deletion?
 		do

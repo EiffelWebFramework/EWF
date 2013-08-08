@@ -197,7 +197,12 @@ feature -- DELETE
 			-- Has resource named by `req' been deleted?
 		require
 			req_attached: req /= Void
-		deferred
+		do
+			if not req.error_handler.has_error then
+				Result := True
+			end
+		ensure
+			negative_implication: not Result implies req.error_handler.has_error
 		end
 
 	delete_queued (req: WSF_REQUEST): BOOLEAN
