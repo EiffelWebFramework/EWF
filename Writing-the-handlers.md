@@ -120,6 +120,34 @@ Currently the framework provides very little support for PUT and POST requests (
 
 Experience with converting the restbucksCRUD example to use the framework, shows that it is certainly possible to do POST and PUT processing with it. But enhancements are needed, especially in the area of decoding the request entity.
 
+### is_entity_too_large
+
+If your application has limits on the size of entities that it can store, then you implement them here.
+
+### check_content_headers
+
+This is called after is_entity_too_large returns False. You are supposed to check the following request headers, and take any appropriate actions (such as setting an error, decompression the entity, or converting it to a different character set):
+
+* Content-Encoding
+* Content-Language
+* Content-MD5
+* Content-Range
+* Content-Type
+
+At the moment, your duty is to set the execution variable CONTENT_CHECK_CODE to zero, or an HTTP error status code. A future enhancement of the framework might be to provide more support for this.
+
+### content_check_code
+
+This simply accesses the execution variable CONTENT_CHECK_CODE set in check_content_headers. if you want to use some other mechanism, then you can redefine this routine.
+
+### create_resource
+
+This routine is called when a PUT request is made with a URI that refers to a resource that does not exist (PUT is normally used for updating an existing resource), and you have already decided to allow this.
+In this routine you have the responsibilities of:
+
+1. Creating the resource using the entity in REQUEST_ENTITY (or some decoded version that you have stored elsewhere).
+1. Writing the entire response yourself (as I said before, support for PUT and POST processing is poor at present), including setting the status code of 201 Created or 303 See Other or 500 Internal server error).
+
 ## Implementing the policies
 
 * [WSF_OPTIONS_POLICY](./WSF_OPTIONS_POLICY)
