@@ -248,8 +248,7 @@ feature {NONE} -- Implementation
 					l_chunk := a_handler.next_chunk (req, a_media_type, a_language_type, a_character_type, a_compression_type)
 					res.put_chunk (l_chunk.a_chunk, l_chunk.a_extension)
 				else
-					-- TODO - req.error_handler.has_error = True
-					-- handle_internal_server_error (a_handler.last_error (req), req, res)
+					write_error_response (req, res)
 				end
 			until
 				a_handler.finished (req) or not a_handler.response_ok (req)
@@ -259,8 +258,7 @@ feature {NONE} -- Implementation
 					l_chunk := a_handler.next_chunk (req, a_media_type, a_language_type, a_character_type, a_compression_type)
 					res.put_chunk (l_chunk.a_chunk, l_chunk.a_extension)
 				else
-					-- TODO - req.error_handler.has_error = True
-					-- handle_internal_server_error (a_handler.last_error (req), req, res)
+					write_error_response (req, res)					
 				end
 			end
 			if a_handler.finished (req) then
@@ -334,7 +332,29 @@ feature {NONE} -- Implementation
 			end
 		end
 
-feature -- Basic operations
+feature -- Errors
+
+	
+feature -- Error reporting
+
+	write_error_response (req: WSF_REQUEST; res: WSF_RESPONSE)
+			-- Write an error response to `res' using `req.error_handler'.
+		require
+			req_attached: req /= Void
+			res_attached: res /= Void
+			req_has_error: req.has_error
+		local
+			h: HTTP_HEADER
+			m: READABLE_STRING_8
+		do
+			m := req.error_handler.as_string_representation
+			create h.make
+			h.put_content_type_text_plain
+			h.put_content_length (m.count)
+			res.set_status_code (req.error_handler.primary_error_code)
+			res.put_header_lines (h)
+			res.put_string (m)
+		end
 
 	handle_redirection_error (req: WSF_REQUEST; res: WSF_RESPONSE; a_locations: LIST [URI]; a_status_code: INTEGER)
 			-- Write `a_status_code' error to `res'.

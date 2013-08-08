@@ -47,8 +47,7 @@ feature {NONE} -- Implementation
 					res.put_header_text (a_header.string)
 				end
 			else
-				-- TODO - req.error_handler.has_error = True
-				--handle_internal_server_error (a_handler.last_error (req), req, res)
+				write_error_response (req, res)
 			end
 		end
 

@@ -464,6 +464,7 @@ feature {NONE} -- Implementation
 			h.put_content_length (m.count)
 			h.put_current_date
 			res.set_status_code ({HTTP_STATUS_CODE}.internal_server_error)
+			res.put_header_lines (h)
 			res.put_string (m)
 		ensure
 			response_status_is_set: res.status_is_set
