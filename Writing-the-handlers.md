@@ -88,9 +88,37 @@ Of course, if you have not mapped any DELETE requests to the URI space of this h
 
 If in the delete routine, you elected to queue the request, then you need to return True here. You will probably need to check the execution variable you set in the delete routine.
 
-### deleted
+### ensure_content_available
 
-If delete_queued returns False, then deleted needs to indicate whether or not the delete succeeded. A default implementation is provided that should be satisfactory.
+This routine is called for GET and DELETE (when a entity is provided in the response) processing. It's purpose is to make the text of the entity (body of the response) available for future routines (if is_chunking is true, then only the first chunk needs to be made available, although if you only serve, as opposed to generate, the result in chunks, then you will make the entire entity available here). This is necessary so that we can compute the length before we start to serve the response. You would normally save it in an execution variable on the request object (as ORDER_HANDLER does). Note that this usage of execution variables ensures your routines can successfully cope with simultaneous requests. If you encounter a problem generating the content, then add an error to req.error_handler.
+
+As well as the request object, we provide the results of content negotiation, so you can generate the entity in the agreed format. If you only support one format (i.e. all of mime_types_supported, charsets_supported, encodings_supported and languages_supported are one-element lists), then you are guaranteed that this is what you are being asked for, and so you can ignore them.
+
+### content
+
+When not streaming, this routine provides the entity to the framework (for GET or DELETE). Normally you would just access the execution variable that you set in ensure_content_available. Again, the results of content negotiation are made available, but you probably don't need them at this stage. If you only stream responses (for GET), and if you don't support DELETE, then you don't need to do anything here.
+
+### generate_next_chunk
+
+When streaming the response, this routine is called to enable you to generate chunks beyond the first, so that you can incrementally generate the response entity. If you generated the entire response entity in 
+ensure_content_available, then you do nothing here. Otherwise, you will generate the next chunk, and save it in the same execution variable that you use in ensure_content_available (or add an error to req.error_handler). If you don't support streaming, then you don't need to do anything here.
+
+### next_chunk
+
+When streaming the response, the framework calls this routine to provides the contents of each generated chunk. If you generated the entire response entity in ensure_content_available, then you need to slice it in this routine (you will have to keep track of where you are with execution variables). If instead you generate the response incrementally, then your task is much easier - you just access the execution variable saved in ensure_content_available/generate_next_chunk.
+As in all these content-serving routines, we provide the results of content negotiation. This might be necessary, for instance, if you were compressing an incrementally generated response (it might be more convenient to do the compression here rather than in both ensure_content_available and generate_next_chunk).
+ 
+### read_entity
+
+This is called for PUT and POST processing, to read the entity provided in the request. A default implementation is provided. This assumes that no decoding (e.g. decompression or character set conversion) is necessary. And it saves it in the execution variable REQUEST_ENTITY.
+
+Currently the framework provides very little support for PUT and POST requests (so you may well need to redefine this routine). There are several reasons for this:
+
+1. I personally don't have much experience with PUT and POST.
+1. It has taken a long time to develop this framework, and to some extent I was working in the dark (I couldn't check what I was doing until the entire framework was written - it wouldn't even compile before then).
+1. The idea for the framework came from a code review process on servers I had written for the company that I work for. I had acquired a lot of knowledge of the HTTP protocol in the process, and some of it showed in the code that I had written. It was thought that it would be a good idea if this knowledge were encapsulated in Eiffel, so other developers would be able to write servers without such knowledge. So this framework has been developed in company time. However, at present, we are only using GET requests.
+
+Experience with converting the restbucksCRUD example to use the framework, shows that it is certainly possible to do POST and PUT processing with it. But enhancements are needed, especially in the area of decoding the request entity.
 
 ## Implementing the policies
 
