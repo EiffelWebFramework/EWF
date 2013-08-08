@@ -172,6 +172,14 @@ This is implemented to check CONFLICT_CHECK_CODE from the previous routine. If y
 
 This is called for PUT and POST requests. You need to check that the request entity (available in the execution variable REQUEST_ENTITY) is valid for the semantics of the request URI. You should set the execution variable REQUEST_CHECK_CODE to 0 if it is OK. If not, set it to 400 and write the full response, including a status code of 400 Bad Request.
 
+### request_check_code
+
+This routine just checks REQUEST_CHECK_CODE. if you choose to use a different mechanism, then redefine it.
+
+### update_resource
+
+This routine is called for a normal (updating) PUT request. You have to update the state of the resource using the entity saved in the execution environment variable REQUEST_ENTITY (or more likely elsewhere - see what ORDER_HANDLER does). Then write the entire response including a status code of 204 No Content or 500 Internal server error.
+
 ## Implementing the policies
 
 * [WSF_OPTIONS_POLICY](./WSF_OPTIONS_POLICY)
