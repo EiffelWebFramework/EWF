@@ -37,8 +37,7 @@ feature {NONE} -- Implementation
 			if l_ok then
 				res.set_status_code ({HTTP_STATUS_CODE}.ok)
 			else
-				-- TODO - req.error_handler.has_error = True
-				--handle_internal_server_error (a_handler.last_error (req), req, res)
+				write_error_response (req, res)
 			end
 			if attached a_handler.etag (req, a_media_type, a_language_type, a_character_type, a_compression_type) as l_etag then
 				a_header.put_header_key_value ({HTTP_HEADER_NAMES}.header_etag, l_etag)
@@ -52,5 +51,15 @@ feature {NONE} -- Implementation
 				end
 			end
 		end
-	
+
+note
+	copyright: "2011-2013, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
+	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
+	source: "[
+			Eiffel Software
+			5949 Hollister Ave., Goleta, CA 93117 USA
+			Telephone 805-685-1006, Fax 805-685-6869
+			Website http://www.eiffel.com
+			Customer support http://support.eiffel.com
+		]"
 end
