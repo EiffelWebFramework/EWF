@@ -88,6 +88,10 @@ Of course, if you have not mapped any DELETE requests to the URI space of this h
 
 If in the delete routine, you elected to queue the request, then you need to return True here. You will probably need to check the execution variable you set in the delete routine.
 
+### deleted
+
+If delete_queued returns False, then deleted needs to indicate whether or not the delete succeeded. A default implementation is provided that should be satisfactory.
+
 ## Implementing the policies
 
 * [WSF_OPTIONS_POLICY](./WSF_OPTIONS_POLICY)
