@@ -26,18 +26,21 @@ feature {NONE} -- Implementation
 			l_dt: STRING
 		do
 			a_handler.ensure_content_available (req)
-			l_chunked := a_handler.is_chunking (req)
-			if l_chunked then
-				a_header.put_transfer_encoding_chunked
-			else
-				a_header.put_content_length (a_handler.content_length (req).as_integer_32)
-			end
-			if attached req.request_time as l_time then
-				l_dt := (create {HTTP_DATE}.make_from_date_time (l_time)).rfc1123_string
-				a_header.put_header_key_value ({HTTP_HEADER_NAMES}.header_date, l_dt)
-				generate_cache_headers (req, a_handler, a_header, l_time)
-			end
 			l_ok := a_handler.response_ok (req)
+			if l_ok then
+				l_chunked := a_handler.is_chunking (req)
+				if l_chunked then
+					a_header.put_transfer_encoding_chunked
+				else
+					a_header.put_content_length (a_handler.content_length (req).as_integer_32)
+				end
+				if attached req.request_time as l_time then
+					l_dt := (create {HTTP_DATE}.make_from_date_time (l_time)).rfc1123_string
+					a_header.put_header_key_value ({HTTP_HEADER_NAMES}.header_date, l_dt)
+					generate_cache_headers (req, a_handler, a_header, l_time)
+				end
+				l_ok := a_handler.response_ok (req)
+			end
 			if l_ok then
 				res.set_status_code ({HTTP_STATUS_CODE}.ok)
 			else
