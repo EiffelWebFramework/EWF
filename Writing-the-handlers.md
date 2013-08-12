@@ -4,6 +4,12 @@ Now you have to implement each handler. You need to inherit from WSF_SKELETON_HA
 
 ## Implementing the routines declared directly in WSF_SKELETON_HANDLER
 
+### check_resource_exists
+
+Here you check for the existence of the resource named by the request URI. If it does, then you need to call set_resource_exists on the helper argument.
+Note that if you support multiple representations through content negotiation, then etags are dependent upon
+the selected variant. If you support etags, then you will need to make the response entity available at this point, rather than in ensure_content_available.
+
 ### is_chunking
 
 HTTP/1.1 supports streaming responses (and providing you have configured your server to use a proxy server in WSF_PROXY_USE_POLICY, this framework guarantees you have an HTTP/1.1 client to deal with). It is up to you whether or not you choose to make use of it. If so, then you have to serve the response one chunk at a time (but you could generate it all at once, and slice it up as you go). In this routine you just say whether or not you will be doing this. So the framework n=knows which other routines to call.
