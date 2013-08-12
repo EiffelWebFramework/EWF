@@ -6,7 +6,7 @@
 
 The aim of the policy-driven framework is to allow authors of web-servers to concentrate on the business logic (e.g., in the case of a GET request, generating the content), without having to worry about the details of the HTTP protocol (such as headers and response codes). However, there are so many possibilities in the HTTP protocol, that it is impossible to correctly guess what to do in all cases. Therefore the author has to supply policy decisions to the framework, in areas such as caching decisions. These are implemented as a set of deferred classes for which the author needs to provide effective implementations.
 
-We aim to provide unconditional compliance [See HTTP/1.1 specification](http://www.w3.org/Protocols/rfc2616/rfc2616-sec1.html#sec1) for you.
+We aim to provide unconditional compliance [See HTTP/1.1 specification](http://www.w3.org/Protocols/rfc2616/rfc2616-sec1.html#sec1) for you. Note that byte-ranges are not yet supported.
 
 ## Mapping the URI space
 
