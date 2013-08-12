@@ -24,15 +24,16 @@ feature -- Basic operations
 			if a_handler.treat_as_moved_permanently (req) then
 				handle_redirection_error (req, res, a_handler.previous_location (req), {HTTP_STATUS_CODE}.moved_permanently)
 			else
-				handle_content_negotiation (req, res, a_handler, True)
+				check attached {HTTP_HEADER} req.execution_variable ("NEGOTIATED_HTTP_HEADER") as h then
+						-- postcondition header_attached of `handle_content_negotiation'
+					send_response (req, res, a_handler, h, True)
+				end
 			end
 		end
 
-	
 feature {NONE} -- Implementation
 
-	send_response (req: WSF_REQUEST; res: WSF_RESPONSE; a_handler: WSF_SKELETON_HANDLER; a_header: HTTP_HEADER;
-		a_media_type, a_language_type, a_character_type, a_compression_type: detachable READABLE_STRING_8; a_new_resource: BOOLEAN)
+	send_response (req: WSF_REQUEST; res: WSF_RESPONSE; a_handler: WSF_SKELETON_HANDLER; a_header: HTTP_HEADER; a_new_resource: BOOLEAN)
 			-- Write response to `req' into `res' in accordance with `a_media_type' etc. as a new URI.
 		local
 			l_code: NATURAL

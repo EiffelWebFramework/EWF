@@ -14,14 +14,18 @@ inherit
 
 feature {NONE} -- Implementation
 
-	send_response (req: WSF_REQUEST; res: WSF_RESPONSE; a_handler: WSF_SKELETON_HANDLER; a_header: HTTP_HEADER;
-		a_media_type, a_language_type, a_character_type, a_compression_type: detachable READABLE_STRING_8; a_new_resource: BOOLEAN)
+	send_response (req: WSF_REQUEST; res: WSF_RESPONSE; a_handler: WSF_SKELETON_HANDLER; a_header: HTTP_HEADER; a_new_resource: BOOLEAN)
 			-- Write response to `req' into `res' in accordance with `a_media_type' etc.
+			-- Upto four execution variables may be set on `req':
+			-- "NEGOTIATED_MEDIA_TYPE"
+			-- "NEGOTIATED_LANGUAGE"
+			-- "NEGOTIATED_CHARSET"
+			-- "NEGOTIATED_ENCODING"	
 		local
 			l_chunked, l_ok: BOOLEAN
 			l_dt: STRING
 		do
-			a_handler.ensure_content_available (req, a_media_type, a_language_type, a_character_type, a_compression_type)
+			a_handler.ensure_content_available (req)
 			l_chunked := a_handler.is_chunking (req)
 			if l_chunked then
 				a_header.put_transfer_encoding_chunked
@@ -39,15 +43,15 @@ feature {NONE} -- Implementation
 			else
 				write_error_response (req, res)
 			end
-			if attached a_handler.etag (req, a_media_type, a_language_type, a_character_type, a_compression_type) as l_etag then
+			if attached a_handler.etag (req) as l_etag then
 				a_header.put_header_key_value ({HTTP_HEADER_NAMES}.header_etag, l_etag)
 			end
 			res.put_header_text (a_header.string)
 			if l_ok then
 				if l_chunked then
-					send_chunked_response (req, res, a_handler, a_header, a_media_type, a_language_type, a_character_type, a_compression_type)
+					send_chunked_response (req, res, a_handler, a_header)
 				else
-					res.put_string (a_handler.content (req, a_media_type, a_language_type, a_character_type, a_compression_type))
+					res.put_string (a_handler.content (req))
 				end
 			end
 		end

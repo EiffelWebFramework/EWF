@@ -152,7 +152,7 @@ feature -- Access
 			end
 		end
 
-	etag (req: WSF_REQUEST; a_media_type, a_language_type, a_character_type, a_compression_type: READABLE_STRING_8): detachable READABLE_STRING_8
+	etag (req: WSF_REQUEST): detachable READABLE_STRING_8
 			-- Optional Etag for `req' in the requested variant
 		local
 			l_etag_utils: ETAG_UTILS
@@ -228,14 +228,14 @@ feature -- Execution
 
 feature -- GET/HEAD content
 
-	ensure_content_available (req: WSF_REQUEST;
-		a_media_type, a_language_type, a_character_type, a_compression_type: READABLE_STRING_8)
+	ensure_content_available (req: WSF_REQUEST)
 			-- Commence generation of response text (entity-body).
 			-- If not chunked, then this will create the entire entity-body so as to be available
 			--  for a subsequent call to `content'.
 			-- If chunked, only the first chunk will be made available to `next_chunk'. If chunk extensions
 			--  are used, then this will also generate the chunk extension for the first chunk.
 			-- We save the text in `req.execution_variable ("GENERATED_CONTENT")'
+			-- We ignore the results of content negotiation, as there is only one possible combination.
 		do
 			check attached {ORDER} req.execution_variable ("ORDER") as l_order then
 					-- precondition get_or_head and postcondition order_saved_only_for_get_head of `check_resource_exists' and
@@ -250,7 +250,7 @@ feature -- GET/HEAD content
 				 attached {READABLE_STRING_8} req.execution_variable ("GENERATED_CONTENT")
 		end
 
-	content (req: WSF_REQUEST; a_media_type, a_language_type, a_character_type, a_compression_type: READABLE_STRING_8): READABLE_STRING_8
+	content (req: WSF_REQUEST): READABLE_STRING_8
 			-- Non-chunked entity body in response to `req';
 			-- We only call this for GET/HEAD in this example.
 		do
@@ -260,7 +260,7 @@ feature -- GET/HEAD content
 			end
 		end
 
-		next_chunk (req: WSF_REQUEST; a_media_type, a_language_type, a_character_type, a_compression_type: READABLE_STRING_8): TUPLE [a_check: READABLE_STRING_8; a_extension: detachable READABLE_STRING_8]
+		next_chunk (req: WSF_REQUEST): TUPLE [a_chunk: READABLE_STRING_8; a_extension: detachable READABLE_STRING_8]
 			-- Next chunk of entity body in response to `req';
 			-- The second field of the result is an optional chunk extension.
 		do
@@ -269,7 +269,7 @@ feature -- GET/HEAD content
 			Result := ["", Void]
 		end
 
-	generate_next_chunk (req: WSF_REQUEST; a_media_type, a_language_type, a_character_type, a_compression_type: READABLE_STRING_8)
+	generate_next_chunk (req: WSF_REQUEST)
 			-- Prepare next chunk (including optional chunk extension) of entity body in response to `req'.
 			-- This is not called for the first chunk.
 		do

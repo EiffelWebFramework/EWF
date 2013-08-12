@@ -14,15 +14,19 @@ inherit
 
 feature {NONE} -- Implementation
 	
-	send_response (req: WSF_REQUEST; res: WSF_RESPONSE; a_handler: WSF_SKELETON_HANDLER; a_header: HTTP_HEADER;
-		a_media_type, a_language_type, a_character_type, a_compression_type: detachable READABLE_STRING_8; a_new_resource: BOOLEAN)
-			-- Write response to deletion of resource named by `req' into `res' in accordance with `a_media_type' etc.
+	send_response (req: WSF_REQUEST; res: WSF_RESPONSE; a_handler: WSF_SKELETON_HANDLER; a_header: HTTP_HEADER; a_new_resource: BOOLEAN)
+			-- Write response to deletion of resource named by `req' into `res'.
+			-- Upto four execution variables may be set on `req':
+			-- "NEGOTIATED_MEDIA_TYPE"
+			-- "NEGOTIATED_LANGUAGE"
+			-- "NEGOTIATED_CHARSET"
+			-- "NEGOTIATED_ENCODING"
 		local
 			l_dt: STRING
 		do
 			a_handler.delete (req)
 			if a_handler.includes_response_entity (req) then
-				a_handler.ensure_content_available (req, a_media_type, a_language_type, a_character_type, a_compression_type)
+				a_handler.ensure_content_available (req)
 				a_header.put_content_length (a_handler.content_length (req).as_integer_32)
 				-- we don't bother supporting chunked responses for DELETE.
 			else
@@ -36,12 +40,12 @@ feature {NONE} -- Implementation
 			if a_handler.delete_queued (req) then
 				res.set_status_code ({HTTP_STATUS_CODE}.accepted)
 				res.put_header_text (a_header.string)
-				res.put_string (a_handler.content (req, a_media_type, a_language_type, a_character_type, a_compression_type))
+				res.put_string (a_handler.content (req))
 			elseif a_handler.deleted (req) then
 				if a_handler.includes_response_entity (req) then
 					res.set_status_code ({HTTP_STATUS_CODE}.ok)
 					res.put_header_text (a_header.string)
-					res.put_string (a_handler.content (req, a_media_type, a_language_type, a_character_type, a_compression_type))
+					res.put_string (a_handler.content (req))
 				else
 					res.set_status_code ({HTTP_STATUS_CODE}.no_content)
 					res.put_header_text (a_header.string)

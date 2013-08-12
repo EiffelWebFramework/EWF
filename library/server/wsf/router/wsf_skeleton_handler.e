@@ -109,14 +109,15 @@ feature -- Access
 		deferred
 		end
 
-	etag (req: WSF_REQUEST; a_media_type, a_language_type, a_character_type, a_compression_type: READABLE_STRING_8): detachable READABLE_STRING_8
-			-- Optional Etag for `req' in the requested variant
+	etag (req: WSF_REQUEST): detachable READABLE_STRING_8
+			-- Optional Etag for response entity to `req';
+			-- Upto four execution variables may be set on `req':
+			-- "NEGOTIATED_MEDIA_TYPE"
+			-- "NEGOTIATED_LANGUAGE"
+			-- "NEGOTIATED_CHARSET"
+			-- "NEGOTIATED_ENCODING"
 		require
 			req_attached: req /= Void
-			a_media_type_attached: a_media_type /= Void
-			a_language_type_attached: a_language_type /= Void
-			a_character_type_attached: a_character_type /= Void
-			a_compression_type_attached: a_compression_type /= Void
 		deferred
 		end
 
@@ -216,20 +217,23 @@ feature -- DELETE
 
 feature -- GET/HEAD content
 
-	ensure_content_available (req: WSF_REQUEST;
-		a_media_type, a_language_type, a_character_type, a_compression_type: READABLE_STRING_8)
+	ensure_content_available (req: WSF_REQUEST)
 			-- Commence generation of response text (entity-body).
 			-- If not chunked, then this will create the entire entity-body so as to be available
 			--  for a subsequent call to `content'.
 			-- If chunked, only the first chunk will be made available to `next_chunk'. If chunk extensions
 			--  are used, then this will also generate the chunk extension for the first chunk.
+			-- Upto four execution variables may be set on `req':
+			-- "NEGOTIATED_MEDIA_TYPE"
+			-- "NEGOTIATED_LANGUAGE"
+			-- "NEGOTIATED_CHARSET"
+			-- "NEGOTIATED_ENCODING"
+			-- If you support etags, and you have more than one possible representation
+			--  for the resource (so that your etag depends upon the particular representation),
+			--  then you will probably have already created the response entity in `check_resource_exists'.
 		require
 			req_attached: req /= Void
 			get_or_head_or_delete: req.is_get_head_request_method or req.is_delete_request_method
-			a_media_type_attached: a_media_type /= Void
-			a_language_type_attached: a_language_type /= Void
-			a_character_type_attached: a_character_type /= Void
-			a_compression_type_attached: a_compression_type /= Void
 		deferred
 		end
 
@@ -243,45 +247,48 @@ feature -- GET/HEAD content
 			last_error_set: Result = not req.error_handler.has_error
 		end
 
-	content (req: WSF_REQUEST; a_media_type, a_language_type, a_character_type, a_compression_type: READABLE_STRING_8): READABLE_STRING_8
-			-- Non-chunked entity body in response to `req'
+	content (req: WSF_REQUEST): READABLE_STRING_8
+			-- Non-chunked entity body in response to `req';
+			-- Upto four execution variables may be set on `req':
+			-- "NEGOTIATED_MEDIA_TYPE"
+			-- "NEGOTIATED_LANGUAGE"
+			-- "NEGOTIATED_CHARSET"
+			-- "NEGOTIATED_ENCODING"
 		require
 			req_attached: req /= Void
 			head_get_or_delete: req.is_get_head_request_method or req.is_delete_request_method
 			no_error: response_ok (req)
 			not_chunked: not is_chunking (req)
-			a_media_type_attached: a_media_type /= Void
-			a_language_type_attached: a_language_type /= Void
-			a_character_type_attached: a_character_type /= Void
-			a_compression_type_attached: a_compression_type /= Void
 		deferred
 		end
 
-	generate_next_chunk (req: WSF_REQUEST; a_media_type, a_language_type, a_character_type, a_compression_type: READABLE_STRING_8)
+	generate_next_chunk (req: WSF_REQUEST)
 			-- Prepare next chunk (including optional chunk extension) of entity body in response to `req'.
 			-- This is not called for the first chunk.
+			-- Upto four execution variables may be set on `req':
+			-- "NEGOTIATED_MEDIA_TYPE"
+			-- "NEGOTIATED_LANGUAGE"
+			-- "NEGOTIATED_CHARSET"
+			-- "NEGOTIATED_ENCODING"
 		require
 			req_attached: req /= Void
 			no_error: response_ok (req)
 			chunked: is_chunking (req)
-			a_media_type_attached: a_media_type /= Void
-			a_language_type_attached: a_language_type /= Void
-			a_character_type_attached: a_character_type /= Void
-			a_compression_type_attached: a_compression_type /= Void
 		deferred
 		end
 
-	next_chunk (req: WSF_REQUEST; a_media_type, a_language_type, a_character_type, a_compression_type: READABLE_STRING_8): TUPLE [a_check: READABLE_STRING_8; a_extension: detachable READABLE_STRING_8]
+	next_chunk (req: WSF_REQUEST): TUPLE [a_check: READABLE_STRING_8; a_extension: detachable READABLE_STRING_8]
 			-- Next chunk of entity body in response to `req';
 			-- The second field of the result is an optional chunk extension.
+				-- Four execution variables are set on `req':
+			-- "NEGOTIATED_MEDIA_TYPE"
+			-- "NEGOTIATED_LANGUAGE"
+			-- "NEGOTIATED_CHARSET"
+			-- "NEGOTIATED_ENCODING"
 		require
 			req_attached: req /= Void
 			no_error: response_ok (req)
 			chunked: is_chunking (req)
-			a_media_type_attached: a_media_type /= Void
-			a_language_type_attached: a_language_type /= Void
-			a_character_type_attached: a_character_type /= Void
-			a_compression_type_attached: a_compression_type /= Void
 		deferred
 		end
 
@@ -427,14 +434,17 @@ feature -- Execution
 			res_attached: res /= Void
 			a_helper_attached: a_helper /= Void
 		do
-			check_resource_exists (req, a_helper)
-			if a_helper.resource_exists then
-				a_helper.execute_existing_resource (req, res, Current)
-			else
-				if attached req.http_if_match as l_if_match and then l_if_match.same_string ("*") then
-					a_helper.handle_precondition_failed (req, res)
+			a_helper.handle_content_negotiation (req, res, Current)
+			if not res.status_is_set or else res.status_code /= {HTTP_STATUS_CODE}.Not_acceptable then
+				check_resource_exists (req, a_helper)
+				if a_helper.resource_exists then
+					a_helper.execute_existing_resource (req, res, Current)
 				else
-					a_helper.execute_new_resource (req, res, Current)
+					if attached req.http_if_match as l_if_match and then l_if_match.same_string ("*") then
+						a_helper.handle_precondition_failed (req, res)
+					else
+						a_helper.execute_new_resource (req, res, Current)
+					end
 				end
 			end
 		end
@@ -442,6 +452,15 @@ feature -- Execution
 	check_resource_exists (req: WSF_REQUEST; a_helper: WSF_METHOD_HELPER)
 			-- Call `a_helper.set_resource_exists' to indicate that `req.path_translated'
 			--  is the name of an existing resource.
+			-- Upto four execution variables may be set on `req':
+			-- "NEGOTIATED_MEDIA_TYPE"
+			-- "NEGOTIATED_LANGUAGE"
+			-- "NEGOTIATED_CHARSET"
+			-- "NEGOTIATED_ENCODING"
+			-- If you support etags, and you have more than one possible representation
+			--  for the resource (so that your etag depends upon the particular representation),
+			--  then you will probably need to create the response entity at this point, rather
+			--  than in `ensure_content_available'.
 		require
 			req_attached: req /= Void
 			a_helper_attached: a_helper /= Void

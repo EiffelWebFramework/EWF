@@ -36,15 +36,19 @@ feature -- Basic operations
 	execute_new_resource (req: WSF_REQUEST; res: WSF_RESPONSE; a_handler: WSF_SKELETON_HANDLER)
 			-- Write response to non-existing resource requested by  `req.' into `res'.
 			-- Policy routines are available in `a_handler'.
-			-- This default implementation does not apply for PUT requests.
-			-- The behaviour for POST requests depends upon a policy.
+			-- Upto four execution variables may be set on `req':
+			-- "NEGOTIATED_MEDIA_TYPE"
+			-- "NEGOTIATED_LANGUAGE"
+			-- "NEGOTIATED_CHARSET"
+			-- "NEGOTIATED_ENCODING"
+			-- An HTTP_HEADER is also available as the execution variable "NEGOTIATED_HTTP_HEADER".
+			-- It includes the Vary header (if any)
 		require
 			req_attached: req /= Void
 			res_attached: res /= Void
 			a_handler_attached: a_handler /= Void
 		local
 			l_locs: LIST [URI]
-			h: HTTP_HEADER
 		do
 			if a_handler.resource_previously_existed (req) then
 				if a_handler.resource_moved_permanently (req) then
@@ -54,26 +58,35 @@ feature -- Basic operations
 					l_locs := a_handler.previous_location (req)
 					handle_redirection_error (req, res, l_locs, {HTTP_STATUS_CODE}.found)
 				else
-					create h.make
+					check attached {HTTP_HEADER} req.execution_variable ("NEGOTIATED_HTTP_HEADER") as h then
+						-- postcondition header_attached of `handle_content_negotiation'
+						h.put_content_type_text_plain
+						h.put_current_date
+						h.put_content_length (0)
+						res.set_status_code ({HTTP_STATUS_CODE}.gone)
+						res.put_header_lines (h)
+					end
+				end
+			else
+				check attached {HTTP_HEADER} req.execution_variable ("NEGOTIATED_HTTP_HEADER") as h then
+						-- postcondition header_attached of `handle_content_negotiation'
 					h.put_content_type_text_plain
 					h.put_current_date
 					h.put_content_length (0)
-					res.set_status_code ({HTTP_STATUS_CODE}.gone)
+					res.set_status_code ({HTTP_STATUS_CODE}.not_found)
 					res.put_header_lines (h)
 				end
-			else
-				create h.make
-				h.put_content_type_text_plain
-				h.put_current_date
-				h.put_content_length (0)
-				res.set_status_code ({HTTP_STATUS_CODE}.not_found)
-				res.put_header_lines (h)
 			end
 		end
 
 	execute_existing_resource (req: WSF_REQUEST; res: WSF_RESPONSE; a_handler: WSF_SKELETON_HANDLER)
 			-- Write response to existing resource requested by  `req' into `res'.
 			-- Policy routines are available in `a_handler'.
+			-- Upto four execution variables may be set on `req':
+			-- "NEGOTIATED_MEDIA_TYPE"
+			-- "NEGOTIATED_LANGUAGE"
+			-- "NEGOTIATED_CHARSET"
+			-- "NEGOTIATED_ENCODING"
 		require
 			req_attached: req /= Void
 			res_attached: res /= Void
@@ -127,19 +140,28 @@ feature -- Basic operations
 						end
 					end
 					if not l_failed then
-						handle_content_negotiation (req, res, a_handler, False)
+						check attached {HTTP_HEADER} req.execution_variable ("NEGOTIATED_HTTP_HEADER") as h then
+								-- postcondition header_attached of `handle_content_negotiation'
+							send_response (req, res, a_handler, h, False)
+						end
 					end
 				end
 			end
 		end
 
-feature {NONE} -- Implementation
+feature -- Content negotiation
 
-	handle_content_negotiation (req: WSF_REQUEST; res: WSF_RESPONSE;
-		a_handler: WSF_SKELETON_HANDLER; a_new_resource: BOOLEAN)
+	handle_content_negotiation (req: WSF_REQUEST; res: WSF_RESPONSE; a_handler: WSF_SKELETON_HANDLER)
 			-- Negotiate acceptable content for, then write, response requested by `req' into `res'.
 			-- Policy routines are available in `a_handler'.
-			-- This default version applies to GET and HEAD.
+			-- 
+			-- Either a 406 Not Acceptable error is sent, or upto four execution variables may be set on `req':
+			-- "NEGOTIATED_MEDIA_TYPE"
+			-- "NEGOTIATED_LANGUAGE"
+			-- "NEGOTIATED_CHARSET"
+			-- "NEGOTIATED_ENCODING"
+			-- An HTTP_HEADER is also saved as the execution variable "NEGOTIATED_HTTP_HEADER".
+			-- It includes the Vary header (if any)
 		require
 			req_attached: req /= Void
 			res_attached: res /= Void
@@ -182,6 +204,7 @@ feature {NONE} -- Implementation
 				else
 					if attached l_lang.language_type as l_language_type then
 						h.put_content_language (l_language_type)
+						req.set_execution_variable ("NEGOTIATED_LANGUAGE", l_language_type)
 					end
 					l_charsets := a_handler.charsets_supported (req)
 					l_charset := l_conneg.charset_preference (l_charsets, req.http_accept_charset)
@@ -191,8 +214,14 @@ feature {NONE} -- Implementation
 					if not l_charset.is_acceptable then
 						handle_not_acceptable ("None of the requested character encodings were acceptable", l_charsets, req, res)
 					else
-						if attached l_media.media_type as l_media_type and attached l_charset.character_type as l_character_type  then
-							h.put_content_type (l_media_type + "; charset=" + l_character_type)
+						if attached l_media.media_type as l_media_type then
+							if attached l_charset.character_type as l_character_type  then
+								h.put_content_type (l_media_type + "; charset=" + l_character_type)
+								req.set_execution_variable ("NEGOTIATED_CHARSET", l_charset)
+							else
+								h.put_content_type (l_media_type)
+							end
+							req.set_execution_variable ("NEGOTIATED_MEDIA_TYPE", l_media_type)
 						end
 						l_encodings := a_handler.encodings_supported (req)
 						l_encoding := l_conneg.encoding_preference (l_encodings, req.http_accept_encoding)
@@ -204,48 +233,51 @@ feature {NONE} -- Implementation
 						else
 							if attached l_encoding.compression_type as l_compression_type then
 								h.put_content_encoding (l_compression_type)
+								req.set_execution_variable ("NEGOTIATED_ENCODING", l_compression_type)
 							end
-							-- We do not support multiple choices, so
-							send_response (req, res, a_handler, h,
-								l_media.media_type, l_lang.language_type, l_charset.character_type, l_encoding.compression_type, a_new_resource)
 						end
 					end
 				end
 			end
+			req.set_execution_variable ("NEGOTIATED_HTTP_HEADER", h)
+		ensure
+			header_attached: attached {HTTP_HEADER} req.execution_variable ("NEGOTIATED_HTTP_HEADER")
 		end
 
-	send_response (req: WSF_REQUEST; res: WSF_RESPONSE; a_handler: WSF_SKELETON_HANDLER; a_header: HTTP_HEADER;
-		a_media_type, a_language_type, a_character_type, a_compression_type: detachable READABLE_STRING_8; a_new_resource: BOOLEAN)
-			-- Write response to `req' into `res' in accordance with `a_media_type' etc.
+feature {NONE} -- Implementation
+
+	send_response (req: WSF_REQUEST; res: WSF_RESPONSE; a_handler: WSF_SKELETON_HANDLER; a_header: HTTP_HEADER; a_new_resource: BOOLEAN)
+			-- Write response to `req' into `res'.
+			-- Upto four execution variables may be set on `req':
+			-- "NEGOTIATED_MEDIA_TYPE"
+			-- "NEGOTIATED_LANGUAGE"
+			-- "NEGOTIATED_CHARSET"
+			-- "NEGOTIATED_ENCODING"
 		require
 			req_attached: req /= Void
 			res_attached: res /= Void
 			a_handler_attached: a_handler /= Void
 			a_header_attached: a_header /= Void
-			a_media_type_attached: a_media_type /= Void
-			a_language_type_attached: a_language_type /= Void
-			a_character_type_attached: a_character_type /= Void
-			a_compression_type_attached: a_compression_type /= Void
 		deferred
 		end
 
-	send_chunked_response (req: WSF_REQUEST; res: WSF_RESPONSE; a_handler: WSF_SKELETON_HANDLER; a_header: HTTP_HEADER;
-		a_media_type, a_language_type, a_character_type, a_compression_type: READABLE_STRING_8)
-			-- Write response in chunks to `req' into `res' in accordance with `a_media_type' etc.
+	send_chunked_response (req: WSF_REQUEST; res: WSF_RESPONSE; a_handler: WSF_SKELETON_HANDLER; a_header: HTTP_HEADER)
+			-- Write response in chunks to `req'.
+			-- Upto four execution variables may be set on `req':
+			-- "NEGOTIATED_MEDIA_TYPE"
+			-- "NEGOTIATED_LANGUAGE"
+			-- "NEGOTIATED_CHARSET"
+			-- "NEGOTIATED_ENCODING"
 		require
 			req_attached: req /= Void
 			res_attached: res /= Void
 			a_handler_attached: a_handler /= Void
-			a_media_type_attached: a_media_type /= Void
-			a_language_type_attached: a_language_type /= Void
-			a_character_type_attached: a_character_type /= Void
-			a_compression_type_attached: a_compression_type /= Void
 		local
 			l_chunk: TUPLE [a_chunk: READABLE_STRING_8; a_extension: detachable READABLE_STRING_8]
 		do
 			from
 				if a_handler.response_ok (req) then
-					l_chunk := a_handler.next_chunk (req, a_media_type, a_language_type, a_character_type, a_compression_type)
+					l_chunk := a_handler.next_chunk (req)
 					res.put_chunk (l_chunk.a_chunk, l_chunk.a_extension)
 				else
 					write_error_response (req, res)
@@ -253,9 +285,9 @@ feature {NONE} -- Implementation
 			until
 				a_handler.finished (req) or not a_handler.response_ok (req)
 			loop
-				a_handler.generate_next_chunk (req, a_media_type, a_language_type, a_character_type, a_compression_type)
+				a_handler.generate_next_chunk (req)
 				if a_handler.response_ok (req) then
-					l_chunk := a_handler.next_chunk (req, a_media_type, a_language_type, a_character_type, a_compression_type)
+					l_chunk := a_handler.next_chunk (req)
 					res.put_chunk (l_chunk.a_chunk, l_chunk.a_extension)
 				else
 					write_error_response (req, res)					
@@ -464,6 +496,11 @@ feature -- Error reporting
 
 	handle_not_modified (req: WSF_REQUEST; res: WSF_RESPONSE; a_handler: WSF_SKELETON_HANDLER)
 			-- Write a Not Modified response to `res'.
+			-- Upto four execution variables may be set on `req':
+			-- "NEGOTIATED_MEDIA_TYPE"
+			-- "NEGOTIATED_LANGUAGE"
+			-- "NEGOTIATED_CHARSET"
+			-- "NEGOTIATED_ENCODING"
 		require
 			req_attached: req /= Void
 			res_attached: res /= Void
@@ -474,12 +511,7 @@ feature -- Error reporting
 			create h.make
 			h.put_content_type_text_plain
 			h.put_content_length (0)
-			if attached a_handler.etag (req, "", "", "", "") as l_etag then
-				-- FIXME: We aren't strictly conformant here, as we have not conducted content negotiation yet,
-				--  so we might not get an identical etag as for a successful (200 OK) request.
-				-- So we should conduct content negotiation at this point (and if not acceptable, we don't include an etag).
-				-- Add add any Vary header that might result.
-				-- Also, when we add support for the Content-Location header in responses, we need to send that here too.
+			if attached a_handler.etag (req) as l_etag then
 				h.put_header_key_value ({HTTP_HEADER_NAMES}.header_etag, l_etag)
 			end
 			generate_cache_headers (req, a_handler, h, create {DATE_TIME}.make_now_utc)
