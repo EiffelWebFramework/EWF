@@ -8,6 +8,7 @@ Now you have to implement each handler. You need to inherit from WSF_SKELETON_HA
 
 HTTP/1.1 supports streaming responses (and providing you have configured your server to use a proxy server in WSF_PROXY_USE_POLICY, this framework guarantees you have an HTTP/1.1 client to deal with). It is up to you whether or not you choose to make use of it. If so, then you have to serve the response one chunk at a time (but you could generate it all at once, and slice it up as you go). In this routine you just say whether or not you will be doing this. So the framework n=knows which other routines to call.
 Currently we only support chunking for GET or HEAD routines. This might change in the future, so if you intend to return True, you should call req.is_get_head_request_method.
+Note that currently this framework does not support writing a trailer. 
 
 ### includes_response_entity
 
@@ -47,10 +48,14 @@ If the response may vary in other ways not predictable from the request headers,
 
 An **ETag** header is a kind of message digest. Clients can use etags to avoid re-fetching responses for unchanged resources, or to avoid updating a resource that may have changed since the client last updated it.
 You must implement this routine to test for matches **if and only if** you return non-Void responses for the etag routine. 
+Note that if you support multiple representations through content negotiation, then etags are dependent upon
+the selected variant. Therefore you will need to have the response entity available for this routine. This can be done in check_resource_exists.
 
 ### etag
 
 You are strongly encouraged to return non-Void for this routine. See [Validation Model](http://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html#sec13.3) for more details.
+Note that if you support multiple representations through content negotiation, then etags are dependent upon
+the selected variant. Therefore you will need to have the response entity available for this routine. This can be done in check_resource_exists.
 
 ### modified_since
 
@@ -93,6 +98,9 @@ If in the delete routine, you elected to queue the request, then you need to ret
 This routine is called for GET and DELETE (when a entity is provided in the response) processing. It's purpose is to make the text of the entity (body of the response) available for future routines (if is_chunking is true, then only the first chunk needs to be made available, although if you only serve, as opposed to generate, the result in chunks, then you will make the entire entity available here). This is necessary so that we can compute the length before we start to serve the response. You would normally save it in an execution variable on the request object (as ORDER_HANDLER does). Note that this usage of execution variables ensures your routines can successfully cope with simultaneous requests. If you encounter a problem generating the content, then add an error to req.error_handler.
 
 As well as the request object, we provide the results of content negotiation, so you can generate the entity in the agreed format. If you only support one format (i.e. all of mime_types_supported, charsets_supported, encodings_supported and languages_supported are one-element lists), then you are guaranteed that this is what you are being asked for, and so you can ignore them.
+
+Note that if you support multiple representations through content negotiation, then etags are dependent upon
+the selected variant. Therefore you will need to have the response entity available for this routine. In such cases, this will have to be done in check_resource_exists, rather than here, as this routine is called later on.
 
 ### content
 
