@@ -18,6 +18,8 @@ The first one makes the request entity from a PULL or POST request available to 
 
 The next four make the results of content negotiation available to your routines. The last one makes an HTTP_HEADER available to your routines. You should use this rather than create your own, as it may contain a **Vary** header as a by-product of content negotiation.
 
+All six names are defined as constants in WSF_SKELETON_HANDLER, to make it easier for you to refer to them.
+
 ## Implementing the routines declared directly in WSF_SKELETON_HANDLER
 
 ### check_resource_exists
