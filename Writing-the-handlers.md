@@ -2,6 +2,22 @@
 
 Now you have to implement each handler. You need to inherit from WSF_SKELETON_HANDLER (as ORDER_HANDLER does). This involves implementing a lot of deferred routines. There are other routines for which default implementations are provided, which you might want to override. This applies to both routines defined in this class, and those declared in the three policy classes from which it inherits.
 
+## Communicating between routines
+
+Depending upon the connector (Nino, CGI, FastCGI etc.) that you are using, your handler may be invoked concurrently for multiple requests. Therefore it is unsafe to save state in normal attributes. WSF_REQUEST has a pair of getter/setter routines, execution_variable/set_execution_variable, which you can use for this purpose.
+Internally, the framework uses the following execution variable names, so you must avoid them:
+
+1. REQUEST_ENTITY
+1. NEGOTIATED_LANGUAGE
+1. NEGOTIATED_CHARSET
+1. NEGOTIATED_MEDIA_TYPE
+1. NEGOTIATED_ENCODING
+1. NEGOTIATED_HTTP_HEADER
+
+The first one makes the request entity from a PULL or POST request available to your routines. 
+
+The next four make the results of content negotiation available to your routines. The last one makes an HTTP_HEADER available to your routines. You should use this rather than create your own, as it may contain a **Vary** header as a by-product of content negotiation.
+
 ## Implementing the routines declared directly in WSF_SKELETON_HANDLER
 
 ### check_resource_exists
