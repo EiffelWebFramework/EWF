@@ -26,6 +26,26 @@ inherit
 
 	WSF_SELF_DOCUMENTED_HANDLER
 
+feature -- Execution variables
+
+	Negotiated_language_execution_variable: STRING = "NEGOTIATED_LANGUAGE"
+			-- Execution variable set by framework
+		
+	Negotiated_charset_execution_variable: STRING = "NEGOTIATED_CHARSET"
+			-- Execution variable set by framework
+
+	Negotiated_media_type_execution_variable: STRING = "NEGOTIATED_MEDIA_TYPE"
+			-- Execution variable set by framework
+
+	Negotiated_encoding_execution_variable: STRING = "NEGOTIATED_ENCODING"
+			-- Execution variable set by framework
+
+	Negotiated_http_header_execution_variable: STRING = "NEGOTIATED_HTTP_HEADER"
+			-- Execution variable set by framework
+
+	Request_entity_execution_variable: STRING = "REQUEST_ENTITY"
+			-- Execution variable set by framework
+
 feature -- Access
 
 	is_chunking (req: WSF_REQUEST): BOOLEAN
@@ -295,7 +315,7 @@ feature -- GET/HEAD content
 feature -- PUT/POST
 
 	read_entity (req: WSF_REQUEST)
-			-- Read request body and set as `req.execution_variable ("REQUEST_ENTITY")'.
+			-- Read request body and set as `req.execution_variable (Request_entity_execution_variable)'.
 		require
 			req_attached: req /= Void
 		local
@@ -304,7 +324,7 @@ feature -- PUT/POST
 			create l_body.make_empty
 			req.read_input_data_into (l_body)
 			if not l_body.is_empty then
-				req.set_execution_variable ("REQUEST_ENTITY", l_body)
+				req.set_execution_variable (Request_entity_execution_variable, l_body)
 			end
 		end
 

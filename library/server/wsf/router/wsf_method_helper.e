@@ -204,7 +204,7 @@ feature -- Content negotiation
 				else
 					if attached l_lang.language_type as l_language_type then
 						h.put_content_language (l_language_type)
-						req.set_execution_variable ("NEGOTIATED_LANGUAGE", l_language_type)
+						req.set_execution_variable (a_handler.Negotiated_language_execution_variable, l_language_type)
 					end
 					l_charsets := a_handler.charsets_supported (req)
 					l_charset := l_conneg.charset_preference (l_charsets, req.http_accept_charset)
@@ -217,11 +217,11 @@ feature -- Content negotiation
 						if attached l_media.media_type as l_media_type then
 							if attached l_charset.character_type as l_character_type  then
 								h.put_content_type (l_media_type + "; charset=" + l_character_type)
-								req.set_execution_variable ("NEGOTIATED_CHARSET", l_charset)
+								req.set_execution_variable (a_handler.Negotiated_charset_execution_variable, l_charset)
 							else
 								h.put_content_type (l_media_type)
 							end
-							req.set_execution_variable ("NEGOTIATED_MEDIA_TYPE", l_media_type)
+							req.set_execution_variable (a_handler.Negotiated_media_type_execution_variable, l_media_type)
 						end
 						l_encodings := a_handler.encodings_supported (req)
 						l_encoding := l_conneg.encoding_preference (l_encodings, req.http_accept_encoding)
@@ -233,15 +233,15 @@ feature -- Content negotiation
 						else
 							if attached l_encoding.compression_type as l_compression_type then
 								h.put_content_encoding (l_compression_type)
-								req.set_execution_variable ("NEGOTIATED_ENCODING", l_compression_type)
+								req.set_execution_variable (a_handler.Negotiated_encoding_execution_variable, l_compression_type)
 							end
 						end
 					end
 				end
 			end
-			req.set_execution_variable ("NEGOTIATED_HTTP_HEADER", h)
+			req.set_execution_variable (a_handler.Negotiated_http_header_execution_variable, h)
 		ensure
-			header_attached: attached {HTTP_HEADER} req.execution_variable ("NEGOTIATED_HTTP_HEADER")
+			header_attached: attached {HTTP_HEADER} req.execution_variable (a_handler.Negotiated_http_header_execution_variable)
 		end
 
 feature {NONE} -- Implementation
