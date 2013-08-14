@@ -11,7 +11,7 @@ deferred class WSF_SKELETON_HANDLER
 
 inherit
 
-	WSF_URI_TEMPLATE_ROUTING_HANDLER
+	WSF_URI_TEMPLATE_HANDLER
 		redefine
 			execute
 		end
@@ -25,6 +25,23 @@ inherit
 	WSF_METHOD_HELPER_FACTORY
 
 	WSF_SELF_DOCUMENTED_HANDLER
+
+feature {NONE} -- Initialization
+
+	make_with_router (a_router: WSF_ROUTER)
+			-- Initialize `router'.
+		require
+			a_router_attached: a_router /= Void
+		do
+			router := a_router
+		ensure
+			router_aliased: router = a_router
+		end
+
+feature -- Router
+
+	router: WSF_ROUTER
+			-- So that WSF_OPTIONS_POLICY can find the allowed methods
 
 feature -- Execution variables
 
