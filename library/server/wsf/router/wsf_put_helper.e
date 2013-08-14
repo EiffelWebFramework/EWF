@@ -24,7 +24,7 @@ feature -- Basic operations
 			if a_handler.treat_as_moved_permanently (req) then
 				handle_redirection_error (req, res, a_handler.previous_location (req), {HTTP_STATUS_CODE}.moved_permanently)
 			else
-				check attached {HTTP_HEADER} req.execution_variable ("NEGOTIATED_HTTP_HEADER") as h then
+				check attached {HTTP_HEADER} req.execution_variable (a_handler.Negotiated_http_header_execution_variable) as h then
 						-- postcondition header_attached of `handle_content_negotiation'
 					send_response (req, res, a_handler, h, True)
 				end
@@ -68,5 +68,15 @@ feature {NONE} -- Implementation
 				end
 			end
 		end
-	
+
+note
+	copyright: "2011-2013, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
+	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
+	source: "[
+			Eiffel Software
+			5949 Hollister Ave., Goleta, CA 93117 USA
+			Telephone 805-685-1006, Fax 805-685-6869
+			Website http://www.eiffel.com
+			Customer support http://support.eiffel.com
+		]"
 end

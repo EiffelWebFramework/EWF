@@ -28,6 +28,18 @@ create
 
 	make_with_router
 
+
+feature -- Execution variables
+
+	Order_execution_variable: STRING = "ORDER"
+			-- Execution variable used by application
+
+	Generated_content_execution_variable: STRING = "GENERATED_CONTENT"
+			-- Execution variable used by application
+
+	Extracted_order_execution_variable: STRING = "EXTRACTED_ORDER"
+			-- Execution variable used by application
+
 feature -- Documentation
 
 	description: READABLE_STRING_GENERAL
@@ -85,13 +97,6 @@ feature -- Access
 		do
 			create {ARRAYED_LIST [STRING]} Result.make_from_array (<<"identity">>)
 			Result.compare_objects
-		end
-
-	previous_location (req: WSF_REQUEST): LIST [URI]
-			-- Previous location(s) for resource named by `req';
-		do
-			-- precondition is never met but we need a non-void Result to satisfy the compiler in Void-safe mode:
-			create {LINKED_LIST [URI]} Result.make
 		end
 
 	age (req: WSF_REQUEST): NATURAL
@@ -158,7 +163,7 @@ feature -- Access
 			l_etag_utils: ETAG_UTILS
 		do
 			create l_etag_utils
-			if attached {ORDER} req.execution_variable ("ORDER") as l_order then
+			if attached {ORDER} req.execution_variable (Order_execution_variable) as l_order then
 				Result := l_etag_utils.md5_digest (l_order.out)
 			end
 		end
@@ -175,7 +180,7 @@ feature -- Measurement
 	content_length (req: WSF_REQUEST): NATURAL
 			-- Length of entity-body of the response to `req'
 		do
-			check attached {READABLE_STRING_8} req.execution_variable ("GENERATED_CONTENT") as l_response then
+			check attached {READABLE_STRING_8} req.execution_variable (Generated_content_execution_variable) as l_response then
 					-- postcondition generated_content_set_for_get_head of `ensure_content_available'
 					-- We only call this for GET/HEAD in this example.
 				Result := l_response.count.as_natural_32
@@ -201,7 +206,7 @@ feature -- Execution
 	check_resource_exists (req: WSF_REQUEST; a_helper: WSF_METHOD_HELPER)
 			-- Call `a_helper.set_resource_exists' to indicate that `req.path_translated'
 			--  is the name of an existing resource.
-			-- We also put the order into `req.execution_variable ("ORDER")' for GET or HEAD responses.
+			-- We also put the order into `req.execution_variable (Order_execution_variable)' for GET or HEAD responses.
 		local
 			l_id: STRING
 		do
@@ -216,14 +221,14 @@ feature -- Execution
 					if req.is_get_head_request_method then
 						check attached db_access.orders.item (l_id) as l_order then
 								-- postcondition `item_if_found' of `has_key'
-							req.set_execution_variable ("ORDER", l_order)
+							req.set_execution_variable (Order_execution_variable, l_order)
 						end
 					end
 				end
 			end
 		ensure then
 			order_saved_only_for_get_head: req.is_get_head_request_method =
-				attached {ORDER} req.execution_variable ("ORDER")
+				attached {ORDER} req.execution_variable (Order_execution_variable)
 		end
 
 feature -- GET/HEAD content
@@ -234,27 +239,27 @@ feature -- GET/HEAD content
 			--  for a subsequent call to `content'.
 			-- If chunked, only the first chunk will be made available to `next_chunk'. If chunk extensions
 			--  are used, then this will also generate the chunk extension for the first chunk.
-			-- We save the text in `req.execution_variable ("GENERATED_CONTENT")'
+			-- We save the text in `req.execution_variable (Generated_content_execution_variable)'
 			-- We ignore the results of content negotiation, as there is only one possible combination.
 		do
-			check attached {ORDER} req.execution_variable ("ORDER") as l_order then
+			check attached {ORDER} req.execution_variable (Order_execution_variable) as l_order then
 					-- precondition get_or_head and postcondition order_saved_only_for_get_head of `check_resource_exists' and
 				if attached {JSON_VALUE} json.value (l_order) as jv then
-					req.set_execution_variable ("GENERATED_CONTENT", jv.representation)
+					req.set_execution_variable (Generated_content_execution_variable, jv.representation)
 				else
-					req.set_execution_variable ("GENERATED_CONTENT", "")
+					req.set_execution_variable (Generated_content_execution_variable, "")
 				end
 			end
 		ensure then
 			generated_content_set_for_get_head: req.is_get_head_request_method implies
-				 attached {READABLE_STRING_8} req.execution_variable ("GENERATED_CONTENT")
+				 attached {READABLE_STRING_8} req.execution_variable (Generated_content_execution_variable)
 		end
 
 	content (req: WSF_REQUEST): READABLE_STRING_8
 			-- Non-chunked entity body in response to `req';
 			-- We only call this for GET/HEAD in this example.
 		do
-			check attached {READABLE_STRING_8} req.execution_variable ("GENERATED_CONTENT") as l_response then
+			check attached {READABLE_STRING_8} req.execution_variable (Generated_content_execution_variable) as l_response then
 					-- postcondition generated_content_set_for_get_head of `ensure_content_available'
 				Result := l_response
 			end
@@ -307,14 +312,14 @@ feature -- DELETE
 feature -- PUT/POST
 
 	is_entity_too_large (req: WSF_REQUEST): BOOLEAN
-			-- Is the entity stored in `req.execution_variable ("REQUEST_ENTITY")' too large for the application?
+			-- Is the entity stored in `req.execution_variable (Request_entity_execution_variable)' too large for the application?
 		do
 			-- No. We don't care for this example.
 		end
 
 	check_content_headers (req: WSF_REQUEST)
 			-- Check we can support all content headers on request entity.
-			-- Set `req.execution_variable ("CONTENT_CHECK_CODE")' to {NATURAL} zero if OK, or 415 or 501 if not.
+			-- Set `req.execution_variable (Content_check_code_execution_variable)' to {NATURAL} zero if OK, or 415 or 501 if not.
 		do
 			-- We don't bother for this example. Note that this is equivalent to setting zero.
 		end
@@ -331,7 +336,7 @@ feature -- PUT/POST
 			-- Create new resource in response to a POST request.
 			-- Implementor must set error code of 200 OK or 204 No Content or 303 See Other or 500 Server Error.
 		do
-			if attached {ORDER} req.execution_variable ("EXTRACTED_ORDER") as l_order then
+			if attached {ORDER} req.execution_variable (Extracted_order_execution_variable) as l_order then
 				save_order (l_order)
 				compute_response_post (req, res, l_order)
 			else
@@ -341,16 +346,16 @@ feature -- PUT/POST
 
 	check_conflict (req: WSF_REQUEST; res: WSF_RESPONSE)
 			-- Check we can support all content headers on request entity.
-			-- Set `req.execution_variable ("CONFLICT_CHECK_CODE")' to {NATURAL} zero if OK, or 409 if not.
+			-- Set `req.execution_variable (Conflict_check_code_execution_variable)' to {NATURAL} zero if OK, or 409 if not.
 			-- In the latter case, write the full error response to `res'.
 		do
-			if attached {ORDER} req.execution_variable ("EXTRACTED_ORDER") as l_order then
+			if attached {ORDER} req.execution_variable (Extracted_order_execution_variable) as l_order then
 				if not is_valid_to_update (l_order)	then
-					req.set_execution_variable ("CONFLICT_CHECK_CODE", {NATURAL} 409)
+					req.set_execution_variable (Conflict_check_code_execution_variable, {NATURAL} 409)
 					handle_resource_conflict_response (l_order.out +"%N There is conflict while trying to update the order, the order could not be update in the current state", req, res)
 				end
 			else
-				req.set_execution_variable ("CONFLICT_CHECK_CODE", {NATURAL} 409)
+				req.set_execution_variable (Conflict_check_code_execution_variable, {NATURAL} 409)
 				--| This ought to be a 500, as if attached should probably be check attached. But as yet I lack a proof.
 				handle_resource_conflict_response ("There is conflict while trying to update the order, the order could not be update in the current state", req, res)
 			end
@@ -358,31 +363,31 @@ feature -- PUT/POST
 
 	check_request (req: WSF_REQUEST; res: WSF_RESPONSE)
 			-- Check that the request entity is a valid request.
-			-- The entity is available as `req.execution_variable ("REQUEST_ENTITY")'.
-			-- Set `req.execution_variable ("REQUEST_CHECK_CODE")' to {NATURAL} zero if OK, or 400 if not.
+			-- The entity is available as `req.execution_variable (Conflict_check_code_execution_variable)'.
+			-- Set `req.execution_variable (Request_check_code_execution_variable)' to {NATURAL} zero if OK, or 400 if not.
 			-- In the latter case, write the full error response to `res'.
 		local
 			l_order: detachable ORDER
 			l_id: STRING
 		do
-			if attached {READABLE_STRING_8} req.execution_variable ("REQUEST_ENTITY") as l_request then
+			if attached {READABLE_STRING_8} req.execution_variable (Request_entity_execution_variable) as l_request then
 				l_order := extract_order_request (l_request)
 				if req.is_put_request_method then
 					l_id := order_id_from_request (req)
 					if l_order /= Void  and then db_access.orders.has_key (l_id) then
 						l_order.set_id (l_id)
-						req.set_execution_variable ("REQUEST_CHECK_CODE", {NATURAL} 0)
-						req.set_execution_variable ("EXTRACTED_ORDER", l_order)
+						req.set_execution_variable (Request_check_code_execution_variable, {NATURAL} 0)
+						req.set_execution_variable (Extracted_order_execution_variable, l_order)
 					else
-						req.set_execution_variable ("REQUEST_CHECK_CODE", {NATURAL} 400)
+						req.set_execution_variable (Request_check_code_execution_variable, {NATURAL} 400)
 						handle_bad_request_response (l_request +"%N is not a valid ORDER, maybe the order does not exist in the system", req, res)
 					end
 				else
-					req.set_execution_variable ("REQUEST_CHECK_CODE", {NATURAL} 0)
-					req.set_execution_variable ("EXTRACTED_ORDER", l_order)
+					req.set_execution_variable (Request_check_code_execution_variable, {NATURAL} 0)
+					req.set_execution_variable (Extracted_order_execution_variable, l_order)
 				end
 			else
-				req.set_execution_variable ("REQUEST_CHECK_CODE", {NATURAL} 400)
+				req.set_execution_variable (Request_check_code_execution_variable, {NATURAL} 400)
 				handle_bad_request_response ("Request is not a valid ORDER", req, res)
 			end
 		end
@@ -391,7 +396,7 @@ feature -- PUT/POST
 			-- Perform the update requested in `req'.
 			-- Write a response to `res' with a code of 204 or 500.
 		do
-			if attached {ORDER} req.execution_variable ("EXTRACTED_ORDER") as l_order then
+			if attached {ORDER} req.execution_variable (Extracted_order_execution_variable) as l_order then
 				update_order (l_order)
 				compute_response_put (req, res, l_order)
 			else

@@ -22,7 +22,7 @@ feature -- Basic operations
 			-- Policy routines are available in `a_handler'.
 		do
 			if a_handler.allow_post_to_missing_resource (req) then
-				check attached {HTTP_HEADER} req.execution_variable ("NEGOTIATED_HTTP_HEADER") as h then
+				check attached {HTTP_HEADER} req.execution_variable (a_handler.Negotiated_http_header_execution_variable) as h then
 						-- postcondition header_attached of `handle_content_negotiation'
 					send_response (req, res, a_handler, h, True)
 				end

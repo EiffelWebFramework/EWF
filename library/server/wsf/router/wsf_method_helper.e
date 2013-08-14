@@ -12,7 +12,7 @@ deferred class WSF_METHOD_HELPER
 inherit
 
 	HTTP_STATUS_CODE_MESSAGES
-	
+
 	SHARED_HTML_ENCODER
 		export {NONE} all end
 
@@ -58,7 +58,7 @@ feature -- Basic operations
 					l_locs := a_handler.previous_location (req)
 					handle_redirection_error (req, res, l_locs, {HTTP_STATUS_CODE}.found)
 				else
-					check attached {HTTP_HEADER} req.execution_variable ("NEGOTIATED_HTTP_HEADER") as h then
+					check attached {HTTP_HEADER} req.execution_variable (a_handler.Negotiated_http_header_execution_variable) as h then
 						-- postcondition header_attached of `handle_content_negotiation'
 						h.put_content_type_text_plain
 						h.put_current_date
@@ -68,7 +68,7 @@ feature -- Basic operations
 					end
 				end
 			else
-				check attached {HTTP_HEADER} req.execution_variable ("NEGOTIATED_HTTP_HEADER") as h then
+				check attached {HTTP_HEADER} req.execution_variable (a_handler.Negotiated_http_header_execution_variable) as h then
 						-- postcondition header_attached of `handle_content_negotiation'
 					h.put_content_type_text_plain
 					h.put_current_date
@@ -140,7 +140,7 @@ feature -- Basic operations
 						end
 					end
 					if not l_failed then
-						check attached {HTTP_HEADER} req.execution_variable ("NEGOTIATED_HTTP_HEADER") as h then
+						check attached {HTTP_HEADER} req.execution_variable (a_handler.Negotiated_http_header_execution_variable) as h then
 								-- postcondition header_attached of `handle_content_negotiation'
 							send_response (req, res, a_handler, h, False)
 						end
@@ -154,7 +154,7 @@ feature -- Content negotiation
 	handle_content_negotiation (req: WSF_REQUEST; res: WSF_RESPONSE; a_handler: WSF_SKELETON_HANDLER)
 			-- Negotiate acceptable content for, then write, response requested by `req' into `res'.
 			-- Policy routines are available in `a_handler'.
-			-- 
+			--
 			-- Either a 406 Not Acceptable error is sent, or upto four execution variables may be set on `req':
 			-- "NEGOTIATED_MEDIA_TYPE"
 			-- "NEGOTIATED_LANGUAGE"
@@ -290,7 +290,7 @@ feature {NONE} -- Implementation
 					l_chunk := a_handler.next_chunk (req)
 					res.put_chunk (l_chunk.a_chunk, l_chunk.a_extension)
 				else
-					write_error_response (req, res)					
+					write_error_response (req, res)
 				end
 			end
 			if a_handler.finished (req) then
@@ -366,7 +366,7 @@ feature {NONE} -- Implementation
 
 feature -- Errors
 
-	
+
 feature -- Error reporting
 
 	write_error_response (req: WSF_REQUEST; res: WSF_RESPONSE)
@@ -439,7 +439,7 @@ feature -- Error reporting
 					s.append ("<div id=%"footer%"></div>")
 					s.append ("</body>%N")
 					s.append ("</html>%N")
-					
+
 					h.put_content_type_text_html
 				else
 					s := "Error " + a_status_code.out + " (" + l_msg + "): "
@@ -566,7 +566,7 @@ feature -- Error reporting
 			res.set_status_code ({HTTP_STATUS_CODE}.not_implemented)
 			res.put_header_lines (h)
 		end
-	
+
 	handle_request_entity_too_large (req: WSF_REQUEST; res: WSF_RESPONSE; a_handler: WSF_SKELETON_HANDLER)
 			-- Write a Request Entity Too Large response for `req' to `res'.
 		require

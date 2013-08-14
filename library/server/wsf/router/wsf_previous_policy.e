@@ -43,10 +43,11 @@ feature -- Access
 			req_attached: req /= Void
 			previously_existed: resource_previously_existed (req)
 			moved: resource_moved_permanently (req) or resource_moved_temporarily (req)
-		deferred
+		do
+			create {LINKED_LIST [URI]} Result.make
 		ensure
 			previous_location_attached: Result /= Void
-			non_empty_list: not Result.empty
+			non_empty_list: not Result.is_empty
 		end
 
 note

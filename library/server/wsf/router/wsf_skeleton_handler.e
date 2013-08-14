@@ -30,7 +30,7 @@ feature -- Execution variables
 
 	Negotiated_language_execution_variable: STRING = "NEGOTIATED_LANGUAGE"
 			-- Execution variable set by framework
-		
+
 	Negotiated_charset_execution_variable: STRING = "NEGOTIATED_CHARSET"
 			-- Execution variable set by framework
 
@@ -45,6 +45,15 @@ feature -- Execution variables
 
 	Request_entity_execution_variable: STRING = "REQUEST_ENTITY"
 			-- Execution variable set by framework
+
+	Conflict_check_code_execution_variable: STRING = "CONFLICT_CHECK_CODE"
+		-- Execution variable set by framework
+
+	Content_check_code_execution_variable: STRING = "CONTENT_CHECK_CODE"
+		-- Execution variable set by framework
+
+	Request_check_code_execution_variable: STRING = "REQUEST_CHECK_CODE"
+		-- Execution variable set by framework
 
 feature -- Access
 
@@ -329,7 +338,7 @@ feature -- PUT/POST
 		end
 
 	is_entity_too_large (req: WSF_REQUEST): BOOLEAN
-			-- Is the entity stored in `req.execution_variable ("REQUEST_ENTITY")' too large for the application?
+			-- Is the entity stored in `req.execution_variable (Request_entity_execution_variable)' too large for the application?
 		require
 			req_attached: req /= Void
 		deferred
@@ -337,7 +346,7 @@ feature -- PUT/POST
 
 	check_content_headers (req: WSF_REQUEST)
 			-- Check we can support all content headers on request entity.
-			-- Set `req.execution_variable ("CONTENT_CHECK_CODE")' to {NATURAL} zero if OK, or 415 or 501 if not.
+			-- Set `req.execution_variable (Content_check_code_execution_variable)' to {NATURAL} zero if OK, or 415 or 501 if not.
 		require
 			req_attached: req /= Void
 		deferred
@@ -348,7 +357,7 @@ feature -- PUT/POST
 		require
 			req_attached: req /= Void
 		do
-			if attached {NATURAL} req.execution_variable ("CONTENT_CHECK_CODE") as l_code then
+			if attached {NATURAL} req.execution_variable (Content_check_code_execution_variable) as l_code then
 				Result := l_code
 			end
 		end
@@ -375,7 +384,7 @@ feature -- PUT/POST
 
 	check_conflict (req: WSF_REQUEST; res: WSF_RESPONSE)
 			-- Check to see if updating the resource is problematic due to the current state of the resource.
-			-- Set `req.execution_variable ("CONFLICT_CHECK_CODE")' to {NATURAL} zero if OK, or 409 if not.
+			-- Set `req.execution_variable (Conflict_check_code_execution_variable)' to {NATURAL} zero if OK, or 409 if not.
 			-- In the latter case, write the full error response to `res'.
 		require
 			req_attached: req /= Void
@@ -388,15 +397,15 @@ feature -- PUT/POST
 		require
 			req_attached: req /= Void
 		do
-			if attached {NATURAL} req.execution_variable ("CONFLICT_CHECK_CODE") as l_code then
+			if attached {NATURAL} req.execution_variable (Conflict_check_code_execution_variable) as l_code then
 				Result := l_code
 			end
 		end
 
 	check_request (req: WSF_REQUEST; res: WSF_RESPONSE)
 			-- Check that the request entity is a valid request.
-			-- The entity is available as `req.execution_variable ("REQUEST_ENTITY")'.
-			-- Set `req.execution_variable ("REQUEST_CHECK_CODE")' to {NATURAL} zero if OK, or 400 if not.
+			-- The entity is available as `req.execution_variable (Conflict_check_code_execution_variable)'.
+			-- Set `req.execution_variable (Request_check_code_execution_variable)' to {NATURAL} zero if OK, or 400 if not.
 			-- In the latter case, write the full error response to `res'.
 		require
 			req_attached: req /= Void
@@ -410,7 +419,7 @@ feature -- PUT/POST
 		require
 			req_attached: req /= Void
 		do
-			if attached {NATURAL} req.execution_variable ("REQUEST_CHECK_CODE") as l_code then
+			if attached {NATURAL} req.execution_variable (Request_check_code_execution_variable) as l_code then
 				Result := l_code
 			end
 		end
