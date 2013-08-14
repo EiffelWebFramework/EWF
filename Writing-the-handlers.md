@@ -13,12 +13,16 @@ Internally, the framework uses the following execution variable names, so you mu
 1. NEGOTIATED_MEDIA_TYPE
 1. NEGOTIATED_ENCODING
 1. NEGOTIATED_HTTP_HEADER
+1. CONFLICT_CHECK_CODE
+1. CONTENT_CHECK_CODE
+1. REQUEST_CHECK_CODE
 
 The first one makes the request entity from a PULL or POST request available to your routines. 
 
-The next four make the results of content negotiation available to your routines. The last one makes an HTTP_HEADER available to your routines. You should use this rather than create your own, as it may contain a **Vary** header as a by-product of content negotiation.
+The next four make the results of content negotiation available to your routines. The sixth one makes an HTTP_HEADER available to your routines. You should use this rather than create your own, as it may contain a **Vary** header as a by-product of content negotiation.
+The last three are for reporting the result from check_conflict, check_content and check_request.
 
-All six names are defined as constants in WSF_SKELETON_HANDLER, to make it easier for you to refer to them.
+All names are defined as constants in WSF_SKELETON_HANDLER, to make it easier for you to refer to them.
 
 ## Implementing the routines declared directly in WSF_SKELETON_HANDLER
 
