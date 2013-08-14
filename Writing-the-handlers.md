@@ -215,5 +215,5 @@ This routine is called for a normal (updating) PUT request. You have to update t
 ## Implementing the policies
 
 * [WSF_OPTIONS_POLICY](./WSF_OPTIONS_POLICY)
-* [WSF_PREVIOUS_POLICY](./WSF_PREVIOUS_POLICY)
+* [WSF_PREVIOUS_POLICY](./Wsf-previous-policy)
 * [WSF_CACHING_POLICY](./WSF_CACHING_POLICY)
