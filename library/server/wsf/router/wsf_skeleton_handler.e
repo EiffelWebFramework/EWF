@@ -264,7 +264,7 @@ feature -- DELETE
 feature -- GET/HEAD content
 
 	ensure_content_available (req: WSF_REQUEST)
-			-- Commence generation of response text (entity-body) (if not already done in `check_resource_exists'.
+			-- Commence generation of response text (entity-body) (if not already done in `check_resource_exists').
 			-- If not chunked, then this will create the entire entity-body so as to be available
 			--  for a subsequent call to `content'.
 			-- If chunked, only the first chunk will be made available to `next_chunk'. If chunk extensions
