@@ -457,10 +457,9 @@ feature -- Execution
 			-- <Precursor>
 		do
 			check
-				known_method: True -- Can't be done until WSF_METHOD_NOT_ALLOWED_RESPONSE
-				-- is refactored.
-				-- Then maybe this can become a precondition. But we will still (?)
-				-- need a check that it isn't CONNECT or TRACE (it MIGHT be HEAD).
+				known_method: router.allowed_methods_for_request (req).has (req.request_method)
+				not_trace: not req.is_request_method ({HTTP_REQUEST_METHODS}.method_trace)
+				not_connect: not req.is_request_method ({HTTP_REQUEST_METHODS}.method_connect)
 			end
 			if req.is_request_method ({HTTP_REQUEST_METHODS}.method_options) then
 				execute_options (req, res, router)
