@@ -364,8 +364,6 @@ feature {NONE} -- Implementation
 			end
 		end
 
-feature -- Errors
-
 
 feature -- Error reporting
 
