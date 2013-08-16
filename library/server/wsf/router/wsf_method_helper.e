@@ -315,7 +315,7 @@ feature {NONE} -- Implementation
 			create l_dur.make (0, 0, 0, 0, 0, l_age.as_integer_32)
 			l_dt := (create {HTTP_DATE}.make_from_date_time (a_request_time + l_dur)).rfc1123_string
 			a_header.put_header_key_value ({HTTP_HEADER_NAMES}.header_expires, l_dt)
-			l_age_1 := a_handler.age (req)
+			l_age_1 := a_handler.max_age (req)
 			if l_age_1 /= l_age then
 				a_header.add_header_key_value ({HTTP_HEADER_NAMES}.header_cache_control, "max-age=" + l_age_1.out)
 			end

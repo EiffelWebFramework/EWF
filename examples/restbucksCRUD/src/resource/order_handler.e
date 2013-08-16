@@ -99,7 +99,7 @@ feature -- Access
 			Result.compare_objects
 		end
 
-	age (req: WSF_REQUEST): NATURAL
+	max_age (req: WSF_REQUEST): NATURAL
 			-- Maximum age in seconds before response to `req` is considered stale;
 			-- This is used to generate a Cache-Control: max-age header.
 			-- Return 0 to indicate already expired.

@@ -14,7 +14,7 @@ feature -- Access
 		-- 525600 = 365 * 24 * 60 * 60 = (almost) 1 year;
 		-- See http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.21 for an explanation of why this means never expire
 
-	age (req: WSF_REQUEST): NATURAL
+	max_age (req: WSF_REQUEST): NATURAL
 			-- Maximum age in seconds before response to `req` is considered stale;
 			-- This is used to generate a Cache-Control: max-age header.
 			-- Return 0 to indicate already expired.
@@ -35,7 +35,7 @@ feature -- Access
 		require
 			req_attached: req /= Void
 		do
-			Result := age (req)
+			Result := max_age (req)
 		ensure
 			not_more_than_1_year: Result <= Never_expires
 		end
@@ -51,7 +51,7 @@ feature -- Access
 		require
 			req_attached: req /= Void
 		do
-			Result := age (req)
+			Result := max_age (req)
 		ensure
 			not_more_than_1_year: Result <= Never_expires
 		end
