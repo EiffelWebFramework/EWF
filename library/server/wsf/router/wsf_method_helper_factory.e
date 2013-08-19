@@ -12,7 +12,8 @@ class WSF_METHOD_HELPER_FACTORY
 feature -- Factory
 
 	new_method_helper (a_method: READABLE_STRING_8): detachable WSF_METHOD_HELPER
-			-- New object for processing `a_method'
+			-- New object for processing `a_method';
+			-- Redefine this routine to implement extension methods.
 		require
 			a_method_attached: a_method /= Void
 		do
