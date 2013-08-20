@@ -46,6 +46,7 @@
 		<library name="uri_template" location="..\library\text\parser\uri_template\uri_template-safe.ecf" readonly="false"/>
 		<library name="wizard" location="..\tools\ise_wizard\ewf_ise_wizard-safe.ecf" readonly="false"/>
 		<library name="wsf" location="..\library\server\wsf\wsf-safe.ecf" readonly="false"/>
+		<library name="wsf_policy_driven" location="..\library\server\wsf\wsf_policy_driven-safe.ecf" readonly="false"/>
 		<library name="wsf_all" location="..\library\server\wsf\connector\all-safe.ecf" readonly="false"/>
 		<library name="wsf_cgi" location="..\library\server\wsf\connector\cgi-safe.ecf" readonly="false"/>
 		<library name="wsf_extension" location="..\library\server\wsf\wsf_extension-safe.ecf" readonly="false"/>
