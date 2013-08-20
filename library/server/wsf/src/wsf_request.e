@@ -309,16 +309,42 @@ feature -- Helper
 			Result := request_method.is_case_insensitive_equal (m.as_string_8)
 		end
 
+	is_put_request_method: BOOLEAN
+			-- Is Current a PUT request method?
+		do
+			Result := request_method.is_case_insensitive_equal ({HTTP_REQUEST_METHODS}.method_put)
+		end
+
 	is_post_request_method: BOOLEAN
 			-- Is Current a POST request method?
 		do
 			Result := request_method.is_case_insensitive_equal ({HTTP_REQUEST_METHODS}.method_post)
 		end
 
+	is_delete_request_method: BOOLEAN
+			-- Is Current a DELETE request method?
+		do
+			Result := request_method.is_case_insensitive_equal ({HTTP_REQUEST_METHODS}.method_delete)
+		end
+
 	is_get_request_method: BOOLEAN
 			-- Is Current a GET request method?
 		do
 			Result := request_method.is_case_insensitive_equal ({HTTP_REQUEST_METHODS}.method_get)
+		end
+
+	is_get_head_request_method: BOOLEAN
+			-- Is Current a GET or a HEAD request method?
+		do
+			Result := request_method.is_case_insensitive_equal ({HTTP_REQUEST_METHODS}.method_get) or
+				request_method.is_case_insensitive_equal ({HTTP_REQUEST_METHODS}.method_head)
+		end
+
+	is_put_post_request_method: BOOLEAN
+			-- Is Current a PUT or a POST request method?
+		do
+			Result := request_method.is_case_insensitive_equal ({HTTP_REQUEST_METHODS}.method_put) or
+				request_method.is_case_insensitive_equal ({HTTP_REQUEST_METHODS}.method_post)
 		end
 
 	is_content_type_accepted (a_content_type: READABLE_STRING_GENERAL): BOOLEAN
@@ -348,6 +374,8 @@ feature -- Helper
 					end
 				end
 				Result := l_accept.has_substring (a_content_type)
+			else
+				Result := True
 			end
 		end
 
@@ -1135,6 +1163,42 @@ feature -- HTTP_*
 			-- Existence check on resource
 		do
 			Result := wgi_request.http_if_match
+		end
+
+	http_if_modified_since: detachable READABLE_STRING_8
+			-- Modification check on resource
+		do
+			Result := wgi_request.http_if_modified_since
+		end
+
+	http_if_none_match: detachable READABLE_STRING_8
+			-- Existence check on resource
+		do
+			Result := wgi_request.http_if_none_match
+		end
+
+	http_if_range: detachable READABLE_STRING_8
+			-- Range check on resource
+		do
+			Result := wgi_request.http_if_range
+		end
+
+	http_if_unmodified_since: detachable READABLE_STRING_8
+			-- Modification check on resource
+		do
+			Result := wgi_request.http_if_unmodified_since
+		end
+
+	http_last_modified: detachable READABLE_STRING_8
+			-- Modification time of resource
+		do
+			Result := wgi_request.http_last_modified
+		end
+
+	http_range: detachable READABLE_STRING_8
+			-- Requested byte-range of resource
+		do
+			Result := wgi_request.http_range
 		end
 
 feature -- Extra CGI environment variables
