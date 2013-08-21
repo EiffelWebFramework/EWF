@@ -4,10 +4,9 @@
     <meta charset="utf-8">
     <title>Eiffel Web Framework</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/vendor/bootstrap.min.css" rel="stylesheet">
     <link href="css/main.css" rel="stylesheet">
-    <link href="css/bootstrap-responsive.min.css" rel="stylesheet">
-    <link href="css/lang-eiffel.css" rel="stylesheet">
+    <link href="css/vendor/lang-eiffel.css" rel="stylesheet">
   </head>
   <body>
     <div class="container-narrow">
@@ -20,8 +19,8 @@
         <h3 class="muted">Eiffel Web Framework</h3>
       </div>
       <hr>
-      <div class="row-fluid">
-        <div class="span12">
+      <div class="row">
+        <div class="col-md-12">
           <div class="page-header">
             <h1>Getting Started</h1>
           </div>
@@ -34,7 +33,7 @@
           <h3>Other EiffelStudio versions</h3>
           <p>If you have another version of EiffelStudio than 7.2, you have to</p>
           <ol>
-            <li><a href="http://github.com/EiffelWebFramework/EWF/zipball/release-0.2">dowload EWF</a></li>
+            <li><a href="https://github.com/EiffelWebFramework/EWF/archive/v0.3.1.zip">dowload EWF</a></li>
             <li>create a directory where you will put your custum Eiffel libraries</li>
             <li>extract EWF in the newly created directory</li>
             <li>define the environment variable EIFFEL_LIBRARY to point to the newly created directory</li>
@@ -42,7 +41,7 @@
           <h3>Source code</h3>
           <p>The source code is available on Github.
           You can get it by running the command:</p>
-          <pre><code>git clone --recursive git://github.com/EiffelWebFramework/EWF.git</code></pre>
+          <pre><code>git clone git://github.com/EiffelWebFramework/EWF.git</code></pre>
           <h2>Hello World</h2>
           <p>The hello world example is located in the directory <i>$ISE_EIFFEL/contrib/examples/web/ewf/simple</i>.
           Just double click on the <i>simple.ecf</i> file and select the <i>simple</i> target or if you prefer the command line, run the command:</p>
@@ -83,9 +82,9 @@ feature {NONE} -- Initialization
         <p>&copy; EiffelWebFramework 2013</p>
       </div>
     </div> <!-- /container -->
-    <script src="js/jquery.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <script src="js/run_prettify.js"></script>
-    <script src="js/lang-eiffel.js"></script>
+    <script src="js/vendor/jquery.min.js"></script>
+    <script src="js/vendor/bootstrap.min.js"></script>
+    <script src="js/vendor/run_prettify.js"></script>
+    <script src="js/vendor/lang-eiffel.js"></script>
   </body>
 </html>
