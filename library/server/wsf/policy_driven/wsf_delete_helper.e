@@ -13,7 +13,7 @@ inherit
 	WSF_METHOD_HELPER
 
 feature {NONE} -- Implementation
-	
+
 	send_response (req: WSF_REQUEST; res: WSF_RESPONSE; a_handler: WSF_SKELETON_HANDLER; a_header: HTTP_HEADER; a_new_resource: BOOLEAN)
 			-- Write response to deletion of resource named by `req' into `res'.
 			-- Upto four execution variables may be set on `req':
@@ -63,4 +63,14 @@ feature {NONE} -- Implementation
 			end
 		end
 
+note
+	copyright: "2011-2013, Colin Adams, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
+	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
+	source: "[
+			Eiffel Software
+			5949 Hollister Ave., Goleta, CA 93117 USA
+			Telephone 805-685-1006, Fax 805-685-6869
+			Website http://www.eiffel.com
+			Customer support http://support.eiffel.com
+		]"
 end
