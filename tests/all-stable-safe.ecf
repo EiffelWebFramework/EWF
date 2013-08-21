@@ -10,8 +10,6 @@
 		</file_rule>
 		<option warning="true" full_class_checking="true" is_attached_by_default="true" void_safety="all" syntax="standard">
 		</option>
-		<library name="cms" location="..\draft\application\cms\cms-safe.ecf" readonly="false"/>
-		<library name="demo" location="..\draft\application\cms\example\cms_demo-safe.ecf" readonly="false"/>
 		<library name="restbucks" location="..\examples\restbucksCRUD\restbucks-safe.ecf" readonly="false"/>
 		<library name="client" location="..\examples\restbucksCRUD\client\client-safe.ecf" readonly="false"/>
 		<library name="upload_image" location="..\examples\upload_image\upload_image-safe.ecf" readonly="false"/>
@@ -21,7 +19,6 @@
 		<library name="openid" location="..\library\security\openid\consumer\openid-safe.ecf" readonly="false"/>
 		<library name="demo-1" location="..\library\security\openid\consumer\demo\demo-safe.ecf" readonly="false"/>
 		<library name="http_authorization" location="..\library\server\authentication\http_authorization\http_authorization-safe.ecf" readonly="false"/>
-		<library name="ewf_support" location="..\library\server\ewf_support\ewf_support-safe.ecf" readonly="false"/>
 		<library name="ewsgi" location="..\library\server\ewsgi\ewsgi-safe.ecf" readonly="false"/>
 		<library name="ewsgi_spec" location="..\library\server\ewsgi\ewsgi_spec-safe.ecf" readonly="false"/>
 		<library name="connector_cgi" location="..\library\server\ewsgi\connectors\cgi\cgi-safe.ecf" readonly="false"/>
