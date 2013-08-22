@@ -209,7 +209,6 @@ feature {NONE} -- Implementation: Environment
 			j := a_var.count
 			from
 				i := 1
-				j := 0
 			until
 				i > j or done
 			loop
