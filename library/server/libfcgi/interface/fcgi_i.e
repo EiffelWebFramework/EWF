@@ -208,7 +208,6 @@ feature {NONE} -- Implementation: Environment
 		do
 			j := a_var.count
 			from
-				done := False
 				i := 1
 				j := 0
 			until
@@ -222,8 +221,6 @@ feature {NONE} -- Implementation: Environment
 			end
 			if i > 1 and then i < j then
 				Result := [a_var.substring (i + 1, j), a_var.substring (1, i - 1)]
-			else
-				Result := Void
 			end
 		end
 
