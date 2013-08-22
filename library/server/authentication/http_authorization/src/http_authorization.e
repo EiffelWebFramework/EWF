@@ -19,14 +19,15 @@ feature {NONE} -- Initialization
 
 	make (a_http_authorization: detachable READABLE_STRING_GENERAL)
 			-- Initialize `Current'.
+		require
+			a_http_authorization_valid_as_string_8: (attached a_http_authorization as lr_s) and then lr_s.is_valid_as_string_8
 		local
 			i: INTEGER
-			t, s: STRING_8
-			u, p: like login
+			s, l_type, l_login, l_password: STRING_8
 		do
 			if a_http_authorization /= Void then
 				s := a_http_authorization.as_string_8
-				create http_authorization.make_from_string (s)
+				http_authorization := s
 				if not s.is_empty then
 					i := 1
 					if s[i] = ' ' then
@@ -34,73 +35,74 @@ feature {NONE} -- Initialization
 					end
 					i := s.index_of (' ', i)
 					if i > 0 then
-						t := s.substring (1, i - 1).as_lower
-						t.right_adjust; t.left_adjust
-						type := t
-						if t.same_string (Basic_type) then
+						l_type := s.substring (1, i - 1).as_lower
+						l_type.right_adjust; l_type.left_adjust
+						type := l_type
+						if l_type.same_string (Basic_type) then
 							s := (create {BASE64}).decoded_string (s.substring (i + 1, s.count))
 							i := s.index_of (':', 1) --| Let's assume ':' is forbidden in login ...
 							if i > 0 then
-								u := s.substring (1, i - 1).as_string_32
-								p := s.substring (i + 1, s.count).as_string_32
-								login := u
-								password := p
+								l_login := s.substring (1, i - 1).as_string_32
+								l_password := s.substring (i + 1, s.count).as_string_32
+								login := l_login
+								password := l_password
 								check
-									(create {HTTP_AUTHORIZATION}.make_custom_auth (u, p, t)).http_authorization ~ http_authorization
+									(create {HTTP_AUTHORIZATION}.make_custom_auth (l_login, l_password, l_type)).http_authorization ~ http_authorization
 								end
 							end
-						elseif t.same_string ("digest") then
+						elseif l_type.same_string ("digest") then
 							to_implement ("HTTP Authorization %"digest%", not yet implemented")
 						else
-							to_implement ("HTTP Authorization %""+ t +"%", not yet implemented")
+							to_implement ("HTTP Authorization %""+ l_type +"%", not yet implemented")
 						end
 					end
 				end
-			else
-				http_authorization := Void
 			end
 		end
 
-	make_basic_auth (u, p: attached like login)
+	make_basic_auth (a_login: READABLE_STRING_GENERAL; a_password: READABLE_STRING_GENERAL)
 		do
-			make_custom_auth (u, p, Basic_type)
+			make_custom_auth (a_login, a_password, Basic_type)
 		ensure
-			login_effect: login = u
-			password_effect: password = p
+			login_effect: login = a_login
+			password_effect: password = a_password
 			is_basic: is_basic
 		end
 
-	make_custom_auth (u, p: attached like login; a_type: attached like type)
+	make_custom_auth (a_login: READABLE_STRING_GENERAL; a_password: READABLE_STRING_GENERAL; a_type: READABLE_STRING_GENERAL)
+		require
+			a_type_valid_as_string_8: a_type.is_valid_as_string_8
 		local
-			t: STRING_8
+			l_type: STRING_8
 		do
-			login := u
-			password := p
-			create t.make_from_string (a_type.as_lower)
-			t.left_adjust; t.right_adjust
-			type := t
-			if t.same_string (Basic_type) then
-				create http_authorization.make_from_string ("Basic " + (create {BASE64}).encoded_string (u + ":" + p))
+			login := a_login.as_string_32
+			password := a_password.as_string_32
+			l_type := a_type.as_string_8
+			l_type := l_type.as_lower
+			l_type.left_adjust; l_type.right_adjust
+			type := l_type
+			if l_type.same_string (Basic_type) then
+				create http_authorization.make_from_string ("Basic " + (create {BASE64}).encoded_string (a_login.out + ":" + a_password))
 			else
-				to_implement ("HTTP Authorization %""+ t +"%", not yet implemented")
+				to_implement ("HTTP Authorization %""+ l_type +"%", not yet implemented")
 			end
 		ensure
-			login_effect: login = u
-			password_effect: password = p
+			login_effect: login = a_login
+			password_effect: password = a_password
 		end
 
 feature -- Access
 
-	Basic_type: READABLE_STRING_8
+	Basic_type: IMMUTABLE_STRING_8
 		once
 			Result := "basic"
 		end
 
 	type: detachable like Basic_type
 
-	login: detachable READABLE_STRING_32
+	login: detachable IMMUTABLE_STRING_32
 
-	password: detachable like login
+	password: detachable IMMUTABLE_STRING_32
 
 	http_authorization: detachable IMMUTABLE_STRING_8
 
@@ -109,9 +111,9 @@ feature -- Status report
 	is_basic: BOOLEAN
 			-- Is Basic authorization?
 		do
-			Result := (attached type as t) and then t.same_string (Basic_type)
+			Result := (attached type as l_type) and then l_type.same_string (Basic_type)
 		end
 
 invariant
-	type_is_lower: (attached type as t) implies t.same_string (t.as_lower)
+	type_is_lower: (attached type as li_type) implies li_type.same_string (li_type.as_lower)
 end
