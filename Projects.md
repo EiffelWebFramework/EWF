@@ -165,7 +165,7 @@ If you are a student, don't hesitate to pick one, or even suggest a new project,
 * _Description_: Get inspired by any existing template engine, and build one for Eiffel, this should be easily usable within a web application. This could be inspired, or implementation of standard template engine, this way people can reuse existing content, or migrate easily their application to EWF. For inspiration, one can look at:
   - [http://www.smarty.net/](http://www.smarty.net/)
   - [http://mustache.github.com/](http://mustache.github.com/)
-  - [http://en.wikipedia.org/wiki/Template_engine_(web)](http://en.wikipedia.org/wiki/Template_engine_(web)) ... they are plenty of them, a comparison of the different engine would help.
+  - [http://en.wikipedia.org/wiki/Web_template_system](http://en.wikipedia.org/wiki/Web_template_system) ... they are plenty of them, a comparison of the different engine would help.
 * This is not specific to EWF, but it will be very useful in website context.
 
 ## library: Wikitext, markdown parser and render engine
