@@ -12,7 +12,7 @@ Note the following is work in progress, and reflect a specification proposal, ra
 2011-08-01
 ---
 For now, the specification from EWF is done in Eiffel interface
-please see: [https://github.com/Eiffel-World/Eiffel-Web-Framework/tree/master/library/server/ewsgi](https://github.com/Eiffel-World/Eiffel-Web-Framework/tree/master/library/server/ewsgi)/specification
+please see: [https://github.com/Eiffel-World/Eiffel-Web-Framework/tree/master/library/server/ewsgi/specification](https://github.com/Eiffel-World/Eiffel-Web-Framework/tree/master/library/server/ewsgi/specification)
 
 WGI_APPLICATION
 
