@@ -18,7 +18,7 @@ create
 feature {NONE} -- Initialization
 
 	make (a_http_authorization: detachable READABLE_STRING_GENERAL)
-			-- Initialize `Current'.
+			-- Initialize 'Current' with 'a_http_authorization'.
 		require
 			a_http_authorization_valid_as_string_8: (attached a_http_authorization as lr_s) and then lr_s.is_valid_as_string_8
 		local
@@ -61,6 +61,7 @@ feature {NONE} -- Initialization
 		end
 
 	make_basic_auth (a_login: READABLE_STRING_GENERAL; a_password: READABLE_STRING_GENERAL)
+			-- Use 'a_login' as login, 'a_password' as password and 'Basic_type' as type
 		do
 			make_custom_auth (a_login, a_password, Basic_type)
 		ensure
@@ -70,6 +71,7 @@ feature {NONE} -- Initialization
 		end
 
 	make_custom_auth (a_login: READABLE_STRING_GENERAL; a_password: READABLE_STRING_GENERAL; a_type: READABLE_STRING_GENERAL)
+			-- Use 'a_login' as login, 'a_password' as password and 'a_type' as type
 		require
 			a_type_valid_as_string_8: a_type.is_valid_as_string_8
 		local
@@ -93,12 +95,9 @@ feature {NONE} -- Initialization
 
 feature -- Access
 
-	Basic_type: IMMUTABLE_STRING_8
-		once
-			Result := "basic"
-		end
+	Basic_type: STRING_8 = "basic"
 
-	type: detachable like Basic_type
+	type: detachable IMMUTABLE_STRING_8
 
 	login: detachable IMMUTABLE_STRING_32
 
