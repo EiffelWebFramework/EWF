@@ -12,15 +12,15 @@ The official documentation/wiki is located at [https://github.com/EiffelWebFrame
 - to redo
 
 ## Contributions ##
-- You want to contribute or follow the progress/discussion, see the [collaboration page](./Community-collaboration)
-- Potential tasks/projects on EWF: [Projects page](./Projects)
+- You want to contribute or follow the progress/discussion, see the [collaboration page](./wiki/Community-collaboration)
+- Potential tasks/projects on EWF: [Projects page](./wiki/Projects)
 
 ## See also ##
-   - [list of tasks, and a potential roadmap](./Tasks-Roadmap)
-   - [General source structure of this project](./Source-structure)
-   - EWSGI: [Eiffel Web Server Gateway Interface](./EWSGI)
-   - [Overview of the server side architecture](./Spec-Server-Architecture)
-   - This project is also a collection of [Libraries](./Libraries) related to the Web
+   - [list of tasks, and a potential roadmap](./wiki/Tasks-Roadmap)
+   - [General source structure of this project](./wiki/Source-structure)
+   - EWSGI: [Eiffel Web Server Gateway Interface](./wiki/EWSGI)
+   - [Overview of the server side architecture](./wiki/Spec-Server-Architecture)
+   - This project is also a collection of [Libraries](./wiki/Libraries) related to the Web
 
 ## Note ##
    - This wiki needs to be updated, in the meantime, please have a look at the presentation: [https://docs.google.com/presentation/pub?id=1GPFv6aHhTjFSLMnlAt-J4WeIHSGfHdB42dQxmOVOH8s&start=false&loop=false&delayms=3000](https://docs.google.com/presentation/pub?id=1GPFv6aHhTjFSLMnlAt-J4WeIHSGfHdB42dQxmOVOH8s&start=false&loop=false&delayms=3000)
