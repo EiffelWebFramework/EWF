@@ -1,5 +1,5 @@
-- See proposed specifications: [[EWSGI specification| EWSGI-specification]]
-- See [[Open questions| EWSGI-open-questions]]
+- See proposed specifications: [EWSGI specification](./EWSGI-specification)
+- See [Open questions](./EWSGI-open-questions)
 - And below the various proposals and associated decision
 
 ----
