@@ -196,7 +196,7 @@ If you are a student, don't hesitate to pick one, or even suggest a new project,
 * _Description_: TODO 
 * Generic client that can be customized (see design in slide 12)
 * [http://s3.amazonaws.com/cimlabs/Oredev-Hypermedia-APIs.pdf](http://s3.amazonaws.com/cimlabs/Oredev-Hypermedia-APIs.pdf)
-* video http://vimeo.com/20781278
+* video [http://vimeo.com/20781278](http://vimeo.com/20781278)
 
 ## Create a Client Cache based on Apache commons Client Cache. 
 * _Suggested by **Javier**_
