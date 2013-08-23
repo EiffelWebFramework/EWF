@@ -1,3 +1,8 @@
+---
+layout: default
+title: Projects
+base_url: ../../
+---
 This page lists potential projects on EWF, this is open for contribution.
 If you are a student, don't hesitate to pick one, or even suggest a new project, or a project being a merge of several, in any case, you will get close support from EWF's team. 
 
@@ -236,4 +241,4 @@ If you are a student, don't hesitate to pick one, or even suggest a new project,
 ----
 # Feel free to add new idea below this line
 ----
-Use the following page [Projects new suggestions](./Projects new suggestions) to suggest new project, or request a feature.
+Use the following page [Projects new suggestions](../Projects new suggestions) to suggest new project, or request a feature.

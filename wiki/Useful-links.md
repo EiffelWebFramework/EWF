@@ -1,3 +1,8 @@
+---
+layout: default
+title: Useful links
+base_url: ../../
+---
 ## Eiffel
 
 * [http://www.scoop.it/t/eiffel-resources](http://www.scoop.it/t/eiffel-resources)

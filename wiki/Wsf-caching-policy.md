@@ -1,3 +1,8 @@
+---
+layout: default
+title: Wsf caching policy
+base_url: ../../
+---
 # Implementing WSF_CACHING_POLICY
 
 This class contains a large number of routines, some of which have sensible defaults.

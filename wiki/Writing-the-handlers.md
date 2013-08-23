@@ -1,3 +1,8 @@
+---
+layout: default
+title: Writing the handlers
+base_url: ../../
+---
 # Writing the handlers
 
 Now you have to implement each handler. You need to inherit from WSF_SKELETON_HANDLER (as ORDER_HANDLER does). This involves implementing a lot of deferred routines. There are other routines for which default implementations are provided, which you might want to override. This applies to both routines defined in this class, and those declared in the three policy classes from which it inherits.
@@ -218,6 +223,6 @@ This routine is called for a normal (updating) PUT request. You have to update t
 
 ## Implementing the policies
 
-* [WSF_OPTIONS_POLICY](./WSF_OPTIONS_POLICY)
-* [WSF_PREVIOUS_POLICY](./Wsf-previous-policy)
-* [WSF_CACHING_POLICY](./Wsf-caching-policy)
+* [WSF_OPTIONS_POLICY](../WSF_OPTIONS_POLICY)
+* [WSF_PREVIOUS_POLICY](../Wsf-previous-policy)
+* [WSF_CACHING_POLICY](../Wsf-caching-policy)

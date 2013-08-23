@@ -1,5 +1,10 @@
-- See proposed specifications: [EWSGI specification](./EWSGI-specification)
-- See [Open questions](./EWSGI-Open-Questions)
+---
+layout: default
+title: EWSGI
+base_url: ../../
+---
+- See proposed specifications: [EWSGI specification](../EWSGI-specification)
+- See [Open questions](../EWSGI-Open-Questions)
 - And below the various proposals and associated decision
 
 ----

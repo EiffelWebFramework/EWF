@@ -1,3 +1,8 @@
+---
+layout: default
+title: Tasks Roadmap
+base_url: ../../
+---
 ## Future
 * Focus on REST API
     - Hypermedia API
@@ -31,5 +36,5 @@
 * Installation scripts
 
 ## Contributors ##
-  - See [the collaboration page](./Community-collaboration)
+  - See [the collaboration page](../Community-collaboration)
 

@@ -1,3 +1,8 @@
+---
+layout: default
+title: Wsf previous policy
+base_url: ../../
+---
 # WSF_PREVIOUS_POLICY
 
 This class deals with resources that have moved or gone. The default assumes no such resources. It exists as a separate class, rather than have the routines directly in WSF_SKELETON_HANDLER, as sub-classing it may be convenient for an organisation.

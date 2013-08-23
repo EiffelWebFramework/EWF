@@ -1,3 +1,8 @@
+---
+layout: default
+title: Library conneg
+base_url: ../../
+---
 # Server-driven content negotiation
 
 EWF supports server-driven content content negotiation, as defined in [HTTP/1.1 Content Negotiation](http://www.w3.org/Protocols/rfc2616/rfc2616-sec12.html#sec12.1) . To enable this facility:

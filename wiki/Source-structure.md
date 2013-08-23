@@ -1,3 +1,8 @@
+---
+layout: default
+title: Source structure
+base_url: ../../
+---
 ## Currently ##
 
 - LICENSE : file containing the global license
