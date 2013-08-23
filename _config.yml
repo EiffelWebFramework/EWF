@@ -1,0 +1,15 @@
+# Dependencies
+markdown:         rdiscount
+pygments:         true
+
+# Permalinks
+permalink:        pretty
+
+# Server
+destination:      ./_gh_pages
+exclude:          [".gitignore", "Gruntfile.js", "package.json", "node_modules", "README.md"]
+port:             9000
+
+# Custom vars
+repo:             https://github.com/EiffelWebFramework/EWF
+download:         https://github.com/EiffelWebFramework/EWF/archive/v0.3.1.zip
