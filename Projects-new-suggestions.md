@@ -15,6 +15,6 @@ For any entry, please use this template
 ## Add support for Swagger
 * _Suggested by **Olivier**_
 * _Description_: Build a Swagger Eiffel implementation
-* _References_: http://swagger.wordnik.com/
+* _References_: [http://swagger.wordnik.com/](http://swagger.wordnik.com/)
 
 ----
