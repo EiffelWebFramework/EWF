@@ -31,5 +31,5 @@
 * Installation scripts
 
 ## Contributors ##
-  - See [[the collaboration page|Community-collaboration]] 
+  - See [the collaboration page](./Community-collaboration)
 
