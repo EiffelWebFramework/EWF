@@ -155,8 +155,8 @@ If you are a student, don't hesitate to pick one, or even suggest a new project,
 * _Suitability_: TODO 
 * _Description_: Design and build a Single Sign On implementation for Eiffel. That should include the authentication server, and at least one Eiffel client component (it would be convenient to also provide php, js, ...). In the same spirit, having Eiffel client for popular SSO server would be appreciated as well.
 * _Reference_: 
-    - http://en.wikipedia.org/wiki/Single_sign-on
-    - http://en.wikipedia.org/wiki/List_of_single_sign-on_implementations
+    - [http://en.wikipedia.org/wiki/Single_sign-on](http://en.wikipedia.org/wiki/Single_sign-on)
+    - [http://en.wikipedia.org/wiki/List_of_single_sign-on_implementations](http://en.wikipedia.org/wiki/List_of_single_sign-on_implementations)
 
 ## library: Template engine
 * _Suggested by **Jocelyn**_
