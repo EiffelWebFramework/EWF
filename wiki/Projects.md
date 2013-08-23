@@ -155,8 +155,8 @@ If you are a student, don't hesitate to pick one, or even suggest a new project,
 * _Suitability_: TODO 
 * _Description_: Design and build a Single Sign On implementation for Eiffel. That should include the authentication server, and at least one Eiffel client component (it would be convenient to also provide php, js, ...). In the same spirit, having Eiffel client for popular SSO server would be appreciated as well.
 * _Reference_: 
-    - http://en.wikipedia.org/wiki/Single_sign-on
-    - http://en.wikipedia.org/wiki/List_of_single_sign-on_implementations
+    - [http://en.wikipedia.org/wiki/Single_sign-on](http://en.wikipedia.org/wiki/Single_sign-on)
+    - [http://en.wikipedia.org/wiki/List_of_single_sign-on_implementations](http://en.wikipedia.org/wiki/List_of_single_sign-on_implementations)
 
 ## library: Template engine
 * _Suggested by **Jocelyn**_
@@ -165,7 +165,7 @@ If you are a student, don't hesitate to pick one, or even suggest a new project,
 * _Description_: Get inspired by any existing template engine, and build one for Eiffel, this should be easily usable within a web application. This could be inspired, or implementation of standard template engine, this way people can reuse existing content, or migrate easily their application to EWF. For inspiration, one can look at:
   - [http://www.smarty.net/](http://www.smarty.net/)
   - [http://mustache.github.com/](http://mustache.github.com/)
-  - [http://en.wikipedia.org/wiki/Template_engine_(web)](http://en.wikipedia.org/wiki/Template_engine_(web)) ... they are plenty of them, a comparison of the different engine would help.
+  - [http://en.wikipedia.org/wiki/Web_template_system](http://en.wikipedia.org/wiki/Web_template_system) ... they are plenty of them, a comparison of the different engine would help.
 * This is not specific to EWF, but it will be very useful in website context.
 
 ## library: Wikitext, markdown parser and render engine
@@ -196,7 +196,7 @@ If you are a student, don't hesitate to pick one, or even suggest a new project,
 * _Description_: TODO 
 * Generic client that can be customized (see design in slide 12)
 * [http://s3.amazonaws.com/cimlabs/Oredev-Hypermedia-APIs.pdf](http://s3.amazonaws.com/cimlabs/Oredev-Hypermedia-APIs.pdf)
-* video http://vimeo.com/20781278
+* video [http://vimeo.com/20781278](http://vimeo.com/20781278)
 
 ## Create a Client Cache based on Apache commons Client Cache. 
 * _Suggested by **Javier**_
