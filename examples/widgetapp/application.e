@@ -1,13 +1,12 @@
 note
-	description: "simple application root class"
-	date: "$Date$"
-	revision: "$Revision$"
+	description : "simple application root class"
+	date        : "$Date$"
+	revision    : "$Revision$"
 
 class
 	APPLICATION
 
 inherit
-
 	WSF_DEFAULT_SERVICE
 		redefine
 			initialize
@@ -27,11 +26,13 @@ feature {NONE} -- Initialization
 feature -- Basic operations
 
 	execute (req: WSF_REQUEST; res: WSF_RESPONSE)
+		local
+			page: SAMPLE_PAGE
 		do
-				-- To send a response we need to setup, the status code and
-				-- the response headers.
-			res.put_header ({HTTP_STATUS_CODE}.ok, <<["Content-Type", "text/plain"], ["Content-Length", "11"]>>)
-			res.put_string ("Hello World 99 just another mod")
+			-- To send a response we need to setup, the status code and
+			-- the response headers.
+			create page.make(req, res)
+			page.execute
 		end
 
 end
