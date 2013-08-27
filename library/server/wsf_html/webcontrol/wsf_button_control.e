@@ -31,16 +31,21 @@ feature
 		do
 		end
 
-	handle_callback (event: STRING; cname: STRING; page: WSF_PAGE_CONTROL)
+	set_click_event (e: PROCEDURE [ANY, TUPLE [WSF_PAGE_CONTROL]])
 		do
-			if Current.control_name = cname and attached click_event then
+			click_event := e
+		end
+
+	handle_callback (cname: STRING; event: STRING; page: WSF_PAGE_CONTROL)
+		do
+			if Current.control_name.is_equal (cname) and attached click_event then
 				click_event.call ([page])
 			end
 		end
 
 	render: STRING
 		do
-			Result := "<button>" + text + "</button>"
+			Result := "<button data-name=%"" + control_name + "%" data-type=%"WSF_BUTTON_CONTROL%">" + text + "</button>"
 		end
 
 	state: JSON_OBJECT

@@ -1,0 +1,45 @@
+trigger_callback = (control_name,event)->
+    $.ajax
+        data:
+           control_name: control_name
+           event:        event
+        cache: no
+    .done (new_states)->
+         states = new_states
+         for name,state of states
+             controls[name].update(state)
+         return
+
+class WSF_CONTROL
+   constructor: (@control_name, @$el)->
+      @attach_events()
+      return
+   
+   attach_events: ()->
+      return
+
+   update: (state)->
+      return
+
+controls = {}
+
+class WSF_BUTTON_CONTROL extends WSF_CONTROL
+    attach_events: ()->
+       self = @
+       @$el.click ()->
+                 self.click()
+    click: ()->
+        trigger_callback(@control_name, 'click')
+
+    update: (state) ->
+       @$el.text(state.text)
+
+typemap =
+    "WSF_BUTTON_CONTROL":WSF_BUTTON_CONTROL
+
+for name,state of states
+   $el = $('[data-name='+name+']')
+   type = $el.data('type')
+   #bind widget
+   controls[name]=new typemap[type](name,$el)
+   

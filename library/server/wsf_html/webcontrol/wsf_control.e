@@ -13,7 +13,7 @@ feature
 
 feature {WSF_PAGE_CONTROL, WSF_CONTROL}
 
-	handle_callback (event: STRING; cname: STRING; page: WSF_PAGE_CONTROL)
+	handle_callback (cname: STRING; event: STRING; page: WSF_PAGE_CONTROL)
 		deferred
 		end
 

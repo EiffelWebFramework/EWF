@@ -23,6 +23,7 @@ feature
 	initialize_controls
 		do
 			button := create {WSF_BUTTON_CONTROL}.make ("sample_button", "I'm a button")
+			button.set_click_event(agent handle_click)
 			control := button
 		end
 

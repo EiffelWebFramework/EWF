@@ -59,12 +59,25 @@ feature
 	render
 		local
 			data: STRING
+			page: WSF_PAGE_RESPONSE
+			states: JSON_OBJECT
 		do
-			data := control.render
-			response.put_header ({HTTP_STATUS_CODE}.ok, <<["Content-Type", "text/html"]>>)
-			response.put_string ("<html><head></head><body>")
-			response.put_string (data)
-			response.put_string ("</body></html>")
+			create states.make
+			control.read_state (states)
+
+			data := "<html><head>"
+			data.append ("</head><body>")
+			data.append (control.render)
+			data.append ("<script type=%"text/javascript%">var states=")
+			data.append (states.representation)
+			data.append (";</script>")
+			data.append ("<script src=%"//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js%"></script>")
+			data.append ("<script src=%"/widget.js%"></script>")
+			data.append ("</body></html>")
+			create page.make
+			page.put_header ({HTTP_STATUS_CODE}.ok,  <<["Content-Type", "text/html"]>>)
+			page.set_body (data)
+			response.send (page)
 		end
 
 	get_parameter (key: STRING): detachable STRING
