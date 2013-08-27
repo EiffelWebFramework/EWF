@@ -61,8 +61,10 @@ feature
 			data: STRING
 		do
 			data := control.render
-			response.put_header ({HTTP_STATUS_CODE}.ok, <<["Content-Type", "text/plain"], ["Content-Length", data.count.out]>>)
+			response.put_header ({HTTP_STATUS_CODE}.ok, <<["Content-Type", "text/html"], ["Content-Length", data.count.out]>>)
+			response.put_string ("<html><head></head><body>")
 			response.put_string (data)
+			response.put_string ("</body></html>")
 		end
 
 	get_parameter (key: STRING): detachable STRING
