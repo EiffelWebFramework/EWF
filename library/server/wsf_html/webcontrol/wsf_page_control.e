@@ -24,57 +24,55 @@ feature -- Access
 feature
 
 	initialize_controls
-	deferred
-	end
+		deferred
+		end
 
 	process
-	deferred
-	end
+		deferred
+		end
 
 feature
 
-
 	execute
-	local
-		event: detachable STRING
-		control_name: detachable STRING
-		states:JSON_OBJECT
-	do
-		initialize_controls
-		control_name := get_parameter("control_name")
-		event := get_parameter("event")
-		if attached event and attached control_name and attached control then
-				control.handle_callback (control_name,event, Current)
+		local
+			event: detachable STRING
+			control_name: detachable STRING
+			states: JSON_OBJECT
+		do
+			initialize_controls
+			control_name := get_parameter ("control_name")
+			event := get_parameter ("event")
+			if attached event and attached control_name and attached control then
+				control.handle_callback (control_name, event, Current)
 				create states.make
-				control.read_state(states)
+				control.read_state (states)
 				response.put_header ({HTTP_STATUS_CODE}.ok, <<["Content-Type", "application/json"]>>)
 				response.put_string (states.representation)
-		else
-			process
-		render
+			else
+				process
+				render
+			end
 		end
-	end
 
 	render
-	local
-		data: STRING
-	do
-		data := control.render
-		response.put_header ({HTTP_STATUS_CODE}.ok, <<["Content-Type", "text/plain"], ["Content-Length", data.count.out]>>)
-		response.put_string (data)
-	end
-
-	get_parameter(key: STRING) : detachable STRING
-	local
-		value: detachable WSF_VALUE
-	do
-		Result := VOID
-		value := request.query_parameter (key)
-		if attached value then
-			Result := value.as_string.value
+		local
+			data: STRING
+		do
+			data := control.render
+			response.put_header ({HTTP_STATUS_CODE}.ok, <<["Content-Type", "text/plain"], ["Content-Length", data.count.out]>>)
+			response.put_string (data)
 		end
 
-	end
+	get_parameter (key: STRING): detachable STRING
+		local
+			value: detachable WSF_VALUE
+		do
+			Result := VOID
+			value := request.query_parameter (key)
+			if attached value then
+				Result := value.as_string.value
+			end
+		end
 
 feature {NONE}
 
