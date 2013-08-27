@@ -7,18 +7,11 @@ note
 deferred class
 	WSF_CONTROL
 
-feature {NONE}
-
-	make_control
-		do
-			control_name := ""
-		end
-
 feature
 
 	control_name: STRING
 
-feature {WSF_PAGE_CONTROL}
+feature {WSF_PAGE_CONTROL, WSF_CONTROL}
 
 	handle_callback (event: STRING; cname: STRING; page: WSF_PAGE_CONTROL)
 		deferred

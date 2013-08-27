@@ -18,7 +18,6 @@ feature {NONE}
 
 	make (n: STRING; v: STRING)
 		do
-			make_control
 			control_name := n
 			text := v
 			click_event := agent donothing
