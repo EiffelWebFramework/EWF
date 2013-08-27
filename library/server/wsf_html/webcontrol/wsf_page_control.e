@@ -38,12 +38,17 @@ feature
 	local
 		event: detachable STRING
 		control_name: detachable STRING
+		states:JSON_OBJECT
 	do
 		initialize_controls
 		control_name := get_parameter("control_name")
 		event := get_parameter("event")
 		if attached event and attached control_name and attached control then
 				control.handle_callback (control_name,event, Current)
+				create states.make
+				control.read_state(states)
+				response.put_header ({HTTP_STATUS_CODE}.ok, <<["Content-Type", "application/json"]>>)
+				response.put_string (states.representation)
 		else
 			process
 		render
