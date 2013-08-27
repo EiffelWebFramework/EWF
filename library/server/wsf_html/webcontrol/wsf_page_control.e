@@ -26,6 +26,8 @@ feature
 
 	initialize_controls
 		deferred
+		ensure
+			attached control
 		end
 
 	process
