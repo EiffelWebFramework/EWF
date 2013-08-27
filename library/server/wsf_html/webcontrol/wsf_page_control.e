@@ -13,6 +13,7 @@ feature {NONE} -- Initialization
 		do
 			request := req
 			response := res
+			initialize_controls
 		end
 
 feature -- Access
@@ -39,7 +40,6 @@ feature
 			control_name: detachable STRING
 			states: JSON_OBJECT
 		do
-			initialize_controls
 			control_name := get_parameter ("control_name")
 			event := get_parameter ("event")
 			if attached event and attached control_name and attached control then
