@@ -50,6 +50,11 @@ feature
 			Result.put (create {JSON_STRING}.make_json (text), create {JSON_STRING}.make_json ("text"))
 		end
 
+	set_text (t: STRING)
+		do
+			text := t
+		end
+
 feature
 
 	text: STRING
