@@ -1,11 +1,11 @@
 note
-	description: "Summary description for {WSF_BUTTON_CONTROL}."
+	description: "Summary description for {WSF_TEXT_CONTROL}."
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
 class
-	WSF_BUTTON_CONTROL
+	WSF_TEXT_CONTROL
 
 inherit
 
@@ -20,7 +20,7 @@ feature {NONE}
 		do
 			control_name := n
 			text := v
-			click_event := agent donothing
+			change_event := agent donothing
 		end
 
 feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- STATE MANAGEMENT
@@ -44,15 +44,17 @@ feature --EVENT HANDLING
 		do
 		end
 
-	set_click_event (e: PROCEDURE [ANY, TUPLE [WSF_PAGE_CONTROL]])
+	set_change_event (e: PROCEDURE [ANY, TUPLE [WSF_PAGE_CONTROL]])
 		do
-			click_event := e
+			change_event := e
 		end
 
 	handle_callback (cname: STRING; event: STRING; page: WSF_PAGE_CONTROL)
 		do
-			if Current.control_name.is_equal (cname) and attached click_event then
-				click_event.call ([page])
+			if Current.control_name.is_equal (cname) and attached change_event then
+				if event.is_equal ("change") then
+					change_event.call ([page])
+				end
 			end
 		end
 
@@ -60,7 +62,7 @@ feature
 
 	render: STRING
 		do
-			Result := "<button data-name=%"" + control_name + "%" data-type=%"WSF_BUTTON_CONTROL%">" + text + "</button>"
+			Result := "<input type=%"text%" data-name=%"" + control_name + "%" data-type=%"WSF_TEXT_CONTROL%" value=%"" + text + "%" />"
 		end
 
 	set_text (t: STRING)
@@ -72,6 +74,6 @@ feature
 
 	text: STRING
 
-	click_event: PROCEDURE [ANY, TUPLE [WSF_PAGE_CONTROL]]
+	change_event: PROCEDURE [ANY, TUPLE [WSF_PAGE_CONTROL]]
 
 end

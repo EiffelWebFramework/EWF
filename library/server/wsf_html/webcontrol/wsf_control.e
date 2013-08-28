@@ -11,13 +11,24 @@ feature
 
 	control_name: STRING
 
-feature {WSF_PAGE_CONTROL, WSF_CONTROL}
+feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- STATE MANAGEMENT
 
-	handle_callback (cname: STRING; event: STRING; page: WSF_PAGE_CONTROL)
-		deferred
+	load_state (new_states: JSON_OBJECT)
+		local
+			new_state: detachable JSON_VALUE
+		do
+			new_state := new_states.item (create {JSON_STRING}.make_json (control_name))
+			if attached {JSON_OBJECT} new_state as new_state_obj then
+				set_state (new_state_obj)
+			end
 		end
 
-	render: STRING
+	read_state (states: JSON_OBJECT)
+		do
+			states.put (state, create {JSON_STRING}.make_json (control_name))
+		end
+
+	set_state (new_state: JSON_OBJECT)
 		deferred
 		end
 
@@ -25,9 +36,16 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL}
 		deferred
 		end
 
-	read_state (states: JSON_OBJECT)
-		do
-			states.put (state, create {JSON_STRING}.make_json (control_name))
+feature --EVENT HANDLING
+
+	handle_callback (cname: STRING; event: STRING; page: WSF_PAGE_CONTROL)
+		deferred
+		end
+
+feature
+
+	render: STRING
+		deferred
 		end
 
 end

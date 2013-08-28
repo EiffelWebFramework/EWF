@@ -40,16 +40,23 @@ feature
 		local
 			event: detachable STRING
 			control_name: detachable STRING
-			states: JSON_OBJECT
+			states: detachable STRING
+			new_states: JSON_OBJECT
+			json_parser: JSON_PARSER
 		do
 			control_name := get_parameter ("control_name")
 			event := get_parameter ("event")
-			if attached event and attached control_name and attached control then
+			states := get_parameter ("states")
+			if attached event and attached control_name and attached control and attached states then
+				create json_parser.make_parser (states)
+				if attached {JSON_OBJECT} json_parser.parse_json as sp then
+					control.load_state (sp)
+				end
 				control.handle_callback (control_name, event, Current)
-				create states.make
-				control.read_state (states)
+				create new_states.make
+				control.read_state (new_states)
 				response.put_header ({HTTP_STATUS_CODE}.ok, <<["Content-Type", "application/json"]>>)
-				response.put_string (states.representation)
+				response.put_string (new_states.representation)
 			else
 				process
 				render
@@ -64,18 +71,17 @@ feature
 		do
 			create states.make
 			control.read_state (states)
-
 			data := "<html><head>"
 			data.append ("</head><body>")
 			data.append (control.render)
-			data.append ("<script type=%"text/javascript%">var states=")
+			data.append ("<script type=%"text/javascript%">window.states=")
 			data.append (states.representation)
 			data.append (";</script>")
 			data.append ("<script src=%"//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js%"></script>")
 			data.append ("<script src=%"/widget.js%"></script>")
 			data.append ("</body></html>")
 			create page.make
-			page.put_header ({HTTP_STATUS_CODE}.ok,  <<["Content-Type", "text/html"]>>)
+			page.put_header ({HTTP_STATUS_CODE}.ok, <<["Content-Type", "text/html"]>>)
 			page.set_body (data)
 			response.send (page)
 		end

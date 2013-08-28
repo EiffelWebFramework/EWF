@@ -24,21 +24,24 @@ feature
 		local
 			panel: WSF_MULTI_CONTROL
 		do
-			button1 := create {WSF_BUTTON_CONTROL}.make ("sample_button1", "I'm a button")
+			create textbox1.make ("txtBox1", "1")
+			create textbox2.make ("txtBox2", "2")
+			button1 := create {WSF_BUTTON_CONTROL}.make ("sample_button1", "SUM")
+			create textbox_result.make ("txtBox3", "")
 			button1.set_click_event (agent handle_click)
-			button2 := create {WSF_BUTTON_CONTROL}.make ("sample_button2", "I'm a button2")
-			button2.set_click_event (agent handle_click)
 			create panel.make ("panel")
+			panel.add_control (textbox1)
+			panel.add_control (textbox2)
 			panel.add_control (button1)
-			panel.add_control (button2)
+			panel.add_control (textbox_result)
 			control := panel
 		end
 
 	handle_click (context: WSF_PAGE_CONTROL)
 		do
 			if attached {SAMPLE_PAGE} context as sp then
-				sp.button1.set_text ("Hello World! (Ueeee)")
-				sp.button2.set_text ("Hi btn2")
+
+				sp.textbox_result.set_text (textbox1.text + " + " + textbox2.text+" = "+ (textbox1.text.to_integer_16+textbox2.text.to_integer_16).out)
 			end
 		end
 
@@ -48,6 +51,10 @@ feature
 
 	button1: WSF_BUTTON_CONTROL
 
-	button2: WSF_BUTTON_CONTROL
+	textbox1: WSF_TEXT_CONTROL
+
+	textbox2: WSF_TEXT_CONTROL
+
+	textbox_result: WSF_TEXT_CONTROL
 
 end

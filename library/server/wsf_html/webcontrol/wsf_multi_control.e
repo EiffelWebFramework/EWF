@@ -11,7 +11,8 @@ inherit
 
 	WSF_CONTROL
 		redefine
-			read_state
+			read_state,
+			load_state
 		end
 
 create
@@ -27,32 +28,28 @@ feature {NONE}
 			controls := create {LINKED_LIST [WSF_CONTROL]}.make;
 		end
 
-feature
+feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- STATE MANAGEMENT
 
-	add_control (c: WSF_CONTROL)
+	load_state (new_states: JSON_OBJECT)
 		do
-			controls.put_front (c)
-		end
-
-	handle_callback (event: STRING; cname: STRING; page: WSF_PAGE_CONTROL)
-		do
-			if equal (cname, control_name) then
-			else
-				across
-					controls as c
-				loop
-					c.item.handle_callback (event, cname, page)
-				end
-			end
-		end
-
-	render: STRING
-		do
-			Result := ""
 			across
 				controls as c
 			loop
-				Result := Result + c.item.render
+				c.item.load_state (new_states)
+			end
+		end
+
+	set_state (new_state: JSON_OBJECT)
+		do
+		end
+
+	read_state (states: JSON_OBJECT)
+		do
+			states.put (state, create {JSON_STRING}.make_json (control_name))
+			across
+				controls as c
+			loop
+				c.item.read_state (states)
 			end
 		end
 
@@ -68,13 +65,35 @@ feature
 			end
 		end
 
-	read_state (states: JSON_OBJECT)
+feature --EVENT HANDLING
+
+	handle_callback (event: STRING; cname: STRING; page: WSF_PAGE_CONTROL)
 		do
-			states.put (state, create {JSON_STRING}.make_json (control_name))
+			if equal (cname, control_name) then
+			else
+				across
+					controls as c
+				loop
+					c.item.handle_callback (event, cname, page)
+				end
+			end
+		end
+
+feature
+
+	render: STRING
+		do
+			Result := ""
 			across
 				controls as c
 			loop
-				c.item.read_state(states)
+				Result := c.item.render + Result
 			end
 		end
+
+	add_control (c: WSF_CONTROL)
+		do
+			controls.put_front (c)
+		end
+
 end
