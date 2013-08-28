@@ -25,18 +25,22 @@ feature -- Access
 feature
 
 	initialize_controls
+		-- Initalize all the controls, all the event handles must be set in this function.
 		deferred
 		ensure
 			attached control
 		end
 
 	process
+		-- Function called on page load (not on callback)
 		deferred
 		end
 
 feature
 
 	execute
+		-- Entry Point: If request is a callback, restore control states and execute handle then return new state json.
+		-- If request is not a callback. Run process and render the html page
 		local
 			event: detachable STRING
 			control_name: detachable STRING
@@ -64,6 +68,7 @@ feature
 		end
 
 	render
+		-- Render and send the HTML Page
 		local
 			data: STRING
 			page: WSF_PAGE_RESPONSE
@@ -87,12 +92,13 @@ feature
 		end
 
 	get_parameter (key: STRING): detachable STRING
+		-- Read query parameter as string
 		local
 			value: detachable WSF_VALUE
 		do
 			Result := VOID
 			value := request.query_parameter (key)
-			if attached value then
+			if attached value and then value.is_string  then
 				Result := value.as_string.value
 			end
 		end

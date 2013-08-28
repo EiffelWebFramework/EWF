@@ -31,7 +31,9 @@ feature {NONE}
 feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- STATE MANAGEMENT
 
 	load_state (new_states: JSON_OBJECT)
+		-- Pass new_states to subcontrols
 		do
+			Precursor(new_states)
 			across
 				controls as c
 			loop
@@ -44,8 +46,9 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- STATE MANAGEMENT
 		end
 
 	read_state (states: JSON_OBJECT)
+		-- Read states in subcontrols
 		do
-			states.put (state, create {JSON_STRING}.make_json (control_name))
+			Precursor(states)
 			across
 				controls as c
 			loop
@@ -54,20 +57,15 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- STATE MANAGEMENT
 		end
 
 	state: JSON_OBJECT
-		local
-			temp: JSON_OBJECT
+		--Read state
 		do
 			create Result.make
-			across
-				controls as c
-			loop
-				temp := c.item.state
-			end
 		end
 
 feature --EVENT HANDLING
 
 	handle_callback (event: STRING; cname: STRING)
+		-- Pass callback to subcontrols
 		do
 			if equal (cname, control_name) then
 			else

@@ -25,6 +25,7 @@ feature {NONE}
 feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- STATE MANAGEMENT
 
 	set_state (new_state: JSON_OBJECT)
+		-- Restore text from json
 		do
 			if attached {JSON_STRING} new_state.item (create {JSON_STRING}.make_json ("text")) as new_text then
 				text := new_text.unescaped_string_32
@@ -32,6 +33,7 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- STATE MANAGEMENT
 		end
 
 	state: JSON_OBJECT
+		-- Return state which contains the current text and if there is an event handle attached
 		do
 			create Result.make
 			Result.put (create {JSON_STRING}.make_json (text), create {JSON_STRING}.make_json ("text"))
@@ -41,6 +43,7 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- STATE MANAGEMENT
 feature --EVENT HANDLING
 
 	set_click_event (e: attached like click_event)
+		-- Set button click event handle
 		do
 			click_event := e
 		end
