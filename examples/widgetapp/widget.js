@@ -12,12 +12,14 @@
       },
       cache: false
     }).done(function(new_states) {
-      var name, state, states;
-      states = new_states;
-      for (name in states) {
-        state = states[name];
-        controls[name].update(state);
+      var name, state, states, _ref;
+      for (name in new_states) {
+        state = new_states[name];
+        if ((_ref = controls[name]) != null) {
+          _ref.update(state);
+        }
       }
+      states = new_states;
     });
   };
 
@@ -76,7 +78,9 @@
     state = states[name];
     $el = $('[data-name=' + name + ']');
     type = $el.data('type');
-    controls[name] = new typemap[type](name, $el);
+    if ((type != null) && (typemap[type] != null)) {
+      controls[name] = new typemap[type](name, $el);
+    }
   }
 
 }).call(this);

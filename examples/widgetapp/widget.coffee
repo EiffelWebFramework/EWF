@@ -5,10 +5,10 @@ trigger_callback = (control_name,event)->
       event:        event
     cache: no
   .done (new_states)->
-    states = new_states
     #Update all classes
-    for name,state of states
-      controls[name].update(state)
+    for name,state of new_states
+      controls[name]?.update(state)
+    states = new_states
     return
 
 class WSF_CONTROL
@@ -46,5 +46,6 @@ for name,state of states
   #get control type
   type = $el.data('type')
   #create class
-  controls[name]=new typemap[type](name,$el)
+  if type? and typemap[type]?
+    controls[name]=new typemap[type](name,$el)
    
