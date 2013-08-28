@@ -35,6 +35,7 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- STATE MANAGEMENT
 		do
 			create Result.make
 			Result.put (create {JSON_STRING}.make_json (text), create {JSON_STRING}.make_json ("text"))
+			Result.put (create {JSON_BOOLEAN}.make_boolean (attached click_event), create {JSON_STRING}.make_json ("callback_click"))
 		end
 
 feature --EVENT HANDLING

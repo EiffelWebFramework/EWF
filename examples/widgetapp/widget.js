@@ -60,7 +60,9 @@
     };
 
     WSF_BUTTON_CONTROL.prototype.click = function() {
-      return trigger_callback(this.control_name, 'click');
+      if (window.states[this.control_name]['callback_click']) {
+        return trigger_callback(this.control_name, 'click');
+      }
     };
 
     WSF_BUTTON_CONTROL.prototype.update = function(state) {
@@ -89,7 +91,9 @@
 
     WSF_TEXT_CONTROL.prototype.change = function() {
       window.states[this.control_name]['text'] = this.$el.val();
-      return trigger_callback(this.control_name, 'change');
+      if (window.states[this.control_name]['callback_change']) {
+        return trigger_callback(this.control_name, 'change');
+      }
     };
 
     WSF_TEXT_CONTROL.prototype.update = function(state) {

@@ -31,7 +31,8 @@ class WSF_BUTTON_CONTROL extends WSF_CONTROL
     @$el.click ()->
       self.click()
   click: ()->
-    trigger_callback(@control_name, 'click')
+    if window.states[@control_name]['callback_click']
+      trigger_callback(@control_name, 'click')
 
   update: (state) ->
     @$el.text(state.text)
@@ -44,7 +45,8 @@ class WSF_TEXT_CONTROL extends WSF_CONTROL
   change: ()->
     #update local state
     window.states[@control_name]['text'] = @$el.val()
-    trigger_callback(@control_name, 'change')
+    if window.states[@control_name]['callback_change']
+      trigger_callback(@control_name, 'change')
 
   update: (state) ->
     @$el.val(state.text)
