@@ -26,7 +26,7 @@ feature
 		do
 			create textbox1.make ("txtBox1", "1")
 			create textbox2.make ("txtBox2", "2")
-			button1 := create {WSF_BUTTON_CONTROL}.make ("sample_button1", "SUM")
+			create button1.make ("sample_button1", "SUM")
 			create textbox_result.make ("txtBox3", "")
 			button1.set_click_event (agent handle_click)
 			create panel.make ("panel")
@@ -37,12 +37,9 @@ feature
 			control := panel
 		end
 
-	handle_click (context: WSF_PAGE_CONTROL)
+	handle_click
 		do
-			if attached {SAMPLE_PAGE} context as sp then
-
-				sp.textbox_result.set_text (textbox1.text + " + " + textbox2.text+" = "+ (textbox1.text.to_integer_16+textbox2.text.to_integer_16).out)
-			end
+			textbox_result.set_text (textbox1.text + " + " + textbox2.text + " = " + (textbox1.text.to_integer_16 + textbox2.text.to_integer_16).out)
 		end
 
 	process

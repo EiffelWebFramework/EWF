@@ -67,14 +67,14 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- STATE MANAGEMENT
 
 feature --EVENT HANDLING
 
-	handle_callback (event: STRING; cname: STRING; page: WSF_PAGE_CONTROL)
+	handle_callback (event: STRING; cname: STRING)
 		do
 			if equal (cname, control_name) then
 			else
 				across
 					controls as c
 				loop
-					c.item.handle_callback (event, cname, page)
+					c.item.handle_callback (event, cname)
 				end
 			end
 		end

@@ -40,15 +40,15 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- STATE MANAGEMENT
 
 feature --EVENT HANDLING
 
-	set_click_event (e: PROCEDURE [ANY, TUPLE [WSF_PAGE_CONTROL]])
+	set_click_event (e: attached like click_event)
 		do
 			click_event := e
 		end
 
-	handle_callback (cname: STRING; event: STRING; page: WSF_PAGE_CONTROL)
+	handle_callback (cname: STRING; event: STRING)
 		do
 			if Current.control_name.is_equal (cname) and attached click_event as cevent then
-				cevent.call ([page])
+				cevent.call ([])
 			end
 		end
 
@@ -68,6 +68,6 @@ feature
 
 	text: STRING
 
-	click_event: detachable PROCEDURE [ANY, TUPLE [WSF_PAGE_CONTROL]]
+	click_event: detachable PROCEDURE [ANY, TUPLE []]
 
 end

@@ -52,7 +52,7 @@ feature
 				if attached {JSON_OBJECT} json_parser.parse_json as sp then
 					control.load_state (sp)
 				end
-				control.handle_callback (control_name, event, Current)
+				control.handle_callback (control_name, event)
 				create new_states.make
 				control.read_state (new_states)
 				response.put_header ({HTTP_STATUS_CODE}.ok, <<["Content-Type", "application/json"]>>)

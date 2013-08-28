@@ -41,16 +41,16 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- STATE MANAGEMENT
 feature --EVENT HANDLING
 
 
-	set_change_event (e: PROCEDURE [ANY, TUPLE [WSF_PAGE_CONTROL]])
+	set_change_event (e:  attached like change_event)
 		do
 			change_event := e
 		end
 
-	handle_callback (cname: STRING; event: STRING; page: WSF_PAGE_CONTROL)
+	handle_callback (cname: STRING; event: STRING)
 		do
 			if Current.control_name.is_equal (cname) and attached change_event as cevent then
 				if event.is_equal ("change") then
-					cevent.call ([page])
+					cevent.call ([])
 				end
 			end
 		end
@@ -71,6 +71,6 @@ feature
 
 	text: STRING
 
-	change_event: detachable PROCEDURE [ANY, TUPLE [WSF_PAGE_CONTROL]]
+	change_event: detachable PROCEDURE [ANY, TUPLE []]
 
 end
