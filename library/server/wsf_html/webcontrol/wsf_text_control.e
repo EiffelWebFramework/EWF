@@ -20,7 +20,6 @@ feature {NONE}
 		do
 			control_name := n
 			text := v
-			change_event := agent donothing
 		end
 
 feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- STATE MANAGEMENT
@@ -40,9 +39,6 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- STATE MANAGEMENT
 
 feature --EVENT HANDLING
 
-	donothing (p: WSF_PAGE_CONTROL) --UGLY HACK MUST BE REMOVED
-		do
-		end
 
 	set_change_event (e: PROCEDURE [ANY, TUPLE [WSF_PAGE_CONTROL]])
 		do
@@ -51,9 +47,9 @@ feature --EVENT HANDLING
 
 	handle_callback (cname: STRING; event: STRING; page: WSF_PAGE_CONTROL)
 		do
-			if Current.control_name.is_equal (cname) and attached change_event then
+			if Current.control_name.is_equal (cname) and attached change_event as cevent then
 				if event.is_equal ("change") then
-					change_event.call ([page])
+					cevent.call ([page])
 				end
 			end
 		end
@@ -74,6 +70,6 @@ feature
 
 	text: STRING
 
-	change_event: PROCEDURE [ANY, TUPLE [WSF_PAGE_CONTROL]]
+	change_event: detachable PROCEDURE [ANY, TUPLE [WSF_PAGE_CONTROL]]
 
 end
