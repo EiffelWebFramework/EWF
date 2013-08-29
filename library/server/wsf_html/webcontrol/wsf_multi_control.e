@@ -11,7 +11,9 @@ inherit
 
 	WSF_CONTROL
 		redefine
+			make,
 			read_state,
+			read_state_changes,
 			load_state
 		end
 
@@ -24,16 +26,16 @@ feature {NONE}
 
 	make (n: STRING)
 		do
-			control_name := n
+			Precursor (n)
 			controls := create {LINKED_LIST [WSF_CONTROL]}.make;
 		end
 
 feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- STATE MANAGEMENT
 
 	load_state (new_states: JSON_OBJECT)
-		-- Pass new_states to subcontrols
+			-- Pass new_states to subcontrols
 		do
-			Precursor(new_states)
+			Precursor (new_states)
 			across
 				controls as c
 			loop
@@ -46,9 +48,9 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- STATE MANAGEMENT
 		end
 
 	read_state (states: JSON_OBJECT)
-		-- Read states in subcontrols
+			-- Read states in subcontrols
 		do
-			Precursor(states)
+			Precursor (states)
 			across
 				controls as c
 			loop
@@ -56,8 +58,19 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- STATE MANAGEMENT
 			end
 		end
 
+	read_state_changes (states: JSON_OBJECT)
+			-- Read states_changes in subcontrols
+		do
+			Precursor (states)
+			across
+				controls as c
+			loop
+				c.item.read_state_changes (states)
+			end
+		end
+
 	state: JSON_OBJECT
-		--Read state
+			--Read state
 		do
 			create Result.make
 		end
@@ -65,7 +78,7 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- STATE MANAGEMENT
 feature --EVENT HANDLING
 
 	handle_callback (event: STRING; cname: STRING)
-		-- Pass callback to subcontrols
+			-- Pass callback to subcontrols
 		do
 			if equal (cname, control_name) then
 			else

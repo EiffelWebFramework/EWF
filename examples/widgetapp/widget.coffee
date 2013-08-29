@@ -7,7 +7,6 @@ trigger_callback = (control_name,event)->
     cache: no
   .done (new_states)->
     #Update all classes
-    window.states = new_states
     for name,state of new_states
       controls[name]?.update(state)
     return
@@ -35,7 +34,9 @@ class WSF_BUTTON_CONTROL extends WSF_CONTROL
       trigger_callback(@control_name, 'click')
 
   update: (state) ->
-    @$el.text(state.text)
+    if state.text?
+      window.states[@control_name]['text'] = state.text
+      @$el.text(state.text)
 
 class WSF_TEXT_CONTROL extends WSF_CONTROL
   attach_events: ()->
@@ -49,7 +50,9 @@ class WSF_TEXT_CONTROL extends WSF_CONTROL
       trigger_callback(@control_name, 'change')
 
   update: (state) ->
-    @$el.val(state.text)
+    if state.text?
+      window.states[@control_name]['text'] = state.text
+      @$el.val(state.text)
 
 #map class name to effectiv class
 typemap =

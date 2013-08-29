@@ -12,20 +12,20 @@ inherit
 	WSF_CONTROL
 
 create
-	make
+	make_text
 
 feature {NONE}
 
-	make (n: STRING; v: STRING)
+	make_text (n: STRING; v: STRING)
 		do
-			control_name := n
+			make (n)
 			text := v
 		end
 
 feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- STATE MANAGEMENT
 
 	set_state (new_state: JSON_OBJECT)
-		-- Restore text from json
+			-- Restore text from json
 		do
 			if attached {JSON_STRING} new_state.item (create {JSON_STRING}.make_json ("text")) as new_text then
 				text := new_text.unescaped_string_32
@@ -33,7 +33,7 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- STATE MANAGEMENT
 		end
 
 	state: JSON_OBJECT
-		-- Return state which contains the current text and if there is an event handle attached
+			-- Return state which contains the current text and if there is an event handle attached
 		do
 			create Result.make
 			Result.put (create {JSON_STRING}.make_json (text), create {JSON_STRING}.make_json ("text"))
@@ -42,9 +42,8 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- STATE MANAGEMENT
 
 feature --EVENT HANDLING
 
-
-	set_change_event (e:  attached like change_event)
-		-- Set text change event handle
+	set_change_event (e: attached like change_event)
+			-- Set text change event handle
 		do
 			change_event := e
 		end
@@ -67,7 +66,10 @@ feature
 
 	set_text (t: STRING)
 		do
-			text := t
+			if not t.is_equal (text) then
+				text := t
+				state_changes.replace (create {JSON_STRING}.make_json (text), create {JSON_STRING}.make_json ("text"))
+			end
 		end
 
 feature

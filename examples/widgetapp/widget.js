@@ -14,7 +14,6 @@
       cache: false
     }).done(function(new_states) {
       var name, state, _ref;
-      window.states = new_states;
       for (name in new_states) {
         state = new_states[name];
         if ((_ref = controls[name]) != null) {
@@ -66,7 +65,10 @@
     };
 
     WSF_BUTTON_CONTROL.prototype.update = function(state) {
-      return this.$el.text(state.text);
+      if (state.text != null) {
+        window.states[this.control_name]['text'] = state.text;
+        return this.$el.text(state.text);
+      }
     };
 
     return WSF_BUTTON_CONTROL;
@@ -97,7 +99,10 @@
     };
 
     WSF_TEXT_CONTROL.prototype.update = function(state) {
-      return this.$el.val(state.text);
+      if (state.text != null) {
+        window.states[this.control_name]['text'] = state.text;
+        return this.$el.val(state.text);
+      }
     };
 
     return WSF_TEXT_CONTROL;

@@ -24,10 +24,10 @@ feature
 		local
 			panel: WSF_MULTI_CONTROL
 		do
-			create textbox1.make ("txtBox1", "1")
-			create textbox2.make ("txtBox2", "2")
-			create button1.make ("sample_button1", "SUM")
-			create textbox_result.make ("txtBox3", "")
+			create textbox1.make_text ("txtBox1", "1")
+			create textbox2.make_text ("txtBox2", "2")
+			create button1.make_button ("sample_button1", "SUM")
+			create textbox_result.make_text ("txtBox3", "")
 			button1.set_click_event (agent handle_click)
 			create panel.make ("panel")
 			panel.add_control (textbox1)
