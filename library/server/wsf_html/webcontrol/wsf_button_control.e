@@ -16,10 +16,10 @@ create
 
 feature {NONE}
 
-	make_button (n: STRING; v: STRING)
+	make_button (n: STRING; t: STRING)
 		do
 			make (n)
-			text := v
+			text := t
 		end
 
 feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- STATE MANAGEMENT

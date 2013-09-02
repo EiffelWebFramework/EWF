@@ -54,7 +54,7 @@ class WSF_TEXT_CONTROL extends WSF_CONTROL
       window.states[@control_name]['text'] = state.text
       @$el.val(state.text)
 
-#map class name to effectiv class
+#map class name to effective class
 typemap =
   "WSF_BUTTON_CONTROL":WSF_BUTTON_CONTROL
   "WSF_TEXT_CONTROL":WSF_TEXT_CONTROL

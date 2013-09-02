@@ -30,6 +30,13 @@ feature {NONE}
 			controls := create {LINKED_LIST [WSF_CONTROL]}.make;
 		end
 
+	make_with_controls (n: STRING; c: LINKED_LIST [WSF_CONTROL])
+		do
+			control_name := n
+			controls := c
+			create state_changes.make
+		end
+
 feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- STATE MANAGEMENT
 
 	load_state (new_states: JSON_OBJECT)
@@ -45,6 +52,11 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- STATE MANAGEMENT
 
 	set_state (new_state: JSON_OBJECT)
 		do
+			across
+				controls as c
+			loop
+				c.item.set_state (new_state)
+			end
 		end
 
 	read_state (states: JSON_OBJECT)
