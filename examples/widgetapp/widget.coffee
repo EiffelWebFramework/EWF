@@ -54,10 +54,27 @@ class WSF_TEXT_CONTROL extends WSF_CONTROL
       window.states[@control_name]['text'] = state.text
       @$el.val(state.text)
 
+class WSF_TEXTAREA_CONTROL extends WSF_CONTROL
+  attach_events: () ->
+    self = @
+    @$el.change () ->
+      self.change()
+
+  change: () ->
+    window.states[@control_name]['text'] = @$el.val()
+    if window.states[@control_name]['callback_change']
+      trigger_callback(@control_name, 'change')
+
+  update: (state) ->
+    if state.text?
+      window.states[@control_name]['text'] = state.text
+      $el.val(state.text)
+
 #map class name to effective class
 typemap =
   "WSF_BUTTON_CONTROL":WSF_BUTTON_CONTROL
   "WSF_TEXT_CONTROL":WSF_TEXT_CONTROL
+  "WSF_TEXTAREA_CONTROL":WSF_TEXTAREA_CONTROL
 
 #create a js class for each control
 for name,state of window.states
