@@ -11,17 +11,20 @@ base_url: "../"
           <p>This page will help you to get started with EWF.
           We will first see how to install EWF and then how to compile and run the venerable <i>Hello World</i> example.</p>
           <h2>Installation</h2>
-          <h3>EiffelStudio 7.2</h3>
-          <p>EWF is already included in EiffelStudio 7.2: you don't have to do anything in this case!
-          This is the recommanded solution if you are a new developer or are new to Eiffel.</p>
-          <h3>Other EiffelStudio versions</h3>
-          <p>If you have another version of EiffelStudio than 7.2, you have to</p>
+          <h3>Download</h3>
+          <p>Follow these steps to download and install EWF on your computer:</p>
           <ol>
-            <li><a href="https://github.com/EiffelWebFramework/EWF/archive/v0.3.1.zip">dowload EWF</a></li>
-            <li>create a directory where you will put your custum Eiffel libraries</li>
-            <li>extract EWF in the newly created directory</li>
-            <li>define the environment variable EIFFEL_LIBRARY to point to the newly created directory</li>
+            <li><a href="https://github.com/EiffelWebFramework/EWF/archive/v0.3.1.zip">Dowload the archive</a></li>
+            <li>Create a directory where you will put your custom Eiffel libraries</li>
+            <li>Extract EWF in the newly created directory</li>
+            <li>Define the environment variable EIFFEL_LIBRARY to point to the newly created directory</li>
           </ol>
+          <h3>EiffelStudio</h3>
+          <p>EWF version 0.2 is included in EiffelStudio 7.2 and version 0.3 is included in EiffelStudio 7.3.
+          We recommand to use the latest EWF version (0.3 as of this writing) even if you are using EiffelStudio 7.2.</p>
+          <div class="alert alert-info">
+            <strong>Note</strong>: The version that comes with EiffelStudio 7.3 does not include the examples.
+          </div>
           <h3>Source code</h3>
           <p>The source code is available on Github.
           You can get it by running the command:</p>
@@ -30,34 +33,7 @@ base_url: "../"
           <p>The hello world example is located in the directory <i>$ISE_EIFFEL/contrib/examples/web/ewf/simple</i>.
           Just double click on the <i>simple.ecf</i> file and select the <i>simple</i> target or if you prefer the command line, run the command:</p>
           <pre><code>estudio -config simple.ecf -target simple</code></pre>
-          <p>Once the project is compiled, we will adapt the root class to point to port number 9090.</p>
-          <div class="alert alert-info">
-          <strong>Note</strong>: By default, the application listens on port 80, which is often already used by standard webservers (Apache, nginx, ...).
-          Moreover, on Linux, ports below 1024 can only be opened by root.
-          </div>
-          <p>To do this, we will redefine the feature <i>initialize</i> as follows:</p>
-          <pre class="prettyprint lang-eiffel">
-class
-	APPLICATION
-
-inherit
-	WSF_DEFAULT_SERVICE
-		redefine
-			initialize
-		end
-
-create
-	make_and_launch
-
-feature {NONE} -- Initialization
-
-	initialize
-			-- Initialize current service
-		do
-			set_service_option ("port", 9090)
-		end
-          </pre>
-          <p>After one more compile, you can now launch the application and point your browser to <a href="http://localhost:9090">http://localhost:9090</a>.
+          <p>Once the project is compiled, you can launch the application and point your browser to <a href="http://localhost:9090">http://localhost:9090</a>.
           You should now see a simple page with <i>Hello World</i>.</p>
         </div>
       </div>
