@@ -13,11 +13,11 @@ feature
 
 	tag_name: STRING
 
-	css_class: LINKED_LIST[STRING]
+	css_class: LINKED_LIST [STRING]
 
 feature {NONE}
 
-	make (n,a_tag_name: STRING)
+	make (n, a_tag_name: STRING)
 		do
 			control_name := n
 			tag_name := a_tag_name
@@ -72,16 +72,17 @@ feature --EVENT HANDLING
 		end
 
 feature
-	render_tag(body,attributes:STRING):STRING
+
+	render_tag (body, attributes: STRING): STRING
 		do
-			Result:="<"+tag_name+"  data-name=%"" + control_name + "%" data-type=%""+generator+"%" "+attributes
+			Result := "<" + tag_name + "  data-name=%"" + control_name + "%" data-type=%"" + generator + "%" " + attributes
 			if not body.is_empty then
-				Result:= Result + " />"
+				Result := Result + " />"
 			else
-				Result:= Result + " >" + body + "</"+tag_name+">"
+				Result := Result + " >" + body + "</" + tag_name + ">"
 			end
 		end
-		
+
 	render: STRING
 			-- Return html representaion of control
 		deferred

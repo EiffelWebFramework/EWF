@@ -103,6 +103,7 @@ feature
 			loop
 				Result := c.item.render + Result
 			end
+			Result := render_tag (Result, "")
 		end
 
 	add_control (c: WSF_CONTROL)
