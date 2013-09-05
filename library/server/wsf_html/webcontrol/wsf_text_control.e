@@ -61,7 +61,7 @@ feature
 
 	render: STRING
 		do
-			Result := "<input type=%"text%" data-name=%"" + control_name + "%" data-type=%"WSF_TEXT_CONTROL%" value=%"" + text + "%" />"
+			Result :=render_tag("","value=%"" + text + "%"")
 		end
 
 	set_text (t: STRING)

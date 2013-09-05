@@ -73,15 +73,26 @@ feature --EVENT HANDLING
 
 feature
 	render_tag(body,attributes:STRING):STRING
+		local
+			css_class_string: STRING
 		do
-			Result:="<"+tag_name+"  data-name=%"" + control_name + "%" data-type=%""+generator+"%" "+attributes
+			css_class_string := ""
+			across
+				css_class as c
+			loop
+				css_class_string := css_class_string + " " + c.item
+			end
+			if not css_class_string.is_empty then
+				css_class_string := " class=%"" + css_class_string + "%""
+			end
+			Result:="<"+tag_name+"  data-name=%"" + control_name + "%" data-type=%""+generator+"%" "+attributes+css_class_string
 			if not body.is_empty then
 				Result:= Result + " />"
 			else
 				Result:= Result + " >" + body + "</"+tag_name+">"
 			end
 		end
-		
+
 	render: STRING
 			-- Return html representaion of control
 		deferred
