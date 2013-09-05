@@ -12,22 +12,21 @@ inherit
 	WSF_CONTROL
 
 create
-	make_form_element,
-	make_form_element_with_validators
+	make_form_element, make_form_element_with_validators
 
 feature {NONE}
 
-	make_form_element (a_label:STRING; c: WSF_VALUE_CONTROL [G])
+	make_form_element (a_label: STRING; c: WSF_VALUE_CONTROL [G])
 		local
 			a_validators: LINKED_LIST [WSF_VALIDATOR [G]]
 		do
 			create a_validators.make
-			make_form_element_with_validators(a_label,c,a_validators)
+			make_form_element_with_validators (a_label, c, a_validators)
 		end
 
 	make_form_element_with_validators (a_label: STRING; c: WSF_VALUE_CONTROL [G]; v: LINKED_LIST [WSF_VALIDATOR [G]])
 		do
-			make (c.control_name+"_container", "div")
+			make (c.control_name + "_container", "div")
 			add_class ("form-group")
 			c.add_class ("form-control")
 			value_control := c
@@ -62,6 +61,15 @@ feature --Implementation
 	handle_callback (cname, event: STRING_8)
 		do
 			value_control.handle_callback (cname, event)
+		end
+
+	read_state_changes (states: JSON_OBJECT)
+			-- Add a new entry in the `states_changes` JSON object with the `control_name` as key and the `state` as value
+		do
+			if state_changes.count > 0 then
+				states.put (state_changes, create {JSON_STRING}.make_json (control_name))
+			end
+			value_control.read_state_changes (states)
 		end
 
 	render: STRING

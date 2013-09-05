@@ -27,7 +27,8 @@ controls = {}
 class WSF_BUTTON_CONTROL extends WSF_CONTROL
   attach_events: ()->
     self = @
-    @$el.click ()->
+    @$el.click (e)->
+      e.preventDefault()
       self.click()
   click: ()->
     if window.states[@control_name]['callback_click']

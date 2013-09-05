@@ -27,13 +27,13 @@ feature
 			create textbox1.make_text ("txtBox1", "1")
 			create textbox2.make_text ("txtBox2", "2")
 			create button1.make_button ("sample_button1", "SUM")
-			create textbox_result.make_text ("txtBox3", "")
+			create textbox_result.make_textarea ("txtBox3", "")
 			button1.set_click_event (agent handle_click)
 			create form.make_form_control ("panel")
 			form.add_control (create {WSF_FORM_ELEMENT_CONTROL[STRING]}.make_form_element("Number1",textbox1))
-			form.add_control (textbox2)
+			form.add_control (create {WSF_FORM_ELEMENT_CONTROL[STRING]}.make_form_element("Number2",textbox2))
 			form.add_control (button1)
-			form.add_control (textbox_result)
+			form.add_control (create {WSF_FORM_ELEMENT_CONTROL[STRING]}.make_form_element("Result",textbox_result))
 			control := form
 		end
 
@@ -52,6 +52,6 @@ feature
 
 	textbox2: WSF_TEXT_CONTROL
 
-	textbox_result: WSF_TEXT_CONTROL
+	textbox_result: WSF_TEXTAREA_CONTROL
 
 end

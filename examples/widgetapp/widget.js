@@ -53,7 +53,8 @@
     WSF_BUTTON_CONTROL.prototype.attach_events = function() {
       var self;
       self = this;
-      return this.$el.click(function() {
+      return this.$el.click(function(e) {
+        e.preventDefault();
         return self.click();
       });
     };

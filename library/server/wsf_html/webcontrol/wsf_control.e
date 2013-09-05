@@ -92,7 +92,7 @@ feature
 				css_classes_string := " class=%"" + css_classes_string + "%""
 			end
 			Result := "<" + tag_name + "  data-name=%"" + control_name + "%" data-type=%"" + generator + "%" " + attributes + css_classes_string
-			if body.is_empty then
+			if body.is_empty and not tag_name.is_equal("textarea") then
 				Result := Result + " />"
 			else
 				Result := Result + " >" + body + "</" + tag_name + ">"

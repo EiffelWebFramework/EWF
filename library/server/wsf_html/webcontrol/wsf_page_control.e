@@ -77,6 +77,8 @@ feature
 			create states.make
 			control.read_state (states)
 			data := "<html><head>"
+			data.append ("<link href=%"//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css%" rel=%"stylesheet%">")
+				
 			data.append ("</head><body>")
 			data.append (control.render)
 			data.append ("<script type=%"text/javascript%">window.states=")
@@ -84,7 +86,6 @@ feature
 			data.append (";</script>")
 			data.append ("<script src=%"//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js%"></script>")
 			data.append ("<script src=%"/widget.js%"></script>")
-			data.append ("<link href=%"//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css%" rel=%"stylesheet%">")
 			data.append ("</body></html>")
 			create page.make
 			page.put_header ({HTTP_STATUS_CODE}.ok, <<["Content-Type", "text/html"]>>)
