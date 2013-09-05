@@ -72,7 +72,16 @@ feature --EVENT HANDLING
 		end
 
 feature
-
+	render_tag(body,attributes:STRING):STRING
+		do
+			Result:="<"+tag_name+"  data-name=%"" + control_name + "%" data-type=%""+generator+"%" "+attributes
+			if not body.is_empty then
+				Result:= Result + " />"
+			else
+				Result:= Result + " >" + body + "</"+tag_name+">"
+			end
+		end
+		
 	render: STRING
 			-- Return html representaion of control
 		deferred
