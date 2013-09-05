@@ -7,6 +7,10 @@ note
 deferred class
 	WSF_VALUE_CONTROL [G]
 
+inherit
+
+	WSF_CONTROL
+
 feature
 
 	value: G

@@ -4,13 +4,15 @@ note
 	date: "$Date$"
 	revision: "$Revision$"
 
-class
-	WSF_VALIDATOR
+deferred class
+	WSF_VALIDATOR [G]
 
-create
-	make
+feature
 
-feature {NONE}
-	
+	validate (input: G): BOOLEAN
+		deferred
+		end
+
+	error: STRING
 
 end

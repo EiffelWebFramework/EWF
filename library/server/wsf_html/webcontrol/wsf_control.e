@@ -13,7 +13,7 @@ feature
 
 	tag_name: STRING
 
-	css_class: LINKED_LIST [STRING]
+	css_classes: LINKED_LIST [STRING]
 
 feature {NONE}
 
@@ -21,11 +21,11 @@ feature {NONE}
 		do
 			control_name := n
 			tag_name := a_tag_name
-			create css_class.make
+			create css_classes.make
 			create state_changes.make
 		ensure
 			attached state_changes
-			attached css_class
+			attached css_classes
 		end
 
 feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- STATE MANAGEMENT
@@ -73,20 +73,25 @@ feature --EVENT HANDLING
 
 feature
 
-	render_tag(body,attributes:STRING):STRING
-		local
-			css_class_string: STRING
+	add_class (c: STRING)
 		do
-			css_class_string := ""
+			css_classes.extend (c)
+		end
+
+	render_tag (body, attributes: STRING): STRING
+		local
+			css_classes_string: STRING
+		do
+			css_classes_string := ""
 			across
-				css_class as c
+				css_classes as c
 			loop
-				css_class_string := css_class_string + " " + c.item
+				css_classes_string := css_classes_string + " " + c.item
 			end
-			if not css_class_string.is_empty then
-				css_class_string := " class=%"" + css_class_string + "%""
+			if not css_classes_string.is_empty then
+				css_classes_string := " class=%"" + css_classes_string + "%""
 			end
-			Result:="<"+tag_name+"  data-name=%"" + control_name + "%" data-type=%""+generator+"%" "+attributes+css_class_string
+			Result := "<" + tag_name + "  data-name=%"" + control_name + "%" data-type=%"" + generator + "%" " + attributes + css_classes_string
 			if not body.is_empty then
 				Result := Result + " />"
 			else

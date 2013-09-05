@@ -80,7 +80,7 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- STATE MANAGEMENT
 
 feature --EVENT HANDLING
 
-	handle_callback (event: STRING; cname: STRING)
+	handle_callback (cname: STRING; event: STRING)
 			-- Pass callback to subcontrols
 		do
 			if equal (cname, control_name) then
@@ -88,7 +88,7 @@ feature --EVENT HANDLING
 				across
 					controls as c
 				loop
-					c.item.handle_callback (event, cname)
+					c.item.handle_callback (cname, event)
 				end
 			end
 		end
