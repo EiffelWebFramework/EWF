@@ -22,19 +22,19 @@ feature
 
 	initialize_controls
 		local
-			panel: WSF_MULTI_CONTROL
+			form: WSF_FORM_CONTROL
 		do
 			create textbox1.make_text ("txtBox1", "1")
 			create textbox2.make_text ("txtBox2", "2")
 			create button1.make_button ("sample_button1", "SUM")
 			create textbox_result.make_text ("txtBox3", "")
 			button1.set_click_event (agent handle_click)
-			create panel.make ("panel")
-			panel.add_control (textbox1)
-			panel.add_control (textbox2)
-			panel.add_control (button1)
-			panel.add_control (textbox_result)
-			control := panel
+			create form.make_form_control ("panel")
+			form.add_control (create {WSF_FORM_ELEMENT_CONTROL[STRING]}.make_form_element("Number1",textbox1))
+			form.add_control (textbox2)
+			form.add_control (button1)
+			form.add_control (textbox_result)
+			control := form
 		end
 
 	handle_click
