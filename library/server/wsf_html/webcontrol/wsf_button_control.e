@@ -18,7 +18,7 @@ feature {NONE}
 
 	make_button (n: STRING; t: STRING)
 		do
-			make (n)
+			make (n, "button")
 			text := t
 		end
 

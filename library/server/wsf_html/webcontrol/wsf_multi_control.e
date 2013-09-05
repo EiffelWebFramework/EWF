@@ -11,30 +11,21 @@ inherit
 
 	WSF_CONTROL
 		redefine
-			make,
 			read_state,
 			read_state_changes,
 			load_state
 		end
 
 create
-	make
-
+	make_multi_control
 feature {NONE}
 
 	controls: LINKED_LIST [WSF_CONTROL]
 
-	make (n: STRING)
+	make_multi_control (n: STRING)
 		do
-			Precursor (n)
+			make (n, "div")
 			controls := create {LINKED_LIST [WSF_CONTROL]}.make;
-		end
-
-	make_with_controls (n: STRING; c: LINKED_LIST [WSF_CONTROL])
-		do
-			control_name := n
-			controls := c
-			create state_changes.make
 		end
 
 feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- STATE MANAGEMENT

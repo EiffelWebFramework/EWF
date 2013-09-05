@@ -18,7 +18,7 @@ feature {NONE}
 
 	make_text (n: STRING; v: STRING)
 		do
-			make (n)
+			make (n, "input")
 			text := v
 		end
 

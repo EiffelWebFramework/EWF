@@ -12,9 +12,14 @@ inherit
 	WSF_MULTI_CONTROL
 
 create
-	make, make_with_controls
+	make_form_control
 
 feature {NONE}
 
+	make_form_control (n: STRING)
+		do
+			make_multi_control (n)
+			tag_name := "form"
+		end
 
 end

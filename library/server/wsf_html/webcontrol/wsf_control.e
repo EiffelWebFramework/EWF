@@ -25,6 +25,7 @@ feature {NONE}
 			create state_changes.make
 		ensure
 			attached state_changes
+			attached css_class
 		end
 
 feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- STATE MANAGEMENT
