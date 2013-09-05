@@ -37,12 +37,17 @@ feature {NONE}
 
 feature
 
-	is_valid (value: G): BOOLEAN
+	is_valid (): BOOLEAN
 		do
 			Result := True
 			across
 				validators as c
+			until
+				not Result
 			loop
+				if not c.item.validate (value_control.value) then
+					Result := False
+				end
 			end
 		end
 

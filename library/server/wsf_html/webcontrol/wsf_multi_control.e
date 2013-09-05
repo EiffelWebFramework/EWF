@@ -5,7 +5,7 @@ note
 	revision: "$Revision$"
 
 class
-	WSF_MULTI_CONTROL
+	WSF_MULTI_CONTROL[G -> WSF_CONTROL]
 
 inherit
 
@@ -18,14 +18,15 @@ inherit
 
 create
 	make_multi_control
+
 feature {NONE}
 
-	controls: LINKED_LIST [WSF_CONTROL]
+	controls: LINKED_LIST [G]
 
 	make_multi_control (n: STRING)
 		do
 			make (n, "div")
-			controls := create {LINKED_LIST [WSF_CONTROL]}.make;
+			controls := create {LINKED_LIST [G]}.make;
 		end
 
 feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- STATE MANAGEMENT
@@ -106,7 +107,7 @@ feature
 			Result := render_tag (Result, "")
 		end
 
-	add_control (c: WSF_CONTROL)
+	add_control (c: G)
 		do
 			controls.put_front (c)
 		end

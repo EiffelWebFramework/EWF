@@ -14,7 +14,7 @@ inherit
 create
 	make_email_validator
 
-feature
+feature{NONE}
 
 	make_email_validator (e: STRING)
 		do
