@@ -11,6 +11,8 @@ inherit
 
 	WSF_CONTROL
 
+	WSF_VALUE_CONTROL [STRING]
+
 create
 	make_text
 
@@ -57,11 +59,11 @@ feature --EVENT HANDLING
 			end
 		end
 
-feature
+feature -- Implementation
 
 	render: STRING
 		do
-			Result := "<input type=%"text%" data-name=%"" + control_name + "%" data-type=%"WSF_TEXT_CONTROL%" value=%"" + text + "%" />"
+			Result := render_tag ("", "value=%"" + text + "%"")
 		end
 
 	set_text (t: STRING)
@@ -70,6 +72,11 @@ feature
 				text := t
 				state_changes.replace (create {JSON_STRING}.make_json (text), create {JSON_STRING}.make_json ("text"))
 			end
+		end
+
+	value: STRING
+		do
+			Result := text
 		end
 
 feature

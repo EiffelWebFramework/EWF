@@ -4,18 +4,31 @@ note
 	date: "$Date$"
 	revision: "$Revision$"
 
-deferred class
-	WSF_FORM_ELEMENT_CONTROL
+class
+	WSF_FORM_ELEMENT_CONTROL [G]
+
 inherit
+
 	WSF_CONTROL
 
 feature
 
-	is_valid(value: STRING):BOOLEAN
-	do
-		
-	end
+	is_valid (value: G): BOOLEAN
+		do
+			if attached validate as v then
+				Result := v.item ([value])
+			else
+				Result := True
+			end
+		end
 
-	validate: detachable FUNCTION[ANY, TUPLE[STRING], BOOLEAN]
+
+feature
+
+	value_control: WSF_VALUE_CONTROL[G]
+
+	validate: detachable FUNCTION [ANY, TUPLE [G], BOOLEAN]
+
+	
 
 end
