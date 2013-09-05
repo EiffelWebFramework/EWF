@@ -10,6 +10,9 @@ class
 inherit
 
 	WSF_TEXT_CONTROL
+		redefine
+			render
+		end
 
 create
 	make_textarea
@@ -21,4 +24,11 @@ feature {NONE}
 			make_text (n, t)
 		    tag_name := "textarea"
 		end
+feature
+
+	render: STRING
+		do
+			Result :=render_tag(text,"")
+		end
+
 end

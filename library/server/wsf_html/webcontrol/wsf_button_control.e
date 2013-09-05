@@ -59,7 +59,7 @@ feature
 
 	render: STRING
 		do
-			Result := "<button data-name=%"" + control_name + "%" data-type=%"WSF_BUTTON_CONTROL%">" + generator + text + "</button>"
+			Result := render_tag ( text, "")
 		end
 
 	set_text (t: STRING)
