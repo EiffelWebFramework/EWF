@@ -11,6 +11,9 @@
 		</option>
 		<library name="base" location="$ISE_LIBRARY\library\base\base-safe.ecf"/>
 		<library name="encoder" location="..\..\text\encoder\encoder-safe.ecf"/>
+		<library name="gobo_kernel" location="$ISE_LIBRARY\library\gobo\gobo_kernel-safe.ecf"/>
+		<library name="gobo_lexical" location="$ISE_LIBRARY\library\gobo\gobo_lexical-safe.ecf"/>
+		<library name="gobo_parse" location="$ISE_LIBRARY\library\gobo\gobo_parse-safe.ecf"/>
 		<library name="http" location="..\..\network\protocol\http\http-safe.ecf"/>
 		<library name="json" location="..\..\..\contrib\library\text\parser\json\library\json-safe.ecf"/>
 		<library name="uri_template" location="..\..\text\parser\uri_template\uri_template-safe.ecf"/>
@@ -18,7 +21,9 @@
 		<cluster name="api" location=".\api\" recursive="true"/>
 		<cluster name="css" location=".\css\" recursive="true"/>
 		<cluster name="form" location=".\form\" recursive="true"/>
-		<cluster name="webcontrol" location=".\webcontrol\"/>
+		<cluster name="webcontrol" location=".\webcontrol\">
+			<cluster name="validators" location=".\webcontrol\validators\"/>
+		</cluster>
 		<cluster name="widget" location=".\widget\" recursive="true"/>
 	</target>
 </system>

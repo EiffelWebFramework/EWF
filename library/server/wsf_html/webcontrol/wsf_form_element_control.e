@@ -20,6 +20,7 @@ feature {NONE}
 		do
 			make (n, "div")
 			add_class ("form-group")
+			c.add_class ("form-control")
 			value_control := c
 			validators := v
 			label := ""
@@ -56,11 +57,11 @@ feature --Implementation
 
 	render: STRING
 		local
-			body:STRING
+			body: STRING
 		do
 			body := ""
 			if not label.is_empty then
-				body := "<label class=%"col-lg-10 control-label%" for=%"" + value_control.control_name + "%">" + label + "</label>"
+				body := "<label class=%"col-lg-2 control-label%" for=%"" + value_control.control_name + "%">" + label + "</label>"
 			end
 			body := body + "<div class=%"col-lg-10%">"
 			body := body + value_control.render

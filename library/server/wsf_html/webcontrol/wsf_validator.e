@@ -7,6 +7,13 @@ note
 deferred class
 	WSF_VALIDATOR [G]
 
+feature {NONE}
+
+	make (e: STRING)
+		do
+			error := e
+		end
+
 feature
 
 	validate (input: G): BOOLEAN
