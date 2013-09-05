@@ -6,16 +6,19 @@ note
 
 class
 	WSF_PHONE_NUMBER_VALIDATOR
+
 inherit
-	WSF_VALIDATOR[STRING]
+
+	WSF_REGEXP_VALIDATOR
+
 create
-	make
+	make_with_message
 
-feature -- Implementation
+feature {NONE}
 
-	validate(input:STRING):BOOLEAN
-	do
-
-	end
+	make_with_message (e: STRING)
+		do
+			make_regexp_validator ("", e)
+		end
 
 end
