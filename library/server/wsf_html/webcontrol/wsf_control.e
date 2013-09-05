@@ -11,11 +11,17 @@ feature
 
 	control_name: STRING
 
+	tag_name: STRING
+
+	css_class: LINKED_LIST[STRING]
+
 feature {NONE}
 
-	make (n: STRING)
+	make (n,a_tag_name: STRING)
 		do
 			control_name := n
+			tag_name := a_tag_name
+			create css_class.make
 			create state_changes.make
 		ensure
 			attached state_changes
