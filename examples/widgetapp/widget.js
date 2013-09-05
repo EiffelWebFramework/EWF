@@ -136,7 +136,7 @@
     WSF_TEXTAREA_CONTROL.prototype.update = function(state) {
       if (state.text != null) {
         window.states[this.control_name]['text'] = state.text;
-        return $el.val(state.text);
+        return this.$el.val(state.text);
       }
     };
 

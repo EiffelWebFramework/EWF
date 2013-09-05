@@ -11,7 +11,7 @@ inherit
 
 	WSF_CONTROL
 		redefine
-			read_state_changes
+			read_state_changes,load_state,read_state
 		end
 
 create
@@ -48,32 +48,52 @@ feature
 			loop
 			end
 		end
+feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- STATE MANAGEMENT
 
-feature --Implementation
+	load_state (new_states: JSON_OBJECT)
+			-- Pass new_states to subcontrols
+		do
+			Precursor (new_states)
+			value_control.load_state (new_states)
+		end
 
 	set_state (new_state: JSON_OBJECT)
 		do
-			value_control.set_state (new_state)
+			value_control.set_state(new_state)
 		end
 
-	state: JSON_OBJECT
+	read_state (states: JSON_OBJECT)
+			-- Read states in subcontrols
 		do
-			Result := value_control.state
-		end
-
-	handle_callback (cname, event: STRING_8)
-		do
-			value_control.handle_callback (cname, event)
+			Precursor (states)
+			value_control.read_state(states)
 		end
 
 	read_state_changes (states: JSON_OBJECT)
-			-- Add a new entry in the `states_changes` JSON object with the `control_name` as key and the `state` as value
+			-- Read states_changes in subcontrols
 		do
-			if state_changes.count > 0 then
-				states.put (state_changes, create {JSON_STRING}.make_json (control_name))
-			end
-			value_control.read_state_changes (states)
+			Precursor (states)
+			value_control.read_state_changes(states)
 		end
+
+	state: JSON_OBJECT
+			--Read state
+		do
+			create Result.make
+		end
+
+feature --EVENT HANDLING
+
+	handle_callback (cname: STRING; event: STRING)
+			-- Pass callback to subcontrols
+		do
+			if equal (cname, control_name) then
+			else
+				value_control.handle_callback (cname, event)
+			end
+		end
+feature --Implementation
+
 
 	render: STRING
 		local

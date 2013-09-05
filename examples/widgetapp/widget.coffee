@@ -69,7 +69,7 @@ class WSF_TEXTAREA_CONTROL extends WSF_CONTROL
   update: (state) ->
     if state.text?
       window.states[@control_name]['text'] = state.text
-      $el.val(state.text)
+      @$el.val(state.text)
 
 #map class name to effective class
 typemap =
