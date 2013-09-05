@@ -91,7 +91,7 @@ feature
 			if not css_classes_string.is_empty then
 				css_classes_string := " class=%"" + css_classes_string + "%""
 			end
-			Result := "<" + tag_name + "  data-name=%"" + control_name + "%" data-type=%"" + generator + "%" " + attributes + css_classes_string
+			Result := "<" + tag_name + " id=%"" + control_name + "%" data-name=%"" + control_name + "%" data-type=%"" + generator + "%" " + attributes + css_classes_string
 			if body.is_empty then
 				Result := Result + " />"
 			else

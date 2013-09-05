@@ -12,22 +12,21 @@ inherit
 	WSF_CONTROL
 
 create
-	make_form_element,
-	make_form_element_with_validators
+	make_form_element, make_form_element_with_validators
 
 feature {NONE}
 
-	make_form_element (a_label:STRING; c: WSF_VALUE_CONTROL [G])
+	make_form_element (a_label: STRING; c: WSF_VALUE_CONTROL [G])
 		local
 			a_validators: LINKED_LIST [WSF_VALIDATOR [G]]
 		do
 			create a_validators.make
-			make_form_element_with_validators(a_label,c,a_validators)
+			make_form_element_with_validators (a_label, c, a_validators)
 		end
 
 	make_form_element_with_validators (a_label: STRING; c: WSF_VALUE_CONTROL [G]; v: LINKED_LIST [WSF_VALIDATOR [G]])
 		do
-			make (c.control_name+"_container", "div")
+			make (c.control_name + "_container", "div")
 			add_class ("form-group")
 			c.add_class ("form-control")
 			value_control := c

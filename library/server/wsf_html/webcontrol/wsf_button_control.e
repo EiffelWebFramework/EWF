@@ -59,7 +59,7 @@ feature
 
 	render: STRING
 		do
-			Result := render_tag ( text, "")
+			Result := render_tag (text, "")
 		end
 
 	set_text (t: STRING)

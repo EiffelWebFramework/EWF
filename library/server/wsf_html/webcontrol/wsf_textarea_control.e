@@ -22,13 +22,14 @@ feature {NONE}
 	make_textarea (n, t: STRING)
 		do
 			make_text (n, t)
-		    tag_name := "textarea"
+			tag_name := "textarea"
 		end
+
 feature
 
 	render: STRING
 		do
-			Result :=render_tag(text,"")
+			Result := render_tag (text, "")
 		end
 
 end
