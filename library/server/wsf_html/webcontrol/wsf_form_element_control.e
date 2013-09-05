@@ -11,24 +11,71 @@ inherit
 
 	WSF_CONTROL
 
+create
+	make_form_element
+
+feature {NONE}
+
+	make_form_element (n: STRING; c: WSF_VALUE_CONTROL [G]; v: LINKED_LIST [WSF_VALIDATOR [G]])
+		do
+			make (n, "div")
+			add_class ("form-group")
+			value_control := c
+			validators := v
+			label := ""
+			error := ""
+		end
+
 feature
 
 	is_valid (value: G): BOOLEAN
 		do
-			if attached validate as v then
-				Result := v.item ([value])
-			else
-				Result := True
+			Result := True
+			across
+				validators as c
+			loop
 			end
 		end
 
+feature --Implementation
+
+	set_state (new_state: JSON_OBJECT)
+		do
+			value_control.set_state (new_state)
+		end
+
+	state: JSON_OBJECT
+		do
+			Result := value_control.state
+		end
+
+	handle_callback (cname, event: STRING_8)
+		do
+			value_control.handle_callback (cname, event)
+		end
+
+	render: STRING
+		local
+			body:STRING
+		do
+			body := ""
+			if not label.is_empty then
+				body := "<label class=%"col-lg-10 control-label%" for=%"" + value_control.control_name + "%">" + label + "</label>"
+			end
+			body := body + "<div class=%"col-lg-10%">"
+			body := body + value_control.render
+			body := body + "</div>"
+			Result := render_tag (body, "")
+		end
 
 feature
 
-	value_control: WSF_VALUE_CONTROL[G]
+	value_control: WSF_VALUE_CONTROL [G]
 
-	validate: detachable FUNCTION [ANY, TUPLE [G], BOOLEAN]
+	validators: LINKED_LIST [WSF_VALIDATOR [G]]
 
-	
+	label: STRING
+
+	error: STRING
 
 end
