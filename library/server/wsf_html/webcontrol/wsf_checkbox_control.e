@@ -1,25 +1,22 @@
 note
-	description: "Summary description for {WSF_TEXT_CONTROL}."
+	description: "Summary description for {WSF_CHECKBOX_CONTROL}."
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
 class
-	WSF_TEXT_CONTROL
-
+	WSF_CHECKBOX_CONTROL
 inherit
-
-	WSF_VALUE_CONTROL [STRING]
-
+	WSF_VALUE_CONTROL[BOOLEAN]
 create
-	make_text
+	make_checkbox
 
 feature {NONE}
 
-	make_text (n: STRING; v: STRING)
+	make_checkbox (n: STRING; l: STRING)
 		do
 			make (n, "input")
-			text := v
+			label := l
 		end
 
 feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- STATE MANAGEMENT
@@ -27,8 +24,8 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- STATE MANAGEMENT
 	set_state (new_state: JSON_OBJECT)
 			-- Restore text from json
 		do
-			if attached {JSON_STRING} new_state.item (create {JSON_STRING}.make_json ("text")) as new_text then
-				text := new_text.unescaped_string_32
+			if attached {JSON_BOOLEAN} new_state.item (create {JSON_STRING}.make_json ("checked")) as new_checked then
+				checked := new_checked.item
 			end
 		end
 
@@ -36,7 +33,7 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- STATE MANAGEMENT
 			-- Return state which contains the current text and if there is an event handle attached
 		do
 			create Result.make
-			Result.put (create {JSON_STRING}.make_json (text), create {JSON_STRING}.make_json ("text"))
+			Result.put (create {JSON_BOOLEAN}.make_boolean (checked), create {JSON_STRING}.make_json ("checked"))
 			Result.put (create {JSON_BOOLEAN}.make_boolean (attached change_event), create {JSON_STRING}.make_json ("callback_change"))
 		end
 
@@ -60,26 +57,26 @@ feature --EVENT HANDLING
 feature -- Implementation
 
 	render: STRING
+		local
+			attributes: STRING
 		do
-			Result := render_tag ("", "type=%"text%" value=%"" + text + "%"")
-		end
-
-	set_text (t: STRING)
-		do
-			if not t.is_equal (text) then
-				text := t
-				state_changes.replace (create {JSON_STRING}.make_json (text), create {JSON_STRING}.make_json ("text"))
+			attributes := "type=%"checkbox%""
+			if checked then
+				attributes := attributes + " checked"
 			end
+			Result := render_tag ("", attributes)
 		end
 
-	value: STRING
+	value: BOOLEAN
 		do
-			Result := text
+			Result := checked
 		end
 
 feature
 
-	text: STRING
+	label: STRING
+
+	checked: BOOLEAN
 
 	change_event: detachable PROCEDURE [ANY, TUPLE []]
 

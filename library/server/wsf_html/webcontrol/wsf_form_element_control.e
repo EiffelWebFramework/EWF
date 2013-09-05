@@ -10,6 +10,9 @@ class
 inherit
 
 	WSF_CONTROL
+		redefine
+			read_state_changes
+		end
 
 create
 	make_form_element, make_form_element_with_validators
