@@ -88,15 +88,22 @@ feature
 			loop
 				css_classes_string := css_classes_string + " " + c.item
 			end
-			if not css_classes_string.is_empty then
-				css_classes_string := " class=%"" + css_classes_string + "%""
-			end
+			Result:=render_tag_with_tagname(tag_name,body,attributes,css_classes_string)
+		end
 
-			Result := "<" + tag_name + " id=%"" + control_name + "%" data-name=%"" + control_name + "%" data-type=%"" + generator + "%" " + attributes + css_classes_string
-			if body.is_empty and not tag_name.is_equal("textarea") then
+	render_tag_with_tagname (tag, body, attributes,css_classes_string: STRING): STRING
+		local
+			l_attributes: STRING
+		do
+			l_attributes:=attributes
+			if not css_classes_string.is_empty then
+				l_attributes := " class=%"" + css_classes_string + "%""
+			end
+			Result := "<" + tag + " id=%"" + control_name + "%" data-name=%"" + control_name + "%" data-type=%"" + generator + "%" " + l_attributes
+			if body.is_empty and not tag.is_equal ("textarea") then
 				Result := Result + " />"
 			else
-				Result := Result + " >" + body + "</" + tag_name + ">"
+				Result := Result + " >" + body + "</" + tag + ">"
 			end
 		end
 

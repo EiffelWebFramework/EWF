@@ -16,10 +16,11 @@ create
 
 feature {NONE}
 
-	make_checkbox (n: STRING; l: STRING)
+	make_checkbox (n: STRING; l: STRING; c: STRING)
 		do
 			make (n, "input")
 			label := l
+			checked_value := c
 		end
 
 feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- STATE MANAGEMENT
@@ -67,7 +68,7 @@ feature -- Implementation
 			if checked then
 				attributes := attributes + " checked"
 			end
-			Result := render_tag ("", attributes)
+			Result := render_tag_with_tagname ("div",render_tag_with_tagname ("label", render_tag ("", attributes) + " " + label, "",""), "","checkbox")
 		end
 
 	value: BOOLEAN
@@ -80,6 +81,8 @@ feature
 	label: STRING
 
 	checked: BOOLEAN
+
+	checked_value: STRING
 
 	change_event: detachable PROCEDURE [ANY, TUPLE []]
 

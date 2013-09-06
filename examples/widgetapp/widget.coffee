@@ -71,12 +71,28 @@ class WSF_TEXTAREA_CONTROL extends WSF_CONTROL
       window.states[@control_name]['text'] = state.text
       @$el.val(state.text)
 
+class WSF_CHECKBOX_CONTROL extends WSF_CONTROL
+  attach_events: ()->
+    self = @
+    @$el.change ()->
+      self.change()
+  change: ()->
+    #update local state
+    window.states[@control_name]['checked'] = @$el.is(':checked')
+    if window.states[@control_name]['callback_change']
+      trigger_callback(@control_name, 'change')
+
+  update: (state) ->
+    if state.text?
+      window.states[@control_name]['checked'] = state.checked
+      @$el.prop('checked',state.checked)
+
 #map class name to effective class
 typemap =
   "WSF_BUTTON_CONTROL":WSF_BUTTON_CONTROL
   "WSF_TEXT_CONTROL":WSF_TEXT_CONTROL
   "WSF_TEXTAREA_CONTROL":WSF_TEXTAREA_CONTROL
-  "WSF_FORM_CONTROL":WSF_FORM_CONTROL
+  "WSF_CHECKBOX_CONTROL":WSF_CHECKBOX_CONTROL
 
 #create a js class for each control
 for name,state of window.states

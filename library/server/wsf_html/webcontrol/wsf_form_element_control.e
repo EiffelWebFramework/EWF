@@ -31,7 +31,10 @@ feature {NONE}
 		do
 			make (c.control_name + "_container", "div")
 			add_class ("form-group")
-			c.add_class ("form-control")
+			if attached {WSF_TEXT_CONTROL}c or attached {WSF_TEXTAREA_CONTROL}c then
+				c.add_class ("form-control")
+
+			end
 			value_control := c
 			validators := v
 			label := a_label

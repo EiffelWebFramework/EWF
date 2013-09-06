@@ -30,16 +30,29 @@ feature
 			create textbox_result.make_textarea ("txtBox3", "")
 			button1.set_click_event (agent handle_click)
 			create form.make_form_control ("panel")
+			form.add_class ("form-horizontal")
+			create cklist.make_checkbox_list_control("categories")
+			cklist.add_control (create {WSF_CHECKBOX_CONTROL}.make_checkbox("net","Network","net"))
+			cklist.add_control (create {WSF_CHECKBOX_CONTROL}.make_checkbox("os","Operating Systems","os"))
 			form.add_control (create {WSF_FORM_ELEMENT_CONTROL[STRING]}.make_form_element("Number1",textbox1))
 			form.add_control (create {WSF_FORM_ELEMENT_CONTROL[STRING]}.make_form_element("Number2",textbox2))
+			form.add_control (create {WSF_FORM_ELEMENT_CONTROL[LIST[STRING]]}.make_form_element("Categories",cklist))
 			form.add_control (button1)
 			form.add_control (create {WSF_FORM_ELEMENT_CONTROL[STRING]}.make_form_element("Result",textbox_result))
 			control := form
 		end
 
 	handle_click
+		local
+			text:STRING
 		do
-			textbox_result.set_text (textbox1.text + " + " + textbox2.text + " = " + (textbox1.text.to_integer_16 + textbox2.text.to_integer_16).out)
+			text := textbox1.text + " + " + textbox2.text + " = " + (textbox1.text.to_integer_16 + textbox2.text.to_integer_16).out
+			across
+				cklist.value as s
+			loop
+				text.append ("%N-"+s.item)
+			end
+			textbox_result.set_text (text)
 		end
 
 	process
@@ -51,6 +64,8 @@ feature
 	textbox1: WSF_TEXT_CONTROL
 
 	textbox2: WSF_TEXT_CONTROL
+
+	cklist: WSF_CHECKBOX_LIST_CONTROL
 
 	textbox_result: WSF_TEXTAREA_CONTROL
 
