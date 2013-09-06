@@ -64,6 +64,8 @@ feature
 						text.append ("<br />-" + s.item)
 					end
 					textbox_result.set_html (text)
+				else
+					textbox_result.set_html ("VALIDATION ERROR")
 				end
 			end
 		end
