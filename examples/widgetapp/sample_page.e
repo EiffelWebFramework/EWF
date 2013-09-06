@@ -29,7 +29,7 @@ feature
 			create textbox1.make_input ("txtBox1", "1")
 			create textbox2.make_input ("txtBox2", "2")
 			create button1.make_button ("sample_button1", "SUM")
-			create textbox_result.make_textarea ("txtBox3", "")
+			create textbox_result.make_html ("txtBox3","p", "")
 			button1.set_click_event (agent handle_click)
 			button1.add_class ("col-lg-offset-2")
 			create form.make_form_control ("panel")
@@ -61,9 +61,9 @@ feature
 					across
 						cklist.value as s
 					loop
-						text.append ("%N-" + s.item)
+						text.append ("<br />-" + s.item)
 					end
-					textbox_result.set_text (text)
+					textbox_result.set_html (text)
 				end
 			end
 		end
@@ -80,6 +80,6 @@ feature
 
 	cklist: WSF_CHECKBOX_LIST_CONTROL
 
-	textbox_result: WSF_TEXTAREA_CONTROL
+	textbox_result: WSF_HTML_CONTROL
 
 end

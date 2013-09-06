@@ -38,6 +38,10 @@ feature {NONE}
 			if attached {WSF_INPUT_CONTROL} c or attached {WSF_TEXTAREA_CONTROL} c then
 				c.add_class ("form-control")
 			end
+			if attached {WSF_HTML_CONTROL} c then
+				c.add_class ("form-control-static")
+			end
+
 			value_control := c
 			validators := v
 			label := a_label
