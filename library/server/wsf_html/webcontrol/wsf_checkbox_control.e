@@ -6,8 +6,11 @@ note
 
 class
 	WSF_CHECKBOX_CONTROL
+
 inherit
-	WSF_VALUE_CONTROL[BOOLEAN]
+
+	WSF_VALUE_CONTROL [BOOLEAN]
+
 create
 	make_checkbox
 

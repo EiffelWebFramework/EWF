@@ -76,6 +76,7 @@ typemap =
   "WSF_BUTTON_CONTROL":WSF_BUTTON_CONTROL
   "WSF_TEXT_CONTROL":WSF_TEXT_CONTROL
   "WSF_TEXTAREA_CONTROL":WSF_TEXTAREA_CONTROL
+  "WSF_FORM_CONTROL":WSF_FORM_CONTROL
 
 #create a js class for each control
 for name,state of window.states
