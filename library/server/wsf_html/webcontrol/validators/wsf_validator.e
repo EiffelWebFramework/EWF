@@ -16,7 +16,14 @@ feature {NONE}
 
 feature
 
-	validate (input: G): BOOLEAN
+	state: JSON_OBJECT
+		do
+			create Result.make
+			Result.put (create {JSON_STRING}.make_json (generator), create {JSON_STRING}.make_json ("name"))
+			Result.put (create {JSON_STRING}.make_json (error), create {JSON_STRING}.make_json ("error"))
+		end
+
+	is_valid (input: G): BOOLEAN
 		deferred
 		end
 

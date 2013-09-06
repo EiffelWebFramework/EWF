@@ -9,7 +9,7 @@ class
 
 inherit
 
-	WSF_TEXT_CONTROL
+	WSF_INPUT_CONTROL
 		redefine
 			render
 		end
@@ -21,7 +21,7 @@ feature {NONE}
 
 	make_textarea (n, t: STRING)
 		do
-			make_text (n, t)
+			make_input (n, t)
 			tag_name := "textarea"
 		end
 

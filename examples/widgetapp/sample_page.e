@@ -19,19 +19,27 @@ feature
 	initialize_controls
 		local
 			form: WSF_FORM_CONTROL
+			n1_container: WSF_FORM_ELEMENT_CONTROL [STRING]
+			n2_container: WSF_FORM_ELEMENT_CONTROL [STRING]
 		do
-			create textbox1.make_text ("txtBox1", "1")
-			create textbox2.make_text ("txtBox2", "2")
+			create textbox1.make_input ("txtBox1", "1")
+			create textbox2.make_input ("txtBox2", "2")
 			create button1.make_button ("sample_button1", "SUM")
-			create textbox_result.make_textarea ("txtBox3", "")
+			create textbox_result.make_html ("txtBox3","p", "")
 			button1.set_click_event (agent handle_click)
+			button1.add_class ("col-lg-offset-2")
 			create form.make_form_control ("panel")
 			form.add_class ("form-horizontal")
 			create cklist.make_checkbox_list_control ("categories")
 			cklist.add_control (create {WSF_CHECKBOX_CONTROL}.make_checkbox ("net", "Network", "net"))
 			cklist.add_control (create {WSF_CHECKBOX_CONTROL}.make_checkbox ("os", "Operating Systems", "os"))
-			form.add_control (create {WSF_FORM_ELEMENT_CONTROL [STRING]}.make_form_element ("Number1", textbox1))
-			form.add_control (create {WSF_FORM_ELEMENT_CONTROL [STRING]}.make_form_element ("Number2", textbox2))
+			create n1_container.make_form_element ("Number1", textbox1)
+			n1_container.add_validator (create {WSF_DECIMAL_VALIDATOR}.make_decimal_validator ("Invalid Number"))
+			n1_container.add_validator (create {OWN_VALIDATOR}.make_own)
+			create n2_container.make_form_element ("Number2", textbox2)
+			n2_container.add_validator (create {WSF_DECIMAL_VALIDATOR}.make_decimal_validator ("Invalid Number"))
+			form.add_control (n1_container)
+			form.add_control (n2_container)
 			form.add_control (create {WSF_FORM_ELEMENT_CONTROL [LIST [STRING]]}.make_form_element ("Categories", cklist))
 			form.add_control (button1)
 			form.add_control (create {WSF_FORM_ELEMENT_CONTROL [STRING]}.make_form_element ("Result", textbox_result))
@@ -42,13 +50,20 @@ feature
 		local
 			text: STRING
 		do
-			text := textbox1.text + " + " + textbox2.text + " = " + (textbox1.text.to_integer_16 + textbox2.text.to_integer_16).out
-			across
-				cklist.value as s
-			loop
-				text.append ("%N-" + s.item)
+			if attached {WSF_FORM_CONTROL} control as form then
+				form.validate
+				if form.is_valid then
+					text := textbox1.text + " + " + textbox2.text + " = " + (textbox1.text.to_integer_64 + textbox2.text.to_integer_64).out
+					across
+						cklist.value as s
+					loop
+						text.append ("<br />-" + s.item)
+					end
+					textbox_result.set_html (text)
+				else
+					textbox_result.set_html ("VALIDATION ERROR")
+				end
 			end
-			textbox_result.set_text (text)
 		end
 
 	process
@@ -57,12 +72,12 @@ feature
 
 	button1: WSF_BUTTON_CONTROL
 
-	textbox1: WSF_TEXT_CONTROL
+	textbox1: WSF_INPUT_CONTROL
 
-	textbox2: WSF_TEXT_CONTROL
+	textbox2: WSF_INPUT_CONTROL
 
 	cklist: WSF_CHECKBOX_LIST_CONTROL
 
-	textbox_result: WSF_TEXTAREA_CONTROL
+	textbox_result: WSF_HTML_CONTROL
 
 end

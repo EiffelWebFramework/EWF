@@ -10,6 +10,9 @@ class
 inherit
 
 	WSF_VALIDATOR [STRING]
+		redefine
+			state
+		end
 
 create
 	make_regexp_validator
@@ -18,20 +21,31 @@ feature {NONE}
 
 	make_regexp_validator (r, e: STRING)
 		do
-			make(e)
+			make (e)
 			regexp_string := r
 			create regexp
-			regexp.compile (r)
 		end
 
 feature -- Implementation
 
-	validate (input: STRING): BOOLEAN
+	is_valid (input: STRING): BOOLEAN
 		do
+				--Only compile when used
+			if not regexp.is_compiled then
+				regexp.compile (regexp_string)
+			end
 			Result := regexp.matches (input)
 		end
 
 feature
+
+	state: JSON_OBJECT
+		do
+			create Result.make
+			Result.put (create {JSON_STRING}.make_json ("WSF_REGEXP_VALIDATOR"), create {JSON_STRING}.make_json ("name"))
+			Result.put (create {JSON_STRING}.make_json (regexp_string), create {JSON_STRING}.make_json ("expression"))
+			Result.put (create {JSON_STRING}.make_json (error), create {JSON_STRING}.make_json ("error"))
+		end
 
 	regexp_string: STRING
 

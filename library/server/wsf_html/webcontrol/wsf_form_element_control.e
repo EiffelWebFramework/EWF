@@ -11,8 +11,12 @@ inherit
 
 	WSF_CONTROL
 		redefine
-			read_state_changes,load_state,read_state
+			read_state_changes,
+			load_state,
+			read_state
 		end
+
+	WSF_VALIDATABLE
 
 create
 	make_form_element, make_form_element_with_validators
@@ -31,31 +35,19 @@ feature {NONE}
 		do
 			make (c.control_name + "_container", "div")
 			add_class ("form-group")
-			if attached {WSF_TEXT_CONTROL}c or attached {WSF_TEXTAREA_CONTROL}c then
+			if attached {WSF_INPUT_CONTROL} c or attached {WSF_TEXTAREA_CONTROL} c then
 				c.add_class ("form-control")
-
 			end
+			if attached {WSF_HTML_CONTROL} c then
+				c.add_class ("form-control-static")
+			end
+
 			value_control := c
 			validators := v
 			label := a_label
 			error := ""
 		end
 
-feature
-
-	is_valid (): BOOLEAN
-		do
-			Result := True
-			across
-				validators as c
-			until
-				not Result
-			loop
-				if not c.item.validate (value_control.value) then
-					Result := False
-				end
-			end
-		end
 feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- STATE MANAGEMENT
 
 	load_state (new_states: JSON_OBJECT)
@@ -67,27 +59,37 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- STATE MANAGEMENT
 
 	set_state (new_state: JSON_OBJECT)
 		do
-			value_control.set_state(new_state)
+			value_control.set_state (new_state)
 		end
 
 	read_state (states: JSON_OBJECT)
 			-- Read states in subcontrols
 		do
 			Precursor (states)
-			value_control.read_state(states)
+			value_control.read_state (states)
 		end
 
 	read_state_changes (states: JSON_OBJECT)
 			-- Read states_changes in subcontrols
 		do
 			Precursor (states)
-			value_control.read_state_changes(states)
+			value_control.read_state_changes (states)
 		end
 
 	state: JSON_OBJECT
 			--Read state
+		local
+			validator_description: JSON_ARRAY
 		do
 			create Result.make
+			create validator_description.make_array
+			across
+				validators as v
+			loop
+				validator_description.add (v.item.state)
+			end
+			Result.put (create {JSON_STRING}.make_json (value_control.control_name), create {JSON_STRING}.make_json ("value_control"))
+			Result.put (validator_description, create {JSON_STRING}.make_json ("validators"))
 		end
 
 feature --EVENT HANDLING
@@ -96,12 +98,15 @@ feature --EVENT HANDLING
 			-- Pass callback to subcontrols
 		do
 			if equal (cname, control_name) then
+				if event.is_equal ("validate") then
+					validate
+				end
 			else
 				value_control.handle_callback (cname, event)
 			end
 		end
-feature --Implementation
 
+feature --Implementation
 
 	render: STRING
 		local
@@ -116,6 +121,42 @@ feature --Implementation
 			body := body + "</div>"
 			Result := render_tag (body, "")
 		end
+
+feature -- Validation
+
+	add_validator (v: WSF_VALIDATOR [G])
+		do
+			validators.extend (v)
+		end
+
+	set_error (e: STRING)
+		do
+			error := e
+			state_changes.replace (create {JSON_STRING}.make_json (e), create {JSON_STRING}.make_json ("error"))
+		end
+
+	validate
+		local
+			current_value: G
+		do
+			current_value := value_control.value
+			is_valid := True
+			across
+				validators as c
+			until
+				not is_valid
+			loop
+				if not c.item.is_valid (current_value) then
+					is_valid := False
+					set_error (c.item.error)
+				end
+			end
+			if is_valid then
+				set_error ("")
+			end
+		end
+
+	is_valid: BOOLEAN
 
 feature
 

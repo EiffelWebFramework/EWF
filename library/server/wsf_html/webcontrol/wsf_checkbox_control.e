@@ -68,7 +68,7 @@ feature -- Implementation
 			if checked then
 				attributes := attributes + " checked"
 			end
-			Result := render_tag_with_tagname ("div",render_tag_with_tagname ("label", render_tag ("", attributes) + " " + label, "",""), "","checkbox")
+			Result := render_tag_with_tagname ("div", render_tag_with_tagname ("label", render_tag ("", attributes) + " " + label, "", ""), "", "checkbox")
 		end
 
 	value: BOOLEAN
