@@ -25,6 +25,7 @@ feature
 			form: WSF_FORM_CONTROL
 			n1_container: WSF_FORM_ELEMENT_CONTROL [STRING]
 			n2_container: WSF_FORM_ELEMENT_CONTROL [STRING]
+			cats_container: WSF_FORM_ELEMENT_CONTROL [LIST [STRING]]
 		do
 			create textbox1.make_input ("txtBox1", "1")
 			create textbox2.make_input ("txtBox2", "2")
@@ -44,8 +45,13 @@ feature
 			n2_container.add_validator (create {WSF_DECIMAL_VALIDATOR}.make_decimal_validator ("Invalid Number"))
 			form.add_control (n1_container)
 			form.add_control (n2_container)
-			form.add_control (create {WSF_FORM_ELEMENT_CONTROL [LIST [STRING]]}.make_form_element ("Categories", cklist))
+			create cats_container.make_form_element ("Categories", cklist)
+			cats_container.add_validator (create {WSF_MIN_VALIDATOR[STRING]}.make_min_validator (1,"Choose at least one category"))
+			cats_container.add_validator (create {WSF_MAX_VALIDATOR[STRING]}.make_max_validator (1,"Choose at most one category"))
+
+			form.add_control (cats_container)
 			form.add_control (button1)
+
 			form.add_control (create {WSF_FORM_ELEMENT_CONTROL [STRING]}.make_form_element ("Result", textbox_result))
 			control := form
 		end
@@ -58,11 +64,13 @@ feature
 				form.validate
 				if form.is_valid then
 					text := textbox1.text + " + " + textbox2.text + " = " + (textbox1.text.to_integer_64 + textbox2.text.to_integer_64).out
+					text.append ("<ul>")
 					across
 						cklist.value as s
 					loop
-						text.append ("<br />-" + s.item)
+						text.append ("<li>" + s.item + "</li>")
 					end
+					text.append ("</ul>")
 					textbox_result.set_html (text)
 				else
 					textbox_result.set_html ("VALIDATION ERROR")
