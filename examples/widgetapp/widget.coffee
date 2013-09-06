@@ -42,6 +42,8 @@ class WSF_CONTROL
     return 
 
   #Simple event listener
+
+  #subscribe to an event
   on: (name, callback, context)->
     if not @_events?
       @_events = {}
@@ -50,6 +52,7 @@ class WSF_CONTROL
     @_events[name].push({callback:callback,context:context})
     return @
 
+  #trigger an event
   trigger: (name)->
     if not @_events?[name]?
       return @
@@ -142,8 +145,10 @@ class WSF_FORM_ELEMENT_CONTROL extends WSF_CONTROL
     self = @
     @value_control = controls[window.states[@control_name]['value_control']]
     if @value_control?
+      #subscribe to change event on value_control
       @value_control.on('change',@change,@)
     @serverside_validator = false
+    #Initialize validators
     @validators = []
     for validator in window.states[@control_name]['validators']
       if validatormap[validator.name]?
@@ -153,12 +158,14 @@ class WSF_FORM_ELEMENT_CONTROL extends WSF_CONTROL
         @serverside_validator = true
     return
 
+  #value_control changed run validators
   change: ()->
     for validator in @validators
       if not validator.validate()
         @showerror(validator.error)
         return
     @showerror("")
+    #If there is validator which is not implemented in js ask server to validate
     if @serverside_validator
       trigger_callback(@control_name, 'validate')
     return
