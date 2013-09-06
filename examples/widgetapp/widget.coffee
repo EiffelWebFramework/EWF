@@ -28,8 +28,22 @@ class WSF_REGEXP_VALIDATOR extends WSF_VALIDATOR
     res = val.match(@pattern)
     return (res!=null)
 
+class WSF_MIN_VALIDATOR extends WSF_VALIDATOR
+
+  validate: ()->
+    val = @parent_control.value()
+    return (val.length>=@settings.min)
+
+class WSF_MAX_VALIDATOR extends WSF_VALIDATOR
+
+  validate: ()->
+    val = @parent_control.value()
+    return (val.length<=@settings.max)
+
 validatormap =
   "WSF_REGEXP_VALIDATOR":WSF_REGEXP_VALIDATOR
+  "WSF_MIN_VALIDATOR":WSF_MIN_VALIDATOR
+  "WSF_MAX_VALIDATOR":WSF_MAX_VALIDATOR
 
 class WSF_CONTROL
   constructor: (@control_name, @$el)->
@@ -142,6 +156,7 @@ class WSF_TEXTAREA_CONTROL extends WSF_CONTROL
 class WSF_CHECKBOX_CONTROL extends WSF_CONTROL
   attach_events: ()->
     self = @
+    @checked_value = window.states[@control_name]['checked_value']
     @$el.change ()->
       self.change()
 
@@ -215,6 +230,28 @@ class WSF_HTML_CONTROL extends WSF_CONTROL
       window.states[@control_name]['html'] = state.html
       @$el.html(state.html)
 
+class WSF_CHECKBOX_LIST_CONTROL extends WSF_CONTROL
+
+  attach_events: ()->
+    self = @
+    @subcontrols = []
+    #Listen to events of subelements and forward them
+    for name,control of controls
+      if @$el.has(control.$el).length > 0
+        @subcontrols.push(control)
+        control.on('change',@change,@)
+    return
+ 
+  change:()->
+    @trigger("change")
+
+  value:()->
+    result = []
+    for subc in @subcontrols
+      if subc.value()
+        result.push(subc.checked_value)
+    return result
+
 #map class name to effective class
 typemap =
   "WSF_BUTTON_CONTROL":WSF_BUTTON_CONTROL
@@ -223,6 +260,7 @@ typemap =
   "WSF_CHECKBOX_CONTROL":WSF_CHECKBOX_CONTROL
   "WSF_FORM_ELEMENT_CONTROL": WSF_FORM_ELEMENT_CONTROL
   "WSF_HTML_CONTROL": WSF_HTML_CONTROL
+  "WSF_CHECKBOX_LIST_CONTROL": WSF_CHECKBOX_LIST_CONTROL
 
 #create a js class for each control
 for name,state of window.states

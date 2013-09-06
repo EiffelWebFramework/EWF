@@ -38,6 +38,7 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- STATE MANAGEMENT
 		do
 			create Result.make
 			Result.put (create {JSON_BOOLEAN}.make_boolean (checked), create {JSON_STRING}.make_json ("checked"))
+			Result.put (create {JSON_STRING}.make_json (checked_value), create {JSON_STRING}.make_json ("checked_value"))
 			Result.put (create {JSON_BOOLEAN}.make_boolean (attached change_event), create {JSON_STRING}.make_json ("callback_change"))
 		end
 
