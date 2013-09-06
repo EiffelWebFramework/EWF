@@ -5,7 +5,7 @@ note
 	revision: "$Revision$"
 
 class
-	WSF_MULTI_CONTROL[G -> WSF_CONTROL]
+	WSF_MULTI_CONTROL [G -> WSF_CONTROL]
 
 inherit
 

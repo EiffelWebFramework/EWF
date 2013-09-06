@@ -78,7 +78,6 @@ feature
 			control.read_state (states)
 			data := "<html><head>"
 			data.append ("<link href=%"//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css%" rel=%"stylesheet%">")
-				
 			data.append ("</head><body>")
 			data.append (control.render)
 			data.append ("<script type=%"text/javascript%">window.states=")

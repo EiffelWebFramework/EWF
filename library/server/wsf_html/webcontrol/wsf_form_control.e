@@ -11,6 +11,8 @@ inherit
 
 	WSF_MULTI_CONTROL [WSF_CONTROL]
 
+	WSF_VALIDATABLE
+
 create
 	make_form_control
 
@@ -24,22 +26,23 @@ feature {NONE}
 
 feature -- Validation
 
-	validate: BOOLEAN
+	validate
 		do
-			Result := True
+			is_valid := True
 			across
 				controls as c
 			until
-				Result = False
+				is_valid = False
 			loop
-				-- TODO: Change generic parameter of elm from ANY to <WILDCARD> if something like that is available in Eiffel.
-				-- Otherwise, check separately for STRING, LIST...
-				if attached {WSF_FORM_ELEMENT_CONTROL[ANY]} c.item as elem then
+				if attached {WSF_VALIDATABLE} c.item as elem then
+					elem.validate
 					if not elem.is_valid then
-						Result := False
+						is_valid := False
 					end
 				end
 			end
 		end
+
+	is_valid: BOOLEAN
 
 end

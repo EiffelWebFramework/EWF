@@ -5,20 +5,21 @@ note
 	revision: "$Revision$"
 
 class
-	WSF_TEXT_CONTROL
+	WSF_INPUT_CONTROL
 
 inherit
 
 	WSF_VALUE_CONTROL [STRING]
 
 create
-	make_text
+	make_input
 
 feature {NONE}
 
-	make_text (n: STRING; v: STRING)
+	make_input (n: STRING; v: STRING)
 		do
 			make (n, "input")
+			type := "text"
 			text := v
 		end
 
@@ -61,7 +62,7 @@ feature -- Implementation
 
 	render: STRING
 		do
-			Result := render_tag ("", "type=%"text%" value=%"" + text + "%"")
+			Result := render_tag ("", "type=%"" + type + "%" value=%"" + text + "%"")
 		end
 
 	set_text (t: STRING)
@@ -80,6 +81,8 @@ feature -- Implementation
 feature
 
 	text: STRING
+
+	type: STRING
 
 	change_event: detachable PROCEDURE [ANY, TUPLE []]
 

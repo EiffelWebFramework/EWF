@@ -18,7 +18,7 @@ feature {NONE}
 
 	make_decimal_validator (e: STRING)
 		do
-			make_regexp_validator ("[0-9]+(\\.[0-9]*)?|\\.[0-9]+", e)
+			make_regexp_validator ("^[0-9]+(\.[0-9]*)?$|^\.[0-9]+$", e)
 		end
 
 end

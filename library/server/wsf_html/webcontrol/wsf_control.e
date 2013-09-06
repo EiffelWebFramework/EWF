@@ -88,14 +88,14 @@ feature
 			loop
 				css_classes_string := css_classes_string + " " + c.item
 			end
-			Result:=render_tag_with_tagname(tag_name,body,attributes,css_classes_string)
+			Result := render_tag_with_tagname (tag_name, body, attributes, css_classes_string)
 		end
 
-	render_tag_with_tagname (tag, body, attributes,css_classes_string: STRING): STRING
+	render_tag_with_tagname (tag, body, attributes, css_classes_string: STRING): STRING
 		local
 			l_attributes: STRING
 		do
-			l_attributes:=attributes
+			l_attributes := attributes
 			if not css_classes_string.is_empty then
 				l_attributes := " class=%"" + css_classes_string + "%""
 			end
