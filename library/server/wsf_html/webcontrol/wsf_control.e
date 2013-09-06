@@ -97,7 +97,7 @@ feature
 		do
 			l_attributes := attributes
 			if not css_classes_string.is_empty then
-				l_attributes := " class=%"" + css_classes_string + "%""
+				l_attributes := l_attributes + " class=%"" + css_classes_string + "%""
 			end
 			Result := "<" + tag + " id=%"" + control_name + "%" data-name=%"" + control_name + "%" data-type=%"" + generator + "%" " + l_attributes
 			if body.is_empty and not tag.is_equal ("textarea") then
