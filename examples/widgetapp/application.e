@@ -33,6 +33,7 @@ feature {NONE} -- Initialization
 		do
 				--			router.map (create {WSF_URI_MAPPING}.make ("/hello", create {WSF_AGENT_URI_HANDLER}.make (agent execute_hello)))
 			map_agent_uri ("/", agent execute_hello, Void)
+			map_agent_uri ("/grid", agent grid_demo, Void)
 			map_agent_uri ("/widget.js", agent load_js, Void)
 		end
 
@@ -48,6 +49,16 @@ feature -- Execution
 	execute_hello (req: WSF_REQUEST; res: WSF_RESPONSE)
 		local
 			page: SAMPLE_PAGE
+		do
+				-- To send a response we need to setup, the status code and
+				-- the response headers.
+			create page.make (req, res)
+			page.execute
+		end
+
+	grid_demo (req: WSF_REQUEST; res: WSF_RESPONSE)
+		local
+			page: GRID_PAGE
 		do
 				-- To send a response we need to setup, the status code and
 				-- the response headers.
