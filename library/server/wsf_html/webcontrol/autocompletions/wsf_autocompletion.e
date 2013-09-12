@@ -13,4 +13,6 @@ feature
 		deferred
 		end
 
+	template: detachable STRING
+
 end

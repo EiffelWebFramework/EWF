@@ -11,7 +11,8 @@ inherit
 
 	WSF_INPUT_CONTROL
 		redefine
-			handle_callback
+			handle_callback,
+			state
 		end
 
 create
@@ -22,12 +23,24 @@ feature {NONE} -- Creation
 	make_autocomplete (n: STRING; c: WSF_AUTOCOMPLETION)
 		do
 			make_autocomplete_with_agent (n, agent c.autocompletion)
+			if attached c.template as t then
+				template := t
+			end
 		end
 
 	make_autocomplete_with_agent (n: STRING; c: FUNCTION [ANY, TUPLE [STRING], JSON_ARRAY])
 		do
 			make_input (n, "")
 			create_json_list := c
+			template := "{{=value}}"
+		end
+
+feature -- State
+
+	state: JSON_OBJECT
+		do
+			Result := Precursor {WSF_INPUT_CONTROL}
+			Result.put (create {JSON_STRING}.make_json (template), create {JSON_STRING}.make_json ("template"))
 		end
 
 feature -- Callback
@@ -43,5 +56,7 @@ feature -- Callback
 feature -- Autocomplete
 
 	create_json_list: FUNCTION [ANY, TUPLE [STRING], JSON_ARRAY]
+
+	template: STRING
 
 end

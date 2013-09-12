@@ -21,10 +21,14 @@ feature
 			form: WSF_FORM_CONTROL
 			n1_container: WSF_FORM_ELEMENT_CONTROL [STRING]
 			n2_container: WSF_FORM_ELEMENT_CONTROL [STRING]
+			n3_container: WSF_FORM_ELEMENT_CONTROL [STRING]
 			cats_container: WSF_FORM_ELEMENT_CONTROL [LIST [STRING]]
+			s: FLAG_AUTOCOMPLETION
 		do
+			create s.make(<<["dz", "Algeria"], ["be", "Belgium"] , ["ca", "Canada"],["de", "Deutschland"], ["england", "England"], ["fi", "Finland"], ["gr", "Greece"], ["hu", "Hungary"]>>)
 			create textbox1.make_input ("txtBox1", "1")
 			create textbox2.make_input ("txtBox2", "2")
+			create autocompletion1.make_autocomplete ("autocompletion1", s)
 			create button1.make_button ("sample_button1", "SUM")
 			create textbox_result.make_html ("txtBox3", "p", "")
 			button1.set_click_event (agent handle_click)
@@ -39,8 +43,10 @@ feature
 			n1_container.add_validator (create {OWN_VALIDATOR}.make_own)
 			create n2_container.make_form_element ("Number2", textbox2)
 			n2_container.add_validator (create {WSF_DECIMAL_VALIDATOR}.make_decimal_validator ("Invalid Number"))
+			create n3_container.make_form_element ("Autoc1", autocompletion1)
 			form.add_control (n1_container)
 			form.add_control (n2_container)
+			form.add_control (n3_container)
 			create cats_container.make_form_element ("Categories", cklist)
 			cats_container.add_validator (create {WSF_MIN_VALIDATOR [STRING]}.make_min_validator (1, "Choose at least one category"))
 			cats_container.add_validator (create {WSF_MAX_VALIDATOR [STRING]}.make_max_validator (1, "Choose at most one category"))
@@ -81,6 +87,8 @@ feature
 	textbox1: WSF_INPUT_CONTROL
 
 	textbox2: WSF_INPUT_CONTROL
+
+	autocompletion1: WSF_AUTOCOMPLETE_CONTROL
 
 	cklist: WSF_CHECKBOX_LIST_CONTROL
 

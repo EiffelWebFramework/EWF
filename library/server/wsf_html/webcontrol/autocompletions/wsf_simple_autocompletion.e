@@ -16,7 +16,7 @@ create
 
 feature {NONE}
 
-	make (l: LIST [STRING])
+	make (l: ITERABLE [STRING])
 		do
 			list := l
 		end
@@ -41,6 +41,6 @@ feature -- Implementation
 
 feature
 
-	list: LIST [STRING]
+	list: ITERABLE [STRING]
 
 end
