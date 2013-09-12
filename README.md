@@ -2,11 +2,11 @@
 
 Eiffel Web Framework is a framework to build web applications in Eiffel.
 
-To get started, check out [http://oligot.github.io/EWF/](http://oligot.github.io/EWF/)!
+To get started, check out [http://eiffelwebframework.github.io/EWF](http://eiffelwebframework.github.io/EWF)!
 
 ## Documentation
 
-Eiffel Web Framework's documentation, included in this repo in the root directory, is built with [Jekyll](http://jekyllrb.com) and publicly hosted on GitHub Pages at [http://oligot.github.io/EWF/](http://oligot.github.io/EWF/). The docs may also be run locally.
+Eiffel Web Framework's documentation, included in this repo in the root directory, is built with [Jekyll](http://jekyllrb.com) and publicly hosted on GitHub Pages at [http://eiffelwebframework.github.io/EWF](http://eiffelwebframework.github.io/EWF). The docs may also be run locally.
 
 ### Running documentation locally
 
