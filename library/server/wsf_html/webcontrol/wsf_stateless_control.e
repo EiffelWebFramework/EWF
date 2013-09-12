@@ -51,7 +51,7 @@ feature
 			if not css_classes_string.is_empty then
 				l_attributes := l_attributes + " class=%"" + css_classes_string + "%""
 			end
-			Result := "<" + tag + l_attributes
+			Result := "<" + tag + " " + l_attributes
 			if body.is_empty and not tag.is_equal ("textarea") then
 				Result := Result + " />"
 			else

@@ -10,6 +10,9 @@ deferred class
 inherit
 
 	WSF_STATELESS_CONTROL
+		redefine
+			render_tag_with_tagname
+		end
 
 feature
 
@@ -61,6 +64,24 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- STATE MANAGEMENT
 		end
 
 	state_changes: JSON_OBJECT
+
+feature -- Rendering
+
+	render_tag_with_tagname (tag, body, attributes, css_classes_string: STRING): STRING
+		local
+			l_attributes: STRING
+		do
+			l_attributes := attributes
+			if not css_classes_string.is_empty then
+				l_attributes := l_attributes + " class=%"" + css_classes_string + "%""
+			end
+			Result := "<" + tag + " id=%"" + control_name + "%" data-name=%"" + control_name + "%" data-type=%"" + generator + "%" " + l_attributes
+			if body.is_empty and not tag.is_equal ("textarea") then
+				Result := Result + " />"
+			else
+				Result := Result + " >" + body + "</" + tag + ">"
+			end
+		end
 
 feature --EVENT HANDLING
 

@@ -76,7 +76,7 @@ feature
 		do
 			create states.make
 			control.read_state (states)
-			data := "<!DOCTYPE html><html><head>"
+			data := "<html><head>"
 			data.append ("<link href=%"/bootstrap.min.css%" rel=%"stylesheet%">")
 			data.append ("<link href=%"/widget.css%" rel=%"stylesheet%">")
 			data.append ("</head><body>")
