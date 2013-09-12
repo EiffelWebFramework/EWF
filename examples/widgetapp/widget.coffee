@@ -113,45 +113,17 @@ class WSF_INPUT_CONTROL extends WSF_CONTROL
       window.states[@control_name]['text'] = state.text
       @$el.val(state.text)
 
-class WSF_TEXTAREA_CONTROL extends WSF_CONTROL
+class WSF_TEXTAREA_CONTROL extends WSF_INPUT_CONTROL
+
+class WSF_AUTOCOMPLETE_CONTROL extends WSF_INPUT_CONTROL
   attach_events: () ->
-    self = @
-    @$el.change () ->
-      self.change()
-
-  change: () ->
-    window.states[@control_name]['text'] = @$el.val()
-    if window.states[@control_name]['callback_change']
-      trigger_callback(@control_name, 'change')
-    @trigger('change')
-
-  value:()->
-    return @$el.val()
-
-  update: (state) ->
-    if state.text?
-      window.states[@control_name]['text'] = state.text
-      @$el.val(state.text)
-
-class WSF_TEXTAREA_CONTROL extends WSF_CONTROL
-  attach_events: () ->
-    self = @
-    @$el.change () ->
-      self.change()
-
-  change: () ->
-    window.states[@control_name]['text'] = @$el.val()
-    if window.states[@control_name]['callback_change']
-      trigger_callback(@control_name, 'change')
-    @trigger('change')
-
-  value:()->
-    return @$el.val()
-
-  update: (state) ->
-    if state.text?
-      window.states[@control_name]['text'] = state.text
-      @$el.val(state.text)
+    super
+    @$el.typeahead({
+      name: @control_name
+      local: ["one",
+        "two",
+        "three"]
+    })
 
 class WSF_CHECKBOX_CONTROL extends WSF_CONTROL
   attach_events: ()->
@@ -257,6 +229,7 @@ typemap =
   "WSF_BUTTON_CONTROL":WSF_BUTTON_CONTROL
   "WSF_INPUT_CONTROL":WSF_INPUT_CONTROL
   "WSF_TEXTAREA_CONTROL":WSF_TEXTAREA_CONTROL
+  "WSF_AUTOCOMPLETE_CONTROL":WSF_AUTOCOMPLETE_CONTROL
   "WSF_CHECKBOX_CONTROL":WSF_CHECKBOX_CONTROL
   "WSF_FORM_ELEMENT_CONTROL": WSF_FORM_ELEMENT_CONTROL
   "WSF_HTML_CONTROL": WSF_HTML_CONTROL

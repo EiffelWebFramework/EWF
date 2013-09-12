@@ -22,6 +22,7 @@
 		<cluster name="webcontrol" location=".\webcontrol\">
 			<cluster name="validators" location=".\webcontrol\validators\"/>
 			<cluster name="input" location=".\webcontrol\input\"/>
+			<cluster name="autocompletions" location="\home\severin\Documents\EWF\EWF\library\server\wsf_html\webcontrol\autocompletions\"/>
 		</cluster>
 		<cluster name="widget" location=".\widget\" recursive="true"/>
 	</target>
