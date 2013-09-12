@@ -23,6 +23,7 @@
 			<cluster name="validators" location=".\webcontrol\validators\"/>
 			<cluster name="input" location=".\webcontrol\input\"/>
 			<cluster name="grid" location=".\webcontrol\grid\"/>
+			<cluster name="autocompletions" location=".\webcontrol\autocompletions\"/>
 		</cluster>
 		<cluster name="widget" location=".\widget\" recursive="true"/>
 	</target>

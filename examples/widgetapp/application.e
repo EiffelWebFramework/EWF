@@ -35,6 +35,8 @@ feature {NONE} -- Initialization
 			map_agent_uri ("/", agent execute_hello, Void)
 			map_agent_uri ("/grid", agent grid_demo, Void)
 			map_agent_uri ("/widget.js", agent load_js, Void)
+			map_agent_uri ("/widget.css", agent load_css, Void)
+			map_agent_uri ("/bootstrap.min.css", agent load_bootstrap, Void)
 		end
 
 feature -- Helper: mapping
@@ -71,6 +73,22 @@ feature -- Execution
 			f: WSF_FILE_RESPONSE
 		do
 			create f.make_html ("widget.js")
+			res.send (f)
+		end
+
+	load_css (req: WSF_REQUEST; res: WSF_RESPONSE)
+		local
+			f: WSF_FILE_RESPONSE
+		do
+			create f.make_html ("widget.css")
+			res.send (f)
+		end
+
+	load_bootstrap (req: WSF_REQUEST; res: WSF_RESPONSE)
+		local
+			f: WSF_FILE_RESPONSE
+		do
+			create f.make_html ("bootstrap.min.css")
 			res.send (f)
 		end
 

@@ -67,7 +67,7 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- STATE MANAGEMENT
 feature --EVENT HANDLING
 
 	handle_callback (cname: STRING; event: STRING)
-			-- Method called if any callback recived. In this method you can route the callback to the event handler
+			-- Method called if any callback received. In this method you can route the callback to the event handler
 		deferred
 		end
 

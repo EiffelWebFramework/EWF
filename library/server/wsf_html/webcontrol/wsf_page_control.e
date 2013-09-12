@@ -77,13 +77,15 @@ feature
 			create states.make
 			control.read_state (states)
 			data := "<html><head>"
-			data.append ("<link href=%"//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css%" rel=%"stylesheet%">")
+			data.append ("<link href=%"/bootstrap.min.css%" rel=%"stylesheet%">")
+			data.append ("<link href=%"/widget.css%" rel=%"stylesheet%">")
 			data.append ("</head><body>")
 			data.append (control.render)
 			data.append ("<script type=%"text/javascript%">window.states=")
 			data.append (states.representation)
 			data.append (";</script>")
 			data.append ("<script src=%"//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js%"></script>")
+			data.append ("<script src=%"//cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.9.3/typeahead.min.js%"></script>")
 			data.append ("<script src=%"/widget.js%"></script>")
 			data.append ("</body></html>")
 			create page.make

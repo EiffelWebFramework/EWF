@@ -5,10 +5,11 @@ note
 	revision: "$Revision$"
 
 class
-	WSF_max_VALIDATOR[G]
+	WSF_max_VALIDATOR [G]
 
 inherit
-	WSF_VALIDATOR [LIST[G]]
+
+	WSF_VALIDATOR [LIST [G]]
 		redefine
 			state
 		end
@@ -18,7 +19,7 @@ create
 
 feature {NONE}
 
-	make_max_validator (m:INTEGER; e: STRING)
+	make_max_validator (m: INTEGER; e: STRING)
 		do
 			make (e)
 			max := m
@@ -26,10 +27,9 @@ feature {NONE}
 
 feature -- Implementation
 
-	is_valid (input:LIST[G]): BOOLEAN
+	is_valid (input: LIST [G]): BOOLEAN
 		do
-			Result:= input.count < max or input.count = max
-
+			Result := input.count < max or input.count = max
 		end
 
 feature

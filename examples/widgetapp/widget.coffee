@@ -1,9 +1,22 @@
+cache = {}
+template  = tmpl = (str, data) ->
+  # Simple JavaScript Templating
+  # John Resig - http://ejohn.org/ - MIT Licensed
+  fn = (if not /\W/.test(str) then cache[str] = cache[str] or tmpl(str) else new Function("obj", "var p=[],print=function(){p.push.apply(p,arguments);};" + "with(obj){p.push('" + str.replace(/[\r\t\n]/g, " ").split("{{").join("\t").replace(/((^|}})[^\t]*)'/g, "$1\r").replace(/\t=(.*?)}}/g, "',$1,'").split("\t").join("');").split("}}").join("p.push('").split("\r").join("\\'") + "');}return p.join('');"))
+  (if data then fn(data) else fn)
+
+Mini =
+  compile:(t)->
+    {
+      render:template(t)
+    }
+
 trigger_callback = (control_name,event)->
   $.ajax
     data:
       control_name: control_name
       event: event
-      states: JSON.stringify(states)
+      states: JSON.stringify(window.states)
     cache: no
   .done (new_states)->
     #Update all classes
@@ -113,45 +126,27 @@ class WSF_INPUT_CONTROL extends WSF_CONTROL
       window.states[@control_name]['text'] = state.text
       @$el.val(state.text)
 
-class WSF_TEXTAREA_CONTROL extends WSF_CONTROL
+class WSF_TEXTAREA_CONTROL extends WSF_INPUT_CONTROL
+
+class WSF_AUTOCOMPLETE_CONTROL extends WSF_INPUT_CONTROL
   attach_events: () ->
+    super
     self = @
-    @$el.change () ->
-      self.change()
-
-  change: () ->
-    window.states[@control_name]['text'] = @$el.val()
-    if window.states[@control_name]['callback_change']
-      trigger_callback(@control_name, 'change')
-    @trigger('change')
-
-  value:()->
-    return @$el.val()
-
-  update: (state) ->
-    if state.text?
-      window.states[@control_name]['text'] = state.text
-      @$el.val(state.text)
-
-class WSF_TEXTAREA_CONTROL extends WSF_CONTROL
-  attach_events: () ->
-    self = @
-    @$el.change () ->
-      self.change()
-
-  change: () ->
-    window.states[@control_name]['text'] = @$el.val()
-    if window.states[@control_name]['callback_change']
-      trigger_callback(@control_name, 'change')
-    @trigger('change')
-
-  value:()->
-    return @$el.val()
-
-  update: (state) ->
-    if state.text?
-      window.states[@control_name]['text'] = state.text
-      @$el.val(state.text)
+    @$el.typeahead({
+      name: @control_name
+      template: window.states[@control_name]['template']
+      engine: Mini
+      remote:
+        url:""
+        replace: (url, uriEncodedQuery) ->
+            window.states[self.control_name]['text'] = self.$el.val()
+            '?' + $.param
+                      control_name: self.control_name
+                      event: 'autocomplete'
+                      states: JSON.stringify(window.states)
+        filter: (parsedResponse) ->
+            parsedResponse[self.control_name]['suggestions']
+    })
 
 class WSF_CHECKBOX_CONTROL extends WSF_CONTROL
   attach_events: ()->
@@ -257,6 +252,7 @@ typemap =
   "WSF_BUTTON_CONTROL":WSF_BUTTON_CONTROL
   "WSF_INPUT_CONTROL":WSF_INPUT_CONTROL
   "WSF_TEXTAREA_CONTROL":WSF_TEXTAREA_CONTROL
+  "WSF_AUTOCOMPLETE_CONTROL":WSF_AUTOCOMPLETE_CONTROL
   "WSF_CHECKBOX_CONTROL":WSF_CHECKBOX_CONTROL
   "WSF_FORM_ELEMENT_CONTROL": WSF_FORM_ELEMENT_CONTROL
   "WSF_HTML_CONTROL": WSF_HTML_CONTROL
