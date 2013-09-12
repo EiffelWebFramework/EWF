@@ -18,7 +18,7 @@ feature {NONE}
 
 	make_checkbox (n: STRING; l: STRING; c: STRING)
 		do
-			make (n, "input")
+			make_control (n, "input")
 			label := l
 			checked_value := c
 		end

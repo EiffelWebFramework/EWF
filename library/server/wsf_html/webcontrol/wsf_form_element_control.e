@@ -33,7 +33,7 @@ feature {NONE}
 
 	make_form_element_with_validators (a_label: STRING; c: WSF_VALUE_CONTROL [G]; v: LINKED_LIST [WSF_VALIDATOR [G]])
 		do
-			make (c.control_name + "_container", "div")
+			make_control (c.control_name + "_container", "div")
 			add_class ("form-group")
 			if attached {WSF_INPUT_CONTROL} c or attached {WSF_TEXTAREA_CONTROL} c then
 				c.add_class ("form-control")

@@ -18,7 +18,7 @@ feature {NONE}
 
 	make_html (n,t,v: STRING)
 		do
-			make (n, t)
+			make_control (n, t)
 			html := v
 		end
 

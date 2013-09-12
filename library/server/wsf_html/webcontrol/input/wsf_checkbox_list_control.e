@@ -31,18 +31,15 @@ feature {NONE}
 feature
 
 	value: LIST [STRING]
-		local
-			l: LINKED_LIST [STRING]
 		do
-			create l.make
+			create {LINKED_LIST [STRING]} Result.make
 			across
 				controls as c
 			loop
 				if c.item.value then
-					l.extend (c.item.checked_value)
+					Result.extend (c.item.checked_value)
 				end
 			end
-			Result := l
 		end
 
 end

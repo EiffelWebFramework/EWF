@@ -17,15 +17,18 @@ inherit
 		end
 
 create
-	make_multi_control
+	make_multi_control, make_with_tag_name
 
-feature {NONE}
-
-	controls: LINKED_LIST [G]
+feature {NONE} -- Initialization
 
 	make_multi_control (n: STRING)
 		do
-			make (n, "div")
+			make_with_tag_name(n, "div")
+		end
+
+	make_with_tag_name (n, t: STRING)
+		do
+			make_control (n, t)
 			controls := create {LINKED_LIST [G]}.make;
 		end
 
@@ -111,5 +114,7 @@ feature
 		do
 			controls.put_front (c)
 		end
+
+	controls: LINKED_LIST [G]
 
 end

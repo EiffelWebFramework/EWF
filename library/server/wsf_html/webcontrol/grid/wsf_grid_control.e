@@ -18,7 +18,7 @@ feature {NONE}
 
 	make_grid (n: STRING; a_columns: ITERABLE [WSF_GRID_COLUMN]; a_datasource: WSF_DATASOURCE [G])
 		do
-			make (n, "div")
+			make_control (n, "div")
 			columns := a_columns
 			datasource := a_datasource
 		end
@@ -79,7 +79,7 @@ feature -- Implementation
 				end
 				Result.append (render_tag_with_tagname ("tr", row, "", ""))
 			end
-			Result :=render_tag_with_tagname ("tbody", Result, "", "")
+			Result := render_tag_with_tagname ("tbody", Result, "", "")
 		end
 
 	render: STRING

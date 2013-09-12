@@ -18,7 +18,7 @@ feature {NONE}
 
 	make_input (n: STRING; v: STRING)
 		do
-			make (n, "input")
+			make_control (n, "input")
 			type := "text"
 			text := v
 		end

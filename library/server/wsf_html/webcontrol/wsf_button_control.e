@@ -18,7 +18,7 @@ feature {NONE}
 
 	make_button (n: STRING; t: STRING)
 		do
-			make (n, "button")
+			make_control (n, "button")
 			add_class ("btn")
 			add_class ("btn-default")
 			text := t

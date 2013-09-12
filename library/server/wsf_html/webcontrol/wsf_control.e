@@ -7,25 +7,23 @@ note
 deferred class
 	WSF_CONTROL
 
+inherit
+
+	WSF_STATELESS_CONTROL
+
 feature
 
 	control_name: STRING
 
-	tag_name: STRING
-
-	css_classes: LINKED_LIST [STRING]
-
 feature {NONE}
 
-	make (n, a_tag_name: STRING)
+	make_control (n, a_tag_name: STRING)
 		do
+			make (a_tag_name)
 			control_name := n
-			tag_name := a_tag_name
-			create css_classes.make
 			create state_changes.make
 		ensure
 			attached state_changes
-			attached css_classes
 		end
 
 feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- STATE MANAGEMENT
@@ -68,47 +66,6 @@ feature --EVENT HANDLING
 
 	handle_callback (cname: STRING; event: STRING)
 			-- Method called if any callback received. In this method you can route the callback to the event handler
-		deferred
-		end
-
-feature
-
-	add_class (c: STRING)
-		do
-			css_classes.extend (c)
-		end
-
-	render_tag (body, attributes: STRING): STRING
-		local
-			css_classes_string: STRING
-		do
-			css_classes_string := ""
-			across
-				css_classes as c
-			loop
-				css_classes_string := css_classes_string + " " + c.item
-			end
-			Result := render_tag_with_tagname (tag_name, body, attributes, css_classes_string)
-		end
-
-	render_tag_with_tagname (tag, body, attributes, css_classes_string: STRING): STRING
-		local
-			l_attributes: STRING
-		do
-			l_attributes := attributes
-			if not css_classes_string.is_empty then
-				l_attributes := l_attributes + " class=%"" + css_classes_string + "%""
-			end
-			Result := "<" + tag + " id=%"" + control_name + "%" data-name=%"" + control_name + "%" data-type=%"" + generator + "%" " + l_attributes
-			if body.is_empty and not tag.is_equal ("textarea") then
-				Result := Result + " />"
-			else
-				Result := Result + " >" + body + "</" + tag + ">"
-			end
-		end
-
-	render: STRING
-			-- Return html representaion of control
 		deferred
 		end
 
