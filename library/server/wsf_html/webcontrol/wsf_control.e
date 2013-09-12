@@ -11,7 +11,7 @@ inherit
 
 	WSF_STATELESS_CONTROL
 		redefine
-			render_tag_with_tagname
+			render_tag
 		end
 
 feature
@@ -67,20 +67,19 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- STATE MANAGEMENT
 
 feature -- Rendering
 
-	render_tag_with_tagname (tag, body, attrs, css_classes_string: STRING): STRING
+	render_tag (body, attrs: STRING): STRING
 		local
+			css_classes_string: STRING
 			l_attributes: STRING
 		do
-			l_attributes := attrs
-			if not css_classes_string.is_empty then
-				l_attributes := l_attributes + " class=%"" + css_classes_string + "%""
+			css_classes_string := ""
+			across
+				css_classes as c
+			loop
+				css_classes_string := css_classes_string + " " + c.item
 			end
-			Result := "<" + tag + " id=%"" + control_name + "%" data-name=%"" + control_name + "%" data-type=%"" + generator + "%" " + l_attributes
-			if body.is_empty and not tag.is_equal ("textarea") then
-				Result := Result + " />"
-			else
-				Result := Result + " >" + body + "</" + tag + ">"
-			end
+			l_attributes := "id=%"" + control_name + "%" data-name=%"" + control_name + "%" data-type=%"" + generator + "%" " + attrs
+			Result := render_tag_with_tagname (tag_name, body, l_attributes, css_classes_string)
 		end
 
 feature --EVENT HANDLING
