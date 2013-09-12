@@ -26,7 +26,7 @@ feature
 			create textbox1.make_input ("txtBox1", "1")
 			create textbox2.make_input ("txtBox2", "2")
 			create button1.make_button ("sample_button1", "SUM")
-			create textbox_result.make_html ("txtBox3","p", "")
+			create textbox_result.make_html ("txtBox3", "p", "")
 			button1.set_click_event (agent handle_click)
 			button1.add_class ("col-lg-offset-2")
 			create form.make_form_control ("panel")
@@ -42,12 +42,10 @@ feature
 			form.add_control (n1_container)
 			form.add_control (n2_container)
 			create cats_container.make_form_element ("Categories", cklist)
-			cats_container.add_validator (create {WSF_MIN_VALIDATOR[STRING]}.make_min_validator (1,"Choose at least one category"))
-			cats_container.add_validator (create {WSF_MAX_VALIDATOR[STRING]}.make_max_validator (1,"Choose at most one category"))
-
+			cats_container.add_validator (create {WSF_MIN_VALIDATOR [STRING]}.make_min_validator (1, "Choose at least one category"))
+			cats_container.add_validator (create {WSF_MAX_VALIDATOR [STRING]}.make_max_validator (1, "Choose at most one category"))
 			form.add_control (cats_container)
 			form.add_control (button1)
-
 			form.add_control (create {WSF_FORM_ELEMENT_CONTROL [STRING]}.make_form_element ("Result", textbox_result))
 			control := form
 		end

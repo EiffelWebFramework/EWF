@@ -21,6 +21,7 @@
 		<cluster name="form" location=".\form\" recursive="true"/>
 		<cluster name="webcontrol" location=".\webcontrol\">
 			<cluster name="validators" location=".\webcontrol\validators\"/>
+			<cluster name="input" location=".\webcontrol\input\"/>
 		</cluster>
 		<cluster name="widget" location=".\widget\" recursive="true"/>
 	</target>

@@ -18,7 +18,7 @@ feature {NONE}
 
 	make_own
 		do
-			error := "Input to long"
+			error := "Input too long"
 		end
 
 feature
