@@ -63,13 +63,13 @@ feature -- Implementation
 
 	render: STRING
 		local
-			attributes: STRING
+			attrs: STRING
 		do
-			attributes := "type=%"checkbox%""
+			attrs := "type=%"checkbox%""
 			if checked then
-				attributes := attributes + " checked"
+				attrs := attrs + " checked"
 			end
-			Result := render_tag_with_tagname ("div", render_tag_with_tagname ("label", render_tag ("", attributes) + " " + label, "", ""), "", "checkbox")
+			Result := render_tag_with_tagname ("div", render_tag_with_tagname ("label", render_tag ("", attrs) + " " + label, "", ""), "", "checkbox")
 		end
 
 	value: BOOLEAN

@@ -6,16 +6,19 @@ note
 
 class
 	WSF_GRID_COLUMN
+
 create
 	make_column
+
 feature {NONE}
 
-	make_column(a_header,a_field:STRING)
-	do
-		header:=a_header
-		field_name:=a_field
-		sorting_name:=a_field
-	end
+	make_column (a_header, a_field: STRING)
+		do
+			header := a_header
+			field_name := a_field
+			sorting_name := a_field
+		end
+
 feature
 
 	header: STRING

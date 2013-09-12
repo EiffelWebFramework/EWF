@@ -13,6 +13,10 @@ feature
 
 	css_classes: LINKED_LIST [STRING]
 
+		--TODO: Maybe improve
+
+	attributes: detachable STRING
+
 feature {NONE}
 
 	make (a_tag_name: STRING)
@@ -25,12 +29,17 @@ feature {NONE}
 
 feature
 
+	set_attributes (a: STRING)
+		do
+			attributes := a
+		end
+
 	add_class (c: STRING)
 		do
 			css_classes.extend (c)
 		end
 
-	render_tag (body, attributes: STRING): STRING
+	render_tag (body, attrs: STRING): STRING
 		local
 			css_classes_string: STRING
 		do
@@ -40,14 +49,14 @@ feature
 			loop
 				css_classes_string := css_classes_string + " " + c.item
 			end
-			Result := render_tag_with_tagname (tag_name, body, attributes, css_classes_string)
+			Result := render_tag_with_tagname (tag_name, body, attrs, css_classes_string)
 		end
 
-	render_tag_with_tagname (tag, body, attributes, css_classes_string: STRING): STRING
+	render_tag_with_tagname (tag, body, attrs, css_classes_string: STRING): STRING
 		local
 			l_attributes: STRING
 		do
-			l_attributes := attributes
+			l_attributes := attrs
 			if not css_classes_string.is_empty then
 				l_attributes := l_attributes + " class=%"" + css_classes_string + "%""
 			end

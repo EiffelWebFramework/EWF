@@ -16,7 +16,7 @@ create
 
 feature {NONE}
 
-	make_html (n,t,v: STRING)
+	make_html (n, t, v: STRING)
 		do
 			make_control (n, t)
 			html := v
@@ -49,7 +49,7 @@ feature -- Implementation
 
 	render: STRING
 		do
-			Result := render_tag (html,"")
+			Result := render_tag (html, "")
 		end
 
 	set_html (t: STRING)
@@ -69,6 +69,4 @@ feature
 
 	html: STRING
 
-
 end
-

@@ -67,11 +67,11 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- STATE MANAGEMENT
 
 feature -- Rendering
 
-	render_tag_with_tagname (tag, body, attributes, css_classes_string: STRING): STRING
+	render_tag_with_tagname (tag, body, attrs, css_classes_string: STRING): STRING
 		local
 			l_attributes: STRING
 		do
-			l_attributes := attributes
+			l_attributes := attrs
 			if not css_classes_string.is_empty then
 				l_attributes := l_attributes + " class=%"" + css_classes_string + "%""
 			end
