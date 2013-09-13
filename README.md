@@ -70,6 +70,14 @@ review the [guidelines for contributing](CONTRIBUTING.md).
 * [Feature requests](CONTRIBUTING.md#features)
 * [Pull requests](CONTRIBUTING.md#pull-requests)
 
+## Community
+
+Keep track of development and community news.
+
+* Follow [@EiffelWeb](https://twitter.com/EiffelWeb) on Twitter
+* Follow our [page](https://plus.google.com/u/0/110650349519032194479) and [community](https://plus.google.com/communities/110457383244374256721) on Google+
+* Have a question that's not a feature request or bug report? [Ask on the mailing list](http://groups.google.com/group/eiffel-web-framework)
+
 
 For more information please have a look at the related wiki:
 * https://github.com/EiffelWebFramework/EWF/wiki
