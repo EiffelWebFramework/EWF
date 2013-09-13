@@ -1,4 +1,4 @@
-note
+	note
 	description: "Summary description for {WSF_CONTROL}."
 	author: ""
 	date: "$Date$"

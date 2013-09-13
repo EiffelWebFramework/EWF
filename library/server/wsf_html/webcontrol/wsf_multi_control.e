@@ -5,7 +5,7 @@ note
 	revision: "$Revision$"
 
 class
-	WSF_MULTI_CONTROL [G -> WSF_CONTROL]
+	WSF_MULTI_CONTROL [G -> WSF_STATELESS_CONTROL]
 
 inherit
 
@@ -23,7 +23,7 @@ feature {NONE} -- Initialization
 
 	make_multi_control (n: STRING)
 		do
-			make_with_tag_name(n, "div")
+			make_with_tag_name (n, "div")
 		end
 
 	make_with_tag_name (n, t: STRING)
@@ -41,7 +41,9 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- STATE MANAGEMENT
 			across
 				controls as c
 			loop
-				c.item.load_state (new_states)
+				if attached {WSF_CONTROL} c.item as cont then
+					cont.load_state (new_states)
+				end
 			end
 		end
 
@@ -50,7 +52,9 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- STATE MANAGEMENT
 			across
 				controls as c
 			loop
-				c.item.set_state (new_state)
+				if attached {WSF_CONTROL} c.item as cont then
+					cont.set_state (new_state)
+				end
 			end
 		end
 
@@ -61,7 +65,9 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- STATE MANAGEMENT
 			across
 				controls as c
 			loop
-				c.item.read_state (states)
+				if attached {WSF_CONTROL} c.item as cont then
+					cont.read_state (states)
+				end
 			end
 		end
 
@@ -72,7 +78,9 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- STATE MANAGEMENT
 			across
 				controls as c
 			loop
-				c.item.read_state_changes (states)
+				if attached {WSF_CONTROL} c.item as cont then
+					cont.read_state_changes (states)
+				end
 			end
 		end
 
@@ -92,7 +100,9 @@ feature --EVENT HANDLING
 				across
 					controls as c
 				loop
-					c.item.handle_callback (cname, event)
+					if attached {WSF_CONTROL} c.item as cont then
+						cont.handle_callback (cname, event)
+					end
 				end
 			end
 		end

@@ -18,6 +18,8 @@ feature
 
 	initialize_controls
 		local
+			container: WSF_MULTI_CONTROL[WSF_STATELESS_CONTROL]
+			navbar: WSF_NAVBAR_CONTROL
 			form: WSF_FORM_CONTROL
 			n1_container: WSF_FORM_ELEMENT_CONTROL [STRING]
 			n2_container: WSF_FORM_ELEMENT_CONTROL [STRING]
@@ -26,6 +28,8 @@ feature
 			s: FLAG_AUTOCOMPLETION
 		do
 			create s.make(<<["dz", "Algeria"], ["be", "Belgium"] , ["ca", "Canada"],["de", "Deutschland"], ["england", "England"], ["fi", "Finland"], ["gr", "Greece"], ["hu", "Hungary"]>>)
+			create container.make_multi_control ("container")
+			create navbar.make_navbar ("Sample Page")
 			create textbox1.make_input ("txtBox1", "1")
 			create textbox2.make_input ("txtBox2", "2")
 			create autocompletion1.make_autocomplete ("autocompletion1", s)
@@ -53,7 +57,9 @@ feature
 			form.add_control (cats_container)
 			form.add_control (button1)
 			form.add_control (create {WSF_FORM_ELEMENT_CONTROL [STRING]}.make_form_element ("Result", textbox_result))
-			control := form
+			container.add_control (navbar)
+			container.add_control (form)
+			control := container
 		end
 
 	handle_click

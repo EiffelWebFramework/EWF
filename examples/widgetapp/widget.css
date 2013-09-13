@@ -1,5 +1,6 @@
-/* ignore this line */
-.container { margin:30px; }
+body {
+    padding-top: 30px;
+}
 
 .twitter-typeahead {
     width: 100%;

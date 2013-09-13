@@ -30,7 +30,7 @@ feature
 			across
 				((page - 1) * page_size) |..| (page * page_size - 1) as c
 			loop
-				list.extend (create {DEMO_DATA}.make(c.item,"Name"+c.item.out,"desc "+c.item.out))
+				list.extend (create {DEMO_DATA}.make (c.item, "Name" + c.item.out, "desc " + c.item.out))
 			end
 			Result := list
 		end

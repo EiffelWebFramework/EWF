@@ -15,8 +15,6 @@ feature
 
 		--TODO: Maybe improve
 
-	attributes: detachable STRING
-
 feature {NONE}
 
 	make (a_tag_name: STRING)
@@ -28,11 +26,6 @@ feature {NONE}
 		end
 
 feature
-
-	set_attributes (a: STRING)
-		do
-			attributes := a
-		end
 
 	add_class (c: STRING)
 		do
@@ -61,7 +54,7 @@ feature
 				l_attributes := l_attributes + " class=%"" + css_classes_string + "%""
 			end
 			Result := "<" + tag + " " + l_attributes
-			if body.is_empty and not tag.is_equal ("textarea") then
+			if body.is_empty and not tag.is_equal ("textarea") and not tag.is_equal ("span") and not tag.is_equal ("button") then
 				Result := Result + " />"
 			else
 				Result := Result + " >" + body + "</" + tag + ">"
