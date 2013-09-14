@@ -20,11 +20,14 @@ feature
 			container: WSF_MULTI_CONTROL [WSF_STATELESS_CONTROL]
 		do
 			create container.make_multi_control ("container")
+			container.add_class ("container")
+			container.add_control (create {WSF_STATELESS_HTML_CONTROL}.make_html("h1","Repeater Demo"))
 			create datasource.make_news
 			create search_query.make_autocomplete ("query", create {GOOGLE_AUTOCOMPLETION}.make)
 			search_query.add_class ("form-control")
 			search_query.set_change_event (agent change_query)
 			container.add_control (search_query)
+			container.add_control (create {WSF_STATELESS_HTML_CONTROL}.make_html("h2","Results"))
 			create repeater.make_repeater ("myrepeater", datasource)
 			container.add_control (repeater)
 			control := container
