@@ -96,6 +96,7 @@ class WSF_BUTTON_CONTROL extends WSF_CONTROL
     @$el.click (e)->
       e.preventDefault()
       self.click()
+
   click: ()->
     if window.states[@control_name]['callback_click']
       trigger_callback(@control_name, 'click')
@@ -247,16 +248,24 @@ class WSF_CHECKBOX_LIST_CONTROL extends WSF_CONTROL
         result.push(subc.checked_value)
     return result
 
+class WSF_PROGRESS_CONTROL extends WSF_CONTROL
+
+  update: (state)->
+    if state.progress?
+      window.states[@control_name]['progress'] = state.progress
+      $('#' + @control_name).children('.progress-bar').attr('aria-valuenow', state.progress).width(state.progress + '%')
+
 #map class name to effective class
 typemap =
-  "WSF_BUTTON_CONTROL":WSF_BUTTON_CONTROL
-  "WSF_INPUT_CONTROL":WSF_INPUT_CONTROL
-  "WSF_TEXTAREA_CONTROL":WSF_TEXTAREA_CONTROL
-  "WSF_AUTOCOMPLETE_CONTROL":WSF_AUTOCOMPLETE_CONTROL
-  "WSF_CHECKBOX_CONTROL":WSF_CHECKBOX_CONTROL
+  "WSF_BUTTON_CONTROL": WSF_BUTTON_CONTROL
+  "WSF_INPUT_CONTROL": WSF_INPUT_CONTROL
+  "WSF_TEXTAREA_CONTROL": WSF_TEXTAREA_CONTROL
+  "WSF_AUTOCOMPLETE_CONTROL": WSF_AUTOCOMPLETE_CONTROL
+  "WSF_CHECKBOX_CONTROL": WSF_CHECKBOX_CONTROL
   "WSF_FORM_ELEMENT_CONTROL": WSF_FORM_ELEMENT_CONTROL
   "WSF_HTML_CONTROL": WSF_HTML_CONTROL
   "WSF_CHECKBOX_LIST_CONTROL": WSF_CHECKBOX_LIST_CONTROL
+  "WSF_PROGRESS_CONTROL": WSF_PROGRESS_CONTROL
 
 #create a js class for each control
 for name,state of window.states
