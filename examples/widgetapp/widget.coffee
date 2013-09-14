@@ -149,6 +149,8 @@ class WSF_AUTOCOMPLETE_CONTROL extends WSF_INPUT_CONTROL
     })
     @$el.on 'typeahead:closed',()->
         self.change() 
+    @$el.on 'typeahead:blured',()->
+        self.change() 
 
 class WSF_CHECKBOX_CONTROL extends WSF_CONTROL
   attach_events: ()->

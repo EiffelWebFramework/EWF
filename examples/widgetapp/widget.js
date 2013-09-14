@@ -283,7 +283,10 @@
           }
         }
       });
-      return this.$el.on('typeahead:closed', function() {
+      this.$el.on('typeahead:closed', function() {
+        return self.change();
+      });
+      return this.$el.on('typeahead:blured', function() {
         return self.change();
       });
     };
