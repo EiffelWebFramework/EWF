@@ -20,6 +20,29 @@ feature
 
 	nav: WSF_STATELESS_MULTI_CONTROL [WSF_STATELESS_CONTROL]
 
+	nav_right: WSF_STATELESS_MULTI_CONTROL [WSF_STATELESS_CONTROL]
+
+feature
+
+	add_element (c: WSF_STATELESS_CONTROL)
+		do
+			add_element_to_nav (c, nav)
+		end
+
+	add_element_right (c: WSF_STATELESS_CONTROL)
+		do
+			add_element_to_nav (c, nav_right)
+		end
+
+	add_element_to_nav (e: WSF_STATELESS_CONTROL; n: WSF_STATELESS_MULTI_CONTROL [WSF_STATELESS_CONTROL])
+		local
+			li: WSF_STATELESS_MULTI_CONTROL [WSF_STATELESS_CONTROL]
+		do
+			create li.make_with_tag_name ("li")
+			li.add_control (e)
+			n.add_control (li)
+		end
+
 feature {NONE} -- Initialization
 
 	make_navbar (b: STRING)
@@ -37,6 +60,7 @@ feature {NONE} -- Initialization
 			create collapse_button.make_with_tag_name ("button")
 			create collapse.make_multi_control
 			create nav.make_with_tag_name ("ul")
+			create nav_right.make_with_tag_name ("ul")
 			create brand.make_control ("a")
 			create icon_bar.make_control ("span")
 			container.add_class ("container")
@@ -53,85 +77,13 @@ feature {NONE} -- Initialization
 			header.add_control (collapse_button)
 			header.add_control (brand)
 			nav.add_class ("nav navbar-nav")
+			nav_right.add_class ("nav navbar-nav navbar-right")
 			collapse.add_class ("navbar-collapse")
 			collapse.add_control (nav)
+			collapse.add_control (nav_right)
 			container.add_control (header)
 			container.add_control (collapse)
 			add_control (container)
-
-				--	EXAMPLE NAVBAR USED AS REFERENCE
-				--			<div class="navbar navbar-inverse navbar-fixed-top">
-				--            <div class="container">
-				--                <div class="navbar-header">
-				--                    <button class="navbar-toggle" data-target=".navbar-collapse" data-toggle="collapse" type="button">
-				--                        <span class="icon-bar"></span>
-				--                    </button>
-				--                    <a class="navbar-brand" href="#">WG Manager
-				--                    </a>
-				--                </div>
-				--                <div class="navbar-collapse in" style="height: auto;">
-				--                    <ul class="nav navbar-nav">
-				--                        <li class="active">
-				--                            <a href="/wgmanager">
-				--                                <span class="glyphicon glyphicon-home"></span> Home
-				--                            </a>
-				--                        </li>
-				--                        <li>
-				--                            <a href="users">Users
-				--                            </a>
-				--                        </li>
-				--                        <li>
-				--                            <a href="about">About
-				--                            </a>
-				--                        </li>
-				--                    </ul>
-				--                    <ul class="nav navbar-nav navbar-right" id="loginnavbar">
-				--                        <li>
-				--                            <a href="register">
-				--                                <span class="glyphicon glyphicon-pencil"></span> Register
-				--                            </a>
-				--                        </li>
-				--                        <li class="dropdown">
-				--                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-				--                                <span class="glyphicon glyphicon-log-in"></span> Sign In
-				--                                <strong class="caret"></strong>
-				--                            </a>
-				--                            <ul class="dropdown-menu" style="min-width: 250px; padding: 15px; padding-bottom: 0px">
-				--                                <form id="signinform" onsubmit="check_login();return false;">
-				--                                    <div class="alert alert-danger" id="login_alert" style="display: none"></div>
-				--                                    <div class="form-group">
-				--                                        <input class="form-control" id="username" autofocus="autofocus" placeholder="username" name="username" type="text">
-				--                                    </div>
-				--                                    <div class="form-group">
-				--                                        <input class="form-control" id="password" placeholder="password" name="password" type="password">
-				--                                    </div>
-				--                                    <div class="checkbox">
-				--                                        <label>
-				--                                            <input type="checkbox"> Remember me
-				--                                        </label>
-				--                                    </div>
-				--                                    <div class="form-group">
-				--                                        <input class="btn btn-primary btn-block form-control" id="signin" value="Sign In" type="submit">
-				--                                    </div>
-				--                                </form>
-				--                            </ul>
-				--                        </li>
-				--                    </ul>
-				--                    <ul class="nav navbar-nav navbar-right" id="accountnavbar" style="display: none">
-				--                        <li>
-				--                            <a id="account" href="account">
-				--                                <span class="glyphicon glyphicon-user"></span>
-				--                            </a>
-				--                        </li>
-				--                        <li>
-				--                            <a href="javascript:logout()">
-				--                                <span class="glyphicon glyphicon-log-out"></span> Logout
-				--                            </a>
-				--                        </li>
-				--                    </ul>
-				--                </div>
-				--            </div>
-				--        </div>
 		end
 
 end

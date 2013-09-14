@@ -18,16 +18,18 @@ feature
 
 	initialize_controls
 		local
-			container: WSF_MULTI_CONTROL[WSF_STATELESS_CONTROL]
+			container: WSF_MULTI_CONTROL [WSF_STATELESS_CONTROL]
 			navbar: WSF_NAVBAR_CONTROL
 			form: WSF_FORM_CONTROL
 			n1_container: WSF_FORM_ELEMENT_CONTROL [STRING]
 			n2_container: WSF_FORM_ELEMENT_CONTROL [STRING]
 			n3_container: WSF_FORM_ELEMENT_CONTROL [STRING]
 			cats_container: WSF_FORM_ELEMENT_CONTROL [LIST [STRING]]
+			link1: WSF_BASIC_CONTROL
+			link2: WSF_BASIC_CONTROL
 			s: FLAG_AUTOCOMPLETION
 		do
-			create s.make(<<["dz", "Algeria"], ["be", "Belgium"] , ["ca", "Canada"],["de", "Deutschland"], ["england", "England"], ["fi", "Finland"], ["gr", "Greece"], ["hu", "Hungary"]>>)
+			create s.make (<<["dz", "Algeria"], ["be", "Belgium"], ["ca", "Canada"], ["de", "Deutschland"], ["england", "England"], ["fi", "Finland"], ["gr", "Greece"], ["hu", "Hungary"]>>)
 			create container.make_multi_control ("container")
 			create navbar.make_navbar ("Sample Page")
 			create textbox1.make_input ("txtBox1", "1")
@@ -35,6 +37,14 @@ feature
 			create autocompletion1.make_autocomplete ("autocompletion1", s)
 			create button1.make_button ("sample_button1", "SUM")
 			create textbox_result.make_html ("txtBox3", "p", "")
+			create link1.make_control ("a")
+			create link2.make_control ("a")
+			link1.set_content ("Home")
+			link1.set_attributes ("href=%"#%"")
+			link2.set_content ("About")
+			link2.set_attributes ("href=%"#%"")
+			navbar.add_element (link1)
+			navbar.add_element_right (link2)
 			button1.set_click_event (agent handle_click)
 			button1.add_class ("col-lg-offset-2")
 			create form.make_form_control ("panel")

@@ -54,7 +54,7 @@ feature
 				l_attributes := l_attributes + " class=%"" + css_classes_string + "%""
 			end
 			Result := "<" + tag + " " + l_attributes
-			if body.is_empty and not tag.is_equal ("textarea") and not tag.is_equal ("span") and not tag.is_equal ("button") then
+			if body.is_empty and not tag.is_equal ("textarea") and not tag.is_equal ("span") and not tag.is_equal ("button") and not tag.is_equal ("ul") then
 				Result := Result + " />"
 			else
 				Result := Result + " >" + body + "</" + tag + ">"
