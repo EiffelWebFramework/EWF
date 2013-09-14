@@ -11,11 +11,12 @@ Mini =
       render:template(t)
     }
 
-trigger_callback = (control_name,event)->
+trigger_callback = (control_name,event,event_parameter)->
   $.ajax
     data:
       control_name: control_name
       event: event
+      event_parameter: event_parameter
       states: JSON.stringify(window.states)
     cache: no
   .done (new_states)->
@@ -247,6 +248,36 @@ class WSF_CHECKBOX_LIST_CONTROL extends WSF_CONTROL
         result.push(subc.checked_value)
     return result
 
+class WSF_PAGINATION_CONTROL extends WSF_CONTROL
+  attach_events: ()->
+    self = @
+    @$el.on 'click', 'a', (e)->
+      e.preventDefault()
+      self.click(e)
+
+  click: (e)->
+    nr = $(e.target).data('nr')
+    if nr == "next"
+      trigger_callback(@control_name, "next")
+    else if nr == "prev"
+      trigger_callback(@control_name, "prev")
+    else
+      trigger_callback(@control_name, "goto", nr)
+
+  update: (state) ->
+    if state._html?
+      @$el.html($(state._html).html())
+
+class WSF_GRID_CONTROL extends WSF_CONTROL
+  attach_events: ()->
+    self = @
+
+  update: (state) ->
+    if state.datasource?
+      window.states[@control_name]['datasource'] = state.datasource
+    if state._body?
+      @$el.find('tbody').html($(state._body).html())
+
 #map class name to effective class
 typemap =
   "WSF_BUTTON_CONTROL":WSF_BUTTON_CONTROL
@@ -257,6 +288,8 @@ typemap =
   "WSF_FORM_ELEMENT_CONTROL": WSF_FORM_ELEMENT_CONTROL
   "WSF_HTML_CONTROL": WSF_HTML_CONTROL
   "WSF_CHECKBOX_LIST_CONTROL": WSF_CHECKBOX_LIST_CONTROL
+  "WSF_PAGINATION_CONTROL": WSF_PAGINATION_CONTROL
+  "WSF_GRID_CONTROL": WSF_GRID_CONTROL
 
 #create a js class for each control
 for name,state of window.states

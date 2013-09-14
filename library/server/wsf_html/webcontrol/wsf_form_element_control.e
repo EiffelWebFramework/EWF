@@ -41,7 +41,6 @@ feature {NONE}
 			if attached {WSF_HTML_CONTROL} c then
 				c.add_class ("form-control-static")
 			end
-
 			value_control := c
 			validators := v
 			label := a_label
@@ -94,7 +93,7 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- STATE MANAGEMENT
 
 feature --EVENT HANDLING
 
-	handle_callback (cname: STRING; event: STRING)
+	handle_callback (cname: STRING; event: STRING; event_parameter: detachable STRING)
 			-- Pass callback to subcontrols
 		do
 			if equal (cname, control_name) then
@@ -102,7 +101,7 @@ feature --EVENT HANDLING
 					validate
 				end
 			else
-				value_control.handle_callback (cname, event)
+				value_control.handle_callback (cname, event, event_parameter)
 			end
 		end
 

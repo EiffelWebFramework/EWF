@@ -7,14 +7,28 @@ note
 deferred class
 	WSF_DATASOURCE [G -> WSF_ENTITY]
 
+feature -- Update event
+
+	set_on_update_agent (f: PROCEDURE [ANY, TUPLE []])
+		do
+			on_update_agent := f
+		end
+
+	update
+		do
+			if attached on_update_agent as a  then
+				a.call([])
+			end
+		end
+
+	on_update_agent: detachable PROCEDURE [ANY, TUPLE []]
+
 feature --State
 
 	state: JSON_OBJECT
 			-- Return state which contains the current html and if there is an event handle attached
 		do
 			create Result.make
-			Result.put (create {JSON_NUMBER}.make_integer (page), create {JSON_STRING}.make_json ("page"))
-			Result.put (create {JSON_NUMBER}.make_integer (page_size), create {JSON_STRING}.make_json ("page_size"))
 			if attached sort_column as a_sort_column then
 				Result.put (create {JSON_STRING}.make_json (a_sort_column), create {JSON_STRING}.make_json ("sort_column"))
 			else
@@ -42,16 +56,6 @@ feature --State
 		end
 
 feature
-
-	set_page (a_page: like page)
-		do
-			page := a_page
-		end
-
-	set_page_size (a_page_size: like page_size)
-		do
-			page_size := a_page_size
-		end
 
 	set_sort_column (a_sort_column: like sort_column)
 		do

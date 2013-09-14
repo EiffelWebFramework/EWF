@@ -50,7 +50,7 @@ feature --EVENT HANDLING
 			click_event := e
 		end
 
-	handle_callback (cname: STRING; event: STRING)
+	handle_callback (cname: STRING; event: STRING; event_parameter: detachable STRING)
 		do
 			if Current.control_name.is_equal (cname) and attached click_event as cevent then
 				cevent.call ([])

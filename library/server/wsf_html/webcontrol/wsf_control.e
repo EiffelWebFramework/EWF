@@ -84,7 +84,7 @@ feature -- Rendering
 
 feature --EVENT HANDLING
 
-	handle_callback (cname: STRING; event: STRING)
+	handle_callback (cname: STRING; event: STRING; event_parameter: detachable STRING)
 			-- Method called if any callback received. In this method you can route the callback to the event handler
 		deferred
 		end

@@ -48,15 +48,10 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- STATE MANAGEMENT
 		end
 
 	set_state (new_state: JSON_OBJECT)
+			-- Before we process the callback. We restore the state of control.
 		do
-			across
-				controls as c
-			loop
-				if attached {WSF_CONTROL} c.item as cont then
-					cont.set_state (new_state)
-				end
-			end
 		end
+
 
 	read_state (states: JSON_OBJECT)
 			-- Read states in subcontrols
@@ -92,7 +87,7 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- STATE MANAGEMENT
 
 feature --EVENT HANDLING
 
-	handle_callback (cname: STRING; event: STRING)
+	handle_callback (cname: STRING; event: STRING; event_parameter: detachable STRING)
 			-- Pass callback to subcontrols
 		do
 			if equal (cname, control_name) then
@@ -101,7 +96,7 @@ feature --EVENT HANDLING
 					controls as c
 				loop
 					if attached {WSF_CONTROL} c.item as cont then
-						cont.handle_callback (cname, event)
+						cont.handle_callback (cname, event, event_parameter)
 					end
 				end
 			end
@@ -120,9 +115,11 @@ feature
 			Result := render_tag (Result, "")
 		end
 
-	add_control (c: G)
+	add_control (c: detachable  G)
 		do
-			controls.put_front (c)
+			if attached c as d then
+				controls.put_front (d)
+			end
 		end
 
 	controls: LINKED_LIST [G]

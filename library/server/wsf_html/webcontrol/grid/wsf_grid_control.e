@@ -9,7 +9,13 @@ class
 
 inherit
 
-	WSF_CONTROL
+	WSF_MULTI_CONTROL [WSF_STATELESS_CONTROL]
+		redefine
+			set_state,
+			state,
+			handle_callback,
+			render
+		end
 
 create
 	make_grid
@@ -18,15 +24,22 @@ feature {NONE}
 
 	make_grid (n: STRING; a_columns: ITERABLE [WSF_GRID_COLUMN]; a_datasource: WSF_DATASOURCE [G])
 		do
-			make_control (n, "div")
+			make_multi_control (n)
 			columns := a_columns
 			datasource := a_datasource
+			datasource.set_on_update_agent (agent update)
+			if attached {WSF_PAGABLE_DATASOURCE [G]} a_datasource as ds then
+				create pagination_control.make_paging (n + "_paging", ds)
+				add_control (pagination_control)
+			end
 		end
 
 feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- STATE MANAGEMENT
 
 	update
 		do
+			state_changes.replace (create {JSON_STRING}.make_json (render_body), create {JSON_STRING}.make_json ("_body"))
+			state_changes.replace (datasource.state, create {JSON_STRING}.make_json ("datasource"))
 		end
 
 	set_state (new_state: JSON_OBJECT)
@@ -46,8 +59,9 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- STATE MANAGEMENT
 
 feature --EVENT HANDLING
 
-	handle_callback (cname: STRING; event: STRING)
+	handle_callback (cname: STRING; event: STRING; event_parameter: detachable STRING)
 		do
+			Precursor (cname, event, event_parameter)
 		end
 
 feature -- Implementation
@@ -83,8 +97,17 @@ feature -- Implementation
 		end
 
 	render: STRING
+		local
+			table: STRING
 		do
-			Result := render_tag (render_tag_with_tagname ("table", render_header + render_body, "", "table table-striped"), "")
+			table := render_tag_with_tagname ("table", render_header + render_body, "", "table table-striped")
+			Result := ""
+			across
+				controls as c
+			loop
+				Result := c.item.render + Result
+			end
+			Result := render_tag (table + Result, "")
 		end
 
 feature
@@ -92,5 +115,7 @@ feature
 	columns: ITERABLE [WSF_GRID_COLUMN]
 
 	datasource: WSF_DATASOURCE [G]
+
+	pagination_control: detachable WSF_PAGINATION_CONTROL [G]
 
 end
