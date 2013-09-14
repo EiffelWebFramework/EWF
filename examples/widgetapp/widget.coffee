@@ -277,7 +277,19 @@ class WSF_GRID_CONTROL extends WSF_CONTROL
     if state.datasource?
       window.states[@control_name]['datasource'] = state.datasource
     if state._body?
-      @$el.find('tbody').html($(state._body).html())
+      @$el.find('tbody').html(state._body)
+
+class WSF_REPEATER_CONTROL extends WSF_CONTROL
+  attach_events: ()->
+    self = @
+
+  update: (state) ->
+    if state.datasource?
+      window.states[@control_name]['datasource'] = state.datasource
+    if state._body?
+      @$el.find('.repeater_content').html(state._body)
+      console.log state._body
+
 
 #map class name to effective class
 typemap =
@@ -291,6 +303,7 @@ typemap =
   "WSF_CHECKBOX_LIST_CONTROL": WSF_CHECKBOX_LIST_CONTROL
   "WSF_PAGINATION_CONTROL": WSF_PAGINATION_CONTROL
   "WSF_GRID_CONTROL": WSF_GRID_CONTROL
+  "WSF_REPEATER_CONTROL":WSF_REPEATER_CONTROL
 
 #create a js class for each control
 for name,state of window.states
