@@ -12,8 +12,28 @@ inherit
 	WSF_DATASOURCE [G]
 		redefine
 			state,
-			set_state
+			set_state,
+			update
 		end
+
+feature -- Update event
+
+	set_on_update_page_agent (f: PROCEDURE [ANY, TUPLE []])
+		do
+			on_update_page_agent := f
+		end
+
+	update
+		do
+			if attached on_update_agent as a then
+				a.call ([])
+			end
+			if attached on_update_page_agent as a then
+				a.call ([])
+			end
+		end
+
+	on_update_page_agent: detachable PROCEDURE [ANY, TUPLE []]
 
 feature --States
 

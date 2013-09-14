@@ -263,9 +263,8 @@
 
     WSF_AUTOCOMPLETE_CONTROL.prototype.attach_events = function() {
       var self;
-      WSF_AUTOCOMPLETE_CONTROL.__super__.attach_events.apply(this, arguments);
       self = this;
-      return this.$el.typeahead({
+      this.$el.typeahead({
         name: this.control_name,
         template: window.states[this.control_name]['template'],
         engine: Mini,
@@ -283,6 +282,9 @@
             return parsedResponse[self.control_name]['suggestions'];
           }
         }
+      });
+      return this.$el.on('typeahead:closed', function() {
+        return self.change();
       });
     };
 

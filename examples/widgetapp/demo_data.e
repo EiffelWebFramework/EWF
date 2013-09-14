@@ -21,6 +21,7 @@ feature {NONE}
 			id := a_id
 			name := a_name
 			description := a_description
+			image := "http://placehold.it/20x20&text=" + id.out
 		end
 
 feature
@@ -31,6 +32,8 @@ feature
 
 	description: STRING
 
+	image: STRING
+
 	get (field: STRING): detachable ANY
 		do
 			if field.is_equal ("id") then
@@ -39,6 +42,8 @@ feature
 				Result := name
 			elseif field.is_equal ("description") then
 				Result := description
+			elseif field.is_equal ("image") then
+				Result := image
 			end
 		end
 

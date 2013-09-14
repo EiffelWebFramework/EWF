@@ -131,7 +131,6 @@ class WSF_TEXTAREA_CONTROL extends WSF_INPUT_CONTROL
 
 class WSF_AUTOCOMPLETE_CONTROL extends WSF_INPUT_CONTROL
   attach_events: () ->
-    super
     self = @
     @$el.typeahead({
       name: @control_name
@@ -148,6 +147,8 @@ class WSF_AUTOCOMPLETE_CONTROL extends WSF_INPUT_CONTROL
         filter: (parsedResponse) ->
             parsedResponse[self.control_name]['suggestions']
     })
+    @$el.on 'typeahead:closed',()->
+        self.change() 
 
 class WSF_CHECKBOX_CONTROL extends WSF_CONTROL
   attach_events: ()->

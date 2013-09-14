@@ -16,8 +16,8 @@ feature -- Update event
 
 	update
 		do
-			if attached on_update_agent as a  then
-				a.call([])
+			if attached on_update_agent as a then
+				a.call ([])
 			end
 		end
 

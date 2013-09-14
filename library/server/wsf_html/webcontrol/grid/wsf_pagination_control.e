@@ -21,6 +21,7 @@ feature {NONE}
 			make_control (n, "ul")
 			add_class ("pagination")
 			datasource := ds
+			datasource.set_on_update_page_agent (agent update)
 		end
 
 feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- STATE MANAGEMENT
@@ -49,16 +50,19 @@ feature --EVENT HANDLING
 						datasource.set_page (i)
 					end
 				end
-				state_changes.replace (create {JSON_STRING}.make_json (render), create {JSON_STRING}.make_json ("_html"))
 				datasource.update
 			end
 		end
 
 feature
 
+	update
+		do
+			state_changes.replace (create {JSON_STRING}.make_json (render), create {JSON_STRING}.make_json ("_html"))
+		end
+
 	render: STRING
 		local
-			page_count: INTEGER
 			paging_start: INTEGER
 			paging_end: INTEGER
 			cssclass: STRING
