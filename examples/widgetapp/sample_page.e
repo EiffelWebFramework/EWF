@@ -10,9 +10,9 @@ class
 inherit
 
 	BASE_PAGE
-	redefine
-		initialize_controls
-	end
+		redefine
+			initialize_controls
+		end
 
 create
 	make
@@ -24,43 +24,60 @@ feature
 			n1_container: WSF_FORM_ELEMENT_CONTROL [STRING]
 			n2_container: WSF_FORM_ELEMENT_CONTROL [STRING]
 			n3_container: WSF_FORM_ELEMENT_CONTROL [STRING]
+			n4_container: WSF_FORM_ELEMENT_CONTROL [STRING]
+			n5_container: WSF_FORM_ELEMENT_CONTROL [STRING]
 			cats_container: WSF_FORM_ELEMENT_CONTROL [LIST [STRING]]
-
 			s: FLAG_AUTOCOMPLETION
 		do
 			Precursor
-			create s.make (<<["dz", "Algeria"], ["be", "Belgium"], ["ca", "Canada"], ["de", "Deutschland"], ["england", "England"], ["fi", "Finland"], ["gr", "Greece"], ["hu", "Hungary"]>>)
-
-			create textbox1.make_input ("txtBox1", "1")
-			create textbox2.make_input ("txtBox2", "2")
-			create autocompletion1.make_autocomplete ("autocompletion1", s)
-			create button1.make_button ("sample_button1", "SUM")
-			create textbox_result.make_html ("txtBox3", "p", "")
-			create progress.make_progress ("progress1")
-			button1.set_click_event (agent handle_click)
-			button1.add_class ("col-lg-offset-2")
 			create form.make_form_control ("panel")
 			form.add_class ("form-horizontal")
-			create cklist.make_checkbox_list_control ("categories")
-			cklist.add_control (create {WSF_CHECKBOX_CONTROL}.make_checkbox ("net", "Network", "net"))
-			cklist.add_control (create {WSF_CHECKBOX_CONTROL}.make_checkbox ("os", "Operating Systems", "os"))
+				--Number 1
+			create textbox1.make_input ("txtBox1", "1")
 			create n1_container.make_form_element ("Number1", textbox1)
 			n1_container.add_validator (create {WSF_DECIMAL_VALIDATOR}.make_decimal_validator ("Invalid Number"))
 			n1_container.add_validator (create {OWN_VALIDATOR}.make_own)
+			form.add_control (n1_container)
+				--Number 2
+			create textbox2.make_input ("txtBox2", "2")
 			create n2_container.make_form_element ("Number2", textbox2)
 			n2_container.add_validator (create {WSF_DECIMAL_VALIDATOR}.make_decimal_validator ("Invalid Number"))
-			create n3_container.make_form_element ("Autoc1", autocompletion1)
-			form.add_control (n1_container)
 			form.add_control (n2_container)
+				--Flag autocomplete
+			create s.make (<<["dz", "Algeria"], ["be", "Belgium"], ["ca", "Canada"], ["de", "Deutschland"], ["england", "England"], ["fi", "Finland"], ["gr", "Greece"], ["hu", "Hungary"]>>)
+			create autocompletion1.make_autocomplete ("autocompletion1", s)
+			create n3_container.make_form_element ("Flag Autocomplete", autocompletion1)
 			form.add_control (n3_container)
+				--Contact autocomplete
+			create autocompletion2.make_autocomplete ("autocompletion2", create {CONTACT_AUTOCOMPLETION}.make)
+			create n4_container.make_form_element ("Contact Autocomplete", autocompletion2)
+			form.add_control (n4_container)
+				--Google autocomplete
+			create autocompletion3.make_autocomplete ("autocompletion4", create {GOOGLE_AUTOCOMPLETION}.make)
+			create n5_container.make_form_element ("Google Autocomplete", autocompletion3)
+			form.add_control (n5_container)
+				--Categories
+			create cklist.make_checkbox_list_control ("categories")
+			cklist.add_control (create {WSF_CHECKBOX_CONTROL}.make_checkbox ("net", "Network", "net"))
+			cklist.add_control (create {WSF_CHECKBOX_CONTROL}.make_checkbox ("os", "Operating Systems", "os"))
+			cklist.add_control (create {WSF_CHECKBOX_CONTROL}.make_checkbox ("fmfp", "Formal Methods and Functional Programming", "fmfp"))
 			create cats_container.make_form_element ("Categories", cklist)
 			cats_container.add_validator (create {WSF_MIN_VALIDATOR [STRING]}.make_min_validator (1, "Choose at least one category"))
-			cats_container.add_validator (create {WSF_MAX_VALIDATOR [STRING]}.make_max_validator (1, "Choose at most one category"))
+			cats_container.add_validator (create {WSF_MAX_VALIDATOR [STRING]}.make_max_validator (2, "Choose at most two category"))
 			form.add_control (cats_container)
+				--Button 1
+			create button1.make_button ("sample_button1", "Update")
+			button1.set_click_event (agent handle_click)
+			button1.add_class ("col-lg-offset-2")
 			form.add_control (button1)
-			form.add_control (create {WSF_FORM_ELEMENT_CONTROL [STRING]}.make_form_element ("Result", textbox_result))
-
+				--Result
+			create result_html.make_html ("txtBox3", "p", "")
+			form.add_control (create {WSF_FORM_ELEMENT_CONTROL [STRING]}.make_form_element ("Result", result_html))
 			container.add_control (form)
+
+				--Progress bar
+			container.add_control (create {WSF_BASIC_CONTROL}.make_with_body("h4","","Number1/Number2"))
+			create progress.make_progress ("progress1")
 			container.add_control (progress)
 		end
 
@@ -70,7 +87,7 @@ feature
 		do
 			form.validate
 			if form.is_valid then
-				progress.set_progress ((textbox1.text.to_integer_64 / textbox2.text.to_integer_64*100).ceiling)
+				progress.set_progress ((textbox1.text.to_integer_64 / textbox2.text.to_integer_64 * 100).ceiling)
 				text := textbox1.text + " + " + textbox2.text + " = " + (textbox1.text.to_integer_64 + textbox2.text.to_integer_64).out
 				text.append ("<ul>")
 				across
@@ -79,9 +96,9 @@ feature
 					text.append ("<li>" + s.item + "</li>")
 				end
 				text.append ("</ul>")
-				textbox_result.set_html (text)
+				result_html.set_html (text)
 			else
-				textbox_result.set_html ("VALIDATION ERROR")
+				result_html.set_html ("VALIDATION ERROR")
 			end
 		end
 
@@ -97,11 +114,16 @@ feature
 
 	autocompletion1: WSF_AUTOCOMPLETE_CONTROL
 
+	autocompletion2: WSF_AUTOCOMPLETE_CONTROL
+
+	autocompletion3: WSF_AUTOCOMPLETE_CONTROL
+
 	cklist: WSF_CHECKBOX_LIST_CONTROL
 
-	textbox_result: WSF_HTML_CONTROL
+	result_html: WSF_HTML_CONTROL
 
 	form: WSF_FORM_CONTROL
 
 	progress: WSF_PROGRESS_CONTROL
+
 end
