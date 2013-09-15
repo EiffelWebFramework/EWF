@@ -37,7 +37,7 @@ feature -- Implementation
 			create Result.make_array
 			if curl_handle /= default_pointer then
 				create l_curl_string.make_empty
-				curl_easy.setopt_string (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_url, "http://suggestqueries.google.com/complete/search?client=firefox&q=" + query_str)
+				curl_easy.setopt_string (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_url, "http://google.com/complete/search?client=chrome&q=" + query_str)
 				curl_easy.set_write_function (curl_handle)
 				curl_easy.setopt_integer (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_writedata, l_curl_string.object_id)
 				l_result := curl_easy.perform (curl_handle)
