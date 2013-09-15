@@ -86,8 +86,8 @@ feature
 			control.read_state (states)
 			data.append (states.representation)
 			data.append (";</script>")
-			data.append ("<script src=%"//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js%"></script>")
-			data.append ("<script src=%"//cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.9.3/typeahead.min.js%"></script>")
+			data.append ("<script src=%"/jquery.min.js%"></script>")
+			data.append ("<script src=%"/typeahead.min.js%"></script>")
 			data.append ("<script src=%"/widget.js%"></script>")
 			data.append ("</body></html>")
 			create page.make
