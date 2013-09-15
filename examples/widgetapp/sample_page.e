@@ -9,7 +9,10 @@ class
 
 inherit
 
-	WSF_PAGE_CONTROL
+	BASE_PAGE
+	redefine
+		initialize_controls
+	end
 
 create
 	make
@@ -18,8 +21,6 @@ feature
 
 	initialize_controls
 		local
-			container: WSF_MULTI_CONTROL [WSF_STATELESS_CONTROL]
-			navbar: WSF_NAVBAR_CONTROL
 			n1_container: WSF_FORM_ELEMENT_CONTROL [STRING]
 			n2_container: WSF_FORM_ELEMENT_CONTROL [STRING]
 			n3_container: WSF_FORM_ELEMENT_CONTROL [STRING]
@@ -27,20 +28,15 @@ feature
 
 			s: FLAG_AUTOCOMPLETION
 		do
+			Precursor
 			create s.make (<<["dz", "Algeria"], ["be", "Belgium"], ["ca", "Canada"], ["de", "Deutschland"], ["england", "England"], ["fi", "Finland"], ["gr", "Greece"], ["hu", "Hungary"]>>)
-			create container.make_multi_control ("container")
-			container.add_class ("container")
-			create navbar.make_navbar ("Sample Page")
+
 			create textbox1.make_input ("txtBox1", "1")
 			create textbox2.make_input ("txtBox2", "2")
 			create autocompletion1.make_autocomplete ("autocompletion1", s)
 			create button1.make_button ("sample_button1", "SUM")
 			create textbox_result.make_html ("txtBox3", "p", "")
 			create progress.make_progress ("progress1")
-			navbar.add_element (create {WSF_BASIC_CONTROL}.make_with_body("a","href=%"/%"","Home"))
-			navbar.add_element (create {WSF_BASIC_CONTROL}.make_with_body("a","href=%"/grid%"","Grid"))
-			navbar.add_element (create {WSF_BASIC_CONTROL}.make_with_body("a","href=%"/repeater%"","Repeater"))
-			navbar.add_element_right (create {WSF_BASIC_CONTROL}.make_with_body("a","href=%"#%"","About"))
 			button1.set_click_event (agent handle_click)
 			button1.add_class ("col-lg-offset-2")
 			create form.make_form_control ("panel")
@@ -63,10 +59,9 @@ feature
 			form.add_control (cats_container)
 			form.add_control (button1)
 			form.add_control (create {WSF_FORM_ELEMENT_CONTROL [STRING]}.make_form_element ("Result", textbox_result))
-			container.add_control (navbar)
+
 			container.add_control (form)
 			container.add_control (progress)
-			control := container
 		end
 
 	handle_click
