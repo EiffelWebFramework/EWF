@@ -1,4 +1,4 @@
-	note
+note
 	description: "Summary description for {WSF_CONTROL}."
 	author: ""
 	date: "$Date$"
@@ -68,6 +68,11 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- STATE MANAGEMENT
 feature -- Rendering
 
 	render_tag (body, attrs: STRING): STRING
+		do
+			Result:=render_tag_with_generator_name (generator, body, attrs)
+		end
+
+	render_tag_with_generator_name (a_generator, body, attrs: STRING): STRING
 		local
 			css_classes_string: STRING
 			l_attributes: STRING
@@ -78,13 +83,13 @@ feature -- Rendering
 			loop
 				css_classes_string := css_classes_string + " " + c.item
 			end
-			l_attributes := "id=%"" + control_name + "%" data-name=%"" + control_name + "%" data-type=%"" + generator + "%" " + attrs
+			l_attributes := "id=%"" + control_name + "%" data-name=%"" + control_name + "%" data-type=%"" + a_generator + "%" " + attrs
 			Result := render_tag_with_tagname (tag_name, body, l_attributes, css_classes_string)
 		end
 
 feature --EVENT HANDLING
 
-	handle_callback (cname: STRING; event: STRING)
+	handle_callback (cname: STRING; event: STRING; event_parameter: detachable STRING)
 			-- Method called if any callback received. In this method you can route the callback to the event handler
 		deferred
 		end

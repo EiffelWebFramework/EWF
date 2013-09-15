@@ -43,6 +43,7 @@ feature
 			-- If request is not a callback. Run process and render the html page
 		local
 			event: detachable STRING
+			event_parameter: detachable STRING
 			control_name: detachable STRING
 			states: detachable STRING
 			states_changes: JSON_OBJECT
@@ -50,13 +51,14 @@ feature
 		do
 			control_name := get_parameter ("control_name")
 			event := get_parameter ("event")
+			event_parameter := get_parameter ("event_parameter")
 			states := get_parameter ("states")
 			if attached event and attached control_name and attached control and attached states then
 				create json_parser.make_parser (states)
 				if attached {JSON_OBJECT} json_parser.parse_json as sp then
 					control.load_state (sp)
 				end
-				control.handle_callback (control_name, event)
+				control.handle_callback (control_name, event, event_parameter)
 				create states_changes.make
 				control.read_state_changes (states_changes)
 				response.put_header ({HTTP_STATUS_CODE}.ok, <<["Content-Type", "application/json"]>>)
@@ -74,14 +76,14 @@ feature
 			page: WSF_PAGE_RESPONSE
 			states: JSON_OBJECT
 		do
-			create states.make
-			control.read_state (states)
 			data := "<html><head>"
 			data.append ("<link href=%"/bootstrap.min.css%" rel=%"stylesheet%">")
 			data.append ("<link href=%"/widget.css%" rel=%"stylesheet%">")
 			data.append ("</head><body>")
 			data.append (control.render)
 			data.append ("<script type=%"text/javascript%">window.states=")
+			create states.make
+			control.read_state (states)
 			data.append (states.representation)
 			data.append (";</script>")
 			data.append ("<script src=%"//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js%"></script>")

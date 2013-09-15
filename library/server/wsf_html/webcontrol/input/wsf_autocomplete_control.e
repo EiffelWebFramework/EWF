@@ -45,9 +45,9 @@ feature -- State
 
 feature -- Callback
 
-	handle_callback (cname: STRING; event: STRING)
+	handle_callback (cname: STRING; event: STRING; event_parameter: detachable STRING)
 		do
-			Precursor {WSF_INPUT_CONTROL} (cname, event)
+			Precursor {WSF_INPUT_CONTROL} (cname, event, event_parameter)
 			if cname.is_equal (control_name) and event.is_equal ("autocomplete") then
 				state_changes.put (create_json_list.item ([text]), create {JSON_STRING}.make_json ("suggestions"))
 			end

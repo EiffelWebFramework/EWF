@@ -34,6 +34,7 @@ feature {NONE} -- Initialization
 				--			router.map (create {WSF_URI_MAPPING}.make ("/hello", create {WSF_AGENT_URI_HANDLER}.make (agent execute_hello)))
 			map_agent_uri ("/", agent execute_hello, Void)
 			map_agent_uri ("/grid", agent grid_demo, Void)
+			map_agent_uri ("/repeater", agent repeater_demo, Void)
 			map_agent_uri ("/widget.js", agent load_js, Void)
 			map_agent_uri ("/widget.css", agent load_css, Void)
 			map_agent_uri ("/bootstrap.min.css", agent load_bootstrap, Void)
@@ -61,6 +62,16 @@ feature -- Execution
 	grid_demo (req: WSF_REQUEST; res: WSF_RESPONSE)
 		local
 			page: GRID_PAGE
+		do
+				-- To send a response we need to setup, the status code and
+				-- the response headers.
+			create page.make (req, res)
+			page.execute
+		end
+
+	repeater_demo (req: WSF_REQUEST; res: WSF_RESPONSE)
+		local
+			page: REPEATER_PAGE
 		do
 				-- To send a response we need to setup, the status code and
 				-- the response headers.

@@ -12,7 +12,8 @@ inherit
 	WSF_STATELESS_CONTROL
 
 create
-	make_control
+	make_control,
+	make_with_body
 
 feature {NONE} -- Initialization
 
@@ -25,6 +26,13 @@ feature {NONE} -- Initialization
 			make (t)
 			attributes := ""
 			content := ""
+		end
+
+	make_with_body (t,attr,a_content: STRING)
+		do
+			make (t)
+			attributes := attr
+			content := a_content
 		end
 
 feature -- Rendering

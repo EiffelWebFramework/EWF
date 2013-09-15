@@ -49,7 +49,7 @@ feature --EVENT HANDLING
 			change_event := e
 		end
 
-	handle_callback (cname: STRING; event: STRING)
+	handle_callback (cname: STRING; event: STRING; event_parameter: detachable STRING)
 		do
 			if Current.control_name.is_equal (cname) and attached change_event as cevent then
 				if event.is_equal ("change") then

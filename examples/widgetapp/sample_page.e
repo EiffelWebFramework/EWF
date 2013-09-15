@@ -20,35 +20,27 @@ feature
 		local
 			container: WSF_MULTI_CONTROL [WSF_STATELESS_CONTROL]
 			navbar: WSF_NAVBAR_CONTROL
-			form: WSF_FORM_CONTROL
 			n1_container: WSF_FORM_ELEMENT_CONTROL [STRING]
 			n2_container: WSF_FORM_ELEMENT_CONTROL [STRING]
 			n3_container: WSF_FORM_ELEMENT_CONTROL [STRING]
 			cats_container: WSF_FORM_ELEMENT_CONTROL [LIST [STRING]]
-			progress: WSF_PROGRESS_CONTROL
-			progress_source: WSF_PROGRESSSOURCE
-			link1: WSF_BASIC_CONTROL
-			link2: WSF_BASIC_CONTROL
+
 			s: FLAG_AUTOCOMPLETION
 		do
 			create s.make (<<["dz", "Algeria"], ["be", "Belgium"], ["ca", "Canada"], ["de", "Deutschland"], ["england", "England"], ["fi", "Finland"], ["gr", "Greece"], ["hu", "Hungary"]>>)
 			create container.make_multi_control ("container")
+			container.add_class ("container")
 			create navbar.make_navbar ("Sample Page")
 			create textbox1.make_input ("txtBox1", "1")
 			create textbox2.make_input ("txtBox2", "2")
 			create autocompletion1.make_autocomplete ("autocompletion1", s)
 			create button1.make_button ("sample_button1", "SUM")
 			create textbox_result.make_html ("txtBox3", "p", "")
-			create {DEMO_PROGRESSSOURCE} progress_source.make
-			create progress.make_progress ("progress1", progress_source)
-			create link1.make_control ("a")
-			create link2.make_control ("a")
-			link1.set_content ("Home")
-			link1.set_attributes ("href=%"#%"")
-			link2.set_content ("About")
-			link2.set_attributes ("href=%"#%"")
-			navbar.add_element (link1)
-			navbar.add_element_right (link2)
+			create progress.make_progress ("progress1")
+			navbar.add_element (create {WSF_BASIC_CONTROL}.make_with_body("a","href=%"/%"","Home"))
+			navbar.add_element (create {WSF_BASIC_CONTROL}.make_with_body("a","href=%"/grid%"","Grid"))
+			navbar.add_element (create {WSF_BASIC_CONTROL}.make_with_body("a","href=%"/repeater%"","Repeater"))
+			navbar.add_element_right (create {WSF_BASIC_CONTROL}.make_with_body("a","href=%"#%"","About"))
 			button1.set_click_event (agent handle_click)
 			button1.add_class ("col-lg-offset-2")
 			create form.make_form_control ("panel")
@@ -81,21 +73,20 @@ feature
 		local
 			text: STRING
 		do
-			if attached {WSF_FORM_CONTROL} control as form then
-				form.validate
-				if form.is_valid then
-					text := textbox1.text + " + " + textbox2.text + " = " + (textbox1.text.to_integer_64 + textbox2.text.to_integer_64).out
-					text.append ("<ul>")
-					across
-						cklist.value as s
-					loop
-						text.append ("<li>" + s.item + "</li>")
-					end
-					text.append ("</ul>")
-					textbox_result.set_html (text)
-				else
-					textbox_result.set_html ("VALIDATION ERROR")
+			form.validate
+			if form.is_valid then
+				progress.set_progress ((textbox1.text.to_integer_64 / textbox2.text.to_integer_64*100).ceiling)
+				text := textbox1.text + " + " + textbox2.text + " = " + (textbox1.text.to_integer_64 + textbox2.text.to_integer_64).out
+				text.append ("<ul>")
+				across
+					cklist.value as s
+				loop
+					text.append ("<li>" + s.item + "</li>")
 				end
+				text.append ("</ul>")
+				textbox_result.set_html (text)
+			else
+				textbox_result.set_html ("VALIDATION ERROR")
 			end
 		end
 
@@ -115,4 +106,7 @@ feature
 
 	textbox_result: WSF_HTML_CONTROL
 
+	form: WSF_FORM_CONTROL
+
+	progress: WSF_PROGRESS_CONTROL
 end

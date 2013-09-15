@@ -11,11 +11,12 @@ Mini =
       render:template(t)
     }
 
-trigger_callback = (control_name,event)->
+trigger_callback = (control_name,event,event_parameter)->
   $.ajax
     data:
       control_name: control_name
       event: event
+      event_parameter: event_parameter
       states: JSON.stringify(window.states)
     cache: no
   .done (new_states)->
@@ -131,7 +132,6 @@ class WSF_TEXTAREA_CONTROL extends WSF_INPUT_CONTROL
 
 class WSF_AUTOCOMPLETE_CONTROL extends WSF_INPUT_CONTROL
   attach_events: () ->
-    super
     self = @
     @$el.typeahead({
       name: @control_name
@@ -148,6 +148,10 @@ class WSF_AUTOCOMPLETE_CONTROL extends WSF_INPUT_CONTROL
         filter: (parsedResponse) ->
             parsedResponse[self.control_name]['suggestions']
     })
+    @$el.on 'typeahead:closed',()->
+        self.change() 
+    @$el.on 'typeahead:blured',()->
+        self.change() 
 
 class WSF_CHECKBOX_CONTROL extends WSF_CONTROL
   attach_events: ()->
@@ -255,6 +259,47 @@ class WSF_PROGRESS_CONTROL extends WSF_CONTROL
       window.states[@control_name]['progress'] = state.progress
       $('#' + @control_name).children('.progress-bar').attr('aria-valuenow', state.progress).width(state.progress + '%')
 
+class WSF_PAGINATION_CONTROL extends WSF_CONTROL
+  attach_events: ()->
+    self = @
+    @$el.on 'click', 'a', (e)->
+      e.preventDefault()
+      self.click(e)
+
+  click: (e)->
+    nr = $(e.target).data('nr')
+    if nr == "next"
+      trigger_callback(@control_name, "next")
+    else if nr == "prev"
+      trigger_callback(@control_name, "prev")
+    else
+      trigger_callback(@control_name, "goto", nr)
+
+  update: (state) ->
+    if state._html?
+      @$el.html($(state._html).html())
+
+class WSF_GRID_CONTROL extends WSF_CONTROL
+  attach_events: ()->
+    self = @
+
+  update: (state) ->
+    if state.datasource?
+      window.states[@control_name]['datasource'] = state.datasource
+    if state._body?
+      @$el.find('tbody').html(state._body)
+
+class WSF_REPEATER_CONTROL extends WSF_CONTROL
+  attach_events: ()->
+    self = @
+
+  update: (state) ->
+    if state.datasource?
+      window.states[@control_name]['datasource'] = state.datasource
+    if state._body?
+      @$el.find('.repeater_content').html(state._body)
+      console.log state._body
+
 #map class name to effective class
 typemap =
   "WSF_BUTTON_CONTROL": WSF_BUTTON_CONTROL
@@ -266,6 +311,9 @@ typemap =
   "WSF_HTML_CONTROL": WSF_HTML_CONTROL
   "WSF_CHECKBOX_LIST_CONTROL": WSF_CHECKBOX_LIST_CONTROL
   "WSF_PROGRESS_CONTROL": WSF_PROGRESS_CONTROL
+  "WSF_PAGINATION_CONTROL": WSF_PAGINATION_CONTROL
+  "WSF_GRID_CONTROL": WSF_GRID_CONTROL
+  "WSF_REPEATER_CONTROL":WSF_REPEATER_CONTROL
 
 #create a js class for each control
 for name,state of window.states
