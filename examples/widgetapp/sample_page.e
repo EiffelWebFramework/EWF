@@ -25,6 +25,8 @@ feature
 			n2_container: WSF_FORM_ELEMENT_CONTROL [STRING]
 			n3_container: WSF_FORM_ELEMENT_CONTROL [STRING]
 			cats_container: WSF_FORM_ELEMENT_CONTROL [LIST [STRING]]
+			progress: WSF_PROGRESS_CONTROL
+			progress_source: WSF_PROGRESSSOURCE
 			link1: WSF_BASIC_CONTROL
 			link2: WSF_BASIC_CONTROL
 			s: FLAG_AUTOCOMPLETION
@@ -37,6 +39,8 @@ feature
 			create autocompletion1.make_autocomplete ("autocompletion1", s)
 			create button1.make_button ("sample_button1", "SUM")
 			create textbox_result.make_html ("txtBox3", "p", "")
+			create {DEMO_PROGRESSSOURCE} progress_source.make
+			create progress.make_progress ("progress1", progress_source)
 			create link1.make_control ("a")
 			create link2.make_control ("a")
 			link1.set_content ("Home")
@@ -69,6 +73,7 @@ feature
 			form.add_control (create {WSF_FORM_ELEMENT_CONTROL [STRING]}.make_form_element ("Result", textbox_result))
 			container.add_control (navbar)
 			container.add_control (form)
+			container.add_control (progress)
 			control := container
 		end
 
