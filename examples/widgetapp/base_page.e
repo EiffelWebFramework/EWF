@@ -25,7 +25,7 @@ feature
 			navbar.add_element (create {WSF_BASIC_CONTROL}.make_with_body ("a", "href=%"/repeater%"", "Repeater"))
 			navbar.add_element_right (create {WSF_BASIC_CONTROL}.make_with_body ("a", "href=%"#%"", "About"))
 			container.add_control (navbar)
-			control:=container
+			control := container
 		end
 
 feature

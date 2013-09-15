@@ -53,8 +53,11 @@ feature -- Event handling
 feature -- Rendering
 
 	render: STRING
+		local
+			p: STRING
 		do
-			Result := render_tag_with_tagname ("div", "", "role=%"progressbar%" aria-valuenow=%"" + progress_value.out + "%" aria-valuemin=%"0%" aria-valuemax=%"100%" style=%"width: " + progress_value.out + "%%;%"", "progress-bar")
+			p := progress_value.out
+			Result := render_tag_with_tagname ("div", "", "role=%"progressbar%" aria-valuenow=%"" + p + "%" aria-valuemin=%"0%" aria-valuemax=%"100%" style=%"width: " + p + "%%;%"", "progress-bar")
 			Result := render_tag (Result, "")
 		end
 

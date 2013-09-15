@@ -77,7 +77,7 @@ feature
 
 				--Progress bar
 			container.add_control (create {WSF_BASIC_CONTROL}.make_with_body("h4","","Number1/Number2"))
-			create progress.make_progress ("progress1")
+			create progress.make_progress_with_source ("progress1", create {INCREASING_PROGRESSSOURCE}.make)
 			container.add_control (progress)
 		end
 

@@ -477,10 +477,21 @@
       return WSF_PROGRESS_CONTROL.__super__.constructor.apply(this, arguments);
     }
 
+    WSF_PROGRESS_CONTROL.prototype.attach_events = function() {
+      var self;
+      self = this;
+      return setInterval(this.fetch, 1000);
+    };
+
+    WSF_PROGRESS_CONTROL.prototype.fetch = function() {
+      return trigger_callback(this.control_name, 'progress_fetch');
+    };
+
     WSF_PROGRESS_CONTROL.prototype.update = function(state) {
+      alert('update');
       if (state.progress != null) {
         window.states[this.control_name]['progress'] = state.progress;
-        return $('#' + this.control_name).children('.progress-bar').attr('aria-valuenow', state.progress).width(state.progress + '%');
+        return this.$el.children('.progress-bar').attr('aria-valuenow', state.progress).width(state.progress + '%');
       }
     };
 

@@ -254,10 +254,18 @@ class WSF_CHECKBOX_LIST_CONTROL extends WSF_CONTROL
 
 class WSF_PROGRESS_CONTROL extends WSF_CONTROL
 
+  attach_events:() ->
+    self = @
+    setInterval(@fetch, 1000)
+
+  fetch: ()->
+    trigger_callback(@control_name, 'progress_fetch')
+
   update: (state)->
+    alert('update')
     if state.progress?
       window.states[@control_name]['progress'] = state.progress
-      $('#' + @control_name).children('.progress-bar').attr('aria-valuenow', state.progress).width(state.progress + '%')
+      @$el.children('.progress-bar').attr('aria-valuenow', state.progress).width(state.progress + '%')
 
 class WSF_PAGINATION_CONTROL extends WSF_CONTROL
   attach_events: ()->
