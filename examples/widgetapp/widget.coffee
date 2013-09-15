@@ -259,7 +259,7 @@ class WSF_PROGRESS_CONTROL extends WSF_CONTROL
     self = @
     runfetch= ()->
             self.fetch()
-    setInterval(runfetch, 100)
+    setInterval(runfetch, 5000)
 
   fetch: ()->
     trigger_callback(@control_name, 'progress_fetch')

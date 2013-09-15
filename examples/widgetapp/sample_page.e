@@ -75,7 +75,7 @@ feature
 			container.add_control (form)
 
 				--Progress bar
-			container.add_control (create {WSF_BASIC_CONTROL}.make_with_body("h4","","Number1/Number2"))
+			container.add_control (create {WSF_BASIC_CONTROL}.make_with_body("h4","","Autoincrementing progressbar"))
 			create source.make
 			create progress.make_progress_with_source ("progress1", source)
 			source.set_control (progress)
@@ -88,7 +88,7 @@ feature
 		do
 			form.validate
 			if form.is_valid then
-				progress.set_progress ((textbox1.text.to_integer_64 / textbox2.text.to_integer_64 * 100).ceiling)
+				--progress.set_progress ((textbox1.text.to_integer_64 / textbox2.text.to_integer_64 * 100).ceiling)
 				text := textbox1.text + " + " + textbox2.text + " = " + (textbox1.text.to_integer_64 + textbox2.text.to_integer_64).out
 				text.append ("<ul>")
 				across

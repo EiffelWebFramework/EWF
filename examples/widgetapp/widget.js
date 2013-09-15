@@ -483,7 +483,7 @@
       runfetch = function() {
         return self.fetch();
       };
-      return setInterval(runfetch, 100);
+      return setInterval(runfetch, 5000);
     };
 
     WSF_PROGRESS_CONTROL.prototype.fetch = function() {
