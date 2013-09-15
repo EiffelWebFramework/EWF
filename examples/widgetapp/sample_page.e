@@ -27,7 +27,6 @@ feature
 			n4_container: WSF_FORM_ELEMENT_CONTROL [STRING]
 			n5_container: WSF_FORM_ELEMENT_CONTROL [STRING]
 			cats_container: WSF_FORM_ELEMENT_CONTROL [LIST [STRING]]
-			s: FLAG_AUTOCOMPLETION
 		do
 			Precursor
 			create form.make_form_control ("panel")
@@ -44,8 +43,7 @@ feature
 			n2_container.add_validator (create {WSF_DECIMAL_VALIDATOR}.make_decimal_validator ("Invalid Number"))
 			form.add_control (n2_container)
 				--Flag autocomplete
-			create s.make (<<["dz", "Algeria"], ["be", "Belgium"], ["ca", "Canada"], ["de", "Deutschland"], ["england", "England"], ["fi", "Finland"], ["gr", "Greece"], ["hu", "Hungary"]>>)
-			create autocompletion1.make_autocomplete ("autocompletion1", s)
+			create autocompletion1.make_autocomplete ("autocompletion1", create {FLAG_AUTOCOMPLETION}.make)
 			create n3_container.make_form_element ("Flag Autocomplete", autocompletion1)
 			form.add_control (n3_container)
 				--Contact autocomplete

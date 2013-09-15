@@ -35,9 +35,11 @@ feature {NONE} -- Initialization
 			map_agent_uri ("/", agent execute_hello, Void)
 			map_agent_uri ("/grid", agent grid_demo, Void)
 			map_agent_uri ("/repeater", agent repeater_demo, Void)
-			map_agent_uri ("/widget.js", agent load_js, Void)
-			map_agent_uri ("/widget.css", agent load_css, Void)
-			map_agent_uri ("/bootstrap.min.css", agent load_bootstrap, Void)
+			map_agent_uri ("/widget.js", agent load_file("widget.js", ?, ?), Void)
+			map_agent_uri ("/jquery.min.js", agent load_file("jquery.min.js", ?, ?), Void)
+			map_agent_uri ("/typeahead.min.js", agent load_file("typeahead.min.js", ?, ?), Void)
+			map_agent_uri ("/widget.css", agent load_file("widget.css", ?, ?), Void)
+			map_agent_uri ("/bootstrap.min.css", agent load_file("bootstrap.min.css", ?, ?), Void)
 		end
 
 feature -- Helper: mapping
@@ -79,27 +81,11 @@ feature -- Execution
 			page.execute
 		end
 
-	load_js (req: WSF_REQUEST; res: WSF_RESPONSE)
+	load_file (name: STRING; req: WSF_REQUEST; res: WSF_RESPONSE)
 		local
 			f: WSF_FILE_RESPONSE
 		do
-			create f.make_html ("widget.js")
-			res.send (f)
-		end
-
-	load_css (req: WSF_REQUEST; res: WSF_RESPONSE)
-		local
-			f: WSF_FILE_RESPONSE
-		do
-			create f.make_html ("widget.css")
-			res.send (f)
-		end
-
-	load_bootstrap (req: WSF_REQUEST; res: WSF_RESPONSE)
-		local
-			f: WSF_FILE_RESPONSE
-		do
-			create f.make_html ("bootstrap.min.css")
+			create f.make_html (name)
 			res.send (f)
 		end
 

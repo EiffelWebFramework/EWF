@@ -61,7 +61,7 @@ feature
 				control.handle_callback (control_name, event, event_parameter)
 				create states_changes.make
 				control.read_state_changes (states_changes)
-				response.put_header ({HTTP_STATUS_CODE}.ok, <<["Content-Type", "application/json"]>>)
+				response.put_header ({HTTP_STATUS_CODE}.ok, <<["Content-Type", "application/json; charset=ISO-8859-1"]>>)
 				response.put_string (states_changes.representation)
 			else
 				process
@@ -86,12 +86,12 @@ feature
 			control.read_state (states)
 			data.append (states.representation)
 			data.append (";</script>")
-			data.append ("<script src=%"//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js%"></script>")
-			data.append ("<script src=%"//cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.9.3/typeahead.min.js%"></script>")
+			data.append ("<script src=%"/jquery.min.js%"></script>")
+			data.append ("<script src=%"/typeahead.min.js%"></script>")
 			data.append ("<script src=%"/widget.js%"></script>")
 			data.append ("</body></html>")
 			create page.make
-			page.put_header ({HTTP_STATUS_CODE}.ok, <<["Content-Type", "text/html"]>>)
+			page.put_header ({HTTP_STATUS_CODE}.ok, <<["Content-Type", "text/html; charset=ISO-8859-1"]>>)
 			page.set_body (data)
 			response.send (page)
 		end
