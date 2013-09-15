@@ -33,6 +33,9 @@ feature -- State handling
 
 	set_state (new_state: JSON_OBJECT)
 		do
+			if attached {JSON_NUMBER} new_state.item (create {JSON_STRING}.make_json ("progress")) as new_progress then
+				progress := new_progress.item.to_integer
+			end
 		end
 
 	state: JSON_OBJECT

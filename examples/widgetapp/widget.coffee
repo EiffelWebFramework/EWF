@@ -24,6 +24,7 @@ trigger_callback = (control_name,event,event_parameter)->
     for name,state of new_states
       controls[name]?.update(state)
     return
+
 class WSF_VALIDATOR
   constructor: (@parent_control, @settings)->
     @error = @settings.error
@@ -256,13 +257,14 @@ class WSF_PROGRESS_CONTROL extends WSF_CONTROL
 
   attach_events:() ->
     self = @
-    setInterval(@fetch, 1000)
+    runfetch= ()->
+            self.fetch()
+    setInterval(runfetch, 100)
 
   fetch: ()->
     trigger_callback(@control_name, 'progress_fetch')
 
   update: (state)->
-    alert('update')
     if state.progress?
       window.states[@control_name]['progress'] = state.progress
       @$el.children('.progress-bar').attr('aria-valuenow', state.progress).width(state.progress + '%')

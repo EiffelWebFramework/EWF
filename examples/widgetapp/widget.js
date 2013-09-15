@@ -478,9 +478,12 @@
     }
 
     WSF_PROGRESS_CONTROL.prototype.attach_events = function() {
-      var self;
+      var runfetch, self;
       self = this;
-      return setInterval(this.fetch, 1000);
+      runfetch = function() {
+        return self.fetch();
+      };
+      return setInterval(runfetch, 100);
     };
 
     WSF_PROGRESS_CONTROL.prototype.fetch = function() {
@@ -488,7 +491,6 @@
     };
 
     WSF_PROGRESS_CONTROL.prototype.update = function(state) {
-      alert('update');
       if (state.progress != null) {
         window.states[this.control_name]['progress'] = state.progress;
         return this.$el.children('.progress-bar').attr('aria-valuenow', state.progress).width(state.progress + '%');

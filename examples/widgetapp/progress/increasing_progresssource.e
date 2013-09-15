@@ -16,20 +16,28 @@ create
 
 feature {NONE} -- Initialization
 
-	progress_value: INTEGER
+	control: detachable WSF_PROGRESS_CONTROL
 
-	make
+	make ()
 		do
-			progress_value := 0
 		end
 
 feature -- Implementation
 
+	set_control (c: WSF_PROGRESS_CONTROL)
+		do
+			control := c
+		end
+
 	progress: INTEGER
 		do
-			Result := progress_value
-			if progress_value < 100 then
-				progress_value := progress_value + 1
+			if attached control as c then
+				Result := c.progress
+				if c.progress < 100 then
+					Result := Result + 1
+				end
+			else
+				Result := 0
 			end
 		end
 

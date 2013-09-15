@@ -27,6 +27,7 @@ feature
 			n4_container: WSF_FORM_ELEMENT_CONTROL [STRING]
 			n5_container: WSF_FORM_ELEMENT_CONTROL [STRING]
 			cats_container: WSF_FORM_ELEMENT_CONTROL [LIST [STRING]]
+			source: INCREASING_PROGRESSSOURCE
 		do
 			Precursor
 			create form.make_form_control ("panel")
@@ -75,7 +76,9 @@ feature
 
 				--Progress bar
 			container.add_control (create {WSF_BASIC_CONTROL}.make_with_body("h4","","Number1/Number2"))
-			create progress.make_progress_with_source ("progress1", create {INCREASING_PROGRESSSOURCE}.make)
+			create source.make
+			create progress.make_progress_with_source ("progress1", source)
+			source.set_control (progress)
 			container.add_control (progress)
 		end
 
