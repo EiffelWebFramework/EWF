@@ -117,7 +117,7 @@ feature -- Test routines
 			--Scenario 3, the server select the best match, and set the vary header
 			l_compression := "gzip"
 			compression_supported := l_compression.split(',')
-			conneg.set_encoding_defautl ("gzip")
+			conneg.set_encoding_default("gzip")
 			compression_variants := conneg.encoding_preference (compression_supported, "compress,gzip;q=0.7")
 			assert ("Expected Acceptable", compression_variants.is_acceptable)
 			assert ("Variants is dettached",compression_variants.supported_variants = Void)
