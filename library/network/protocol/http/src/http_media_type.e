@@ -97,9 +97,9 @@ feature {NONE} -- Initialization
 					-- Extract type and subtype
 				p := t.index_of ('/', 1)
 				if p = 0 then
-					has_error := True
+						--| Accept *; should be */*
 					type := t
-					subtype := ""
+					subtype := "*"
 				else
 					subtype := t.substring (p + 1, t.count)
 					type := t
@@ -366,6 +366,30 @@ feature -- Status report
 			else
 				Result := ""
 			end
+		end
+
+	format : STRING
+			-- Representation of the current object
+		do
+			create Result.make_from_string ("(")
+			if attached type as t then
+				Result.append_string ("'" + t + "',")
+			end
+			if attached subtype as st then
+				Result.append_string (" '" + st + "',")
+			end
+			Result.append_string (" {")
+			if attached parameters as l_params then
+				from
+					l_params.start
+				until
+					l_params.after
+				loop
+					Result.append ("'" + l_params.key_for_iteration + "':'" + l_params.item_for_iteration + "',");
+					l_params.forth
+				end
+			end
+			Result.append ("})")
 		end
 
 invariant

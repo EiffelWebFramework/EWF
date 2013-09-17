@@ -3,7 +3,7 @@
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
-	description : "Accept Reference: http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.1"
+	EIS: "name=Accept", "src=http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.1", "protocol=uri"
 class
 	MIME_PARSE
 
@@ -12,47 +12,16 @@ inherit
 
 feature -- Parser
 
-	parse_mime_type (a_mime_type: STRING): PARSE_RESULTS
+	parse_mime_type (a_mime_type: STRING): HTTP_MEDIA_TYPE
 			-- Parses a mime-type into its component parts.
 			-- For example, the media range 'application/xhtml;q=0.5' would get parsed
 			-- into:
 			-- ('application', 'xhtml', {'q', '0.5'})
-		local
-			l_parts: LIST [STRING]
-			p: STRING
-			sub_parts: LIST [STRING]
-			i: INTEGER
-			l_full_type: STRING
-			l_types: LIST [STRING]
 		do
-			fixme ("Improve code!!!")
-			create Result.make
-			l_parts := a_mime_type.split (';')
-			from
-				i := 1
-			until
-				i > l_parts.count
-			loop
-				p := l_parts.at (i)
-				sub_parts := p.split ('=')
-				if sub_parts.count = 2 then
-					Result.put (trim (sub_parts[2]), trim (sub_parts[1]))
-				end
-				i := i + 1
-			end
-			--Java URLConnection class sends an Accept header that includes a
-			--single "*" - Turn it into a legal wildcard.
-
-			l_full_type := trim (l_parts[1])
-			if l_full_type.same_string ("*") then
-				l_full_type := "*/*"
-			end
-			l_types := l_full_type.split ('/')
-			Result.set_type (trim (l_types[1]))
-			Result.set_sub_type (trim (l_types[2]))
+			create Result.make_from_string (a_mime_type)
 		end
 
-	parse_media_range (a_range: STRING): PARSE_RESULTS
+	parse_media_range (a_range: STRING): HTTP_MEDIA_TYPE
 			-- Media-ranges are mime-types with wild-cards and a 'q' quality parameter.
 			-- For example, the media range 'application/*;q=0.5' would get parsed into:
 			-- ('application', '*', {'q', '0.5'})
@@ -62,7 +31,7 @@ feature -- Parser
 		do
 			fixme ("Improve the code!!!")
 			Result := parse_mime_type (a_range)
-			if attached Result.item ("q") as q then
+			if attached Result.parameter ("q") as q then
 				if
 					q.is_double and then
 					attached {REAL_64} q.to_double as r and then
@@ -71,18 +40,18 @@ feature -- Parser
 					--| Keep current value
 					if q.same_string ("1") then
 							--| Use 1.0 formatting
-						Result.put ("1.0", "q")
+						Result.add_parameter ("q", "1.0")
 					end
 				else
-					Result.put ("1.0", "q")
+					Result.add_parameter ("q", "1.0")
 				end
 			else
-				Result.put ("1.0", "q")
+				Result.add_parameter ("q", "1.0")
 			end
 		end
 
 
-	fitness_and_quality_parsed (a_mime_type: STRING; parsed_ranges: LIST [PARSE_RESULTS]): FITNESS_AND_QUALITY
+	fitness_and_quality_parsed (a_mime_type: STRING; parsed_ranges: LIST [HTTP_MEDIA_TYPE]): FITNESS_AND_QUALITY
 			-- Find the best match for a given mimeType against a list of media_ranges
 			-- that have already been parsed by parse_media_range. Returns a
 			-- tuple of the fitness value and the value of the 'q' quality parameter of
@@ -92,17 +61,16 @@ feature -- Parser
 			best_fitness: INTEGER
 			target_q: REAL_64
 			best_fit_q: REAL_64
-			target: PARSE_RESULTS
-			range: PARSE_RESULTS
-			keys: LIST [STRING]
+			target: HTTP_MEDIA_TYPE
+			range: HTTP_MEDIA_TYPE
 			param_matches: INTEGER
-			element: detachable STRING
+			element: detachable READABLE_STRING_8
 			l_fitness: INTEGER
 		do
 			best_fitness := -1
 			best_fit_q := 0.0
 			target := parse_media_range (a_mime_type)
-			if attached target.item ("q") as q and then q.is_double then
+			if attached target.parameter ("q") as q and then q.is_double then
 				target_q := q.to_double
 				if target_q < 0.0 then
 					target_q := 0.0
@@ -115,7 +83,7 @@ feature -- Parser
 
 			if
 				attached target.type as l_target_type and
-				attached target.sub_type as l_target_sub_type
+				attached target.subtype as l_target_sub_type
 			then
 				from
 					parsed_ranges.start
@@ -129,29 +97,29 @@ feature -- Parser
 							(l_target_type.same_string (l_range_type) or l_range_type.same_string ("*") or l_target_type.same_string ("*"))
 						) and
 						(
-							attached range.sub_type as l_range_sub_type and then
+							attached range.subtype as l_range_sub_type and then
 							(l_target_sub_type.same_string (l_range_sub_type) or l_range_sub_type.same_string ("*") or l_target_sub_type.same_string ("*"))
 						)
 					then
-						from
-							param_matches := 0
-							keys := target.keys
-							keys.start
-						until
-							keys.after
-						loop
-							element := keys.item_for_iteration
-							if
-								not element.same_string ("q") and then
-								range.has_key (element) and then
-								(attached target.item (element) as t_item and attached range.item (element) as r_item) and then
-								t_item.same_string (r_item)
-							then
-								param_matches := param_matches + 1
+						if attached target.parameters as l_keys then
+							from
+								param_matches := 0
+								l_keys.start
+							until
+								l_keys.after
+							loop
+								element := l_keys.key_for_iteration
+								if
+									not element.same_string ("q") and then
+									range.has_parameter (element) and then
+									(attached target.parameter (element) as t_item and attached range.parameter (element) as r_item) and then
+									t_item.same_string (r_item)
+								then
+									param_matches := param_matches + 1
+								end
+								l_keys.forth
 							end
-							keys.forth
 						end
-
 						if l_range_type.same_string (l_target_type) then
 							l_fitness := 100
 						else
@@ -166,7 +134,7 @@ feature -- Parser
 
 						if l_fitness > best_fitness then
 							best_fitness := l_fitness
-							element := range.item ("q")
+							element := range.parameter ("q")
 							if element /= Void then
 								best_fit_q := element.to_double.min (target_q)
 							else
@@ -180,7 +148,7 @@ feature -- Parser
 			create Result.make (best_fitness, best_fit_q)
 		end
 
-	quality_parsed (a_mime_type: STRING; parsed_ranges: LIST [PARSE_RESULTS]): REAL_64
+	quality_parsed (a_mime_type: STRING; parsed_ranges: LIST [HTTP_MEDIA_TYPE]): REAL_64
 			--	Find the best match for a given mime-type against a list of ranges that
 			--	have already been parsed by parseMediaRange(). Returns the 'q' quality
 			--	parameter of the best match, 0 if no match was found. This function
@@ -195,8 +163,8 @@ feature -- Parser
 			-- mediaRanges in ranges.
 		local
 			l_ranges : LIST [STRING]
-			res : ARRAYED_LIST [PARSE_RESULTS]
-			p_res : PARSE_RESULTS
+			res : ARRAYED_LIST [HTTP_MEDIA_TYPE]
+			p_res : HTTP_MEDIA_TYPE
 		do
 			l_ranges := ranges.split (',')
 			from
@@ -215,15 +183,15 @@ feature -- Parser
 	best_match (supported: LIST [STRING]; header: STRING): STRING
 			-- Choose the mime-type with the highest fitness score and quality ('q') from a list of candidates.
 		local
-			l_header_results: LIST [PARSE_RESULTS]
+			l_header_results: LIST [HTTP_MEDIA_TYPE]
 			weighted_matches: LIST [FITNESS_AND_QUALITY]
 			l_res: LIST [STRING]
-			p_res: PARSE_RESULTS
+			p_res: HTTP_MEDIA_TYPE
 			fitness_and_quality, first_one: detachable FITNESS_AND_QUALITY
 			s: STRING
 		do
 			l_res := header.split (',')
-			create {ARRAYED_LIST [PARSE_RESULTS]} l_header_results.make (l_res.count)
+			create {ARRAYED_LIST [HTTP_MEDIA_TYPE]} l_header_results.make (l_res.count)
 
 			fixme("Extract method!!!")
 			from
@@ -290,7 +258,7 @@ feature -- Parser
 					until
 						l_header_results.after or fitness_and_quality /= Void
 					loop
-						s := l_header_results.item.mime_type
+						s := l_header_results.item.simple_type
 						from
 							weighted_matches.start
 						until
@@ -344,6 +312,6 @@ feature {NONE} -- Implementation
 		end
 
 note
-	copyright: "2011-2011, Javier Velilla, Jocelyn Fiat and others"
+	copyright: "2011-2013, Javier Velilla, Jocelyn Fiat, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 end

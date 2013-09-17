@@ -12,7 +12,7 @@
 			<assertions precondition="true"/>
 		</option>
 		<library name="base" location="$ISE_LIBRARY\library\base\base-safe.ecf"/>
-		<library name="http" location="..\http\http-safe.ecf"/>
+		<library name="http" location="..\http\http-safe.ecf" readonly="false"/>
 		<cluster name="conneg" location=".\src\" recursive="true"/>
 	</target>
 </system>

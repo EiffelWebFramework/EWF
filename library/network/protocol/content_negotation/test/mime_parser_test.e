@@ -28,15 +28,15 @@ feature -- Test routines
 
 	test_parse_media_range
 		do
-			assert ("Expected ('application', 'xml', {'q':'1',})", parser.parse_media_range("application/xml;q=1").out.same_string("('application', 'xml', {'q':'1.0',})") )
+			assert ("Expected ('application', 'xml', {'q':'1',})", parser.parse_media_range("application/xml;q=1").format.same_string("('application', 'xml', {'q':'1.0',})") )
 
-			assert ("Expected ('application', 'xml', {'q':'1',})", parser.parse_media_range("application/xml").out.same_string("('application', 'xml', {'q':'1.0',})") )
-			assert ("Expected ('application', 'xml', {'q':'1',})", parser.parse_media_range("application/xml;q=").out.same_string("('application', 'xml', {'q':'1.0',})") )
-			assert ("Expected ('application', 'xml', {'q':'1',})", parser.parse_media_range("application/xml ; q=").out.same_string("('application', 'xml', {'q':'1.0',})") )
-			assert ("Expected ('application', 'xml', {'q':'1','b':'other',})", parser.parse_media_range("application/xml ; q=1;b=other").out.same_string("('application', 'xml', {'q':'1.0','b':'other',})") )
-			assert ("Expected ('application', 'xml', {'q':'1','b':'other',})", parser.parse_media_range("application/xml ; q=2;b=other").out.same_string("('application', 'xml', {'q':'1.0','b':'other',})") )
+			assert ("Expected ('application', 'xml', {'q':'1',})", parser.parse_media_range("application/xml").format.same_string("('application', 'xml', {'q':'1.0',})") )
+			assert ("Expected ('application', 'xml', {'q':'1',})", parser.parse_media_range("application/xml;q=").format.same_string("('application', 'xml', {'q':'1.0',})") )
+			assert ("Expected ('application', 'xml', {'q':'1',})", parser.parse_media_range("application/xml ; q=").format.same_string("('application', 'xml', {'q':'1.0',})") )
+			assert ("Expected ('application', 'xml', {'q':'1','b':'other',})", parser.parse_media_range("application/xml ; q=1;b=other").format.same_string("('application', 'xml', {'q':'1.0','b':'other',})") )
+			assert ("Expected ('application', 'xml', {'q':'1','b':'other',})", parser.parse_media_range("application/xml ; q=2;b=other").format.same_string("('application', 'xml', {'q':'1.0','b':'other',})") )
 			-- Accept header that includes *
-			assert ("Expected ('*', '*', {'q':'.2',})", parser.parse_media_range(" *; q=.2").out.same_string("('*', '*', {'q':'.2',})"))
+			assert ("Expected ('*', '*', {'q':'.2',})", parser.parse_media_range(" *; q=.2").format.same_string("('*', '*', {'q':'.2',})"))
 		end
 
 

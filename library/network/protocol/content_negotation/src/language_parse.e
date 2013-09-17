@@ -3,11 +3,13 @@ note
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
-	description : "Language Reference: http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.4"
+	description: "Language Reference: http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.4"
 
 class
 	LANGUAGE_PARSE
+
 inherit
+
 	REFACTORING_HELPER
 
 feature -- Parser
@@ -36,23 +38,23 @@ feature -- Parser
 				p := l_parts.at (i)
 				sub_parts := p.split ('=')
 				if sub_parts.count = 2 then
-					Result.put (trim (sub_parts[2]), trim (sub_parts[1]))
+					Result.put (trim (sub_parts [2]), trim (sub_parts [1]))
 				end
 				i := i + 1
 			end
-			--Java URLConnection class sends an Accept header that includes a
-			--single "*" - Turn it into a legal wildcard.
+				--Java URLConnection class sends an Accept header that includes a
+				--single "*" - Turn it into a legal wildcard.
 
-			l_full_type := trim (l_parts[1])
+			l_full_type := trim (l_parts [1])
 			if l_full_type.same_string ("*") then
 				l_full_type := "*"
 			end
 			l_types := l_full_type.split ('-')
 			if l_types.count = 1 then
-				Result.set_type (trim (l_types[1]))
+				Result.set_type (trim (l_types [1]))
 			else
-				Result.set_type (trim (l_types[1]))
-				Result.set_sub_type (trim (l_types[2]))
+				Result.set_type (trim (l_types [1]))
+				Result.set_sub_type (trim (l_types [2]))
 			end
 		end
 
@@ -67,12 +69,8 @@ feature -- Parser
 			fixme ("Improve the code!!!")
 			Result := parse_mime_type (a_range)
 			if attached Result.item ("q") as q then
-				if
-					q.is_double and then
-					attached {REAL_64} q.to_double as r and then
-					(r >= 0.0 and r <= 1.0)
-				then
-					--| Keep current value
+				if q.is_double and then attached {REAL_64} q.to_double as r and then (r >= 0.0 and r <= 1.0) then
+						--| Keep current value
 					if q.same_string ("1") then
 							--| Use 1.0 formatting
 						Result.put ("1.0", "q")
@@ -84,7 +82,6 @@ feature -- Parser
 				Result.put ("1.0", "q")
 			end
 		end
-
 
 	fitness_and_quality_parsed (a_mime_type: STRING; parsed_ranges: LIST [LANGUAGE_RESULTS]): FITNESS_AND_QUALITY
 			-- Find the best match for a given mimeType against a list of media_ranges
@@ -116,22 +113,14 @@ feature -- Parser
 			else
 				target_q := 1.0
 			end
-
-			if
-				attached target.type as l_target_type
-			then
+			if attached target.type as l_target_type then
 				from
 					parsed_ranges.start
 				until
 					parsed_ranges.after
 				loop
 					range := parsed_ranges.item_for_iteration
-					if
-						(
-							attached range.type as l_range_type and then
-							(l_target_type.same_string (l_range_type) or l_range_type.same_string ("*") or l_target_type.same_string ("*"))
-						)
-					then
+					if (attached range.type as l_range_type and then (l_target_type.same_string (l_range_type) or l_range_type.same_string ("*") or l_target_type.same_string ("*"))) then
 						from
 							param_matches := 0
 							keys := target.keys
@@ -140,33 +129,22 @@ feature -- Parser
 							keys.after
 						loop
 							element := keys.item_for_iteration
-							if
-								not element.same_string ("q") and then
-								range.has_key (element) and then
-								(attached target.item (element) as t_item and attached range.item (element) as r_item) and then
-								t_item.same_string (r_item)
-							then
+							if not element.same_string ("q") and then range.has_key (element) and then (attached target.item (element) as t_item and attached range.item (element) as r_item) and then t_item.same_string (r_item) then
 								param_matches := param_matches + 1
 							end
 							keys.forth
 						end
-
 						if l_range_type.same_string (l_target_type) then
 							l_fitness := 100
 						else
 							l_fitness := 0
 						end
-						if 	(
-							attached range.sub_type as l_range_sub_type and then attached target.sub_type as l_target_sub_type and then
-							(l_target_sub_type.same_string (l_range_sub_type) or l_range_sub_type.same_string ("*") or l_target_sub_type.same_string ("*"))
-						) then
+						if (attached range.sub_type as l_range_sub_type and then attached target.sub_type as l_target_sub_type and then (l_target_sub_type.same_string (l_range_sub_type) or l_range_sub_type.same_string ("*") or l_target_sub_type.same_string ("*"))) then
 							if l_range_sub_type.same_string (l_target_sub_type) then
 								l_fitness := l_fitness + 10
 							end
 						end
-
 						l_fitness := l_fitness + param_matches
-
 						if l_fitness > best_fitness then
 							best_fitness := l_fitness
 							element := range.item ("q")
@@ -197,9 +175,9 @@ feature -- Parser
 			-- Returns the quality 'q' of a mime-type when compared against the
 			-- mediaRanges in ranges.
 		local
-			l_ranges : LIST [STRING]
-			res : ARRAYED_LIST [LANGUAGE_RESULTS]
-			p_res : LANGUAGE_RESULTS
+			l_ranges: LIST [STRING]
+			res: ARRAYED_LIST [LANGUAGE_RESULTS]
+			p_res: LANGUAGE_RESULTS
 		do
 			l_ranges := ranges.split (',')
 			from
@@ -227,8 +205,7 @@ feature -- Parser
 		do
 			l_res := header.split (',')
 			create {ARRAYED_LIST [LANGUAGE_RESULTS]} l_header_results.make (l_res.count)
-
-			fixme("Extract method!!!")
+			fixme ("Extract method!!!")
 			from
 				l_res.start
 			until
@@ -238,9 +215,7 @@ feature -- Parser
 				l_header_results.force (p_res)
 				l_res.forth
 			end
-
 			create {ARRAYED_LIST [FITNESS_AND_QUALITY]} weighted_matches.make (supported.count)
-
 			from
 				supported.start
 			until
@@ -274,12 +249,16 @@ feature -- Parser
 						end
 						weighted_matches.forth
 					end
-					check weighted_matches.item = fitness_and_quality end
+					check
+						weighted_matches.item = fitness_and_quality
+					end
 					weighted_matches.forth
 				elseif first_one.is_equal (fitness_and_quality) then
 					weighted_matches.forth
 				else
-					check first_one > fitness_and_quality end
+					check
+						first_one > fitness_and_quality
+					end
 					weighted_matches.remove
 				end
 			end
@@ -301,7 +280,7 @@ feature -- Parser
 						loop
 							fitness_and_quality := weighted_matches.item
 							if fitness_and_quality.mime_type.same_string (s) then
-								--| Found
+									--| Found
 							else
 								fitness_and_quality := Void
 								weighted_matches.forth
@@ -337,7 +316,7 @@ feature {NONE} -- Implementation
 	trim (a_string: STRING): STRING
 			-- trim whitespace from the beginning and end of a string
 		require
-			valid_argument : a_string /= Void
+			valid_argument: a_string /= Void
 		do
 			a_string.left_adjust
 			a_string.right_justify
@@ -347,6 +326,7 @@ feature {NONE} -- Implementation
 		end
 
 note
-	copyright: "2011-2011, Javier Velilla, Jocelyn Fiat and others"
+	copyright: "2011-2013, Javier Velilla, Jocelyn Fiat, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
+
 end
