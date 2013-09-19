@@ -1,5 +1,20 @@
 ﻿note
-	description: "Summary description for {MIME_PARSE}."
+	description: "[
+			{MIME_PARSE}. is encharge to parse Accept request-header field defined as follow:
+
+			Accept         = "Accept" ":"
+                        #( media-range [ accept-params ] )
+       		media-range    = ( "*/*"
+                        | ( type "/" "*" )
+                        | ( type "/" subtype )
+                        ) *( ";" parameter )
+       		accept-params  = ";" "q" "=" qvalue *( accept-extension )
+		    accept-extension = ";" token [ "=" ( token | quoted-string ) ]
+
+	   	    Example:
+
+	   	    Accept: text/plain; q=0.5, text/html, text/x-dvi; q=0.8, text/x-c
+			]"
 	date: "$Date$"
 	revision: "$Revision$"
 	EIS: "name=Accept", "src=http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.1", "protocol=uri"
@@ -56,10 +71,7 @@ feature -- Parser
 
 	fitness_and_quality_parsed (a_mime_type: READABLE_STRING_8; parsed_ranges: LIST [HTTP_MEDIA_TYPE]): FITNESS_AND_QUALITY
 			-- Find the best match for a given mimeType against a list of media_ranges
-			-- that have already been parsed by parse_media_range. Returns a
-			-- tuple of the fitness value and the value of the 'q' quality parameter of
-			-- the best match, or (-1, 0) if no match was found. Just as for
-			-- quality_parsed(), 'parsed_ranges' must be a list of parsed media ranges.
+			-- that have already been parsed by parse_media_range.
 		local
 			best_fitness: INTEGER
 			target_q: REAL_64
@@ -153,9 +165,9 @@ feature -- Parser
 
 	quality_parsed (a_mime_type: READABLE_STRING_8; parsed_ranges: LIST [HTTP_MEDIA_TYPE]): REAL_64
 			--	Find the best match for a given mime-type against a list of ranges that
-			--	have already been parsed by parseMediaRange(). Returns the 'q' quality
+			--	have already been parsed by parse_media_range. Returns the 'q' quality
 			--	parameter of the best match, 0 if no match was found. This function
-			--	bahaves the same as quality() except that 'parsed_ranges' must be a list
+			--	bahaves the same as quality except that 'parsed_ranges' must be a list
 			--	of parsed media ranges.
 		do
 			Result := fitness_and_quality_parsed (a_mime_type, parsed_ranges).quality
