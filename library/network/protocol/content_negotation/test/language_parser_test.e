@@ -25,10 +25,10 @@ feature -- Test routines
 
 	test_parse_media_range
 		do
-			assert ("Expected ('da', {'q':'1.0',})", parser.parse_media_range ("da").out.same_string ("('da', {'q':'1.0',})"));
-			assert ("Expected ('en', 'gb', {'q':'0.8',})", parser.parse_media_range ("en-gb;q=0.8").out.same_string ("('en', 'gb', {'q':'0.8',})"));
-			assert ("Expected ('en', {'q':'0.7',})", parser.parse_media_range ("en;q=0.7").out.same_string ("('en', {'q':'0.7',})"));
-			assert ("Expected ('en', '*', {'q':'1.0',})", parser.parse_media_range ("en-*").out.same_string ("('en', '*', {'q':'1.0',})"));
+			assert ("Expected ('da', {'q':'1.0',})", parser.parse_language_range ("da").out.same_string ("('da', {'q':'1.0',})"));
+			assert ("Expected ('en', 'gb', {'q':'0.8',})", parser.parse_language_range ("en-gb;q=0.8").out.same_string ("('en', 'gb', {'q':'0.8',})"));
+			assert ("Expected ('en', {'q':'0.7',})", parser.parse_language_range ("en;q=0.7").out.same_string ("('en', {'q':'0.7',})"));
+			assert ("Expected ('en', '*', {'q':'1.0',})", parser.parse_language_range ("en-*").out.same_string ("('en', '*', {'q':'1.0',})"));
 		end
 
 

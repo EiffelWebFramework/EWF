@@ -1,26 +1,35 @@
 note
-	description: "Summary description for {LANGUAGE_PARSE}."
-	author: ""
+	description: "[
+		  {LANGUAGE_PARSE} is encharge to parse language tags defined as follow:
+
+		  Accept-Language = "Accept-Language" ":"
+                         1#( language-range [ ";" "q" "=" qvalue ] )
+   	      language-range  = ( ( 1*8ALPHA *( "-" 1*8ALPHA ) ) | "*" )
+   	      
+   	      Example:
+   	      Accept-Language: da, en-gb;q=0.8, en;q=0.7
+
+	]"
 	date: "$Date$"
 	revision: "$Revision$"
-	description: "Language Reference: http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.4"
+	EIS: "name=Accept-Language", "src=http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.4", "protocol=uri"
 
 class
 	LANGUAGE_PARSE
 
 inherit {NONE}
 
-	STRING_UTILS
+	MIME_TYPE_PARSER_UTILITIES
 
 	REFACTORING_HELPER
 
 feature -- Parser
 
-	parse_mime_type (a_mime_type: READABLE_STRING_8): LANGUAGE_RESULTS
-			-- Parses a mime-type into its component parts.
-			-- For example, the media range 'application/xhtml;q=0.5' would get parsed
+	parse_language (a_accept_language: READABLE_STRING_8): LANGUAGE_RESULTS
+			-- Parses  `a_accept_language' request-header field into its component parts.
+			-- For example, the language range 'en-gb;q=0.8' would get parsed
 			-- into:
-			-- ('application', 'xhtml', {'q', '0.5'})
+			-- ('en-gb', {'q':'0.8',})
 		local
 			l_parts: LIST [READABLE_STRING_8]
 			p: READABLE_STRING_8
@@ -31,7 +40,7 @@ feature -- Parser
 		do
 			fixme ("Improve code!!!")
 			create Result.make
-			l_parts := a_mime_type.split (';')
+			l_parts := a_accept_language.split (';')
 			from
 				i := 1
 			until
@@ -44,8 +53,6 @@ feature -- Parser
 				end
 				i := i + 1
 			end
-				--Java URLConnection class sends an Accept header that includes a
-				--single "*" - Turn it into a legal wildcard.
 
 			l_full_type := trim (l_parts [1])
 			if l_full_type.same_string ("*") then
@@ -60,16 +67,16 @@ feature -- Parser
 			end
 		end
 
-	parse_media_range (a_range: READABLE_STRING_8): LANGUAGE_RESULTS
-			-- Media-ranges are mime-types with wild-cards and a 'q' quality parameter.
-			-- For example, the media range 'application/*;q=0.5' would get parsed into:
-			-- ('application', '*', {'q', '0.5'})
+	parse_language_range (a_language_range: READABLE_STRING_8): LANGUAGE_RESULTS
+			-- Languages-ranges are languages with wild-cards and a 'q' quality parameter.
+			-- For example, the language range ('en-* ;q=0.5') would get parsed into:
+			-- ('en', '*', {'q', '0.5'})
 			-- In addition this function also guarantees that there is a value for 'q'
 			-- in the params dictionary, filling it in with a proper default if
 			-- necessary.
 		do
 			fixme ("Improve the code!!!")
-			Result := parse_mime_type (a_range)
+			Result := parse_language (a_language_range)
 			if attached Result.item ("q") as q then
 				if q.is_double and then attached {REAL_64} q.to_double as r and then (r >= 0.0 and r <= 1.0) then
 						--| Keep current value
@@ -85,12 +92,9 @@ feature -- Parser
 			end
 		end
 
-	fitness_and_quality_parsed (a_mime_type: READABLE_STRING_8; parsed_ranges: LIST [LANGUAGE_RESULTS]): FITNESS_AND_QUALITY
-			-- Find the best match for a given mimeType against a list of media_ranges
-			-- that have already been parsed by parse_media_range. Returns a
-			-- tuple of the fitness value and the value of the 'q' quality parameter of
-			-- the best match, or (-1, 0) if no match was found. Just as for
-			-- quality_parsed(), 'parsed_ranges' must be a list of parsed media ranges.
+	fitness_and_quality_parsed (a_language: READABLE_STRING_8; a_parsed_ranges: LIST [LANGUAGE_RESULTS]): FITNESS_AND_QUALITY
+			-- Find the best match for a given `a_language' against a list of language ranges `a_parsed_ranges'
+			-- that have already been parsed by parse_language_range.
 		local
 			best_fitness: INTEGER
 			target_q: REAL_64
@@ -104,7 +108,7 @@ feature -- Parser
 		do
 			best_fitness := -1
 			best_fit_q := 0.0
-			target := parse_media_range (a_mime_type)
+			target := parse_language_range (a_language)
 			if attached target.item ("q") as q and then q.is_double then
 				target_q := q.to_double
 				if target_q < 0.0 then
@@ -117,11 +121,11 @@ feature -- Parser
 			end
 			if attached target.type as l_target_type then
 				from
-					parsed_ranges.start
+					a_parsed_ranges.start
 				until
-					parsed_ranges.after
+					a_parsed_ranges.after
 				loop
-					range := parsed_ranges.item_for_iteration
+					range := a_parsed_ranges.item_for_iteration
 					if (attached range.type as l_range_type and then (l_target_type.same_string (l_range_type) or l_range_type.same_string ("*") or l_target_type.same_string ("*"))) then
 						from
 							param_matches := 0
@@ -157,46 +161,46 @@ feature -- Parser
 							end
 						end
 					end
-					parsed_ranges.forth
+					a_parsed_ranges.forth
 				end
 			end
 			create Result.make (best_fitness, best_fit_q)
 		end
 
-	quality_parsed (a_mime_type: READABLE_STRING_8; parsed_ranges: LIST [LANGUAGE_RESULTS]): REAL_64
-			--	Find the best match for a given mime-type against a list of ranges that
-			--	have already been parsed by parseMediaRange(). Returns the 'q' quality
+	quality_parsed (a_language: READABLE_STRING_8; a_parsed_ranges: LIST [LANGUAGE_RESULTS]): REAL_64
+			--	Find the best match for a given `a_language' against a list of ranges `parsed_ranges' that
+			--	have already been parsed by parse_language_range. Returns the 'q' quality
 			--	parameter of the best match, 0 if no match was found. This function
-			--	bahaves the same as quality() except that 'parsed_ranges' must be a list
-			--	of parsed media ranges.
+			--	bahaves the same as quality except that 'a_parsed_ranges' must be a list
+			--	of parsed language ranges.
 		do
-			Result := fitness_and_quality_parsed (a_mime_type, parsed_ranges).quality
+			Result := fitness_and_quality_parsed (a_language, a_parsed_ranges).quality
 		end
 
-	quality (a_mime_type: READABLE_STRING_8; ranges: READABLE_STRING_8): REAL_64
-			-- Returns the quality 'q' of a mime-type when compared against the
-			-- mediaRanges in ranges.
+	quality (a_language: READABLE_STRING_8; a_ranges: READABLE_STRING_8): REAL_64
+			-- Returns the quality 'q' of a `a_language' when compared against the
+			-- language range in `a_ranges'.
 		local
 			l_ranges: LIST [READABLE_STRING_8]
 			res: ARRAYED_LIST [LANGUAGE_RESULTS]
 			p_res: LANGUAGE_RESULTS
 		do
-			l_ranges := ranges.split (',')
+			l_ranges := a_ranges.split (',')
 			from
 				create res.make (10);
 				l_ranges.start
 			until
 				l_ranges.after
 			loop
-				p_res := parse_media_range (l_ranges.item_for_iteration)
+				p_res := parse_language_range (l_ranges.item_for_iteration)
 				res.put_left (p_res)
 				l_ranges.forth
 			end
-			Result := quality_parsed (a_mime_type, res)
+			Result := quality_parsed (a_language, res)
 		end
 
-	best_match (supported: LIST [READABLE_STRING_8]; header: READABLE_STRING_8): READABLE_STRING_8
-			-- Choose the mime-type with the highest fitness score and quality ('q') from a list of candidates.
+	best_match (a_supported: LIST [READABLE_STRING_8]; a_header: READABLE_STRING_8): READABLE_STRING_8
+			-- Choose the `language' with the highest fitness score and quality ('q') from a list of candidates.
 		local
 			l_header_results: LIST [LANGUAGE_RESULTS]
 			weighted_matches: LIST [FITNESS_AND_QUALITY]
@@ -205,7 +209,7 @@ feature -- Parser
 			fitness_and_quality, first_one: detachable FITNESS_AND_QUALITY
 			s: READABLE_STRING_8
 		do
-			l_res := header.split (',')
+			l_res := a_header.split (',')
 			create {ARRAYED_LIST [LANGUAGE_RESULTS]} l_header_results.make (l_res.count)
 			fixme ("Extract method!!!")
 			from
@@ -213,20 +217,20 @@ feature -- Parser
 			until
 				l_res.after
 			loop
-				p_res := parse_media_range (l_res.item_for_iteration)
+				p_res := parse_language_range (l_res.item_for_iteration)
 				l_header_results.force (p_res)
 				l_res.forth
 			end
-			create {ARRAYED_LIST [FITNESS_AND_QUALITY]} weighted_matches.make (supported.count)
+			create {ARRAYED_LIST [FITNESS_AND_QUALITY]} weighted_matches.make (a_supported.count)
 			from
-				supported.start
+				a_supported.start
 			until
-				supported.after
+				a_supported.after
 			loop
-				fitness_and_quality := fitness_and_quality_parsed (supported.item_for_iteration, l_header_results)
-				fitness_and_quality.set_mime_type (mime_type (supported.item_for_iteration))
+				fitness_and_quality := fitness_and_quality_parsed (a_supported.item_for_iteration, l_header_results)
+				fitness_and_quality.set_mime_type (mime_type (a_supported.item_for_iteration))
 				weighted_matches.force (fitness_and_quality)
-				supported.forth
+				a_supported.forth
 			end
 
 				--| Keep only top quality+fitness types

@@ -78,10 +78,10 @@ feature {NONE} -- Initialization
 			print (language.best_match (accept.split (','), "da"))
 			print (language.best_match (accept.split (','), "en-*"))
 
-			print ("%N"+language.parse_media_range ("da").out)
-			print ("%N"+language.parse_media_range ("en-gb;q=0.8").out)
-			print ("%N"+language.parse_media_range ("en;q=0.7").out)
-			print ("%N"+language.parse_media_range ("en-*").out)
+			print ("%N"+language.parse_language_range ("da").out)
+			print ("%N"+language.parse_language_range ("en-gb;q=0.8").out)
+			print ("%N"+language.parse_language_range ("en;q=0.7").out)
+			print ("%N"+language.parse_language_range ("en-*").out)
 		end
 
 end

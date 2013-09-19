@@ -1,6 +1,8 @@
 note
-	description: "COMMON_ACCEPT_HEADER_PARSER, this class allows to parse Accept-Charset and Accept-Encoding headers"
-	author: ""
+	description: "[
+					COMMON_ACCEPT_HEADER_PARSER, this class allows to parse Accept-Charset and Accept-Encoding headers
+					
+		]"
 	date: "$Date$"
 	revision: "$Revision$"
 	EIS: "name=Charset", "src=http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.2", "protocol=uri"
@@ -11,7 +13,7 @@ class
 
 inherit {NONE}
 
-	STRING_UTILS
+	MIME_TYPE_PARSER_UTILITIES
 
 
 feature -- Parser

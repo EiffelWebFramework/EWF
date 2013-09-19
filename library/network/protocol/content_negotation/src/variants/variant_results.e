@@ -1,6 +1,5 @@
 note
-	description: "Summary description for {VARIANT_RESULTS}."
-	author: ""
+	description: "Generic {VARIANT_RESULTS}.with common functionality to most header variants.."
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -10,13 +9,18 @@ deferred class
 feature -- Access
 
 	variant_header: detachable READABLE_STRING_8
-			-- variant header for the response
+			--  Name of variant header to be added to the Vary header of the response
 
 	supported_variants: detachable LIST [READABLE_STRING_8]
 			-- Set of supported variants for the response
 
 	is_acceptable: BOOLEAN
 			-- is the current variant accepted?
+
+	type: detachable READABLE_STRING_8
+		-- the type could be: media type, language, chracter_sets and encoding.
+
+feature {NONE} -- Implementation
 
 	accept_headers_set: ARRAY[READABLE_STRING_8]
 			-- Set of valid accept headers headers
@@ -40,6 +44,15 @@ feature -- Status_Report
 
 feature -- Change Element
 
+
+	set_type (a_type: READABLE_STRING_8)
+			-- Set `type' as `a_type'
+		do
+			type := a_type
+		ensure
+			type_set: attached type as l_type implies l_type = a_type
+		end
+
 	set_acceptable (acceptable: BOOLEAN)
 			-- Set `is_acceptable' with `acceptable'
 		do
@@ -47,7 +60,6 @@ feature -- Change Element
 		ensure
 			is_acceptable_set: is_acceptable = acceptable
 		end
-
 
 	set_variant_header
 			-- Set variant header
@@ -57,7 +69,7 @@ feature -- Change Element
 		end
 
 	set_supported_variants (a_supported: LIST [READABLE_STRING_8])
-			-- Set `supported vairants' with `a_supported'
+			-- Set `supported variants' with `a_supported'
 		do
 			supported_variants := a_supported
 		ensure

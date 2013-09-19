@@ -1,6 +1,11 @@
 note
-	description: "Summary description for {CHARACTER_ENCODING_VARIANT_RESULTS}."
-	author: ""
+	description: "[
+				{CHARACTER_ENCODING_VARIANT_RESULTS}
+				Represent the character sets results between client preferences and character sets variants supported by the server.
+				If the server is unable to supports the requested Accept-Charset values, the server can build
+				a response with the list of supported character sets.
+			]"
+
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -10,21 +15,10 @@ class
 inherit
 
 	VARIANT_RESULTS
-	
-feature -- Access
-
-	character_type: detachable READABLE_STRING_8
 
 
 feature -- Change Element
 
-	set_character_type (a_character_type: READABLE_STRING_8)
-			-- Set `character_type' with `a_character_type'
-		do
-			character_type := a_character_type
-		ensure
-			character_type_set: character_type /= Void implies a_character_type = character_type
-		end
 
 	set_variant_header
 			-- Set variant header as `Accept-Charset'

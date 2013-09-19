@@ -1,6 +1,5 @@
 note
 	description: "Summary description for {COMMON_RESULTS}."
-	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -62,7 +61,7 @@ feature -- Element change
 		do
 			field := a_field
 		ensure
-			field_assigned: field /= Void implies field = a_field
+			field_set: attached field as l_field implies l_field = a_field
 		end
 
 	put (new: STRING; key: STRING)

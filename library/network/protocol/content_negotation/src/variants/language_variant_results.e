@@ -1,6 +1,10 @@
 note
-	description: "Summary description for {LANGUAGE_VARIANT_RESULTS}."
-	author: ""
+	description: "[
+				{LANGUAGE_VARIANT_RESULTS}.
+				Represent the language results between client preferences and language variants supported by the server.
+				If the server is unable to supports the requested Accept-Language values, the server can build
+				a response with the list of supported languages
+			]"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -11,21 +15,9 @@ inherit
 
 	VARIANT_RESULTS
 
-feature -- Access
-
-	language_type: detachable READABLE_STRING_8
-			-- language variant for the response
 
 feature -- Change Element
 
-
-	set_language_type (a_language_type: READABLE_STRING_8)
-			-- Set `language_type' with `a_language_type'
-		do
-			language_type := a_language_type
-		ensure
-			language_type_set:  attached language_type as l_language_type implies l_language_type = a_language_type
-		end
 
 	set_variant_header
 			-- Set variant header as 'Accept-Language'

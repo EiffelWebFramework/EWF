@@ -1,15 +1,15 @@
 ﻿note
 	description: "Summary description for {MIME_PARSE}."
-	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 	EIS: "name=Accept", "src=http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.1", "protocol=uri"
+
 class
 	MIME_PARSE
 
 inherit {NONE}
 
-	STRING_UTILS
+	MIME_TYPE_PARSER_UTILITIES
 
 	REFACTORING_HELPER
 

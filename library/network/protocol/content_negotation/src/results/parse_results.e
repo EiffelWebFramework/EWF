@@ -1,6 +1,5 @@
 ﻿note
 	description: "Summary description for {PARSE_RESULTS}."
-	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 

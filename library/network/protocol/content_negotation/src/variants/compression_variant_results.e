@@ -1,6 +1,10 @@
 note
-	description: "Summary description for {COMPRESSION_VARIANT_RESULTS}."
-	author: ""
+	description: "[
+				{COMPRESSION_VARIANT_RESULTS}
+				Represent the compression results between client preferences and ccompression variants supported by the server.
+				If the server is unable to supports the requested Accept-Encoding values, the server can build
+				a response with the list of supported encodings/compressions
+			]"
 	date: "$Date$"
 	revision: "$Revision$"
 	EIS: "name= Compression", "src=http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.3", "protocol=uri"
@@ -11,22 +15,9 @@ class
 inherit
 
 	VARIANT_RESULTS
-	
-feature -- Access
-
-	compression_type: detachable READABLE_STRING_8
-			-- Compression variant for the response
 
 
 feature -- Change Element
-
-	set_compression_type (a_compression_type: READABLE_STRING_8)
-			-- Set `compression_type' with `a_compression_type'
-		do
-			compression_type := a_compression_type
-		ensure
-			compression_type_set: attached compression_type as l_compression_type implies l_compression_type = a_compression_type
-		end
 
 	set_variant_header
 			-- Set variant_header as `Accept-Encoding'
