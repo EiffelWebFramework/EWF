@@ -101,42 +101,42 @@ feature -- Helper: mapping
 
 feature -- Execution
 
-	execute_hello (req: WSF_REQUEST; res: WSF_RESPONSE)
+	execute_hello (request:  WSF_REQUEST; response: WSF_RESPONSE)
 		local
 			page: SAMPLE_PAGE
 		do
 				-- To send a response we need to setup, the status code and
 				-- the response headers.
-			create page.make (req, res)
+			create page.make (request, response)
 			page.execute
 		end
 
-	grid_demo (req: WSF_REQUEST; res: WSF_RESPONSE)
+	grid_demo (request: WSF_REQUEST; response: WSF_RESPONSE)
 		local
 			page: GRID_PAGE
 		do
 				-- To send a response we need to setup, the status code and
 				-- the response headers.
-			create page.make (req, res)
+			create page.make (request, response)
 			page.execute
 		end
 
-	repeater_demo (req: WSF_REQUEST; res: WSF_RESPONSE)
+	repeater_demo (request: WSF_REQUEST; response: WSF_RESPONSE)
 		local
 			page: REPEATER_PAGE
 		do
 				-- To send a response we need to setup, the status code and
 				-- the response headers.
-			create page.make (req, res)
+			create page.make (request, response)
 			page.execute
 		end
 
-	load_file (name: STRING; req: WSF_REQUEST; res: WSF_RESPONSE)
+	load_file (name: STRING; request: WSF_REQUEST; response: WSF_RESPONSE)
 		local
 			f: WSF_FILE_RESPONSE
 		do
 			create f.make_html (name)
-			res.send (f)
+			response.send (f)
 		end
 
 end

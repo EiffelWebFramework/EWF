@@ -6,14 +6,14 @@
 			<exclude>/CVS$</exclude>
 			<exclude>/.svn$</exclude>
 		</file_rule>
-		<option warning="true" full_class_checking="false" is_attached_by_default="true" void_safety="transitional" syntax="transitional">
+		<option warning="true" full_class_checking="false" is_attached_by_default="true" void_safety="all"  syntax="transitional">
 			<assertions precondition="true" postcondition="true" check="true" invariant="true" loop="true" supplier_precondition="true"/>
 		</option>
 		<library name="base" location="$ISE_LIBRARY\library\base\base-safe.ecf"/>
 		<library name="http" location="..\..\library\network\protocol\http\http-safe.ecf"/>
 		<library name="http_client" location="$ISE_LIBRARY\contrib\library\network\http_client\http_client-safe.ecf"/>
 		<library name="wsf" location="..\..\library\server\wsf\wsf-safe.ecf"/>
-		<library name="wsf_html" location="..\..\library\server\wsf_html\wsf_html-safe.ecf" readonly="false"/>
+		<library name="wsf_js_widget" location="..\..\library\server\wsf_js_widget\wsf_js_widget-safe.ecf" readonly="false"/>
 	</target>
 	<target name="widgetapp_nino" extends="common">
 		<root class="APPLICATION" feature="make_and_launch"/>
