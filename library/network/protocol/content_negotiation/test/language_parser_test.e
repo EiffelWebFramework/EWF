@@ -21,14 +21,41 @@ feature {NONE} -- Events
 			create parser
 		end
 
+feature -- Helpers
+
+	format (a_language: LANGUAGE_RESULTS): STRING
+			-- Representation of the current object
+		do
+			create Result.make_from_string ("(")
+			if attached a_language.type as t then
+				Result.append_string ("'" + t + "',")
+			end
+			if attached a_language.sub_type as st then
+				Result.append_string (" '" + st + "',")
+			end
+			Result.append_string (" {")
+			if attached a_language.params as l_params then
+				from
+					l_params.start
+				until
+					l_params.after
+				loop
+					Result.append ("'" + l_params.key_for_iteration + "':'"+ l_params.item_for_iteration + "',");
+					l_params.forth
+				end
+			end
+			Result.append ("})")
+		end
+
+
 feature -- Test routines
 
-	test_parse_media_range
+	test_parse_language
 		do
-			assert ("Expected ('da', {'q':'1.0',})", parser.parse_language_range ("da").out.same_string ("('da', {'q':'1.0',})"));
-			assert ("Expected ('en', 'gb', {'q':'0.8',})", parser.parse_language_range ("en-gb;q=0.8").out.same_string ("('en', 'gb', {'q':'0.8',})"));
-			assert ("Expected ('en', {'q':'0.7',})", parser.parse_language_range ("en;q=0.7").out.same_string ("('en', {'q':'0.7',})"));
-			assert ("Expected ('en', '*', {'q':'1.0',})", parser.parse_language_range ("en-*").out.same_string ("('en', '*', {'q':'1.0',})"));
+			assert ("Expected ('da', {'q':'1.0',})", format (parser.parse_language_range ("da")).same_string ("('da', {'q':'1.0',})"));
+			assert ("Expected ('en', 'gb', {'q':'0.8',})", format (parser.parse_language_range ("en-gb;q=0.8")).same_string ("('en', 'gb', {'q':'0.8',})"));
+			assert ("Expected ('en', {'q':'0.7',})", format (parser.parse_language_range ("en;q=0.7")).same_string ("('en', {'q':'0.7',})"));
+			assert ("Expected ('en', '*', {'q':'1.0',})", format (parser.parse_language_range ("en-*")).same_string ("('en', '*', {'q':'1.0',})"));
 		end
 
 
