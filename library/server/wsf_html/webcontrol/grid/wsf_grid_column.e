@@ -8,11 +8,11 @@ class
 	WSF_GRID_COLUMN
 
 create
-	make_column
+	make
 
 feature {NONE}
 
-	make_column (a_header, a_field: STRING)
+	make (a_header, a_field: STRING)
 		do
 			header := a_header
 			field_name := a_field
@@ -31,7 +31,7 @@ feature
 
 	render_column (e: WSF_ENTITY): STRING
 		do
-			if attached e.get (field_name) as data then
+			if attached e.item (field_name) as data then
 				Result := data.out
 			else
 				Result := "[VOID]"

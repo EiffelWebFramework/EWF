@@ -7,40 +7,40 @@ note
 deferred class
 	WSF_STATELESS_CONTROL
 
-feature
-
-	tag_name: STRING
-
-	css_classes: LINKED_LIST [STRING]
-
-		--TODO: Maybe improve
-
 feature {NONE}
 
 	make (a_tag_name: STRING)
 		do
 			tag_name := a_tag_name
-			create css_classes.make
+			create css_classes.make (0)
 		ensure
 			attached css_classes
 		end
 
-feature
+feature -- Access
+
+	tag_name: STRING
+
+	css_classes: ARRAYED_LIST [STRING]
+
+		--TODO: Maybe improve
+
+feature -- Change
 
 	add_class (c: STRING)
 		do
-			css_classes.extend (c)
+			css_classes.force (c)
 		end
 
 	render_tag (body, attrs: STRING): STRING
 		local
 			css_classes_string: STRING
 		do
-			css_classes_string := ""
+			create css_classes_string.make_empty
 			across
 				css_classes as c
 			loop
-				css_classes_string := css_classes_string + " " + c.item
+				css_classes_string.append (" " + c.item)
 			end
 			Result := render_tag_with_tagname (tag_name, body, attrs, css_classes_string)
 		end
@@ -49,20 +49,28 @@ feature
 		local
 			l_attributes: STRING
 		do
-			l_attributes := attrs
+			create l_attributes.make_from_string (attrs)
 			if not css_classes_string.is_empty then
-				l_attributes := l_attributes + " class=%"" + css_classes_string + "%""
+				l_attributes.append (" class=%"")
+				l_attributes.append (css_classes_string)
+				l_attributes.append_character ('%"')
 			end
 			Result := "<" + tag + " " + l_attributes
-			if body.is_empty and not tag.is_equal ("textarea") and not tag.is_equal ("span") and not tag.is_equal ("button") and not tag.is_equal ("ul") then
-				Result := Result + " />"
+			if
+				body.is_empty and
+				not tag.same_string ("textarea") and
+				not tag.same_string ("span") and
+				not tag.same_string ("button") and
+				not tag.same_string ("ul")
+			then
+				Result.append (" />")
 			else
-				Result := Result + " >" + body + "</" + tag + ">"
+				Result.append (" >" + body + "</" + tag + ">")
 			end
 		end
 
 	render: STRING
-			-- Return html representaion of control
+			-- Return html representation of control
 		deferred
 		end
 

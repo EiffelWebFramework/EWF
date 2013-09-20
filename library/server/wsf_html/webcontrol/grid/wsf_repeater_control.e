@@ -34,14 +34,14 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- STATE MANAGEMENT
 
 	update
 		do
-			state_changes.replace (create {JSON_STRING}.make_json (render_body), create {JSON_STRING}.make_json ("_body"))
-			state_changes.replace (datasource.state, create {JSON_STRING}.make_json ("datasource"))
+			state_changes.replace (create {JSON_STRING}.make_json (render_body), "_body")
+			state_changes.replace (datasource.state, "datasource")
 		end
 
 	set_state (new_state: JSON_OBJECT)
 			-- Restore html from json
 		do
-			if attached {JSON_OBJECT} new_state.item (create {JSON_STRING}.make_json ("datasource")) as datasource_state then
+			if attached {JSON_OBJECT} new_state.item ("datasource") as datasource_state then
 				datasource.set_state (datasource_state)
 			end
 		end
@@ -50,7 +50,7 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- STATE MANAGEMENT
 			-- Return state which contains the current html and if there is an event handle attached
 		do
 			create Result.make
-			Result.put (datasource.state, create {JSON_STRING}.make_json ("datasource"))
+			Result.put (datasource.state, "datasource")
 		end
 
 feature --EVENT HANDLING

@@ -58,7 +58,7 @@ feature
 
 	update
 		do
-			state_changes.replace (create {JSON_STRING}.make_json (render), create {JSON_STRING}.make_json ("_html"))
+			state_changes.replace (create {JSON_STRING}.make_json (render), "_html")
 		end
 
 	render: STRING

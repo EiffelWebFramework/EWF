@@ -18,18 +18,21 @@ feature {NONE}
 
 	make_from_json (json: JSON_OBJECT)
 		do
-			if attached {JSON_STRING} json.item (create {JSON_STRING}.make_json ("title")) as a_title then
-				title := a_title.unescaped_string_32
+			if attached {JSON_STRING} json.item ("title") as l_title then
+				title := l_title.unescaped_string_32
 			end
-			if attached {JSON_STRING} json.item (create {JSON_STRING}.make_json ("content")) as a_content then
-				content := a_content.unescaped_string_32
+			if attached {JSON_STRING} json.item ("content") as l_content then
+				content := l_content.unescaped_string_32
 			end
-			if attached {JSON_OBJECT} json.item (create {JSON_STRING}.make_json ("image")) as img and then attached {JSON_STRING} img.item (create {JSON_STRING}.make_json ("url")) as a_image then
-				image := a_image.item
+			if
+				attached {JSON_OBJECT} json.item ("image") as img and then
+				attached {JSON_STRING} img.item ("url") as l_image
+			then
+				image := l_image.item
 			end
 		end
 
-feature
+feature -- Access
 
 	title: detachable STRING
 
@@ -37,13 +40,14 @@ feature
 
 	image: detachable STRING
 
-	get (field: STRING): detachable ANY
+	item (a_field: READABLE_STRING_GENERAL): detachable ANY
+			-- <Precursor>
 		do
-			if field.is_equal ("title") then
+			if a_field.same_string ("title") then
 				Result := title
-			elseif field.is_equal ("content") then
+			elseif a_field.same_string ("content") then
 				Result := content
-			elseif field.is_equal ("image") then
+			elseif a_field.same_string ("image") then
 				Result := image
 			end
 		end

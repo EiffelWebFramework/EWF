@@ -52,7 +52,6 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- STATE MANAGEMENT
 		do
 		end
 
-
 	read_state (states: JSON_OBJECT)
 			-- Read states in subcontrols
 		do
@@ -85,7 +84,7 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- STATE MANAGEMENT
 			create Result.make
 		end
 
-feature --EVENT HANDLING
+feature -- EVENT HANDLING
 
 	handle_callback (cname: STRING; event: STRING; event_parameter: detachable STRING)
 			-- Pass callback to subcontrols

@@ -10,16 +10,18 @@ class
 inherit
 
 	WSF_GRID_COLUMN
+		rename
+			make as make_column
 		redefine
 			render_column
 		end
 
 create
-	make_image_column
+	make
 
 feature {NONE}
 
-	make_image_column (a_header, a_field: STRING)
+	make (a_header, a_field: STRING)
 		do
 			make_column (a_header, a_field)
 		end
@@ -28,7 +30,7 @@ feature
 
 	render_column (e: WSF_ENTITY): STRING
 		do
-			if attached e.get (field_name) as data then
+			if attached e.item (field_name) as data then
 				Result := "<img src=%"" + data.out + "%" />"
 			else
 				Result := "[VOID]"

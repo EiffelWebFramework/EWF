@@ -56,6 +56,7 @@
 		<library name="wsf_openshift" location="..\library\server\wsf\connector\openshift-safe.ecf" readonly="false"/>
 		<library name="wsf_router_context" location="..\library\server\wsf\wsf_router_context-safe.ecf" readonly="false"/>
 		<library name="wsf_session" location="..\library\server\wsf\wsf_session-safe.ecf" readonly="false"/>
+		<library name="widgetapp" location="..\examples\widgetapp\widgetapp.ecf" readonly="false"/>
 	</target>
 	<target name="all_windows" extends="all">
 		<description>Compiling as Windows , on other platforms than Windows</description>

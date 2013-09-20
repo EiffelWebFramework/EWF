@@ -70,7 +70,7 @@ feature {NONE} -- Initialization
 			collapse_button.add_control (icon_bar)
 			collapse_button.add_control (icon_bar)
 			collapse_button.add_control (icon_bar)
-				--collapse_button.set_attributes ("data-target=%".navbar-collapse%" data-toggle=%"collapse%" type=%"button%"")
+--			collapse_button.set_attributes ("data-target=%".navbar-collapse%" data-toggle=%"collapse%" type=%"button%"")
 			brand.add_class ("navbar-brand")
 			brand.set_attributes ("href=%"#%"")
 			brand.set_content (b)
