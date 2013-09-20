@@ -1,22 +1,10 @@
 note
-	description: "Summary description for {COMMON_RESULTS}."
+	description: "Object that represents a results after parsing Charset or Encoding Accept headers."
 	date: "$Date$"
 	revision: "$Revision$"
 
 class
 	COMMON_RESULTS
-
-inherit
-
-	ANY
-		redefine
-			out
-		end
-
-	DEBUG_OUTPUT
-		redefine
-			out
-		end
 
 create
 	make
@@ -47,6 +35,12 @@ feature -- Access
 			create res.make_from_array (params.current_keys)
 			Result := res
 		end
+
+
+	params: HASH_TABLE [STRING, STRING]
+			--dictionary of all the parameters for the media range
+
+feature -- Status Report
 
 	has_key (a_key: STRING): BOOLEAN
 			-- Is there an item in the table with key `a_key'?
@@ -81,37 +75,13 @@ feature -- Element change
 
 feature -- Status Report
 
-	out: STRING
-			-- Representation of the current object
-		do
-			create Result.make_from_string ("(")
-			if attached field as t then
-				Result.append_string ("'" + t + "',")
-			end
-			Result.append_string (" {")
-			from
-				params.start
-			until
-				params.after
-			loop
-				Result.append ("'" + params.key_for_iteration + "':'" + params.item_for_iteration + "',");
-				params.forth
-			end
-			Result.append ("})")
-		end
-
 	debug_output: STRING
 			-- String that should be displayed in debugger to represent `Current'.
 		do
 			Result := out
 		end
 
-feature {NONE} -- Implementation
 
-	params: HASH_TABLE [STRING, STRING]
-			--dictionary of all the parameters for the media range
-
-	;
 
 note
 	copyright: "2011-2013, Javier Velilla, Jocelyn Fiat, Eiffel Software and others"
