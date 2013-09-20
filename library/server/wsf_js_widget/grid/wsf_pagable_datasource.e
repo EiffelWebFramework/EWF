@@ -18,7 +18,7 @@ inherit
 
 feature -- Update event
 
-	set_on_update_page_agent (f: PROCEDURE [ANY, TUPLE []])
+	set_on_update_page_agent (f: PROCEDURE [ANY, TUPLE])
 		do
 			on_update_page_agent := f
 		end
@@ -33,7 +33,7 @@ feature -- Update event
 			end
 		end
 
-	on_update_page_agent: detachable PROCEDURE [ANY, TUPLE []]
+	on_update_page_agent: detachable PROCEDURE [ANY, TUPLE]
 
 feature --States
 

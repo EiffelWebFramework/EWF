@@ -76,6 +76,6 @@ feature
 
 	text: STRING
 
-	click_event: detachable PROCEDURE [ANY, TUPLE []]
+	click_event: detachable PROCEDURE [ANY, TUPLE]
 
 end

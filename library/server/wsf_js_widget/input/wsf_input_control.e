@@ -84,6 +84,6 @@ feature
 
 	type: STRING
 
-	change_event: detachable PROCEDURE [ANY, TUPLE []]
+	change_event: detachable PROCEDURE [ANY, TUPLE]
 
 end
