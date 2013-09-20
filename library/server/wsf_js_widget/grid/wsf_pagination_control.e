@@ -79,9 +79,9 @@ feature
 				else
 					cssclass := ""
 				end
-				Result := Result + render_tag_with_tagname ("li", render_tag_with_tagname ("a", n.item.out, "href=%"#%" data-nr=%"" + n.item.out + "%"", ""), "", cssclass)
+				Result.append (render_tag_with_tagname ("li", render_tag_with_tagname ("a", n.item.out, "href=%"#%" data-nr=%"" + n.item.out + "%"", ""), "", cssclass))
 			end
-			Result := Result + render_tag_with_tagname ("li", render_tag_with_tagname ("a", "&raquo;", "href=%"#%" data-nr=%"next%"", ""), "", "")
+			Result.append (render_tag_with_tagname ("li", render_tag_with_tagname ("a", "&raquo;", "href=%"#%" data-nr=%"next%"", ""), "", ""))
 			Result := render_tag (Result, "")
 		end
 
