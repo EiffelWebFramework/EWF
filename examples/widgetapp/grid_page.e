@@ -29,7 +29,8 @@ feature
 			search_query.set_change_event (agent change_query)
 			container.add_control (search_query)
 			container.add_control (create {WSF_BASIC_CONTROL}.make_with_body("h2","","Results"))
-			create grid.make_grid ("mygrid", <<create {WSF_GRID_COLUMN}.make_column ("Title", "title"), create {WSF_GRID_COLUMN}.make_column ("Content", "content")>>, datasource)
+			create grid.make_grid ("mygrid", <<create {WSF_GRID_COLUMN}.make ("Title", "title"),
+												create {WSF_GRID_COLUMN}.make ("Content", "content")>>, datasource)
 			container.add_control (grid)
 			control := container
 		end

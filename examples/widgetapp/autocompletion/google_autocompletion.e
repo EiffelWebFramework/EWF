@@ -16,7 +16,7 @@ create
 
 feature {NONE} -- Initialization
 
-	make ()
+	make
 		do
 			template := "{{=value}}";
 		end
@@ -25,26 +25,24 @@ feature -- Implementation
 
 	autocompletion (input: STRING): JSON_ARRAY
 		local
+			cl: LIBCURL_HTTP_CLIENT
+			sess: HTTP_CLIENT_SESSION
+			l_json: detachable READABLE_STRING_8
+
 			o: JSON_OBJECT
-			l_result: INTEGER
-			l_curl_string: CURL_STRING
 			json_parser: JSON_PARSER
 			query_str: STRING
 		do
 			query_str := input
 			query_str.replace_substring_all (" ", "+")
-			curl_handle := curl_easy.init
+			create cl.make
+			sess := cl.new_session ("http://google.com")
+			if attached sess.get ("/complete/search?client=chrome&q=" + query_str, Void) as resp and then not resp.error_occurred then
+				l_json := resp.body
+			end
 			create Result.make_array
-			if curl_handle /= default_pointer then
-				create l_curl_string.make_empty
-				curl_easy.setopt_string (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_url, "http://google.com/complete/search?client=chrome&q=" + query_str)
-				curl_easy.set_write_function (curl_handle)
-				curl_easy.setopt_integer (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_writedata, l_curl_string.object_id)
-				l_result := curl_easy.perform (curl_handle)
-
-					-- Always cleanup
-				curl_easy.cleanup (curl_handle)
-				create json_parser.make_parser (l_curl_string.out)
+			if l_json /= Void and then not l_json.is_empty then
+				create json_parser.make_parser (l_json)
 				if attached {JSON_ARRAY} json_parser.parse_json as data and then attached {JSON_ARRAY} data.i_th (2) as list then
 					across
 						1 |..| list.count as c
@@ -58,15 +56,5 @@ feature -- Implementation
 				end
 			end
 		end
-
-feature {NONE} -- Implementation
-
-	curl_easy: CURL_EASY_EXTERNALS
-		once
-			create Result
-		end
-
-	curl_handle: POINTER;
-	-- cURL handle
 
 end

@@ -34,7 +34,7 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- STATE MANAGEMENT
 	load_state (new_states: JSON_OBJECT)
 			-- Select state stored with `control_name` as key
 		do
-			if attached {JSON_OBJECT} new_states.item (create {JSON_STRING}.make_json (control_name)) as new_state_obj then
+			if attached {JSON_OBJECT} new_states.item (control_name) as new_state_obj then
 				set_state (new_state_obj)
 			end
 		end
@@ -47,14 +47,14 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- STATE MANAGEMENT
 	read_state (states: JSON_OBJECT)
 			-- Add a new entry in the `states` JSON object with the `control_name` as key and the `state` as value
 		do
-			states.put (state, create {JSON_STRING}.make_json (control_name))
+			states.put (state, control_name)
 		end
 
 	read_state_changes (states: JSON_OBJECT)
 			-- Add a new entry in the `states_changes` JSON object with the `control_name` as key and the `state` as value
 		do
 			if state_changes.count > 0 then
-				states.put (state_changes, create {JSON_STRING}.make_json (control_name))
+				states.put (state_changes, control_name)
 			end
 		end
 
@@ -69,7 +69,7 @@ feature -- Rendering
 
 	render_tag (body, attrs: STRING): STRING
 		do
-			Result:=render_tag_with_generator_name (generator, body, attrs)
+			Result := render_tag_with_generator_name (generator, body, attrs)
 		end
 
 	render_tag_with_generator_name (a_generator, body, attrs: STRING): STRING
@@ -87,7 +87,7 @@ feature -- Rendering
 			Result := render_tag_with_tagname (tag_name, body, l_attributes, css_classes_string)
 		end
 
-feature --EVENT HANDLING
+feature -- EVENT HANDLING
 
 	handle_callback (cname: STRING; event: STRING; event_parameter: detachable STRING)
 			-- Method called if any callback received. In this method you can route the callback to the event handler

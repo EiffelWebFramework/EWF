@@ -17,15 +17,9 @@ create
 
 feature {NONE} -- Initialization
 
-	attributes: STRING
-
-	content: STRING
-
 	make_control (t: STRING)
 		do
-			make (t)
-			attributes := ""
-			content := ""
+			make_with_body (t, "", "")
 		end
 
 	make_with_body (t,attr,a_content: STRING)
@@ -34,6 +28,12 @@ feature {NONE} -- Initialization
 			attributes := attr
 			content := a_content
 		end
+
+feature -- Access		
+
+	attributes: STRING
+
+	content: STRING
 
 feature -- Rendering
 

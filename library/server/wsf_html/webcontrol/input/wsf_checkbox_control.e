@@ -28,7 +28,7 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- STATE MANAGEMENT
 	set_state (new_state: JSON_OBJECT)
 			-- Restore text from json
 		do
-			if attached {JSON_BOOLEAN} new_state.item (create {JSON_STRING}.make_json ("checked")) as new_checked then
+			if attached {JSON_BOOLEAN} new_state.item ("checked") as new_checked then
 				checked := new_checked.item
 			end
 		end
@@ -37,9 +37,9 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- STATE MANAGEMENT
 			-- Return state which contains the current text and if there is an event handle attached
 		do
 			create Result.make
-			Result.put (create {JSON_BOOLEAN}.make_boolean (checked), create {JSON_STRING}.make_json ("checked"))
-			Result.put (create {JSON_STRING}.make_json (checked_value), create {JSON_STRING}.make_json ("checked_value"))
-			Result.put (create {JSON_BOOLEAN}.make_boolean (attached change_event), create {JSON_STRING}.make_json ("callback_change"))
+			Result.put (create {JSON_BOOLEAN}.make_boolean (checked), "checked")
+			Result.put (create {JSON_STRING}.make_json (checked_value), "checked_value")
+			Result.put (create {JSON_BOOLEAN}.make_boolean (attached change_event), "callback_change")
 		end
 
 feature --EVENT HANDLING
@@ -52,9 +52,9 @@ feature --EVENT HANDLING
 
 	handle_callback (cname: STRING; event: STRING; event_parameter: detachable STRING)
 		do
-			if Current.control_name.is_equal (cname) and attached change_event as cevent then
-				if event.is_equal ("change") then
-					cevent.call ([])
+			if Current.control_name.same_string (cname) and attached change_event as cevent then
+				if event.same_string ("change") then
+					cevent.call (Void)
 				end
 			end
 		end
@@ -85,6 +85,6 @@ feature
 
 	checked_value: STRING
 
-	change_event: detachable PROCEDURE [ANY, TUPLE []]
+	change_event: detachable PROCEDURE [ANY, TUPLE]
 
 end

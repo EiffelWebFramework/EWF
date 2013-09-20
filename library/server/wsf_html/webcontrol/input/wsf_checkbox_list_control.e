@@ -32,7 +32,7 @@ feature
 
 	value: LIST [STRING]
 		do
-			create {LINKED_LIST [STRING]} Result.make
+			create {ARRAYED_LIST [STRING]} Result.make (0)
 			across
 				controls as c
 			loop

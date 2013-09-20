@@ -47,26 +47,28 @@ feature
 	data: ITERABLE [GOOGLE_NEWS]
 		local
 			list: LINKED_LIST [GOOGLE_NEWS]
-			l_result: INTEGER
-			l_curl_string: CURL_STRING
+			l_json: detachable READABLE_STRING_8
 			json_parser: JSON_PARSER
 			query_str: STRING
+			cl: LIBCURL_HTTP_CLIENT
+			sess: HTTP_CLIENT_SESSION
 		do
-			curl_handle := curl_easy.init
 			create list.make
 			row_count := 0
-			if curl_handle /= default_pointer then
-				create l_curl_string.make_empty
-				query_str := query.out
-				query_str.replace_substring_all (" ", "+")
-				curl_easy.setopt_string (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_url, "https://ajax.googleapis.com/ajax/services/search/news?v=1.0&q=" + query_str + "&rsz=" + page_size.out + "&start=" + (page_size * (page - 1)).out)
-				curl_easy.set_write_function (curl_handle)
-				curl_easy.setopt_integer (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_writedata, l_curl_string.object_id)
-				l_result := curl_easy.perform (curl_handle)
-
-					-- Always cleanup
-				curl_easy.cleanup (curl_handle)
-				create json_parser.make_parser (l_curl_string.out)
+			query_str := query.out
+			query_str.replace_substring_all (" ", "+")
+			create cl.make
+			sess := cl.new_session ("https://ajax.googleapis.com/ajax/services/search")
+			sess.set_is_insecure (True)
+			if sess.is_available then
+				if attached {HTTP_CLIENT_RESPONSE} sess.get ("/news?v=1.0&q=" + query_str + "&rsz=" + page_size.out + "&start=" + (page_size * (page - 1)).out, Void) as l_response then
+					if not l_response.error_occurred then
+						l_json := l_response.body
+					end
+				end
+			end
+			if l_json /= Void and then not l_json.is_empty then
+				create json_parser.make_parser (l_json)
 				if attached {JSON_OBJECT} json_parser.parse_json as sp then
 					if attached {JSON_OBJECT} sp.item (create {JSON_STRING}.make_json ("responseData")) as responsedata and then attached {JSON_ARRAY} responsedata.item (create {JSON_STRING}.make_json ("results")) as results then
 						if attached {JSON_OBJECT} responsedata.item (create {JSON_STRING}.make_json ("cursor")) as cursor and then attached {JSON_STRING} cursor.item (create {JSON_STRING}.make_json ("estimatedResultCount")) as count then
@@ -93,15 +95,5 @@ feature
 		end
 
 	query: STRING
-
-feature {NONE} -- Implementation
-
-	curl_easy: CURL_EASY_EXTERNALS
-		once
-			create Result
-		end
-
-	curl_handle: POINTER;
-	-- cURL handle
 
 end

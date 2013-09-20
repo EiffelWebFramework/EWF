@@ -24,14 +24,11 @@ create
 feature {NONE}
 
 	make_form_element (a_label: STRING; c: WSF_VALUE_CONTROL [G])
-		local
-			a_validators: LINKED_LIST [WSF_VALIDATOR [G]]
 		do
-			create a_validators.make
-			make_form_element_with_validators (a_label, c, a_validators)
+			make_form_element_with_validators (a_label, c, create {ARRAYED_LIST [WSF_VALIDATOR [G]]}.make (0))
 		end
 
-	make_form_element_with_validators (a_label: STRING; c: WSF_VALUE_CONTROL [G]; v: LINKED_LIST [WSF_VALIDATOR [G]])
+	make_form_element_with_validators (a_label: STRING; c: WSF_VALUE_CONTROL [G]; v: LIST [WSF_VALIDATOR [G]])
 		do
 			make_control (c.control_name + "_container", "div")
 			add_class ("form-group")
@@ -87,8 +84,8 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- STATE MANAGEMENT
 			loop
 				validator_description.add (v.item.state)
 			end
-			Result.put (create {JSON_STRING}.make_json (value_control.control_name), create {JSON_STRING}.make_json ("value_control"))
-			Result.put (validator_description, create {JSON_STRING}.make_json ("validators"))
+			Result.put (create {JSON_STRING}.make_json (value_control.control_name), "value_control")
+			Result.put (validator_description, "validators")
 		end
 
 feature --EVENT HANDLING
@@ -96,8 +93,8 @@ feature --EVENT HANDLING
 	handle_callback (cname: STRING; event: STRING; event_parameter: detachable STRING)
 			-- Pass callback to subcontrols
 		do
-			if equal (cname, control_name) then
-				if event.is_equal ("validate") then
+			if cname.same_string (control_name) then
+				if event.same_string ("validate") then
 					validate
 				end
 			else
@@ -113,11 +110,11 @@ feature --Implementation
 		do
 			body := ""
 			if not label.is_empty then
-				body := "<label class=%"col-lg-2 control-label%" for=%"" + value_control.control_name + "%">" + label + "</label>"
+				body.append ("<label class=%"col-lg-2 control-label%" for=%"" + value_control.control_name + "%">" + label + "</label>")
 			end
-			body := body + "<div class=%"col-lg-10%">"
-			body := body + value_control.render
-			body := body + "</div>"
+			body.append ("<div class=%"col-lg-10%">")
+			body.append (value_control.render)
+			body.append ("</div>")
 			Result := render_tag (body, "")
 		end
 
@@ -161,7 +158,7 @@ feature
 
 	value_control: WSF_VALUE_CONTROL [G]
 
-	validators: LINKED_LIST [WSF_VALIDATOR [G]]
+	validators: LIST [WSF_VALIDATOR [G]]
 
 	label: STRING
 

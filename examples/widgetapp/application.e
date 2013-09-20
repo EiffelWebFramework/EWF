@@ -9,10 +9,20 @@ class
 inherit
 
 	WSF_ROUTED_SERVICE
+		rename
+			execute as execute_router
+		end
+
+	WSF_FILTERED_SERVICE
 
 	WSF_DEFAULT_SERVICE
 		redefine
 			initialize
+		end
+
+	WSF_FILTER
+		rename
+			execute as execute_router
 		end
 
 create
@@ -24,10 +34,47 @@ feature {NONE} -- Initialization
 			-- Initialize current service.
 		do
 			initialize_router
+			initialize_filter
+			Precursor
 			set_service_option ("port", 9090)
 		end
 
-feature {NONE} -- Initialization
+feature -- Router and Filter
+
+	create_filter
+			-- Create `filter'
+		local
+			f, l_filter: detachable WSF_FILTER
+		do
+			l_filter := Void
+
+				-- Maintenance
+			create {WSF_MAINTENANCE_FILTER} f
+			f.set_next (l_filter)
+			l_filter := f
+
+				-- Logging
+			create {WSF_LOGGING_FILTER} f
+			f.set_next (l_filter)
+			l_filter := f
+
+			filter := l_filter
+		end
+
+	setup_filter
+			-- Setup `filter'
+		local
+			f: WSF_FILTER
+		do
+			from
+				f := filter
+			until
+				not attached f.next as l_next
+			loop
+				f := l_next
+			end
+			f.set_next (Current)
+		end
 
 	setup_router
 		do
@@ -35,6 +82,9 @@ feature {NONE} -- Initialization
 			map_agent_uri ("/", agent execute_hello, Void)
 			map_agent_uri ("/grid", agent grid_demo, Void)
 			map_agent_uri ("/repeater", agent repeater_demo, Void)
+
+				-- NOTE: you could put all those files in a specific folder, and use WSF_FILE_SYSTEM_HANDLER with "/"
+				-- this way, it handles the caching and so on
 			map_agent_uri ("/widget.js", agent load_file("widget.js", ?, ?), Void)
 			map_agent_uri ("/jquery.min.js", agent load_file("jquery.min.js", ?, ?), Void)
 			map_agent_uri ("/typeahead.min.js", agent load_file("typeahead.min.js", ?, ?), Void)
