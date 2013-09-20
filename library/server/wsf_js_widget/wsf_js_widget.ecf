@@ -17,10 +17,10 @@
 		<library name="uri_template" location="..\..\text\parser\uri_template\uri_template.ecf"/>
 		<library name="wsf" location="..\wsf\wsf.ecf"/>
 		<cluster name="webcontrol" location=".\webcontrol\"/>
-		<cluster name="validators" location=".\validators\"/>
+		<cluster name="validator" location=".\validator\"/>
 		<cluster name="input" location=".\input\"/>
 		<cluster name="grid" location=".\grid\"/>
-		<cluster name="autocompletions" location=".\autocompletions\"/>
+		<cluster name="autocompletion" location=".\autocompletion\"/>
 		<cluster name="navbar" location=".\navbar\"/>
 		<cluster name="progressbar" location=".\progressbar\"/>
 	</target>
