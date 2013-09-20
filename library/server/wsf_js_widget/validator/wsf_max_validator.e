@@ -37,7 +37,7 @@ feature
 	state: JSON_OBJECT
 		do
 			Result := Precursor
-			Result.put (create {JSON_NUMBER}.make_integer (max), create {JSON_STRING}.make_json ("max"))
+			Result.put (create {JSON_NUMBER}.make_integer (max), "max")
 		end
 
 	max: INTEGER

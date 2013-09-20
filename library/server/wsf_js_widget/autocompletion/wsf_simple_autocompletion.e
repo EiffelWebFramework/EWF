@@ -33,7 +33,7 @@ feature -- Implementation
 			loop
 				if c.item.as_lower.has_substring (input.as_lower) then
 					create o.make
-					o.put (create {JSON_STRING}.make_json (c.item), "value")
+					o.put (create {JSON_STRING}.make_json(c.item), "value")
 					Result.add (o)
 				end
 			end

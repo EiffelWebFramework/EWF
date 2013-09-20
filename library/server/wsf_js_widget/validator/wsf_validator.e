@@ -19,8 +19,8 @@ feature
 	state: JSON_OBJECT
 		do
 			create Result.make
-			Result.put (create {JSON_STRING}.make_json (generator), create {JSON_STRING}.make_json ("name"))
-			Result.put (create {JSON_STRING}.make_json (error), create {JSON_STRING}.make_json ("error"))
+			Result.put (create {JSON_STRING}.make_json (generator), "name")
+			Result.put (create {JSON_STRING}.make_json (error), "error")
 		end
 
 	is_valid (input: G): BOOLEAN

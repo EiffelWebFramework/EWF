@@ -40,7 +40,7 @@ feature -- State
 	state: JSON_OBJECT
 		do
 			Result := Precursor {WSF_INPUT_CONTROL}
-			Result.put (create {JSON_STRING}.make_json (template), create {JSON_STRING}.make_json ("template"))
+			Result.put (create {JSON_STRING}.make_json (template), "template")
 		end
 
 feature -- Callback
@@ -48,8 +48,8 @@ feature -- Callback
 	handle_callback (cname: STRING; event: STRING; event_parameter: detachable STRING)
 		do
 			Precursor {WSF_INPUT_CONTROL} (cname, event, event_parameter)
-			if cname.is_equal (control_name) and event.is_equal ("autocomplete") then
-				state_changes.put (create_json_list.item ([text]), create {JSON_STRING}.make_json ("suggestions"))
+			if cname.same_string (control_name) and event.same_string ("autocomplete") then
+				state_changes.put (create_json_list.item ([text]), "suggestions")
 			end
 		end
 

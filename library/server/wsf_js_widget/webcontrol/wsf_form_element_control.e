@@ -128,7 +128,7 @@ feature -- Validation
 	set_error (e: STRING)
 		do
 			error := e
-			state_changes.replace (create {JSON_STRING}.make_json (e), create {JSON_STRING}.make_json ("error"))
+			state_changes.replace (create {JSON_STRING}.make_json (e), "error")
 		end
 
 	validate

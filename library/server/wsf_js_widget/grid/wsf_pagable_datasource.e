@@ -26,10 +26,10 @@ feature -- Update event
 	update
 		do
 			if attached on_update_agent as a then
-				a.call ([])
+				a.call (Void)
 			end
 			if attached on_update_page_agent as a then
-				a.call ([])
+				a.call (Void)
 			end
 		end
 
@@ -41,21 +41,21 @@ feature --States
 			-- Return state which contains the current html and if there is an event handle attached
 		do
 			Result := Precursor
-			Result.put (create {JSON_NUMBER}.make_integer (page), create {JSON_STRING}.make_json ("page"))
-			Result.put (create {JSON_NUMBER}.make_integer (page_size), create {JSON_STRING}.make_json ("page_size"))
-			Result.put (create {JSON_NUMBER}.make_integer (row_count), create {JSON_STRING}.make_json ("row_count"))
+			Result.put (create {JSON_NUMBER}.make_integer (page), "page")
+			Result.put (create {JSON_NUMBER}.make_integer (page_size), "page_size")
+			Result.put (create {JSON_NUMBER}.make_integer (row_count), "row_count")
 		end
 
 	set_state (new_state: JSON_OBJECT)
 		do
 			Precursor (new_state)
-			if attached {JSON_NUMBER} new_state.item (create {JSON_STRING}.make_json ("page")) as new_page then
+			if attached {JSON_NUMBER} new_state.item ("page") as new_page then
 				page := new_page.item.to_integer
 			end
-			if attached {JSON_NUMBER} new_state.item (create {JSON_STRING}.make_json ("page_size")) as new_page_size then
+			if attached {JSON_NUMBER} new_state.item ("page_size") as new_page_size then
 				page_size := new_page_size.item.to_integer
 			end
-			if attached {JSON_NUMBER} new_state.item (create {JSON_STRING}.make_json ("row_count")) as new_row_count then
+			if attached {JSON_NUMBER} new_state.item ("row_count") as new_row_count then
 				row_count := new_row_count.item.to_integer
 			end
 		end

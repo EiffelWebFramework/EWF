@@ -33,7 +33,7 @@ feature -- State handling
 
 	set_state (new_state: JSON_OBJECT)
 		do
-			if attached {JSON_NUMBER} new_state.item (create {JSON_STRING}.make_json ("progress")) as new_progress then
+			if attached {JSON_NUMBER} new_state.item ("progress") as new_progress then
 				progress := new_progress.item.to_integer
 			end
 		end
@@ -48,8 +48,8 @@ feature -- Event handling
 
 	handle_callback (cname: STRING; event: STRING; event_parameter: detachable STRING)
 		do
-			if cname.is_equal (control_name) and event.is_equal ("progress_fetch") then
-				state_changes.put (create {JSON_NUMBER}.make_integer (progress_value), create {JSON_STRING}.make_json ("progress"))
+			if cname.same_string (control_name) and event.same_string ("progress_fetch") then
+				state_changes.put (create {JSON_NUMBER}.make_integer (progress_value), "progress")
 			end
 		end
 
@@ -71,7 +71,7 @@ feature --Change progress
 			no_progress_source: not (attached progress_source)
 		do
 			progress := p
-			state_changes.put (create {JSON_NUMBER}.make_integer (progress), create {JSON_STRING}.make_json ("progress"))
+			state_changes.put (create {JSON_NUMBER}.make_integer (progress), "progress")
 		end
 
 feature

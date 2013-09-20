@@ -40,12 +40,12 @@ feature --EVENT HANDLING
 
 	handle_callback (cname: STRING; event: STRING; event_parameter: detachable STRING)
 		do
-			if Current.control_name.is_equal (cname) then
-				if event.is_equal ("next") then
+			if Current.control_name.same_string (cname) then
+				if event.same_string ("next") then
 					datasource.set_page (datasource.page + 1)
-				elseif event.is_equal ("prev") then
+				elseif event.same_string ("prev") then
 					datasource.set_page (datasource.page - 1)
-				elseif event.is_equal ("goto") then
+				elseif event.same_string ("goto") then
 					if attached event_parameter as p and then attached p.to_integer as i then
 						datasource.set_page (i)
 					end

@@ -28,7 +28,7 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- STATE MANAGEMENT
 	set_state (new_state: JSON_OBJECT)
 			-- Restore text from json
 		do
-			if attached {JSON_STRING} new_state.item (create {JSON_STRING}.make_json ("text")) as new_text then
+			if attached {JSON_STRING} new_state.item ("text") as new_text then
 				text := new_text.unescaped_string_32
 			end
 		end
@@ -37,8 +37,8 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- STATE MANAGEMENT
 			-- Return state which contains the current text and if there is an event handle attached
 		do
 			create Result.make
-			Result.put (create {JSON_STRING}.make_json (text), create {JSON_STRING}.make_json ("text"))
-			Result.put (create {JSON_BOOLEAN}.make_boolean (attached change_event), create {JSON_STRING}.make_json ("callback_change"))
+			Result.put (create {JSON_STRING}.make_json (text), "text")
+			Result.put (create {JSON_BOOLEAN}.make_boolean (attached change_event), "callback_change")
 		end
 
 feature --EVENT HANDLING
@@ -51,9 +51,9 @@ feature --EVENT HANDLING
 
 	handle_callback (cname: STRING; event: STRING; event_parameter: detachable STRING)
 		do
-			if Current.control_name.is_equal (cname) and attached change_event as cevent then
-				if event.is_equal ("change") then
-					cevent.call ([])
+			if Current.control_name.same_string (cname) and attached change_event as cevent then
+				if event.same_string ("change") then
+					cevent.call (Void)
 				end
 			end
 		end
@@ -67,9 +67,9 @@ feature -- Implementation
 
 	set_text (t: STRING)
 		do
-			if not t.is_equal (text) then
+			if not t.same_string (text) then
 				text := t
-				state_changes.replace (create {JSON_STRING}.make_json (text), create {JSON_STRING}.make_json ("text"))
+				state_changes.replace (create {JSON_STRING}.make_json (text), "text")
 			end
 		end
 

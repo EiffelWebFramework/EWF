@@ -42,9 +42,9 @@ feature
 	state: JSON_OBJECT
 		do
 			create Result.make
-			Result.put (create {JSON_STRING}.make_json ("WSF_REGEXP_VALIDATOR"), create {JSON_STRING}.make_json ("name"))
-			Result.put (create {JSON_STRING}.make_json (regexp_string), create {JSON_STRING}.make_json ("expression"))
-			Result.put (create {JSON_STRING}.make_json (error), create {JSON_STRING}.make_json ("error"))
+			Result.put (create {JSON_STRING}.make_json ("WSF_REGEXP_VALIDATOR"), "name")
+			Result.put (create {JSON_STRING}.make_json (regexp_string), "expression")
+			Result.put (create {JSON_STRING}.make_json (error), "error")
 		end
 
 	regexp_string: STRING

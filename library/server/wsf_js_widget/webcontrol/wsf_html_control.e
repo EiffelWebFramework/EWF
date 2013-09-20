@@ -27,7 +27,7 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- STATE MANAGEMENT
 	set_state (new_state: JSON_OBJECT)
 			-- Restore html from json
 		do
-			if attached {JSON_STRING} new_state.item (create {JSON_STRING}.make_json ("html")) as new_html then
+			if attached {JSON_STRING} new_state.item ("html") as new_html then
 				html := new_html.unescaped_string_32
 			end
 		end
@@ -36,7 +36,7 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- STATE MANAGEMENT
 			-- Return state which contains the current html and if there is an event handle attached
 		do
 			create Result.make
-			Result.put (create {JSON_STRING}.make_json (html), create {JSON_STRING}.make_json ("html"))
+			Result.put (create {JSON_STRING}.make_json (html), "html")
 		end
 
 feature --EVENT HANDLING
@@ -54,9 +54,9 @@ feature -- Implementation
 
 	set_html (t: STRING)
 		do
-			if not t.is_equal (html) then
+			if not t.same_string (html) then
 				html := t
-				state_changes.replace (create {JSON_STRING}.make_json (html), create {JSON_STRING}.make_json ("html"))
+				state_changes.replace (create {JSON_STRING}.make_json (html), "html")
 			end
 		end
 

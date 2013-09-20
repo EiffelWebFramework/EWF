@@ -37,7 +37,7 @@ feature
 	state: JSON_OBJECT
 		do
 			Result := Precursor
-			Result.put (create {JSON_NUMBER}.make_integer (min), create {JSON_STRING}.make_json ("min"))
+			Result.put (create {JSON_NUMBER}.make_integer (min), "min")
 		end
 
 	min: INTEGER
