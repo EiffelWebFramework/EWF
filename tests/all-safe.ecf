@@ -10,13 +10,14 @@
 		</file_rule>
 		<option warning="true" full_class_checking="true" is_attached_by_default="true" void_safety="all" syntax="standard">
 		</option>
+		<library name="all-stable" location="all-stable-safe.ecf" readonly="false"/>
 		<library name="atom" location="..\draft\library\protocol\syndication\atom\atom-safe.ecf" readonly="false"/>
 		<library name="client" location="..\examples\restbucksCRUD\client\client-safe.ecf" readonly="false"/>
 		<library name="connector_cgi" location="..\library\server\ewsgi\connectors\cgi\cgi-safe.ecf" readonly="false"/>
 		<library name="connector_libfcgi" location="..\library\server\ewsgi\connectors\libfcgi\libfcgi-safe.ecf" readonly="false"/>
 		<library name="connector_nino" location="..\library\server\ewsgi\connectors\nino\nino-safe.ecf" readonly="false"/>
 		<library name="connector_null" location="..\library\server\ewsgi\connectors\null\null-safe.ecf" readonly="false"/>
-		<library name="conneg" location="..\library\network\protocol\CONNEG\conneg-safe.ecf" readonly="false"/>
+		<library name="conneg" location="..\library\network\protocol\content_negotiation\conneg-safe.ecf" readonly="false"/>
 		<library name="default_cgi" location="..\library\server\wsf\default\cgi-safe.ecf" readonly="false"/>
 		<library name="default_libfcgi" location="..\library\server\wsf\default\libfcgi-safe.ecf" readonly="false"/>
 		<library name="default_nino" location="..\library\server\wsf\default\nino-safe.ecf" readonly="false"/>
