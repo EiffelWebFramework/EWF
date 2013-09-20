@@ -1,34 +1,39 @@
 note
-	description: "COMMON_ACCEPT_HEADER_PARSER, this class allows to parse Accept-Charset and Accept-Encoding headers"
-	author: ""
+	description: "[
+					COMMON_ACCEPT_HEADER_PARSER, this class allows to parse Accept-Charset and Accept-Encoding headers
+					
+		]"
 	date: "$Date$"
 	revision: "$Revision$"
-	description :  "[
-		Charset Reference : http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.2
-		Encoding Reference : http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.3
-	]"
+	EIS: "name=Charset", "src=http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.2", "protocol=uri"
+	EIS: "name=Encoding", "src=http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.3", "protocol=uri"
 
 class
 	COMMON_ACCEPT_HEADER_PARSER
 
+inherit {NONE}
+
+	MIME_TYPE_PARSER_UTILITIES
+
 
 feature -- Parser
- 	parse_common (header: STRING): COMMON_RESULTS
+
+	parse_common (header: READABLE_STRING_8): COMMON_RESULTS
 			-- Parses `header' charset/encoding into its component parts.
 			-- For example, the charset 'iso-8889-5' would get parsed
 			-- into:
 			-- ('iso-8889-5', {'q':'1.0'})
 		local
-			l_parts: LIST [STRING]
-			sub_parts: LIST [STRING]
-			p: STRING
+			l_parts: LIST [READABLE_STRING_8]
+			sub_parts: LIST [READABLE_STRING_8]
+			p: READABLE_STRING_8
 			i: INTEGER
-			l_header: STRING
+			l_header: READABLE_STRING_8
 		do
 			create Result.make
 			l_parts := header.split (';')
 			if l_parts.count = 1 then
-					Result.put ("1.0", "q")
+				Result.put ("1.0", "q")
 			else
 				from
 					i := 1
@@ -38,17 +43,16 @@ feature -- Parser
 					p := l_parts.at (i)
 					sub_parts := p.split ('=')
 					if sub_parts.count = 2 then
-						Result.put (trim (sub_parts[2]), trim (sub_parts[1]))
+						Result.put (trim (sub_parts [2]), trim (sub_parts [1]))
 					end
 					i := i + 1
 				end
 			end
-			l_header := trim (l_parts[1])
+			l_header := trim (l_parts [1])
 			Result.set_field (trim (l_header))
 		end
 
-
-	fitness_and_quality_parsed (a_field: STRING; parsed_charsets: LIST [COMMON_RESULTS]): FITNESS_AND_QUALITY
+	fitness_and_quality_parsed (a_field: READABLE_STRING_8; parsed_charsets: LIST [COMMON_RESULTS]): FITNESS_AND_QUALITY
 			-- Find the best match for a given charset/encoding against a list of charsets/encodings
 			-- that have already been parsed by parse_common. Returns a
 			-- tuple of the fitness value and the value of the 'q' quality parameter of
@@ -60,12 +64,12 @@ feature -- Parser
 			best_fit_q: REAL_64
 			target: COMMON_RESULTS
 			range: COMMON_RESULTS
-			element: detachable STRING
+			element: detachable READABLE_STRING_8
 			l_fitness: INTEGER
 		do
 			best_fitness := -1
 			best_fit_q := 0.0
-			target := parse_common(a_field)
+			target := parse_common (a_field)
 			if attached target.item ("q") as q and then q.is_double then
 				target_q := q.to_double
 				if target_q < 0.0 then
@@ -76,9 +80,7 @@ feature -- Parser
 			else
 				target_q := 1.0
 			end
-
-			if attached target.field as l_target_field
-			then
+			if attached target.field as l_target_field then
 				from
 					parsed_charsets.start
 				until
@@ -86,7 +88,7 @@ feature -- Parser
 				loop
 					range := parsed_charsets.item_for_iteration
 					if attached range.field as l_range_common then
-						if  l_target_field.same_string (l_range_common) or l_target_field.same_string ("*") or l_range_common.same_string ("*") then
+						if l_target_field.same_string (l_range_common) or l_target_field.same_string ("*") or l_range_common.same_string ("*") then
 							if l_range_common.same_string (l_target_field) then
 								l_fitness := 100
 							else
@@ -109,8 +111,7 @@ feature -- Parser
 			create Result.make (best_fitness, best_fit_q)
 		end
 
-
-	quality_parsed (a_field: STRING; parsed_common: LIST [COMMON_RESULTS]): REAL_64
+	quality_parsed (a_field: READABLE_STRING_8; parsed_common: LIST [COMMON_RESULTS]): REAL_64
 			--	Find the best match for a given charset/encoding against a list of charsets/encodings that
 			--	have already been parsed by parse_charsets(). Returns the 'q' quality
 			--	parameter of the best match, 0 if no match was found. This function
@@ -119,14 +120,13 @@ feature -- Parser
 			Result := fitness_and_quality_parsed (a_field, parsed_common).quality
 		end
 
-
-	quality (a_field: STRING; commons: STRING): REAL_64
+	quality (a_field: READABLE_STRING_8; commons: READABLE_STRING_8): REAL_64
 			-- Returns the quality 'q' of a charset/encoding when compared against the
 			-- a list of charsets/encodings/
 		local
-			l_commons : LIST [STRING]
-			res : ARRAYED_LIST [COMMON_RESULTS]
-			p_res : COMMON_RESULTS
+			l_commons: LIST [READABLE_STRING_8]
+			res: ARRAYED_LIST [COMMON_RESULTS]
+			p_res: COMMON_RESULTS
 		do
 			l_commons := commons.split (',')
 			from
@@ -142,19 +142,17 @@ feature -- Parser
 			Result := quality_parsed (a_field, res)
 		end
 
-	best_match (supported: LIST [STRING]; header: STRING): STRING
+	best_match (supported: LIST [READABLE_STRING_8]; header: READABLE_STRING_8): READABLE_STRING_8
 			-- Choose the accept with the highest fitness score and quality ('q') from a list of candidates.
 		local
 			l_header_results: LIST [COMMON_RESULTS]
 			weighted_matches: LIST [FITNESS_AND_QUALITY]
-			l_res: LIST [STRING]
+			l_res: LIST [READABLE_STRING_8]
 			p_res: COMMON_RESULTS
 			fitness_and_quality, first_one: detachable FITNESS_AND_QUALITY
 		do
 			l_res := header.split (',')
 			create {ARRAYED_LIST [COMMON_RESULTS]} l_header_results.make (l_res.count)
-
-
 			from
 				l_res.start
 			until
@@ -164,9 +162,7 @@ feature -- Parser
 				l_header_results.force (p_res)
 				l_res.forth
 			end
-
 			create {ARRAYED_LIST [FITNESS_AND_QUALITY]} weighted_matches.make (supported.count)
-
 			from
 				supported.start
 			until
@@ -201,12 +197,16 @@ feature -- Parser
 						end
 						weighted_matches.forth
 					end
-					check weighted_matches.item = fitness_and_quality end
+					check
+						weighted_matches.item = fitness_and_quality
+					end
 					weighted_matches.forth
 				elseif first_one.is_equal (fitness_and_quality) then
 					weighted_matches.forth
 				else
-					check first_one > fitness_and_quality end
+					check
+						first_one > fitness_and_quality
+					end
 					weighted_matches.remove
 				end
 			end
@@ -228,14 +228,16 @@ feature -- Parser
 							loop
 								fitness_and_quality := weighted_matches.item
 								if fitness_and_quality.mime_type.same_string (l_field) then
-									--| Found
+										--| Found
 								else
 									fitness_and_quality := Void
 									weighted_matches.forth
 								end
 							end
 						else
-							check has_field: False end
+							check
+								has_field: False
+							end
 						end
 						l_header_results.forth
 					end
@@ -250,33 +252,8 @@ feature -- Parser
 			end
 		end
 
-feature -- Util
-
-	mime_type (s: STRING): STRING
-		local
-			p: INTEGER
-		do
-			p := s.index_of (';', 1)
-			if p > 0 then
-				Result := trim (s.substring (1, p - 1))
-			else
-				Result := trim (s.string)
-			end
-		end
-
-	trim (a_string: STRING): STRING
-			-- trim whitespace from the beginning and end of a string
-		require
-			valid_argument : a_string /= Void
-		do
-			a_string.left_adjust
-			a_string.right_justify
-			Result := a_string
-		ensure
-			result_same_as_argument: a_string = Result
-		end
-
 note
-	copyright: "2011-2011, Javier Velilla, Jocelyn Fiat and others"
+	copyright: "2011-2013, Javier Velilla, Jocelyn Fiat, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
+
 end

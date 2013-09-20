@@ -1,12 +1,13 @@
-note
-	description: "Summary description for {COMMON_RESULTS}."
-	author: ""
+﻿note
+	description: "Summary description for {PARSE_RESULTS}."
 	date: "$Date$"
 	revision: "$Revision$"
 
 class
-	COMMON_RESULTS
+	PARSE_RESULTS
+
 inherit
+
 	ANY
 		redefine
 			out
@@ -25,12 +26,16 @@ feature -- Initialization
 	make
 		do
 			create params.make (2)
+			create mime_type.make_from_string ("*/*")
 		end
 
 feature -- Access
 
-	field: detachable STRING
+	type: detachable STRING
 
+	sub_type: detachable STRING
+
+	mime_type: STRING
 
 	item (a_key: STRING): detachable STRING
 			-- Item associated with `a_key', if present
@@ -56,16 +61,33 @@ feature -- Access
 
 feature -- Element change
 
-	set_field (a_field: STRING)
-			-- Set type with `a_charset'	
+	set_type (a_type: STRING)
+			-- Set type with `a_type'
 		do
-			field := a_field
+			type := a_type
+			if attached sub_type as st then
+				mime_type := a_type + "/" + st
+			else
+				mime_type := a_type + "/*"
+			end
 		ensure
-			field_assigned: field ~ field
+			type_assigned: type ~ a_type
 		end
 
+	set_sub_type (a_sub_type: STRING)
+			-- Set sub_type with `a_sub_type
+		do
+			sub_type := a_sub_type
+			if attached type as t then
+				mime_type := t + "/" + a_sub_type
+			else
+				mime_type := "*/" + a_sub_type
+			end
+		ensure
+			sub_type_assigned: sub_type ~ a_sub_type
+		end
 
-    put (new: STRING; key: STRING)
+	put (new: STRING; key: STRING)
 			-- Insert `new' with `key' if there is no other item
 			-- associated with the same key. If present, replace
 			-- the old value with `new'
@@ -86,11 +108,13 @@ feature -- Status Report
 			-- Representation of the current object
 		do
 			create Result.make_from_string ("(")
-			if attached field as t then
+			if attached type as t then
 				Result.append_string ("'" + t + "',")
 			end
+			if attached sub_type as st then
+				Result.append_string (" '" + st + "',")
+			end
 			Result.append_string (" {")
-
 			from
 				params.start
 			until
@@ -113,7 +137,10 @@ feature {NONE} -- Implementation
 	params: HASH_TABLE [STRING, STRING]
 			--dictionary of all the parameters for the media range
 
-;note
-	copyright: "2011-2011, Javier Velilla, Jocelyn Fiat and others"
+		;
+
+note
+	copyright: "2011-2013, Javier Velilla, Jocelyn Fiat, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
+
 end

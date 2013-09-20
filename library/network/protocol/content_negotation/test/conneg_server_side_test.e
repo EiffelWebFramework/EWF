@@ -36,13 +36,13 @@ feature -- Test routines
 			assert ("Same Value at 1",mime_types_supported.at (1).is_equal (media_variants.supported_variants.at (1)))
 			assert ("Same count",mime_types_supported.count = media_variants.supported_variants.count)
 			assert ("Variant header is void",media_variants.variant_header = Void)
-			assert ("Media type is void",media_variants.media_type = Void)
+			assert ("Media type is void",media_variants.type = Void)
 
 			-- Scenario 2, the client doesnt send values in the header, Accept:
 			media_variants := conneg.media_type_preference (mime_types_supported, "")
 			assert ("Expected Acceptable", media_variants.is_acceptable)
 			assert ("Variants is dettached",media_variants.supported_variants = Void)
-			assert ("Mime is defaul", conneg.mime_default.is_equal (media_variants.media_type))
+			assert ("Mime is defaul", conneg.mime_default.is_equal (media_variants.type))
 			assert ("Variant header", media_variants.variant_header = Void)
 
 			--Scenario 3, the server select the best match, and set the vary header
@@ -50,7 +50,7 @@ feature -- Test routines
 			assert ("Expected Acceptable", media_variants.is_acceptable)
 			assert ("Variants is dettached",media_variants.supported_variants = Void)
 			assert ("Variant Header", media_variants.variant_header.is_equal ("Accept"))
-			assert ("Media Type is application/json", media_variants.media_type.is_equal ("application/json"))
+			assert ("Media Type is application/json", media_variants.type.is_equal ("application/json"))
 
 		end
 
@@ -70,14 +70,14 @@ feature -- Test routines
 			assert ("Same Value at 1",charset_supported.at (1).is_equal (charset_variants.supported_variants.at (1)))
 			assert ("Same count",charset_supported.count = charset_variants.supported_variants.count)
 			assert ("Variant header is void",charset_variants.variant_header = Void)
-			assert ("Character type is void",charset_variants.character_type = Void)
+			assert ("Character type is void",charset_variants.type = Void)
 
 
 			-- Scenario 2, the client doesnt send values in the header, Accept-Charset:
 			charset_variants := conneg.charset_preference (charset_supported, "")
 			assert ("Expected Acceptable", charset_variants.is_acceptable)
 			assert ("Variants is dettached",charset_variants.supported_variants = Void)
-			assert ("Charset is defaul", conneg.charset_default.is_equal (charset_variants.character_type))
+			assert ("Charset is defaul", conneg.charset_default.is_equal (charset_variants.type))
 			assert ("Variant header", charset_variants.variant_header = Void)
 
 
@@ -86,7 +86,7 @@ feature -- Test routines
 			assert ("Expected Acceptable", charset_variants.is_acceptable)
 			assert ("Variants is dettached",charset_variants.supported_variants = Void)
 			assert ("Variant Header", charset_variants.variant_header.is_equal ("Accept-Charset"))
-			assert ("Character Type is iso-8859-5", charset_variants.character_type.is_equal ("iso-8859-5"))
+			assert ("Character Type is iso-8859-5", charset_variants.type.is_equal ("iso-8859-5"))
 		end
 
 	test_compression_negotiation
@@ -103,26 +103,26 @@ feature -- Test routines
 			assert ("Same Value at 1",compression_supported.at (1).is_equal (compression_variants.supported_variants.at (1)))
 			assert ("Same count",compression_supported.count = compression_variants.supported_variants.count)
 			assert ("Variant header is void",compression_variants.variant_header = Void)
-			assert ("Compression type is void",compression_variants.compression_type = Void)
+			assert ("Compression type is void",compression_variants.type = Void)
 
 
 			-- Scenario 2, the client doesnt send values in the header, Accept-Encoding
 			compression_variants := conneg.encoding_preference (compression_supported, "")
 			assert ("Expected Acceptable", compression_variants.is_acceptable)
 			assert ("Variants is dettached",compression_variants.supported_variants = Void)
-			assert ("Compression is defaul", conneg.encoding_default.is_equal (compression_variants.compression_type))
+			assert ("Compression is defaul", conneg.encoding_default.is_equal (compression_variants.type))
 			assert ("Variant header", compression_variants.variant_header = Void)
 
 
 			--Scenario 3, the server select the best match, and set the vary header
 			l_compression := "gzip"
 			compression_supported := l_compression.split(',')
-			conneg.set_encoding_defautl ("gzip")
+			conneg.set_encoding_default("gzip")
 			compression_variants := conneg.encoding_preference (compression_supported, "compress,gzip;q=0.7")
 			assert ("Expected Acceptable", compression_variants.is_acceptable)
 			assert ("Variants is dettached",compression_variants.supported_variants = Void)
 			assert ("Variant Header", compression_variants.variant_header.is_equal ("Accept-Encoding"))
-			assert ("Encoding Type is gzip", compression_variants.compression_type.is_equal ("gzip"))
+			assert ("Encoding Type is gzip", compression_variants.type.is_equal ("gzip"))
 		end
 
 
@@ -141,14 +141,14 @@ feature -- Test routines
 			assert ("Same Value at 1",languages_supported.at (1).is_equal (language_variants.supported_variants.at (1)))
 			assert ("Same count",languages_supported.count = language_variants.supported_variants.count)
 			assert ("Variant header is void",language_variants.variant_header = Void)
-			assert ("Language type is void",language_variants.language_type = Void)
+			assert ("Language type is void",language_variants.type = Void)
 
 
 			-- Scenario 2, the client doesnt send values in the header, Accept-Language:
 			language_variants := conneg.language_preference (languages_supported, "")
 			assert ("Expected Acceptable", language_variants.is_acceptable)
 			assert ("Variants is dettached",language_variants.supported_variants = Void)
-			assert ("Language is defaul", conneg.language_default.is_equal (language_variants.language_type))
+			assert ("Language is defaul", conneg.language_default.is_equal (language_variants.type))
 			assert ("Variant header", language_variants.variant_header = Void)
 
 
@@ -157,7 +157,7 @@ feature -- Test routines
 			assert ("Expected Acceptable", language_variants.is_acceptable)
 			assert ("Variants is dettached",language_variants.supported_variants = Void)
 			assert ("Variant Header", language_variants.variant_header.is_equal ("Accept-Language"))
-			assert ("Language Type is fr", language_variants.language_type.is_equal ("fr"))
+			assert ("Language Type is fr", language_variants.type.is_equal ("fr"))
 
 
 		end
