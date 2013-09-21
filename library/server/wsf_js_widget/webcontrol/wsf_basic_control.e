@@ -12,46 +12,52 @@ inherit
 	WSF_STATELESS_CONTROL
 
 create
-	make_control,
-	make_with_body
+	make_control, make_with_body
 
 feature {NONE} -- Initialization
 
 	make_control (t: STRING)
+			-- Initialize
 		do
 			make_with_body (t, "", "")
 		end
 
-	make_with_body (t,attr,a_content: STRING)
+	make_with_body (t, attr, b: STRING)
+			-- Initialize with specific attributes and body
 		do
 			make (t)
 			attributes := attr
-			content := a_content
+			body := b
 		end
 
-feature -- Access		
+feature -- Access
 
 	attributes: STRING
+			-- Attributes string of this control
 
-	content: STRING
+	body: STRING
+			-- Body of this control
 
 feature -- Rendering
 
 	render: STRING
+			-- HTML representation of this control
 		do
-			Result := render_tag (content, attributes)
+			Result := render_tag (body, attributes)
 		end
 
 feature
 
 	set_attributes (a: STRING)
+			-- Set the attributes string of this control
 		do
 			attributes := a
 		end
 
-	set_content (c: STRING)
+	set_body (b: STRING)
+			-- Set the body of this control
 		do
-			content := c
+			body := b
 		end
 
 end

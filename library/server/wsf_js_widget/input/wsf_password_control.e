@@ -14,9 +14,10 @@ inherit
 create
 	make_password
 
-feature {NONE}
+feature {NONE} -- Initialization
 
-	make_password (n: STRING; v: STRING)
+	make_password (n, v: STRING)
+			-- Initialize with specified control name and text
 		do
 			make_input (n, v)
 			type := "password"

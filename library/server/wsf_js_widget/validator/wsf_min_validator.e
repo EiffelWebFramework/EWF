@@ -5,10 +5,11 @@ note
 	revision: "$Revision$"
 
 class
-	WSF_MIN_VALIDATOR[G]
+	WSF_MIN_VALIDATOR [G]
 
 inherit
-	WSF_VALIDATOR [LIST[G]]
+
+	WSF_VALIDATOR [LIST [G]]
 		redefine
 			state
 		end
@@ -16,9 +17,10 @@ inherit
 create
 	make_min_validator
 
-feature {NONE}
+feature {NONE} -- Initialization
 
-	make_min_validator (m:INTEGER; e: STRING)
+	make_min_validator (m: INTEGER; e: STRING)
+			-- Initialize with specified minimum and error message which will be displayed on validation failure
 		do
 			make (e)
 			min := m
@@ -26,13 +28,12 @@ feature {NONE}
 
 feature -- Implementation
 
-	is_valid (input:LIST[G]): BOOLEAN
+	is_valid (input: LIST [G]): BOOLEAN
 		do
-			Result:= input.count > min or input.count = min
-
+			Result := input.count > min or input.count = min
 		end
 
-feature
+feature -- State
 
 	state: JSON_OBJECT
 		do
@@ -40,6 +41,9 @@ feature
 			Result.put (create {JSON_NUMBER}.make_integer (min), "min")
 		end
 
+feature -- Propertiess
+
 	min: INTEGER
+			-- The minimal allowed value
 
 end

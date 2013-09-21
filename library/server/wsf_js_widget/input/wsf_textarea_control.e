@@ -17,15 +17,16 @@ inherit
 create
 	make_textarea
 
-feature {NONE}
+feature {NONE} -- Initialization
 
 	make_textarea (n, t: STRING)
+			-- Initialize with specified control name and text to be displayed in this textarea
 		do
 			make_input (n, t)
 			tag_name := "textarea"
 		end
 
-feature
+feature -- Rendering
 
 	render: STRING
 		do

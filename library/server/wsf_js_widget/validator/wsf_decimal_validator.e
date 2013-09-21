@@ -14,9 +14,10 @@ inherit
 create
 	make_decimal_validator
 
-feature {NONE}
+feature {NONE} -- Initialization
 
 	make_decimal_validator (e: STRING)
+			-- Initialize with specified error message which will be displayed on validation failure
 		do
 			make_regexp_validator ("^[0-9]+(\.[0-9]*)?$|^\.[0-9]+$", e)
 		end

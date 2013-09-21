@@ -11,9 +11,10 @@ inherit
 
 	WSF_CONTROL
 
-feature
+feature -- Access
 
 	value: G
+			-- The current value of this control
 		deferred
 		end
 

@@ -21,14 +21,16 @@ inherit
 create
 	make_form_element, make_form_element_with_validators
 
-feature {NONE}
+feature {NONE} -- Initialization
 
 	make_form_element (a_label: STRING; c: WSF_VALUE_CONTROL [G])
+			-- Initialize form element control with a specific label and value control
 		do
 			make_form_element_with_validators (a_label, c, create {ARRAYED_LIST [WSF_VALIDATOR [G]]}.make (0))
 		end
 
 	make_form_element_with_validators (a_label: STRING; c: WSF_VALUE_CONTROL [G]; v: LIST [WSF_VALIDATOR [G]])
+			-- Initialize form element control with a specific label, value control and list of validators
 		do
 			make_control (c.control_name + "_container", "div")
 			add_class ("form-group")
@@ -44,7 +46,7 @@ feature {NONE}
 			error := ""
 		end
 
-feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- STATE MANAGEMENT
+feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 
 	load_state (new_states: JSON_OBJECT)
 			-- Pass new_states to subcontrols
@@ -54,6 +56,7 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- STATE MANAGEMENT
 		end
 
 	set_state (new_state: JSON_OBJECT)
+			-- Set new state
 		do
 			value_control.set_state (new_state)
 		end
@@ -73,7 +76,7 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- STATE MANAGEMENT
 		end
 
 	state: JSON_OBJECT
-			--Read state
+			-- Read state
 		local
 			validator_description: JSON_ARRAY
 		do
@@ -88,7 +91,7 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- STATE MANAGEMENT
 			Result.put (validator_description, "validators")
 		end
 
-feature --EVENT HANDLING
+feature -- Event handling
 
 	handle_callback (cname: STRING; event: STRING; event_parameter: detachable STRING)
 			-- Pass callback to subcontrols
@@ -102,9 +105,10 @@ feature --EVENT HANDLING
 			end
 		end
 
-feature --Implementation
+feature -- Implementation
 
 	render: STRING
+			-- HTML Respresentation of this form element control
 		local
 			body: STRING
 		do
@@ -121,17 +125,20 @@ feature --Implementation
 feature -- Validation
 
 	add_validator (v: WSF_VALIDATOR [G])
+			-- Add an additional validator that will check the input of the value control of this form element control on validation
 		do
 			validators.extend (v)
 		end
 
 	set_error (e: STRING)
+			-- Set the error message that will be displayed upon failure of client side validation
 		do
 			error := e
 			state_changes.replace (create {JSON_STRING}.make_json (e), "error")
 		end
 
 	validate
+			-- Perform validation
 		local
 			current_value: G
 		do
@@ -153,15 +160,20 @@ feature -- Validation
 		end
 
 	is_valid: BOOLEAN
+			-- Tells whether the last validation was successful or not
 
-feature
+feature -- Properties
 
 	value_control: WSF_VALUE_CONTROL [G]
+			-- The value control associated with this form element control
 
 	validators: LIST [WSF_VALIDATOR [G]]
+			-- The validators which check the input when validaton is performed
 
 	label: STRING
+			-- The label of this form element control
 
 	error: STRING
+			-- The error message that is displayed when client side validation fails
 
 end

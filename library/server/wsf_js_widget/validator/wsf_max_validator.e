@@ -17,9 +17,10 @@ inherit
 create
 	make_max_validator
 
-feature {NONE}
+feature {NONE} -- Initialization
 
 	make_max_validator (m: INTEGER; e: STRING)
+			-- Initialize with specified maximum and error message which will be displayed on validation failure
 		do
 			make (e)
 			max := m
@@ -32,7 +33,7 @@ feature -- Implementation
 			Result := input.count < max or input.count = max
 		end
 
-feature
+feature -- State
 
 	state: JSON_OBJECT
 		do
@@ -40,6 +41,9 @@ feature
 			Result.put (create {JSON_NUMBER}.make_integer (max), "max")
 		end
 
+feature -- Properties
+
 	max: INTEGER
+			-- The maximal allowed value
 
 end

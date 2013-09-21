@@ -14,9 +14,10 @@ inherit
 create
 	make_button
 
-feature {NONE}
+feature {NONE} -- Initialization
 
 	make_button (n: STRING; t: STRING)
+			-- Initialize with specified control name and text
 		do
 			make_control (n, "button")
 			add_class ("btn")
@@ -24,7 +25,7 @@ feature {NONE}
 			text := t
 		end
 
-feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- STATE MANAGEMENT
+feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 
 	set_state (new_state: JSON_OBJECT)
 			-- Restore text from json
@@ -42,7 +43,7 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- STATE MANAGEMENT
 			Result.put (create {JSON_BOOLEAN}.make_boolean (attached click_event), "callback_click")
 		end
 
-feature --EVENT HANDLING
+feature --Event handling
 
 	set_click_event (e: attached like click_event)
 			-- Set button click event handle
@@ -57,14 +58,18 @@ feature --EVENT HANDLING
 			end
 		end
 
-feature
+feature -- Rendering
 
 	render: STRING
+			-- HTML representation of this control
 		do
 			Result := render_tag (text, "")
 		end
 
+feature -- Change
+
 	set_text (t: STRING)
+			-- Set text of that button
 		do
 			if not t.same_string (text) then
 				text := t
@@ -72,10 +77,12 @@ feature
 			end
 		end
 
-feature
+feature -- Properties
 
 	text: STRING
+			-- The text currently displayed on this button
 
 	click_event: detachable PROCEDURE [ANY, TUPLE]
+			-- Event that is executed when button is clicked
 
 end

@@ -21,14 +21,15 @@ inherit
 create
 	make_checkbox_list_control
 
-feature {NONE}
+feature {NONE} -- Initializaton
 
 	make_checkbox_list_control (n: STRING)
+			-- Initialize with specified control name
 		do
 			make_multi_control (n)
 		end
 
-feature
+feature -- Implementation
 
 	value: LIST [STRING]
 		do

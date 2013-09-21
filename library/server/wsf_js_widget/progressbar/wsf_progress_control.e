@@ -17,6 +17,7 @@ create
 feature {NONE} -- Initialization
 
 	make_progress (n: STRING)
+			-- Initialize with specified control name
 		do
 			make_control (n, "div")
 			add_class ("progress")
@@ -24,6 +25,7 @@ feature {NONE} -- Initialization
 		end
 
 	make_progress_with_source (n: STRING; p: WSF_PROGRESSSOURCE)
+			-- Initialize with specified control name and progresssource
 		do
 			make_progress (n)
 			progress_source := p
@@ -64,21 +66,18 @@ feature -- Rendering
 			Result := render_tag (Result, "")
 		end
 
-feature --Change progress
+feature -- Change
 
 	set_progress (p: INTEGER)
+			-- Set current progress value to specified value. Must be between 0 and 100. Must only be called when no progresssource has been set to this progress control
 		require
-			no_progress_source: not (attached progress_source)
+			no_progress_source: not (attached progress_source) and p >= 0 and p <= 100
 		do
 			progress := p
 			state_changes.put (create {JSON_NUMBER}.make_integer (progress), "progress")
 		end
 
-feature
-
-	progress_source: detachable WSF_PROGRESSSOURCE
-
-	progress: INTEGER
+feature -- Implementation
 
 	progress_value: INTEGER
 		do
@@ -87,5 +86,11 @@ feature
 				Result := ps.progress
 			end
 		end
+
+feature -- Properties
+
+	progress_source: detachable WSF_PROGRESSSOURCE
+
+	progress: INTEGER
 
 end

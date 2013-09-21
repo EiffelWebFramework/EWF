@@ -7,9 +7,10 @@ note
 deferred class
 	WSF_PROGRESSSOURCE
 
-feature
+feature -- Specification
 
 	progress: INTEGER
+			-- Current value of progress between 0 and 100 of this progresssource
 		deferred
 		end
 

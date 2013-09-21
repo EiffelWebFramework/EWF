@@ -14,16 +14,17 @@ inherit
 create
 	make_checkbox
 
-feature {NONE}
+feature {NONE} -- Initialization
 
-	make_checkbox (n: STRING; l: STRING; c: STRING)
+	make_checkbox (n, l, c: STRING)
+			-- Initialize with specified control name,
 		do
 			make_control (n, "input")
 			label := l
 			checked_value := c
 		end
 
-feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- STATE MANAGEMENT
+feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 
 	set_state (new_state: JSON_OBJECT)
 			-- Restore text from json
@@ -42,7 +43,7 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- STATE MANAGEMENT
 			Result.put (create {JSON_BOOLEAN}.make_boolean (attached change_event), "callback_change")
 		end
 
-feature --EVENT HANDLING
+feature --Event handling
 
 	set_change_event (e: attached like change_event)
 			-- Set text change event handle
@@ -77,14 +78,18 @@ feature -- Implementation
 			Result := checked
 		end
 
-feature
+feature -- Properties
 
 	label: STRING
+			-- The label of the checkbox control
 
 	checked: BOOLEAN
+			-- The checked value of the checkbox control
 
 	checked_value: STRING
+			-- String checked value
 
 	change_event: detachable PROCEDURE [ANY, TUPLE]
+			-- Function to be executed on change
 
 end

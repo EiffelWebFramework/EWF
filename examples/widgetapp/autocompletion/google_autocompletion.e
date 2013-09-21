@@ -17,6 +17,7 @@ create
 feature {NONE} -- Initialization
 
 	make
+			-- Initialize
 		do
 			template := "{{=value}}";
 		end
@@ -24,11 +25,11 @@ feature {NONE} -- Initialization
 feature -- Implementation
 
 	autocompletion (input: STRING): JSON_ARRAY
+			-- Implementation
 		local
 			cl: LIBCURL_HTTP_CLIENT
 			sess: HTTP_CLIENT_SESSION
 			l_json: detachable READABLE_STRING_8
-
 			o: JSON_OBJECT
 			json_parser: JSON_PARSER
 			query_str: STRING

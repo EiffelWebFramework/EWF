@@ -7,12 +7,14 @@ note
 deferred class
 	WSF_AUTOCOMPLETION
 
-feature
+feature -- Access
 
 	autocompletion (input: STRING): JSON_ARRAY
+			-- JSON array of suggestions that fit the specific input
 		deferred
 		end
 
 	template: detachable STRING
+			-- Customizable template
 
 end

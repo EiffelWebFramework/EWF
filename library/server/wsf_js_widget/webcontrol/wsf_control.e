@@ -18,9 +18,10 @@ feature
 
 	control_name: STRING
 
-feature {NONE}
+feature {NONE} -- Initialization
 
 	make_control (n, a_tag_name: STRING)
+			-- Initialize with specified control name and tag
 		do
 			make (a_tag_name)
 			control_name := n
@@ -68,11 +69,13 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- STATE MANAGEMENT
 feature -- Rendering
 
 	render_tag (body, attrs: STRING): STRING
+			-- Render this control with the specified body and attributes
 		do
 			Result := render_tag_with_generator_name (generator, body, attrs)
 		end
 
 	render_tag_with_generator_name (a_generator, body, attrs: STRING): STRING
+			-- Render this control with the specified generator name, body and attributes
 		local
 			css_classes_string: STRING
 			l_attributes: STRING

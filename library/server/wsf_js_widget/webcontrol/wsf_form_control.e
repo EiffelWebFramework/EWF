@@ -16,9 +16,10 @@ inherit
 create
 	make_form_control
 
-feature {NONE}
+feature {NONE} -- Initialization
 
 	make_form_control (n: STRING)
+			-- Initialize
 		do
 			make_multi_control (n)
 			tag_name := "form"
@@ -27,6 +28,7 @@ feature {NONE}
 feature -- Validation
 
 	validate
+			-- Perform form validation
 		do
 			is_valid := True
 			across
@@ -44,5 +46,6 @@ feature -- Validation
 		end
 
 	is_valid: BOOLEAN
+			-- Tells whether the last validation was valid
 
 end

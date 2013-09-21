@@ -22,17 +22,19 @@ create
 feature {NONE} -- Initialization
 
 	make_multi_control (n: STRING)
+			-- Initialize with specified control name and default tag "div"
 		do
 			make_with_tag_name (n, "div")
 		end
 
 	make_with_tag_name (n, t: STRING)
+			-- Initialize with specified control name and tag
 		do
 			make_control (n, t)
 			controls := create {LINKED_LIST [G]}.make;
 		end
 
-feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- STATE MANAGEMENT
+feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 
 	load_state (new_states: JSON_OBJECT)
 			-- Pass new_states to subcontrols
@@ -84,7 +86,7 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- STATE MANAGEMENT
 			create Result.make
 		end
 
-feature -- EVENT HANDLING
+feature -- Event handling
 
 	handle_callback (cname: STRING; event: STRING; event_parameter: detachable STRING)
 			-- Pass callback to subcontrols
@@ -101,9 +103,10 @@ feature -- EVENT HANDLING
 			end
 		end
 
-feature
+feature -- Rendering
 
 	render: STRING
+			-- HTML representation of this multi control
 		do
 			Result := ""
 			across
@@ -114,13 +117,19 @@ feature
 			Result := render_tag (Result, "")
 		end
 
-	add_control (c: detachable  G)
+feature -- Change
+
+	add_control (c: detachable G)
+			-- Add a control to this multi control
 		do
 			if attached c as d then
 				controls.put_front (d)
 			end
 		end
 
+feature -- Properties
+
 	controls: LINKED_LIST [G]
+			-- List of current controls in this multi control
 
 end

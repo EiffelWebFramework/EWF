@@ -14,9 +14,10 @@ inherit
 create
 	make
 
-feature {NONE}
+feature {NONE} -- Initialization
 
 	make (l: ITERABLE [STRING])
+			-- Initialize
 		do
 			list := l
 		end
@@ -24,6 +25,7 @@ feature {NONE}
 feature -- Implementation
 
 	autocompletion (input: STRING): JSON_ARRAY
+			-- Implementation
 		local
 			o: JSON_OBJECT
 		do
@@ -33,14 +35,13 @@ feature -- Implementation
 			loop
 				if c.item.as_lower.has_substring (input.as_lower) then
 					create o.make
-					o.put (create {JSON_STRING}.make_json(c.item), "value")
+					o.put (create {JSON_STRING}.make_json (c.item), "value")
 					Result.add (o)
 				end
 			end
 		end
 
-feature
-
 	list: ITERABLE [STRING]
+			-- List containing suggestions
 
 end

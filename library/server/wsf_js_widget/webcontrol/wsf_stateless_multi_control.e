@@ -5,7 +5,7 @@ note
 	revision: "$Revision$"
 
 class
-	WSF_STATELESS_MULTI_CONTROL [G -> WSF_STATELESS_CONTROL]
+	WSF_STATELESS_MULTI_CONTROL
 
 inherit
 
@@ -17,19 +17,22 @@ create
 feature {NONE} -- Initialization
 
 	make_multi_control
+			-- Initialize with default tag "div"
 		do
 			make_with_tag_name ("div")
 		end
 
 	make_with_tag_name (t: STRING)
+			-- Initialize with specified tag
 		do
 			make (t)
-			controls := create {LINKED_LIST [G]}.make;
+			controls := create {LINKED_LIST [WSF_STATELESS_CONTROL]}.make;
 		end
 
-feature
+feature -- Rendering
 
 	render: STRING
+			-- HTML representation of this stateless multi control
 		do
 			Result := ""
 			across
@@ -40,11 +43,17 @@ feature
 			Result := render_tag (Result, "")
 		end
 
-	add_control (c: G)
+feature -- Change
+
+	add_control (c: WSF_STATELESS_CONTROL)
+			-- Add control to this stateless multi control
 		do
 			controls.put_front (c)
 		end
 
-	controls: LINKED_LIST [G]
+feature -- Properties
+
+	controls: LINKED_LIST [WSF_STATELESS_CONTROL]
+			-- List of controls
 
 end

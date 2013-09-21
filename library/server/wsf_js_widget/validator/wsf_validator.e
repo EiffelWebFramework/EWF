@@ -7,16 +7,18 @@ note
 deferred class
 	WSF_VALIDATOR [G]
 
-feature {NONE}
+feature {NONE} -- Initialization
 
 	make (e: STRING)
+			-- Initialize with specified error message to be displayed on validation failure
 		do
 			error := e
 		end
 
-feature
+feature -- Access
 
 	state: JSON_OBJECT
+			-- JSON state of this validator
 		do
 			create Result.make
 			Result.put (create {JSON_STRING}.make_json (generator), "name")
@@ -24,8 +26,11 @@ feature
 		end
 
 	is_valid (input: G): BOOLEAN
+			-- Perform validation on given input and tell whether validation was successful or not
 		deferred
 		end
+
+feature -- Properties
 
 	error: STRING
 

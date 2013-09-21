@@ -14,16 +14,17 @@ inherit
 create
 	make_input
 
-feature {NONE}
+feature {NONE} -- Initialization
 
-	make_input (n: STRING; v: STRING)
+	make_input (n, v: STRING)
+			-- Initialize with specified name and value
 		do
 			make_control (n, "input")
 			type := "text"
 			text := v
 		end
 
-feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- STATE MANAGEMENT
+feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 
 	set_state (new_state: JSON_OBJECT)
 			-- Restore text from json
@@ -41,7 +42,7 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- STATE MANAGEMENT
 			Result.put (create {JSON_BOOLEAN}.make_boolean (attached change_event), "callback_change")
 		end
 
-feature --EVENT HANDLING
+feature --Event handling
 
 	set_change_event (e: attached like change_event)
 			-- Set text change event handle
@@ -58,14 +59,17 @@ feature --EVENT HANDLING
 			end
 		end
 
-feature -- Implementation
+feature -- Rendering
 
 	render: STRING
 		do
 			Result := render_tag ("", "type=%"" + type + "%" value=%"" + text + "%"")
 		end
 
+feature -- Change
+
 	set_text (t: STRING)
+			-- Set text to be displayed
 		do
 			if not t.same_string (text) then
 				text := t
@@ -73,17 +77,22 @@ feature -- Implementation
 			end
 		end
 
+feature -- Implementation
+
 	value: STRING
 		do
 			Result := text
 		end
 
-feature
+feature -- Properties
 
 	text: STRING
+			-- Text to be displayed
 
 	type: STRING
+			-- Type of this input control
 
 	change_event: detachable PROCEDURE [ANY, TUPLE]
+			-- Procedure to be execued on change
 
 end

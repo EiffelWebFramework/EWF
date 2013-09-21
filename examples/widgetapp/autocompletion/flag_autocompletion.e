@@ -16,7 +16,8 @@ create
 
 feature {NONE} -- Initialization
 
-	make ()
+	make
+			-- Initialize
 		do
 			template := "<img src=%"http://www.famfamfam.com/lab/icons/flags/icons/gif/{{=flag}}.gif%"> {{=value}}";
 		end
@@ -24,6 +25,7 @@ feature {NONE} -- Initialization
 feature -- Implementation
 
 	autocompletion (input: STRING): JSON_ARRAY
+			-- Implementation
 		local
 			list: ITERABLE [TUPLE [STRING, STRING]]
 			o: JSON_OBJECT

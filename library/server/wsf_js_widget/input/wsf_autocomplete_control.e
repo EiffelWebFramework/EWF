@@ -18,9 +18,10 @@ inherit
 create
 	make_autocomplete, make_autocomplete_with_agent
 
-feature {NONE} -- Creation
+feature {NONE} -- Initialization
 
 	make_autocomplete (n: STRING; c: WSF_AUTOCOMPLETION)
+			-- Initialize with specified name and autocompletion
 		do
 			make_autocomplete_with_agent (n, agent c.autocompletion)
 			if attached c.template as t then
@@ -29,6 +30,7 @@ feature {NONE} -- Creation
 		end
 
 	make_autocomplete_with_agent (n: STRING; c: FUNCTION [ANY, TUPLE [STRING], JSON_ARRAY])
+			-- Initialize with specified name and autocompletion function
 		do
 			make_input (n, "")
 			create_json_list := c
@@ -53,7 +55,7 @@ feature -- Callback
 			end
 		end
 
-feature -- Autocomplete
+feature -- Properties
 
 	create_json_list: FUNCTION [ANY, TUPLE [STRING], JSON_ARRAY]
 

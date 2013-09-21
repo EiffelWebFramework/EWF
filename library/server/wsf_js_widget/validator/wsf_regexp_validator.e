@@ -17,9 +17,10 @@ inherit
 create
 	make_regexp_validator
 
-feature {NONE}
+feature {NONE} -- Initialization
 
 	make_regexp_validator (r, e: STRING)
+			-- Initialize with specified regular expression and error message which will be displayed on validation failure
 		do
 			make (e)
 			regexp_string := r
@@ -37,7 +38,7 @@ feature -- Implementation
 			Result := regexp.matches (input)
 		end
 
-feature
+feature -- State
 
 	state: JSON_OBJECT
 		do
@@ -46,6 +47,8 @@ feature
 			Result.put (create {JSON_STRING}.make_json (regexp_string), "expression")
 			Result.put (create {JSON_STRING}.make_json (error), "error")
 		end
+
+feature -- Properties
 
 	regexp_string: STRING
 

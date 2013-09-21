@@ -10,6 +10,7 @@ deferred class
 feature {NONE} -- Initialization
 
 	make (req: WSF_REQUEST; res: WSF_RESPONSE)
+			-- Initialize
 		do
 			request := req
 			response := res
@@ -19,10 +20,12 @@ feature {NONE} -- Initialization
 feature -- Access
 
 	request: WSF_REQUEST
+			-- The request
 
 	response: WSF_RESPONSE
+			-- The response
 
-feature
+feature -- Specific implementation
 
 	initialize_controls
 			-- Initalize all the controls, all the event handles must be set in this function.
@@ -36,7 +39,7 @@ feature
 		deferred
 		end
 
-feature
+feature -- Implementation
 
 	execute
 			-- Entry Point: If request is a callback, restore control states and execute handle then return new state json.
@@ -108,8 +111,9 @@ feature
 			end
 		end
 
-feature {NONE}
+feature {NONE} -- Root control
 
 	control: WSF_CONTROL
+			-- The root control of this page
 
 end

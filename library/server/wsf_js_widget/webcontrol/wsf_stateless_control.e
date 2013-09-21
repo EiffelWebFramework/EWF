@@ -7,9 +7,10 @@ note
 deferred class
 	WSF_STATELESS_CONTROL
 
-feature {NONE}
+feature {NONE} -- Initialization
 
 	make (a_tag_name: STRING)
+			-- Initialize with specified tag
 		do
 			tag_name := a_tag_name
 			create css_classes.make (0)
@@ -20,19 +21,25 @@ feature {NONE}
 feature -- Access
 
 	tag_name: STRING
+			-- The tag name
 
 	css_classes: ARRAYED_LIST [STRING]
+			-- List of classes (appear in the "class" attribute)
 
-		--TODO: Maybe improve
+		-- TODO: Maybe improve
 
 feature -- Change
 
 	add_class (c: STRING)
+			-- Add a css class to this control
 		do
 			css_classes.force (c)
 		end
 
+feature -- Rendering
+
 	render_tag (body, attrs: STRING): STRING
+			-- Generate HTML of this control with the specified body and attributes
 		local
 			css_classes_string: STRING
 		do
@@ -46,6 +53,7 @@ feature -- Change
 		end
 
 	render_tag_with_tagname (tag, body, attrs, css_classes_string: STRING): STRING
+			-- Generate HTML of the specified tag with specified body, attributes and css classes
 		local
 			l_attributes: STRING
 		do
@@ -56,13 +64,7 @@ feature -- Change
 				l_attributes.append_character ('%"')
 			end
 			Result := "<" + tag + " " + l_attributes
-			if
-				body.is_empty and
-				not tag.same_string ("textarea") and
-				not tag.same_string ("span") and
-				not tag.same_string ("button") and
-				not tag.same_string ("ul")
-			then
+			if body.is_empty and not tag.same_string ("textarea") and not tag.same_string ("span") and not tag.same_string ("button") and not tag.same_string ("ul") then
 				Result.append (" />")
 			else
 				Result.append (" >" + body + "</" + tag + ">")

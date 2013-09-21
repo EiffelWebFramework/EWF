@@ -9,47 +9,19 @@ class
 
 inherit
 
-	WSF_STATELESS_MULTI_CONTROL [WSF_STATELESS_CONTROL]
+	WSF_STATELESS_MULTI_CONTROL
 
 create
 	make_navbar
 
-feature
-
-	collapse: WSF_STATELESS_MULTI_CONTROL [WSF_STATELESS_CONTROL]
-
-	nav: WSF_STATELESS_MULTI_CONTROL [WSF_STATELESS_CONTROL]
-
-	nav_right: WSF_STATELESS_MULTI_CONTROL [WSF_STATELESS_CONTROL]
-
-feature
-
-	add_element (c: WSF_STATELESS_CONTROL)
-		do
-			add_element_to_nav (c, nav)
-		end
-
-	add_element_right (c: WSF_STATELESS_CONTROL)
-		do
-			add_element_to_nav (c, nav_right)
-		end
-
-	add_element_to_nav (e: WSF_STATELESS_CONTROL; n: WSF_STATELESS_MULTI_CONTROL [WSF_STATELESS_CONTROL])
-		local
-			li: WSF_STATELESS_MULTI_CONTROL [WSF_STATELESS_CONTROL]
-		do
-			create li.make_with_tag_name ("li")
-			li.add_control (e)
-			n.add_control (li)
-		end
-
 feature {NONE} -- Initialization
 
 	make_navbar (b: STRING)
+			-- Initialize with specified brand string
 		local
-			container: WSF_STATELESS_MULTI_CONTROL [WSF_STATELESS_CONTROL]
-			header: WSF_STATELESS_MULTI_CONTROL [WSF_STATELESS_CONTROL]
-			collapse_button: WSF_STATELESS_MULTI_CONTROL [WSF_STATELESS_CONTROL]
+			container: WSF_STATELESS_MULTI_CONTROL
+			header: WSF_STATELESS_MULTI_CONTROL
+			collapse_button: WSF_STATELESS_MULTI_CONTROL
 			brand: WSF_BASIC_CONTROL
 			icon_bar: WSF_BASIC_CONTROL
 		do
@@ -70,10 +42,9 @@ feature {NONE} -- Initialization
 			collapse_button.add_control (icon_bar)
 			collapse_button.add_control (icon_bar)
 			collapse_button.add_control (icon_bar)
---			collapse_button.set_attributes ("data-target=%".navbar-collapse%" data-toggle=%"collapse%" type=%"button%"")
 			brand.add_class ("navbar-brand")
 			brand.set_attributes ("href=%"#%"")
-			brand.set_content (b)
+			brand.set_body (b)
 			header.add_control (collapse_button)
 			header.add_control (brand)
 			nav.add_class ("nav navbar-nav")
@@ -85,5 +56,16 @@ feature {NONE} -- Initialization
 			container.add_control (collapse)
 			add_control (container)
 		end
+
+feature -- Properties
+
+	collapse: WSF_STATELESS_MULTI_CONTROL
+			-- Content of collapsable navbar
+
+	nav: WSF_STATELESS_MULTI_CONTROL
+			-- Middle nav
+
+	nav_right: WSF_STATELESS_MULTI_CONTROL
+			-- Right nav
 
 end

@@ -14,9 +14,10 @@ inherit
 create
 	make_with_message
 
-feature {NONE}
+feature {NONE} -- Initialization
 
 	make_with_message (e: STRING)
+			-- Initialize with specified error message which will be displayed on validation failure
 		do
 			make_regexp_validator ("", e)
 		end

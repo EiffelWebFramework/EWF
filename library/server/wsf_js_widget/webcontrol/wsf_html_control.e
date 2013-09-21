@@ -14,15 +14,16 @@ inherit
 create
 	make_html
 
-feature {NONE}
+feature {NONE} -- Initialization
 
 	make_html (n, t, v: STRING)
+			-- Initialize
 		do
 			make_control (n, t)
 			html := v
 		end
 
-feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- STATE MANAGEMENT
+feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 
 	set_state (new_state: JSON_OBJECT)
 			-- Restore html from json
@@ -39,7 +40,7 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- STATE MANAGEMENT
 			Result.put (create {JSON_STRING}.make_json (html), "html")
 		end
 
-feature --EVENT HANDLING
+feature --Event handling
 
 	handle_callback (cname: STRING; event: STRING; event_parameter: detachable STRING)
 		do
@@ -48,6 +49,7 @@ feature --EVENT HANDLING
 feature -- Implementation
 
 	render: STRING
+			-- HTML representation of this html control
 		do
 			Result := render_tag (html, "")
 		end
@@ -65,7 +67,7 @@ feature -- Implementation
 			Result := html
 		end
 
-feature
+feature -- Properties
 
 	html: STRING
 
