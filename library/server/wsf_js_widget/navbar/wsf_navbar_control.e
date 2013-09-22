@@ -10,62 +10,109 @@ class
 inherit
 
 	WSF_STATELESS_MULTI_CONTROL
+		redefine
+			render
+		end
 
 create
-	make_navbar
+	make_navbar,
+	make_navbar_with_brand
 
 feature {NONE} -- Initialization
 
-	make_navbar (b: STRING)
-			-- Initialize with specified brand string
-		local
-			container: WSF_STATELESS_MULTI_CONTROL
-			header: WSF_STATELESS_MULTI_CONTROL
-			collapse_button: WSF_STATELESS_MULTI_CONTROL
-			brand: WSF_BASIC_CONTROL
-			icon_bar: WSF_BASIC_CONTROL
+	make_navbar
+			--Initialize
 		do
 			make_multi_control
 			add_class ("navbar navbar-inverse navbar-fixed-top")
-			create container.make_multi_control
-			create header.make_multi_control
-			create collapse_button.make_with_tag_name ("button")
-			create collapse.make_multi_control
 			create nav.make_with_tag_name ("ul")
-			create nav_right.make_with_tag_name ("ul")
-			create brand.make_control ("a")
-			create icon_bar.make_control ("span")
-			container.add_class ("container")
-			header.add_class ("navbar-header")
-			collapse_button.add_class ("navbar-toggle")
-			icon_bar.add_class ("icon-bar")
-			collapse_button.add_control (icon_bar)
-			collapse_button.add_control (icon_bar)
-			collapse_button.add_control (icon_bar)
-			brand.add_class ("navbar-brand")
-			brand.set_attributes ("href=%"#%"")
-			brand.set_body (b)
-			header.add_control (collapse_button)
-			header.add_control (brand)
 			nav.add_class ("nav navbar-nav")
-			nav_right.add_class ("nav navbar-nav navbar-right")
-			collapse.add_class ("navbar-collapse")
-			collapse.add_control (nav)
-			collapse.add_control (nav_right)
-			container.add_control (header)
-			container.add_control (collapse)
-			add_control (container)
+		end
+
+	make_navbar_with_brand (b: STRING)
+			-- Initialize with specified brand string
+		do
+			make_navbar
+			brand := b
+		end
+
+feature -- Rendering
+
+	render: STRING
+		local
+			temp: STRING
+			nav_string: STRING
+		do
+			temp := render_tag_with_tagname ("span", "", "", "icon-bar")
+			temp.append (render_tag_with_tagname ("span", "", "", "icon-bar"))
+			temp.append (render_tag_with_tagname ("span", "", "", "icon-bar"))
+			temp := render_tag_with_tagname ("button", temp, "", "navbar-toggle")
+			if attached brand as b then
+				temp.append (render_tag_with_tagname ("a", b, "href=%"#%"", "navbar-brand"))
+			end
+			temp := render_tag_with_tagname ("div", temp, "", "navbar-header")
+			nav_string := nav.render
+			if attached nav_right as n then
+				nav_string.append (n.render)
+			end
+			temp.append (render_tag_with_tagname ("div", nav_string, "", "navbar-collapse"))
+			Result := render_tag_with_tagname ("div", temp, "", "container")
+			Result := render_tag (Result, "")
+		end
+
+feature -- Change
+
+	add_list_element_right (c: WSF_STATELESS_CONTROL)
+			-- Add element in li tag to right aligned part of navbar
+		local
+			right: WSF_STATELESS_MULTI_CONTROL
+			li: WSF_STATELESS_MULTI_CONTROL
+		do
+			create li.make_with_tag_name ("li")
+			li.add_control (c)
+			add_element_right (li)
+		end
+
+	add_list_element (c: WSF_STATELESS_CONTROL)
+			-- Add element in li tag to main nav
+		local
+			li: WSF_STATELESS_MULTI_CONTROL
+		do
+			create li.make_with_tag_name ("li")
+			li.add_control (c)
+			add_element (li)
+		end
+
+	add_element_right (c: WSF_STATELESS_CONTROL)
+			-- Add element to right aligned part of navbar
+		local
+			right: WSF_STATELESS_MULTI_CONTROL
+		do
+			if attached nav_right as r then
+				right := r
+			else
+				create right.make_with_tag_name ("ul")
+				right.add_class ("nav navbar-nav navbar-right")
+				nav_right := right
+			end
+			right.add_control (c)
+		end
+
+	add_element (c: WSF_STATELESS_CONTROL)
+			-- Add element to main nav
+		do
+			nav.add_control (c)
 		end
 
 feature -- Properties
 
-	collapse: WSF_STATELESS_MULTI_CONTROL
-			-- Content of collapsable navbar
+	brand: detachable STRING
+			-- Optional brand of the navbar
 
 	nav: WSF_STATELESS_MULTI_CONTROL
 			-- Middle nav
 
-	nav_right: WSF_STATELESS_MULTI_CONTROL
+	nav_right: detachable WSF_STATELESS_MULTI_CONTROL
 			-- Right nav
 
 end
