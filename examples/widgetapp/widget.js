@@ -5,6 +5,23 @@ var Mini, WSF_AUTOCOMPLETE_CONTROL, WSF_BUTTON_CONTROL, WSF_CHECKBOX_CONTROL, WS
 
 cache = {};
 
+jQuery.unparam = function(value) {
+  var i, l, pair, params, pieces;
+  params = {};
+  pieces = value.split("&");
+  pair = void 0;
+  i = void 0;
+  l = void 0;
+  i = 0;
+  l = pieces.length;
+  while (i < l) {
+    pair = pieces[i].split("=", 2);
+    params[decodeURIComponent(pair[0])] = (pair.length === 2 ? decodeURIComponent(pair[1].replace(/\+/g, " ")) : true);
+    i++;
+  }
+  return params;
+};
+
 template = tmpl = function(str, data) {
   var fn;
   fn = (!/\W/.test(str) ? cache[str] = cache[str] || tmpl(str) : new Function("obj", "var p=[],print=function(){p.push.apply(p,arguments);};" + "with(obj){p.push('" + str.replace(/[\r\t\n]/g, " ").split("{{").join("\t").replace(/((^|}})[^\t]*)'/g, "$1\r").replace(/\t=(.*?)}}/g, "',$1,'").split("\t").join("');").split("}}").join("p.push('").split("\r").join("\\'") + "');}return p.join('');"));
@@ -195,6 +212,14 @@ WSF_CONTROL = (function() {
     return state;
   };
 
+  WSF_CONTROL.prototype.callback_url = function(params) {
+    if (this.parent_control != null) {
+      return this.parent_control.callback_url(params);
+    }
+    $.extend(params, this.url_params);
+    return this.url + '?' + $.param(params);
+  };
+
   WSF_CONTROL.prototype.trigger_callback = function(control_name, event, event_parameter) {
     var self;
     if ((this.parent_control != null) && !this.isolation) {
@@ -203,7 +228,7 @@ WSF_CONTROL = (function() {
     self = this;
     return $.ajax({
       type: 'POST',
-      url: '?' + $.param({
+      url: this.callback_url({
         control_name: control_name,
         event: event,
         event_parameter: event_parameter
@@ -258,6 +283,8 @@ WSF_PAGE_CONTROL = (function(_super) {
     this.parent_control = null;
     this.$el = $('[data-name=' + this.state.id + ']');
     this.control_name = this.state.id;
+    this.url = this.state['url'];
+    this.url_params = jQuery.unparam(this.state['url_params']);
     this.load_subcontrols();
   }
 

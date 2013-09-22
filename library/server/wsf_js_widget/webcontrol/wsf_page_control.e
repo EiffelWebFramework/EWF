@@ -109,6 +109,8 @@ feature -- Implementation
 		do
 			create Result.make
 			Result.put (create {JSON_STRING}.make_json (control_name), "id")
+			Result.put (create {JSON_STRING}.make_json (request.path_info), "url")
+			Result.put (create {JSON_STRING}.make_json (request.query_string), "url_params")
 		end
 
 	full_state: JSON_OBJECT

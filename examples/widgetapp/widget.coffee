@@ -1,5 +1,18 @@
 #IMPORTANT PLEASE COMPILE WITH:: coffee -cbw widget.coffee
 cache = {}
+jQuery.unparam = (value) ->
+  params = {}
+  pieces = value.split("&")
+  pair = undefined
+  i = undefined
+  l = undefined
+  i = 0
+  l = pieces.length
+  while i < l
+    pair = pieces[i].split("=", 2)
+    params[decodeURIComponent(pair[0])] = ((if pair.length is 2 then decodeURIComponent(pair[1].replace(/\+/g, " ")) else true))
+    i++
+  params
 template  = tmpl = (str, data) ->
   # Simple JavaScript Templating
   # John Resig - http://ejohn.org/ - MIT Licensed
@@ -99,13 +112,20 @@ class WSF_CONTROL
     if @parent_control?
       return @parent_control.wrap(@parent_control.control_name,state)
     return state
+
+  callback_url: (params)->
+    if @parent_control?
+      return @parent_control.callback_url(params)
+    $.extend params, @url_params
+    @url + '?' + $.param(params)
+
   trigger_callback: (control_name,event,event_parameter)->
     if @parent_control? and not @isolation
       return @parent_control.trigger_callback(control_name,event,event_parameter)
     self = @
     $.ajax
       type: 'POST',
-      url: '?' + $.param
+      url: @callback_url
                       control_name: control_name
                       event: event
                       event_parameter: event_parameter
@@ -142,7 +162,10 @@ class WSF_PAGE_CONTROL extends WSF_CONTROL
     @parent_control=null
     @$el = $('[data-name='+@state.id+']') 
     @control_name = @state.id
+    @url = @state['url']
+    @url_params = jQuery.unparam(@state['url_params'])
     @load_subcontrols()
+    
   wrap : (cname,state)->
     state
 
