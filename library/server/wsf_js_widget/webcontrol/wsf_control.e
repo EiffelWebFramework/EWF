@@ -23,6 +23,9 @@ feature {NONE} -- Initialization
 
 	make_control (n, a_tag_name: STRING)
 			-- Initialize with specified control name and tag
+		require
+			not n.is_empty
+			not a_tag_name.is_empty
 		do
 			make (a_tag_name)
 			control_name := n

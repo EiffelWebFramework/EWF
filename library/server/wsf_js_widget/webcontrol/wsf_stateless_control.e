@@ -11,11 +11,11 @@ feature {NONE} -- Initialization
 
 	make (a_tag_name: STRING)
 			-- Initialize with specified tag
+		require
+			not a_tag_name.is_empty
 		do
 			tag_name := a_tag_name
 			create css_classes.make (0)
-		ensure
-			attached css_classes
 		end
 
 feature -- Access
@@ -26,7 +26,8 @@ feature -- Access
 	css_classes: ARRAYED_LIST [STRING]
 			-- List of classes (appear in the "class" attribute)
 
-		-- TODO: Maybe improve
+	attributes: detachable STRING
+			-- Attributes string
 
 feature -- Change
 
@@ -68,6 +69,16 @@ feature -- Rendering
 				Result.append (" />")
 			else
 				Result.append (" >" + body + "</" + tag + ">")
+			end
+		end
+
+	render_tag_with_body (body: STRING): STRING
+			-- Generate HTML of this control with the specified body
+		do
+			if attached attributes as attrs then
+				Result := render_tag (body, attrs)
+			else
+				Result := render_tag (body, "")
 			end
 		end
 

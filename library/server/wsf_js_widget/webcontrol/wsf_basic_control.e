@@ -10,6 +10,9 @@ class
 inherit
 
 	WSF_STATELESS_CONTROL
+		redefine
+			attributes
+		end
 
 create
 	make_control, make_with_body
@@ -30,14 +33,6 @@ feature {NONE} -- Initialization
 			body := b
 		end
 
-feature -- Access
-
-	attributes: STRING
-			-- Attributes string of this control
-
-	body: STRING
-			-- Body of this control
-
 feature -- Rendering
 
 	render: STRING
@@ -46,7 +41,7 @@ feature -- Rendering
 			Result := render_tag (body, attributes)
 		end
 
-feature
+feature -- Change
 
 	set_attributes (a: STRING)
 			-- Set the attributes string of this control
@@ -59,5 +54,13 @@ feature
 		do
 			body := b
 		end
+
+feature -- Access
+
+	attributes: STRING
+			-- Attributes of this control
+
+	body: STRING
+			-- Body of this control
 
 end
