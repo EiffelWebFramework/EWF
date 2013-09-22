@@ -35,7 +35,7 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- STATE MANAGEMENT
 	load_state (new_states: JSON_OBJECT)
 			-- Select state stored with `control_name` as key
 		do
-			if attached {JSON_OBJECT} new_states.item (control_name) as new_state_obj then
+			if attached {JSON_OBJECT} new_states.item ("state") as new_state_obj then
 				set_state (new_state_obj)
 			end
 		end
@@ -45,10 +45,11 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- STATE MANAGEMENT
 		deferred
 		end
 
-	read_state (states: JSON_OBJECT)
-			-- Add a new entry in the `states` JSON object with the `control_name` as key and the `state` as value
+	full_state: JSON_OBJECT
+			-- Return state of object
 		do
-			states.put (state, control_name)
+			create Result.make
+			Result.put (state, "state")
 		end
 
 	read_state_changes (states: JSON_OBJECT)
@@ -62,6 +63,8 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- STATE MANAGEMENT
 	state: JSON_OBJECT
 			-- Returns the current state of the Control as JSON. This state will be transfered to the client.
 		deferred
+		ensure
+			controls_not_defined: not (attached Result.item ("controls"))
 		end
 
 	state_changes: JSON_OBJECT

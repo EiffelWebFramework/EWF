@@ -12,7 +12,7 @@ inherit
 	WSF_VALUE_CONTROL [LIST [STRING]]
 		undefine
 			load_state,
-			read_state,
+			full_state,
 			read_state_changes
 		end
 

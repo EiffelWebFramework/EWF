@@ -135,7 +135,7 @@ feature -- Execution
 		local
 			f: WSF_FILE_RESPONSE
 		do
-			create f.make_html (name)
+			create f.make (name)
 			response.send (f)
 		end
 

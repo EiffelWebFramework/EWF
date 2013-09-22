@@ -13,7 +13,7 @@ inherit
 		redefine
 			read_state_changes,
 			load_state,
-			read_state
+			full_state
 		end
 
 	WSF_VALIDATABLE
@@ -52,7 +52,9 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 			-- Pass new_states to subcontrols
 		do
 			Precursor (new_states)
-			value_control.load_state (new_states)
+			if attached {JSON_OBJECT} new_states.item ("controls") as ct and then attached {JSON_OBJECT} ct.item (value_control.control_name) as value_state then
+				value_control.load_state (value_state)
+			end
 		end
 
 	set_state (new_state: JSON_OBJECT)
@@ -61,11 +63,14 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 			value_control.set_state (new_state)
 		end
 
-	read_state (states: JSON_OBJECT)
-			-- Read states in subcontrols
+	full_state: JSON_OBJECT
+		local
+			controls_state: JSON_OBJECT
 		do
-			Precursor (states)
-			value_control.read_state (states)
+			Result := Precursor
+			create controls_state.make
+			controls_state.put (value_control.full_state, value_control.control_name)
+			Result.put (controls_state, "controls")
 		end
 
 	read_state_changes (states: JSON_OBJECT)

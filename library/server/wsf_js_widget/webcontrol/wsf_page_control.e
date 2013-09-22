@@ -47,21 +47,24 @@ feature -- Implementation
 		local
 			event: detachable STRING
 			event_parameter: detachable STRING
-			control_name: detachable STRING
-			states: detachable STRING
+			event_control_name: detachable STRING
+			states: STRING
 			states_changes: JSON_OBJECT
 			json_parser: JSON_PARSER
 		do
-			control_name := get_parameter ("control_name")
+			event_control_name := get_parameter ("control_name")
 			event := get_parameter ("event")
 			event_parameter := get_parameter ("event_parameter")
-			states := get_parameter ("states")
-			if attached event and attached control_name and attached control and attached states then
+			if attached event and attached event_control_name and attached control then
+				create states.make_empty
+				request.read_input_data_into (states)
 				create json_parser.make_parser (states)
 				if attached {JSON_OBJECT} json_parser.parse_json as sp then
-					control.load_state (sp)
+					if attached {JSON_OBJECT} sp.item ("controls") as ct and then attached {JSON_OBJECT} ct.item (control.control_name) as value_state then
+						control.load_state (value_state)
+					end
 				end
-				control.handle_callback (control_name, event, event_parameter)
+				control.handle_callback (event_control_name, event, event_parameter)
 				create states_changes.make
 				control.read_state_changes (states_changes)
 				response.put_header ({HTTP_STATUS_CODE}.ok, <<["Content-Type", "application/json; charset=ISO-8859-1"]>>)
@@ -82,21 +85,41 @@ feature -- Implementation
 			data := "<html><head>"
 			data.append ("<link href=%"/bootstrap.min.css%" rel=%"stylesheet%">")
 			data.append ("<link href=%"/widget.css%" rel=%"stylesheet%">")
-			data.append ("</head><body>")
+			data.append ("</head><body data-name=%"" + control_name + "%" data-type=%"WSF_PAGE_CONTROL%">")
 			data.append (control.render)
-			data.append ("<script type=%"text/javascript%">window.states=")
-			create states.make
-			control.read_state (states)
-			data.append (states.representation)
-			data.append (";</script>")
 			data.append ("<script src=%"/jquery.min.js%"></script>")
 			data.append ("<script src=%"/typeahead.min.js%"></script>")
 			data.append ("<script src=%"/widget.js%"></script>")
+			data.append ("<script type=%"text/javascript%">$(function() {var page= new WSF_PAGE_CONTROL(")
+			data.append (full_state.representation)
+			data.append (");page.attach_events();});</script>")
 			data.append ("</body></html>")
 			create page.make
 			page.put_header ({HTTP_STATUS_CODE}.ok, <<["Content-Type", "text/html; charset=ISO-8859-1"]>>)
 			page.set_body (data)
 			response.send (page)
+		end
+
+	control_name: STRING
+		do
+			Result := request.request_time_stamp.out
+		end
+
+	state: JSON_OBJECT
+		do
+			create Result.make
+			Result.put (create {JSON_STRING}.make_json (control_name), "id")
+		end
+
+	full_state: JSON_OBJECT
+		local
+			controls_state: JSON_OBJECT
+		do
+			create Result.make
+			create controls_state.make
+			controls_state.put (control.full_state, control.control_name)
+			Result.put (controls_state, "controls")
+			Result.put (state, "state")
 		end
 
 	get_parameter (key: STRING): detachable STRING

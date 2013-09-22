@@ -11,7 +11,7 @@ inherit
 
 	WSF_CONTROL
 		redefine
-			read_state,
+			full_state,
 			read_state_changes,
 			load_state
 		end
@@ -31,7 +31,7 @@ feature {NONE} -- Initialization
 			-- Initialize with specified control name and tag
 		do
 			make_control (n, t)
-			controls := create {ARRAYED_LIST [G]}.make(5);
+			controls := create {ARRAYED_LIST [G]}.make (5);
 		end
 
 feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
@@ -40,11 +40,15 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 			-- Pass new_states to subcontrols
 		do
 			Precursor (new_states)
-			across
-				controls as c
-			loop
-				if attached {WSF_CONTROL} c.item as cont then
-					cont.load_state (new_states)
+			if attached {JSON_OBJECT} new_states.item ("controls") as ct then
+				across
+					controls as c
+				loop
+					if attached {WSF_CONTROL} c.item as cont then
+						if attached {JSON_OBJECT} ct.item (cont.control_name) as value_state then
+							cont.load_state (value_state)
+						end
+					end
 				end
 			end
 		end
@@ -54,17 +58,21 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 		do
 		end
 
-	read_state (states: JSON_OBJECT)
+	full_state: JSON_OBJECT
 			-- Read states in subcontrols
+		local
+			controls_state: JSON_OBJECT
 		do
-			Precursor (states)
+			Result := Precursor
+			create controls_state.make
 			across
 				controls as c
 			loop
 				if attached {WSF_CONTROL} c.item as cont then
-					cont.read_state (states)
+					controls_state.put (cont.full_state, cont.control_name)
 				end
 			end
+			Result.put (controls_state, "controls")
 		end
 
 	read_state_changes (states: JSON_OBJECT)
