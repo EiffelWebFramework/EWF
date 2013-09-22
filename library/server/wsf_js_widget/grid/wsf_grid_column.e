@@ -10,7 +10,7 @@ class
 create
 	make
 
-feature {NONE}
+feature {NONE} -- Initialization
 
 	make (a_header, a_field: STRING)
 		do
@@ -19,7 +19,19 @@ feature {NONE}
 			sorting_name := a_field
 		end
 
-feature
+feature -- Render
+
+	render_column (e: WSF_ENTITY): STRING
+			-- Return the rendered column cell for a specific entity (row)
+		do
+			if attached e.item (field_name) as data then
+				Result := data.out
+			else
+				Result := "[VOID]"
+			end
+		end
+
+feature -- Properties
 
 	header: STRING
 
@@ -28,14 +40,5 @@ feature
 	sorting_name: STRING
 
 	field_name: STRING
-
-	render_column (e: WSF_ENTITY): STRING
-		do
-			if attached e.item (field_name) as data then
-				Result := data.out
-			else
-				Result := "[VOID]"
-			end
-		end
 
 end

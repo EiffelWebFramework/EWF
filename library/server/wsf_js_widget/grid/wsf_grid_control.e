@@ -17,7 +17,7 @@ inherit
 create
 	make_grid
 
-feature {NONE}
+feature {NONE} -- Initialization
 
 	make_grid (n: STRING; a_columns: ITERABLE [WSF_GRID_COLUMN]; a_datasource: WSF_DATASOURCE [G])
 		do
@@ -25,9 +25,10 @@ feature {NONE}
 			columns := a_columns
 		end
 
-feature -- Implementation
+feature -- Render
 
 	render_item (item: G): STRING
+			-- Render table row
 		do
 			Result := ""
 			across
@@ -39,6 +40,7 @@ feature -- Implementation
 		end
 
 	render_header: STRING
+			-- Render table header
 		do
 			Result := ""
 			across
@@ -50,6 +52,7 @@ feature -- Implementation
 		end
 
 	render: STRING
+			-- Render entre table and subcontrols
 		local
 			table: STRING
 		do
@@ -58,12 +61,12 @@ feature -- Implementation
 			across
 				controls as c
 			loop
-				Result := c.item.render + Result
+				Result.append (c.item.render)
 			end
 			Result := render_tag (table + Result, "")
 		end
 
-feature
+feature -- Properties
 
 	columns: ITERABLE [WSF_GRID_COLUMN]
 

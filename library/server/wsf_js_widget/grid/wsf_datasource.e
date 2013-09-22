@@ -7,26 +7,26 @@ note
 deferred class
 	WSF_DATASOURCE [G -> WSF_ENTITY]
 
-feature -- Update event
+feature --Event handling
 
 	set_on_update_agent (f: PROCEDURE [ANY, TUPLE])
+			--Set update listener
 		do
 			on_update_agent := f
 		end
 
 	update
+			--Trigger update listener
 		do
 			if attached on_update_agent as a then
 				a.call (Void)
 			end
 		end
 
-	on_update_agent: detachable PROCEDURE [ANY, TUPLE]
-
-feature --State
+feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 
 	state: JSON_OBJECT
-			-- Return state which contains the current html and if there is an event handle attached
+			-- Return state which contains the current sort_column and sort_direction
 		do
 			create Result.make
 			if attached sort_column as a_sort_column then
@@ -38,13 +38,8 @@ feature --State
 		end
 
 	set_state (new_state: JSON_OBJECT)
+			-- Restore sort_column and sort_direction from json
 		do
-			if attached {JSON_NUMBER} new_state.item ("page") as new_page then
-				page := new_page.integer_type
-			end
-			if attached {JSON_NUMBER} new_state.item ("page_size") as new_page_size then
-				page_size := new_page_size.integer_type
-			end
 			if attached {JSON_STRING} new_state.item ("sort_column") as new_sort_column then
 				sort_column := new_sort_column.unescaped_string_32 -- Implicit Conversion !
 			elseif attached {JSON_NULL} new_state.item ("sort_column") as new_sort_column then
@@ -55,21 +50,21 @@ feature --State
 			end
 		end
 
-feature
+feature -- Change
 
 	set_sort_column (a_sort_column: like sort_column)
+			-- Set the column by which the data should be sorted
 		do
 			sort_column := a_sort_column
 		end
 
 	set_sort_direction (a_sort_direction: like sort_direction)
+			-- Set the sorting direction
 		do
 			sort_direction := a_sort_direction
 		end
 
-	page: INTEGER
-
-	page_size: INTEGER
+feature -- Properties
 
 	sort_column: detachable STRING
 
@@ -78,5 +73,7 @@ feature
 	data: ITERABLE [G]
 		deferred
 		end
+
+	on_update_agent: detachable PROCEDURE [ANY, TUPLE]
 
 end

@@ -20,10 +20,10 @@ feature {NONE} -- Initialization
 feature -- Access
 
 	request: WSF_REQUEST
-			-- The request
+			-- The http request
 
 	response: WSF_RESPONSE
-			-- The response
+			-- The http response
 
 feature -- Specific implementation
 

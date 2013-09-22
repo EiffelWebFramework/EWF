@@ -24,21 +24,29 @@ feature {NONE}
 			datasource.set_on_update_page_agent (agent update)
 		end
 
-feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- STATE MANAGEMENT
+feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 
 	state: JSON_OBJECT
-			-- Return state which contains the current html and if there is an event handle attached
+			-- Return empty
 		do
 			create Result.make
 		end
 
 	set_state (new_state: JSON_OBJECT)
+			-- There is no state to restore states
 		do
 		end
 
-feature --EVENT HANDLING
+	update
+			-- Send new renederd control to client on update
+		do
+			state_changes.replace (create {JSON_STRING}.make_json (render), "_html")
+		end
+
+feature --Event handling
 
 	handle_callback (cname: STRING; event: STRING; event_parameter: detachable STRING)
+			-- Handle goto/next/prev events
 		do
 			if Current.control_name.same_string (cname) then
 				if event.same_string ("next") then
@@ -54,14 +62,10 @@ feature --EVENT HANDLING
 			end
 		end
 
-feature
-
-	update
-		do
-			state_changes.replace (create {JSON_STRING}.make_json (render), "_html")
-		end
+feature -- Render
 
 	render: STRING
+			-- Render paging control
 		local
 			paging_start: INTEGER
 			paging_end: INTEGER
@@ -85,7 +89,7 @@ feature
 			Result := render_tag (Result, "")
 		end
 
-feature
+feature -- Properties
 
 	datasource: WSF_PAGABLE_DATASOURCE [G]
 

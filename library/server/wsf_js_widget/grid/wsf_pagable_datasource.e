@@ -16,29 +16,27 @@ inherit
 			update
 		end
 
-feature -- Update event
+feature --Event handling
 
 	set_on_update_page_agent (f: PROCEDURE [ANY, TUPLE])
+			--Set paging update listener
 		do
 			on_update_page_agent := f
 		end
 
 	update
+			--Trigger update listeners
 		do
-			if attached on_update_agent as a then
-				a.call (Void)
-			end
+			Precursor
 			if attached on_update_page_agent as a then
 				a.call (Void)
 			end
 		end
 
-	on_update_page_agent: detachable PROCEDURE [ANY, TUPLE]
-
-feature --States
+feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 
 	state: JSON_OBJECT
-			-- Return state which contains the current html and if there is an event handle attached
+			-- Return state which contains the current page, page_size and row_count
 		do
 			Result := Precursor
 			Result.put (create {JSON_NUMBER}.make_integer (page), "page")
@@ -47,6 +45,7 @@ feature --States
 		end
 
 	set_state (new_state: JSON_OBJECT)
+			-- Restore page, page_size and row_count from json
 		do
 			Precursor (new_state)
 			if attached {JSON_NUMBER} new_state.item ("page") as new_page then
@@ -60,12 +59,18 @@ feature --States
 			end
 		end
 
-feature
+feature -- Change
 
 	set_page (p: INTEGER)
 		do
 			page := p.min (page_count).max (1)
 		end
+
+feature -- Properties
+
+	page: INTEGER
+
+	page_size: INTEGER
 
 	row_count: INTEGER
 
@@ -73,5 +78,7 @@ feature
 		do
 			Result := (row_count / page_size).ceiling
 		end
+
+	on_update_page_agent: detachable PROCEDURE [ANY, TUPLE]
 
 end

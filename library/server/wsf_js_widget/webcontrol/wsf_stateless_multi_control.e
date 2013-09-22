@@ -26,7 +26,7 @@ feature {NONE} -- Initialization
 			-- Initialize with specified tag
 		do
 			make (t)
-			controls := create {LINKED_LIST [WSF_STATELESS_CONTROL]}.make;
+			controls := create {ARRAYED_LIST [WSF_STATELESS_CONTROL]}.make (5);
 		end
 
 feature -- Rendering
@@ -53,7 +53,7 @@ feature -- Change
 
 feature -- Properties
 
-	controls: LINKED_LIST [WSF_STATELESS_CONTROL]
+	controls: ARRAYED_LIST [WSF_STATELESS_CONTROL]
 			-- List of controls
 
 end
