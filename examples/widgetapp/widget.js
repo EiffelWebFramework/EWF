@@ -121,6 +121,7 @@ WSF_CONTROL = (function() {
     this.fullstate = fullstate;
     this.state = this.fullstate.state;
     this.load_subcontrols();
+    this.isolation = "" + this.$el.data('isolation') === "1";
     return;
   }
 
@@ -156,30 +157,6 @@ WSF_CONTROL = (function() {
 
   WSF_CONTROL.prototype.update = function(state) {};
 
-  WSF_CONTROL.prototype.get_state = function() {
-    return this.state;
-  };
-
-  WSF_CONTROL.prototype.get_control_states = function() {
-    var control, result, _i, _len, _ref;
-    result = {};
-    _ref = this.controls;
-    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-      control = _ref[_i];
-      if (control != null) {
-        result[control.control_name] = control.get_full_state();
-      }
-    }
-    return result;
-  };
-
-  WSF_CONTROL.prototype.get_full_state = function() {
-    return {
-      "state": this.get_state(),
-      "controls": this.get_control_states()
-    };
-  };
-
   WSF_CONTROL.prototype.process_update = function(new_states) {
     var control, _i, _len, _ref, _results;
     if (new_states[this.control_name] != null) {
@@ -199,15 +176,28 @@ WSF_CONTROL = (function() {
   };
 
   WSF_CONTROL.prototype.get_context_state = function() {
-    if (this.parent_control != null) {
+    if ((this.parent_control != null) && !this.isolation) {
       return this.parent_control.get_context_state();
     }
-    return this.get_full_state();
+    return this.wrap(this.control_name, this.fullstate);
+  };
+
+  WSF_CONTROL.prototype.wrap = function(cname, state) {
+    var ctrs;
+    ctrs = {};
+    ctrs[cname] = state;
+    state = {
+      "controls": ctrs
+    };
+    if (this.parent_control != null) {
+      return this.parent_control.wrap(this.parent_control.control_name, state);
+    }
+    return state;
   };
 
   WSF_CONTROL.prototype.trigger_callback = function(control_name, event, event_parameter) {
     var self;
-    if (this.parent_control != null) {
+    if ((this.parent_control != null) && !this.isolation) {
       return this.parent_control.trigger_callback(control_name, event, event_parameter);
     }
     self = this;
@@ -215,9 +205,10 @@ WSF_CONTROL = (function() {
       type: 'POST',
       url: '?' + $.param({
         control_name: control_name,
-        event: event
+        event: event,
+        event_parameter: event_parameter
       }),
-      data: JSON.stringify(this.get_full_state()),
+      data: JSON.stringify(this.get_context_state()),
       processData: false,
       contentType: 'application/json',
       cache: false
@@ -269,6 +260,10 @@ WSF_PAGE_CONTROL = (function(_super) {
     this.control_name = this.state.id;
     this.load_subcontrols();
   }
+
+  WSF_PAGE_CONTROL.prototype.wrap = function(cname, state) {
+    return state;
+  };
 
   return WSF_PAGE_CONTROL;
 

@@ -61,6 +61,7 @@ class WSF_CONTROL
   constructor: (@parent_control, @$el, @control_name, @fullstate)->
     @state = @fullstate.state 
     @load_subcontrols()
+    @isolation = (""+@$el.data('isolation')=="1")
     return
 
   load_subcontrols: ()->
@@ -79,19 +80,7 @@ class WSF_CONTROL
 
   update: (state)->
     return 
-  get_state: ()->
-    @state
-
-  get_control_states:()->
-    result = {}
-    for control in @controls 
-      if control?
-        result[control.control_name]=control.get_full_state()
-    result
-
-  get_full_state: ()->
-    {"state":@get_state(),"controls":@get_control_states()}
-
+ 
   process_update: (new_states)->
     if new_states[@control_name]?
       @update(new_states[@control_name])
@@ -100,12 +89,18 @@ class WSF_CONTROL
         control.process_update(new_states)
 
   get_context_state : ()->
-    if @parent_control?
+    if @parent_control? and not @isolation
       return @parent_control.get_context_state()
-    return @get_full_state()
-
-  trigger_callback: (control_name,event,event_parameter)->
+    return @wrap(@control_name,@fullstate)
+  wrap : (cname,state)->
+    ctrs = {}
+    ctrs[cname] = state
+    state = {"controls":ctrs}
     if @parent_control?
+      return @parent_control.wrap(@parent_control.control_name,state)
+    return state
+  trigger_callback: (control_name,event,event_parameter)->
+    if @parent_control? and not @isolation
       return @parent_control.trigger_callback(control_name,event,event_parameter)
     self = @
     $.ajax
@@ -113,8 +108,9 @@ class WSF_CONTROL
       url: '?' + $.param
                       control_name: control_name
                       event: event
+                      event_parameter: event_parameter
       data:
-        JSON.stringify(@get_full_state())
+        JSON.stringify(@get_context_state())
       processData: false,
       contentType: 'application/json',
       cache: no
@@ -147,6 +143,8 @@ class WSF_PAGE_CONTROL extends WSF_CONTROL
     @$el = $('[data-name='+@state.id+']') 
     @control_name = @state.id
     @load_subcontrols()
+  wrap : (cname,state)->
+    state
 
 controls = {}
 

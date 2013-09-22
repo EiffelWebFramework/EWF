@@ -14,6 +14,7 @@ inherit
 			render_tag
 		end
 
+
 feature
 
 	control_name: STRING
@@ -90,6 +91,9 @@ feature -- Rendering
 				css_classes_string := css_classes_string + " " + c.item
 			end
 			l_attributes := "id=%"" + control_name + "%" data-name=%"" + control_name + "%" data-type=%"" + a_generator + "%" " + attrs
+			if isolate then
+				l_attributes.append (" data-isolation=%"1%"")
+			end
 			Result := render_tag_with_tagname (tag_name, body, l_attributes, css_classes_string)
 		end
 
@@ -99,5 +103,15 @@ feature -- EVENT HANDLING
 			-- Method called if any callback received. In this method you can route the callback to the event handler
 		deferred
 		end
+feature -- Change
+
+	set_isolation (p: BOOLEAN)
+		do
+			isolate := true
+		end
+
+feature -- Properties
+
+	isolate: BOOLEAN
 
 end

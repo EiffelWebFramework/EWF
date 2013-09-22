@@ -79,6 +79,7 @@ feature
 			create source.make
 			create progress.make_progress_with_source ("progress1", source)
 			source.set_control (progress)
+			progress.set_isolation(true)
 			container.add_control (progress)
 		end
 
