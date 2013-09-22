@@ -638,11 +638,14 @@ WSF_PROGRESS_CONTROL = (function(_super) {
     runfetch = function() {
       return self.fetch();
     };
-    return setInterval(runfetch, 5000);
+    return this.int = setInterval(runfetch, 5000);
   };
 
   WSF_PROGRESS_CONTROL.prototype.fetch = function() {
-    return this.trigger_callback(this.control_name, 'progress_fetch');
+    this.trigger_callback(this.control_name, 'progress_fetch');
+    if (this.$el.closest('body').length <= 0) {
+      return clearInterval(this.int);
+    }
   };
 
   WSF_PROGRESS_CONTROL.prototype.update = function(state) {
@@ -756,9 +759,12 @@ show_alert = function(action) {
 
 start_modal = function(action) {
   var modal;
-  modal = $("<div class=\"modal fade\">\n<div class=\"modal-dialog\">\n  <div class=\"modal-content\">\n    <div class=\"modal-header\">\n      <button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-hidden=\"true\">&times;</button>\n      <h4 class=\"modal-title\">Modal title</h4>\n    </div>\n    <div class=\"modal-body\">\n    \n    </div>\n    <div class=\"modal-footer\">\n      <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Close</button>\n      <button type=\"button\" class=\"btn btn-primary\">Save changes</button>\n    </div>\n  </div><!-- /.modal-content -->\n</div><!-- /.modal-dialog -->\n</div><!-- /.modal -->");
+  modal = $("<div class=\"modal fade\">\n<div class=\"modal-dialog\">\n  <div class=\"modal-content\">\n    <div class=\"modal-header\">\n      <button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-hidden=\"true\">&times;</button>\n      <h4 class=\"modal-title\">Modal title</h4>\n    </div>\n    <div class=\"modal-body\">\n    \n    </div>\n  </div>\n</div>\n</div>");
   modal.appendTo('body');
-  modal.modal();
+  modal.modal('show');
+  modal.on('hidden.bs.modal', function() {
+    return modal.remove();
+  });
   return $.get(action.url, {
     ajax: 1
   }).done(function(data) {

@@ -353,10 +353,12 @@ class WSF_PROGRESS_CONTROL extends WSF_CONTROL
     self = @
     runfetch= ()->
             self.fetch()
-    setInterval(runfetch, 5000)
+    @int=setInterval(runfetch, 5000)
 
   fetch: ()->
     @trigger_callback(@control_name, 'progress_fetch')
+    if @$el.closest('body').length <= 0
+      clearInterval(@int)
 
   update: (state)->
     if state.progress?
@@ -428,15 +430,13 @@ start_modal = (action)->
       <div class="modal-body">
       
       </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
-      </div>
-    </div><!-- /.modal-content -->
-  </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->""")
+    </div>
+  </div>
+</div>""")
   modal.appendTo('body')
-  modal.modal()
+  modal.modal('show')
+  modal.on 'hidden.bs.modal', ()->
+    modal.remove()
   $.get( action.url, { ajax: 1 } )
     .done (data) ->
       modal.find('.modal-body').append(data)
