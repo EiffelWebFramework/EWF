@@ -30,8 +30,33 @@ feature {NONE} -- Initialization
 			make (a_tag_name)
 			control_name := n
 			create state_changes.make
+			create actions.make_array
 		ensure
 			attached state_changes
+		end
+
+feature -- Actions
+
+	start_modal(url:STRING)
+		--Start a modal window containg an other or the same page
+		local
+			modal:JSON_OBJECT
+		do
+			create modal.make
+			modal.put (create {JSON_STRING}.make_json("start_modal"), "type")
+			modal.put (create {JSON_STRING}.make_json(url), "url")
+			actions.add (modal)
+		end
+
+	show_alert(mesage:STRING)
+		--Start a modal window containg an other or the same page
+		local
+			modal:JSON_OBJECT
+		do
+			create modal.make
+			modal.put (create {JSON_STRING}.make_json("show_alert"), "type")
+			modal.put (create {JSON_STRING}.make_json(mesage), "message")
+			actions.add (modal)
 		end
 
 feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- STATE MANAGEMENT
@@ -61,6 +86,18 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- STATE MANAGEMENT
 		do
 			if state_changes.count > 0 then
 				states.put (state_changes, control_name)
+			end
+			if actions.count > 0 then
+				if not attached states.item ("actions") then
+					states.put (create {JSON_ARRAY}.make_array,"actions")
+				end
+				if attached {JSON_ARRAY}states.item ("actions") as action_list then
+					across
+						actions.array_representation as action
+					loop
+						action_list.add (action.item)
+					end
+				end
 			end
 		end
 
@@ -117,4 +154,5 @@ feature -- Properties
 
 	isolate: BOOLEAN
 
+	actions: JSON_ARRAY
 end

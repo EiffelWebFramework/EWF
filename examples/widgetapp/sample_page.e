@@ -69,19 +69,29 @@ feature
 			button1.set_click_event (agent handle_click)
 			button1.add_class ("col-lg-offset-2")
 			form.add_control (button1)
+				--Button 2
+			create button2.make_button ("sample_button2", "Start Modal Grid")
+			button2.set_click_event (agent handle_click2)
+			button2.add_class ("col-lg-offset-2")
+			form.add_control (button2)
 				--Result
 			create result_html.make_html ("txtBox3", "p", "")
 			form.add_control (create {WSF_FORM_ELEMENT_CONTROL [STRING]}.make_form_element ("Result", result_html))
 			container.add_control (form)
 
 				--Progress bar
-			container.add_control (create {WSF_BASIC_CONTROL}.make_with_body("h4","","Autoincrementing progressbar"))
+			container.add_control (create {WSF_BASIC_CONTROL}.make_with_body ("h4", "", "Autoincrementing progressbar"))
 			create source.make
 			create progress.make_progress_with_source ("progress1", source)
 			source.set_control (progress)
-			progress.set_isolation(true)
+			progress.set_isolation (true)
 			container.add_control (progress)
 		end
+
+	handle_click2
+	do
+		start_modal ("/")
+	end
 
 	handle_click
 		local
@@ -89,7 +99,7 @@ feature
 		do
 			form.validate
 			if form.is_valid then
-				--progress.set_progress ((textbox1.text.to_integer_64 / textbox2.text.to_integer_64 * 100).ceiling)
+					--progress.set_progress ((textbox1.text.to_integer_64 / textbox2.text.to_integer_64 * 100).ceiling)
 				text := textbox1.text + " + " + textbox2.text + " = " + (textbox1.text.to_integer_64 + textbox2.text.to_integer_64).out
 				text.append ("<ul>")
 				across
@@ -100,7 +110,7 @@ feature
 				text.append ("</ul>")
 				result_html.set_html (text)
 			else
-				result_html.set_html ("VALIDATION ERROR")
+				show_alert ("VALIDATION ERROR")
 			end
 		end
 
@@ -109,6 +119,8 @@ feature
 		end
 
 	button1: WSF_BUTTON_CONTROL
+
+	button2: WSF_BUTTON_CONTROL
 
 	textbox1: WSF_INPUT_CONTROL
 

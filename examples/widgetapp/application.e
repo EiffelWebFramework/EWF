@@ -87,6 +87,7 @@ feature -- Router and Filter
 				-- this way, it handles the caching and so on
 			map_agent_uri ("/widget.js", agent load_file("widget.js", ?, ?), Void)
 			map_agent_uri ("/jquery.min.js", agent load_file("jquery.min.js", ?, ?), Void)
+			map_agent_uri ("/bootstrap.min.js", agent load_file("bootstrap.min.js", ?, ?), Void)
 			map_agent_uri ("/typeahead.min.js", agent load_file("typeahead.min.js", ?, ?), Void)
 			map_agent_uri ("/widget.css", agent load_file("widget.css", ?, ?), Void)
 			map_agent_uri ("/bootstrap.min.css", agent load_file("bootstrap.min.css", ?, ?), Void)

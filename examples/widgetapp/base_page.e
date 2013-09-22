@@ -24,7 +24,9 @@ feature
 			navbar.add_list_element (create {WSF_BASIC_CONTROL}.make_with_body ("a", "href=%"/grid%"", "Grid"))
 			navbar.add_list_element (create {WSF_BASIC_CONTROL}.make_with_body ("a", "href=%"/repeater%"", "Repeater"))
 			navbar.add_list_element_right (create {WSF_BASIC_CONTROL}.make_with_body ("a", "href=%"#%"", "About"))
-			container.add_control (navbar)
+			if not attached get_parameter ("ajax") then
+				container.add_control (navbar)
+			end
 			control := container
 		end
 

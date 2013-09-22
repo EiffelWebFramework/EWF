@@ -93,6 +93,13 @@ class WSF_CONTROL
 
   update: (state)->
     return 
+  process_actions: (actions)->
+    for action in actions
+      try
+        fn = eval(action.type)
+        fn(action)
+      catch e
+        console.log "Failed preforming action #{action.type}"
  
   process_update: (new_states)->
     if new_states[@control_name]?
@@ -136,6 +143,8 @@ class WSF_CONTROL
       cache: no
     .done (new_states)->
       #Update all classes
+      if new_states.actions?
+        self.process_actions(new_states.actions)
       self.process_update(new_states)
   #Simple event listener
 
@@ -165,7 +174,7 @@ class WSF_PAGE_CONTROL extends WSF_CONTROL
     @url = @state['url']
     @url_params = jQuery.unparam(@state['url_params'])
     @load_subcontrols()
-    
+
   wrap : (cname,state)->
     state
 
@@ -399,3 +408,36 @@ class WSF_REPEATER_CONTROL extends WSF_CONTROL
       console.log state._body
 
  
+
+
+
+
+#### actions
+
+show_alert = (action)->
+    alert(action.message)
+
+start_modal = (action)->
+  modal = $("""<div class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">Modal title</h4>
+      </div>
+      <div class="modal-body">
+      
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->""")
+  modal.appendTo('body')
+  modal.modal()
+  $.get( action.url, { ajax: 1 } )
+    .done (data) ->
+      modal.find('.modal-body').append(data)
+  
