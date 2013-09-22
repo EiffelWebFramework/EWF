@@ -41,7 +41,7 @@ feature -- State
 			Result.put (create {JSON_NUMBER}.make_integer (min), "min")
 		end
 
-feature -- Propertiess
+feature -- Properties
 
 	min: INTEGER
 			-- The minimal allowed value

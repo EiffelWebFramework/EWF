@@ -31,7 +31,7 @@ feature {NONE} -- Initialization
 			-- Initialize with specified control name and tag
 		do
 			make_control (n, t)
-			controls := create {LINKED_LIST [G]}.make;
+			controls := create {ARRAYED_LIST [G]}.make(5);
 		end
 
 feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
@@ -129,7 +129,7 @@ feature -- Change
 
 feature -- Properties
 
-	controls: LINKED_LIST [G]
+	controls: ARRAYED_LIST [G]
 			-- List of current controls in this multi control
 
 end
