@@ -90,7 +90,7 @@ feature
 
 	handle_click2
 	do
-		start_modal ("/")
+		start_modal ("/","My first modal")
 	end
 
 	handle_click

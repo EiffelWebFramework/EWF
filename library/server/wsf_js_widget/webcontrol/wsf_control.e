@@ -37,7 +37,7 @@ feature {NONE} -- Initialization
 
 feature -- Actions
 
-	start_modal(url:STRING)
+	start_modal(url:STRING; title:STRING)
 		--Start a modal window containg an other or the same page
 		local
 			modal:JSON_OBJECT
@@ -45,6 +45,7 @@ feature -- Actions
 			create modal.make
 			modal.put (create {JSON_STRING}.make_json("start_modal"), "type")
 			modal.put (create {JSON_STRING}.make_json(url), "url")
+			modal.put (create {JSON_STRING}.make_json(title), "title")
 			actions.add (modal)
 		end
 

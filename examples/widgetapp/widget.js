@@ -773,7 +773,7 @@ show_alert = function(action) {
 
 start_modal = function(action) {
   var modal;
-  modal = $("<div class=\"modal fade\">\n<div class=\"modal-dialog\">\n  <div class=\"modal-content\">\n    <div class=\"modal-header\">\n      <button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-hidden=\"true\">&times;</button>\n      <h4 class=\"modal-title\">Modal title</h4>\n    </div>\n    <div class=\"modal-body\">\n    \n    </div>\n  </div>\n</div>\n</div>");
+  modal = $("<div class=\"modal fade\">\n<div class=\"modal-dialog\">\n  <div class=\"modal-content\">\n    <div class=\"modal-header\">\n      <button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-hidden=\"true\">&times;</button>\n      <h4 class=\"modal-title\">" + action.title + "</h4>\n    </div>\n    <div class=\"modal-body\">\n    \n    </div>\n  </div>\n</div>\n</div>");
   modal.appendTo('body');
   modal.modal('show');
   modal.on('hidden.bs.modal', function() {
