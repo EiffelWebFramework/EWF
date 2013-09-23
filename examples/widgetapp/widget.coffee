@@ -75,6 +75,7 @@ class WSF_CONTROL
     @state = @fullstate.state 
     @load_subcontrols()
     @isolation = (""+@$el.data('isolation')=="1")
+    @$el.data('control',@)
     return
 
   load_subcontrols: ()->
@@ -93,6 +94,7 @@ class WSF_CONTROL
 
   update: (state)->
     return 
+
   process_actions: (actions)->
     for action in actions
       try
@@ -146,6 +148,7 @@ class WSF_CONTROL
       if new_states.actions?
         self.process_actions(new_states.actions)
       self.process_update(new_states)
+      
   #Simple event listener
 
   #subscribe to an event
@@ -165,6 +168,11 @@ class WSF_CONTROL
       ev.callback.call(ev.context)
     return @
 
+  remove:()->
+    console.log "Removed #{@control_name}"
+    @$el.remove()
+
+
 class WSF_PAGE_CONTROL extends WSF_CONTROL
   constructor: (@fullstate)->
     @state = @fullstate.state
@@ -173,10 +181,15 @@ class WSF_PAGE_CONTROL extends WSF_CONTROL
     @control_name = @state.id
     @url = @state['url']
     @url_params = jQuery.unparam(@state['url_params'])
+    @$el.data('control',@)
     @load_subcontrols()
 
   wrap : (cname,state)->
     state
+
+  remove:()->
+    console.log "Removed #{@control_name}"
+    @$el.remove()
 
 controls = {}
 
@@ -357,13 +370,16 @@ class WSF_PROGRESS_CONTROL extends WSF_CONTROL
 
   fetch: ()->
     @trigger_callback(@control_name, 'progress_fetch')
-    if @$el.closest('body').length <= 0
-      clearInterval(@int)
+      
 
   update: (state)->
     if state.progress?
       @state['progress'] = state.progress
       @$el.children('.progress-bar').attr('aria-valuenow', state.progress).width(state.progress + '%')
+
+  remove: ()->
+    clearInterval(@int)
+    super
 
 class WSF_PAGINATION_CONTROL extends WSF_CONTROL
 
@@ -436,7 +452,10 @@ start_modal = (action)->
   modal.appendTo('body')
   modal.modal('show')
   modal.on 'hidden.bs.modal', ()->
-    modal.remove()
+    $(modal.find('[data-name]').get().reverse()).each (i,value)->
+      $(value).data('control').remove()
+      return
+    return
   $.get( action.url, { ajax: 1 } )
     .done (data) ->
       modal.find('.modal-body').append(data)

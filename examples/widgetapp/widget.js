@@ -139,6 +139,7 @@ WSF_CONTROL = (function() {
     this.state = this.fullstate.state;
     this.load_subcontrols();
     this.isolation = "" + this.$el.data('isolation') === "1";
+    this.$el.data('control', this);
     return;
   }
 
@@ -287,6 +288,11 @@ WSF_CONTROL = (function() {
     return this;
   };
 
+  WSF_CONTROL.prototype.remove = function() {
+    console.log("Removed " + this.control_name);
+    return this.$el.remove();
+  };
+
   return WSF_CONTROL;
 
 })();
@@ -303,11 +309,17 @@ WSF_PAGE_CONTROL = (function(_super) {
     this.control_name = this.state.id;
     this.url = this.state['url'];
     this.url_params = jQuery.unparam(this.state['url_params']);
+    this.$el.data('control', this);
     this.load_subcontrols();
   }
 
   WSF_PAGE_CONTROL.prototype.wrap = function(cname, state) {
     return state;
+  };
+
+  WSF_PAGE_CONTROL.prototype.remove = function() {
+    console.log("Removed " + this.control_name);
+    return this.$el.remove();
   };
 
   return WSF_PAGE_CONTROL;
@@ -642,10 +654,7 @@ WSF_PROGRESS_CONTROL = (function(_super) {
   };
 
   WSF_PROGRESS_CONTROL.prototype.fetch = function() {
-    this.trigger_callback(this.control_name, 'progress_fetch');
-    if (this.$el.closest('body').length <= 0) {
-      return clearInterval(this.int);
-    }
+    return this.trigger_callback(this.control_name, 'progress_fetch');
   };
 
   WSF_PROGRESS_CONTROL.prototype.update = function(state) {
@@ -653,6 +662,11 @@ WSF_PROGRESS_CONTROL = (function(_super) {
       this.state['progress'] = state.progress;
       return this.$el.children('.progress-bar').attr('aria-valuenow', state.progress).width(state.progress + '%');
     }
+  };
+
+  WSF_PROGRESS_CONTROL.prototype.remove = function() {
+    clearInterval(this.int);
+    return WSF_PROGRESS_CONTROL.__super__.remove.apply(this, arguments);
   };
 
   return WSF_PROGRESS_CONTROL;
@@ -763,7 +777,9 @@ start_modal = function(action) {
   modal.appendTo('body');
   modal.modal('show');
   modal.on('hidden.bs.modal', function() {
-    return modal.remove();
+    $(modal.find('[data-name]').get().reverse()).each(function(i, value) {
+      $(value).data('control').remove();
+    });
   });
   return $.get(action.url, {
     ajax: 1
