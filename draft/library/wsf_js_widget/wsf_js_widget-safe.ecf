@@ -10,18 +10,12 @@
 		<option warning="true" full_class_checking="true" is_attached_by_default="true" void_safety="all" syntax="standard">
 		</option>
 		<library name="base" location="$ISE_LIBRARY\library\base\base-safe.ecf"/>
-		<library name="encoder" location="..\..\text\encoder\encoder-safe.ecf"/>
-		<library name="http" location="..\..\network\protocol\http\http-safe.ecf"/>
+		<library name="encoder" location="..\..\..\library\text\encoder\encoder-safe.ecf"/>
+		<library name="http" location="..\..\..\library\network\protocol\http\http-safe.ecf"/>
 		<library name="json" location="..\..\..\contrib\library\text\parser\json\library\json-safe.ecf"/>
 		<library name="pcre" location="$ISE_EIFFEL\unstable\library\text\regexp\pcre\pcre-safe.ecf"/>
-		<library name="uri_template" location="..\..\text\parser\uri_template\uri_template-safe.ecf"/>
-		<library name="wsf" location="..\wsf\wsf-safe.ecf"/>
-		<cluster name="webcontrol" location=".\webcontrol\"/>
-		<cluster name="validator" location=".\validator\"/>
-		<cluster name="input" location=".\input\"/>
-		<cluster name="grid" location=".\grid\"/>
-		<cluster name="autocompletion" location=".\autocompletion\"/>
-		<cluster name="navbar" location=".\navbar\"/>
-		<cluster name="progressbar" location=".\progressbar\"/>
+		<library name="uri_template" location="..\..\..\library\text\parser\uri_template\uri_template-safe.ecf"/>
+		<library name="wsf" location="..\..\..\library\server\wsf\wsf-safe.ecf"/>
+		<cluster name="kernel" location=".\kernel\" recursive="true"/>
 	</target>
 </system>

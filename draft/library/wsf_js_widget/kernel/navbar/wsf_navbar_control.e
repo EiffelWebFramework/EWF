@@ -9,30 +9,29 @@ class
 
 inherit
 
-	WSF_STATELESS_MULTI_CONTROL
+	WSF_MULTI_CONTROL [WSF_STATELESS_CONTROL]
 		redefine
 			render
 		end
 
 create
-	make_navbar,
-	make_navbar_with_brand
+	make_navbar, make_navbar_with_brand
 
 feature {NONE} -- Initialization
 
-	make_navbar
+	make_navbar (n: STRING)
 			--Initialize
 		do
-			make_multi_control
+			make_multi_control (n)
 			add_class ("navbar navbar-inverse navbar-fixed-top")
-			create nav.make_with_tag_name ("ul")
+			create nav.make_with_tag_name (control_name + "_nav", "ul")
 			nav.add_class ("nav navbar-nav")
 		end
 
-	make_navbar_with_brand (b: STRING)
+	make_navbar_with_brand (n, b: STRING)
 			-- Initialize with specified brand string
 		do
-			make_navbar
+			make_navbar (n)
 			brand := b
 		end
 
@@ -65,10 +64,16 @@ feature -- Change
 	add_list_element_right (c: WSF_STATELESS_CONTROL)
 			-- Add element in li tag to right aligned part of navbar
 		local
-			right: WSF_STATELESS_MULTI_CONTROL
-			li: WSF_STATELESS_MULTI_CONTROL
+			name: STRING
+			li: WSF_MULTI_CONTROL [WSF_STATELESS_CONTROL]
 		do
-			create li.make_with_tag_name ("li")
+			name := control_name + "_rightlink";
+			if attached nav_right as right then
+				name := name + right.controls.count.out
+			else
+				name := name + "0"
+			end
+			create li.make_with_tag_name (name, "li")
 			li.add_control (c)
 			add_element_right (li)
 		end
@@ -76,9 +81,9 @@ feature -- Change
 	add_list_element (c: WSF_STATELESS_CONTROL)
 			-- Add element in li tag to main nav
 		local
-			li: WSF_STATELESS_MULTI_CONTROL
+			li: WSF_MULTI_CONTROL [WSF_STATELESS_CONTROL]
 		do
-			create li.make_with_tag_name ("li")
+			create li.make_with_tag_name (control_name + "_link" + nav.controls.count.out, "li")
 			li.add_control (c)
 			add_element (li)
 		end
@@ -86,12 +91,12 @@ feature -- Change
 	add_element_right (c: WSF_STATELESS_CONTROL)
 			-- Add element to right aligned part of navbar
 		local
-			right: WSF_STATELESS_MULTI_CONTROL
+			right: WSF_MULTI_CONTROL [WSF_STATELESS_CONTROL]
 		do
 			if attached nav_right as r then
 				right := r
 			else
-				create right.make_with_tag_name ("ul")
+				create right.make_with_tag_name (control_name + "_rightnav", "ul")
 				right.add_class ("nav navbar-nav navbar-right")
 				nav_right := right
 			end
@@ -109,10 +114,10 @@ feature -- Properties
 	brand: detachable STRING
 			-- Optional brand of the navbar
 
-	nav: WSF_STATELESS_MULTI_CONTROL
+	nav: WSF_MULTI_CONTROL [WSF_STATELESS_CONTROL]
 			-- Middle nav
 
-	nav_right: detachable WSF_STATELESS_MULTI_CONTROL
+	nav_right: detachable WSF_MULTI_CONTROL [WSF_STATELESS_CONTROL]
 			-- Right nav
 
 end

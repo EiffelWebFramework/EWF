@@ -145,7 +145,7 @@ feature -- Implementation
 			end
 		end
 
-feature -- EVENT HANDLING
+feature -- Event handling
 
 	handle_callback (cname: STRING; event: STRING; event_parameter: detachable STRING)
 			-- Forward callback to control
@@ -153,7 +153,7 @@ feature -- EVENT HANDLING
 			control.handle_callback (cname, event, event_parameter)
 		end
 
-feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- STATE MANAGEMENT
+feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 
 	state: JSON_OBJECT
 		do
