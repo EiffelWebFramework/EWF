@@ -52,6 +52,57 @@ feature -- Change Element
             object.extend (l_value, key)
         end
 
+    put_string (value: detachable JSON_STRING; key: JSON_STRING)
+            -- Assuming there is no item of key `key',
+            -- insert `value' with `key'.
+        require
+            key_not_present: not has_key (key)
+        do
+            put (value, key)
+        end
+
+    put_integer (value: detachable INTEGER_64; key: JSON_STRING)
+            -- Assuming there is no item of key `key',
+            -- insert `value' with `key'.
+        require
+            key_not_present: not has_key (key)
+        local
+            l_value: detachable JSON_NUMBER
+        do
+            if attached value as v then
+                create l_value.make_integer (v)
+            end
+            put (l_value, key)
+        end
+
+    put_natural (value: detachable NATURAL_64; key: JSON_STRING)
+            -- Assuming there is no item of key `key',
+            -- insert `value' with `key'.
+        require
+            key_not_present: not has_key (key)
+        local
+            l_value: detachable JSON_NUMBER
+        do
+            if attached value as v then
+                create l_value.make_natural (v)
+            end
+            put (l_value, key)
+        end
+
+    put_real (value: detachable DOUBLE; key: JSON_STRING)
+            -- Assuming there is no item of key `key',
+            -- insert `value' with `key'.
+        require
+            key_not_present: not has_key (key)
+        local
+            l_value: detachable JSON_NUMBER
+        do
+            if attached value as v then
+                create l_value.make_real (v)
+            end
+            put (l_value, key)
+        end
+
     replace (value: detachable JSON_VALUE; key: JSON_STRING)
             -- Assuming there is no item of key `key',
             -- insert `value' with `key'.
@@ -63,6 +114,49 @@ feature -- Change Element
                 create {JSON_NULL} l_value
             end
             object.force (l_value, key)
+        end
+
+    replace_string (value: detachable JSON_STRING; key: JSON_STRING)
+            -- Assuming there is no item of key `key',
+            -- insert `value' with `key'.
+        do
+            replace (value, key)
+        end
+
+    replace_integer (value: detachable INTEGER_64; key: JSON_STRING)
+            -- Assuming there is no item of key `key',
+            -- insert `value' with `key'.
+        local
+            l_value: detachable JSON_NUMBER
+        do
+            if attached value as v then
+                create l_value.make_integer (v)
+            end
+            replace (l_value, key)
+        end
+
+    replace_natural (value: detachable NATURAL_64; key: JSON_STRING)
+            -- Assuming there is no item of key `key',
+            -- insert `value' with `key'.
+        local
+            l_value: detachable JSON_NUMBER
+        do
+            if attached value as v then
+                create l_value.make_natural (v)
+            end
+            replace (l_value, key)
+        end
+
+    replace_real (value: detachable DOUBLE; key: JSON_STRING)
+            -- Assuming there is no item of key `key',
+            -- insert `value' with `key'.
+        local
+            l_value: detachable JSON_NUMBER
+        do
+            if attached value as v then
+                create l_value.make_real (v)
+            end
+            replace (l_value, key)
         end
 
 	remove (key: JSON_STRING)
