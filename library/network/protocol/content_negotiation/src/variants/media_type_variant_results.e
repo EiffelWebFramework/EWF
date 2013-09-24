@@ -3,7 +3,7 @@ note
 				{MEDIA_TYPE_VARIANT_RESULTS}. 
 				Represent the media type results between client preferences and media type variants supported by the server..
 				If the server is unable to supports the requested Accept values, the server can build
-				a response with the list of supported representations	
+				a response with the list of supported representations
 				]"
 	date: "$Date$"
 	revision: "$Revision$"
@@ -15,15 +15,13 @@ inherit
 
 	VARIANT_RESULTS
 
-
 feature -- Change Element
 
 	set_variant_header
 			-- Set variant header as `Accept'
 		do
-			variant_header := "Accept"
+			variant_header := {HTTP_HEADER_NAMES}.header_accept -- "Accept"
 		end
-
 
 note
 	copyright: "2011-2013, Javier Velilla, Jocelyn Fiat, Eiffel Software and others"

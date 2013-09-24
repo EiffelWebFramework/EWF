@@ -23,7 +23,7 @@ feature -- Change Element
 	set_variant_header
 			-- Set variant header as `Accept-Charset'
 		do
-			variant_header := "Accept-Charset"
+			variant_header := {HTTP_HEADER_NAMES}.header_accept_charset -- "Accept-Charset"
 		end
 
 note

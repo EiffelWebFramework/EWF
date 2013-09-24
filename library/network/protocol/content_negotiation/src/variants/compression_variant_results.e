@@ -22,7 +22,7 @@ feature -- Change Element
 	set_variant_header
 			-- Set variant_header as `Accept-Encoding'
 		do
-			variant_header := "Accept-Encoding"
+			variant_header := {HTTP_HEADER_NAMES}.header_accept_encoding -- "Accept-Encoding"
 		end
 
 note

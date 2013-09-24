@@ -15,16 +15,13 @@ inherit
 
 	VARIANT_RESULTS
 
-
 feature -- Change Element
-
 
 	set_variant_header
 			-- Set variant header as 'Accept-Language'
 		do
-			variant_header := "Accept-Language"
+			variant_header := {HTTP_HEADER_NAMES}.header_accept_language -- "Accept-Language"
 		end
-
 
 note
 	copyright: "2011-2013, Javier Velilla, Jocelyn Fiat, Eiffel Software and others"

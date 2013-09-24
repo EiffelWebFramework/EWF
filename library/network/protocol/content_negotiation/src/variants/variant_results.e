@@ -18,11 +18,15 @@ feature -- Access
 			-- is the current variant accepted?
 
 	type: detachable READABLE_STRING_8
-		-- the type could be: media type, language, chracter_sets and encoding.
+			-- Associated type, it could be:
+			-- 		media type
+			--		language
+			--		character_sets
+			--		encoding.
 
 feature {NONE} -- Implementation
 
-	accept_headers_set: ARRAY[READABLE_STRING_8]
+	accept_headers_set: ARRAY [READABLE_STRING_8]
 			-- Set of valid accept headers headers
 		note
 			EIS:"name=Accept", "src=http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.1", "protocol=uri"
@@ -30,7 +34,12 @@ feature {NONE} -- Implementation
 			EIS:"name=Accept-Encoding", "src=http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.3", "protocol=uri"
 			EIS:"name=Accept-Language", "src=http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.4", "protocol=uri"
 		once
-			Result:= <<"Accept","Accept-Language","Accept-Encoding","Accept-Charset">>
+			Result:= <<
+						{HTTP_HEADER_NAMES}.header_accept, -- "Accept",
+						{HTTP_HEADER_NAMES}.header_accept_language, -- "Accept-Language",
+						{HTTP_HEADER_NAMES}.header_accept_encoding, -- "Accept-Encoding",
+						{HTTP_HEADER_NAMES}.header_accept_charset --"Accept-Charset"
+						>>
 			Result.compare_objects
 		end
 
@@ -43,7 +52,6 @@ feature -- Status_Report
 		end
 
 feature -- Change Element
-
 
 	set_type (a_type: READABLE_STRING_8)
 			-- Set `type' as `a_type'
