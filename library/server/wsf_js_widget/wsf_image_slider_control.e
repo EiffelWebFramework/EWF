@@ -63,7 +63,7 @@ feature -- Change
 	add_image_with_caption (src, alt: STRING; caption: detachable WSF_STATELESS_CONTROL)
 			-- Add a new image to the slider, with specified url, alternative text and caption element
 		local
-			item: WSF_MULTI_CONTROL
+			item: WSF_STATELESS_MULTI_CONTROL
 		do
 			list.add_control (create {WSF_BASIC_CONTROL}.make_with_body ("li", "data-target=%"#" + control_name + "%" data-slide-to=%"" + list.controls.count.out + "%"", ""));
 			create item.make_multi_control
@@ -77,17 +77,17 @@ feature -- Change
 	add_image (src, alt: STRING)
 			-- Add a new image to the slider, with specified url and alternative text
 		local
-			item: WSF_MULTI_CONTROL[WSF_STATELESS_CONTROL]
+			item: WSF_MULTI_CONTROL [WSF_STATELESS_CONTROL]
 		do
 			add_image_with_caption (src, alt, Void)
 		end
 
 feature -- Properties
 
-	list: WSF_MULTI_CONTROL[WSF_STATELESS_CONTROL]
+	list: WSF_STATELESS_MULTI_CONTROL
 			-- List of slider links
 
-	slide_wrapper: WSF_MULTI_CONTROL[WSF_STATELESS_CONTROL]
+	slide_wrapper: WSF_STATELESS_MULTI_CONTROL
 			-- List of the single image slides
 
 end

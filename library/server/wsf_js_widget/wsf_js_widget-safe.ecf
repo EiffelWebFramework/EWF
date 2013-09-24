@@ -16,12 +16,13 @@
 		<library name="pcre" location="$ISE_EIFFEL\unstable\library\text\regexp\pcre\pcre-safe.ecf"/>
 		<library name="uri_template" location="..\..\text\parser\uri_template\uri_template-safe.ecf"/>
 		<library name="wsf" location="..\wsf\wsf-safe.ecf"/>
-		<cluster name="webcontrol" location=".\webcontrol\"/>
-		<cluster name="validator" location=".\validator\"/>
-		<cluster name="input" location=".\input\"/>
-		<cluster name="grid" location=".\grid\"/>
 		<cluster name="autocompletion" location=".\autocompletion\"/>
+		<cluster name="grid" location=".\grid\"/>
+		<cluster name="image_slider" location="\home\severin\Documents\EWF\EWF\library\server\wsf_js_widget\"/>
+		<cluster name="input" location=".\input\"/>
 		<cluster name="navbar" location=".\navbar\"/>
 		<cluster name="progressbar" location=".\progressbar\"/>
+		<cluster name="validator" location=".\validator\"/>
+		<cluster name="webcontrol" location=".\webcontrol\"/>
 	</target>
 </system>

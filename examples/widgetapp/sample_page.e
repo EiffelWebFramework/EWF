@@ -77,15 +77,15 @@ feature
 				--Result
 			create result_html.make_html ("txtBox3", "p", "")
 			form.add_control (create {WSF_FORM_ELEMENT_CONTROL [STRING]}.make_form_element ("Result", result_html))
-			container.add_control (form)
+			control.add_control (form)
 
 				--Progress bar
-			container.add_control (create {WSF_BASIC_CONTROL}.make_with_body ("h4", "", "Autoincrementing progressbar"))
+			control.add_control (create {WSF_BASIC_CONTROL}.make_with_body ("h4", "", "Autoincrementing progressbar"))
 			create source.make
 			create progress.make_progress_with_source ("progress1", source)
 			source.set_control (progress)
 			progress.set_isolation (true)
-			container.add_control (progress)
+			control.add_control (progress)
 		end
 
 	handle_click2

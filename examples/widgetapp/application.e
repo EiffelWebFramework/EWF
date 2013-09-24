@@ -57,7 +57,6 @@ feature -- Router and Filter
 			create {WSF_LOGGING_FILTER} f
 			f.set_next (l_filter)
 			l_filter := f
-
 			filter := l_filter
 		end
 
@@ -78,10 +77,10 @@ feature -- Router and Filter
 
 	setup_router
 		do
-				--			router.map (create {WSF_URI_MAPPING}.make ("/hello", create {WSF_AGENT_URI_HANDLER}.make (agent execute_hello)))
 			map_agent_uri ("/", agent execute_hello, Void)
 			map_agent_uri ("/grid", agent grid_demo, Void)
 			map_agent_uri ("/repeater", agent repeater_demo, Void)
+			map_agent_uri ("/slider", agent slider_demo, Void)
 
 				-- NOTE: you could put all those files in a specific folder, and use WSF_FILE_SYSTEM_HANDLER with "/"
 				-- this way, it handles the caching and so on
@@ -102,7 +101,7 @@ feature -- Helper: mapping
 
 feature -- Execution
 
-	execute_hello (request:  WSF_REQUEST; response: WSF_RESPONSE)
+	execute_hello (request: WSF_REQUEST; response: WSF_RESPONSE)
 		local
 			page: SAMPLE_PAGE
 		do
@@ -125,6 +124,16 @@ feature -- Execution
 	repeater_demo (request: WSF_REQUEST; response: WSF_RESPONSE)
 		local
 			page: REPEATER_PAGE
+		do
+				-- To send a response we need to setup, the status code and
+				-- the response headers.
+			create page.make (request, response)
+			page.execute
+		end
+
+	slider_demo (request: WSF_REQUEST; response: WSF_RESPONSE)
+		local
+			page: IMAGE_SLIDER_PAGE
 		do
 				-- To send a response we need to setup, the status code and
 				-- the response headers.
