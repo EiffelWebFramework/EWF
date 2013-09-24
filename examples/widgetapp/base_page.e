@@ -22,7 +22,7 @@ feature
 		do
 			create control.make_multi_control ("container")
 			control.add_class ("container")
-			create navbar.make_navbar_with_brand ("Example")
+			create navbar.make_navbar_with_brand ("navbar1", "Example")
 			navbar.add_list_element (create {WSF_BASIC_CONTROL}.make_with_body ("a", "href=%"/%"", "Home"))
 			navbar.add_list_element (create {WSF_BASIC_CONTROL}.make_with_body ("a", "href=%"/grid%"", "Grid"))
 			navbar.add_list_element (create {WSF_BASIC_CONTROL}.make_with_body ("a", "href=%"/repeater%"", "Repeater"))

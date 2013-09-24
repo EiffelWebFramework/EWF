@@ -21,9 +21,9 @@ feature {NONE} -- Initialization
 		do
 			make_control (n, "div")
 			add_class ("carousel slide")
-			create list.make_with_tag_name ("ol")
+			create list.make_with_tag_name (control_name+"_links", "ol")
 			list.add_class ("carousel-indicators")
-			create slide_wrapper.make_multi_control
+			create slide_wrapper.make_multi_control (control_name+"_wrapper")
 			slide_wrapper.add_class ("carousel-inner")
 		end
 
@@ -63,10 +63,10 @@ feature -- Change
 	add_image_with_caption (src, alt: STRING; caption: detachable WSF_STATELESS_CONTROL)
 			-- Add a new image to the slider, with specified url, alternative text and caption element
 		local
-			item: WSF_STATELESS_MULTI_CONTROL
+			item: WSF_MULTI_CONTROL[WSF_STATELESS_CONTROL]
 		do
 			list.add_control (create {WSF_BASIC_CONTROL}.make_with_body ("li", "data-target=%"#" + control_name + "%" data-slide-to=%"" + list.controls.count.out + "%"", ""));
-			create item.make_multi_control
+			create item.make_multi_control (control_name+"_item"+slide_wrapper.controls.count.out)
 			item.add_class ("item")
 			item.add_control (create {WSF_BASIC_CONTROL}.make_with_body ("img", "src=%"" + src + "%" alt=%"" + alt + "%"", ""))
 			if attached caption as c then
@@ -83,15 +83,15 @@ feature -- Change
 
 	add_control(c:WSF_STATELESS_CONTROL)
 	do
-		
+
 	end
 
 feature -- Properties
 
-	list: WSF_STATELESS_MULTI_CONTROL
+	list: WSF_MULTI_CONTROL[WSF_STATELESS_CONTROL]
 			-- List of slider links
 
-	slide_wrapper: WSF_STATELESS_MULTI_CONTROL
+	slide_wrapper: WSF_MULTI_CONTROL[WSF_STATELESS_CONTROL]
 			-- List of the single slides
 
 end

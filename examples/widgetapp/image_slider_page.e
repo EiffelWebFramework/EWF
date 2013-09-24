@@ -34,6 +34,6 @@ feature -- Implementation
 
 feature -- Properties
 
-	slider: WSF_IMAGE_SLIDER_CONTROL
+	slider: WSF_SLIDER_CONTROL
 
 end
