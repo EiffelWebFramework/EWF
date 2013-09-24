@@ -5,7 +5,7 @@ note
 	revision: "$Revision$"
 
 class
-	WSF_IMAGE_SLIDER_CONTROL
+	WSF_SLIDER_CONTROL
 
 inherit
 
@@ -72,15 +72,19 @@ feature -- Change
 			if attached caption as c then
 				item.add_control (c)
 			end
+			slide_wrapper.add_control (item)
 		end
 
 	add_image (src, alt: STRING)
 			-- Add a new image to the slider, with specified url and alternative text
-		local
-			item: WSF_MULTI_CONTROL [WSF_STATELESS_CONTROL]
 		do
 			add_image_with_caption (src, alt, Void)
 		end
+
+	add_control(c:WSF_STATELESS_CONTROL)
+	do
+		
+	end
 
 feature -- Properties
 
@@ -88,6 +92,6 @@ feature -- Properties
 			-- List of slider links
 
 	slide_wrapper: WSF_STATELESS_MULTI_CONTROL
-			-- List of the single image slides
+			-- List of the single slides
 
 end
