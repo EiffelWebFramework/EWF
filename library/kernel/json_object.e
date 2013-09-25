@@ -52,7 +52,7 @@ feature -- Change Element
             object.extend (l_value, key)
         end
 
-    put_string (value: detachable READABLE_STRING_GENERAL; key: JSON_STRING)
+    put_string (value: READABLE_STRING_GENERAL; key: JSON_STRING)
             -- Assuming there is no item of key `key',
             -- insert `value' with `key'.
         require
@@ -60,9 +60,7 @@ feature -- Change Element
         local
             l_value: detachable JSON_STRING
         do
-            if attached value as v then
-                create l_value.make_json_from_string_32 (v.as_string_32)
-            end
+            create l_value.make_json_from_string_32 (value.as_string_32)
             put (l_value, key)
         end
 
@@ -75,9 +73,7 @@ feature -- Change Element
         local
             l_value: detachable JSON_NUMBER
         do
-            if attached value as v then
-                create l_value.make_integer (v)
-            end
+            create l_value.make_integer (value)
             put (l_value, key)
         end
 
@@ -87,25 +83,21 @@ feature -- Change Element
         require
             key_not_present: not has_key (key)
         local
-            l_value: detachable JSON_NUMBER
+            l_value: JSON_NUMBER
         do
-            if attached value as v then
-                create l_value.make_natural (v)
-            end
+            create l_value.make_natural (value)
             put (l_value, key)
         end
 
-    put_real (value: detachable DOUBLE; key: JSON_STRING)
+    put_real (value: DOUBLE; key: JSON_STRING)
             -- Assuming there is no item of key `key',
             -- insert `value' with `key'.
         require
             key_not_present: not has_key (key)
         local
-            l_value: detachable JSON_NUMBER
+            l_value: JSON_NUMBER
         do
-            if attached value as v then
-                create l_value.make_real (v)
-            end
+            create l_value.make_real (value)
             put (l_value, key)
         end
 
@@ -122,51 +114,43 @@ feature -- Change Element
             object.force (l_value, key)
         end
 
-    replace_with_string (value: detachable READABLE_STRING_GENERAL; key: JSON_STRING)
+    replace_with_string (value: READABLE_STRING_GENERAL; key: JSON_STRING)
             -- Assuming there is no item of key `key',
             -- insert `value' with `key'.
         local
-            l_value: detachable JSON_STRING
+            l_value: JSON_STRING
         do
-            if attached value as v then
-                create l_value.make_json_from_string_32 (v.as_string_32)
-            end
+            create l_value.make_json_from_string_32 (value.as_string_32)
             replace (l_value, key)
         end
 
-    replace_with_integer (value: detachable INTEGER_64; key: JSON_STRING)
+    replace_with_integer (value: INTEGER_64; key: JSON_STRING)
             -- Assuming there is no item of key `key',
             -- insert `value' with `key'.
         local
             l_value: detachable JSON_NUMBER
         do
-            if attached value as v then
-                create l_value.make_integer (v)
-            end
+            create l_value.make_integer (value)
             replace (l_value, key)
         end
 
-    replace_with_with_natural (value: detachable NATURAL_64; key: JSON_STRING)
+    replace_with_with_natural (value: NATURAL_64; key: JSON_STRING)
             -- Assuming there is no item of key `key',
             -- insert `value' with `key'.
         local
-            l_value: detachable JSON_NUMBER
+            l_value: JSON_NUMBER
         do
-            if attached value as v then
-                create l_value.make_natural (v)
-            end
+            create l_value.make_natural (value)
             replace (l_value, key)
         end
 
-    replace_with_real (value: detachable DOUBLE; key: JSON_STRING)
+    replace_with_real (value: DOUBLE; key: JSON_STRING)
             -- Assuming there is no item of key `key',
             -- insert `value' with `key'.
         local
-            l_value: detachable JSON_NUMBER
+            l_value: JSON_NUMBER
         do
-            if attached value as v then
-                create l_value.make_real (v)
-            end
+            create l_value.make_real (value)
             replace (l_value, key)
         end
 
