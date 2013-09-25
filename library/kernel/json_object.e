@@ -58,11 +58,11 @@ feature -- Change Element
         require
             key_not_present: not has_key (key)
         local
-        	l_value: detachable JSON_STRING
+            l_value: detachable JSON_STRING
         do
-        	if attached value as v then
-        		create l_value.make_json_from_string_32 (v.as_string_32)
-        	end
+            if attached value as v then
+                create l_value.make_json_from_string_32 (v.as_string_32)
+            end
             put (l_value, key)
         end
 
@@ -126,11 +126,11 @@ feature -- Change Element
             -- Assuming there is no item of key `key',
             -- insert `value' with `key'.
         local
-        	l_value: detachable JSON_STRING
+            l_value: detachable JSON_STRING
         do
-        	if attached value as v then
-        		create l_value.make_json_from_string_32 (v.as_string_32)
-        	end
+            if attached value as v then
+                create l_value.make_json_from_string_32 (v.as_string_32)
+            end
             replace (l_value, key)
         end
 
