@@ -58,26 +58,26 @@ feature -- Change Element
         require
             key_not_present: not has_key (key)
         local
-            l_value: detachable JSON_STRING
+            l_value: JSON_STRING
         do
             create l_value.make_json_from_string_32 (value.as_string_32)
             put (l_value, key)
         end
 
 
-    put_integer (value: detachable INTEGER_64; key: JSON_STRING)
+    put_integer (value: INTEGER_64; key: JSON_STRING)
             -- Assuming there is no item of key `key',
             -- insert `value' with `key'.
         require
             key_not_present: not has_key (key)
         local
-            l_value: detachable JSON_NUMBER
+            l_value: JSON_NUMBER
         do
             create l_value.make_integer (value)
             put (l_value, key)
         end
 
-    put_natural (value: detachable NATURAL_64; key: JSON_STRING)
+    put_natural (value: NATURAL_64; key: JSON_STRING)
             -- Assuming there is no item of key `key',
             -- insert `value' with `key'.
         require
@@ -128,7 +128,7 @@ feature -- Change Element
             -- Assuming there is no item of key `key',
             -- insert `value' with `key'.
         local
-            l_value: detachable JSON_NUMBER
+            l_value: JSON_NUMBER
         do
             create l_value.make_integer (value)
             replace (l_value, key)
