@@ -156,6 +156,28 @@ feature -- Test routines
 			assert ("Encoding Type is Void", compression_variants.type = Void)
 
 
+			-- Scenario 7, the server set `identity' and the client mention identity;q=0.5, gzip;q=0.7,compress
+			l_compression := "identity"
+			compression_supported := l_compression.split(',')
+			conneg.set_encoding_default("gzip")
+			compression_variants := conneg.encoding_preference (compression_supported, "identity;q=0.5, gzip;q=0.7,compress")
+			assert ("Expected Acceptable",compression_variants.is_acceptable)
+			assert ("Variants is void",compression_variants.supported_variants = Void)
+			assert ("Variant Header", compression_variants.variant_header.is_equal ("Accept-Encoding"))
+			assert ("Encoding Type is identity", compression_variants.type.is_equal ("identity"))
+
+
+			-- Scenario 8, the server set `identity' and the client mention identity;q=0.5
+			l_compression := "identity"
+			compression_supported := l_compression.split(',')
+			conneg.set_encoding_default("gzip")
+			compression_variants := conneg.encoding_preference (compression_supported, "identity;q=0.5")
+			assert ("Expected Acceptable",compression_variants.is_acceptable)
+			assert ("Variants is void",compression_variants.supported_variants = Void)
+			assert ("Variant Header", compression_variants.variant_header.is_equal ("Accept-Encoding"))
+			assert ("Encoding Type is identity", compression_variants.type.is_equal ("identity"))
+
+
 		end
 
 
