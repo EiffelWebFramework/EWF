@@ -52,14 +52,20 @@ feature -- Change Element
             object.extend (l_value, key)
         end
 
-    put_string (value: detachable JSON_STRING; key: JSON_STRING)
+    put_string (value: detachable READABLE_STRING_GENERAL; key: JSON_STRING)
             -- Assuming there is no item of key `key',
             -- insert `value' with `key'.
         require
             key_not_present: not has_key (key)
+        local
+        	l_value: detachable JSON_STRING
         do
-            put (value, key)
+        	if attached value as v then
+        		create l_value.make_json_from_string_32 (v.as_string_32)
+        	end
+            put (l_value, key)
         end
+
 
     put_integer (value: detachable INTEGER_64; key: JSON_STRING)
             -- Assuming there is no item of key `key',
@@ -116,14 +122,19 @@ feature -- Change Element
             object.force (l_value, key)
         end
 
-    replace_string (value: detachable JSON_STRING; key: JSON_STRING)
+    replace_with_string (value: detachable READABLE_STRING_GENERAL; key: JSON_STRING)
             -- Assuming there is no item of key `key',
             -- insert `value' with `key'.
+        local
+        	l_value: detachable JSON_STRING
         do
-            replace (value, key)
+        	if attached value as v then
+        		create l_value.make_json_from_string_32 (v.as_string_32)
+        	end
+            replace (l_value, key)
         end
 
-    replace_integer (value: detachable INTEGER_64; key: JSON_STRING)
+    replace_with_integer (value: detachable INTEGER_64; key: JSON_STRING)
             -- Assuming there is no item of key `key',
             -- insert `value' with `key'.
         local
@@ -135,7 +146,7 @@ feature -- Change Element
             replace (l_value, key)
         end
 
-    replace_natural (value: detachable NATURAL_64; key: JSON_STRING)
+    replace_with_with_natural (value: detachable NATURAL_64; key: JSON_STRING)
             -- Assuming there is no item of key `key',
             -- insert `value' with `key'.
         local
@@ -147,7 +158,7 @@ feature -- Change Element
             replace (l_value, key)
         end
 
-    replace_real (value: detachable DOUBLE; key: JSON_STRING)
+    replace_with_real (value: detachable DOUBLE; key: JSON_STRING)
             -- Assuming there is no item of key `key',
             -- insert `value' with `key'.
         local
