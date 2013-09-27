@@ -25,6 +25,7 @@ feature {NONE} -- Initialization
 			make_multi_control (n)
 			add_class ("navbar navbar-inverse navbar-fixed-top")
 			create nav.make_with_tag_name (control_name + "_nav", "ul")
+			create nav_right.make_with_tag_name (control_name + "_nav_right", "ul")
 			nav.add_class ("nav navbar-nav")
 		end
 
@@ -43,16 +44,15 @@ feature -- Rendering
 			nav_string: STRING
 		do
 			temp := render_tag_with_tagname ("span", "", "", "icon-bar")
-			temp.append (render_tag_with_tagname ("span", "", "", "icon-bar"))
-			temp.append (render_tag_with_tagname ("span", "", "", "icon-bar"))
+			temp.multiply (3)
 			temp := render_tag_with_tagname ("button", temp, "", "navbar-toggle")
 			if attached brand as b then
 				temp.append (render_tag_with_tagname ("a", b, "href=%"#%"", "navbar-brand"))
 			end
 			temp := render_tag_with_tagname ("div", temp, "", "navbar-header")
 			nav_string := nav.render
-			if attached nav_right as n then
-				nav_string.append (n.render)
+			if nav_right.controls.count > 0 then
+				nav_string.append (nav_right.render)
 			end
 			temp.append (render_tag_with_tagname ("div", nav_string, "", "navbar-collapse"))
 			Result := render_tag_with_tagname ("div", temp, "", "container")
@@ -61,6 +61,17 @@ feature -- Rendering
 
 feature -- Change
 
+	set_active (tab: INTEGER)
+		require
+			tab >= 0 and tab < nav.controls.count + nav_right.controls.count
+		do
+			if tab < nav.controls.count then
+				nav.controls.i_th (tab).add_class ("active")
+			else
+				nav_right.controls.i_th (tab - nav.controls.count).add_class ("active")
+			end
+		end
+
 	add_list_element_right (c: WSF_STATELESS_CONTROL)
 			-- Add element in li tag to right aligned part of navbar
 		local
@@ -68,11 +79,7 @@ feature -- Change
 			li: WSF_MULTI_CONTROL [WSF_STATELESS_CONTROL]
 		do
 			name := control_name + "_rightlink";
-			if attached nav_right as right then
-				name := name + right.controls.count.out
-			else
-				name := name + "0"
-			end
+			name := name + nav_right.controls.count.out
 			create li.make_with_tag_name (name, "li")
 			li.add_control (c)
 			add_element_right (li)
@@ -117,7 +124,7 @@ feature -- Properties
 	nav: WSF_MULTI_CONTROL [WSF_STATELESS_CONTROL]
 			-- Middle nav
 
-	nav_right: detachable WSF_MULTI_CONTROL [WSF_STATELESS_CONTROL]
+	nav_right: WSF_MULTI_CONTROL [WSF_STATELESS_CONTROL]
 			-- Right nav
 
 end

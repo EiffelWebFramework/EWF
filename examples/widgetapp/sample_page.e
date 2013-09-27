@@ -86,6 +86,7 @@ feature
 			source.set_control (progress)
 			progress.set_isolation (true)
 			control.add_control (progress)
+			navbar.set_active (1)
 		end
 
 	handle_click2

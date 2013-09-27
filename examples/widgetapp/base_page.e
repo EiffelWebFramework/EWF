@@ -10,15 +10,13 @@ deferred class
 inherit
 
 	WSF_PAGE_CONTROL
-	redefine
-		control
+		redefine
+			control
 		end
 
 feature
 
 	initialize_controls
-		local
-			navbar: WSF_NAVBAR_CONTROL
 		do
 			create control.make_multi_control ("container")
 			control.add_class ("container")
@@ -36,5 +34,7 @@ feature
 feature
 
 	control: WSF_MULTI_CONTROL [WSF_STATELESS_CONTROL]
+
+	navbar: WSF_NAVBAR_CONTROL
 
 end
