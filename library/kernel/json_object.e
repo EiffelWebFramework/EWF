@@ -101,6 +101,18 @@ feature -- Change Element
             put (l_value, key)
         end
 
+    put_boolean (value: BOOLEAN; key: JSON_STRING)
+            -- Assuming there is no item of key `key',
+            -- insert `value' with `key'.
+        require
+            key_not_present: not has_key (key)
+        local
+            l_value: JSON_BOOLEAN
+        do
+            create l_value.make_boolean (value)
+            put (l_value, key)
+        end
+
     replace (value: detachable JSON_VALUE; key: JSON_STRING)
             -- Assuming there is no item of key `key',
             -- insert `value' with `key'.
@@ -151,6 +163,16 @@ feature -- Change Element
             l_value: JSON_NUMBER
         do
             create l_value.make_real (value)
+            replace (l_value, key)
+        end
+
+    replace_with_boolean (value: BOOLEAN; key: JSON_STRING)
+            -- Assuming there is no item of key `key',
+            -- insert `value' with `key'.
+        local
+            l_value: JSON_BOOLEAN
+        do
+            create l_value.make_boolean (value)
             replace (l_value, key)
         end
 
