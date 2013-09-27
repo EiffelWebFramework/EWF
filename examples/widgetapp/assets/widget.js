@@ -5,6 +5,15 @@ var Mini, WSF_AUTOCOMPLETE_CONTROL, WSF_BUTTON_CONTROL, WSF_CHECKBOX_CONTROL, WS
 
 cache = {};
 
+jQuery.cachedScript = function(url, options) {
+  options = $.extend(options || {}, {
+    dataType: "script",
+    cache: true,
+    url: url
+  });
+  return jQuery.ajax(options);
+};
+
 jQuery.unparam = function(value) {
   var i, l, pair, params, pieces;
   params = {};
@@ -131,6 +140,8 @@ WSF_MAX_VALIDATOR = (function(_super) {
 
 WSF_CONTROL = (function() {
 
+  WSF_CONTROL.prototype.requirements = [];
+
   function WSF_CONTROL(parent_control, $el, control_name, fullstate) {
     this.parent_control = parent_control;
     this.$el = $el;
@@ -142,6 +153,24 @@ WSF_CONTROL = (function() {
     this.$el.data('control', this);
     return;
   }
+
+  WSF_CONTROL.prototype.initialize = function() {
+    var counter, done, r, self, _i, _len, _ref;
+    counter = this.requirements.length + 1;
+    self = this;
+    done = function() {
+      counter = counter - 1;
+      if (counter === 0) {
+        self.attach_events();
+      }
+    };
+    _ref = this.requirements;
+    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+      r = _ref[_i];
+      $.cachedScript(r).done(done);
+    }
+    return done();
+  };
 
   WSF_CONTROL.prototype.load_subcontrols = function() {
     var control_name, state;
@@ -168,7 +197,7 @@ WSF_CONTROL = (function() {
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       control = _ref[_i];
       if (control != null) {
-        control.attach_events();
+        control.initialize();
       }
     }
   };
@@ -422,6 +451,8 @@ WSF_AUTOCOMPLETE_CONTROL = (function(_super) {
   function WSF_AUTOCOMPLETE_CONTROL() {
     return WSF_AUTOCOMPLETE_CONTROL.__super__.constructor.apply(this, arguments);
   }
+
+  WSF_AUTOCOMPLETE_CONTROL.prototype.requirements = ['assets/typeahead.min.js'];
 
   WSF_AUTOCOMPLETE_CONTROL.prototype.attach_events = function() {
     var self;

@@ -103,14 +103,13 @@ feature -- Implementation
 			create Result.make_empty
 			if not ajax then
 				Result.append ("<html><head>")
-				Result.append ("<link href=%"/bootstrap.min.css%" rel=%"stylesheet%">")
-				Result.append ("<link href=%"/widget.css%" rel=%"stylesheet%">")
+				Result.append ("<link href=%"assets/bootstrap.min.css%" rel=%"stylesheet%">")
+				Result.append ("<link href=%"assets/widget.css%" rel=%"stylesheet%">")
 				Result.append ("</head><body data-name=%"" + control_name + "%" data-type=%"WSF_PAGE_CONTROL%">")
 				Result.append (control.render)
-				Result.append ("<script src=%"/jquery.min.js%"></script>")
-				Result.append ("<script src=%"/typeahead.min.js%"></script>")
-				Result.append ("<script src=%"/bootstrap.min.js%"></script>")
-				Result.append ("<script src=%"/widget.js%"></script>")
+				Result.append ("<script src=%"assets/jquery.min.js%"></script>")
+				Result.append ("<script src=%"assets/bootstrap.min.js%"></script>")
+				Result.append ("<script src=%"assets/widget.js%"></script>")
 				Result.append ("<script type=%"text/javascript%">$(function() {var page= new WSF_PAGE_CONTROL(")
 				Result.append (full_state.representation)
 				Result.append (");page.attach_events();});</script>")
@@ -120,7 +119,7 @@ feature -- Implementation
 				Result.append (control.render)
 				Result.append ("<script type=%"text/javascript%">$(function() {var page= new WSF_PAGE_CONTROL(")
 				Result.append (full_state.representation)
-				Result.append (");page.attach_events();});</script>")
+				Result.append (");page.initialize();});</script>")
 				Result.append ("</div>")
 			end
 

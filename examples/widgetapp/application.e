@@ -84,12 +84,7 @@ feature -- Router and Filter
 
 				-- NOTE: you could put all those files in a specific folder, and use WSF_FILE_SYSTEM_HANDLER with "/"
 				-- this way, it handles the caching and so on
-			map_agent_uri ("/widget.js", agent load_file("widget.js", ?, ?), Void)
-			map_agent_uri ("/jquery.min.js", agent load_file("jquery.min.js", ?, ?), Void)
-			map_agent_uri ("/bootstrap.min.js", agent load_file("bootstrap.min.js", ?, ?), Void)
-			map_agent_uri ("/typeahead.min.js", agent load_file("typeahead.min.js", ?, ?), Void)
-			map_agent_uri ("/widget.css", agent load_file("widget.css", ?, ?), Void)
-			map_agent_uri ("/bootstrap.min.css", agent load_file("bootstrap.min.css", ?, ?), Void)
+			router.handle_with_request_methods ("/assets", create {WSF_FILE_SYSTEM_HANDLER}.make_hidden ("assets"), router.methods_GET)
 		end
 
 feature -- Helper: mapping
@@ -141,12 +136,5 @@ feature -- Execution
 			page.execute
 		end
 
-	load_file (name: STRING; request: WSF_REQUEST; response: WSF_RESPONSE)
-		local
-			f: WSF_FILE_RESPONSE
-		do
-			create f.make (name)
-			response.send (f)
-		end
 
 end

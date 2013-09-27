@@ -1,5 +1,12 @@
 #IMPORTANT PLEASE COMPILE WITH:: coffee -cbw widget.coffee
 cache = {}
+jQuery.cachedScript = (url, options) ->
+  options = $.extend(options or {},
+    dataType: "script"
+    cache: true
+    url: url
+  )
+  jQuery.ajax options
 jQuery.unparam = (value) ->
   params = {}
   pieces = value.split("&")
@@ -71,12 +78,24 @@ class WSF_MAX_VALIDATOR extends WSF_VALIDATOR
 
 
 class WSF_CONTROL
+  requirements : []
   constructor: (@parent_control, @$el, @control_name, @fullstate)->
     @state = @fullstate.state 
     @load_subcontrols()
     @isolation = (""+@$el.data('isolation')=="1")
     @$el.data('control',@)
     return
+  initialize:()->
+    counter = @requirements.length + 1
+    self = @
+    done = ()->
+        counter = counter - 1
+        if counter == 0
+          self.attach_events()
+        return
+    for r in @requirements
+      $.cachedScript(r).done(done)
+    done()
 
   load_subcontrols: ()->
     if @fullstate.controls?
@@ -84,12 +103,11 @@ class WSF_CONTROL
     else
       @controls = []
 
-
   attach_events: ()->
     console.log "Attached #{@control_name}"
     for control in @controls
       if control?
-        control.attach_events()
+        control.initialize()
     return
 
   update: (state)->
@@ -235,6 +253,7 @@ class WSF_INPUT_CONTROL extends WSF_CONTROL
 class WSF_TEXTAREA_CONTROL extends WSF_INPUT_CONTROL
 
 class WSF_AUTOCOMPLETE_CONTROL extends WSF_INPUT_CONTROL
+  requirements: ['assets/typeahead.min.js']
   attach_events: () ->
     super
     self = @
