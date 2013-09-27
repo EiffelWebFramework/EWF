@@ -20,14 +20,14 @@ create
 
 feature --States
 
-	state: JSON_OBJECT
+	state: WSF_JSON_OBJECT
 			-- Return state which contains the current html and if there is an event handle attached
 		do
 			Result := Precursor
-			Result.put (create {JSON_STRING}.make_json (query), create {JSON_STRING}.make_json ("query"))
+			Result.put_string (query, create {JSON_STRING}.make_json ("query"))
 		end
 
-	set_state (new_state: JSON_OBJECT)
+	set_state (new_state: WSF_JSON_OBJECT)
 		do
 			Precursor (new_state)
 			if attached {JSON_STRING} new_state.item (create {JSON_STRING}.make_json ("query")) as new_query then
