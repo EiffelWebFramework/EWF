@@ -48,24 +48,24 @@ feature {NONE} -- Initialization
 
 feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 
-	load_state (new_states: JSON_OBJECT)
+	load_state (new_states: WSF_JSON_OBJECT)
 			-- Pass new_states to subcontrols
 		do
 			Precursor (new_states)
-			if attached {JSON_OBJECT} new_states.item ("controls") as ct and then attached {JSON_OBJECT} ct.item (value_control.control_name) as value_state then
+			if attached {WSF_JSON_OBJECT} new_states.item ("controls") as ct and then attached {WSF_JSON_OBJECT} ct.item (value_control.control_name) as value_state then
 				value_control.load_state (value_state)
 			end
 		end
 
-	set_state (new_state: JSON_OBJECT)
+	set_state (new_state: WSF_JSON_OBJECT)
 			-- Set new state
 		do
 			value_control.set_state (new_state)
 		end
 
-	full_state: JSON_OBJECT
+	full_state: WSF_JSON_OBJECT
 		local
-			controls_state: JSON_OBJECT
+			controls_state: WSF_JSON_OBJECT
 		do
 			Result := Precursor
 			create controls_state.make
@@ -73,14 +73,14 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 			Result.put (controls_state, "controls")
 		end
 
-	read_state_changes (states: JSON_OBJECT)
+	read_state_changes (states: WSF_JSON_OBJECT)
 			-- Read states_changes in subcontrols
 		do
 			Precursor (states)
 			value_control.read_state_changes (states)
 		end
 
-	state: JSON_OBJECT
+	state: WSF_JSON_OBJECT
 			-- Read state
 		local
 			validator_description: JSON_ARRAY
@@ -92,7 +92,7 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 			loop
 				validator_description.add (v.item.state)
 			end
-			Result.put (create {JSON_STRING}.make_json (value_control.control_name), "value_control")
+			Result.put_string (value_control.control_name, "value_control")
 			Result.put (validator_description, "validators")
 		end
 

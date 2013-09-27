@@ -40,49 +40,49 @@ feature -- Actions
 	start_modal(url:STRING; title:STRING)
 		--Start a modal window containg an other or the same page
 		local
-			modal:JSON_OBJECT
+			modal:WSF_JSON_OBJECT
 		do
 			create modal.make
-			modal.put (create {JSON_STRING}.make_json("start_modal"), "type")
-			modal.put (create {JSON_STRING}.make_json(url), "url")
-			modal.put (create {JSON_STRING}.make_json(title), "title")
+			modal.put_string ("start_modal", "type")
+			modal.put_string (url, "url")
+			modal.put_string (title, "title")
 			actions.add (modal)
 		end
 
 	show_alert(mesage:STRING)
 		--Start a modal window containg an other or the same page
 		local
-			modal:JSON_OBJECT
+			modal:WSF_JSON_OBJECT
 		do
 			create modal.make
-			modal.put (create {JSON_STRING}.make_json("show_alert"), "type")
-			modal.put (create {JSON_STRING}.make_json(mesage), "message")
+			modal.put_string ("show_alert", "type")
+			modal.put_string (mesage, "message")
 			actions.add (modal)
 		end
 
 feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- STATE MANAGEMENT
 
-	load_state (new_states: JSON_OBJECT)
+	load_state (new_states: WSF_JSON_OBJECT)
 			-- Select state stored with `control_name` as key
 		do
-			if attached {JSON_OBJECT} new_states.item ("state") as new_state_obj then
+			if attached {WSF_JSON_OBJECT} new_states.item ("state") as new_state_obj then
 				set_state (new_state_obj)
 			end
 		end
 
-	set_state (new_state: JSON_OBJECT)
+	set_state (new_state: WSF_JSON_OBJECT)
 			-- Before we process the callback. We restore the state of control.
 		deferred
 		end
 
-	full_state: JSON_OBJECT
+	full_state: WSF_JSON_OBJECT
 			-- Return state of object
 		do
 			create Result.make
 			Result.put (state, "state")
 		end
 
-	read_state_changes (states: JSON_OBJECT)
+	read_state_changes (states: WSF_JSON_OBJECT)
 			-- Add a new entry in the `states_changes` JSON object with the `control_name` as key and the `state` as value
 		do
 			if state_changes.count > 0 then
@@ -102,14 +102,14 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- STATE MANAGEMENT
 			end
 		end
 
-	state: JSON_OBJECT
+	state: WSF_JSON_OBJECT
 			-- Returns the current state of the Control as JSON. This state will be transfered to the client.
 		deferred
 		ensure
 			controls_not_defined: not (attached Result.item ("controls"))
 		end
 
-	state_changes: JSON_OBJECT
+	state_changes: WSF_JSON_OBJECT
 
 feature -- Rendering
 

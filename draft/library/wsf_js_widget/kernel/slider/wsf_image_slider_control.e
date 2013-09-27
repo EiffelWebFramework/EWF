@@ -29,11 +29,11 @@ feature {NONE} -- Initialization
 
 feature -- State handling
 
-	set_state (new_state: JSON_OBJECT)
+	set_state (new_state: WSF_JSON_OBJECT)
 		do
 		end
 
-	state: JSON_OBJECT
+	state: WSF_JSON_OBJECT
 		do
 			create Result.make
 		end

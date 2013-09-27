@@ -60,7 +60,7 @@ feature -- Implementation
 			event_parameter: detachable STRING
 			event_control_name: detachable STRING
 			states: STRING
-			states_changes: JSON_OBJECT
+			states_changes: WSF_JSON_OBJECT
 			json_parser: JSON_PARSER
 		do
 			event_control_name := get_parameter ("control_name")
@@ -70,7 +70,7 @@ feature -- Implementation
 				create states.make_empty
 				request.read_input_data_into (states)
 				create json_parser.make_parser (states)
-				if attached {JSON_OBJECT} json_parser.parse_json as sp then
+				if attached {WSF_JSON_OBJECT} json_parser.parse_json as sp then
 					set_state (sp)
 				end
 				handle_callback (event_control_name, event, event_parameter)
@@ -126,7 +126,7 @@ feature -- Implementation
 
 		end
 
-	read_state_changes (states: JSON_OBJECT)
+	read_state_changes (states: WSF_JSON_OBJECT)
 			-- Add a new entry in the `states_changes` JSON object with the `control_name` as key and the `state` as value
 		do
 			Precursor (states)
@@ -155,24 +155,24 @@ feature -- Event handling
 
 feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 
-	state: JSON_OBJECT
+	state: WSF_JSON_OBJECT
 		do
 			create Result.make
-			Result.put (create {JSON_STRING}.make_json (control_name), "id")
-			Result.put (create {JSON_STRING}.make_json (request.path_info), "url")
-			Result.put (create {JSON_STRING}.make_json (request.query_string), "url_params")
+			Result.put_string (control_name, "id")
+			Result.put_string (request.path_info, "url")
+			Result.put_string (request.query_string, "url_params")
 		end
 
-	set_state (sp: JSON_OBJECT)
+	set_state (sp: WSF_JSON_OBJECT)
 		do
-			if attached {JSON_OBJECT} sp.item ("controls") as ct and then attached {JSON_OBJECT} ct.item (control.control_name) as value_state then
+			if attached {WSF_JSON_OBJECT} sp.item ("controls") as ct and then attached {WSF_JSON_OBJECT} ct.item (control.control_name) as value_state then
 				control.load_state (value_state)
 			end
 		end
 
-	full_state: JSON_OBJECT
+	full_state: WSF_JSON_OBJECT
 		local
-			controls_state: JSON_OBJECT
+			controls_state: WSF_JSON_OBJECT
 		do
 			create Result.make
 			create controls_state.make

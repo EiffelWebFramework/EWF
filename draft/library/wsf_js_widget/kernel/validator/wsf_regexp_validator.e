@@ -40,12 +40,12 @@ feature -- Implementation
 
 feature -- State
 
-	state: JSON_OBJECT
+	state: WSF_JSON_OBJECT
 		do
 			create Result.make
-			Result.put (create {JSON_STRING}.make_json ("WSF_REGEXP_VALIDATOR"), "name")
-			Result.put (create {JSON_STRING}.make_json (regexp_string), "expression")
-			Result.put (create {JSON_STRING}.make_json (error), "error")
+			Result.put_string ("WSF_REGEXP_VALIDATOR", "name")
+			Result.put_string (regexp_string, "expression")
+			Result.put_string (error, "error")
 		end
 
 feature -- Properties

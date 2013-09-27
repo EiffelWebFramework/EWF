@@ -25,19 +25,19 @@ feature --Event handling
 
 feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 
-	state: JSON_OBJECT
+	state: WSF_JSON_OBJECT
 			-- Return state which contains the current sort_column and sort_direction
 		do
 			create Result.make
 			if attached sort_column as a_sort_column then
-				Result.put (create {JSON_STRING}.make_json (a_sort_column), "sort_column")
+				Result.put_string (a_sort_column, "sort_column")
 			else
 				Result.put (create {JSON_NULL}, "sort_column")
 			end
-			Result.put (create {JSON_BOOLEAN}.make_boolean (sort_direction), "sort_direction")
+			Result.put_boolean (sort_direction, "sort_direction")
 		end
 
-	set_state (new_state: JSON_OBJECT)
+	set_state (new_state: WSF_JSON_OBJECT)
 			-- Restore sort_column and sort_direction from json
 		do
 			if attached {JSON_STRING} new_state.item ("sort_column") as new_sort_column then

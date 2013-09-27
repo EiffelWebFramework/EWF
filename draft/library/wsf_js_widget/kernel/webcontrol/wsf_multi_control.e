@@ -36,16 +36,16 @@ feature {NONE} -- Initialization
 
 feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 
-	load_state (new_states: JSON_OBJECT)
+	load_state (new_states: WSF_JSON_OBJECT)
 			-- Pass new_states to subcontrols
 		do
 			Precursor (new_states)
-			if attached {JSON_OBJECT} new_states.item ("controls") as ct then
+			if attached {WSF_JSON_OBJECT} new_states.item ("controls") as ct then
 				across
 					controls as c
 				loop
 					if attached {WSF_CONTROL} c.item as cont then
-						if attached {JSON_OBJECT} ct.item (cont.control_name) as value_state then
+						if attached {WSF_JSON_OBJECT} ct.item (cont.control_name) as value_state then
 							cont.load_state (value_state)
 						end
 					end
@@ -53,15 +53,15 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 			end
 		end
 
-	set_state (new_state: JSON_OBJECT)
+	set_state (new_state: WSF_JSON_OBJECT)
 			-- Before we process the callback. We restore the state of control.
 		do
 		end
 
-	full_state: JSON_OBJECT
+	full_state: WSF_JSON_OBJECT
 			-- Read states in subcontrols
 		local
-			controls_state: JSON_OBJECT
+			controls_state: WSF_JSON_OBJECT
 		do
 			Result := Precursor
 			create controls_state.make
@@ -75,7 +75,7 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 			Result.put (controls_state, "controls")
 		end
 
-	read_state_changes (states: JSON_OBJECT)
+	read_state_changes (states: WSF_JSON_OBJECT)
 			-- Read states_changes in subcontrols
 		do
 			Precursor (states)
@@ -88,7 +88,7 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 			end
 		end
 
-	state: JSON_OBJECT
+	state: WSF_JSON_OBJECT
 			--Read state
 		do
 			create Result.make

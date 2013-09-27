@@ -27,7 +27,7 @@ feature -- Implementation
 	autocompletion (input: STRING): JSON_ARRAY
 			-- Implementation
 		local
-			o: JSON_OBJECT
+			o: WSF_JSON_OBJECT
 		do
 			create Result.make_array
 			across
@@ -35,7 +35,7 @@ feature -- Implementation
 			loop
 				if c.item.as_lower.has_substring (input.as_lower) then
 					create o.make
-					o.put (create {JSON_STRING}.make_json (c.item), "value")
+					o.put_string (c.item, "value")
 					Result.add (o)
 				end
 			end

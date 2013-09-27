@@ -35,10 +35,10 @@ feature -- Implementation
 
 feature -- State
 
-	state: JSON_OBJECT
+	state: WSF_JSON_OBJECT
 		do
 			Result := Precursor
-			Result.put (create {JSON_NUMBER}.make_integer (min), "min")
+			Result.put_integer (min, "min")
 		end
 
 feature -- Properties

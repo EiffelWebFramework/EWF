@@ -35,16 +35,16 @@ feature --Event handling
 
 feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 
-	state: JSON_OBJECT
+	state: WSF_JSON_OBJECT
 			-- Return state which contains the current page, page_size and row_count
 		do
 			Result := Precursor
-			Result.put (create {JSON_NUMBER}.make_integer (page), "page")
-			Result.put (create {JSON_NUMBER}.make_integer (page_size), "page_size")
-			Result.put (create {JSON_NUMBER}.make_integer (row_count), "row_count")
+			Result.put_integer (page, "page")
+			Result.put_integer (page_size, "page_size")
+			Result.put_integer (row_count, "row_count")
 		end
 
-	set_state (new_state: JSON_OBJECT)
+	set_state (new_state: WSF_JSON_OBJECT)
 			-- Restore page, page_size and row_count from json
 		do
 			Precursor (new_state)

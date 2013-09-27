@@ -17,12 +17,12 @@ feature {NONE} -- Initialization
 
 feature -- Access
 
-	state: JSON_OBJECT
+	state: WSF_JSON_OBJECT
 			-- JSON state of this validator
 		do
 			create Result.make
-			Result.put (create {JSON_STRING}.make_json (generator), "name")
-			Result.put (create {JSON_STRING}.make_json (error), "error")
+			Result.put_string (generator, "name")
+			Result.put_string (error, "error")
 		end
 
 	is_valid (input: G): BOOLEAN

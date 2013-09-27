@@ -25,7 +25,7 @@ feature {NONE} -- Initialization
 
 feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 
-	set_state (new_state: JSON_OBJECT)
+	set_state (new_state: WSF_JSON_OBJECT)
 			-- Restore html from json
 		do
 			if attached {JSON_STRING} new_state.item ("html") as new_html then
@@ -33,11 +33,11 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 			end
 		end
 
-	state: JSON_OBJECT
+	state: WSF_JSON_OBJECT
 			-- Return state which contains the current html and if there is an event handle attached
 		do
 			create Result.make
-			Result.put (create {JSON_STRING}.make_json (html), "html")
+			Result.put_string (html, "html")
 		end
 
 feature --Event handling
@@ -58,7 +58,7 @@ feature -- Implementation
 		do
 			if not t.same_string (html) then
 				html := t
-				state_changes.replace (create {JSON_STRING}.make_json (html), "html")
+				state_changes.replace_with_string (html, "html")
 			end
 		end
 

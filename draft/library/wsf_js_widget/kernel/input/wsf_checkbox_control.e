@@ -26,7 +26,7 @@ feature {NONE} -- Initialization
 
 feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 
-	set_state (new_state: JSON_OBJECT)
+	set_state (new_state: WSF_JSON_OBJECT)
 			-- Restore text from json
 		do
 			if attached {JSON_BOOLEAN} new_state.item ("checked") as new_checked then
@@ -34,13 +34,13 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 			end
 		end
 
-	state: JSON_OBJECT
+	state: WSF_JSON_OBJECT
 			-- Return state which contains the current text and if there is an event handle attached
 		do
 			create Result.make
-			Result.put (create {JSON_BOOLEAN}.make_boolean (checked), "checked")
-			Result.put (create {JSON_STRING}.make_json (checked_value), "checked_value")
-			Result.put (create {JSON_BOOLEAN}.make_boolean (attached change_event), "callback_change")
+			Result.put_boolean (checked, "checked")
+			Result.put_string (checked_value, "checked_value")
+			Result.put_boolean (attached change_event, "callback_change")
 		end
 
 feature --Event handling

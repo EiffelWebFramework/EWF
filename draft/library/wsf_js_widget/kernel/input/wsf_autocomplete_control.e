@@ -39,10 +39,10 @@ feature {NONE} -- Initialization
 
 feature -- State
 
-	state: JSON_OBJECT
+	state: WSF_JSON_OBJECT
 		do
 			Result := Precursor {WSF_INPUT_CONTROL}
-			Result.put (create {JSON_STRING}.make_json (template), "template")
+			Result.put_string (template, "template")
 		end
 
 feature -- Callback

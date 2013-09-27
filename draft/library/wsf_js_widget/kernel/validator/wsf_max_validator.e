@@ -35,10 +35,10 @@ feature -- Implementation
 
 feature -- State
 
-	state: JSON_OBJECT
+	state: WSF_JSON_OBJECT
 		do
 			Result := Precursor
-			Result.put (create {JSON_NUMBER}.make_integer (max), "max")
+			Result.put_integer (max, "max")
 		end
 
 feature -- Properties
