@@ -31,7 +31,23 @@ Mini =
     {
       render:template(t)
     }
- 
+lazy_load = (requirements,fn,that)->
+  if not that?
+    that = window
+  return ()->
+    if not args?
+      args = []
+    counter = requirements.length + 1
+    self = @
+    done = ()->
+        counter = counter - 1
+        if counter == 0
+          fn.apply(that,arguments)
+        return
+    for r in requirements
+      $.cachedScript(r).done(done)
+    done()
+
 build_control = (control_name, state, control)->
   $el = control.$el.find('[data-name='+control_name+']')
   #get control type
@@ -78,24 +94,14 @@ class WSF_MAX_VALIDATOR extends WSF_VALIDATOR
 
 
 class WSF_CONTROL
-  requirements : []
+  requirements: []
   constructor: (@parent_control, @$el, @control_name, @fullstate)->
     @state = @fullstate.state 
     @load_subcontrols()
     @isolation = (""+@$el.data('isolation')=="1")
     @$el.data('control',@)
+    @initialize = lazy_load @requirements, @attach_events, @
     return
-  initialize:()->
-    counter = @requirements.length + 1
-    self = @
-    done = ()->
-        counter = counter - 1
-        if counter == 0
-          self.attach_events()
-        return
-    for r in @requirements
-      $.cachedScript(r).done(done)
-    done()
 
   load_subcontrols: ()->
     if @fullstate.controls?
@@ -200,6 +206,7 @@ class WSF_PAGE_CONTROL extends WSF_CONTROL
     @url = @state['url']
     @url_params = jQuery.unparam(@state['url_params'])
     @$el.data('control',@)
+    @initialize = lazy_load @requirements, @attach_events, @
     @load_subcontrols()
 
   wrap : (cname,state)->
@@ -274,8 +281,10 @@ class WSF_AUTOCOMPLETE_CONTROL extends WSF_INPUT_CONTROL
         fn: ()->
           self.trigger_callback(self.control_name, 'autocomplete')
     })
+
     @$el.on 'typeahead:closed',()->
         self.change() 
+
     @$el.on 'typeahead:blured',()->
         self.change() 
 
@@ -454,7 +463,7 @@ class WSF_REPEATER_CONTROL extends WSF_CONTROL
 show_alert = (action)->
     alert(action.message)
 
-start_modal = (action)->
+start_modal = lazy_load ['assets/bootstrap.min.js'], (action)->
   modal = $("""<div class="modal fade">
   <div class="modal-dialog">
     <div class="modal-content">
