@@ -49,6 +49,18 @@ feature -- Actions
 			actions.add (modal)
 		end
 
+	start_modal_big(url:STRING; title:STRING)
+		--Start a modal window containg an other or the same page
+		local
+			modal:WSF_JSON_OBJECT
+		do
+			create modal.make
+			modal.put_string ("start_modal_big", "type")
+			modal.put_string (url, "url")
+			modal.put_string (title, "title")
+			actions.add (modal)
+		end
+
 	show_alert(mesage:STRING)
 		--Start a modal window containg an other or the same page
 		local

@@ -111,7 +111,7 @@ feature -- Implementation
 				Result.append ("<script src=%"assets/widget.js%"></script>")
 				Result.append ("<script type=%"text/javascript%">$(function() {var page= new WSF_PAGE_CONTROL(")
 				Result.append (full_state.representation)
-				Result.append (");page.attach_events();});</script>")
+				Result.append (");page.initialize();});</script>")
 				Result.append ("</body></html>")
 			else
 				Result.append ("<div data-name=%"" + control_name + "%" data-type=%"WSF_PAGE_CONTROL%">")

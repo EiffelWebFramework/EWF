@@ -76,3 +76,25 @@ body {
 .tt-suggestion p {
     margin: 0;
 
+}
+
+
+@media (min-width:768px) and (max-width:991px){
+    .big{
+        width:100%;
+    }
+}
+@media (min-width:992px) and (max-width:1199px){
+    .big{
+        width:982px;
+        }
+}
+@media (min-width:1200px){
+    .big{
+        width:1190px;
+    }
+}
+
+.CodeMirror-code{
+    line-height: 1.4em;
+}

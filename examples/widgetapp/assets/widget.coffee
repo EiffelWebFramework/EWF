@@ -1,12 +1,50 @@
 #IMPORTANT PLEASE COMPILE WITH:: coffee -cbw widget.coffee
 cache = {}
-jQuery.cachedScript = (url, options) ->
-  options = $.extend(options or {},
-    dataType: "script"
-    cache: true
-    url: url
-  )
-  jQuery.ajax options
+jQuery.cachedAsset = (url, options) ->
+  if /\.css$/.test(url)
+    $("<link/>",
+      rel: "stylesheet"
+      type: "text/css"
+      href: url
+    ).appendTo("head")
+    return {
+      done:(fn)->
+        fn()
+    }
+  else
+    success = []
+    head = document.head or document.getElementsByTagName('head')[0] or
+      document.documentElement
+    script = document.createElement 'script'
+    script.async = 'async'
+    script.src   = url
+    successful = false
+    onload = (_, aborted = false) ->
+      return unless (aborted or
+      not script.readyState or script.readyState is 'complete')
+      clearTimeout timeoutHandle
+      script.onload = script.onreadystatechange = script.onerror = null
+      head.removeChild(script) if head and script.parentNode
+      script = undefined
+      if success and not aborted
+        successful = true
+        for s in success
+          s()
+        success = []
+    script.onload = script.onreadystatechange = onload
+    script.onerror = ->
+      onload null, true
+    timeoutHandle = setTimeout script.onerror, 7500
+    head.insertBefore script, head.firstChild
+    return {
+      done:(fn)->
+        if not successful
+          success.push(fn)
+        else
+          fn()
+        return 
+      }
+
 jQuery.unparam = (value) ->
   params = {}
   pieces = value.split("&")
@@ -33,6 +71,11 @@ Mini =
     }
 loaded = {}
 lazy_load = (requirements,fn,that)->
+  if requirements.length == 0
+    return ()->
+      a = arguments
+      fn.apply(that,a)
+
   if not that?
     that = window
   return ()->
@@ -47,12 +90,10 @@ lazy_load = (requirements,fn,that)->
           fn.apply(that,a)
         return
     for r in requirements
-      if loaded[r]?
-        done()
-      else  
-        $.cachedScript(r).done ()->
-          done()
-          loaded[r] = true
+      if not loaded[r]?
+        loaded[r]=$.cachedAsset(r)
+      loaded[r].done(done)
+            
     done()
 
 build_control = (control_name, state, control)->
@@ -266,8 +307,31 @@ class WSF_INPUT_CONTROL extends WSF_CONTROL
 
 class WSF_TEXTAREA_CONTROL extends WSF_INPUT_CONTROL
 
+class WSF_CODEVIEW_CONTROL extends WSF_INPUT_CONTROL
+  constructor:()->
+    super
+    #load codemirror and then eiffel syntax
+    @initialize = lazy_load ['assets/codemirror/codemirror.js','assets/codemirror/codemirror.css','assets/codemirror/estudio.css'],
+                            (lazy_load ['assets/codemirror/eiffel.js'], @attach_events, @), 
+                            @
+
+  attach_events: () ->
+    super 
+    @editor = CodeMirror.fromTextArea(@$el[0], {
+        mode: "eiffel",
+        tabMode: "indent",
+        indentUnit: 4,
+        lineNumbers: true,
+        theme:'estudio'
+      })
+    @editor.setSize("100%",700)
+  remove: ()->
+    @editor.toTextArea()
+    super
+
 class WSF_AUTOCOMPLETE_CONTROL extends WSF_INPUT_CONTROL
   requirements: ['assets/typeahead.min.js']
+
   attach_events: () ->
     super
     self = @
@@ -471,8 +535,11 @@ show_alert = (action)->
     alert(action.message)
 
 start_modal = lazy_load ['assets/bootstrap.min.js'], (action)->
+  cssclass = ""
+  if action.type == "start_modal_big"
+    cssclass = " big"
   modal = $("""<div class="modal fade">
-  <div class="modal-dialog">
+  <div class="modal-dialog#{cssclass}">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -494,4 +561,5 @@ start_modal = lazy_load ['assets/bootstrap.min.js'], (action)->
   $.get( action.url, { ajax: 1 } )
     .done (data) ->
       modal.find('.modal-body').append(data)
-  
+
+start_modal_big = start_modal

@@ -71,8 +71,7 @@ feature
 			form.add_control (button1)
 				--Button 2
 			create button2.make_button ("sample_button2", "Start Modal Grid")
-			button2.set_click_event (agent handle_click2)
-			button2.add_class ("col-lg-offset-2")
+			button2.set_click_event (agent handle_click)
 			form.add_control (button2)
 				--Result
 			create result_html.make_html ("txtBox3", "p", "")
@@ -87,11 +86,6 @@ feature
 			progress.set_isolation (true)
 			control.add_control (progress)
 		end
-
-	handle_click2
-	do
-		start_modal ("/","My first modal")
-	end
 
 	handle_click
 		local
