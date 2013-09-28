@@ -33,7 +33,7 @@ feature {NONE} -- Initialization
 
 feature -- State handling
 
-	set_state (new_state: WSF_JSON_OBJECT)
+	set_state (new_state: JSON_OBJECT)
 		do
 			if attached {JSON_NUMBER} new_state.item ("progress") as new_progress then
 				progress := new_progress.item.to_integer

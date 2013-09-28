@@ -26,7 +26,7 @@ feature {NONE} -- Initialization
 
 feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 
-	set_state (new_state: WSF_JSON_OBJECT)
+	set_state (new_state: JSON_OBJECT)
 			-- Restore text from json
 		do
 			if attached {JSON_BOOLEAN} new_state.item ("checked") as new_checked then

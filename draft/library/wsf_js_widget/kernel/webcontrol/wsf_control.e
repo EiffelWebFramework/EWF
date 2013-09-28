@@ -62,15 +62,15 @@ feature -- Actions
 
 feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- STATE MANAGEMENT
 
-	load_state (new_states: WSF_JSON_OBJECT)
+	load_state (new_states: JSON_OBJECT)
 			-- Select state stored with `control_name` as key
 		do
-			if attached {WSF_JSON_OBJECT} new_states.item ("state") as new_state_obj then
+			if attached {JSON_OBJECT} new_states.item ("state") as new_state_obj then
 				set_state (new_state_obj)
 			end
 		end
 
-	set_state (new_state: WSF_JSON_OBJECT)
+	set_state (new_state: JSON_OBJECT)
 			-- Before we process the callback. We restore the state of control.
 		deferred
 		end

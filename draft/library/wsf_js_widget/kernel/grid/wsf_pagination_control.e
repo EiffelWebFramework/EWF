@@ -32,7 +32,7 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 			create Result.make
 		end
 
-	set_state (new_state: WSF_JSON_OBJECT)
+	set_state (new_state: JSON_OBJECT)
 			-- There is no state to restore states
 		do
 		end

@@ -48,16 +48,16 @@ feature {NONE} -- Initialization
 
 feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 
-	load_state (new_states: WSF_JSON_OBJECT)
+	load_state (new_states: JSON_OBJECT)
 			-- Pass new_states to subcontrols
 		do
 			Precursor (new_states)
-			if attached {WSF_JSON_OBJECT} new_states.item ("controls") as ct and then attached {WSF_JSON_OBJECT} ct.item (value_control.control_name) as value_state then
+			if attached {JSON_OBJECT} new_states.item ("controls") as ct and then attached {JSON_OBJECT} ct.item (value_control.control_name) as value_state then
 				value_control.load_state (value_state)
 			end
 		end
 
-	set_state (new_state: WSF_JSON_OBJECT)
+	set_state (new_state: JSON_OBJECT)
 			-- Set new state
 		do
 			value_control.set_state (new_state)

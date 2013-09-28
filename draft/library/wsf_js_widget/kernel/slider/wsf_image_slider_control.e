@@ -29,7 +29,7 @@ feature {NONE} -- Initialization
 
 feature -- State handling
 
-	set_state (new_state: WSF_JSON_OBJECT)
+	set_state (new_state: JSON_OBJECT)
 		do
 		end
 

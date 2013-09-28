@@ -31,10 +31,12 @@ Mini =
     {
       render:template(t)
     }
+loaded = {}
 lazy_load = (requirements,fn,that)->
   if not that?
     that = window
   return ()->
+    a = arguments
     if not args?
       args = []
     counter = requirements.length + 1
@@ -42,10 +44,15 @@ lazy_load = (requirements,fn,that)->
     done = ()->
         counter = counter - 1
         if counter == 0
-          fn.apply(that,arguments)
+          fn.apply(that,a)
         return
     for r in requirements
-      $.cachedScript(r).done(done)
+      if loaded[r]?
+        done()
+      else  
+        $.cachedScript(r).done ()->
+          done()
+          loaded[r] = true
     done()
 
 build_control = (control_name, state, control)->

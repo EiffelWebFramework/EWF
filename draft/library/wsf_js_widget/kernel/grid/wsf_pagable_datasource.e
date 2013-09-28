@@ -44,7 +44,7 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 			Result.put_integer (row_count, "row_count")
 		end
 
-	set_state (new_state: WSF_JSON_OBJECT)
+	set_state (new_state: JSON_OBJECT)
 			-- Restore page, page_size and row_count from json
 		do
 			Precursor (new_state)

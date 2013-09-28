@@ -37,7 +37,7 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 			Result.put_boolean (sort_direction, "sort_direction")
 		end
 
-	set_state (new_state: WSF_JSON_OBJECT)
+	set_state (new_state: JSON_OBJECT)
 			-- Restore sort_column and sort_direction from json
 		do
 			if attached {JSON_STRING} new_state.item ("sort_column") as new_sort_column then

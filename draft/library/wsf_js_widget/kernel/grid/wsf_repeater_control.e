@@ -38,10 +38,10 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 			state_changes.replace (datasource.state, "datasource")
 		end
 
-	set_state (new_state: WSF_JSON_OBJECT)
+	set_state (new_state: JSON_OBJECT)
 			-- Restore datasource state from json
 		do
-			if attached {WSF_JSON_OBJECT} new_state.item ("datasource") as datasource_state then
+			if attached {JSON_OBJECT} new_state.item ("datasource") as datasource_state then
 				datasource.set_state (datasource_state)
 			end
 		end
