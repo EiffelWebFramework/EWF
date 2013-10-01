@@ -484,6 +484,8 @@ feature -- Execution
 				check_resource_exists (req, a_helper)
 				if a_helper.resource_exists then
 					a_helper.execute_existing_resource (req, res, Current)
+				elseif req.error_handler.has_error then
+					a_helper.write_error_response (req, res)
 				else
 					if attached req.http_if_match as l_if_match and then l_if_match.same_string ("*") then
 						a_helper.handle_precondition_failed (req, res)
