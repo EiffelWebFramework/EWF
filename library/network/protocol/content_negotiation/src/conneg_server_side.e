@@ -34,7 +34,7 @@ feature -- Initialization
 			set_charset_default (a_charset)
 			set_encoding_default (a_encoding)
 		ensure
-			mime_default_set: mime = a_mime
+			mime_default_set: mime_default = a_mime
 			language_default_set: language_default = a_language
 			charset_default_set: charset_default = a_charset
 			encoding_default_set: encoding_default = a_encoding
