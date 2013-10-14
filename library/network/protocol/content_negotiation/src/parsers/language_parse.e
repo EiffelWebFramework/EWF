@@ -193,7 +193,7 @@ feature -- Parser
 				l_ranges.after
 			loop
 				p_res := parse_language_range (l_ranges.item_for_iteration)
-				res.put_left (p_res)
+				res.force (p_res)
 				l_ranges.forth
 			end
 			Result := quality_parsed (a_language, res)

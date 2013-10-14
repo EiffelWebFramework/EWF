@@ -1,7 +1,7 @@
 note
 	description: "[
 					COMMON_ACCEPT_HEADER_PARSER, this class allows to parse Accept-Charset and Accept-Encoding headers
-					
+
 		]"
 	date: "$Date$"
 	revision: "$Revision$"
@@ -52,7 +52,7 @@ feature -- Parser
 			Result.set_field (trim (l_header))
 		end
 
-	fitness_and_quality_parsed (a_field: READABLE_STRING_8; parsed_charsets: LIST [COMMON_RESULTS]): FITNESS_AND_QUALITY
+	fitness_and_quality_parsed (a_field: READABLE_STRING_8; a_parsed_charsets: LIST [COMMON_RESULTS]): FITNESS_AND_QUALITY
 			-- Find the best match for a given charset/encoding against a list of charsets/encodings
 			-- that have already been parsed by parse_common. Returns a
 			-- tuple of the fitness value and the value of the 'q' quality parameter of
@@ -82,11 +82,11 @@ feature -- Parser
 			end
 			if attached target.field as l_target_field then
 				from
-					parsed_charsets.start
+					a_parsed_charsets.start
 				until
-					parsed_charsets.after
+					a_parsed_charsets.after
 				loop
-					range := parsed_charsets.item_for_iteration
+					range := a_parsed_charsets.item_for_iteration
 					if attached range.field as l_range_common then
 						if l_target_field.same_string (l_range_common) or l_target_field.same_string ("*") or l_range_common.same_string ("*") then
 							if l_range_common.same_string (l_target_field) then
@@ -105,7 +105,7 @@ feature -- Parser
 							end
 						end
 					end
-					parsed_charsets.forth
+					a_parsed_charsets.forth
 				end
 			end
 			create Result.make (best_fitness, best_fit_q)
@@ -130,13 +130,13 @@ feature -- Parser
 		do
 			l_commons := commons.split (',')
 			from
-				create res.make (10);
+				create res.make (10)
 				l_commons.start
 			until
 				l_commons.after
 			loop
 				p_res := parse_common (l_commons.item_for_iteration)
-				res.put_left (p_res)
+				res.force (p_res)
 				l_commons.forth
 			end
 			Result := quality_parsed (a_field, res)
