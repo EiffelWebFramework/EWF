@@ -8,18 +8,18 @@ class
 
 feature
 
-	Mime: MIME_PARSE
+	Mime: HTTP_ACCEPT_MEDIA_TYPE_PARSER
 		once
 			create Result
 		end
 
-	Common: COMMON_ACCEPT_HEADER_PARSER
+	Common: HTTP_ANY_ACCEPT_HEADER_PARSER
 			-- Charset and Encoding
 		once
 			create Result
 		end
 
-	Language: LANGUAGE_PARSE
+	Language: HTTP_ACCEPT_LANGUAGE_PARSER
 		once
 			create Result
 		end

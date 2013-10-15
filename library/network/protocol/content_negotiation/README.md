@@ -1,7 +1,6 @@
-CONNEG is a library that provides utilities to select the best repesentation of a resource for a client
-where there are multiple representations available.
+CONNEG is a library that provides utilities to select the best repesentation of a resource for a client where there are multiple representations available.
 
-Using this labrary you can retrieve the best Variant for media type, language preference, enconding and compression.
+Using this library you can retrieve the best variant for media type, language preference, enconding and compression.
 The library is based on eMIME Eiffel MIME library based on Joe Gregorio code
 
 Take into account that the library is under development so is expected that the API change.
@@ -9,7 +8,7 @@ Take into account that the library is under development so is expected that the 
 The library contains utilities that deal with content negotiation (server driven negotiation).This utility class
 is based on ideas taken from the Book Restful WebServices Cookbook
 
-The class CONNEG_SERVER_SIDE contains several features that helps to write different type of negotiations (media type, language,
+The class CONNEG_SERVER_SIDE contains several features that helps to write different types of negotiation (media type, language,
 charset and compression).
 So for each of the following questions, you will have a corresponding method to help in the solution.
 

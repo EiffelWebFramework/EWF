@@ -16,10 +16,10 @@ feature {NONE} -- Initialization
 
 	make
 		local
-			mime_parse : MIME_PARSE
+			mime_parse : HTTP_ACCEPT_MEDIA_TYPE_PARSER
 			accept : STRING
-			charset_parse : COMMON_ACCEPT_HEADER_PARSER
-			language : LANGUAGE_PARSE
+			charset_parse : HTTP_ANY_ACCEPT_HEADER_PARSER
+			language : HTTP_ACCEPT_LANGUAGE_PARSER
 		do
 			create mime_parse
 --			parse_result := mime_parse.parse_mime_type ("application/xhtml;q=0.5")
@@ -59,12 +59,12 @@ feature {NONE} -- Initialization
 			print ("%N"+mime_parse.quality ("*/*;q=0.1", accept).out)
 
 			accept := "application/atom+xml"
-			print ("%N"+mime_parse.parse_mime_type (accept).out)
+			print ("%N"+mime_parse.media_type (accept).out)
 			create charset_parse
 			accept := "iso-8859-5"
-			print ("%N" + charset_parse.parse_common (accept).out)
+			print ("%N" + charset_parse.header (accept).out)
 			accept := "unicode-1-1;q=0.8"
-			print ("%N" + charset_parse.parse_common (accept).out)
+			print ("%N" + charset_parse.header (accept).out)
 
 
 			accept:= "iso-8859-5, unicode-1-1;q=0.8"
@@ -78,10 +78,10 @@ feature {NONE} -- Initialization
 			print (language.best_match (accept.split (','), "da"))
 			print (language.best_match (accept.split (','), "en-*"))
 
-			print ("%N"+language.parse_language_range ("da").out)
-			print ("%N"+language.parse_language_range ("en-gb;q=0.8").out)
-			print ("%N"+language.parse_language_range ("en;q=0.7").out)
-			print ("%N"+language.parse_language_range ("en-*").out)
+			print ("%N"+language.accept_language ("da").out)
+			print ("%N"+language.accept_language ("en-gb;q=0.8").out)
+			print ("%N"+language.accept_language ("en;q=0.7").out)
+			print ("%N"+language.accept_language ("en-*").out)
 		end
 
 end

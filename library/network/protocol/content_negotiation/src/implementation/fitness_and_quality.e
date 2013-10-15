@@ -1,6 +1,5 @@
 note
 	description: "Summary description for {FITNESS_AND_QUALITY}."
-	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -24,7 +23,7 @@ feature -- Initialization
 		do
 			fitness := a_fitness
 			quality := a_quality
-			create mime_type.make_empty
+			create {STRING_8} entity.make_empty
 		ensure
 			fitness_assigned : fitness = a_fitness
 			quality_assigned : quality = a_quality
@@ -36,17 +35,17 @@ feature -- Access
 
 	quality: REAL_64
 
-	mime_type: STRING
+	entity: READABLE_STRING_8
 			-- optionally used
 			-- empty by default
-
+			--| Could be a mime type, an encoding, ...
 
 feature -- Status report
 
 	debug_output: STRING
 			-- String that should be displayed in debugger to represent `Current'.
 		do
-			create Result.make_from_string (mime_type)
+			create Result.make_from_string (entity)
 			Result.append (" (")
 			Result.append ("quality=" + quality.out)
 			Result.append (" ; fitness=" + fitness.out)
@@ -55,12 +54,12 @@ feature -- Status report
 
 feature -- Element Change
 
-	set_mime_type (a_mime_type: STRING)
-			-- set mime_type with `a_mime_type'	
+	set_entity (a_entity: READABLE_STRING_8)
+			-- set `entity' with `a_entity'	
 		do
-			mime_type := a_mime_type
+			entity := a_entity
 		ensure
-			mime_type_assigned : mime_type.same_string (a_mime_type)
+			entity_assigned : entity.same_string (a_entity)
 		end
 
 feature -- Comparision
@@ -75,7 +74,7 @@ feature -- Comparision
 			end
 		end
 note
-	copyright: "2011-2011, Javier Velilla, Jocelyn Fiat and others"
+	copyright: "2011-2013, Javier Velilla, Jocelyn Fiat, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 end
 

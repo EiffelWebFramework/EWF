@@ -23,7 +23,7 @@ feature {NONE} -- Events
 
 feature -- Helpers
 
-	format (a_common: COMMON_RESULTS): STRING
+	format (a_common: HTTP_ANY_ACCEPT_HEADER): STRING
 			-- Representation of the current object
 		do
 			create Result.make_from_string ("(")
@@ -47,9 +47,9 @@ feature -- Test routines
 
 	test_parse_charsets
 		do
-			assert ("Expected ('iso-8859-5', {'q':'1.0',})", format (parser.parse_common("iso-8859-5")).same_string("('iso-8859-5', {'q':'1.0',})") )
-			assert ("Expected ('unicode-1-1', {'q':'0.8',})", format (parser.parse_common("unicode-1-1;q=0.8")).same_string("('unicode-1-1', {'q':'0.8',})") )
-			assert ("Expected ('*', {'q':'1.0',})", format (parser.parse_common("*")).same_string("('*', {'q':'1.0',})") )
+			assert ("Expected ('iso-8859-5', {'q':'1.0',})", format (parser.header("iso-8859-5")).same_string("('iso-8859-5', {'q':'1.0',})") )
+			assert ("Expected ('unicode-1-1', {'q':'0.8',})", format (parser.header("unicode-1-1;q=0.8")).same_string("('unicode-1-1', {'q':'0.8',})") )
+			assert ("Expected ('*', {'q':'1.0',})", format (parser.header("*")).same_string("('*', {'q':'1.0',})") )
 		end
 
 
@@ -74,6 +74,6 @@ feature -- Test routines
 			assert ("Expected unicode-1-1", parser.best_match (charset_supported, "unicode-1-1;q=1").same_string ("unicode-1-1"))
 		end
 
-	parser : COMMON_ACCEPT_HEADER_PARSER
+	parser : HTTP_ANY_ACCEPT_HEADER_PARSER
 
 end

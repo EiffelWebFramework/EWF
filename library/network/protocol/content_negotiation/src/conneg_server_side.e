@@ -17,81 +17,96 @@ class
 	CONNEG_SERVER_SIDE
 
 inherit
-
-	SHARED_CONNEG
-
 	REFACTORING_HELPER
 
 create
 	make
 
-feature -- Initialization
+feature {NONE} -- Initialization
 
-	make (a_mime: READABLE_STRING_8; a_language: READABLE_STRING_8; a_charset: READABLE_STRING_8; a_encoding: READABLE_STRING_8)
+	make (a_mediatype_dft: READABLE_STRING_8; a_language_dft: READABLE_STRING_8; a_charset_dft: READABLE_STRING_8; a_encoding_dft: READABLE_STRING_8)
+			-- Initialize Current with default Media type, language, charset and encoding.
 		do
-			set_mime_default (a_mime)
-			set_language_default (a_language)
-			set_charset_default (a_charset)
-			set_encoding_default (a_encoding)
+			initialize
+			set_default_media_type (a_mediatype_dft)
+			set_default_language (a_language_dft)
+			set_default_charset (a_charset_dft)
+			set_default_encoding (a_encoding_dft)
 		ensure
-			mime_default_set: mime_default = a_mime
-			language_default_set: language_default = a_language
-			charset_default_set: charset_default = a_charset
-			encoding_default_set: encoding_default = a_encoding
+			default_media_type_set: default_media_type = a_mediatype_dft
+			default_language_set: default_language = a_language_dft
+			default_charset_set: default_charset = a_charset_dft
+			default_encoding_set: default_encoding = a_encoding_dft
 		end
 
-feature -- AccessServer Side Defaults Formats
+	initialize
+			-- Initialize Current
+		do
+			create accept_media_type_parser
+			create any_header_parser
+			create accept_language_parser
+		end
 
-	mime_default: READABLE_STRING_8
+	accept_media_type_parser: HTTP_ACCEPT_MEDIA_TYPE_PARSER
+			-- MIME
+
+	any_header_parser: HTTP_ANY_ACCEPT_HEADER_PARSER
+			-- Charset and Encoding
+
+	accept_language_parser: HTTP_ACCEPT_LANGUAGE_PARSER
+			-- Language	
+
+feature -- Access: Server Side Defaults Formats
+
+	default_media_type: READABLE_STRING_8
 			-- Media type which is acceptable for the response.
 
-	language_default: READABLE_STRING_8
+	default_language: READABLE_STRING_8
 			-- Natural language that is preferred as a response to the request.
 
-	charset_default: READABLE_STRING_8
+	default_charset: READABLE_STRING_8
 			-- Character set that is  acceptable for the response.
 
-	encoding_default: READABLE_STRING_8
+	default_encoding: READABLE_STRING_8
 			--  Content-coding  that is acceptable in the response.
 
 feature -- Change Element
 
-	set_mime_default (a_mime: READABLE_STRING_8)
-			-- Set the mime_default with `a_mime'
+	set_default_media_type (a_mediatype: READABLE_STRING_8)
+			-- Set `default_media_type' with `a_mediatype'
 		do
-			mime_default := a_mime
+			default_media_type := a_mediatype
 		ensure
-			mime_default_set: a_mime = mime_default
+			default_media_type_set: a_mediatype = default_media_type
 		end
 
-	set_language_default (a_language: READABLE_STRING_8)
-			-- Set the language_default with `a_language'
+	set_default_language (a_language: READABLE_STRING_8)
+			-- Set `default_language' with `a_language'
 		do
-			language_default := a_language
+			default_language := a_language
 		ensure
-			language_default_set: a_language = language_default
+			default_language_set: a_language = default_language
 		end
 
-	set_charset_default (a_charset: READABLE_STRING_8)
-			-- Set the charset_default with `a_charset'
+	set_default_charset (a_charset: READABLE_STRING_8)
+			-- Set `default_charset' with `a_charset'
 		do
-			charset_default := a_charset
+			default_charset := a_charset
 		ensure
-			charset_default_set: a_charset = charset_default
+			default_charset_set: a_charset = default_charset
 		end
 
-	set_encoding_default (a_encoding: READABLE_STRING_8)
+	set_default_encoding (a_encoding: READABLE_STRING_8)
+			-- Set `default_encoding' with `a_encoding'	
 		do
-			encoding_default := a_encoding
+			default_encoding := a_encoding
 		ensure
-			encoding_default_set: a_encoding = encoding_default
+			default_encoding_set: a_encoding = default_encoding
 		end
-
-
 
 feature -- Media Type Negotiation
 
-	media_type_preference (a_mime_types_supported: LIST [READABLE_STRING_8]; a_header: detachable READABLE_STRING_8): MEDIA_TYPE_VARIANT_RESULTS
+	media_type_preference (a_mime_types_supported: LIST [READABLE_STRING_8]; a_header: detachable READABLE_STRING_8): HTTP_ACCEPT_MEDIA_TYPE_VARIANTS
 			-- `a_mime_types_supported' represent media types supported by the server.
 			-- `a_header represent' the Accept header, ie, the client preferences.
 			-- Return which media type to use for representation in a response, if the server supports
@@ -101,30 +116,31 @@ feature -- Media Type Negotiation
 		local
 			l_mime_match: READABLE_STRING_8
 		do
-			create Result
+			create Result.make
+			Result.set_supported_variants (a_mime_types_supported)
 			if a_header = Void or else a_header.is_empty then
 					-- the request has no Accept header, ie the header is empty, in this case we use the default format
-				Result.set_acceptable (TRUE)
-				Result.set_type (mime_default)
+				Result.set_acceptable (True)
+				Result.set_variant_value (default_media_type)
 			else
+				Result.set_vary_header_value
+
 					-- select the best match, server support, client preferences
-				l_mime_match := mime.best_match (a_mime_types_supported, a_header)
+				l_mime_match := accept_media_type_parser.best_match (a_mime_types_supported, a_header)
 				if l_mime_match.is_empty then
 						-- The server does not support any of the media types preferred by the client
 					Result.set_acceptable (False)
-					Result.set_supported_variants (a_mime_types_supported)
 				else
 						-- Set the best match
-					Result.set_type (l_mime_match)
+					Result.set_variant_value (l_mime_match)
 					Result.set_acceptable (True)
-					Result.set_variant_header
 				end
 			end
 		end
 
 feature -- Encoding Negotiation
 
-	charset_preference (a_server_charset_supported: LIST [READABLE_STRING_8]; a_header: detachable READABLE_STRING_8): CHARACTER_ENCODING_VARIANT_RESULTS
+	charset_preference (a_server_charset_supported: LIST [READABLE_STRING_8]; a_header: detachable READABLE_STRING_8): HTTP_ACCEPT_CHARSET_VARIANTS
 			-- `a_server_charset_supported' represent a list of character sets supported by the server.
 			-- `a_header' represents the Accept-Charset header, ie, the client preferences.
 			-- Return which Charset to use in a response, if the server supports
@@ -134,32 +150,33 @@ feature -- Encoding Negotiation
 		local
 			l_charset_match: READABLE_STRING_8
 		do
-			create Result
+			create Result.make
+			Result.set_supported_variants (a_server_charset_supported)
 			if a_header = Void or else a_header.is_empty then
 					-- the request has no Accept-Charset header, ie the header is empty, in this case use default charset encoding
-				Result.set_acceptable (TRUE)
-				Result.set_type (charset_default)
+				Result.set_acceptable (True)
+				Result.set_variant_value (default_charset)
 			else
+				Result.set_vary_header_value
+
 					-- select the best match, server support, client preferences
-				l_charset_match := common.best_match (a_server_charset_supported, a_header)
+				l_charset_match := any_header_parser.best_match (a_server_charset_supported, a_header)
 				if l_charset_match.is_empty then
 						-- The server does not support any of the compression types prefered by the client
 					Result.set_acceptable (False)
-					Result.set_supported_variants (a_server_charset_supported)
 				else
 						-- Set the best match
-					Result.set_type (l_charset_match)
+					Result.set_variant_value (l_charset_match)
 					Result.set_acceptable (True)
-					Result.set_variant_header
 				end
 			end
 		end
 
 feature -- Compression Negotiation
 
-	encoding_preference (a_server_encoding_supported: LIST [READABLE_STRING_8]; a_header: detachable READABLE_STRING_8): COMPRESSION_VARIANT_RESULTS
+	encoding_preference (a_server_encoding_supported: LIST [READABLE_STRING_8]; a_header_value: detachable READABLE_STRING_8): HTTP_ACCEPT_ENCODING_VARIANTS
 			-- `a_server_encoding_supported' represent a list of encoding supported by the server.
-			-- `a_header' represent the Accept-Encoding header, ie, the client preferences.
+			-- `a_header_value' represent the Accept-Encoding header, ie, the client preferences.
 			-- Return which Encoding to use in a response, if the server supports
 			-- the requested Encoding, or empty in other case.
 		note
@@ -167,32 +184,33 @@ feature -- Compression Negotiation
 		local
 			l_compression_match: READABLE_STRING_8
 		do
-			create Result
-			if a_header = Void or else a_header.is_empty then
+			create Result.make
+			Result.set_supported_variants (a_server_encoding_supported)
+			if a_header_value = Void or else a_header_value.is_empty then
 					-- the request has no Accept-Encoding header, ie the header is empty, in this case do not compress representations
-				Result.set_acceptable (TRUE)
-				Result.set_type (encoding_default)
+				Result.set_acceptable (True)
+				Result.set_variant_value (default_encoding)
 			else
+				Result.set_vary_header_value
+
 					-- select the best match, server support, client preferences
-				l_compression_match := common.best_match (a_server_encoding_supported, a_header)
+				l_compression_match := any_header_parser.best_match (a_server_encoding_supported, a_header_value)
 				if l_compression_match.is_empty then
 						-- The server does not support any of the compression types prefered by the client
 					Result.set_acceptable (False)
-					Result.set_supported_variants (a_server_encoding_supported)
 				else
 						-- Set the best match
-					Result.set_type (l_compression_match)
+					Result.set_variant_value (l_compression_match)
 					Result.set_acceptable (True)
-					Result.set_variant_header
 				end
 			end
 		end
 
 feature -- Language Negotiation
 
-	language_preference (a_server_language_supported: LIST [READABLE_STRING_8]; a_header: detachable READABLE_STRING_8): LANGUAGE_VARIANT_RESULTS
+	language_preference (a_server_language_supported: LIST [READABLE_STRING_8]; a_header_value: detachable READABLE_STRING_8): HTTP_ACCEPT_LANGUAGE_VARIANTS
 			-- `a_server_language_supported' represent a list of languages supported by the server.
-			-- `a_header' represent the Accept-Language header, ie, the client preferences.
+			-- `a_header_value' represent the Accept-Language header, ie, the client preferences.
 			-- Return which Language to use in a response, if the server supports
 			-- the requested Language, or empty in other case.
 		note
@@ -201,27 +219,28 @@ feature -- Language Negotiation
 		local
 			l_language_match: READABLE_STRING_8
 		do
-			create Result
-			if a_header = Void or else a_header.is_empty then
+			create Result.make
+			Result.set_supported_variants (a_server_language_supported)
+
+			if a_header_value = Void or else a_header_value.is_empty then
 					-- the request has no Accept header, ie the header is empty, in this case we use the default format
-				Result.set_acceptable (TRUE)
-				Result.set_type (language_default)
+				Result.set_acceptable (True)
+				Result.set_variant_value (default_language)
 			else
+				Result.set_vary_header_value
+
 					-- select the best match, server support, client preferences
-				l_language_match := language.best_match (a_server_language_supported, a_header)
+				l_language_match := accept_language_parser.best_match (a_server_language_supported, a_header_value)
 				if l_language_match.is_empty then
 						-- The server does not support any of the media types prefered by the client
 					Result.set_acceptable (False)
-					Result.set_supported_variants (a_server_language_supported)
 				else
 						-- Set the best match
-					Result.set_type (l_language_match)
+					Result.set_variant_value (l_language_match)
 					Result.set_acceptable (True)
-					Result.set_variant_header
 				end
 			end
 		end
-
 
 note
 	copyright: "2011-2013, Javier Velilla, Jocelyn Fiat, Eiffel Software and others"

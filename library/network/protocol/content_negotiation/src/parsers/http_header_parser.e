@@ -1,14 +1,15 @@
 note
-	description: "{MIME_TYPE_PARSER_UTILITIES}."
+	description: "Summary description for {HTTP_HEADER_PARSER}."
+	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
-class
-	MIME_TYPE_PARSER_UTILITIES
+deferred class
+	HTTP_HEADER_PARSER
 
-feature {NONE} -- Implementation
+feature {NONE} -- Helpers	
 
-	mime_type (a_str: READABLE_STRING_8): READABLE_STRING_8
+	entity_value (a_str: READABLE_STRING_8): READABLE_STRING_8
 			-- `s' with any trailing parameters stripped
 		local
 			p: INTEGER
@@ -21,20 +22,17 @@ feature {NONE} -- Implementation
 			end
 		end
 
-	trim (a_string: READABLE_STRING_8): READABLE_STRING_8
+	trim (a_string: READABLE_STRING_8): STRING_8
 			-- trim whitespace from the beginning and end of a string
 			-- `a_string'
 		require
 			valid_argument : a_string /= Void
-		local
-			l_result: STRING
 		do
-			l_result := a_string.as_string_8
-			l_result.left_adjust
-			l_result.right_adjust
-			Result := l_result
+			create Result.make_from_string (a_string)
+			Result.left_adjust
+			Result.right_adjust
 		ensure
-			result_same_as_argument: Result.same_string_general (a_string)
+			result_trimmed: a_string.has_substring (Result)
 		end
 
 note

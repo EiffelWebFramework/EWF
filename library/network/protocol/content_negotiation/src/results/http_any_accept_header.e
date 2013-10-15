@@ -1,10 +1,10 @@
 note
-	description: "Object that represents a result after parsing Language Headers."
+	description: "Object that represents a results after parsing Accept-* headers."
 	date: "$Date$"
 	revision: "$Revision$"
 
 class
-	LANGUAGE_RESULTS
+	HTTP_ANY_ACCEPT_HEADER
 
 create
 	make
@@ -12,19 +12,13 @@ create
 feature -- Initialization
 
 	make
-			--Create an object LANGUAGE_RESULTS.
 		do
 			create params.make (2)
-			create mime_type.make_from_string ("*")
 		end
 
 feature -- Access
 
-	type: detachable STRING
-
-	sub_type: detachable STRING
-
-	mime_type: STRING
+	field: detachable STRING
 
 	item (a_key: STRING): detachable STRING
 			-- Item associated with `a_key', if present
@@ -43,7 +37,7 @@ feature -- Access
 		end
 
 	params: HASH_TABLE [STRING, STRING]
-			--dictionary of all the parameters for the media range
+			-- Table of all parameters for the media range
 
 feature -- Status Report
 
@@ -55,30 +49,12 @@ feature -- Status Report
 
 feature -- Element change
 
-	set_type (a_type: STRING)
-			-- Set type with `a_type'
+	set_field (a_field: STRING)
+			-- Set type with `a_field'
 		do
-			type := a_type
-			if attached sub_type as st then
-				mime_type := a_type + "-" + st
-			else
-				mime_type := a_type
-			end
+			field := a_field
 		ensure
-			type_assigned: type ~ a_type
-		end
-
-	set_sub_type (a_sub_type: STRING)
-			-- Set sub_type with `a_sub_type
-		do
-			sub_type := a_sub_type
-			if attached type as t then
-				mime_type := t + "-" + a_sub_type
-			else
-				mime_type := "*"
-			end
-		ensure
-			sub_type_assigned: sub_type ~ a_sub_type
+			field_set: attached field as l_field implies l_field = a_field
 		end
 
 	put (new: STRING; key: STRING)
@@ -103,6 +79,7 @@ feature -- Status Report
 		do
 			Result := out
 		end
+
 
 
 note

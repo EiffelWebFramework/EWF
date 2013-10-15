@@ -1,28 +1,31 @@
 note
 	description: "[
-				{COMPRESSION_VARIANT_RESULTS}
-				Represent the compression results between client preferences and ccompression variants supported by the server.
+				{HTTP_ACCEPT_ENCODING_VARIANTS}
+				Represent the encoding results between client preferences and encoding variants supported by the server.
 				If the server is unable to supports the requested Accept-Encoding values, the server can build
-				a response with the list of supported encodings/compressions
+				a response with the list of supported encodings
 			]"
 	date: "$Date$"
 	revision: "$Revision$"
 	EIS: "name= Compression", "src=http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.3", "protocol=uri"
 
 class
-	COMPRESSION_VARIANT_RESULTS
+	HTTP_ACCEPT_ENCODING_VARIANTS
 
 inherit
+	HTTP_ACCEPT_VARIANTS
+		rename
+			variant_value as encoding
+		end
 
-	VARIANT_RESULTS
+create
+	make
 
+feature -- Change
 
-feature -- Change Element
-
-	set_variant_header
-			-- Set variant_header as `Accept-Encoding'
+	set_vary_header_value
 		do
-			variant_header := {HTTP_HEADER_NAMES}.header_accept_encoding -- "Accept-Encoding"
+			vary_header_value := {HTTP_HEADER_NAMES}.header_accept_encoding -- "Accept-Encoding"
 		end
 
 note
