@@ -1,7 +1,7 @@
 note
 	description: "[
 					COMMON_ACCEPT_HEADER_PARSER, this class allows to parse Accept-Charset and Accept-Encoding headers
-					
+
 		]"
 	date: "$Date$"
 	revision: "$Revision$"
@@ -88,7 +88,8 @@ feature -- Parser
 				loop
 					range := parsed_charsets.item_for_iteration
 					if attached range.field as l_range_common then
-						if l_target_field.same_string (l_range_common) or l_target_field.same_string ("*") or l_range_common.same_string ("*") then
+						if l_target_field.same_string (l_range_common) or l_target_field.same_string ("*") or l_range_common.same_string ("*")
+							or l_target_field.same_string ("identity") then
 							if l_range_common.same_string (l_target_field) then
 								l_fitness := 100
 							else
