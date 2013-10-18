@@ -1,7 +1,7 @@
 note
 	description: "[
-				{MEDIA_TYPE_VARIANT_RESULTS}. 
-				Represent the media type results between client preferences and media type variants supported by the server..
+				{HTTP_ACCEPT_MEDIA_TYPE_VARIANTS}. 
+				Represents the media type results between client preferences and media type variants supported by the server..
 				If the server is unable to supports the requested Accept values, the server can build
 				a response with the list of supported representations
 				]"
@@ -9,18 +9,22 @@ note
 	revision: "$Revision$"
 
 class
-	MEDIA_TYPE_VARIANT_RESULTS
+	HTTP_ACCEPT_MEDIA_TYPE_VARIANTS
 
 inherit
+	HTTP_ACCEPT_VARIANTS
+		rename
+			variant_value as media_type
+		end
 
-	VARIANT_RESULTS
+create
+	make
 
-feature -- Change Element
+feature -- Change
 
-	set_variant_header
-			-- Set variant header as `Accept'
+	set_vary_header_value
 		do
-			variant_header := {HTTP_HEADER_NAMES}.header_accept -- "Accept"
+			vary_header_value := {HTTP_HEADER_NAMES}.header_accept -- "Accept"
 		end
 
 note
