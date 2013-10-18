@@ -34,8 +34,8 @@ feature -- Test routines
 			media_variants := conneg.media_type_preference (mime_types_supported, "text/html")
 			assert ("Expected Not Acceptable", not media_variants.is_acceptable)
 			if attached media_variants.supported_variants as l_supported_variants then
-				assert ("Same Value at 1",mime_types_supported.first.same_string (l_supported_variants.first))
-				assert ("Same count",mime_types_supported.count = l_supported_variants.count)
+				assert ("Same Value at 1", same_text (first_of (mime_types_supported), first_of (l_supported_variants)))
+				assert ("Same count", count_of (mime_types_supported) = count_of (l_supported_variants))
 			else
 				assert ("Has supported_variants results", False)
 			end
@@ -72,8 +72,8 @@ feature -- Test routines
 			charset_variants := conneg.charset_preference (charset_supported, "unicode-1-1")
 			assert ("Expected Not Acceptable", not charset_variants.is_acceptable)
 			if attached charset_variants.supported_variants as l_supported_variants then
-				assert ("Same Value at 1",charset_supported.first.same_string (l_supported_variants.first))
-				assert ("Same count",charset_supported.count = l_supported_variants.count)
+				assert ("Same Value at 1", same_text (first_of (charset_supported), first_of (l_supported_variants)))
+				assert ("Same count",charset_supported.count = count_of (l_supported_variants))
 			else
 				assert("Has supported_variants results", False)
 			end
@@ -109,8 +109,8 @@ feature -- Test routines
 			compression_variants := conneg.encoding_preference (compression_supported, "gzip")
 			assert ("Expected Not Acceptable", not compression_variants.is_acceptable)
 			if attached compression_variants.supported_variants as l_supported_variants then
-				assert ("Same Value at 1",compression_supported.first.same_string (l_supported_variants.first))
-				assert ("Same count",compression_supported.count = l_supported_variants.count)
+				assert ("Same Value at 1", same_text (first_of (compression_supported), first_of (l_supported_variants)))
+				assert ("Same count",compression_supported.count = count_of (l_supported_variants))
 			else
 				assert ("Has supported_variants results", False)
 			end
@@ -153,8 +153,8 @@ feature -- Test routines
 			assert ("Variant Header", attached language_variants.vary_header_value as l_variant_header and then l_variant_header.same_string ("Accept-Language"))
 			assert ("Language type is Void",language_variants.language = Void)
 			if attached language_variants.supported_variants as l_supported_variants then
-				assert ("Same Value at 1", languages_supported.first.same_string (l_supported_variants.first))
-				assert ("Same count",languages_supported.count = l_supported_variants.count)
+				assert ("Same Value at 1", same_text (first_of (languages_supported), first_of (l_supported_variants)))
+				assert ("Same count",languages_supported.count = count_of (l_supported_variants))
 			else
 				assert ("Has supported variants results", False)
 			end
@@ -175,5 +175,36 @@ feature -- Test routines
 		end
 
 feature -- Implementation
-	conneg : CONNEG_SERVER_SIDE
+	conneg : SERVER_CONTENT_NEGOTIATION
+
+	same_text (s1,s2: detachable READABLE_STRING_8): BOOLEAN
+		do
+			if s1 = Void then
+				Result := s2 = Void
+			elseif s2 = Void then
+				Result := False
+			else
+				Result := s1.same_string (s2)
+			end
+		end
+
+	count_of (i: ITERABLE [READABLE_STRING_8]): INTEGER
+		do
+			across
+				i as ic
+			loop
+				Result := Result + 1
+			end
+		end
+
+	first_of (i: ITERABLE [READABLE_STRING_8]): detachable READABLE_STRING_8
+		do
+			across
+				i as ic
+			until
+				ic.item /= Void
+			loop
+			end
+		end
+
 end

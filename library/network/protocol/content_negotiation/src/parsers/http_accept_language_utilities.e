@@ -1,6 +1,6 @@
 note
 	description: "[
-		  {HTTP_ACCEPT_LANGUAGE_PARSER} is encharge to parse language tags defined as follow:
+		  {HTTP_ACCEPT_LANGUAGE_UTILITIES} is in charge to parse language tags defined as follow:
 
 		  Accept-Language = "Accept-Language" ":"
                          1#( language-l_range [ ";" "q" "=" qvalue ] )
@@ -15,13 +15,10 @@ note
 	EIS: "name=Accept-Language", "src=http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.4", "protocol=uri"
 
 class
-	HTTP_ACCEPT_LANGUAGE_PARSER
+	HTTP_ACCEPT_LANGUAGE_UTILITIES
 
 inherit
-
-	HTTP_HEADER_PARSER
-
-	REFACTORING_HELPER
+	HTTP_HEADER_UTILITIES
 
 feature -- Parser
 
@@ -68,29 +65,22 @@ feature -- Parser
 			Result := quality_from_list (a_language, accept_language_list (a_ranges))
 		end
 
-	best_match (a_supported: LIST [READABLE_STRING_8]; a_header_value: READABLE_STRING_8): READABLE_STRING_8
+	best_match (a_supported: ITERABLE [READABLE_STRING_8]; a_header_value: READABLE_STRING_8): READABLE_STRING_8
 			-- Choose the `parse_language' with the highest fitness score and quality ('q') from a list of candidates.
 		local
 			l_header_results: LIST [HTTP_ACCEPT_LANGUAGE]
 			l_weighted_matches: LIST [FITNESS_AND_QUALITY]
-			l_res: LIST [READABLE_STRING_8]
-			p_res: HTTP_ACCEPT_LANGUAGE
 			l_fitness_and_quality, l_first_one: detachable FITNESS_AND_QUALITY
 			s: READABLE_STRING_8
 		do
 			l_header_results := accept_language_list (a_header_value)
 
 				--| weighted matches
-			create {ARRAYED_LIST [FITNESS_AND_QUALITY]} l_weighted_matches.make (a_supported.count)
-			from
-				a_supported.start
-			until
-				a_supported.after
-			loop
-				l_fitness_and_quality := fitness_and_quality_from_list (a_supported.item_for_iteration, l_header_results)
-				l_fitness_and_quality.set_entity (entity_value (a_supported.item_for_iteration))
+			create {ARRAYED_LIST [FITNESS_AND_QUALITY]} l_weighted_matches.make (0)
+			across a_supported as ic loop
+				l_fitness_and_quality := fitness_and_quality_from_list (ic.item, l_header_results)
+				l_fitness_and_quality.set_entity (entity_value (ic.item))
 				l_weighted_matches.force (l_fitness_and_quality)
-				a_supported.forth
 			end
 
 				--| Keep only top quality+fitness types
@@ -177,7 +167,6 @@ feature {NONE} -- Implementation
 			l_target: HTTP_ACCEPT_LANGUAGE
 			l_target_type: READABLE_STRING_8
 			l_range: HTTP_ACCEPT_LANGUAGE
-			l_keys: LIST [READABLE_STRING_8]
 			l_param_matches: INTEGER
 			l_element: detachable READABLE_STRING_8
 			l_fitness: INTEGER
@@ -201,23 +190,21 @@ feature {NONE} -- Implementation
 						or l_target_type.same_string ("*")
 					)
 				then
-					from
-						l_param_matches := 0
-						l_keys := l_target.keys
-						l_keys.start
-					until
-						l_keys.after
-					loop
-						l_element := l_keys.item_for_iteration
-						if
-							not l_element.same_string ("q") and then
-							l_range.has_key (l_element) and then
-							(attached l_target.item (l_element) as t_item and attached l_range.item (l_element) as r_item) and then
-							t_item.same_string (r_item)
-						then
-							l_param_matches := l_param_matches + 1
+					l_param_matches := 0
+					if attached l_target.parameters as l_target_parameters then
+						across
+							l_target_parameters as ic
+						loop
+							l_element := ic.key
+							if
+								not l_element.same_string ("q") and then
+								l_range.has_parameter (l_element) and then
+								(attached ic.item as t_item and attached l_range.parameter (l_element) as r_item) and then
+								t_item.same_string (r_item)
+							then
+								l_param_matches := l_param_matches + 1
+							end
 						end
-						l_keys.forth
 					end
 					if l_range_type.same_string (l_target_type) then
 						l_fitness := 100
@@ -239,7 +226,7 @@ feature {NONE} -- Implementation
 					l_fitness := l_fitness + l_param_matches
 					if l_fitness > l_best_fitness then
 						l_best_fitness := l_fitness
-						l_element := l_range.item ("q")
+						l_element := l_range.parameter ("q")
 						if l_element /= Void then
 							l_best_fit_q := l_element.to_real_64.min (l_target_q)
 						else

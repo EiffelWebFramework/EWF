@@ -1,6 +1,6 @@
 ﻿note
 	description: "[
-			{HTTP_ACCEPT_MEDIA_TYPE_PARSER}. is encharge to parse Accept request-header field defined as follow:
+			{HTTP_ACCEPT_MEDIA_TYPE_UTILITIES}. is encharge to parse Accept request-header field defined as follow:
 
 			Accept         = "Accept" ":"
                         #( media-range [ accept-params ] )
@@ -20,13 +20,10 @@
 	EIS: "name=Accept", "src=http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.1", "protocol=uri"
 
 class
-	HTTP_ACCEPT_MEDIA_TYPE_PARSER
+	HTTP_ACCEPT_MEDIA_TYPE_UTILITIES
 
 inherit
-
-	HTTP_HEADER_PARSER
-
-	REFACTORING_HELPER
+	HTTP_HEADER_UTILITIES
 
 feature -- Parser
 
@@ -81,7 +78,7 @@ feature -- Parser
 			Result := quality_from_list (a_mime_type, res)
 		end
 
-	best_match (supported: LIST [READABLE_STRING_8]; header: READABLE_STRING_8): READABLE_STRING_8
+	best_match (supported: ITERABLE [READABLE_STRING_8]; header: READABLE_STRING_8): READABLE_STRING_8
 			-- Choose the mime-type with the highest fitness score and quality ('q') from a list of candidates.
 		local
 			l_header_results: LIST [HTTP_MEDIA_TYPE]
@@ -105,17 +102,12 @@ feature -- Parser
 				l_res.forth
 			end
 
-			create {ARRAYED_LIST [FITNESS_AND_QUALITY]} weighted_matches.make (supported.count)
+			create {ARRAYED_LIST [FITNESS_AND_QUALITY]} weighted_matches.make (0)
 
-			from
-				supported.start
-			until
-				supported.after
-			loop
-				fitness_and_quality := fitness_and_quality_from_list (supported.item_for_iteration, l_header_results)
-				fitness_and_quality.set_entity (entity_value (supported.item_for_iteration))
+			across supported as ic loop
+				fitness_and_quality := fitness_and_quality_from_list (ic.item, l_header_results)
+				fitness_and_quality.set_entity (entity_value (ic.item))
 				weighted_matches.force (fitness_and_quality)
-				supported.forth
 			end
 
 				--| Keep only top quality+fitness types
@@ -236,13 +228,9 @@ feature {NONE} -- Implementation
 						)
 					then
 						if attached target.parameters as l_keys then
-							from
-								param_matches := 0
-								l_keys.start
-							until
-								l_keys.after
-							loop
-								element := l_keys.key_for_iteration
+							param_matches := 0
+							across l_keys as ic loop
+								element := ic.key
 								if
 									not element.same_string ("q") and then
 									range.has_parameter (element) and then
@@ -251,7 +239,6 @@ feature {NONE} -- Implementation
 								then
 									param_matches := param_matches + 1
 								end
-								l_keys.forth
 							end
 						end
 						if l_range_type.same_string (l_target_type) then

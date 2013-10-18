@@ -16,10 +16,10 @@ feature {NONE} -- Initialization
 
 	make
 		local
-			mime_parse : HTTP_ACCEPT_MEDIA_TYPE_PARSER
+			mime_parse : HTTP_ACCEPT_MEDIA_TYPE_UTILITIES
 			accept : STRING
-			charset_parse : HTTP_ANY_ACCEPT_HEADER_PARSER
-			language : HTTP_ACCEPT_LANGUAGE_PARSER
+			charset_parse : HTTP_ANY_ACCEPT_HEADER_UTILITIES
+			language : HTTP_ACCEPT_LANGUAGE_UTILITIES
 		do
 			create mime_parse
 --			parse_result := mime_parse.parse_mime_type ("application/xhtml;q=0.5")

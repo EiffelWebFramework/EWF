@@ -38,13 +38,10 @@ feature -- Helper
 			end
 			Result.append_string (" {")
 			if attached a_mediatype.parameters as l_params then
-				from
-					l_params.start
-				until
-					l_params.after
+				across
+					l_params as ic
 				loop
-					Result.append ("'" + l_params.key_for_iteration + "':'" + l_params.item_for_iteration + "',");
-					l_params.forth
+					Result.append ("'" + ic.key + "':'" + ic.item + "',");
 				end
 			end
 			Result.append ("})")
@@ -148,7 +145,7 @@ feature -- Test routines
 
 
 
-	parser : HTTP_ACCEPT_MEDIA_TYPE_PARSER
+	parser : HTTP_ACCEPT_MEDIA_TYPE_UTILITIES
 
 end
 

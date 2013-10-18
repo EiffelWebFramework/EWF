@@ -9,56 +9,34 @@ note
 	EIS: "name=Encoding", "src=http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.3", "protocol=uri"
 
 class
-	HTTP_ANY_ACCEPT_HEADER_PARSER
+	HTTP_ANY_ACCEPT_HEADER_UTILITIES
 
 inherit
-	HTTP_HEADER_PARSER
+	HTTP_HEADER_UTILITIES
 
 feature -- Parser
 
-	header (a_header: READABLE_STRING_8): HTTP_ANY_ACCEPT_HEADER
+	header (a_header: READABLE_STRING_8): HTTP_ANY_ACCEPT
 			-- Parses `a_header' charset/encoding into its component parts.
 			-- For example, the charset 'iso-8889-5' would get parsed
 			-- into:
 			-- ('iso-8889-5', {'q':'1.0'})
-		local
-			l_parts: LIST [READABLE_STRING_8]
-			sub_parts: LIST [READABLE_STRING_8]
-			p: READABLE_STRING_8
-			i: INTEGER
-			l_header: READABLE_STRING_8
 		do
-			create Result.make
-			l_parts := a_header.split (';')
-			if l_parts.count = 1 then
-				Result.put ("1.0", "q")
-			else
-				from
-					i := 1
-				until
-					i > l_parts.count
-				loop
-					p := l_parts [i]
-					sub_parts := p.split ('=')
-					if sub_parts.count = 2 then
-						Result.put (trim (sub_parts [2]), trim (sub_parts [1]))
-					end
-					i := i + 1
-				end
+			create Result.make_from_string (a_header)
+			if Result.parameter ("q") = Void then
+				Result.put_parameter ("1.0", "q")
 			end
-			l_header := trim (l_parts [1])
-			Result.set_field (trim (l_header))
 		end
 
-	quality (a_field: READABLE_STRING_8; a_commons: READABLE_STRING_8): REAL_64
+	quality (a_field: READABLE_STRING_8; a_header: READABLE_STRING_8): REAL_64
 			-- Returns the quality 'q' of a charset/encoding when compared against the
 			-- a list of charsets/encodings/
 		local
 			l_commons: LIST [READABLE_STRING_8]
-			res: ARRAYED_LIST [HTTP_ANY_ACCEPT_HEADER]
-			p_res: HTTP_ANY_ACCEPT_HEADER
+			res: ARRAYED_LIST [HTTP_ANY_ACCEPT]
+			p_res: HTTP_ANY_ACCEPT
 		do
-			l_commons := a_commons.split (',')
+			l_commons := a_header.split (',')
 			from
 				create res.make (10)
 				l_commons.start
@@ -72,17 +50,17 @@ feature -- Parser
 			Result := quality_from_list (a_field, res)
 		end
 
-	best_match (a_supported: LIST [READABLE_STRING_8]; a_header: READABLE_STRING_8): READABLE_STRING_8
+	best_match (a_supported: ITERABLE [READABLE_STRING_8]; a_header: READABLE_STRING_8): READABLE_STRING_8
 			-- Choose the accept with the highest fitness score and quality ('q') from a list of candidates.
 		local
-			l_header_results: LIST [HTTP_ANY_ACCEPT_HEADER]
+			l_header_results: LIST [HTTP_ANY_ACCEPT]
 			l_weighted_matches: LIST [FITNESS_AND_QUALITY]
 			l_res: LIST [READABLE_STRING_8]
-			p_res: HTTP_ANY_ACCEPT_HEADER
+			p_res: HTTP_ANY_ACCEPT
 			l_fitness_and_quality, l_first_one: detachable FITNESS_AND_QUALITY
 		do
 			l_res := a_header.split (',')
-			create {ARRAYED_LIST [HTTP_ANY_ACCEPT_HEADER]} l_header_results.make (l_res.count)
+			create {ARRAYED_LIST [HTTP_ANY_ACCEPT]} l_header_results.make (l_res.count)
 			from
 				l_res.start
 			until
@@ -92,16 +70,11 @@ feature -- Parser
 				l_header_results.force (p_res)
 				l_res.forth
 			end
-			create {ARRAYED_LIST [FITNESS_AND_QUALITY]} l_weighted_matches.make (a_supported.count)
-			from
-				a_supported.start
-			until
-				a_supported.after
-			loop
-				l_fitness_and_quality := fitness_and_quality_from_list (a_supported.item_for_iteration, l_header_results)
-				l_fitness_and_quality.set_entity (entity_value (a_supported.item_for_iteration))
+			create {ARRAYED_LIST [FITNESS_AND_QUALITY]} l_weighted_matches.make (0)
+			across a_supported as ic loop
+				l_fitness_and_quality := fitness_and_quality_from_list (ic.item, l_header_results)
+				l_fitness_and_quality.set_entity (entity_value (ic.item))
 				l_weighted_matches.force (l_fitness_and_quality)
-				a_supported.forth
 			end
 
 				--| Keep only top quality+fitness types
@@ -150,7 +123,7 @@ feature -- Parser
 					until
 						l_header_results.after or l_fitness_and_quality /= Void
 					loop
-						if attached l_header_results.item.field as l_field then
+						if attached l_header_results.item.value as l_field then
 							from
 								l_weighted_matches.start
 							until
@@ -184,7 +157,7 @@ feature -- Parser
 
 feature {NONE} -- Implementation
 
-	fitness_and_quality_from_list (a_field: READABLE_STRING_8; a_parsed_charsets: LIST [HTTP_ANY_ACCEPT_HEADER]): FITNESS_AND_QUALITY
+	fitness_and_quality_from_list (a_field: READABLE_STRING_8; a_parsed_charsets: LIST [HTTP_ANY_ACCEPT]): FITNESS_AND_QUALITY
 			-- Find the best match for a given charset/encoding against a list of charsets/encodings
 			-- that have already been parsed by parse_common. Returns a
 			-- tuple of the fitness value and the value of the 'q' quality parameter of
@@ -194,15 +167,15 @@ feature {NONE} -- Implementation
 			best_fitness: INTEGER
 			target_q: REAL_64
 			best_fit_q: REAL_64
-			target: HTTP_ANY_ACCEPT_HEADER
-			range: HTTP_ANY_ACCEPT_HEADER
+			target: HTTP_ANY_ACCEPT
+			range: HTTP_ANY_ACCEPT
 			element: detachable READABLE_STRING_8
 			l_fitness: INTEGER
 		do
 			best_fitness := -1
 			best_fit_q := 0.0
 			target := header (a_field)
-			if attached target.item ("q") as q and then q.is_double then
+			if attached target.parameter ("q") as q and then q.is_double then
 				target_q := q.to_double
 				if target_q < 0.0 then
 					target_q := 0.0
@@ -212,14 +185,14 @@ feature {NONE} -- Implementation
 			else
 				target_q := 1.0
 			end
-			if attached target.field as l_target_field then
+			if attached target.value as l_target_field then
 				from
 					a_parsed_charsets.start
 				until
 					a_parsed_charsets.after
 				loop
 					range := a_parsed_charsets.item_for_iteration
-					if attached range.field as l_range_common then
+					if attached range.value as l_range_common then
 						if l_target_field.same_string (l_range_common) or l_target_field.same_string ("*") or l_range_common.same_string ("*") then
 							if l_range_common.same_string (l_target_field) then
 								l_fitness := 100
@@ -228,7 +201,7 @@ feature {NONE} -- Implementation
 							end
 							if l_fitness > best_fitness then
 								best_fitness := l_fitness
-								element := range.item ("q")
+								element := range.parameter ("q")
 								if element /= Void then
 									best_fit_q := element.to_double.min (target_q)
 								else
@@ -243,7 +216,7 @@ feature {NONE} -- Implementation
 			create Result.make (best_fitness, best_fit_q)
 		end
 
-	quality_from_list (a_field: READABLE_STRING_8; a_parsed_common: LIST [HTTP_ANY_ACCEPT_HEADER]): REAL_64
+	quality_from_list (a_field: READABLE_STRING_8; a_parsed_common: LIST [HTTP_ANY_ACCEPT]): REAL_64
 			--	Find the best match for a given charset/encoding against a list of charsets/encodings that
 			--	have already been parsed by parse_charsets(). Returns the 'q' quality
 			--	parameter of the best match, 0 if no match was found. This function
@@ -251,7 +224,6 @@ feature {NONE} -- Implementation
 		do
 			Result := fitness_and_quality_from_list (a_field, a_parsed_common).quality
 		end
-
 
 note
 	copyright: "2011-2013, Javier Velilla, Jocelyn Fiat, Eiffel Software and others"

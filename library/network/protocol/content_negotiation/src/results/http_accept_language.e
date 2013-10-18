@@ -28,74 +28,50 @@ feature {NONE} -- Initialization
 			-- In addition this also guarantees that there is a value for 'q'
 			-- in the params dictionary, filling it in with a proper default if
 			-- necessary.
-		require
-			a_accept_language_item_not_empty: not a_accept_language_item.is_empty
 		local
-			l_parts: LIST [READABLE_STRING_8]
-			p: READABLE_STRING_8
 			i: INTEGER
-			l_tag: STRING_8
 		do
 			fixme (generator + ".make_from_string: improve code!!!")
-			l_parts := a_accept_language_item.split (';')
-			from
-				l_parts.start
-				make_with_language (trimmed_string (l_parts.item))
-				if not l_parts.after then
-					l_parts.forth
-				end
-			until
-				l_parts.after
-			loop
-				p := l_parts.item
-				i := p.index_of ('=', 1)
-				if i > 0 then
-					put (trimmed_string (p.substring (i + 1, p.count)), trimmed_string (p.substring (1, i - 1)))
-				else
-					check is_well_formed_parameter: False end
-				end
-				l_parts.forth
+			i := a_accept_language_item.index_of (';', 1)
+			if i > 0 then
+				make_with_language (trimmed_string (a_accept_language_item.substring (1, i - 1)))
+				create parameters.make_from_substring (a_accept_language_item, i + 1, a_accept_language_item.count)
+				check attached parameters as l_params and then not l_params.has_error end
+			else
+				make_with_language (trimmed_string (a_accept_language_item))
 			end
 
 			check quality_initialized_to_1: quality = 1.0 end
 
 				-- Get quality from parameter if any, and format the value as expected.
-			if attached item ("q") as q then
+			if attached parameter ("q") as q then
 				if q.same_string ("1") then
 						--| Use 1.0 formatting
-					put ("1.0", "q")
+					put_parameter ("1.0", "q")
 				elseif q.is_double and then attached q.to_real_64 as r then
 					if r <= 0.0 then
 						quality := 0.0 --| Should it be 1.0 ?
+						put_parameter ("0.0", "q")
 					elseif r >= 1.0 then
 						quality := 1.0
+						put_parameter ("1.0", "q")
 					else
 						quality := r
 					end
 				else
-					put ("1.0", "q")
+					put_parameter ("1.0", "q")
 					quality := 1.0
 				end
 			else
-				put ("1.0", "q")
+				put_parameter ("1.0", "q")
 			end
 		end
 
 	make_with_language (a_lang_tag: READABLE_STRING_8)
 			-- Instantiate Current from language tag `a_lang_tag'.
-		local
-			i: INTEGER
 		do
 			initialize
-
-			create language_range.make_from_string (a_lang_tag)
-			i := a_lang_tag.index_of ('-', 1)
-			if i > 0 then
-				language := a_lang_tag.substring (1, i - 1)
-				specialization := a_lang_tag.substring (i + 1, a_lang_tag.count)
-			else
-				language := a_lang_tag
-			end
+			set_language_range (a_lang_tag)
 		ensure
 			language_range_set: language_range.same_string (a_lang_tag) and a_lang_tag /= language_range
 		end
@@ -119,7 +95,7 @@ feature {NONE} -- Initialization
 	initialize
 			-- Initialize Current
 		do
-			create params.make (2)
+			create parameters.make (1)
 			quality := 1.0
 		end
 
@@ -148,36 +124,23 @@ feature -- Status report
 			Result.append_double (quality)
 		end
 
-feature -- Parameters
-
-	item (a_key: STRING): detachable STRING
-			-- Item associated with `a_key', if present
-			-- otherwise default value of type `STRING'
-		do
-			Result := params.item (a_key)
-		end
-
-	keys: LIST [STRING]
-			-- arrays of currents keys
-		local
-			res: ARRAYED_LIST [STRING]
-		do
-			create res.make_from_array (params.current_keys)
-			Result := res
-		end
-
-	params: HASH_TABLE [STRING, STRING]
-			-- dictionary of all the parameters for the media range
-
-feature -- Status Report
-
-	has_key (a_key: STRING): BOOLEAN
-			-- Is there an item in the table with key `a_key'?
-		do
-			Result := params.has_key (a_key)
-		end
-
 feature -- Element change
+
+	set_language_range (a_lang_range: READABLE_STRING_8)
+		local
+			i: INTEGER
+		do
+			create language_range.make_from_string (a_lang_range)
+			i := a_lang_range.index_of ('-', 1)
+			if i > 0 then
+				language := a_lang_range.substring (1, i - 1)
+				specialization := a_lang_range.substring (i + 1, a_lang_range.count)
+			else
+				language := a_lang_range
+			end
+		ensure
+			language_range_set: language_range.same_string (a_lang_range) and a_lang_range /= language_range
+		end
 
 	set_language (a_root_lang: READABLE_STRING_8)
 			-- Set `'anguage' with `a_root_lang'
@@ -199,19 +162,47 @@ feature -- Element change
 			specialization_assigned: specialization ~ a_specialization
 		end
 
-	put (new: STRING; key: STRING)
-			-- Insert `new' with `key' if there is no other item
-			-- associated with the same key. If present, replace
-			-- the old value with `new'
+feature -- Parameters: Access
+
+	parameter (a_key: READABLE_STRING_8): detachable READABLE_STRING_8
+			-- Parameter associated with `a_key', if present
+			-- otherwise default value of type `STRING'
 		do
-			if params.has_key (key) then
-				params.replace (new, key)
-			else
-				params.force (new, key)
+			if attached parameters as l_params then
+				Result := l_params.item (a_key)
 			end
+		end
+
+	parameters: detachable HTTP_PARAMETER_TABLE
+			-- Table of all parameters for the media range
+
+feature -- Parameters: Status report
+
+	has_parameter (a_key: READABLE_STRING_8): BOOLEAN
+			-- Is there an parameter in the parameters table with key `a_key'?
+		do
+			if attached parameters as l_params then
+				Result := l_params.has_key (a_key)
+			end
+		end
+
+feature -- Parameters: Change
+
+	put_parameter (a_value: READABLE_STRING_8; a_key: READABLE_STRING_8)
+			-- Insert `a_value' with `a_key' if there is no other item
+			-- associated with the same key. If present, replace
+			-- the old value with `a_value'
+		local
+			l_parameters: like parameters
+		do
+			l_parameters := parameters
+			if l_parameters = Void then
+				create l_parameters.make (1)
+				parameters := l_parameters
+			end
+			l_parameters.force (a_value, a_key)
 		ensure
-			has_key: params.has_key (key)
-			has_item: params.has_item (new)
+			is_set: attached parameters as l_params and then (l_params.has_key (a_key) and l_params.has_item (a_value))
 		end
 
 feature {NONE} -- Implementation		

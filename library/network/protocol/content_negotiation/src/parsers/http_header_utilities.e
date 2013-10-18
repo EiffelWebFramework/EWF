@@ -1,11 +1,14 @@
 note
-	description: "Summary description for {HTTP_HEADER_PARSER}."
+	description: "Summary description for {HTTP_HEADER_UTILITIES}."
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
 deferred class
-	HTTP_HEADER_PARSER
+	HTTP_HEADER_UTILITIES
+
+inherit
+	REFACTORING_HELPER
 
 feature {NONE} -- Helpers	
 
@@ -16,13 +19,13 @@ feature {NONE} -- Helpers
 		do
 			p := a_str.index_of (';', 1)
 			if p > 0 then
-				Result := trim (a_str.substring (1, p - 1))
+				Result := trimmed_string (a_str.substring (1, p - 1))
 			else
-				Result := trim (a_str.string)
+				Result := trimmed_string (a_str.string)
 			end
 		end
 
-	trim (a_string: READABLE_STRING_8): STRING_8
+	trimmed_string (a_string: READABLE_STRING_8): STRING_8
 			-- trim whitespace from the beginning and end of a string
 			-- `a_string'
 		require

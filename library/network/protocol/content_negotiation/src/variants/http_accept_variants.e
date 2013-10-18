@@ -28,7 +28,7 @@ feature -- Access
 			-- this indicates the Accept-* header source of the matched `variant_value' if any,
 			-- if this is using the default, the `vary_header_value' is Void.
 
-	supported_variants: detachable LIST [READABLE_STRING_8]
+	supported_variants: detachable ITERABLE [READABLE_STRING_8]
 			-- Set of supported variants for the response
 
 	variant_value: detachable READABLE_STRING_8
@@ -77,7 +77,7 @@ feature -- Change Element
 			is_acceptable_set: is_acceptable = b
 		end
 
-	set_supported_variants (a_supported: LIST [READABLE_STRING_8])
+	set_supported_variants (a_supported: ITERABLE [READABLE_STRING_8])
 			-- Set `supported variants' with `a_supported'
 		do
 			supported_variants := a_supported

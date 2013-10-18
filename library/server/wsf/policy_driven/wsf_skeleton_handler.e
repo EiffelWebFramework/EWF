@@ -89,7 +89,7 @@ feature -- Access
 		deferred
 		end
 
-	conneg (req: WSF_REQUEST): CONNEG_SERVER_SIDE
+	conneg (req: WSF_REQUEST): SERVER_CONTENT_NEGOTIATION
 			-- Content negotiation for `req';
 			-- This would normally be a once object, ignoring `req'.
 		require
@@ -103,7 +103,7 @@ feature -- Access
 			req_attached: req /= Void
 		deferred
 		ensure
-			mime_types_supported_includes_default: Result.has (conneg (req).mime_default)
+			mime_types_supported_includes_default: Result.has (conneg (req).default_media_type)
 		end
 
 	languages_supported (req: WSF_REQUEST): LIST [STRING]
@@ -112,7 +112,7 @@ feature -- Access
 			req_attached: req /= Void
 		deferred
 		ensure
-			languages_supported_includes_default: Result.has (conneg (req).language_default)
+			languages_supported_includes_default: Result.has (conneg (req).default_language)
 		end
 
 	charsets_supported (req: WSF_REQUEST): LIST [STRING]
@@ -121,7 +121,7 @@ feature -- Access
 			req_attached: req /= Void
 		deferred
 		ensure
-			charsets_supported_includes_default: Result.has (conneg (req).charset_default)
+			charsets_supported_includes_default: Result.has (conneg (req).default_charset)
 		end
 
 	encodings_supported (req: WSF_REQUEST): LIST [STRING]
@@ -130,7 +130,7 @@ feature -- Access
 			req_attached: req /= Void
 		deferred
 		ensure
-			encodings_supported_includes_default: Result.has (conneg (req).encoding_default)
+			encodings_supported_includes_default: Result.has (conneg (req).default_encoding)
 		end
 
 	additional_variant_headers (req: WSF_REQUEST): detachable LIST [STRING]

@@ -34,14 +34,11 @@ feature -- Helpers
 				Result.append_string (" '" + st + "',")
 			end
 			Result.append_string (" {")
-			if attached a_language.params as l_params then
-				from
-					l_params.start
-				until
-					l_params.after
+			if attached a_language.parameters as l_params then
+				across
+					l_params as ic
 				loop
-					Result.append ("'" + l_params.key_for_iteration + "':'"+ l_params.item_for_iteration + "',");
-					l_params.forth
+					Result.append ("'" + ic.key + "':'"+ ic.item + "',");
 				end
 			end
 			Result.append ("})")
@@ -137,7 +134,7 @@ feature -- Test routines
 
 
 
-	parser : HTTP_ACCEPT_LANGUAGE_PARSER
+	parser : HTTP_ACCEPT_LANGUAGE_UTILITIES
 
 end
 
