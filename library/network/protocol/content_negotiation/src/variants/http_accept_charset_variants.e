@@ -1,6 +1,6 @@
 note
 	description: "[
-				{CHARACTER_ENCODING_VARIANT_RESULTS}
+				{HTTP_ACCEPT_CHARSET_VARIANTS}
 				Represent the character sets results between client preferences and character sets variants supported by the server.
 				If the server is unable to supports the requested Accept-Charset values, the server can build
 				a response with the list of supported character sets.
@@ -10,20 +10,22 @@ note
 	revision: "$Revision$"
 
 class
-	CHARACTER_ENCODING_VARIANT_RESULTS
+	HTTP_ACCEPT_CHARSET_VARIANTS
 
 inherit
+	HTTP_ACCEPT_VARIANTS
+		rename
+			variant_value as charset
+		end
 
-	VARIANT_RESULTS
+create
+	make
 
+feature -- Change
 
-feature -- Change Element
-
-
-	set_variant_header
-			-- Set variant header as `Accept-Charset'
+	set_vary_header_value
 		do
-			variant_header := {HTTP_HEADER_NAMES}.header_accept_charset -- "Accept-Charset"
+			vary_header_value := {HTTP_HEADER_NAMES}.header_accept_charset -- "Accept-Charset"
 		end
 
 note

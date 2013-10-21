@@ -1,6 +1,6 @@
 note
 	description: "[
-				{LANGUAGE_VARIANT_RESULTS}.
+				{HTTP_ACCEPT_LANGUAGE_VARIANTS}.
 				Represent the language results between client preferences and language variants supported by the server.
 				If the server is unable to supports the requested Accept-Language values, the server can build
 				a response with the list of supported languages
@@ -9,18 +9,22 @@ note
 	revision: "$Revision$"
 
 class
-	LANGUAGE_VARIANT_RESULTS
+	HTTP_ACCEPT_LANGUAGE_VARIANTS
 
 inherit
+	HTTP_ACCEPT_VARIANTS
+		rename
+			variant_value as language
+		end
 
-	VARIANT_RESULTS
+create
+	make
 
-feature -- Change Element
+feature -- Change
 
-	set_variant_header
-			-- Set variant header as 'Accept-Language'
+	set_vary_header_value
 		do
-			variant_header := {HTTP_HEADER_NAMES}.header_accept_language -- "Accept-Language"
+			vary_header_value := {HTTP_HEADER_NAMES}.header_accept_language -- "Accept-Language"
 		end
 
 note

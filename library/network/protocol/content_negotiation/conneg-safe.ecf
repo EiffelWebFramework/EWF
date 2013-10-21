@@ -13,6 +13,12 @@
 		</option>
 		<library name="base" location="$ISE_LIBRARY\library\base\base-safe.ecf"/>
 		<library name="http" location="..\http\http-safe.ecf" readonly="false"/>
-		<cluster name="conneg" location=".\src\" recursive="true"/>
+		<cluster name="conneg" location=".\src\" recursive="true">
+			<file_rule>
+				<exclude>/implementation</exclude>
+			</file_rule>
+		</cluster>
+		<cluster name="conneg_imp" location=".\src\implementation" recursive="true" hidden="true">
+		</cluster>
 	</target>
 </system>
