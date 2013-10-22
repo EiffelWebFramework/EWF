@@ -7,6 +7,8 @@ class
 	HTTP_ANY_ACCEPT
 
 inherit
+	HTTP_HEADER_UTILITIES
+
 	REFACTORING_HELPER
 
 	DEBUG_OUTPUT
@@ -99,16 +101,6 @@ feature -- Status Report
 			-- String that should be displayed in debugger to represent `Current'.
 		do
 			create Result.make_from_string (value)
-		end
-
-feature {NONE} -- Helper
-
-	trimmed_string (s: READABLE_STRING_8): STRING_8
-			-- Copy of `s', where whitespace were stripped from the beginning and end of the string
-		do
-			create Result.make_from_string (s)
-			Result.left_adjust
-			Result.right_adjust
 		end
 
 note

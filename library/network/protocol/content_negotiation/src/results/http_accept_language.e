@@ -7,6 +7,8 @@ class
 	HTTP_ACCEPT_LANGUAGE
 
 inherit
+	HTTP_HEADER_UTILITIES
+
 	REFACTORING_HELPER
 
 	DEBUG_OUTPUT
@@ -220,16 +222,6 @@ feature {NONE} -- Implementation
 				l_language_range.append_character ('-')
 				l_language_range.append (a_specialization)
 			end
-		end
-
-feature {NONE} -- Helper
-
-	trimmed_string (s: READABLE_STRING_8): STRING_8
-			-- Copy of `s', where whitespace were stripped from the beginning and end of the string
-		do
-			create Result.make_from_string (s)
-			Result.left_adjust
-			Result.right_adjust
 		end
 
 invariant
