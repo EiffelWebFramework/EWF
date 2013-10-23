@@ -30,15 +30,21 @@ feature {NONE} -- Initialization
 			-- necessary.
 		local
 			i: INTEGER
+			s: STRING
 		do
 			fixme (generator + ".make_from_string: improve code!!!")
 			i := a_accept_language_item.index_of (';', 1)
 			if i > 0 then
-				make_with_language (trimmed_string (a_accept_language_item.substring (1, i - 1)))
+				create s.make_from_string (a_accept_language_item.substring (1, i - 1))
+			else
+				create s.make_from_string (a_accept_language_item)
+			end
+			s.left_adjust
+			s.right_adjust
+			make_with_language (s)
+			if i > 0 then
 				create parameters.make_from_substring (a_accept_language_item, i + 1, a_accept_language_item.count)
 				check attached parameters as l_params and then not l_params.has_error end
-			else
-				make_with_language (trimmed_string (a_accept_language_item))
 			end
 
 			check quality_initialized_to_1: quality = 1.0 end
@@ -220,16 +226,6 @@ feature {NONE} -- Implementation
 				l_language_range.append_character ('-')
 				l_language_range.append (a_specialization)
 			end
-		end
-
-feature {NONE} -- Helper
-
-	trimmed_string (s: READABLE_STRING_8): STRING_8
-			-- Copy of `s', where whitespace were stripped from the beginning and end of the string
-		do
-			create Result.make_from_string (s)
-			Result.left_adjust
-			Result.right_adjust
 		end
 
 invariant
