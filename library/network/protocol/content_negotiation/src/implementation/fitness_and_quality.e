@@ -1,5 +1,5 @@
 note
-	description: "Summary description for {FITNESS_AND_QUALITY}."
+	description: "FITNESS_AND_QUALITY. Object holding a fitness/quality values."
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -20,6 +20,7 @@ create
 feature -- Initialization
 
 	make (a_fitness: INTEGER; a_quality: REAL_64)
+			-- Create an object with `a_fitness' and `a_quality'
 		do
 			fitness := a_fitness
 			quality := a_quality
@@ -27,6 +28,7 @@ feature -- Initialization
 		ensure
 			fitness_assigned : fitness = a_fitness
 			quality_assigned : quality = a_quality
+			entity_empty: entity.is_empty
 		end
 
 feature -- Access

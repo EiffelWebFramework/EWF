@@ -23,6 +23,7 @@ create
 feature -- Change
 
 	set_vary_header_value
+			-- <Precursor>
 		do
 			vary_header_value := {HTTP_HEADER_NAMES}.header_accept_language -- "Accept-Language"
 		end
