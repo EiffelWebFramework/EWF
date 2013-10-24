@@ -20,18 +20,22 @@ feature -- Initialization
 
 	make_from_string (a_string: READABLE_STRING_8)
 		local
-			l_parts: LIST [READABLE_STRING_8]
-			sub_parts: LIST [READABLE_STRING_8]
-			p: READABLE_STRING_8
+			s: STRING_8
 			i: INTEGER
 		do
 			initialize
 			i := a_string.index_of (';', 1)
 			if i > 0 then
-				set_value (trimmed_string (a_string.substring (1, i - 1)))
-				create parameters.make_from_substring (a_string, i + 1, a_string.count)
+				create s.make_from_string (a_string.substring (1, i - 1))
 			else
-				set_value (trimmed_string (a_string))
+				create s.make_from_string (a_string)
+			end
+
+			s.left_adjust
+			s.right_adjust
+			set_value (s)
+			if i > 0 then
+				create parameters.make_from_substring (a_string, i + 1, a_string.count)
 			end
 		end
 
