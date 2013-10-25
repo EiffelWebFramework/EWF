@@ -54,6 +54,8 @@ echo Uninstall library: http_client
 %RDCMD% %TMP_CONTRIB_DIR%\library\network\http_client
 echo Uninstall library: http
 %RDCMD% %TMP_CONTRIB_DIR%\library\network\protocol\http
+echo Uninstall library: content_negotiation
+%RDCMD% %TMP_CONTRIB_DIR%\library\network\protocol\content_negotiation
 echo Uninstall library: http_authorization
 %RDCMD% %TMP_CONTRIB_DIR%\library\network\authentication\http_authorization
 echo Uninstall library: security\openid
