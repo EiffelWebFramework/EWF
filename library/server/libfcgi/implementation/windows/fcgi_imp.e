@@ -18,9 +18,6 @@ feature {NONE} -- Initialization
 			create fcgi
 		end
 
-	fcgi: FCGI_C_API
-			-- FastCGI C API primitives
-
 feature -- Access
 
 	fcgi_environ: POINTER
@@ -180,6 +177,9 @@ feature -- FCGI input
 
 feature {NONE} -- Implementation: FCGI Input
 
+	fcgi: FCGI_C_API
+			-- FastCGI C API primitives
+
 	fill_pointer_from_stdin (p: POINTER; n: INTEGER): INTEGER
 			-- Read up to `n' bytes from stdin and store in pointer `p'
 			-- and return number of bytes read.
@@ -272,7 +272,7 @@ feature {NONE} -- Implementation: environment
 
 
 note
-	copyright: "Copyright (c) 1984-2011, Eiffel Software and others"
+	copyright: "Copyright (c) 1984-2013, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

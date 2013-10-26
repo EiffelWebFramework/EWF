@@ -182,7 +182,7 @@ feature {NONE} -- Constants
 			create Result
 		end
 
-	K_input_bufsize: INTEGER = 1024_000
+	K_input_bufsize: INTEGER = 1_024_000
 
 feature {NONE} -- Implementation: Environment
 
