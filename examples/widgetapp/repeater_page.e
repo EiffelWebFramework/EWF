@@ -31,6 +31,7 @@ feature
 			control.add_control (create {WSF_BASIC_CONTROL}.make_with_body ("h2", "", "Results"))
 			create repeater.make_repeater ("myrepeater", datasource)
 			control.add_control (repeater)
+			navbar.set_active (3)
 		end
 
 	change_query

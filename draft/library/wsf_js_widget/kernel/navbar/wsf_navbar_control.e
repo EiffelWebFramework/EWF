@@ -23,9 +23,12 @@ feature {NONE} -- Initialization
 			--Initialize
 		do
 			make_multi_control (n)
+			active_set := false
 			add_class ("navbar navbar-inverse navbar-fixed-top")
 			create nav.make_with_tag_name (control_name + "_nav", "ul")
+			create nav_right.make_with_tag_name (control_name + "_nav_right", "ul")
 			nav.add_class ("nav navbar-nav")
+			nav_right.add_class ("nav navbar-nav navbar-right")
 		end
 
 	make_navbar_with_brand (n, b: STRING)
@@ -43,16 +46,15 @@ feature -- Rendering
 			nav_string: STRING
 		do
 			temp := render_tag_with_tagname ("span", "", "", "icon-bar")
-			temp.append (render_tag_with_tagname ("span", "", "", "icon-bar"))
-			temp.append (render_tag_with_tagname ("span", "", "", "icon-bar"))
+			temp.multiply (3)
 			temp := render_tag_with_tagname ("button", temp, "", "navbar-toggle")
 			if attached brand as b then
 				temp.append (render_tag_with_tagname ("a", b, "href=%"#%"", "navbar-brand"))
 			end
 			temp := render_tag_with_tagname ("div", temp, "", "navbar-header")
 			nav_string := nav.render
-			if attached nav_right as n then
-				nav_string.append (n.render)
+			if nav_right.controls.count > 0 then
+				nav_string.append (nav_right.render)
 			end
 			temp.append (render_tag_with_tagname ("div", nav_string, "", "navbar-collapse"))
 			Result := render_tag_with_tagname ("div", temp, "", "container")
@@ -61,46 +63,70 @@ feature -- Rendering
 
 feature -- Change
 
-	add_list_element_right (c: WSF_STATELESS_CONTROL)
+	set_active (tab: INTEGER)
+			-- Sets the given tab as current active tab
+		require
+			tab >= 1 and tab <= tab_count and not active_set
+		do
+			if tab <= nav.controls.count then
+				nav.controls.i_th (tab).add_class ("active")
+			else
+				nav_right.controls.i_th (tab - nav.controls.count).add_class ("active")
+			end
+			active_set := true
+		end
+
+	add_dropdown (l: WSF_STATELESS_CONTROL; d: WSF_STATELESS_CONTROL)
+			-- Add dropdown menu (in li tag with class dropdown) to navbar
+		local
+			li: WSF_MULTI_CONTROL [WSF_STATELESS_CONTROL]
+		do
+			create li.make_with_tag_name (control_name + "_link" + nav.controls.count.out, "li")
+			li.add_class ("dropdown")
+			li.add_control (l)
+			li.add_control (d)
+			add_element (li)
+		end
+
+	add_dropdown_right (l: WSF_STATELESS_CONTROL; d: WSF_STATELESS_CONTROL)
+			-- Add dropdown menu (in li tag with class dropdown) to right aligned part of navbar
+		local
+			li: WSF_MULTI_CONTROL [WSF_STATELESS_CONTROL]
+		do
+			create li.make_with_tag_name (control_name + "_link" + nav.controls.count.out, "li")
+			li.add_class ("dropdown")
+			li.add_control (l)
+			li.add_control (d)
+			add_element_right (li)
+		end
+
+	add_list_element_right (l: WSF_STATELESS_CONTROL)
 			-- Add element in li tag to right aligned part of navbar
 		local
 			name: STRING
 			li: WSF_MULTI_CONTROL [WSF_STATELESS_CONTROL]
 		do
 			name := control_name + "_rightlink";
-			if attached nav_right as right then
-				name := name + right.controls.count.out
-			else
-				name := name + "0"
-			end
+			name := name + nav_right.controls.count.out
 			create li.make_with_tag_name (name, "li")
-			li.add_control (c)
+			li.add_control (l)
 			add_element_right (li)
 		end
 
-	add_list_element (c: WSF_STATELESS_CONTROL)
+	add_list_element (l: WSF_STATELESS_CONTROL)
 			-- Add element in li tag to main nav
 		local
 			li: WSF_MULTI_CONTROL [WSF_STATELESS_CONTROL]
 		do
 			create li.make_with_tag_name (control_name + "_link" + nav.controls.count.out, "li")
-			li.add_control (c)
+			li.add_control (l)
 			add_element (li)
 		end
 
 	add_element_right (c: WSF_STATELESS_CONTROL)
 			-- Add element to right aligned part of navbar
-		local
-			right: WSF_MULTI_CONTROL [WSF_STATELESS_CONTROL]
 		do
-			if attached nav_right as r then
-				right := r
-			else
-				create right.make_with_tag_name (control_name + "_rightnav", "ul")
-				right.add_class ("nav navbar-nav navbar-right")
-				nav_right := right
-			end
-			right.add_control (c)
+			nav_right.add_control (c)
 		end
 
 	add_element (c: WSF_STATELESS_CONTROL)
@@ -109,7 +135,18 @@ feature -- Change
 			nav.add_control (c)
 		end
 
+feature -- Access
+
+	tab_count: INTEGER
+			-- Current sum of the number of items in left and right navbar
+		do
+			Result := nav.controls.count + nav_right.controls.count
+		end
+
 feature -- Properties
+
+	active_set: BOOLEAN
+			-- This flag is set once a tab has been set as active tab
 
 	brand: detachable STRING
 			-- Optional brand of the navbar
@@ -117,7 +154,7 @@ feature -- Properties
 	nav: WSF_MULTI_CONTROL [WSF_STATELESS_CONTROL]
 			-- Middle nav
 
-	nav_right: detachable WSF_MULTI_CONTROL [WSF_STATELESS_CONTROL]
+	nav_right: WSF_MULTI_CONTROL [WSF_STATELESS_CONTROL]
 			-- Right nav
 
 end

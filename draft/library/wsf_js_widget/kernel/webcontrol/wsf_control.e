@@ -14,11 +14,6 @@ inherit
 			render_tag
 		end
 
-
-feature
-
-	control_name: STRING
-
 feature {NONE} -- Initialization
 
 	make_control (n, a_tag_name: STRING)
@@ -37,10 +32,10 @@ feature {NONE} -- Initialization
 
 feature -- Actions
 
-	start_modal(url:STRING; title:STRING)
-		--Start a modal window containg an other or the same page
+	start_modal (url: STRING; title: STRING)
+			--Start a modal window containg an other or the same page
 		local
-			modal:WSF_JSON_OBJECT
+			modal: WSF_JSON_OBJECT
 		do
 			create modal.make
 			modal.put_string ("start_modal", "type")
@@ -49,10 +44,10 @@ feature -- Actions
 			actions.add (modal)
 		end
 
-	start_modal_big(url:STRING; title:STRING)
-		--Start a modal window containg an other or the same page
+	start_modal_big (url: STRING; title: STRING)
+			--Start a modal window containg an other or the same page
 		local
-			modal:WSF_JSON_OBJECT
+			modal: WSF_JSON_OBJECT
 		do
 			create modal.make
 			modal.put_string ("start_modal_big", "type")
@@ -61,10 +56,10 @@ feature -- Actions
 			actions.add (modal)
 		end
 
-	show_alert(mesage:STRING)
-		--Start a modal window containg an other or the same page
+	show_alert (mesage: STRING)
+			--Start a modal window containg an other or the same page
 		local
-			modal:WSF_JSON_OBJECT
+			modal: WSF_JSON_OBJECT
 		do
 			create modal.make
 			modal.put_string ("show_alert", "type")
@@ -72,7 +67,7 @@ feature -- Actions
 			actions.add (modal)
 		end
 
-feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- STATE MANAGEMENT
+feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 
 	load_state (new_states: JSON_OBJECT)
 			-- Select state stored with `control_name` as key
@@ -102,9 +97,9 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- STATE MANAGEMENT
 			end
 			if actions.count > 0 then
 				if not attached states.item ("actions") then
-					states.put (create {JSON_ARRAY}.make_array,"actions")
+					states.put (create {JSON_ARRAY}.make_array, "actions")
 				end
-				if attached {JSON_ARRAY}states.item ("actions") as action_list then
+				if attached {JSON_ARRAY} states.item ("actions") as action_list then
 					across
 						actions.array_representation as action
 					loop
@@ -150,17 +145,18 @@ feature -- Rendering
 			Result := render_tag_with_tagname (tag_name, body, l_attributes, css_classes_string)
 		end
 
-feature -- EVENT HANDLING
+feature -- Event handling
 
 	handle_callback (cname: STRING; event: STRING; event_parameter: detachable STRING)
 			-- Method called if any callback received. In this method you can route the callback to the event handler
 		deferred
 		end
+
 feature -- Change
 
 	set_isolation (p: BOOLEAN)
 		do
-			isolate := true
+			isolate := p
 		end
 
 feature -- Properties
@@ -168,4 +164,7 @@ feature -- Properties
 	isolate: BOOLEAN
 
 	actions: JSON_ARRAY
+
+	control_name: STRING
+
 end

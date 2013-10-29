@@ -15,14 +15,14 @@ inherit
 		end
 
 create
-	make_control, make_with_body
+	make_control, make_with_body, make_with_body_class
 
 feature {NONE} -- Initialization
 
 	make_control (t: STRING)
 			-- Initialize
 		do
-			make_with_body (t, "", "")
+			make_with_body_class (t, "", "", "")
 		end
 
 	make_with_body (t, attr, b: STRING)
@@ -31,6 +31,15 @@ feature {NONE} -- Initialization
 			make (t)
 			attributes := attr
 			body := b
+		end
+
+	make_with_body_class (t, attr, c, b: STRING)
+			-- Initialize with specific attributes and body
+		do
+			make_with_body (t, attr, b)
+			if not c.is_empty then
+				css_classes.extend (c)
+			end
 		end
 
 feature -- Rendering

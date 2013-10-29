@@ -27,7 +27,7 @@ feature -- Access
 			-- List of classes (appear in the "class" attribute)
 
 	attributes: detachable STRING
-			-- Attributes string
+			-- Attributes string (without classes)
 
 feature -- Change
 

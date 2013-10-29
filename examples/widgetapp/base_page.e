@@ -18,7 +18,6 @@ feature
 
 	initialize_controls
 		local
-			navbar: WSF_NAVBAR_CONTROL
 			btn: WSF_BUTTON_CONTROL
 		do
 			create control.make_multi_control ("container")
@@ -27,11 +26,12 @@ feature
 			navbar.add_list_element (create {WSF_BASIC_CONTROL}.make_with_body ("a", "href=%"/%"", "Home"))
 			navbar.add_list_element (create {WSF_BASIC_CONTROL}.make_with_body ("a", "href=%"/grid%"", "Grid"))
 			navbar.add_list_element (create {WSF_BASIC_CONTROL}.make_with_body ("a", "href=%"/repeater%"", "Repeater"))
-			navbar.add_list_element (create {WSF_BASIC_CONTROL}.make_with_body ("a", "href=%"/slider%"", "Image Slider"))
+			navbar.add_list_element (create {WSF_BASIC_CONTROL}.make_with_body ("a", "href=%"/slider%"", "Slider"))
+			navbar.add_list_element_right (create {WSF_BASIC_CONTROL}.make_with_body ("a", "href=%"/about%"", "About"))
 			create btn.make_button ("scode", "Show Code")
 			btn.set_click_event (agent show_code)
 			btn.set_isolation (true)
-			btn.add_class ("btn-success") 
+			btn.add_class ("btn-success")
 			control.add_control (btn)
 			if not attached get_parameter ("ajax") then
 				control.add_control (navbar)
@@ -46,5 +46,7 @@ feature
 feature
 
 	control: WSF_MULTI_CONTROL [WSF_STATELESS_CONTROL]
+
+	navbar: WSF_NAVBAR_CONTROL
 
 end
