@@ -64,7 +64,7 @@ feature -- Change
 		local
 			caption_control: detachable WSF_STATELESS_CONTROL
 		do
-			if attached caption as c then
+			if attached caption as c and then not c.is_empty then
 				caption_control := create {WSF_BASIC_CONTROL}.make_with_body ("p", "", c)
 			end
 			add_image_with_caption_control (src, alt, caption_control)
@@ -72,16 +72,8 @@ feature -- Change
 
 	add_image_with_caption_control (src, alt: STRING; caption: detachable WSF_STATELESS_CONTROL)
 			-- Add a new image to the slider, with specified url, alternative text and caption element
-		local
-			item: WSF_MULTI_CONTROL [WSF_STATELESS_CONTROL]
 		do
-			create item.make_multi_control (control_name + "_item" + slide_wrapper.controls.count.out)
-			item.add_class ("item")
-			item.add_control (create {WSF_BASIC_CONTROL}.make_with_body_class ("img", "src=%"" + src + "%" alt=%"" + alt + "%"", "", ""))
-			if attached caption as c then
-				item.add_control (c)
-			end
-			add_control (item)
+			add_control (create {WSF_BASIC_CONTROL}.make_with_body_class ("img", "src=%"" + src + "%" alt=%"" + alt + "%"", "", ""), Void)
 		end
 
 	add_image (src, alt: STRING)
@@ -90,17 +82,24 @@ feature -- Change
 			add_image_with_caption (src, alt, "")
 		end
 
-	add_control (c: WSF_STATELESS_CONTROL)
+	add_control (c: WSF_STATELESS_CONTROL; caption: detachable WSF_STATELESS_CONTROL)
 			-- Add a new control to the slider
 		local
 			cl: STRING
+			item: WSF_MULTI_CONTROL [WSF_STATELESS_CONTROL]
 		do
+			create item.make_multi_control (control_name + "_item" + slide_wrapper.controls.count.out)
+			item.add_class ("item")
+			item.add_control (c)
+			if attached caption as capt then
+				item.add_control (capt)
+			end
 			cl := ""
 			if slide_wrapper.controls.count = 0 then
 				cl := "active"
-				c.add_class (cl)
+				item.add_class (cl)
 			end
-			slide_wrapper.add_control (c)
+			slide_wrapper.add_control (item)
 			list.add_control (create {WSF_BASIC_CONTROL}.make_with_body_class ("li", "data-target=%"#" + control_name + "%" data-slide-to=%"" + list.controls.count.out + "%"", cl, ""));
 		end
 

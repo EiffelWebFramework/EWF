@@ -133,7 +133,7 @@ feature -- Execution
 
 	slider_demo (request: WSF_REQUEST; response: WSF_RESPONSE)
 		local
-			page: IMAGE_SLIDER_PAGE
+			page: SLIDER_PAGE
 		do
 				-- To send a response we need to setup, the status code and
 				-- the response headers.

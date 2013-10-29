@@ -120,19 +120,17 @@ feature -- Rendering
 			across
 				controls as c
 			loop
-				Result := c.item.render + Result
+				Result := Result + c.item.render
 			end
 			Result := render_tag (Result, "")
 		end
 
 feature -- Change
 
-	add_control (c: detachable G)
+	add_control (c: G)
 			-- Add a control to this multi control
 		do
-			if attached c as d then
-				controls.put_front (d)
-			end
+				controls.extend (c)
 		end
 
 feature -- Properties

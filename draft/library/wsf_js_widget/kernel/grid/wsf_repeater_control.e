@@ -19,13 +19,16 @@ inherit
 feature {NONE} -- Initialization
 
 	make_repeater (n: STRING; a_datasource: WSF_DATASOURCE [G])
+		local
+			p: WSF_PAGINATION_CONTROL [G]
 		do
 			make_multi_control (n)
 			datasource := a_datasource
 			datasource.set_on_update_agent (agent update)
 			if attached {WSF_PAGABLE_DATASOURCE [G]} a_datasource as ds then
-				create pagination_control.make_paging (n + "_paging", ds)
-				add_control (pagination_control)
+				create p.make_paging (n + "_paging", ds)
+				add_control (p)
+				pagination_control := p
 			end
 		end
 
@@ -52,7 +55,6 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 			create Result.make
 			Result.put (datasource.state, "datasource")
 		end
-
 
 feature -- Rendering
 
