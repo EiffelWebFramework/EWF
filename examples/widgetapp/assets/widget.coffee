@@ -263,6 +263,9 @@ class WSF_PAGE_CONTROL extends WSF_CONTROL
   remove:()->
     console.log "Removed #{@control_name}"
     @$el.remove()
+    
+class WSF_SLIDER_CONTROL extends WSF_CONTROL
+  requirements: ['assets/bootstrap.min.js']
 
 controls = {}
 
