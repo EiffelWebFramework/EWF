@@ -267,6 +267,9 @@ class WSF_PAGE_CONTROL extends WSF_CONTROL
 class WSF_SLIDER_CONTROL extends WSF_CONTROL
   requirements: ['assets/bootstrap.min.js']
 
+class WSF_DROPDOWN_CONTROL extends WSF_CONTROL
+  requirements: ['assets/bootstrap.min.js']
+
 controls = {}
 
 class WSF_BUTTON_CONTROL extends WSF_CONTROL
