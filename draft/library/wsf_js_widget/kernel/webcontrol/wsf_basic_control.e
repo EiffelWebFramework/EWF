@@ -10,16 +10,18 @@ class
 inherit
 
 	WSF_STATELESS_CONTROL
+		rename
+			make as make_stateless_control
 		redefine
 			attributes
 		end
 
 create
-	make_control, make_with_body, make_with_body_class
+	make, make_with_body, make_with_body_class
 
 feature {NONE} -- Initialization
 
-	make_control (t: STRING)
+	make (t: STRING)
 			-- Initialize
 		do
 			make_with_body_class (t, "", "", "")
@@ -28,7 +30,7 @@ feature {NONE} -- Initialization
 	make_with_body (t, attr, b: STRING)
 			-- Initialize with specific attributes and body
 		do
-			make (t)
+			make_stateless_control (t)
 			attributes := attr
 			body := b
 		end
