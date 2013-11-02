@@ -10,6 +10,8 @@ class
 inherit
 
 	WSF_VALUE_CONTROL [LIST [STRING]]
+		rename
+			make as make_control
 		undefine
 			load_state,
 			full_state,
@@ -17,13 +19,16 @@ inherit
 		end
 
 	WSF_MULTI_CONTROL [WSF_CHECKBOX_CONTROL]
+		rename
+			make as make_multi_control
+		end
 
 create
-	make_checkbox_list_control
+	make
 
 feature {NONE} -- Initializaton
 
-	make_checkbox_list_control (n: STRING)
+	make (n: STRING)
 			-- Initialize with specified control name
 		do
 			make_multi_control (n)

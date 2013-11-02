@@ -10,6 +10,8 @@ deferred class
 inherit
 
 	WSF_MULTI_CONTROL [WSF_STATELESS_CONTROL]
+		rename
+			make as make_multi_control
 		redefine
 			set_state,
 			state,
@@ -18,7 +20,7 @@ inherit
 
 feature {NONE} -- Initialization
 
-	make_repeater (n: STRING; a_datasource: WSF_DATASOURCE [G])
+	make (n: STRING; a_datasource: WSF_DATASOURCE [G])
 		local
 			p: WSF_PAGINATION_CONTROL [G]
 		do
@@ -26,7 +28,7 @@ feature {NONE} -- Initialization
 			datasource := a_datasource
 			datasource.set_on_update_agent (agent update)
 			if attached {WSF_PAGABLE_DATASOURCE [G]} a_datasource as ds then
-				create p.make_paging (n + "_paging", ds)
+				create p.make (n + "_paging", ds)
 				add_control (p)
 				pagination_control := p
 			end

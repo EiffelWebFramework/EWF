@@ -10,16 +10,19 @@ class
 inherit
 
 	WSF_VALUE_CONTROL [BOOLEAN]
+		rename
+			make as make_value_control
+		end
 
 create
-	make_checkbox
+	make
 
 feature {NONE} -- Initialization
 
-	make_checkbox (n, l, c: STRING)
+	make (n, l, c: STRING)
 			-- Initialize with specified control name,
 		do
-			make_control (n, "input")
+			make_value_control (n, "input")
 			label := l
 			checked_value := c
 		end

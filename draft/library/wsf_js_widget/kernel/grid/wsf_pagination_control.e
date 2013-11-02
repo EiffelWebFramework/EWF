@@ -10,13 +10,16 @@ class
 inherit
 
 	WSF_CONTROL
+		rename
+			make as make_control
+		end
 
 create
-	make_paging
+	make
 
 feature {NONE}
 
-	make_paging (n: STRING; ds: WSF_PAGABLE_DATASOURCE [G])
+	make (n: STRING; ds: WSF_PAGABLE_DATASOURCE [G])
 		do
 			make_control (n, "ul")
 			add_class ("pagination")

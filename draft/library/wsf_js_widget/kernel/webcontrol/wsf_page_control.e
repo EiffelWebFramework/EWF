@@ -11,7 +11,7 @@ inherit
 
 	WSF_CONTROL
 		rename
-			make as make_wsf_control
+			make as make_control
 		redefine
 			full_state,
 			read_state_changes

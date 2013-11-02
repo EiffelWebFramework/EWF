@@ -10,19 +10,21 @@ deferred class
 inherit
 
 	WSF_STATELESS_CONTROL
+		rename
+			make as make_stateless_control
 		redefine
 			render_tag
 		end
 
 feature {NONE} -- Initialization
 
-	make_control (n, a_tag_name: STRING)
+	make (n, a_tag_name: STRING)
 			-- Initialize with specified control name and tag
 		require
 			not n.is_empty
 			not a_tag_name.is_empty
 		do
-			make (a_tag_name)
+			make_stateless_control (a_tag_name)
 			control_name := n
 			create state_changes.make
 			create actions.make_array

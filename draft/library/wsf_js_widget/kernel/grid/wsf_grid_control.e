@@ -10,16 +10,18 @@ class
 inherit
 
 	WSF_REPEATER_CONTROL [G]
+		rename
+			make as make_repeater
 		redefine
 			render
 		end
 
 create
-	make_grid
+	make
 
 feature {NONE} -- Initialization
 
-	make_grid (n: STRING; a_columns: ITERABLE [WSF_GRID_COLUMN]; a_datasource: WSF_DATASOURCE [G])
+	make (n: STRING; a_columns: ITERABLE [WSF_GRID_COLUMN]; a_datasource: WSF_DATASOURCE [G])
 		do
 			make_repeater (n, a_datasource)
 			columns := a_columns

@@ -10,6 +10,8 @@ class
 inherit
 
 	WSF_CONTROL
+		rename
+			make as make_control
 		redefine
 			read_state_changes,
 			load_state,
@@ -19,17 +21,17 @@ inherit
 	WSF_VALIDATABLE
 
 create
-	make_form_element, make_form_element_with_validators
+	make, make_with_validators
 
 feature {NONE} -- Initialization
 
-	make_form_element (a_label: STRING; c: WSF_VALUE_CONTROL [G])
+	make (a_label: STRING; c: WSF_VALUE_CONTROL [G])
 			-- Initialize form element control with a specific label and value control
 		do
-			make_form_element_with_validators (a_label, c, create {ARRAYED_LIST [WSF_VALIDATOR [G]]}.make (0))
+			make_with_validators (a_label, c, create {ARRAYED_LIST [WSF_VALIDATOR [G]]}.make (0))
 		end
 
-	make_form_element_with_validators (a_label: STRING; c: WSF_VALUE_CONTROL [G]; v: LIST [WSF_VALIDATOR [G]])
+	make_with_validators (a_label: STRING; c: WSF_VALUE_CONTROL [G]; v: LIST [WSF_VALIDATOR [G]])
 			-- Initialize form element control with a specific label, value control and list of validators
 		do
 			make_control (c.control_name + "_container", "div")

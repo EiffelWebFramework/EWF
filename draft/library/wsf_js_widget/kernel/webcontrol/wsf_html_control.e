@@ -10,16 +10,17 @@ class
 inherit
 
 	WSF_VALUE_CONTROL [STRING]
+	rename make as make_value_control end
 
 create
-	make_html
+	make
 
 feature {NONE} -- Initialization
 
-	make_html (n, t, v: STRING)
+	make (n, t, v: STRING)
 			-- Initialize
 		do
-			make_control (n, t)
+			make_value_control (n, t)
 			html := v
 		end
 

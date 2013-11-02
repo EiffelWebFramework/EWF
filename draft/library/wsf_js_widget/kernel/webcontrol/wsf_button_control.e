@@ -10,13 +10,16 @@ class
 inherit
 
 	WSF_CONTROL
+		rename
+			make as make_control
+		end
 
 create
-	make_button
+	make
 
 feature {NONE} -- Initialization
 
-	make_button (n: STRING; t: STRING)
+	make (n: STRING; t: STRING)
 			-- Initialize with specified control name and text
 		do
 			make_control (n, "button")

@@ -10,6 +10,8 @@ class
 inherit
 
 	WSF_CONTROL
+		rename
+			make as make_control
 		redefine
 			full_state,
 			read_state_changes,
@@ -17,11 +19,11 @@ inherit
 		end
 
 create
-	make_multi_control, make_with_tag_name
+	make, make_with_tag_name
 
 feature {NONE} -- Initialization
 
-	make_multi_control (n: STRING)
+	make (n: STRING)
 			-- Initialize with specified control name and default tag "div"
 		do
 			make_with_tag_name (n, "div")
@@ -130,7 +132,7 @@ feature -- Change
 	add_control (c: G)
 			-- Add a control to this multi control
 		do
-				controls.extend (c)
+			controls.extend (c)
 		end
 
 feature -- Properties

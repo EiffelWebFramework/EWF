@@ -10,13 +10,16 @@ class
 inherit
 
 	WSF_CONTROL
+		rename
+			make as make_control
+		end
 
 create
-	make_progress, make_progress_with_source
+	make, make_with_source
 
 feature {NONE} -- Initialization
 
-	make_progress (n: STRING)
+	make (n: STRING)
 			-- Initialize with specified control name
 		do
 			make_control (n, "div")
@@ -24,10 +27,10 @@ feature {NONE} -- Initialization
 			progress := 0
 		end
 
-	make_progress_with_source (n: STRING; p: WSF_PROGRESSSOURCE)
+	make_with_source (n: STRING; p: WSF_PROGRESSSOURCE)
 			-- Initialize with specified control name and progresssource
 		do
-			make_progress (n)
+			make (n)
 			progress_source := p
 		end
 

@@ -10,16 +10,18 @@ class
 inherit
 
 	WSF_MULTI_CONTROL [WSF_STATELESS_CONTROL]
+		rename
+			make as make_multi_control
 		redefine
 			render
 		end
 
 create
-	make_navbar, make_navbar_with_brand
+	make, make_with_brand
 
 feature {NONE} -- Initialization
 
-	make_navbar (n: STRING)
+	make (n: STRING)
 			--Initialize
 		do
 			make_multi_control (n)
@@ -31,10 +33,10 @@ feature {NONE} -- Initialization
 			nav_right.add_class ("nav navbar-nav navbar-right")
 		end
 
-	make_navbar_with_brand (n, b: STRING)
+	make_with_brand (n, b: STRING)
 			-- Initialize with specified brand string
 		do
-			make_navbar (n)
+			make (n)
 			brand := b
 		end
 

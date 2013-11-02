@@ -10,15 +10,18 @@ class
 inherit
 
 	WSF_MULTI_CONTROL [WSF_CONTROL]
+		rename
+			make as make_multi_control
+		end
 
 	WSF_VALIDATABLE
 
 create
-	make_form_control
+	make
 
 feature {NONE} -- Initialization
 
-	make_form_control (n: STRING)
+	make (n: STRING)
 			-- Initialize
 		do
 			make_multi_control (n)

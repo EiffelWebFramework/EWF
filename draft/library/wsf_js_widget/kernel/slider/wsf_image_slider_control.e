@@ -10,20 +10,23 @@ class
 inherit
 
 	WSF_CONTROL
+		rename
+			make as make_control
+		end
 
 create
-	make_slider
+	make
 
 feature {NONE} -- Initialization
 
-	make_slider (n: STRING)
+	make (n: STRING)
 			-- Initialize with specified name
 		do
 			make_control (n, "div")
 			add_class ("carousel slide")
 			create list.make_with_tag_name (control_name + "_links", "ol")
 			list.add_class ("carousel-indicators")
-			create slide_wrapper.make_multi_control (control_name + "_wrapper")
+			create slide_wrapper.make (control_name + "_wrapper")
 			slide_wrapper.add_class ("carousel-inner")
 		end
 
@@ -88,7 +91,7 @@ feature -- Change
 			cl: STRING
 			item: WSF_MULTI_CONTROL [WSF_STATELESS_CONTROL]
 		do
-			create item.make_multi_control (control_name + "_item" + slide_wrapper.controls.count.out)
+			create item.make (control_name + "_item" + slide_wrapper.controls.count.out)
 			item.add_class ("item")
 			item.add_control (c)
 			if attached caption as capt then

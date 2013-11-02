@@ -10,13 +10,16 @@ class
 inherit
 
 	WSF_INPUT_CONTROL
+		rename
+			make as make_input
+		end
 
 create
-	make_password
+	make
 
 feature {NONE} -- Initialization
 
-	make_password (n, v: STRING)
+	make (n, v: STRING)
 			-- Initialize with specified control name and text
 		do
 			make_input (n, v)

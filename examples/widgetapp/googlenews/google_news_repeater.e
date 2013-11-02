@@ -12,7 +12,7 @@ inherit
 	WSF_REPEATER_CONTROL [GOOGLE_NEWS]
 
 create
-	make_repeater
+	make
 
 feature
 

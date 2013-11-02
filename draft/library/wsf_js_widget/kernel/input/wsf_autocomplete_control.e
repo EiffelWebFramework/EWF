@@ -10,26 +10,28 @@ class
 inherit
 
 	WSF_INPUT_CONTROL
+		rename
+			make as make_input
 		redefine
 			handle_callback,
 			state
 		end
 
 create
-	make_autocomplete, make_autocomplete_with_agent
+	make, make_with_agent
 
 feature {NONE} -- Initialization
 
-	make_autocomplete (n: STRING; c: WSF_AUTOCOMPLETION)
+	make (n: STRING; c: WSF_AUTOCOMPLETION)
 			-- Initialize with specified name and autocompletion
 		do
-			make_autocomplete_with_agent (n, agent c.autocompletion)
+			make_with_agent (n, agent c.autocompletion)
 			if attached c.template as t then
 				template := t
 			end
 		end
 
-	make_autocomplete_with_agent (n: STRING; c: FUNCTION [ANY, TUPLE [STRING], JSON_ARRAY])
+	make_with_agent (n: STRING; c: FUNCTION [ANY, TUPLE [STRING], JSON_ARRAY])
 			-- Initialize with specified name and autocompletion function
 		do
 			make_input (n, "")

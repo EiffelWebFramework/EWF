@@ -10,16 +10,19 @@ class
 inherit
 
 	WSF_VALUE_CONTROL [STRING]
+		rename
+			make as make_value_control
+		end
 
 create
-	make_input
+	make
 
 feature {NONE} -- Initialization
 
-	make_input (n, v: STRING)
+	make (n, v: STRING)
 			-- Initialize with specified name and value
 		do
-			make_control (n, "input")
+			make_value_control (n, "input")
 			type := "text"
 			text := v
 		end
