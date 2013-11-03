@@ -6,11 +6,12 @@ note
 deferred class
 	WSF_ENTITY
 
+
 feature -- Access
 
-	item (a_field: READABLE_STRING_GENERAL): detachable ANY
+	item alias "[]"(a_field: READABLE_STRING_GENERAL): detachable ANY
 			-- Value for field item `a_field'.
 		deferred
-		end
+		end 
 
 end

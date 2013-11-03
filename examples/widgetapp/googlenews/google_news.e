@@ -40,7 +40,7 @@ feature -- Access
 
 	image: detachable STRING
 
-	item (a_field: READABLE_STRING_GENERAL): detachable ANY
+	item  alias "[]"  (a_field: READABLE_STRING_GENERAL): detachable ANY
 			-- <Precursor>
 		do
 			if a_field.same_string ("title") then
