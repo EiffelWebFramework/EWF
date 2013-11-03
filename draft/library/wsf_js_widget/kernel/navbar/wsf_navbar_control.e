@@ -29,6 +29,8 @@ feature {NONE} -- Initialization
 			add_class ("navbar navbar-inverse navbar-fixed-top")
 			create nav.make_with_tag_name (control_name + "_nav", "ul")
 			create nav_right.make_with_tag_name (control_name + "_nav_right", "ul")
+			controls.extend (nav)
+			controls.extend (nav_right)
 			nav.add_class ("nav navbar-nav")
 			nav_right.add_class ("nav navbar-nav navbar-right")
 		end
