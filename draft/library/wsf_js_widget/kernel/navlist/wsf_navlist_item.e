@@ -5,7 +5,7 @@ note
 	revision: "$Revision$"
 
 class
-	WSF_NAVLIST_ITEM
+	WSF_NAVLIST_ITEM_CONTROL
 
 inherit
 
@@ -19,10 +19,12 @@ create
 
 feature {NONE} -- Initialization
 
-	make (n, t: STRING)
+	make (n, link, t: STRING)
 		do
 			make_control (n, "a")
 			text := t
+			attributes := "href=%"" + link + "%"";
+			add_class ("list-group-item")
 		end
 
 end

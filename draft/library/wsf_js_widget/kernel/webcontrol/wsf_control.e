@@ -122,13 +122,13 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 
 feature -- Rendering
 
-	render_tag (body, attrs: STRING): STRING
+	render_tag (body: STRING; attrs: detachable STRING): STRING
 			-- Render this control with the specified body and attributes
 		do
 			Result := render_tag_with_generator_name (generator, body, attrs)
 		end
 
-	render_tag_with_generator_name (a_generator, body, attrs: STRING): STRING
+	render_tag_with_generator_name (a_generator, body: STRING; attrs: detachable STRING): STRING
 			-- Render this control with the specified generator name, body and attributes
 		local
 			css_classes_string: STRING
@@ -140,7 +140,10 @@ feature -- Rendering
 			loop
 				css_classes_string := css_classes_string + " " + c.item
 			end
-			l_attributes := "id=%"" + control_name + "%" data-name=%"" + control_name + "%" data-type=%"" + a_generator + "%" " + attrs
+			l_attributes := "id=%"" + control_name + "%" data-name=%"" + control_name + "%" data-type=%"" + a_generator + "%" "
+			if attached attrs as a then
+				l_attributes := l_attributes + a
+			end
 			if isolate then
 				l_attributes.append (" data-isolation=%"1%"")
 			end

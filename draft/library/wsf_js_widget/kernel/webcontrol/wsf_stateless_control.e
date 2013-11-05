@@ -39,7 +39,7 @@ feature -- Change
 
 feature -- Rendering
 
-	render_tag (body, attrs: STRING): STRING
+	render_tag (body: STRING; attrs: detachable STRING): STRING
 			-- Generate HTML of this control with the specified body and attributes
 		local
 			css_classes_string: STRING
@@ -53,12 +53,16 @@ feature -- Rendering
 			Result := render_tag_with_tagname (tag_name, body, attrs, css_classes_string)
 		end
 
-	render_tag_with_tagname (tag, body, attrs, css_classes_string: STRING): STRING
+	render_tag_with_tagname (tag, body: STRING; attrs: detachable STRING; css_classes_string: STRING): STRING
 			-- Generate HTML of the specified tag with specified body, attributes and css classes
 		local
 			l_attributes: STRING
 		do
-			create l_attributes.make_from_string (attrs)
+			if attached attrs as a then
+				create l_attributes.make_from_string (a)
+			else
+				l_attributes := ""
+			end
 			if not css_classes_string.is_empty then
 				l_attributes.append (" class=%"")
 				l_attributes.append (css_classes_string)

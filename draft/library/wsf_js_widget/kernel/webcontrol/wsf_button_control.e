@@ -66,7 +66,7 @@ feature -- Rendering
 	render: STRING
 			-- HTML representation of this control
 		do
-			Result := render_tag (text, "")
+			Result := render_tag (text, attributes)
 		end
 
 feature -- Change
