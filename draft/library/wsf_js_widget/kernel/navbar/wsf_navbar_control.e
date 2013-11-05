@@ -51,7 +51,7 @@ feature -- Rendering
 		do
 			temp := render_tag_with_tagname ("span", "", "", "icon-bar")
 			temp.multiply (3)
-			temp := render_tag_with_tagname ("button", temp, "", "navbar-toggle")
+			temp := render_tag_with_tagname ("button", temp, "data-target=%".navbar-collapse%" data-toggle=%"collapse%" type=%"button%"", "navbar-toggle")
 			if attached brand as b then
 				temp.append (render_tag_with_tagname ("a", b, "href=%"#%"", "navbar-brand"))
 			end
@@ -60,7 +60,7 @@ feature -- Rendering
 			if nav_right.controls.count > 0 then
 				nav_string.append (nav_right.render)
 			end
-			temp.append (render_tag_with_tagname ("div", nav_string, "", "navbar-collapse"))
+			temp.append (render_tag_with_tagname ("div", nav_string, "", "navbar-collapse collapse"))
 			Result := render_tag_with_tagname ("div", temp, "", "container")
 			Result := render_tag (Result, "")
 		end

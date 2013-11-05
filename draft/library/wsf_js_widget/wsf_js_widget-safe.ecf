@@ -16,6 +16,8 @@
 		<library name="pcre" location="$ISE_LIBRARY\unstable\library\text\regexp\pcre\pcre-safe.ecf"/>
 		<library name="uri_template" location="..\..\..\library\text\parser\uri_template\uri_template-safe.ecf"/>
 		<library name="wsf" location="..\..\..\library\server\wsf\wsf-safe.ecf"/>
-		<cluster name="kernel" location=".\kernel\" recursive="true"/>
+		<cluster name="kernel" location=".\kernel\" recursive="true">
+			<cluster name="navlist" location="\home\severin\Documents\EWF\EWF\draft\library\wsf_js_widget\kernel\navlist\"/>
+		</cluster>
 	</target>
 </system>
