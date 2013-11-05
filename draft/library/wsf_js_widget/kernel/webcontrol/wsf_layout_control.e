@@ -35,6 +35,7 @@ feature -- Add control
 			create div.make (control_name + "_item_" + controls.count.out)
 			div.add_class ("col-md-" + span.out + " col-md-offset-" + offset.out)
 			div.add_control (c)
+			add_control_raw (div)
 		end
 
 	add_control (c: WSF_STATELESS_CONTROL; span: INTEGER)
@@ -44,6 +45,7 @@ feature -- Add control
 			create div.make (control_name + "_item_" + controls.count.out)
 			div.add_class ("col-md-" + span.out)
 			div.add_control (c)
+			add_control_raw (div)
 		end
 
 end

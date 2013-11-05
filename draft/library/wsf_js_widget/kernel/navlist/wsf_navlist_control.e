@@ -32,6 +32,7 @@ feature -- Change
 			c: WSF_NAVLIST_ITEM_CONTROL
 		do
 			create c.make (control_name + "_item_" + controls.count.out, link, text)
+			add_control(c)
 		end
 
 end
