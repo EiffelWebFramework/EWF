@@ -43,13 +43,20 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 		do
 			Precursor (new_states)
 			if attached {JSON_OBJECT} new_states.item ("controls") as ct then
-				across
-					controls as c
-				loop
-					if attached {WSF_CONTROL} c.item as cont then
-						if attached {JSON_OBJECT} ct.item (cont.control_name) as value_state then
-							cont.load_state (value_state)
-						end
+				load_subcontrol_state (ct)
+			end
+		end
+
+	load_subcontrol_state (newstate: JSON_OBJECT)
+		do
+			across
+				controls as c
+			loop
+				if attached {WSF_STATELESS_MULTI_CONTROL[WSF_STATELESS_CONTROL]} c.item as cont then
+					cont.load_subcontrol_state (newstate)
+				elseif attached {WSF_CONTROL} c.item as cont then
+					if attached {JSON_OBJECT} newstate.item (cont.control_name) as value_state then
+						cont.load_state (value_state)
 					end
 				end
 			end
@@ -67,14 +74,21 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 		do
 			Result := Precursor
 			create controls_state.make
+			read_subcontrol_state (controls_state)
+			Result.put (controls_state, "controls")
+		end
+
+	read_subcontrol_state (controls_state: JSON_OBJECT)
+		do
 			across
 				controls as c
 			loop
-				if attached {WSF_CONTROL} c.item as cont then
+				if attached {WSF_STATELESS_MULTI_CONTROL[WSF_STATELESS_CONTROL]} c.item as mcont then
+					mcont.read_subcontrol_state (controls_state)
+				elseif attached {WSF_CONTROL} c.item as cont then
 					controls_state.put (cont.full_state, cont.control_name)
 				end
 			end
-			Result.put (controls_state, "controls")
 		end
 
 	read_state_changes (states: WSF_JSON_OBJECT)
@@ -124,7 +138,9 @@ feature -- Rendering
 			loop
 				Result := Result + c.item.render
 			end
-			Result := render_tag (Result, "")
+			if not tag_name.is_empty then
+				Result := render_tag (Result, "")
+			end
 		end
 
 feature -- Change
@@ -136,6 +152,8 @@ feature -- Change
 		end
 
 feature -- Properties
+
+	stateless: BOOLEAN
 
 	controls: ARRAYED_LIST [G]
 			-- List of current controls in this multi control

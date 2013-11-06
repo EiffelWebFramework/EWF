@@ -9,7 +9,7 @@ class
 
 inherit
 
-	WSF_MULTI_CONTROL [WSF_STATELESS_CONTROL]
+	WSF_STATELESS_MULTI_CONTROL [WSF_STATELESS_CONTROL]
 		rename
 			make as make_multi_control,
 			add_control as add_control_raw
@@ -22,7 +22,7 @@ feature {NONE} -- Initialization
 
 	make (n: STRING)
 		do
-			make_with_tag_name (n, "div")
+			make_with_tag_name ("div")
 			add_class ("row")
 		end
 

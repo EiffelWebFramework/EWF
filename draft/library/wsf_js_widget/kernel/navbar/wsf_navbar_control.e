@@ -27,8 +27,8 @@ feature {NONE} -- Initialization
 			make_multi_control (n)
 			active_set := false
 			add_class ("navbar navbar-inverse navbar-fixed-top")
-			create nav.make_with_tag_name (control_name + "_nav", "ul")
-			create nav_right.make_with_tag_name (control_name + "_nav_right", "ul")
+			create nav.make_with_tag_name ("ul")
+			create nav_right.make_with_tag_name ( "ul")
 			controls.extend (nav)
 			controls.extend (nav_right)
 			nav.add_class ("nav navbar-nav")
@@ -155,10 +155,10 @@ feature -- Properties
 	brand: detachable STRING
 			-- Optional brand of the navbar
 
-	nav: WSF_MULTI_CONTROL [WSF_STATELESS_CONTROL]
+	nav: WSF_STATELESS_MULTI_CONTROL [WSF_STATELESS_CONTROL]
 			-- Middle nav
 
-	nav_right: WSF_MULTI_CONTROL [WSF_STATELESS_CONTROL]
+	nav_right: WSF_STATELESS_MULTI_CONTROL [WSF_STATELESS_CONTROL]
 			-- Right nav
 
 end

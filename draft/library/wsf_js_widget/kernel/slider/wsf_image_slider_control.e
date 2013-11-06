@@ -24,9 +24,9 @@ feature {NONE} -- Initialization
 		do
 			make_control (n, "div")
 			add_class ("carousel slide")
-			create list.make_with_tag_name (control_name + "_links", "ol")
+			create list.make_with_tag_name ( "ol")
 			list.add_class ("carousel-indicators")
-			create slide_wrapper.make (control_name + "_wrapper")
+			create slide_wrapper.make_with_tag_name ("div")
 			slide_wrapper.add_class ("carousel-inner")
 		end
 
@@ -108,10 +108,10 @@ feature -- Change
 
 feature -- Properties
 
-	list: WSF_MULTI_CONTROL [WSF_STATELESS_CONTROL]
+	list: WSF_STATELESS_MULTI_CONTROL [WSF_STATELESS_CONTROL]
 			-- List of slider links
 
-	slide_wrapper: WSF_MULTI_CONTROL [WSF_STATELESS_CONTROL]
+	slide_wrapper: WSF_STATELESS_MULTI_CONTROL [WSF_STATELESS_CONTROL]
 			-- List of the single slides
 
 end

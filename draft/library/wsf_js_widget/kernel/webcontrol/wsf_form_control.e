@@ -9,7 +9,7 @@ class
 
 inherit
 
-	WSF_MULTI_CONTROL [WSF_CONTROL]
+	WSF_STATELESS_MULTI_CONTROL [WSF_CONTROL]
 		rename
 			make as make_multi_control
 		end

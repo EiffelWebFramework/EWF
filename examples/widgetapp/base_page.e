@@ -23,7 +23,7 @@ feature
 		do
 			create control.make ("container")
 			control.add_class ("container")
-			create dropdown.make_with_tag_name ("mydropdown", "Dropdown", "li")
+			create dropdown.make_with_tag_name ( "Dropdown", "li")
 			dropdown.add_link_item ("Example link 1", "#")
 			dropdown.add_divider
 			dropdown.add_link_item ("Example link 2", "#")

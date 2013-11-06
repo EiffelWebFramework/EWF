@@ -9,7 +9,7 @@ class
 
 inherit
 
-	WSF_MULTI_CONTROL [WSF_STATELESS_CONTROL]
+	WSF_STATELESS_MULTI_CONTROL [WSF_STATELESS_CONTROL]
 		rename
 			make as make_multi_control,
 			make_with_tag_name as make_multi_control_with_tag_name
@@ -20,19 +20,19 @@ create
 
 feature {NONE} -- Initialization
 
-	make (n, title: STRING)
+	make (  title: STRING)
 			-- Make a dropdown control with div tag name and specified menu title
 		do
-			make_with_tag_name (n, title, "div")
+			make_with_tag_name (  title, "div")
 		end
 
-	make_with_tag_name (n, title, t: STRING)
+	make_with_tag_name ( title, t: STRING)
 			-- Make a dropdown control with specified tag name and menu title (such as li)
 		do
-			make_multi_control_with_tag_name (n, t)
+			make_multi_control_with_tag_name ( t)
 			add_class ("dropdown")
 			create {WSF_BASIC_CONTROL} dropdown_toggle.make_with_body_class ("a", "data-toggle=%"dropdown%" href=%"#%"", "dropdown-toggle", title + " <strong class=%"caret%"></strong>")
-			create dropdown_menu.make_with_tag_name (n + "_menu", "ul")
+			create dropdown_menu.make_with_tag_name ( "ul")
 			dropdown_menu.add_class ("dropdown-menu")
 			add_control (dropdown_toggle)
 			add_control (dropdown_menu)
@@ -66,6 +66,6 @@ feature -- Properties
 
 	dropdown_toggle: WSF_STATELESS_CONTROL
 
-	dropdown_menu: WSF_MULTI_CONTROL [WSF_STATELESS_CONTROL]
+	dropdown_menu: WSF_STATELESS_MULTI_CONTROL [WSF_STATELESS_CONTROL]
 
 end
