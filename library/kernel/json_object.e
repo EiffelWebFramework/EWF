@@ -8,7 +8,7 @@ note
 
                         object
                         {}
-                        {"key","value"}
+                        {"key": "value"}
 
             ]"
     author: "Javier Velilla"
@@ -22,7 +22,7 @@ class
 inherit
     JSON_VALUE
 
-	TABLE_ITERABLE [JSON_VALUE, JSON_STRING]
+    TABLE_ITERABLE [JSON_VALUE, JSON_STRING]
 
 create
     make
