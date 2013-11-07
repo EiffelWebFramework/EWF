@@ -668,7 +668,7 @@ WSF_AUTOCOMPLETE_CONTROL = (function(_super) {
     self = this;
     console.log(this.$el);
     this.$el.typeahead({
-      name: this.control_name,
+      name: this.control_name + Math.random(),
       template: this.state['template'],
       engine: Mini,
       remote: {

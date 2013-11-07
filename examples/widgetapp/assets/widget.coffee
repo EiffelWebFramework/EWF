@@ -396,7 +396,7 @@ class WSF_AUTOCOMPLETE_CONTROL extends WSF_INPUT_CONTROL
     self = @
     console.log @$el
     @$el.typeahead({
-      name: @control_name
+      name: @control_name+Math.random()
       template: @state['template']
       engine: Mini
       remote:
