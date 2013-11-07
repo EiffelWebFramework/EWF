@@ -20,6 +20,8 @@ inherit
 
 	ITERABLE [JSON_VALUE]
 
+	DEBUG_OUTPUT
+
 create
     make_array
 
