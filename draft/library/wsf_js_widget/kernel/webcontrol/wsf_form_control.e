@@ -21,10 +21,10 @@ create
 
 feature {NONE} -- Initialization
 
-	make (n: STRING)
+	make
 			-- Initialize
 		do
-			make_multi_control (n)
+			make_multi_control
 			tag_name := "form"
 		end
 

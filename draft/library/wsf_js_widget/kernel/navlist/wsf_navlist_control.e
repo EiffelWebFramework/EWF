@@ -9,7 +9,7 @@ class
 
 inherit
 
-	WSF_MULTI_CONTROL [WSF_STATELESS_CONTROL]
+	WSF_MULTI_CONTROL [WSF_NAVLIST_ITEM_CONTROL]
 		rename
 			make as make_multi_control
 		end
@@ -19,9 +19,9 @@ create
 
 feature {NONE} -- Initialization
 
-	make (n: STRING)
+	make
 		do
-			make_multi_control (n)
+			make_multi_control
 			add_class ("list-group")
 		end
 
@@ -31,7 +31,16 @@ feature -- Change
 		local
 			c: WSF_NAVLIST_ITEM_CONTROL
 		do
-			create c.make (control_name + "_item_" + controls.count.out, link, text)
+			create c.make (link, text)
+			add_control(c)
+		end
+
+	add_button (event:attached like {WSF_BUTTON_CONTROL}.click_event; text: STRING)
+		local
+			c: WSF_NAVLIST_ITEM_CONTROL
+		do
+			create c.make ("", text)
+			c.set_click_event(event)
 			add_control(c)
 		end
 

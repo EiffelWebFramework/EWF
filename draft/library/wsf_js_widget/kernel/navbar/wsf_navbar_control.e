@@ -21,10 +21,10 @@ create
 
 feature {NONE} -- Initialization
 
-	make (n: STRING)
+	make
 			--Initialize
 		do
-			make_multi_control (n)
+			make_multi_control
 			active_set := false
 			add_class ("navbar navbar-inverse navbar-fixed-top")
 			create nav.make_with_tag_name ("ul")
@@ -35,10 +35,10 @@ feature {NONE} -- Initialization
 			nav_right.add_class ("nav navbar-nav navbar-right")
 		end
 
-	make_with_brand (n, b: STRING)
+	make_with_brand ( b: STRING)
 			-- Initialize with specified brand string
 		do
-			make (n)
+			make
 			brand := b
 		end
 
@@ -85,7 +85,7 @@ feature -- Change
 		local
 			li: WSF_MULTI_CONTROL [WSF_STATELESS_CONTROL]
 		do
-			create li.make_with_tag_name (control_name + "_link" + nav.controls.count.out, "li")
+			create li.make_with_tag_name ("li")
 			li.add_class ("dropdown")
 			li.add_control (l)
 			li.add_control (d)
@@ -97,7 +97,7 @@ feature -- Change
 		local
 			li: WSF_MULTI_CONTROL [WSF_STATELESS_CONTROL]
 		do
-			create li.make_with_tag_name (control_name + "_link" + nav.controls.count.out, "li")
+			create li.make_with_tag_name ("li")
 			li.add_class ("dropdown")
 			li.add_control (l)
 			li.add_control (d)
@@ -107,12 +107,9 @@ feature -- Change
 	add_list_element_right (l: WSF_STATELESS_CONTROL)
 			-- Add element in li tag to right aligned part of navbar
 		local
-			name: STRING
 			li: WSF_MULTI_CONTROL [WSF_STATELESS_CONTROL]
 		do
-			name := control_name + "_rightlink";
-			name := name + nav_right.controls.count.out
-			create li.make_with_tag_name (name, "li")
+			create li.make_with_tag_name ("li")
 			li.add_control (l)
 			add_element_right (li)
 		end
@@ -122,7 +119,7 @@ feature -- Change
 		local
 			li: WSF_MULTI_CONTROL [WSF_STATELESS_CONTROL]
 		do
-			create li.make_with_tag_name (control_name + "_link" + nav.controls.count.out, "li")
+			create li.make_with_tag_name ("li")
 			li.add_control (l)
 			add_element (li)
 		end

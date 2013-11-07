@@ -19,13 +19,13 @@ create
 
 feature {NONE} -- Initialization
 
-	make (n: STRING; t: STRING)
+	make (a_text: STRING)
 			-- Initialize with specified control name and text
 		do
-			make_control (n, "button")
+			make_control ("button")
 			add_class ("btn")
 			add_class ("btn-default")
-			text := t
+			text := a_text
 		end
 
 feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
@@ -54,9 +54,9 @@ feature --Event handling
 			click_event := e
 		end
 
-	handle_callback (cname: STRING; event: STRING; event_parameter: detachable STRING)
+	handle_callback (cname: LIST[STRING]; event: STRING; event_parameter: detachable STRING)
 		do
-			if Current.control_name.same_string (cname) and attached click_event as cevent then
+			if Current.control_name.same_string (cname[1]) and attached click_event as cevent then
 				cevent.call (Void)
 			end
 		end

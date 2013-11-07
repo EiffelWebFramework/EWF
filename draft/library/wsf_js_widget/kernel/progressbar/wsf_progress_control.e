@@ -19,18 +19,18 @@ create
 
 feature {NONE} -- Initialization
 
-	make (n: STRING)
+	make
 			-- Initialize with specified control name
 		do
-			make_control (n, "div")
+			make_control ("div")
 			add_class ("progress")
 			progress := 0
 		end
 
-	make_with_source (n: STRING; p: WSF_PROGRESSSOURCE)
+	make_with_source ( p: WSF_PROGRESSSOURCE)
 			-- Initialize with specified control name and progresssource
 		do
-			make (n)
+			make
 			progress_source := p
 		end
 
@@ -51,9 +51,9 @@ feature -- State handling
 
 feature -- Event handling
 
-	handle_callback (cname: STRING; event: STRING; event_parameter: detachable STRING)
+	handle_callback (cname: LIST[STRING]; event: STRING; event_parameter: detachable STRING)
 		do
-			if cname.same_string (control_name) and event.same_string ("progress_fetch") then
+			if cname[1].same_string (control_name) and event.same_string ("progress_fetch") then
 				state_changes.put_integer (progress_value, "progress")
 			end
 		end

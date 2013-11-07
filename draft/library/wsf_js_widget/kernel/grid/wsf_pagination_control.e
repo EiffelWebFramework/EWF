@@ -19,9 +19,9 @@ create
 
 feature {NONE}
 
-	make (n: STRING; ds: WSF_PAGABLE_DATASOURCE [G])
+	make (ds: WSF_PAGABLE_DATASOURCE [G])
 		do
-			make_control (n, "ul")
+			make_control ( "ul")
 			add_class ("pagination")
 			datasource := ds
 			datasource.set_on_update_page_agent (agent update)
@@ -48,10 +48,10 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 
 feature --Event handling
 
-	handle_callback (cname: STRING; event: STRING; event_parameter: detachable STRING)
+	handle_callback (cname: LIST[STRING]; event: STRING; event_parameter: detachable STRING)
 			-- Handle goto/next/prev events
 		do
-			if Current.control_name.same_string (cname) then
+			if Current.control_name.same_string (cname[1]) then
 				if event.same_string ("next") then
 					datasource.set_page (datasource.page + 1)
 				elseif event.same_string ("prev") then

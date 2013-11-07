@@ -19,10 +19,10 @@ create
 
 feature {NONE} -- Initialization
 
-	make (n: STRING)
+	make
 			-- Initialize with specified name
 		do
-			make_control (n, "div")
+			make_control ( "div")
 			add_class ("carousel slide")
 			create list.make_with_tag_name ( "ol")
 			list.add_class ("carousel-indicators")
@@ -43,7 +43,7 @@ feature -- State handling
 
 feature -- Callback
 
-	handle_callback (cname, event: STRING; event_parameter: detachable STRING)
+	handle_callback (cname: LIST[STRING]; event: STRING; event_parameter: detachable STRING)
 		do
 				-- Do nothing here
 		end
@@ -91,7 +91,7 @@ feature -- Change
 			cl: STRING
 			item: WSF_MULTI_CONTROL [WSF_STATELESS_CONTROL]
 		do
-			create item.make (control_name + "_item" + slide_wrapper.controls.count.out)
+			create item.make ()
 			item.add_class ("item")
 			item.add_control (c)
 			if attached caption as capt then

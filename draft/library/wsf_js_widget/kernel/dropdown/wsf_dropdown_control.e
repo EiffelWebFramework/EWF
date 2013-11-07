@@ -44,7 +44,7 @@ feature -- Change
 		local
 			li: WSF_MULTI_CONTROL [WSF_STATELESS_CONTROL]
 		do
-			create li.make_with_tag_name (control_name + "_item" + dropdown_menu.controls.count.out, "li")
+			create li.make_with_tag_name ("li")
 			li.add_control (c)
 			dropdown_menu.add_control (li)
 		end

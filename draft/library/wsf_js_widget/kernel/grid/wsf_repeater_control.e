@@ -20,15 +20,15 @@ inherit
 
 feature {NONE} -- Initialization
 
-	make (n: STRING; a_datasource: WSF_DATASOURCE [G])
+	make ( a_datasource: WSF_DATASOURCE [G])
 		local
 			p: WSF_PAGINATION_CONTROL [G]
 		do
-			make_multi_control (n)
+			make_multi_control
 			datasource := a_datasource
 			datasource.set_on_update_agent (agent update)
 			if attached {WSF_PAGABLE_DATASOURCE [G]} a_datasource as ds then
-				create p.make (n + "_paging", ds)
+				create p.make ( ds)
 				add_control (p)
 				pagination_control := p
 			end

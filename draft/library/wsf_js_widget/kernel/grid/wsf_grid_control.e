@@ -21,9 +21,9 @@ create
 
 feature {NONE} -- Initialization
 
-	make (n: STRING; a_columns: ITERABLE [WSF_GRID_COLUMN]; a_datasource: WSF_DATASOURCE [G])
+	make (a_columns: ITERABLE [WSF_GRID_COLUMN]; a_datasource: WSF_DATASOURCE [G])
 		do
-			make_repeater (n, a_datasource)
+			make_repeater (a_datasource)
 			columns := a_columns
 		end
 

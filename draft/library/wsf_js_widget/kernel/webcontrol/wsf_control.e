@@ -18,14 +18,13 @@ inherit
 
 feature {NONE} -- Initialization
 
-	make (n, a_tag_name: STRING)
+	make (a_tag_name: STRING)
 			-- Initialize with specified control name and tag
 		require
-			not n.is_empty
 			not a_tag_name.is_empty
 		do
 			make_stateless_control (a_tag_name)
-			control_name := n
+			create control_name_prefix.make_empty
 			create state_changes.make
 			create actions.make_array
 		ensure
@@ -140,7 +139,7 @@ feature -- Rendering
 			loop
 				css_classes_string := css_classes_string + " " + c.item
 			end
-			l_attributes := "id=%"" + control_name + "%" data-name=%"" + control_name + "%" data-type=%"" + a_generator + "%" "
+			l_attributes := " data-name=%"" + control_name + "%" data-type=%"" + a_generator + "%" "
 			if attached attrs as a then
 				l_attributes := l_attributes + a
 			end
@@ -152,7 +151,7 @@ feature -- Rendering
 
 feature -- Event handling
 
-	handle_callback (cname: STRING; event: STRING; event_parameter: detachable STRING)
+	handle_callback (cname: LIST [STRING]; event: STRING; event_parameter: detachable STRING)
 			-- Method called if any callback received. In this method you can route the callback to the event handler
 		deferred
 		end
@@ -170,6 +169,24 @@ feature -- Properties
 
 	actions: JSON_ARRAY
 
+	control_id: INTEGER assign set_control_id
+
+	set_control_id (d: INTEGER)
+		do
+			control_id := d
+		end
+
 	control_name: STRING
+		do
+			Result := control_name_prefix + control_id.out
+		end
+
+	control_name_prefix: STRING assign set_control_name_prefix
+
+
+	set_control_name_prefix (p: STRING)
+		do
+			control_name_prefix := p
+		end
 
 end

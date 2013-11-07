@@ -28,10 +28,10 @@ create
 
 feature {NONE} -- Initializaton
 
-	make (n: STRING)
+	make
 			-- Initialize with specified control name
 		do
-			make_multi_control (n)
+			make_multi_control
 		end
 
 feature -- Implementation

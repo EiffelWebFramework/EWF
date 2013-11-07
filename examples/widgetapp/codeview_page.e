@@ -20,7 +20,7 @@ feature
 
 	initialize_controls
 		do
-			create control.make_codeview ("textarea", "")
+			create control.make_codeview ("")
 		end
 
 	process

@@ -34,7 +34,7 @@ feature {NONE} -- Initialization
 	make_with_validators (a_label: STRING; c: WSF_VALUE_CONTROL [G]; v: LIST [WSF_VALIDATOR [G]])
 			-- Initialize form element control with a specific label, value control and list of validators
 		do
-			make_control (c.control_name + "_container", "div")
+			make_control ("div")
 			add_class ("form-group")
 			if attached {WSF_INPUT_CONTROL} c or attached {WSF_TEXTAREA_CONTROL} c then
 				c.add_class ("form-control")
@@ -100,14 +100,15 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 
 feature -- Event handling
 
-	handle_callback (cname: STRING; event: STRING; event_parameter: detachable STRING)
+	handle_callback (cname: LIST[STRING]; event: STRING; event_parameter: detachable STRING)
 			-- Pass callback to subcontrols
 		do
-			if cname.same_string (control_name) then
+			if cname[1].same_string (control_name) then
+				cname.go_i_th (1)
+				cname.remove
 				if event.same_string ("validate") then
 					validate
 				end
-			else
 				value_control.handle_callback (cname, event, event_parameter)
 			end
 		end

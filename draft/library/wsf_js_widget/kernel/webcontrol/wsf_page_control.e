@@ -13,6 +13,7 @@ inherit
 		rename
 			make as make_control
 		redefine
+			control_name,
 			full_state,
 			read_state_changes
 		end
@@ -22,7 +23,8 @@ feature {NONE} -- Initialization
 	make (req: WSF_REQUEST; res: WSF_RESPONSE)
 			-- Initialize
 		do
-			make_control (req.request_time_stamp.out, "body")
+			control_name:=req.request_time_stamp.out
+			make_control ( "body")
 			request := req
 			response := res
 			initialize_controls
@@ -73,7 +75,7 @@ feature -- Implementation
 				if attached {JSON_OBJECT} json_parser.parse_json as sp then
 					set_state (sp)
 				end
-				handle_callback (event_control_name, event, event_parameter)
+				handle_callback (event_control_name.split ('-'), event, event_parameter)
 				create states_changes.make
 				read_state_changes (states_changes)
 				response.put_header ({HTTP_STATUS_CODE}.ok, <<["Content-Type", "application/json; charset=ISO-8859-1"]>>)
@@ -145,7 +147,7 @@ feature -- Implementation
 
 feature -- Event handling
 
-	handle_callback (cname: STRING; event: STRING; event_parameter: detachable STRING)
+	handle_callback (cname: LIST[STRING]; event: STRING; event_parameter: detachable STRING)
 			-- Forward callback to control
 		do
 			control.handle_callback (cname, event, event_parameter)
@@ -178,6 +180,8 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 			Result.put (controls_state, "controls")
 			Result.put (state, "state")
 		end
+feature
+	control_name:STRING
 
 feature {NONE} -- Root control
 

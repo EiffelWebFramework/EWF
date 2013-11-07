@@ -21,10 +21,10 @@ create
 
 feature {NONE} -- Initialization
 
-	make (n, t: STRING)
+	make (t: STRING)
 			-- Initialize with specified control name and text to be displayed in this textarea
 		do
-			make_input (n, t)
+			make_input ( t)
 			tag_name := "textarea"
 		end
 

@@ -19,10 +19,10 @@ create
 
 feature {NONE} -- Initialization
 
-	make (n, v: STRING)
+	make (v: STRING)
 			-- Initialize with specified name and value
 		do
-			make_value_control (n, "input")
+			make_value_control ( "input")
 			type := "text"
 			text := v
 		end
@@ -53,9 +53,9 @@ feature --Event handling
 			change_event := e
 		end
 
-	handle_callback (cname: STRING; event: STRING; event_parameter: detachable STRING)
-		do
-			if Current.control_name.same_string (cname) and attached change_event as cevent then
+	handle_callback (cname: LIST[STRING]; event: STRING; event_parameter: detachable STRING)
+		do 
+			if Current.control_name.same_string (cname[1]) and attached change_event as cevent then
 				if event.same_string ("change") then
 					cevent.call (Void)
 				end

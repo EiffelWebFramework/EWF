@@ -30,9 +30,9 @@ feature -- Add control
 
 	add_control_with_offset (c: WSF_STATELESS_CONTROL; span, offset: INTEGER)
 		local
-			div: WSF_MULTI_CONTROL [WSF_STATELESS_CONTROL]
+			div: WSF_STATELESS_MULTI_CONTROL [WSF_STATELESS_CONTROL]
 		do
-			create div.make (control_name + "_item_" + controls.count.out)
+			create div.make_with_tag_name ("div")
 			div.add_class ("col-md-" + span.out + " col-md-offset-" + offset.out)
 			div.add_control (c)
 			add_control_raw (div)
@@ -40,9 +40,9 @@ feature -- Add control
 
 	add_control (c: WSF_STATELESS_CONTROL; span: INTEGER)
 		local
-			div: WSF_MULTI_CONTROL [WSF_STATELESS_CONTROL]
+			div: WSF_STATELESS_MULTI_CONTROL [WSF_STATELESS_CONTROL]
 		do
-			create div.make (control_name + "_item_" + controls.count.out)
+			create div.make_with_tag_name ("div")
 			div.add_class ("col-md-" + span.out)
 			div.add_control (c)
 			add_control_raw (div)

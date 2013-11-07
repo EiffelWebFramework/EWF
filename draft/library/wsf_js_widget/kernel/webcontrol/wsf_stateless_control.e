@@ -37,6 +37,12 @@ feature -- Change
 			css_classes.force (c)
 		end
 
+	remove_class (cla: STRING)
+			-- Add a css class to this control
+		do
+			css_classes.prune (cla)
+		end
+
 feature -- Rendering
 
 	render_tag (body: STRING; attrs: detachable STRING): STRING

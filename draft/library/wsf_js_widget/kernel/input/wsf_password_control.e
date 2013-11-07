@@ -19,10 +19,10 @@ create
 
 feature {NONE} -- Initialization
 
-	make (n, v: STRING)
+	make (v: STRING)
 			-- Initialize with specified control name and text
 		do
-			make_input (n, v)
+			make_input (v)
 			type := "password"
 		end
 

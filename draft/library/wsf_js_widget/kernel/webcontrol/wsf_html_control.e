@@ -17,10 +17,10 @@ create
 
 feature {NONE} -- Initialization
 
-	make (n, t, v: STRING)
+	make (t, v: STRING)
 			-- Initialize
 		do
-			make_value_control (n, t)
+			make_value_control ( t)
 			html := v
 		end
 
@@ -43,7 +43,7 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 
 feature --Event handling
 
-	handle_callback (cname: STRING; event: STRING; event_parameter: detachable STRING)
+	handle_callback (cname: LIST[STRING]; event: STRING; event_parameter: detachable STRING)
 		do
 		end
 
