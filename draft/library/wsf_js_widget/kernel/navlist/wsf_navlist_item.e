@@ -55,6 +55,11 @@ feature -- Change
 		do
 			if active /= a then
 				active := a
+				if a then
+					add_class ("active")
+				else
+					remove_class ("active")
+				end
 				state_changes.replace (create {JSON_BOOLEAN}.make_boolean (a), "active")
 			end
 		end

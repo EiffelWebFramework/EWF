@@ -75,7 +75,7 @@ feature -- Rendering
 				l_attributes.append_character ('%"')
 			end
 			Result := "<" + tag + " " + l_attributes
-			if body.is_empty and not tag.same_string ("textarea") and not tag.same_string ("span") and not tag.same_string ("button") and not tag.same_string ("ul") then
+			if body.is_empty and not tag.same_string ("textarea") and not tag.same_string ("span") and not tag.same_string ("button") and not tag.same_string ("ul") and not tag.same_string ("div") then
 				Result.append (" />")
 			else
 				Result.append (" >" + body + "</" + tag + ">")
