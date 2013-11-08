@@ -12,7 +12,7 @@ inherit
 	WSF_STATELESS_MULTI_CONTROL [WSF_STATELESS_CONTROL]
 		rename
 			make as make_multi_control,
-			add_control as add_control_raw
+			add_control as add_control_raw 
 		end
 
 create
@@ -38,13 +38,19 @@ feature -- Add control
 			add_control_raw (div)
 		end
 
-	add_control (c: WSF_STATELESS_CONTROL; span: INTEGER)
+	add_control (col:INTEGER; c: WSF_STATELESS_CONTROL)
+		do
+			if attached {WSF_STATELESS_MULTI_CONTROL [WSF_STATELESS_CONTROL]}controls[col] as div then
+				div.add_control (c)
+			end
+		end
+
+	add_column  (span:INTEGER)
 		local
 			div: WSF_STATELESS_MULTI_CONTROL [WSF_STATELESS_CONTROL]
 		do
 			create div.make_with_tag_name ("div")
 			div.add_class ("col-md-" + span.out)
-			div.add_control (c)
 			add_control_raw (div)
 		end
 

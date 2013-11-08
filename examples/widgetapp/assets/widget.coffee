@@ -358,6 +358,7 @@ class WSF_NAVLIST_ITEM_CONTROL extends WSF_BUTTON_CONTROL
   update: (state) ->
     super
     if state.active?
+      @state['active'] = state.active
       if state.active
         @$el.addClass("active")
       else

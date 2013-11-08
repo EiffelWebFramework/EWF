@@ -22,19 +22,20 @@ create
 
 feature {NONE} -- Initialization
 
-	make ( link, t: STRING)
+	make (link, t: STRING)
 		do
 			make_control ("a")
 			text := t
 			attributes := "href=%"" + link + "%"";
 			add_class ("list-group-item")
 		end
+
 feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 
 	set_state (new_state: JSON_OBJECT)
 			-- Restore text from json
 		do
-			Precursor {WSF_BUTTON_CONTROL}(new_state)
+			Precursor {WSF_BUTTON_CONTROL} (new_state)
 			if attached {JSON_BOOLEAN} new_state.item ("active") as new_active then
 				active := new_active.item
 			end
@@ -44,7 +45,7 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 			-- Return state which contains the current text and if there is an event handle attached
 		do
 			Result := Precursor {WSF_BUTTON_CONTROL}
-			Result.put_boolean (true, "active")
+			Result.put_boolean (active, "active")
 		end
 
 feature -- Change
@@ -52,9 +53,12 @@ feature -- Change
 	set_active (a: BOOLEAN)
 			-- Set text of that button
 		do
+			if active /= a then
 				active := a
 				state_changes.replace (create {JSON_BOOLEAN}.make_boolean (a), "active")
+			end
 		end
+
 feature -- Properties
 
 	active: BOOLEAN

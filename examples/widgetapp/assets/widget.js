@@ -598,6 +598,7 @@ WSF_NAVLIST_ITEM_CONTROL = (function(_super) {
   WSF_NAVLIST_ITEM_CONTROL.prototype.update = function(state) {
     WSF_NAVLIST_ITEM_CONTROL.__super__.update.apply(this, arguments);
     if (state.active != null) {
+      this.state['active'] = state.active;
       if (state.active) {
         return this.$el.addClass("active");
       } else {
