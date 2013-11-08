@@ -24,6 +24,8 @@ inherit
 
     TABLE_ITERABLE [JSON_VALUE, JSON_STRING]
 
+    DEBUG_OUTPUT
+
 create
     make
 
