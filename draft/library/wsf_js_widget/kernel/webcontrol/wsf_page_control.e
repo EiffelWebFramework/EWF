@@ -105,12 +105,12 @@ feature -- Implementation
 			create Result.make_empty
 			if not ajax then
 				Result.append ("<html><head>")
-				Result.append ("<link href=%"assets/bootstrap.min.css%" rel=%"stylesheet%">")
-				Result.append ("<link href=%"assets/widget.css%" rel=%"stylesheet%">")
+				Result.append ("<link href=%"/assets/bootstrap.min.css%" rel=%"stylesheet%">")
+				Result.append ("<link href=%"/assets/widget.css%" rel=%"stylesheet%">")
 				Result.append ("</head><body data-name=%"" + control_name + "%" data-type=%"WSF_PAGE_CONTROL%">")
 				Result.append (control.render)
-				Result.append ("<script src=%"assets/jquery.min.js%"></script>")
-				Result.append ("<script src=%"assets/widget.js%"></script>")
+				Result.append ("<script src=%"/assets/jquery.min.js%"></script>")
+				Result.append ("<script src=%"/assets/widget.js%"></script>")
 				Result.append ("<script type=%"text/javascript%">$(function() {var page= new WSF_PAGE_CONTROL(")
 				Result.append (full_state.representation)
 				Result.append (");page.initialize();});</script>")
