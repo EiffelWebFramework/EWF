@@ -490,7 +490,16 @@ WSF_SLIDER_CONTROL = (function(_super) {
     return WSF_SLIDER_CONTROL.__super__.constructor.apply(this, arguments);
   }
 
-  WSF_SLIDER_CONTROL.prototype.requirements = ['assets/bootstrap.min.js'];
+  WSF_SLIDER_CONTROL.prototype.requirements = ['/assets/bootstrap.min.js'];
+
+  WSF_SLIDER_CONTROL.prototype.attach_events = function() {
+    var id;
+    WSF_SLIDER_CONTROL.__super__.attach_events.apply(this, arguments);
+    id = "slider" + Math.round(Math.random() * 10000);
+    this.$el.attr("id", id);
+    this.$el.find("ol li").attr("data-target", "#" + id);
+    return this.$el.find(".carousel-control").attr("href", "#" + id);
+  };
 
   return WSF_SLIDER_CONTROL;
 
@@ -504,7 +513,7 @@ WSF_DROPDOWN_CONTROL = (function(_super) {
     return WSF_DROPDOWN_CONTROL.__super__.constructor.apply(this, arguments);
   }
 
-  WSF_DROPDOWN_CONTROL.prototype.requirements = ['assets/bootstrap.min.js'];
+  WSF_DROPDOWN_CONTROL.prototype.requirements = ['/assets/bootstrap.min.js'];
 
   return WSF_DROPDOWN_CONTROL;
 
@@ -629,7 +638,7 @@ WSF_CODEVIEW_CONTROL = (function(_super) {
 
   function WSF_CODEVIEW_CONTROL() {
     WSF_CODEVIEW_CONTROL.__super__.constructor.apply(this, arguments);
-    this.initialize = lazy_load(['assets/codemirror/codemirror.js', 'assets/codemirror/codemirror.css', 'assets/codemirror/estudio.css'], lazy_load(['assets/codemirror/eiffel.js'], this.attach_events, this), this);
+    this.initialize = lazy_load(['/assets/codemirror/codemirror.js', '/assets/codemirror/codemirror.css', '/assets/codemirror/estudio.css'], lazy_load(['/assets/codemirror/eiffel.js'], this.attach_events, this), this);
   }
 
   WSF_CODEVIEW_CONTROL.prototype.attach_events = function() {
@@ -1012,7 +1021,7 @@ show_alert = function(action) {
   return alert(action.message);
 };
 
-start_modal = lazy_load(['assets/bootstrap.min.js'], function(action) {
+start_modal = lazy_load(['/assets/bootstrap.min.js'], function(action) {
   var cssclass, modal;
   cssclass = "";
   if (action.type === "start_modal_big") {

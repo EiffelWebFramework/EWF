@@ -56,8 +56,8 @@ feature -- Rendering
 		do
 			temp := list.render
 			temp.append (slide_wrapper.render)
-			temp.append (render_tag_with_tagname ("a", "<span class=%"icon-prev%"></span>", "href=%"#" + control_name + "%" data-slide=%"prev%"", "left carousel-control"))
-			temp.append (render_tag_with_tagname ("a", "<span class=%"icon-next%"></span>", "href=%"#" + control_name + "%" data-slide=%"next%"", "right carousel-control"))
+			temp.append (render_tag_with_tagname ("a", "<span class=%"icon-prev%"></span>", "data-slide=%"prev%"", "left carousel-control"))
+			temp.append (render_tag_with_tagname ("a", "<span class=%"icon-next%"></span>", "data-slide=%"next%"", "right carousel-control"))
 			Result := render_tag (temp, "")
 		end
 
@@ -103,7 +103,7 @@ feature -- Change
 				item.add_class (cl)
 			end
 			slide_wrapper.add_control (item)
-			list.add_control (create {WSF_BASIC_CONTROL}.make_with_body_class ("li", "data-target=%"#" + control_name + "%" data-slide-to=%"" + list.controls.count.out + "%"", cl, ""));
+			list.add_control (create {WSF_BASIC_CONTROL}.make_with_body_class ("li", "data-slide-to=%"" + list.controls.count.out + "%"", cl, ""));
 		end
 
 feature -- Properties
