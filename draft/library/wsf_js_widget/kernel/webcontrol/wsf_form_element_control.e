@@ -77,9 +77,22 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 
 	read_state_changes (states: WSF_JSON_OBJECT)
 			-- Read states_changes in subcontrols
+		local
+			sub_states: WSF_JSON_OBJECT
+			control_state: WSF_JSON_OBJECT
 		do
 			Precursor (states)
-			value_control.read_state_changes (states)
+			create sub_states.make
+			value_control.read_state_changes (sub_states)
+			if sub_states.count>0 then
+				if attached {JSON_OBJECT}states.item (control_name) as changes then
+					changes.put (sub_states, "controls")
+				else
+					create control_state.make
+					control_state.put (sub_states, "controls")
+					states.put (control_state, control_name)
+				end
+			end
 		end
 
 	state: WSF_JSON_OBJECT
