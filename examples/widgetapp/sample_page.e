@@ -61,8 +61,8 @@ feature
 			cklist.add_control (create {WSF_CHECKBOX_CONTROL}.make ("Operating Systems", "os"))
 			cklist.add_control (create {WSF_CHECKBOX_CONTROL}.make ("Formal Methods and Functional Programming", "fmfp"))
 			create cats_container.make ("Categories", cklist)
-			cats_container.add_validator (create {WSF_MIN_VALIDATOR [STRING]}.make_min_validator (1, "Choose at least one category"))
-			cats_container.add_validator (create {WSF_MAX_VALIDATOR [STRING]}.make_max_validator (2, "Choose at most two category"))
+			cats_container.add_validator (create {WSF_MIN_VALIDATOR [LIST[STRING]]}.make_min_validator (1, "Choose at least one category"))
+			cats_container.add_validator (create {WSF_MAX_VALIDATOR [LIST[STRING]]}.make_max_validator (2, "Choose at most two category"))
 			form.add_control (cats_container)
 				--Button 1
 			create button1.make ("Update")
