@@ -35,7 +35,8 @@ feature -- Implementation
 			if not regexp.is_compiled then
 				regexp.compile (regexp_string)
 			end
-			Result := regexp.matches (input)
+
+			Result := (not input.is_empty) and regexp.matches (input)
 		end
 
 feature -- State

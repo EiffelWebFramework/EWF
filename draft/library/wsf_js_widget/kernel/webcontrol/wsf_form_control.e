@@ -36,8 +36,6 @@ feature -- Validation
 			is_valid := True
 			across
 				controls as c
-			until
-				is_valid = False
 			loop
 				if attached {WSF_VALIDATABLE} c.item as elem then
 					elem.validate
