@@ -360,6 +360,8 @@ class WSF_INPUT_CONTROL extends WSF_CONTROL
       @state['text'] = state.text
       @$el.val(state.text)
       
+class WSF_PASSWORD_CONTROL extends   WSF_INPUT_CONTROL   
+
 class WSF_NAVLIST_ITEM_CONTROL extends WSF_BUTTON_CONTROL
   update: (state) ->
     super

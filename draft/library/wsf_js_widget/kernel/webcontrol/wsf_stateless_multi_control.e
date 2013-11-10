@@ -1,3 +1,4 @@
+
 note
 	description: "Summary description for {WSF_STATELESS_MULTI_CONTROL}."
 	author: ""
@@ -80,6 +81,8 @@ feature -- Event handling
 		do
 			across
 				controls as c
+			until
+				cname.is_empty
 			loop
 				if attached {WSF_CONTROL} c.item as cont then
 					cont.handle_callback (cname, event, event_parameter)

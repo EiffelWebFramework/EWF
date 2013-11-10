@@ -100,8 +100,8 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 			Precursor (states)
 			create sub_states.make
 			read_subcontrol_state_changes (sub_states)
-			if sub_states.count>0 then
-				if attached {JSON_OBJECT}states.item (control_name) as changes then
+			if sub_states.count > 0 then
+				if attached {JSON_OBJECT} states.item (control_name) as changes then
 					changes.put (sub_states, "controls")
 				else
 					create control_state.make
@@ -138,11 +138,15 @@ feature -- Event handling
 			if equal (cname [1], control_name) then
 				cname.go_i_th (1)
 				cname.remove
-				across
-					controls as c
-				loop
-					if attached {WSF_CONTROL} c.item as cont then
-						cont.handle_callback (cname, event, event_parameter)
+				if not cname.is_empty then
+					across
+						controls as c
+					until
+						cname.is_empty
+					loop
+						if attached {WSF_CONTROL} c.item as cont then
+							cont.handle_callback (cname, event, event_parameter)
+						end
 					end
 				end
 			end

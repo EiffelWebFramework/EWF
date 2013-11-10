@@ -84,8 +84,8 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 			Precursor (states)
 			create sub_states.make
 			value_control.read_state_changes (sub_states)
-			if sub_states.count>0 then
-				if attached {JSON_OBJECT}states.item (control_name) as changes then
+			if sub_states.count > 0 then
+				if attached {JSON_OBJECT} states.item (control_name) as changes then
 					changes.put (sub_states, "controls")
 				else
 					create control_state.make
@@ -113,16 +113,19 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 
 feature -- Event handling
 
-	handle_callback (cname: LIST[STRING]; event: STRING; event_parameter: detachable STRING)
+	handle_callback (cname: LIST [STRING]; event: STRING; event_parameter: detachable STRING)
 			-- Pass callback to subcontrols
 		do
-			if cname[1].same_string (control_name) then
+			if cname [1].same_string (control_name) then
 				cname.go_i_th (1)
 				cname.remove
-				if event.same_string ("validate") then
-					validate
+				if cname.is_empty then
+					if event.same_string ("validate") then
+						validate
+					end
+				else
+					value_control.handle_callback (cname, event, event_parameter)
 				end
-				value_control.handle_callback (cname, event, event_parameter)
 			end
 		end
 
