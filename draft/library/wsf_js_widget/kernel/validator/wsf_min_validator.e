@@ -5,11 +5,11 @@ note
 	revision: "$Revision$"
 
 class
-	WSF_MIN_VALIDATOR [G]
+	WSF_MIN_VALIDATOR [G->FINITE[ANY]]
 
 inherit
 
-	WSF_VALIDATOR [LIST [G]]
+	WSF_VALIDATOR [G]
 		redefine
 			state
 		end
@@ -28,7 +28,7 @@ feature {NONE} -- Initialization
 
 feature -- Implementation
 
-	is_valid (input: LIST [G]): BOOLEAN
+	is_valid (input: G): BOOLEAN
 		do
 			Result := input.count > min or input.count = min
 		end

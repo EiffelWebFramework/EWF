@@ -19,7 +19,7 @@ feature {NONE} -- Initialization
 	make_email_validator (e: STRING)
 			-- Initialize with specified error message which will be displayed on validation failure
 		do
-			make_regexp_validator ("^[a-zA-Z0-9._%%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$", e)
+			make_regexp_validator ("^[a-zA-Z0-9._%%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$", e)
 		end
 
 end

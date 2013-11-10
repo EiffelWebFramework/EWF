@@ -5,11 +5,11 @@ note
 	revision: "$Revision$"
 
 class
-	WSF_max_VALIDATOR [G]
+	WSF_MAX_VALIDATOR [G->FINITE[ANY]]
 
 inherit
 
-	WSF_VALIDATOR [LIST [G]]
+	WSF_VALIDATOR [G]
 		redefine
 			state
 		end
@@ -28,7 +28,7 @@ feature {NONE} -- Initialization
 
 feature -- Implementation
 
-	is_valid (input: LIST [G]): BOOLEAN
+	is_valid (input: G): BOOLEAN
 		do
 			Result := input.count < max or input.count = max
 		end
