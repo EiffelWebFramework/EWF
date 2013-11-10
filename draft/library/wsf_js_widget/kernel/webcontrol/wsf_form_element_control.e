@@ -48,6 +48,13 @@ feature {NONE} -- Initialization
 			error := ""
 		end
 
+feature
+
+	set_label_width (w: INTEGER)
+		do
+			label_width := w
+		end
+
 feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 
 	load_state (new_states: JSON_OBJECT)
@@ -138,9 +145,9 @@ feature -- Implementation
 		do
 			body := ""
 			if not label.is_empty then
-				body.append ("<label class=%"col-lg-2 control-label%" for=%"" + value_control.control_name + "%">" + label + "</label>")
+				body.append ("<label class=%"col-lg-"+label_width.out+" control-label%" for=%"" + value_control.control_name + "%">" + label + "</label>")
 			end
-			body.append ("<div class=%"col-lg-10%">")
+			body.append ("<div class=%"col-lg-"+(12-label_width).out+"%">")
 			body.append (value_control.render)
 			body.append ("</div>")
 			Result := render_tag (body, "")
@@ -199,5 +206,7 @@ feature -- Properties
 
 	error: STRING
 			-- The error message that is displayed when client side validation fails
+
+	label_width: INTEGER
 
 end

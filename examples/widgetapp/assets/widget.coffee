@@ -359,7 +359,7 @@ class WSF_INPUT_CONTROL extends WSF_CONTROL
     if state.text?
       @state['text'] = state.text
       @$el.val(state.text)
-      
+
 class WSF_PASSWORD_CONTROL extends   WSF_INPUT_CONTROL   
 
 class WSF_NAVLIST_ITEM_CONTROL extends WSF_BUTTON_CONTROL
@@ -489,7 +489,7 @@ class WSF_FORM_ELEMENT_CONTROL extends WSF_CONTROL
     if message.length>0
       @$el.addClass("has-error")
       errordiv = $("<div />").addClass('help-block').addClass('validation').text(message)
-      @$el.find(".col-lg-10").append(errordiv)
+      @$el.children("div").append(errordiv)
 
   update: (state) ->
     if state.error?

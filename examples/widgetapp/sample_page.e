@@ -35,13 +35,13 @@ feature
 				--Number 1
 			create textbox1.make ("1")
 			create n1_container.make ("Number1", textbox1)
-			n1_container.add_validator (create {WSF_DECIMAL_VALIDATOR}.make_decimal_validator ("Invalid Number"))
+			n1_container.add_validator (create {WSF_DECIMAL_VALIDATOR}.make ("Invalid Number"))
 			n1_container.add_validator (create {OWN_VALIDATOR}.make_own)
 			form.add_control (n1_container)
 				--Number 2
 			create textbox2.make ("2")
 			create n2_container.make ("Number2", textbox2)
-			n2_container.add_validator (create {WSF_DECIMAL_VALIDATOR}.make_decimal_validator ("Invalid Number"))
+			n2_container.add_validator (create {WSF_DECIMAL_VALIDATOR}.make ("Invalid Number"))
 			form.add_control (n2_container)
 				--Flag autocomplete
 			create autocompletion1.make (create {FLAG_AUTOCOMPLETION}.make)
@@ -61,8 +61,8 @@ feature
 			cklist.add_control (create {WSF_CHECKBOX_CONTROL}.make ("Operating Systems", "os"))
 			cklist.add_control (create {WSF_CHECKBOX_CONTROL}.make ("Formal Methods and Functional Programming", "fmfp"))
 			create cats_container.make ("Categories", cklist)
-			cats_container.add_validator (create {WSF_MIN_VALIDATOR [LIST[STRING]]}.make_min_validator (1, "Choose at least one category"))
-			cats_container.add_validator (create {WSF_MAX_VALIDATOR [LIST[STRING]]}.make_max_validator (2, "Choose at most two category"))
+			cats_container.add_validator (create {WSF_MIN_VALIDATOR [LIST[STRING]]}.make (1, "Choose at least one category"))
+			cats_container.add_validator (create {WSF_MAX_VALIDATOR [LIST[STRING]]}.make (2, "Choose at most two category"))
 			form.add_control (cats_container)
 				--Button 1
 			create button1.make ("Update")

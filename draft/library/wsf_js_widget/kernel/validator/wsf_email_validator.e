@@ -10,13 +10,16 @@ class
 inherit
 
 	WSF_REGEXP_VALIDATOR
+		rename
+			make as make_regexp_validator
+		end
 
 create
-	make_email_validator
+	make
 
 feature {NONE} -- Initialization
 
-	make_email_validator (e: STRING)
+	make (e: STRING)
 			-- Initialize with specified error message which will be displayed on validation failure
 		do
 			make_regexp_validator ("^[a-zA-Z0-9._%%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$", e)

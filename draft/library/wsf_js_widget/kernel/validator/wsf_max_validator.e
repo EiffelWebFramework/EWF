@@ -5,24 +5,26 @@ note
 	revision: "$Revision$"
 
 class
-	WSF_MAX_VALIDATOR [G->FINITE[ANY]]
+	WSF_MAX_VALIDATOR [G -> FINITE [ANY]]
 
 inherit
 
 	WSF_VALIDATOR [G]
+		rename
+			make as make_validator
 		redefine
 			state
 		end
 
 create
-	make_max_validator
+	make
 
 feature {NONE} -- Initialization
 
-	make_max_validator (m: INTEGER; e: STRING)
+	make (m: INTEGER; e: STRING)
 			-- Initialize with specified maximum and error message which will be displayed on validation failure
 		do
-			make (e)
+			make_validator (e)
 			max := m
 		end
 

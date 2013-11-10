@@ -10,19 +10,21 @@ class
 inherit
 
 	WSF_VALIDATOR [STRING]
+		rename
+			make as make_validator
 		redefine
 			state
 		end
 
 create
-	make_regexp_validator
+	make
 
 feature {NONE} -- Initialization
 
-	make_regexp_validator (r, e: STRING)
+	make (r, e: STRING)
 			-- Initialize with specified regular expression and error message which will be displayed on validation failure
 		do
-			make (e)
+			make_validator (e)
 			regexp_string := r
 			create regexp
 		end

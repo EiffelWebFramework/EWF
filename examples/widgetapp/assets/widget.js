@@ -817,7 +817,7 @@ WSF_FORM_ELEMENT_CONTROL = (function(_super) {
     if (message.length > 0) {
       this.$el.addClass("has-error");
       errordiv = $("<div />").addClass('help-block').addClass('validation').text(message);
-      return this.$el.find(".col-lg-10").append(errordiv);
+      return this.$el.children("div").append(errordiv);
     }
   };
 

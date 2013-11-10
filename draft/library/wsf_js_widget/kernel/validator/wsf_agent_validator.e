@@ -6,16 +6,22 @@ note
 
 class
 	WSF_AGENT_VALIDATOR [G]
+
 inherit
+
 	WSF_VALIDATOR [G]
+		rename
+			make as make_validator
+		end
+
 create
-	make_with_agent
+	make
 
 feature {NONE} -- Initialization
 
-	make_with_agent (h:like handler; e: STRING)
+	make (h: like handler; e: STRING)
 		do
-			make (e)
+			make_validator (e)
 			handler := h
 		end
 
@@ -23,10 +29,9 @@ feature
 
 	is_valid (input: G): BOOLEAN
 		do
-
-			Result := handler.item ( [input])
+			Result := handler.item ([input])
 		end
 
+	handler: FUNCTION [ANY, TUPLE [G], BOOLEAN]
 
-	handler: FUNCTION[ANY,TUPLE[G],BOOLEAN]
 end
