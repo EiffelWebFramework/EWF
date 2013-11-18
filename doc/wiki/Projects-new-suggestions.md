@@ -1,5 +1,5 @@
 Use this to suggest new projects, or request features.
-The content of this page  will be moved to the main [[Projects]] page for time to time.
+The content of this page  will be moved to the main [Projects](./Projects) page for time to time.
 For any entry, please use this template
 
 ----
@@ -15,6 +15,6 @@ For any entry, please use this template
 ## Add support for Swagger
 * _Suggested by **Olivier**_
 * _Description_: Build a Swagger Eiffel implementation
-* _References_: http://swagger.wordnik.com/
+* _References_: [http://swagger.wordnik.com/](http://swagger.wordnik.com/)
 
 ----

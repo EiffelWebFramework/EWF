@@ -8,14 +8,14 @@
 ## Information
 
 ### When ?
-* Tuesday 18th of september, 19:00 - 20:00 UTC/GMT time (see 3rd time in http://www.doodle.com/8v2sekiyebp4dpyh)
+* Tuesday 18th of september, 19:00 - 20:00 UTC/GMT time (see 3rd time in [http://www.doodle.com/8v2sekiyebp4dpyh](http://www.doodle.com/8v2sekiyebp4dpyh))
 
 ### Where ?
 Web meeting using webex
 
-* Short url: http://goo.gl/wBz11
-* Long url: https://eiffel.webex.com/eiffel/j.php?ED=211265702&UID=0&PW=NZWNiMjBiZWIz&RT=MiMyMA%3D%3D 
-* Related Google group topic: https://groups.google.com/d/topic/eiffel-web-framework/A7ADPAT3nj8/discussion
+* Short url: [http://goo.gl/wBz11](http://goo.gl/wBz11)
+* Long url: [https://eiffel.webex.com/eiffel/j.php?ED=211265702&UID=0&PW=NZWNiMjBiZWIz&RT=MiMyMA%3D%3D](https://eiffel.webex.com/eiffel/j.php?ED=211265702&UID=0&PW=NZWNiMjBiZWIz&RT=MiMyMA%3D%3D) 
+* Related Google group topic: [https://groups.google.com/d/topic/eiffel-web-framework/A7ADPAT3nj8/discussion](https://groups.google.com/d/topic/eiffel-web-framework/A7ADPAT3nj8/discussion)
 
 ## Agenda
 

@@ -1,3 +1,4 @@
+Check new roadmap wiki page: [roadmap](./roadmap)
 ## Future
 * Focus on REST API
     - Hypermedia API
@@ -31,5 +32,5 @@
 * Installation scripts
 
 ## Contributors ##
-  - See [[the collaboration page|Community-collaboration]] 
+  - See [the collaboration page](./Community-collaboration)
 
