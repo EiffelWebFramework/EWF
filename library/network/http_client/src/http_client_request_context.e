@@ -5,7 +5,7 @@ note
 					- headers
 					- query_parameters
 					- form parameters
-					- upload_data or upload_filename
+					- upload_data xor upload_filename
 				And in addition it has 
 					- credentials_required
 					- proxy
