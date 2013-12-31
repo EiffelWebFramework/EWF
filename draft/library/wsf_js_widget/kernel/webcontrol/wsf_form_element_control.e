@@ -36,12 +36,13 @@ feature {NONE} -- Initialization
 		do
 			make_control ("div")
 			add_class ("form-group")
-			if attached {WSF_INPUT_CONTROL} c or attached {WSF_TEXTAREA_CONTROL} c then
-				c.add_class ("form-control")
-			end
 			if attached {WSF_HTML_CONTROL} c then
 				c.add_class ("form-control-static")
+			elseif not attached {WSF_VALUE_CONTROL [LIST[ANY]]} c then
+
+				c.add_class ("form-control")
 			end
+			label_width := 2
 			value_control := c
 			validators := v
 			label := a_label

@@ -360,6 +360,35 @@ class WSF_INPUT_CONTROL extends WSF_CONTROL
       @state['text'] = state.text
       @$el.val(state.text)
 
+class WSF_FILE_CONTROL extends WSF_CONTROL
+  attach_events: ()->
+    super
+    self = @
+    @$el.change ()->
+      self.change()
+
+  change: ()->
+    #update local state
+    @state['file'] = null
+    @state['type'] = null
+    @state['size'] = null 
+    if @$el[0].files.length>0
+      file = @$el[0].files[0]
+      @state['file'] = file.name
+      @state['type'] = file.type
+      @state['size'] = file.size
+    if @state['callback_change']
+      @trigger_callback(@control_name, 'change')
+    @trigger('change')
+
+  value:()->
+    return @$el.val()
+
+  update: (state) ->
+    if state.text?
+      @state['text'] = state.text
+      @$el.val(state.text)
+
 class WSF_PASSWORD_CONTROL extends   WSF_INPUT_CONTROL   
 
 class WSF_NAVLIST_ITEM_CONTROL extends WSF_BUTTON_CONTROL

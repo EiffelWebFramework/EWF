@@ -21,6 +21,7 @@ feature
 
 	initialize_controls
 		local
+			n0_container: WSF_FORM_ELEMENT_CONTROL [detachable WSF_PENDING_FILE]
 			n1_container: WSF_FORM_ELEMENT_CONTROL [STRING]
 			n2_container: WSF_FORM_ELEMENT_CONTROL [STRING]
 			n3_container: WSF_FORM_ELEMENT_CONTROL [STRING]
@@ -32,6 +33,11 @@ feature
 			Precursor
 			create form.make
 			form.add_class ("form-horizontal")
+				--File
+			create filebox.make
+			create n0_container.make ("File Upload", filebox)
+			n0_container.add_validator (create {WSF_FILESIZE_VALIDATOR}.make (100000,"File must be smaller than 100KB"))
+			form.add_control (n0_container)
 				--Number 1
 			create textbox1.make ("1")
 			create n1_container.make ("Number1", textbox1)
@@ -121,6 +127,8 @@ feature
 	button1: WSF_BUTTON_CONTROL
 
 	button2: WSF_BUTTON_CONTROL
+
+	filebox: WSF_FILE_CONTROL
 
 	textbox1: WSF_INPUT_CONTROL
 
