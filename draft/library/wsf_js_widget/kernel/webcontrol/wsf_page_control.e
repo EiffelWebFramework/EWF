@@ -59,7 +59,7 @@ feature -- Implementation
 			-- If request is not a callback. Run process and render the html page
 		local
 			event: detachable STRING
-			event_parameter: detachable STRING
+			event_parameter: detachable ANY
 			event_control_name: detachable STRING
 			states: STRING
 			states_changes: WSF_JSON_OBJECT
@@ -74,6 +74,11 @@ feature -- Implementation
 				create json_parser.make_parser (states)
 				if attached {JSON_OBJECT} json_parser.parse_json as sp then
 					set_state (sp)
+				else
+					if attached request.form_parameter ("file") as o  then
+						response.put_string (o.name)
+					end
+
 				end
 				handle_callback (event_control_name.split ('-'), event, event_parameter)
 				create states_changes.make
@@ -147,7 +152,7 @@ feature -- Implementation
 
 feature -- Event handling
 
-	handle_callback (cname: LIST[STRING]; event: STRING; event_parameter: detachable STRING)
+	handle_callback (cname: LIST[STRING]; event: STRING; event_parameter: detachable ANY)
 			-- Forward callback to control
 		do
 			control.handle_callback (cname, event, event_parameter)

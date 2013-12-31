@@ -76,7 +76,7 @@ feature
 		end
 feature -- Event handling
 
-	handle_callback (cname: LIST [STRING]; event: STRING; event_parameter: detachable STRING)
+	handle_callback (cname: LIST [STRING]; event: STRING; event_parameter: detachable ANY)
 			-- Pass callback to subcontrols
 		do
 			across

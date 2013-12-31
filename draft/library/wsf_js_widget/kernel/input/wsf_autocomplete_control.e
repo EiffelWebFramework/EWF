@@ -49,7 +49,7 @@ feature -- State
 
 feature -- Callback
 
-	handle_callback (cname: LIST[STRING]; event: STRING; event_parameter: detachable STRING)
+	handle_callback (cname: LIST[STRING]; event: STRING; event_parameter: detachable ANY)
 		do
 			Precursor {WSF_INPUT_CONTROL} (cname, event, event_parameter)
 			if cname[1].same_string (control_name) and event.same_string ("autocomplete") then

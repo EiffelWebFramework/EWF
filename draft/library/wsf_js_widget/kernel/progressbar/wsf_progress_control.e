@@ -51,7 +51,7 @@ feature -- State handling
 
 feature -- Event handling
 
-	handle_callback (cname: LIST[STRING]; event: STRING; event_parameter: detachable STRING)
+	handle_callback (cname: LIST[STRING]; event: STRING; event_parameter: detachable ANY)
 		do
 			if cname[1].same_string (control_name) and event.same_string ("progress_fetch") then
 				state_changes.put_integer (progress_value, "progress")

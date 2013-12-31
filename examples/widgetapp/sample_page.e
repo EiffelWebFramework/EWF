@@ -100,6 +100,7 @@ feature
 		do
 			form.validate
 			if form.is_valid then
+				filebox.start_upload
 					--progress.set_progress ((textbox1.text.to_integer_64 / textbox2.text.to_integer_64 * 100).ceiling)
 				text := textbox1.text + " + " + textbox2.text + " = " + (textbox1.text.to_integer_64 + textbox2.text.to_integer_64).out
 				text.append ("<ul>")

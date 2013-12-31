@@ -43,7 +43,7 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 
 feature --Event handling
 
-	handle_callback (cname: LIST[STRING]; event: STRING; event_parameter: detachable STRING)
+	handle_callback (cname: LIST[STRING]; event: STRING; event_parameter: detachable ANY)
 		do
 		end
 

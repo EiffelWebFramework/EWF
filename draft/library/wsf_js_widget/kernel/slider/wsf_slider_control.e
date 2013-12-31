@@ -43,7 +43,7 @@ feature -- State handling
 
 feature -- Callback
 
-	handle_callback (cname: LIST[STRING]; event: STRING; event_parameter: detachable STRING)
+	handle_callback (cname: LIST[STRING]; event: STRING; event_parameter: detachable ANY)
 		do
 				-- Do nothing here
 		end

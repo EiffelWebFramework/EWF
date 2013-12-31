@@ -53,7 +53,7 @@ feature --Event handling
 			change_event := e
 		end
 
-	handle_callback (cname: LIST[STRING]; event: STRING; event_parameter: detachable STRING)
+	handle_callback (cname: LIST[STRING]; event: STRING; event_parameter: detachable ANY)
 		do 
 			if Current.control_name.same_string (cname[1]) and attached change_event as cevent then
 				if event.same_string ("change") then

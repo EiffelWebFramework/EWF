@@ -298,8 +298,14 @@ WSF_CONTROL = (function() {
     for (_i = 0, _len = actions.length; _i < _len; _i++) {
       action = actions[_i];
       try {
-        fn = eval(action.type);
-        _results.push(fn(action));
+        fn = null;
+        if (this[action.type] != null) {
+          fn = this[action.type];
+          _results.push(fn.call(this, action));
+        } else {
+          fn = eval(action.type);
+          _results.push(fn(action));
+        }
       } catch (e) {
         _results.push(console.log("Failed preforming action " + action.type));
       }
@@ -310,6 +316,9 @@ WSF_CONTROL = (function() {
   WSF_CONTROL.prototype.process_update = function(new_states) {
     var control, _i, _len, _ref;
     try {
+      if (new_states.actions != null) {
+        this.process_actions(new_states.actions);
+      }
       if (new_states[this.control_name] != null) {
         this.update(new_states[this.control_name]);
         _ref = this.controls;
@@ -453,9 +462,6 @@ WSF_PAGE_CONTROL = (function(_super) {
 
   WSF_PAGE_CONTROL.prototype.process_update = function(new_states) {
     var control, _i, _len, _ref;
-    if (new_states.actions != null) {
-      this.process_actions(new_states.actions);
-    }
     _ref = this.controls;
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       control = _ref[_i];
@@ -601,8 +607,57 @@ WSF_FILE_CONTROL = (function(_super) {
   __extends(WSF_FILE_CONTROL, _super);
 
   function WSF_FILE_CONTROL() {
-    return WSF_FILE_CONTROL.__super__.constructor.apply(this, arguments);
+    WSF_FILE_CONTROL.__super__.constructor.apply(this, arguments);
+    this.uploading = false;
   }
+
+  WSF_FILE_CONTROL.prototype.start_upload = function() {
+    var action, file, formData;
+    if (this.uploading) {
+      return;
+    }
+    this.uploading = true;
+    this.$el.hide();
+    this.progressbar = $("<div class=\"progress\"><div rstyle=\"width: 10%;\" class=\"progress-bar\"></div></div>");
+    this.$el.parent().append(this.progressbar);
+    formData = new FormData();
+    action = this.callback_url({
+      control_name: this.control_name,
+      event: "uploadfile",
+      event_parameter: ""
+    });
+    file = this.$el[0].files[0];
+    formData.append('our-file', file);
+    formData.append('state', JSON.stringify(this.get_context_state()));
+    return this.sendXHRequest(formData, action);
+  };
+
+  WSF_FILE_CONTROL.prototype.sendXHRequest = function(formData, uri) {
+    var onloadHandler, onprogressHandler, self, xhr;
+    xhr = new XMLHttpRequest();
+    self = this;
+    onprogressHandler = function(evt) {
+      var percent;
+      percent = evt.loaded / evt.total * 100;
+      return self.progressbar.find('.progress-bar').css({
+        'width': percent + "%"
+      });
+    };
+    onloadHandler = function(evt) {
+      return alert("DONE");
+    };
+    xhr.upload.addEventListener('progress', onprogressHandler, false);
+    xhr.upload.addEventListener('load', onloadHandler, false);
+    /*Set up events
+    xhr.upload.addEventListener('loadstart', onloadstartHandler, false);
+    
+    
+    xhr.addEventListener('readystatechange', onreadystatechangeHandler, false);
+    */
+
+    xhr.open('POST', uri, true);
+    return xhr.send(formData);
+  };
 
   WSF_FILE_CONTROL.prototype.attach_events = function() {
     var self;

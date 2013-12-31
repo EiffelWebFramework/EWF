@@ -180,13 +180,21 @@ class WSF_CONTROL
   process_actions: (actions)->
     for action in actions
       try
-        fn = eval(action.type)
-        fn(action)
+        fn = null
+        #Check if action exists in class then check global
+        if @[action.type]?
+          fn = @[action.type]
+          fn.call(@, action)
+        else
+          fn = eval(action.type)
+          fn(action)
       catch e
         console.log "Failed preforming action #{action.type}"
  
   process_update: (new_states)->
     try
+      if new_states.actions?
+        @process_actions(new_states.actions)
       if new_states[@control_name]?
         @update(new_states[@control_name])
         for control in @controls
@@ -289,8 +297,6 @@ class WSF_PAGE_CONTROL extends WSF_CONTROL
     @load_subcontrols()
 
   process_update: (new_states)->
-    if new_states.actions?
-      @process_actions(new_states.actions)
     for control in @controls
       if control?
         control.process_update(new_states)
@@ -361,6 +367,50 @@ class WSF_INPUT_CONTROL extends WSF_CONTROL
       @$el.val(state.text)
 
 class WSF_FILE_CONTROL extends WSF_CONTROL
+  constructor: ()->
+    super
+    @uploading = false
+  start_upload: ()->
+    if @uploading
+      return 
+    @uploading = true
+    @$el.hide()
+    @progressbar = $ """<div class="progress"><div rstyle="width: 10%;" class="progress-bar"></div></div>"""
+    @$el.parent().append(@progressbar)
+
+    formData = new FormData();
+    action = @callback_url
+                      control_name: @control_name
+                      event: "uploadfile"
+                      event_parameter: "" 
+    file = @$el[0].files[0];
+    formData.append('our-file', file)
+    formData.append('state', JSON.stringify(@get_context_state()))
+    @sendXHRequest(formData, action)
+
+  sendXHRequest: (formData, uri)->
+    #Get an XMLHttpRequest instance
+    xhr = new XMLHttpRequest();
+    self = @
+    onprogressHandler = (evt)->
+      percent = evt.loaded/evt.total*100
+      self.progressbar.find('.progress-bar').css {'width':percent+"%"}
+    onloadHandler = (evt)->
+      alert "DONE"
+    xhr.upload.addEventListener('progress', onprogressHandler, false);
+    xhr.upload.addEventListener('load', onloadHandler, false);
+
+    ###Set up events
+    xhr.upload.addEventListener('loadstart', onloadstartHandler, false);
+    
+    
+    xhr.addEventListener('readystatechange', onreadystatechangeHandler, false);
+    ###
+    #Set up request
+    xhr.open('POST', uri, true);
+    #Fire!
+    xhr.send(formData);
+
   attach_events: ()->
     super
     self = @

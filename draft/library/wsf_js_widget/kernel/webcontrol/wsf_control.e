@@ -52,12 +52,12 @@ feature -- Actions
 	show_alert (message: STRING)
 			--Start a modal window containg an other or the same page
 		local
-			modal: WSF_JSON_OBJECT
+			alert: WSF_JSON_OBJECT
 		do
-			create modal.make
-			modal.put_string ("show_alert", "type")
-			modal.put_string (message, "message")
-			actions.add (modal)
+			create alert.make
+			alert.put_string ("show_alert", "type")
+			alert.put_string (message, "message")
+			actions.add (alert)
 		end
 
 	redirect (url: STRING)
@@ -154,7 +154,7 @@ feature -- Rendering
 
 feature -- Event handling
 
-	handle_callback (cname: LIST [STRING]; event: STRING; event_parameter: detachable STRING)
+	handle_callback (cname: LIST [STRING]; event: STRING; event_parameter: detachable ANY)
 			-- Method called if any callback received. In this method you can route the callback to the event handler
 		deferred
 		end

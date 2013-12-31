@@ -49,13 +49,24 @@ feature --Event handling
 			change_event := e
 		end
 
-	handle_callback (cname: LIST [STRING]; event: STRING; event_parameter: detachable STRING)
+	handle_callback (cname: LIST [STRING]; event: STRING; event_parameter: detachable ANY)
 		do
 			if Current.control_name.same_string (cname [1]) and attached change_event as cevent then
 				if event.same_string ("change") then
 					cevent.call (Void)
 				end
 			end
+		end
+
+feature -- Upload
+
+	start_upload
+		local
+			upload: WSF_JSON_OBJECT
+		do
+			create upload.make
+			upload.put_string ("start_upload", "type")
+			actions.add (upload)
 		end
 
 feature -- Implementation
