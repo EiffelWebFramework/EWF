@@ -71,7 +71,7 @@ feature
 			form.add_control (button1)
 				--Button 2
 			create button2.make ("Start Modal Grid")
-			button2.set_click_event (agent handle_click)
+			button2.set_click_event (agent run_modal)
 			form.add_control (button2)
 				--Result
 			create result_html.make ("p", "")
@@ -107,6 +107,11 @@ feature
 			else
 				show_alert ("VALIDATION ERROR")
 			end
+		end
+
+	run_modal
+		do
+			start_modal("/","Test Modal", true);
 		end
 
 	process

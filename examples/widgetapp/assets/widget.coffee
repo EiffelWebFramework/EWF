@@ -79,6 +79,7 @@ parseSuggestions = (data)->
         return d
   return null
 loaded = {}
+
 lazy_load = (requirements,fn,that)->
   if requirements.length == 0
     return ()->
@@ -249,8 +250,6 @@ class WSF_CONTROL
       cache: no
     .done (new_states)->
       #Update all classes
-      if new_states.actions?
-        self.process_actions(new_states.actions)
       self.get_page().process_update(new_states)
       
   #Simple event listener
@@ -290,13 +289,14 @@ class WSF_PAGE_CONTROL extends WSF_CONTROL
     @load_subcontrols()
 
   process_update: (new_states)->
+    if new_states.actions?
+      @process_actions(new_states.actions)
     for control in @controls
       if control?
         control.process_update(new_states)
 
     return
     
-
   get_full_control_name: ()->
     ""
 
@@ -599,6 +599,8 @@ class WSF_REPEATER_CONTROL extends WSF_CONTROL
 
 
 #### actions
+redirect = (action) ->
+    document.location.href = action.url
 
 show_alert = (action)->
     alert(action.message)

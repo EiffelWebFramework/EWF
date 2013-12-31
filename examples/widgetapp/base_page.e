@@ -46,7 +46,7 @@ feature
 
 	show_code
 		do
-			start_modal_big ("/codeview?file=" + generator.as_lower, "Eiffel code " + generator)
+			start_modal ("/codeview?file=" + generator.as_lower, "Eiffel code " + generator, true)
 		end
 
 feature

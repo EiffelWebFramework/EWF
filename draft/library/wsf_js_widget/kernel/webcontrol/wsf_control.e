@@ -33,38 +33,41 @@ feature {NONE} -- Initialization
 
 feature -- Actions
 
-	start_modal (url: STRING; title: STRING)
+	start_modal (url: STRING; title: STRING; big: BOOLEAN)
 			--Start a modal window containg an other or the same page
 		local
 			modal: WSF_JSON_OBJECT
 		do
 			create modal.make
-			modal.put_string ("start_modal", "type")
+			if big then
+				modal.put_string ("start_modal_big", "type")
+			else
+				modal.put_string ("start_modal", "type")
+			end
 			modal.put_string (url, "url")
 			modal.put_string (title, "title")
 			actions.add (modal)
 		end
 
-	start_modal_big (url: STRING; title: STRING)
-			--Start a modal window containg an other or the same page
-		local
-			modal: WSF_JSON_OBJECT
-		do
-			create modal.make
-			modal.put_string ("start_modal_big", "type")
-			modal.put_string (url, "url")
-			modal.put_string (title, "title")
-			actions.add (modal)
-		end
-
-	show_alert (mesage: STRING)
+	show_alert (message: STRING)
 			--Start a modal window containg an other or the same page
 		local
 			modal: WSF_JSON_OBJECT
 		do
 			create modal.make
 			modal.put_string ("show_alert", "type")
-			modal.put_string (mesage, "message")
+			modal.put_string (message, "message")
+			actions.add (modal)
+		end
+
+	redirect (url: STRING)
+			--Redirect to an other page
+		local
+			modal: WSF_JSON_OBJECT
+		do
+			create modal.make
+			modal.put_string ("redirect", "type")
+			modal.put_string (url, "url")
 			actions.add (modal)
 		end
 
