@@ -26,14 +26,11 @@ feature
 			n3_container: WSF_FORM_ELEMENT_CONTROL [STRING]
 			n4_container: WSF_FORM_ELEMENT_CONTROL [STRING]
 			n5_container: WSF_FORM_ELEMENT_CONTROL [STRING]
-			n6_container: WSF_FORM_ELEMENT_CONTROL [detachable WSF_PENDING_FILE]
-			n7_container: WSF_FORM_ELEMENT_CONTROL [detachable WSF_PENDING_FILE]
 			cats_container: WSF_FORM_ELEMENT_CONTROL [LIST [STRING]]
 			source: INCREASING_PROGRESSSOURCE
 		do
 			Precursor
-			create form.make
-			form.add_class ("form-horizontal")
+			create form.make 
 				--Number 1
 			create textbox1.make ("1")
 			create n1_container.make ("Number1", textbox1)
@@ -66,21 +63,6 @@ feature
 			cats_container.add_validator (create {WSF_MIN_VALIDATOR [LIST [STRING]]}.make (1, "Choose at least one category"))
 			cats_container.add_validator (create {WSF_MAX_VALIDATOR [LIST [STRING]]}.make (2, "Choose at most two category"))
 			form.add_control (cats_container)
-				--File
-			create filebox.make
-			filebox.set_upload_function (agent upload_file)
-			create n6_container.make ("File Upload", filebox)
-			n6_container.add_validator (create {WSF_FILESIZE_VALIDATOR}.make (10000000, "File must be smaller than 10MB"))
-			form.add_control (n6_container)
-				--File
-			create filebox2.make
-			filebox2.set_upload_function (agent upload_file)
-			filebox2.set_change_event (agent do
-				filebox2.start_upload
-			end)
-			create n7_container.make ("Auto Upload", filebox2)
-			n7_container.add_validator (create {WSF_FILESIZE_VALIDATOR}.make (10000000, "File must be smaller than 10MB"))
-			form.add_control (n7_container)
 				--Button 1
 			create button1.make ("Update")
 			button1.set_click_event (agent handle_click)
@@ -105,23 +87,12 @@ feature
 			navbar.set_active (1)
 		end
 
-	upload_file (f: ITERABLE [WSF_UPLOADED_FILE]): detachable String
-		do
-			-- Store file on server and return link
-			across
-				f as i 
-			loop
-				Result:=i.item.filename
-			end
-		end
-
 	handle_click
 		local
 			text: STRING
 		do
 			form.validate
 			if form.is_valid then
-				filebox.start_upload
 					--progress.set_progress ((textbox1.text.to_integer_64 / textbox2.text.to_integer_64 * 100).ceiling)
 				text := textbox1.text + " + " + textbox2.text + " = " + (textbox1.text.to_integer_64 + textbox2.text.to_integer_64).out
 				text.append ("<ul>")
@@ -149,10 +120,6 @@ feature
 	button1: WSF_BUTTON_CONTROL
 
 	button2: WSF_BUTTON_CONTROL
-
-	filebox: WSF_FILE_CONTROL
-
-	filebox2: WSF_FILE_CONTROL
 
 	textbox1: WSF_INPUT_CONTROL
 
