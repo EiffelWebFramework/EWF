@@ -87,9 +87,9 @@ feature -- Properties
 
 	filebox2: WSF_FILE_CONTROL
 
-	n0_container: WSF_FORM_ELEMENT_CONTROL [detachable WSF_PENDING_FILE]
+	n0_container: WSF_FORM_ELEMENT_CONTROL [detachable WSF_FILE]
 
-	n1_container: WSF_FORM_ELEMENT_CONTROL [detachable WSF_PENDING_FILE]
+	n1_container: WSF_FORM_ELEMENT_CONTROL [detachable WSF_FILE]
 
 
 end
