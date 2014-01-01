@@ -9,23 +9,41 @@ class
 
 inherit
 
-	WSF_MULTI_CONTROL [WSF_CONTROL]
+	WSF_STATELESS_MULTI_CONTROL [WSF_STATELESS_CONTROL]
 		rename
 			make as make_multi_control
+		redefine
+			add_control
 		end
 
 	WSF_VALIDATABLE
 
 create
-	make
+	make, make_with_label_width
 
 feature {NONE} -- Initialization
 
-	make (n: STRING)
+	make
 			-- Initialize
 		do
-			make_multi_control (n)
+			make_with_label_width (2)
+		end
+
+	make_with_label_width (w: INTEGER)
+		do
+			make_multi_control
 			tag_name := "form"
+			label_width := w
+		end
+
+feature
+
+	add_control (c: WSF_STATELESS_CONTROL)
+		do
+			Precursor (c)
+			if attached {WSF_FORM_ELEMENT_CONTROL[ANY]} c as fec then
+				fec.set_label_width (label_width)
+			end
 		end
 
 feature -- Validation
@@ -36,8 +54,6 @@ feature -- Validation
 			is_valid := True
 			across
 				controls as c
-			until
-				is_valid = False
 			loop
 				if attached {WSF_VALIDATABLE} c.item as elem then
 					elem.validate
@@ -50,5 +66,9 @@ feature -- Validation
 
 	is_valid: BOOLEAN
 			-- Tells whether the last validation was valid
+
+feature
+
+	label_width: INTEGER
 
 end

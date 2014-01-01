@@ -19,10 +19,10 @@ create
 
 feature {NONE} -- Initialization
 
-	make (n, l, c: STRING)
+	make (l, c: STRING)
 			-- Initialize with specified control name,
 		do
-			make_value_control (n, "input")
+			make_value_control ( "input")
 			label := l
 			checked_value := c
 		end
@@ -54,9 +54,9 @@ feature --Event handling
 			change_event := e
 		end
 
-	handle_callback (cname: STRING; event: STRING; event_parameter: detachable STRING)
+	handle_callback (cname: LIST[STRING]; event: STRING; event_parameter: detachable ANY)
 		do
-			if Current.control_name.same_string (cname) and attached change_event as cevent then
+			if Current.control_name.same_string (cname[1]) and attached change_event as cevent then
 				if event.same_string ("change") then
 					cevent.call (Void)
 				end

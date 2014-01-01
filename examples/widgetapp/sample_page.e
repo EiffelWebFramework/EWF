@@ -26,66 +26,93 @@ feature
 			n3_container: WSF_FORM_ELEMENT_CONTROL [STRING]
 			n4_container: WSF_FORM_ELEMENT_CONTROL [STRING]
 			n5_container: WSF_FORM_ELEMENT_CONTROL [STRING]
+			n6_container: WSF_FORM_ELEMENT_CONTROL [detachable WSF_PENDING_FILE]
+			n7_container: WSF_FORM_ELEMENT_CONTROL [detachable WSF_PENDING_FILE]
 			cats_container: WSF_FORM_ELEMENT_CONTROL [LIST [STRING]]
 			source: INCREASING_PROGRESSSOURCE
 		do
 			Precursor
-			create form.make ("panel")
+			create form.make
 			form.add_class ("form-horizontal")
 				--Number 1
-			create textbox1.make ("txtBox1", "1")
+			create textbox1.make ("1")
 			create n1_container.make ("Number1", textbox1)
-			n1_container.add_validator (create {WSF_DECIMAL_VALIDATOR}.make_decimal_validator ("Invalid Number"))
+			n1_container.add_validator (create {WSF_DECIMAL_VALIDATOR}.make ("Invalid Number"))
 			n1_container.add_validator (create {OWN_VALIDATOR}.make_own)
 			form.add_control (n1_container)
 				--Number 2
-			create textbox2.make ("txtBox2", "2")
+			create textbox2.make ("2")
 			create n2_container.make ("Number2", textbox2)
-			n2_container.add_validator (create {WSF_DECIMAL_VALIDATOR}.make_decimal_validator ("Invalid Number"))
+			n2_container.add_validator (create {WSF_DECIMAL_VALIDATOR}.make ("Invalid Number"))
 			form.add_control (n2_container)
 				--Flag autocomplete
-			create autocompletion1.make ("autocompletion1", create {FLAG_AUTOCOMPLETION}.make)
+			create autocompletion1.make (create {FLAG_AUTOCOMPLETION}.make)
 			create n3_container.make ("Flag Autocomplete", autocompletion1)
 			form.add_control (n3_container)
 				--Contact autocomplete
-			create autocompletion2.make ("autocompletion2", create {CONTACT_AUTOCOMPLETION}.make)
+			create autocompletion2.make (create {CONTACT_AUTOCOMPLETION}.make)
 			create n4_container.make ("Contact Autocomplete", autocompletion2)
 			form.add_control (n4_container)
 				--Google autocomplete
-			create autocompletion3.make ("autocompletion4", create {GOOGLE_AUTOCOMPLETION}.make)
+			create autocompletion3.make (create {GOOGLE_AUTOCOMPLETION}.make)
 			create n5_container.make ("Google Autocomplete", autocompletion3)
 			form.add_control (n5_container)
 				--Categories
-			create cklist.make ("categories")
-			cklist.add_control (create {WSF_CHECKBOX_CONTROL}.make ("net", "Network", "net"))
-			cklist.add_control (create {WSF_CHECKBOX_CONTROL}.make ("os", "Operating Systems", "os"))
-			cklist.add_control (create {WSF_CHECKBOX_CONTROL}.make ("fmfp", "Formal Methods and Functional Programming", "fmfp"))
+			create cklist.make
+			cklist.add_control (create {WSF_CHECKBOX_CONTROL}.make ("Network", "net"))
+			cklist.add_control (create {WSF_CHECKBOX_CONTROL}.make ("Operating Systems", "os"))
+			cklist.add_control (create {WSF_CHECKBOX_CONTROL}.make ("Formal Methods and Functional Programming", "fmfp"))
 			create cats_container.make ("Categories", cklist)
-			cats_container.add_validator (create {WSF_MIN_VALIDATOR [STRING]}.make_min_validator (1, "Choose at least one category"))
-			cats_container.add_validator (create {WSF_MAX_VALIDATOR [STRING]}.make_max_validator (2, "Choose at most two category"))
+			cats_container.add_validator (create {WSF_MIN_VALIDATOR [LIST [STRING]]}.make (1, "Choose at least one category"))
+			cats_container.add_validator (create {WSF_MAX_VALIDATOR [LIST [STRING]]}.make (2, "Choose at most two category"))
 			form.add_control (cats_container)
+				--File
+			create filebox.make
+			filebox.set_upload_function (agent upload_file)
+			create n6_container.make ("File Upload", filebox)
+			n6_container.add_validator (create {WSF_FILESIZE_VALIDATOR}.make (10000000, "File must be smaller than 10MB"))
+			form.add_control (n6_container)
+				--File
+			create filebox2.make
+			filebox2.set_upload_function (agent upload_file)
+			filebox2.set_change_event (agent do
+				filebox2.start_upload
+			end)
+			create n7_container.make ("Auto Upload", filebox2)
+			n7_container.add_validator (create {WSF_FILESIZE_VALIDATOR}.make (10000000, "File must be smaller than 10MB"))
+			form.add_control (n7_container)
 				--Button 1
-			create button1.make ("sample_button1", "Update")
+			create button1.make ("Update")
 			button1.set_click_event (agent handle_click)
 			button1.add_class ("col-lg-offset-2")
 			form.add_control (button1)
 				--Button 2
-			create button2.make ("sample_button2", "Start Modal Grid")
-			button2.set_click_event (agent handle_click)
+			create button2.make ("Start Modal Grid")
+			button2.set_click_event (agent run_modal)
 			form.add_control (button2)
 				--Result
-			create result_html.make ("txtBox3", "p", "")
+			create result_html.make ("p", "")
 			form.add_control (create {WSF_FORM_ELEMENT_CONTROL [STRING]}.make ("Result", result_html))
 			control.add_control (form)
 
 				--Progress bar
 			control.add_control (create {WSF_BASIC_CONTROL}.make_with_body ("h4", "", "Autoincrementing progressbar"))
 			create source.make
-			create progress.make_with_source ("progress1", source)
+			create progress.make_with_source (source)
 			source.set_control (progress)
 			progress.set_isolation (true)
 			control.add_control (progress)
 			navbar.set_active (1)
+		end
+
+	upload_file (f: ITERABLE [WSF_UPLOADED_FILE]): detachable String
+		do
+			-- Store file on server and return link
+			across
+				f as i 
+			loop
+				Result:=i.item.filename
+			end
 		end
 
 	handle_click
@@ -94,6 +121,7 @@ feature
 		do
 			form.validate
 			if form.is_valid then
+				filebox.start_upload
 					--progress.set_progress ((textbox1.text.to_integer_64 / textbox2.text.to_integer_64 * 100).ceiling)
 				text := textbox1.text + " + " + textbox2.text + " = " + (textbox1.text.to_integer_64 + textbox2.text.to_integer_64).out
 				text.append ("<ul>")
@@ -109,6 +137,11 @@ feature
 			end
 		end
 
+	run_modal
+		do
+			start_modal ("/", "Test Modal", true);
+		end
+
 	process
 		do
 		end
@@ -116,6 +149,10 @@ feature
 	button1: WSF_BUTTON_CONTROL
 
 	button2: WSF_BUTTON_CONTROL
+
+	filebox: WSF_FILE_CONTROL
+
+	filebox2: WSF_FILE_CONTROL
 
 	textbox1: WSF_INPUT_CONTROL
 

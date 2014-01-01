@@ -24,9 +24,9 @@ feature -- Implementation
 			form: WSF_FORM_CONTROL
 		do
 			Precursor
-			create slider.make ("myslider")
-			create form.make ("sliderform")
-			form.add_control (create {WSF_FORM_ELEMENT_CONTROL [STRING]}.make ("Input", create {WSF_INPUT_CONTROL}.make ("sliderformtext", "Test")))
+			create slider.make
+			create form.make
+			form.add_control (create {WSF_FORM_ELEMENT_CONTROL [STRING]}.make ("Input", create {WSF_INPUT_CONTROL}.make ("Test")))
 				--slider.add_control (form, Void)
 				--slider.add_image ("http://www.placesmustseen.com/wp-content/uploads/2013/01/paris-eiffel-tower.jpg", "Eiffel Tower")
 			slider.add_image ("http://31.media.tumblr.com/43f3edae3fb569943047077cddf93c79/tumblr_mtw7wdX9cm1st5lhmo1_1280.jpg", "car")

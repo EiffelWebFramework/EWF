@@ -1,15 +1,15 @@
 note
-	description: "Summary description for {WSF_MAX_VALIDATOR}."
+	description: "Summary description for {WSF_FILESIZE_VALIDATOR}."
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
 class
-	WSF_MAX_VALIDATOR [G -> FINITE [ANY]]
+	WSF_FILESIZE_VALIDATOR
 
 inherit
 
-	WSF_VALIDATOR [G]
+	WSF_VALIDATOR [detachable WSF_PENDING_FILE]
 		rename
 			make as make_validator
 		redefine
@@ -22,7 +22,7 @@ create
 feature {NONE} -- Initialization
 
 	make (m: INTEGER; e: STRING)
-			-- Initialize with specified maximum and error message which will be displayed on validation failure
+			-- Initialize with specified maximum filesize and error message which will be displayed on validation failure
 		do
 			make_validator (e)
 			max := m
@@ -30,9 +30,12 @@ feature {NONE} -- Initialization
 
 feature -- Implementation
 
-	is_valid (input: G): BOOLEAN
+	is_valid (input: detachable WSF_PENDING_FILE): BOOLEAN
 		do
-			Result := input.count < max or input.count = max
+			Result := True
+			if attached input as a_input then
+				Result := a_input.size < max or a_input.size = max
+			end
 		end
 
 feature -- State

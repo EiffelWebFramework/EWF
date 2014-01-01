@@ -9,10 +9,10 @@ class
 
 inherit
 
-	WSF_MULTI_CONTROL [WSF_STATELESS_CONTROL]
+	WSF_STATELESS_MULTI_CONTROL [WSF_STATELESS_CONTROL]
 		rename
 			make as make_multi_control,
-			add_control as add_control_raw
+			add_control as add_control_raw 
 		end
 
 create
@@ -22,7 +22,7 @@ feature {NONE} -- Initialization
 
 	make (n: STRING)
 		do
-			make_with_tag_name (n, "div")
+			make_with_tag_name ("div")
 			add_class ("row")
 		end
 
@@ -30,21 +30,27 @@ feature -- Add control
 
 	add_control_with_offset (c: WSF_STATELESS_CONTROL; span, offset: INTEGER)
 		local
-			div: WSF_MULTI_CONTROL [WSF_STATELESS_CONTROL]
+			div: WSF_STATELESS_MULTI_CONTROL [WSF_STATELESS_CONTROL]
 		do
-			create div.make (control_name + "_item_" + controls.count.out)
+			create div.make_with_tag_name ("div")
 			div.add_class ("col-md-" + span.out + " col-md-offset-" + offset.out)
 			div.add_control (c)
 			add_control_raw (div)
 		end
 
-	add_control (c: WSF_STATELESS_CONTROL; span: INTEGER)
-		local
-			div: WSF_MULTI_CONTROL [WSF_STATELESS_CONTROL]
+	add_control (col:INTEGER; c: WSF_STATELESS_CONTROL)
 		do
-			create div.make (control_name + "_item_" + controls.count.out)
+			if attached {WSF_STATELESS_MULTI_CONTROL [WSF_STATELESS_CONTROL]}controls[col] as div then
+				div.add_control (c)
+			end
+		end
+
+	add_column  (span:INTEGER)
+		local
+			div: WSF_STATELESS_MULTI_CONTROL [WSF_STATELESS_CONTROL]
+		do
+			create div.make_with_tag_name ("div")
 			div.add_class ("col-md-" + span.out)
-			div.add_control (c)
 			add_control_raw (div)
 		end
 

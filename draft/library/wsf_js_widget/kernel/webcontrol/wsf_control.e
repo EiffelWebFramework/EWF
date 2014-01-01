@@ -18,14 +18,13 @@ inherit
 
 feature {NONE} -- Initialization
 
-	make (n, a_tag_name: STRING)
+	make (a_tag_name: STRING)
 			-- Initialize with specified control name and tag
 		require
-			not n.is_empty
 			not a_tag_name.is_empty
 		do
 			make_stateless_control (a_tag_name)
-			control_name := n
+			create control_name_prefix.make_empty
 			create state_changes.make
 			create actions.make_array
 		ensure
@@ -34,38 +33,41 @@ feature {NONE} -- Initialization
 
 feature -- Actions
 
-	start_modal (url: STRING; title: STRING)
+	start_modal (url: STRING; title: STRING; big: BOOLEAN)
 			--Start a modal window containg an other or the same page
 		local
 			modal: WSF_JSON_OBJECT
 		do
 			create modal.make
-			modal.put_string ("start_modal", "type")
+			if big then
+				modal.put_string ("start_modal_big", "type")
+			else
+				modal.put_string ("start_modal", "type")
+			end
 			modal.put_string (url, "url")
 			modal.put_string (title, "title")
 			actions.add (modal)
 		end
 
-	start_modal_big (url: STRING; title: STRING)
+	show_alert (message: STRING)
 			--Start a modal window containg an other or the same page
 		local
-			modal: WSF_JSON_OBJECT
+			alert: WSF_JSON_OBJECT
 		do
-			create modal.make
-			modal.put_string ("start_modal_big", "type")
-			modal.put_string (url, "url")
-			modal.put_string (title, "title")
-			actions.add (modal)
+			create alert.make
+			alert.put_string ("show_alert", "type")
+			alert.put_string (message, "message")
+			actions.add (alert)
 		end
 
-	show_alert (mesage: STRING)
-			--Start a modal window containg an other or the same page
+	redirect (url: STRING)
+			--Redirect to an other page
 		local
 			modal: WSF_JSON_OBJECT
 		do
 			create modal.make
-			modal.put_string ("show_alert", "type")
-			modal.put_string (mesage, "message")
+			modal.put_string ("redirect", "type")
+			modal.put_string (url, "url")
 			actions.add (modal)
 		end
 
@@ -140,7 +142,7 @@ feature -- Rendering
 			loop
 				css_classes_string := css_classes_string + " " + c.item
 			end
-			l_attributes := "id=%"" + control_name + "%" data-name=%"" + control_name + "%" data-type=%"" + a_generator + "%" "
+			l_attributes := " data-name=%"" + control_name + "%" data-type=%"" + a_generator + "%" "
 			if attached attrs as a then
 				l_attributes := l_attributes + a
 			end
@@ -152,7 +154,7 @@ feature -- Rendering
 
 feature -- Event handling
 
-	handle_callback (cname: STRING; event: STRING; event_parameter: detachable STRING)
+	handle_callback (cname: LIST [STRING]; event: STRING; event_parameter: detachable ANY)
 			-- Method called if any callback received. In this method you can route the callback to the event handler
 		deferred
 		end
@@ -170,6 +172,24 @@ feature -- Properties
 
 	actions: JSON_ARRAY
 
+	control_id: INTEGER assign set_control_id
+
+	set_control_id (d: INTEGER)
+		do
+			control_id := d
+		end
+
 	control_name: STRING
+		do
+			Result := control_name_prefix + control_id.out
+		end
+
+	control_name_prefix: STRING assign set_control_name_prefix
+
+
+	set_control_name_prefix (p: STRING)
+		do
+			control_name_prefix := p
+		end
 
 end

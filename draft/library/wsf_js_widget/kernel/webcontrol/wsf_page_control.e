@@ -13,6 +13,7 @@ inherit
 		rename
 			make as make_control
 		redefine
+			control_name,
 			full_state,
 			read_state_changes
 		end
@@ -22,7 +23,8 @@ feature {NONE} -- Initialization
 	make (req: WSF_REQUEST; res: WSF_RESPONSE)
 			-- Initialize
 		do
-			make_control (req.request_time_stamp.out, "body")
+			control_name := req.request_time_stamp.out
+			make_control ("body")
 			request := req
 			response := res
 			initialize_controls
@@ -57,7 +59,7 @@ feature -- Implementation
 			-- If request is not a callback. Run process and render the html page
 		local
 			event: detachable STRING
-			event_parameter: detachable STRING
+			event_parameter: detachable ANY
 			event_control_name: detachable STRING
 			states: STRING
 			states_changes: WSF_JSON_OBJECT
@@ -67,13 +69,23 @@ feature -- Implementation
 			event := get_parameter ("event")
 			event_parameter := get_parameter ("event_parameter")
 			if attached event and attached event_control_name and attached control then
-				create states.make_empty
-				request.read_input_data_into (states)
-				create json_parser.make_parser (states)
-				if attached {JSON_OBJECT} json_parser.parse_json as sp then
-					set_state (sp)
+				if not event.is_equal ("uploadfile") then
+					create states.make_empty
+					request.read_input_data_into (states)
+					create json_parser.make_parser (states)
+					if attached {JSON_OBJECT} json_parser.parse_json as sp then
+						set_state (sp)
+					end
+				else
+					if attached request.form_parameter ("state") as statedata then
+						create json_parser.make_parser (statedata.as_string.value)
+						if attached {JSON_OBJECT} json_parser.parse_json as sp then
+							set_state (sp)
+						end
+					end
+					event_parameter:=request.uploaded_files
 				end
-				handle_callback (event_control_name, event, event_parameter)
+				handle_callback (event_control_name.split ('-'), event, event_parameter)
 				create states_changes.make
 				read_state_changes (states_changes)
 				response.put_header ({HTTP_STATUS_CODE}.ok, <<["Content-Type", "application/json; charset=ISO-8859-1"]>>)
@@ -121,7 +133,6 @@ feature -- Implementation
 				Result.append (");page.initialize();});</script>")
 				Result.append ("</div>")
 			end
-
 		end
 
 	read_state_changes (states: WSF_JSON_OBJECT)
@@ -145,7 +156,7 @@ feature -- Implementation
 
 feature -- Event handling
 
-	handle_callback (cname: STRING; event: STRING; event_parameter: detachable STRING)
+	handle_callback (cname: LIST [STRING]; event: STRING; event_parameter: detachable ANY)
 			-- Forward callback to control
 		do
 			control.handle_callback (cname, event, event_parameter)
@@ -178,6 +189,10 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 			Result.put (controls_state, "controls")
 			Result.put (state, "state")
 		end
+
+feature
+
+	control_name: STRING
 
 feature {NONE} -- Root control
 

@@ -10,6 +10,9 @@ class
 inherit
 
 	WSF_REGEXP_VALIDATOR
+		rename
+			make as make_regexp_validator
+		end
 
 create
 	make_with_message

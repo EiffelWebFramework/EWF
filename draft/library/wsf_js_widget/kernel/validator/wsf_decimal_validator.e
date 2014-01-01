@@ -10,13 +10,16 @@ class
 inherit
 
 	WSF_REGEXP_VALIDATOR
+		rename
+			make as make_regexp_validator
+		end
 
 create
-	make_decimal_validator
+	make
 
 feature {NONE} -- Initialization
 
-	make_decimal_validator (e: STRING)
+	make (e: STRING)
 			-- Initialize with specified error message which will be displayed on validation failure
 		do
 			make_regexp_validator ("^[0-9]+(\.[0-9]*)?$|^\.[0-9]+$", e)

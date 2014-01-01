@@ -69,7 +69,17 @@ Mini =
     {
       render:template(t)
     }
+parseSuggestions = (data)->
+  for a of data
+    if a == 'suggestions'
+      return data[a]
+    else
+      d = parseSuggestions(data[a])
+      if d?
+        return d
+  return null
 loaded = {}
+
 lazy_load = (requirements,fn,that)->
   if requirements.length == 0
     return ()->
@@ -97,7 +107,7 @@ lazy_load = (requirements,fn,that)->
     done()
 
 build_control = (control_name, state, control)->
-  $el = control.$el.find('[data-name='+control_name+']')
+  $el = control.$el.find('[data-name='+control_name+']').first()
   #get control type
   type = $el.data('type')
   #create class
@@ -170,22 +180,45 @@ class WSF_CONTROL
   process_actions: (actions)->
     for action in actions
       try
-        fn = eval(action.type)
-        fn(action)
+        fn = null
+        #Check if action exists in class then check global
+        if @[action.type]?
+          fn = @[action.type]
+          fn.call(@, action)
+        else
+          fn = eval(action.type)
+          fn(action)
       catch e
         console.log "Failed preforming action #{action.type}"
  
   process_update: (new_states)->
-    if new_states[@control_name]?
-      @update(new_states[@control_name])
-    for control in @controls
-      if control?
-        control.process_update(new_states)
+    try
+      if new_states.actions?
+        @process_actions(new_states.actions)
+      if new_states[@control_name]?
+        @update(new_states[@control_name])
+        for control in @controls
+          if control?
+            control.process_update(new_states[this.control_name]['controls'])
+    catch e
+      return
+    return
+    
+    
 
   get_context_state : ()->
     if @parent_control? and not @isolation
       return @parent_control.get_context_state()
     return @wrap(@control_name,@fullstate)
+
+  get_full_control_name: ()->
+    if @parent_control? 
+      val = @parent_control.get_full_control_name()
+      if val != ""
+        val = val + "-"
+      return val+@control_name
+    return @control_name
+
   wrap : (cname,state)->
     ctrs = {}
     ctrs[cname] = state
@@ -201,10 +234,18 @@ class WSF_CONTROL
     @url + '?' + $.param(params)
 
   trigger_callback: (control_name,event,event_parameter)->
+    @run_trigger_callback(@get_full_control_name(),event,event_parameter)
+
+  get_page:()->
+    if @parent_control?
+      return @parent_control.get_page()
+    return @
+
+  run_trigger_callback: (control_name,event,event_parameter)->
     if @parent_control? and not @isolation
-      return @parent_control.trigger_callback(control_name,event,event_parameter)
+      return @parent_control.run_trigger_callback(control_name,event,event_parameter)
     self = @
-    $.ajax
+    return $.ajax
       type: 'POST',
       url: @callback_url
                       control_name: control_name
@@ -217,9 +258,7 @@ class WSF_CONTROL
       cache: no
     .done (new_states)->
       #Update all classes
-      if new_states.actions?
-        self.process_actions(new_states.actions)
-      self.process_update(new_states)
+      self.get_page().process_update(new_states)
       
   #Simple event listener
 
@@ -257,6 +296,16 @@ class WSF_PAGE_CONTROL extends WSF_CONTROL
     @initialize = lazy_load @requirements, @attach_events, @
     @load_subcontrols()
 
+  process_update: (new_states)->
+    for control in @controls
+      if control?
+        control.process_update(new_states)
+
+    return
+    
+  get_full_control_name: ()->
+    ""
+
   wrap : (cname,state)->
     state
 
@@ -265,10 +314,16 @@ class WSF_PAGE_CONTROL extends WSF_CONTROL
     @$el.remove()
     
 class WSF_SLIDER_CONTROL extends WSF_CONTROL
-  requirements: ['assets/bootstrap.min.js']
+  requirements: ['/assets/bootstrap.min.js']
+  attach_events: ()->
+    super
+    id = "slider"+Math.round(Math.random()*10000) 
+    @$el.attr("id",id)
+    @$el.find("ol li").attr("data-target","#"+id)
+    @$el.find(".carousel-control").attr("href","#"+id)
 
 class WSF_DROPDOWN_CONTROL extends WSF_CONTROL
-  requirements: ['assets/bootstrap.min.js']
+  requirements: ['/assets/bootstrap.min.js']
 
 controls = {}
 
@@ -311,14 +366,97 @@ class WSF_INPUT_CONTROL extends WSF_CONTROL
       @state['text'] = state.text
       @$el.val(state.text)
 
+class WSF_FILE_CONTROL extends WSF_CONTROL
+  constructor: ()->
+    super
+    @uploading = false
+
+  start_upload: ()->
+    if @uploading
+      return 
+    @uploading = true
+    @$el.hide()
+    @progressbar = $ """<div class="progress progress-striped active upload"><div rstyle="width: 10%;" class="progress-bar"></div></div>"""
+    @$el.parent().append(@progressbar)
+
+    formData = new FormData();
+    action = @callback_url
+                      control_name: @get_full_control_name()
+                      event: "uploadfile"
+                      event_parameter: "" 
+    file = @$el[0].files[0];
+    formData.append('file', file)
+    formData.append('state', JSON.stringify(@get_context_state()))
+    @sendXHRequest(formData, action)
+
+  sendXHRequest: (formData, uri)->
+    #Get an XMLHttpRequest instance
+    xhr = new XMLHttpRequest();
+    self = @
+    onprogressHandler = (evt)->
+      percent = evt.loaded/evt.total*100
+      self.progressbar.find('.progress-bar').css {'width':percent+"%"}
+    onstatechange = (evt)->
+        if xhr.readyState==4 && xhr.status==200 
+          self.get_page().process_update(JSON.parse(xhr.responseText))
+
+    xhr.upload.addEventListener('progress', onprogressHandler, false); 
+
+    
+    xhr.addEventListener('readystatechange', onstatechange, false);
+    xhr.open('POST', uri, true);
+    xhr.send(formData);
+
+  attach_events: ()->
+    super
+    self = @
+    @$el.change ()->
+      self.change()
+
+  change: ()->
+    #update local state
+    @state['file'] = null
+    @state['type'] = null
+    @state['size'] = null 
+    if @$el[0].files.length>0
+      file = @$el[0].files[0]
+      @state['file'] = file.name
+      @state['type'] = file.type
+      @state['size'] = file.size
+    if @state['callback_change']
+      @trigger_callback(@control_name, 'change')
+    @trigger('change')
+
+  value:()->
+    return @$el.val()
+
+  update: (state) ->
+    if state.upload_file?
+      @progressbar.hide()
+      @$el.parent().append($("""<p></p>""").addClass("form-control-static").text(@state['file']))
+      @state['upload_file'] = state.upload_file
+
+class WSF_PASSWORD_CONTROL extends   WSF_INPUT_CONTROL   
+
+class WSF_NAVLIST_ITEM_CONTROL extends WSF_BUTTON_CONTROL
+  update: (state) ->
+    super
+    if state.active?
+      @state['active'] = state.active
+      if state.active
+        @$el.addClass("active")
+      else
+        @$el.removeClass("active")
+
+
 class WSF_TEXTAREA_CONTROL extends WSF_INPUT_CONTROL
 
 class WSF_CODEVIEW_CONTROL extends WSF_INPUT_CONTROL
   constructor:()->
     super
     #load codemirror and then eiffel syntax
-    @initialize = lazy_load ['assets/codemirror/codemirror.js','assets/codemirror/codemirror.css','assets/codemirror/estudio.css'],
-                            (lazy_load ['assets/codemirror/eiffel.js'], @attach_events, @), 
+    @initialize = lazy_load ['/assets/codemirror/codemirror.js','/assets/codemirror/codemirror.css','/assets/codemirror/estudio.css'],
+                            (lazy_load ['/assets/codemirror/eiffel.js'], @attach_events, @), 
                             @
 
   attach_events: () ->
@@ -341,8 +479,9 @@ class WSF_AUTOCOMPLETE_CONTROL extends WSF_INPUT_CONTROL
   attach_events: () ->
     super
     self = @
+    console.log @$el
     @$el.typeahead({
-      name: @control_name
+      name: @control_name+Math.random()
       template: @state['template']
       engine: Mini
       remote:
@@ -354,7 +493,7 @@ class WSF_AUTOCOMPLETE_CONTROL extends WSF_INPUT_CONTROL
                       event: 'autocomplete'
                       states: JSON.stringify(self.get_context_state())
         filter: (parsedResponse) ->
-            parsedResponse[self.control_name]['suggestions']
+            return parseSuggestions(parsedResponse)
         fn: ()->
           self.trigger_callback(self.control_name, 'autocomplete')
     })
@@ -426,7 +565,7 @@ class WSF_FORM_ELEMENT_CONTROL extends WSF_CONTROL
     if message.length>0
       @$el.addClass("has-error")
       errordiv = $("<div />").addClass('help-block').addClass('validation').text(message)
-      @$el.find(".col-lg-10").append(errordiv)
+      @$el.children("div").append(errordiv)
 
   update: (state) ->
     if state.error?
@@ -536,11 +675,13 @@ class WSF_REPEATER_CONTROL extends WSF_CONTROL
 
 
 #### actions
+redirect = (action) ->
+    document.location.href = action.url
 
 show_alert = (action)->
     alert(action.message)
 
-start_modal = lazy_load ['assets/bootstrap.min.js'], (action)->
+start_modal = lazy_load ['/assets/bootstrap.min.js'], (action)->
   cssclass = ""
   if action.type == "start_modal_big"
     cssclass = " big"

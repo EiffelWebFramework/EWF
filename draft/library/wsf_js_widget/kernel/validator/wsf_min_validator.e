@@ -5,30 +5,32 @@ note
 	revision: "$Revision$"
 
 class
-	WSF_MIN_VALIDATOR [G]
+	WSF_MIN_VALIDATOR [G -> FINITE [ANY]]
 
 inherit
 
-	WSF_VALIDATOR [LIST [G]]
+	WSF_VALIDATOR [G]
+		rename
+			make as make_validator
 		redefine
 			state
 		end
 
 create
-	make_min_validator
+	make
 
 feature {NONE} -- Initialization
 
-	make_min_validator (m: INTEGER; e: STRING)
+	make (m: INTEGER; e: STRING)
 			-- Initialize with specified minimum and error message which will be displayed on validation failure
 		do
-			make (e)
+			make_validator (e)
 			min := m
 		end
 
 feature -- Implementation
 
-	is_valid (input: LIST [G]): BOOLEAN
+	is_valid (input: G): BOOLEAN
 		do
 			Result := input.count > min or input.count = min
 		end

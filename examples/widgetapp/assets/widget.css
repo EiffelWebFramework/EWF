@@ -98,3 +98,8 @@ body {
 .CodeMirror-code{
     line-height: 1.4em;
 }
+
+.upload.progress{
+    margin-top: 7px;
+    margin-bottom: 0px;
+}

@@ -22,19 +22,19 @@ create
 
 feature {NONE} -- Initialization
 
-	make (n: STRING; c: WSF_AUTOCOMPLETION)
+	make (c: WSF_AUTOCOMPLETION)
 			-- Initialize with specified name and autocompletion
 		do
-			make_with_agent (n, agent c.autocompletion)
+			make_with_agent ( agent c.autocompletion)
 			if attached c.template as t then
 				template := t
 			end
 		end
 
-	make_with_agent (n: STRING; c: FUNCTION [ANY, TUPLE [STRING], JSON_ARRAY])
+	make_with_agent (c: FUNCTION [ANY, TUPLE [STRING], JSON_ARRAY])
 			-- Initialize with specified name and autocompletion function
 		do
-			make_input (n, "")
+			make_input ( "")
 			create_json_list := c
 			template := "{{=value}}"
 		end
@@ -49,10 +49,10 @@ feature -- State
 
 feature -- Callback
 
-	handle_callback (cname: STRING; event: STRING; event_parameter: detachable STRING)
+	handle_callback (cname: LIST[STRING]; event: STRING; event_parameter: detachable ANY)
 		do
 			Precursor {WSF_INPUT_CONTROL} (cname, event, event_parameter)
-			if cname.same_string (control_name) and event.same_string ("autocomplete") then
+			if cname[1].same_string (control_name) and event.same_string ("autocomplete") then
 				state_changes.put (create_json_list.item ([text]), "suggestions")
 			end
 		end

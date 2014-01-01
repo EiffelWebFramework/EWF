@@ -34,18 +34,26 @@ feature {NONE} -- Initialization
 	make_with_validators (a_label: STRING; c: WSF_VALUE_CONTROL [G]; v: LIST [WSF_VALIDATOR [G]])
 			-- Initialize form element control with a specific label, value control and list of validators
 		do
-			make_control (c.control_name + "_container", "div")
+			make_control ("div")
 			add_class ("form-group")
-			if attached {WSF_INPUT_CONTROL} c or attached {WSF_TEXTAREA_CONTROL} c then
-				c.add_class ("form-control")
-			end
 			if attached {WSF_HTML_CONTROL} c then
 				c.add_class ("form-control-static")
+			elseif not attached {WSF_VALUE_CONTROL [LIST[ANY]]} c then
+
+				c.add_class ("form-control")
 			end
+			label_width := 2
 			value_control := c
 			validators := v
 			label := a_label
 			error := ""
+		end
+
+feature
+
+	set_label_width (w: INTEGER)
+		do
+			label_width := w
 		end
 
 feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
@@ -77,9 +85,22 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 
 	read_state_changes (states: WSF_JSON_OBJECT)
 			-- Read states_changes in subcontrols
+		local
+			sub_states: WSF_JSON_OBJECT
+			control_state: WSF_JSON_OBJECT
 		do
 			Precursor (states)
-			value_control.read_state_changes (states)
+			create sub_states.make
+			value_control.read_state_changes (sub_states)
+			if sub_states.count > 0 then
+				if attached {JSON_OBJECT} states.item (control_name) as changes then
+					changes.put (sub_states, "controls")
+				else
+					create control_state.make
+					control_state.put (sub_states, "controls")
+					states.put (control_state, control_name)
+				end
+			end
 		end
 
 	state: WSF_JSON_OBJECT
@@ -100,15 +121,19 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 
 feature -- Event handling
 
-	handle_callback (cname: STRING; event: STRING; event_parameter: detachable STRING)
+	handle_callback (cname: LIST [STRING]; event: STRING; event_parameter: detachable ANY)
 			-- Pass callback to subcontrols
 		do
-			if cname.same_string (control_name) then
-				if event.same_string ("validate") then
-					validate
+			if cname [1].same_string (control_name) then
+				cname.go_i_th (1)
+				cname.remove
+				if cname.is_empty then
+					if event.same_string ("validate") then
+						validate
+					end
+				else
+					value_control.handle_callback (cname, event, event_parameter)
 				end
-			else
-				value_control.handle_callback (cname, event, event_parameter)
 			end
 		end
 
@@ -121,9 +146,9 @@ feature -- Implementation
 		do
 			body := ""
 			if not label.is_empty then
-				body.append ("<label class=%"col-lg-2 control-label%" for=%"" + value_control.control_name + "%">" + label + "</label>")
+				body.append ("<label class=%"col-lg-"+label_width.out+" control-label%" for=%"" + value_control.control_name + "%">" + label + "</label>")
 			end
-			body.append ("<div class=%"col-lg-10%">")
+			body.append ("<div class=%"col-lg-"+(12-label_width).out+"%">")
 			body.append (value_control.render)
 			body.append ("</div>")
 			Result := render_tag (body, "")
@@ -182,5 +207,7 @@ feature -- Properties
 
 	error: STRING
 			-- The error message that is displayed when client side validation fails
+
+	label_width: INTEGER
 
 end
