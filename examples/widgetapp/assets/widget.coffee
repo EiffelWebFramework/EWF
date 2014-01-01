@@ -370,21 +370,22 @@ class WSF_FILE_CONTROL extends WSF_CONTROL
   constructor: ()->
     super
     @uploading = false
+
   start_upload: ()->
     if @uploading
       return 
     @uploading = true
     @$el.hide()
-    @progressbar = $ """<div class="progress"><div rstyle="width: 10%;" class="progress-bar"></div></div>"""
+    @progressbar = $ """<div class="progress progress-striped active upload"><div rstyle="width: 10%;" class="progress-bar"></div></div>"""
     @$el.parent().append(@progressbar)
 
     formData = new FormData();
     action = @callback_url
-                      control_name: @control_name
+                      control_name: @get_full_control_name()
                       event: "uploadfile"
                       event_parameter: "" 
     file = @$el[0].files[0];
-    formData.append('our-file', file)
+    formData.append('file', file)
     formData.append('state', JSON.stringify(@get_context_state()))
     @sendXHRequest(formData, action)
 
@@ -395,20 +396,15 @@ class WSF_FILE_CONTROL extends WSF_CONTROL
     onprogressHandler = (evt)->
       percent = evt.loaded/evt.total*100
       self.progressbar.find('.progress-bar').css {'width':percent+"%"}
-    onloadHandler = (evt)->
-      alert "DONE"
-    xhr.upload.addEventListener('progress', onprogressHandler, false);
-    xhr.upload.addEventListener('load', onloadHandler, false);
+    onstatechange = (evt)->
+        if xhr.readyState==4 && xhr.status==200 
+          self.get_page().process_update(JSON.parse(xhr.responseText))
 
-    ###Set up events
-    xhr.upload.addEventListener('loadstart', onloadstartHandler, false);
+    xhr.upload.addEventListener('progress', onprogressHandler, false); 
+
     
-    
-    xhr.addEventListener('readystatechange', onreadystatechangeHandler, false);
-    ###
-    #Set up request
+    xhr.addEventListener('readystatechange', onstatechange, false);
     xhr.open('POST', uri, true);
-    #Fire!
     xhr.send(formData);
 
   attach_events: ()->
@@ -435,9 +431,10 @@ class WSF_FILE_CONTROL extends WSF_CONTROL
     return @$el.val()
 
   update: (state) ->
-    if state.text?
-      @state['text'] = state.text
-      @$el.val(state.text)
+    if state.upload_file?
+      @progressbar.hide()
+      @$el.parent().append($("""<p></p>""").addClass("form-control-static").text(@state['file']))
+      @state['upload_file'] = state.upload_file
 
 class WSF_PASSWORD_CONTROL extends   WSF_INPUT_CONTROL   
 

@@ -618,22 +618,22 @@ WSF_FILE_CONTROL = (function(_super) {
     }
     this.uploading = true;
     this.$el.hide();
-    this.progressbar = $("<div class=\"progress\"><div rstyle=\"width: 10%;\" class=\"progress-bar\"></div></div>");
+    this.progressbar = $("<div class=\"progress progress-striped active upload\"><div rstyle=\"width: 10%;\" class=\"progress-bar\"></div></div>");
     this.$el.parent().append(this.progressbar);
     formData = new FormData();
     action = this.callback_url({
-      control_name: this.control_name,
+      control_name: this.get_full_control_name(),
       event: "uploadfile",
       event_parameter: ""
     });
     file = this.$el[0].files[0];
-    formData.append('our-file', file);
+    formData.append('file', file);
     formData.append('state', JSON.stringify(this.get_context_state()));
     return this.sendXHRequest(formData, action);
   };
 
   WSF_FILE_CONTROL.prototype.sendXHRequest = function(formData, uri) {
-    var onloadHandler, onprogressHandler, self, xhr;
+    var onprogressHandler, onstatechange, self, xhr;
     xhr = new XMLHttpRequest();
     self = this;
     onprogressHandler = function(evt) {
@@ -643,18 +643,13 @@ WSF_FILE_CONTROL = (function(_super) {
         'width': percent + "%"
       });
     };
-    onloadHandler = function(evt) {
-      return alert("DONE");
+    onstatechange = function(evt) {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+        return self.get_page().process_update(JSON.parse(xhr.responseText));
+      }
     };
     xhr.upload.addEventListener('progress', onprogressHandler, false);
-    xhr.upload.addEventListener('load', onloadHandler, false);
-    /*Set up events
-    xhr.upload.addEventListener('loadstart', onloadstartHandler, false);
-    
-    
-    xhr.addEventListener('readystatechange', onreadystatechangeHandler, false);
-    */
-
+    xhr.addEventListener('readystatechange', onstatechange, false);
     xhr.open('POST', uri, true);
     return xhr.send(formData);
   };
@@ -690,9 +685,10 @@ WSF_FILE_CONTROL = (function(_super) {
   };
 
   WSF_FILE_CONTROL.prototype.update = function(state) {
-    if (state.text != null) {
-      this.state['text'] = state.text;
-      return this.$el.val(state.text);
+    if (state.upload_file != null) {
+      this.progressbar.hide();
+      this.$el.parent().append($("<p></p>").addClass("form-control-static").text(this.state['file']));
+      return this.state['upload_file'] = state.upload_file;
     }
   };
 

@@ -21,23 +21,19 @@ feature
 
 	initialize_controls
 		local
-			n0_container: WSF_FORM_ELEMENT_CONTROL [detachable WSF_PENDING_FILE]
 			n1_container: WSF_FORM_ELEMENT_CONTROL [STRING]
 			n2_container: WSF_FORM_ELEMENT_CONTROL [STRING]
 			n3_container: WSF_FORM_ELEMENT_CONTROL [STRING]
 			n4_container: WSF_FORM_ELEMENT_CONTROL [STRING]
 			n5_container: WSF_FORM_ELEMENT_CONTROL [STRING]
+			n6_container: WSF_FORM_ELEMENT_CONTROL [detachable WSF_PENDING_FILE]
+			n7_container: WSF_FORM_ELEMENT_CONTROL [detachable WSF_PENDING_FILE]
 			cats_container: WSF_FORM_ELEMENT_CONTROL [LIST [STRING]]
 			source: INCREASING_PROGRESSSOURCE
 		do
 			Precursor
 			create form.make
 			form.add_class ("form-horizontal")
-				--File
-			create filebox.make
-			create n0_container.make ("File Upload", filebox)
-			n0_container.add_validator (create {WSF_FILESIZE_VALIDATOR}.make (100000,"File must be smaller than 100KB"))
-			form.add_control (n0_container)
 				--Number 1
 			create textbox1.make ("1")
 			create n1_container.make ("Number1", textbox1)
@@ -67,9 +63,24 @@ feature
 			cklist.add_control (create {WSF_CHECKBOX_CONTROL}.make ("Operating Systems", "os"))
 			cklist.add_control (create {WSF_CHECKBOX_CONTROL}.make ("Formal Methods and Functional Programming", "fmfp"))
 			create cats_container.make ("Categories", cklist)
-			cats_container.add_validator (create {WSF_MIN_VALIDATOR [LIST[STRING]]}.make (1, "Choose at least one category"))
-			cats_container.add_validator (create {WSF_MAX_VALIDATOR [LIST[STRING]]}.make (2, "Choose at most two category"))
+			cats_container.add_validator (create {WSF_MIN_VALIDATOR [LIST [STRING]]}.make (1, "Choose at least one category"))
+			cats_container.add_validator (create {WSF_MAX_VALIDATOR [LIST [STRING]]}.make (2, "Choose at most two category"))
 			form.add_control (cats_container)
+				--File
+			create filebox.make
+			filebox.set_upload_function (agent upload_file)
+			create n6_container.make ("File Upload", filebox)
+			n6_container.add_validator (create {WSF_FILESIZE_VALIDATOR}.make (10000000, "File must be smaller than 10MB"))
+			form.add_control (n6_container)
+				--File
+			create filebox2.make
+			filebox2.set_upload_function (agent upload_file)
+			filebox2.set_change_event (agent do
+				filebox2.start_upload
+			end)
+			create n7_container.make ("Auto Upload", filebox2)
+			n7_container.add_validator (create {WSF_FILESIZE_VALIDATOR}.make (10000000, "File must be smaller than 10MB"))
+			form.add_control (n7_container)
 				--Button 1
 			create button1.make ("Update")
 			button1.set_click_event (agent handle_click)
@@ -92,6 +103,16 @@ feature
 			progress.set_isolation (true)
 			control.add_control (progress)
 			navbar.set_active (1)
+		end
+
+	upload_file (f: ITERABLE [WSF_UPLOADED_FILE]): detachable String
+		do
+			-- Store file on server and return link
+			across
+				f as i 
+			loop
+				Result:=i.item.filename
+			end
 		end
 
 	handle_click
@@ -118,7 +139,7 @@ feature
 
 	run_modal
 		do
-			start_modal("/","Test Modal", true);
+			start_modal ("/", "Test Modal", true);
 		end
 
 	process
@@ -130,6 +151,8 @@ feature
 	button2: WSF_BUTTON_CONTROL
 
 	filebox: WSF_FILE_CONTROL
+
+	filebox2: WSF_FILE_CONTROL
 
 	textbox1: WSF_INPUT_CONTROL
 
