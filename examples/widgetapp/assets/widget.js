@@ -550,6 +550,10 @@ WSF_BUTTON_CONTROL = (function(_super) {
   };
 
   WSF_BUTTON_CONTROL.prototype.update = function(state) {
+    if (state.disabled !== void 0) {
+      this.state['disabled'] = state.disabled;
+      this.$el.prop('disabled', state.disabled);
+    }
     if (state.text != null) {
       this.state['text'] = state.text;
       return this.$el.text(state.text);
@@ -590,6 +594,10 @@ WSF_INPUT_CONTROL = (function(_super) {
   };
 
   WSF_INPUT_CONTROL.prototype.update = function(state) {
+    if (state.disabled !== void 0) {
+      this.state['disabled'] = state.disabled;
+      this.$el.prop('disabled', state.disabled);
+    }
     if (state.text != null) {
       this.state['text'] = state.text;
       return this.$el.val(state.text);
@@ -687,9 +695,10 @@ WSF_FILE_CONTROL = (function(_super) {
   };
 
   WSF_FILE_CONTROL.prototype.update = function(state) {
-    var btn, fname, self;
-    if (state.removable !== void 0) {
-      this.state['removable'] = state.removable;
+    if (state.disabled !== void 0) {
+      this.state['disabled'] = state.disabled;
+      this.$el.prop('disabled', state.disabled);
+      this.refresh();
     }
     if (state.file_name !== void 0) {
       this.state['file_name'] = state.file_name;
@@ -701,32 +710,45 @@ WSF_FILE_CONTROL = (function(_super) {
       this.state['file_size'] = state.file_size;
     }
     if (state.file_id !== void 0) {
-      this.uploading = false;
-      this.progressbar.remove();
-      this.state['file_id'] = state.file_id;
-      this.$el.parent().find("p").remove();
-      if (state.file_id !== null) {
-        this.$el.hide();
-        fname = $("<p></p>").addClass("form-control-static").text(this.state['file_name']);
-        this.$el.parent().append(fname);
-        if (this.state['removable']) {
-          fname.append(" ");
-          btn = $("<button />").text("Remove").addClass("btn btn-xs btn-danger");
-          self = this;
-          btn.click(function() {
-            self.progressbar.remove();
-            self.$el.parent().find("p").remove();
-            self.$el.show();
-            self.$el.val('');
-            return self.change();
-          });
-          return fname.append(btn);
+      if (this.state['file_id'] !== state.file_id) {
+        this.state['file_id'] = state.file_id;
+        if (this.state['callback_uploaddone']) {
+          this.trigger_callback(this.control_name, 'uploaddone');
         }
-      } else {
-        this.$el.show();
-        this.$el.val('');
-        return this.change();
+        this.uploading = false;
       }
+      return this.refresh();
+    }
+  };
+
+  WSF_FILE_CONTROL.prototype.refresh = function() {
+    var fname, removebtn, self;
+    if (this.uploading) {
+      return;
+    }
+    this.progressbar.remove();
+    this.$el.parent().find("p").remove();
+    if (this.state['file_id'] !== null) {
+      this.$el.hide();
+      fname = $("<p></p>").addClass("form-control-static").text(this.state['file_name']);
+      this.$el.parent().append(fname);
+      if (!this.state['disabled']) {
+        fname.append(" ");
+        removebtn = $("<button />").text("Remove").addClass("btn btn-xs btn-danger");
+        self = this;
+        removebtn.click(function() {
+          self.progressbar.remove();
+          self.$el.parent().find("p").remove();
+          self.$el.show();
+          self.$el.val('');
+          return self.change();
+        });
+        return fname.append(removebtn);
+      }
+    } else {
+      this.$el.show();
+      this.$el.val('');
+      return this.change();
     }
   };
 

@@ -340,6 +340,9 @@ class WSF_BUTTON_CONTROL extends WSF_CONTROL
       @trigger_callback(@control_name, 'click')
 
   update: (state) ->
+    if state.disabled != undefined
+      @state['disabled'] = state.disabled
+      @$el.prop('disabled', state.disabled)
     if state.text?
       @state['text'] = state.text
       @$el.text(state.text)
@@ -362,6 +365,9 @@ class WSF_INPUT_CONTROL extends WSF_CONTROL
     return @$el.val()
 
   update: (state) ->
+    if state.disabled != undefined
+      @state['disabled'] = state.disabled
+      @$el.prop('disabled', state.disabled)
     if state.text?
       @state['text'] = state.text
       @$el.val(state.text)
@@ -434,8 +440,10 @@ class WSF_FILE_CONTROL extends WSF_CONTROL
     return @$el.val()
 
   update: (state) ->
-    if state.removable != undefined
-      @state['removable'] = state.removable
+    if state.disabled != undefined
+      @state['disabled'] = state.disabled
+      @$el.prop('disabled', state.disabled)
+      @refresh()
     if state.file_name != undefined
       @state['file_name'] = state.file_name 
     if state.file_type  != undefined
@@ -443,29 +451,37 @@ class WSF_FILE_CONTROL extends WSF_CONTROL
     if state.file_size  != undefined
       @state['file_size'] = state.file_size 
     if state.file_id != undefined
-      @uploading = false
-      @progressbar.remove()
-      @state['file_id'] = state.file_id
-      @$el.parent().find("p").remove()
-      if state.file_id!=null
-        @$el.hide()
-        fname = $("""<p></p>""").addClass("form-control-static").text(@state['file_name'])
-        @$el.parent().append(fname)
-        if @state['removable']
-          fname.append(" ");
-          btn = $("<button />").text("Remove").addClass("btn btn-xs btn-danger")
-          self = @
-          btn.click ()->
-            self.progressbar.remove()
-            self.$el.parent().find("p").remove()
-            self.$el.show()
-            self.$el.val('')
-            self.change()
-          fname.append(btn)
-      else
-        @$el.show()
-        @$el.val('')
-        @change()
+      if @state['file_id'] != state.file_id
+        @state['file_id'] = state.file_id
+        if @state['callback_uploaddone'] 
+          @trigger_callback(@control_name, 'uploaddone')
+        @uploading = false
+      @refresh()
+
+  refresh: ()->
+    if @uploading
+      return
+    @progressbar.remove()
+    @$el.parent().find("p").remove()
+    if @state['file_id'] != null
+      @$el.hide()
+      fname = $("""<p></p>""").addClass("form-control-static").text(@state['file_name'])
+      @$el.parent().append(fname)
+      if not @state['disabled']
+        fname.append(" ");
+        removebtn = $("<button />").text("Remove").addClass("btn btn-xs btn-danger")
+        self = @
+        removebtn.click ()->
+          self.progressbar.remove()
+          self.$el.parent().find("p").remove()
+          self.$el.show()
+          self.$el.val('')
+          self.change()
+        fname.append(removebtn)
+    else
+      @$el.show()
+      @$el.val('')
+      @change()
 
 
 class WSF_PASSWORD_CONTROL extends   WSF_INPUT_CONTROL   

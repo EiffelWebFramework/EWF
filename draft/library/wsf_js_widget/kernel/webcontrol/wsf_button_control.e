@@ -43,6 +43,7 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 		do
 			create Result.make
 			Result.put_string (text, "text")
+			Result.put_boolean (disabled, "disabled")
 			Result.put_boolean (attached click_event, "callback_click")
 		end
 
@@ -54,9 +55,9 @@ feature --Event handling
 			click_event := e
 		end
 
-	handle_callback (cname: LIST[STRING]; event: STRING; event_parameter: detachable ANY)
+	handle_callback (cname: LIST [STRING]; event: STRING; event_parameter: detachable ANY)
 		do
-			if Current.control_name.same_string (cname[1]) and attached click_event as cevent then
+			if Current.control_name.same_string (cname [1]) and attached click_event as cevent then
 				cevent.call (Void)
 			end
 		end
@@ -65,8 +66,17 @@ feature -- Rendering
 
 	render: STRING
 			-- HTML representation of this control
+		local
+			attr: STRING
 		do
-			Result := render_tag (text, attributes)
+			create attr.make_empty
+			if attached attributes as a then
+				attr.append (a)
+			end
+			if disabled then
+				attr.append ("disabled=%"disabled%" ")
+			end
+			Result := render_tag (text, attr)
 		end
 
 feature -- Change
@@ -76,11 +86,22 @@ feature -- Change
 		do
 			if not t.same_string (text) then
 				text := t
-				state_changes.replace (create {JSON_STRING}.make_json (text), "text")
+				state_changes.replace_with_string (text, "text")
+			end
+		end
+
+	set_disabled (b: BOOLEAN)
+		do
+			if disabled /= b then
+				disabled := b
+				state_changes.replace_with_boolean (disabled, "disabled")
 			end
 		end
 
 feature -- Properties
+
+	disabled: BOOLEAN
+			-- Defines if the button is editable
 
 	text: STRING
 			-- The text currently displayed on this button

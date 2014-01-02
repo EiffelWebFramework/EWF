@@ -19,9 +19,8 @@ create
 
 feature {NONE} -- Initialization
 
-	make (a_removable: BOOLEAN)
+	make
 		do
-			removable := a_removable
 			make_value_control ("input")
 		end
 
@@ -45,34 +44,17 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 		do
 			create Result.make
 			Result.put_boolean (attached change_event, "callback_change")
+			Result.put_boolean (attached upload_done_event, "callback_uploaddone")
 			if attached file as f then
 				Result.put_string (f.name, "file_name")
 				Result.put_string (f.type, "file_type")
 				Result.put_integer (f.size, "file_size")
 				Result.put_string (f.id, "file_id")
 			end
-			Result.put_boolean (removable, "removable")
+			Result.put_boolean (disabled, "disabled")
 		end
 
 feature -- Event handling
-
-	set_change_event (e: attached like change_event)
-			-- Set text change event handle
-		do
-			change_event := e
-		end
-
-	set_upload_done_event (e: attached like upload_done_event)
-			-- Set text change event handle
-		do
-			upload_done_event := e
-		end
-
-	set_upload_function (e: attached like upload_function)
-			-- Set button click event handle
-		do
-			upload_function := e
-		end
 
 	handle_callback (cname: LIST [STRING]; event: STRING; event_parameter: detachable ANY)
 		local
@@ -84,6 +66,8 @@ feature -- Event handling
 			if Current.control_name.same_string (cname [1]) then
 				if attached change_event as cevent and event.same_string ("change") then
 					cevent.call (Void)
+				elseif attached upload_done_event as udevent and event.same_string ("uploaddone") then
+					udevent.call (Void)
 				elseif event.same_string ("uploadfile") and attached {ITERABLE [WSF_UPLOADED_FILE]} event_parameter as files then
 					if attached file as f then
 						if attached upload_function as ufunction then
@@ -121,14 +105,51 @@ feature -- Implementation
 		end
 
 	render: STRING
+		local
+			attr: STRING
 		do
-			Result := render_tag ("", "type=%"file%"  ")
+			attr := "type=%"file%"  "
+			if attached attributes as a then
+				attr.append (a)
+			end
+			if disabled then
+				attr.append ("disabled=%"disabled%" ")
+			end
+			Result := render_tag ("", attr)
+		end
+
+feature -- Change
+
+	set_change_event (e: attached like change_event)
+			-- Set text change event handle
+		do
+			change_event := e
+		end
+
+	set_upload_done_event (e: attached like upload_done_event)
+			-- Set text change event handle
+		do
+			upload_done_event := e
+		end
+
+	set_upload_function (e: attached like upload_function)
+			-- Set button click event handle
+		do
+			upload_function := e
+		end
+
+	set_disabled (b: BOOLEAN)
+		do
+			if disabled /= b then
+				disabled := b
+				state_changes.replace_with_boolean (disabled, "disabled")
+			end
 		end
 
 feature -- Properties
 
-	removable: BOOLEAN
-			-- Defines if a file can be removed once it is uploaded
+	disabled: BOOLEAN
+			-- Defines if the a file is selectable and if a file can be removed once it is uploaded
 
 	file: detachable WSF_FILE
 			-- Text to be displayed

@@ -29,6 +29,11 @@ feature
 
 feature --Properties
 
+	is_uploaded: BOOLEAN
+		do
+			Result := attached id
+		end
+
 	name: STRING
 			-- File name
 

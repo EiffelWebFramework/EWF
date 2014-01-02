@@ -26,13 +26,15 @@ feature -- Implementation
 			control.add_control (create {WSF_BASIC_CONTROL}.make_with_body ("h1", "", "File Upload Demo"))
 			create form.make
 				--File
-			create filebox.make (true)
+			create filebox.make
 			filebox.set_upload_function (agent upload_file)
+			filebox.set_upload_done_event (agent submit_form)
 			create n0_container.make ("File Upload", filebox)
 			n0_container.add_validator (create {WSF_FILESIZE_VALIDATOR}.make (10000000, "File must be smaller than 10MB"))
 			form.add_control (n0_container)
 				--File
-			create filebox2.make (true)
+			create filebox2.make
+			filebox2.set_upload_function (agent upload_file)
 			create n1_container.make ("Auto start Upload", filebox2)
 			filebox2.set_change_event (agent
 				do
@@ -49,18 +51,29 @@ feature -- Implementation
 			button1.set_click_event (agent submit_form)
 			button1.add_class ("col-lg-offset-2")
 			form.add_control (button1)
-
 			control.add_control (form)
 			navbar.set_active (5)
 		end
 
 	submit_form
-	do
-		form.validate
-		if form.is_valid then
-			filebox.start_upload
+		do
+			form.validate
+			if form.is_valid then
+				if attached filebox.file as f  then
+					if not f.is_uploaded then
+						filebox.set_disabled (true)
+						filebox.start_upload
+						filebox2.set_disabled (true)
+						button1.set_disabled (true)
+						button1.set_text ("Uploading ...")
+					else
+						button1.set_text ("Done")
+
+					end
+
+				end
+			end
 		end
-	end
 
 	upload_file (f: ITERABLE [WSF_UPLOADED_FILE]): detachable String
 		do
@@ -89,6 +102,5 @@ feature -- Properties
 	n0_container: WSF_FORM_ELEMENT_CONTROL [detachable WSF_FILE]
 
 	n1_container: WSF_FORM_ELEMENT_CONTROL [detachable WSF_FILE]
-
 
 end
