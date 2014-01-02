@@ -26,15 +26,14 @@ feature -- Implementation
 			control.add_control (create {WSF_BASIC_CONTROL}.make_with_body ("h1", "", "File Upload Demo"))
 			create form.make
 				--File
-			create filebox.make
+			create filebox.make (true)
 			filebox.set_upload_function (agent upload_file)
 			create n0_container.make ("File Upload", filebox)
 			n0_container.add_validator (create {WSF_FILESIZE_VALIDATOR}.make (10000000, "File must be smaller than 10MB"))
 			form.add_control (n0_container)
 				--File
-			create filebox2.make
+			create filebox2.make (true)
 			create n1_container.make ("Auto start Upload", filebox2)
-			filebox2.set_upload_function (agent upload_file)
 			filebox2.set_change_event (agent
 				do
 					n1_container.validate

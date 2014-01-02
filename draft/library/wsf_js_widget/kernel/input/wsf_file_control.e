@@ -19,8 +19,9 @@ create
 
 feature {NONE} -- Initialization
 
-	make
+	make (a_removable: BOOLEAN)
 		do
+			removable := a_removable
 			make_value_control ("input")
 		end
 
@@ -28,9 +29,14 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 
 	set_state (new_state: JSON_OBJECT)
 			-- Restore text from json
+		local
+			id: detachable STRING
 		do
-			if attached {JSON_STRING} new_state.item ("file") as new_name and attached {JSON_STRING} new_state.item ("type") as new_type and attached {JSON_NUMBER} new_state.item ("size") as new_size then
-				create file.make (new_name.unescaped_string_32, new_type.unescaped_string_32, new_size.item.to_integer_32, VOID);
+			if attached {JSON_STRING} new_state.item ("file_name") as new_name and attached {JSON_STRING} new_state.item ("file_type") as new_type and attached {JSON_NUMBER} new_state.item ("file_size") as new_size then
+				if attached {JSON_STRING} new_state.item ("file_id") as a_id then
+					id := a_id.unescaped_string_32
+				end
+				create file.make (new_name.unescaped_string_32, new_type.unescaped_string_32, new_size.item.to_integer_32, id);
 			end
 		end
 
@@ -45,6 +51,7 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 				Result.put_integer (f.size, "file_size")
 				Result.put_string (f.id, "file_id")
 			end
+			Result.put_boolean (removable, "removable")
 		end
 
 feature -- Event handling
@@ -55,6 +62,12 @@ feature -- Event handling
 			change_event := e
 		end
 
+	set_upload_done_event (e: attached like upload_done_event)
+			-- Set text change event handle
+		do
+			upload_done_event := e
+		end
+
 	set_upload_function (e: attached like upload_function)
 			-- Set button click event handle
 		do
@@ -63,18 +76,28 @@ feature -- Event handling
 
 	handle_callback (cname: LIST [STRING]; event: STRING; event_parameter: detachable ANY)
 		local
-			a_file: WSF_FILE
+			f_name: detachable STRING
+			f_type: detachable STRING
+			f_size: detachable INTEGER
+			f_id: detachable STRING
 		do
 			if Current.control_name.same_string (cname [1]) then
 				if attached change_event as cevent and event.same_string ("change") then
 					cevent.call (Void)
-				elseif attached upload_function as ufunction and event.same_string ("uploadfile") and attached {ITERABLE [WSF_UPLOADED_FILE]} event_parameter as files then
+				elseif event.same_string ("uploadfile") and attached {ITERABLE [WSF_UPLOADED_FILE]} event_parameter as files then
 					if attached file as f then
-						a_file := f
-					else
-						create a_file.make ("", "", 0, VOID)
+						if attached upload_function as ufunction then
+							f.set_id (ufunction.item ([files]))
+						end
+						f_name := f.name
+						f_type := f.type
+						f_size := f.size
+						f_id := f.id
 					end
-					a_file.set_id (ufunction.item ([files]))
+					state_changes.replace_with_string (f_name, "file_name")
+					state_changes.replace_with_string (f_type, "file_type")
+					state_changes.replace_with_integer (f_size, "file_size")
+					state_changes.replace_with_string (f_id, "file_id")
 				end
 			end
 		end
@@ -104,11 +127,17 @@ feature -- Implementation
 
 feature -- Properties
 
+	removable: BOOLEAN
+			-- Defines if a file can be removed once it is uploaded
+
 	file: detachable WSF_FILE
 			-- Text to be displayed
 
 	change_event: detachable PROCEDURE [ANY, TUPLE]
 			-- Procedure to be execued on change
+
+	upload_done_event: detachable PROCEDURE [ANY, TUPLE]
+			-- Procedure to be execued when upload was successful
 
 	upload_function: detachable FUNCTION [ANY, TUPLE [ITERABLE [WSF_UPLOADED_FILE]], detachable STRING]
 			-- Store uploaded file and return server side file id
