@@ -263,7 +263,7 @@ WSF_CONTROL = (function() {
   WSF_CONTROL.prototype.load_subcontrols = function() {
     var control_name, state;
     if (this.fullstate.controls != null) {
-      return this.controls = (function() {
+      this.controls = (function() {
         var _ref, _results;
         _ref = this.fullstate.controls;
         _results = [];
@@ -274,7 +274,7 @@ WSF_CONTROL = (function() {
         return _results;
       }).call(this);
     } else {
-      return this.controls = [];
+      this.controls = [];
     }
   };
 
@@ -293,24 +293,22 @@ WSF_CONTROL = (function() {
   WSF_CONTROL.prototype.update = function(state) {};
 
   WSF_CONTROL.prototype.process_actions = function(actions) {
-    var action, fn, _i, _len, _results;
-    _results = [];
+    var action, fn, _i, _len;
     for (_i = 0, _len = actions.length; _i < _len; _i++) {
       action = actions[_i];
       try {
         fn = null;
         if (this[action.type] != null) {
           fn = this[action.type];
-          _results.push(fn.call(this, action));
+          fn.call(this, action);
         } else {
           fn = eval(action.type);
-          _results.push(fn(action));
+          fn(action);
         }
       } catch (e) {
-        _results.push(console.log("Failed preforming action " + action.type));
+        console.log("Failed preforming action " + action.type);
       }
     }
-    return _results;
   };
 
   WSF_CONTROL.prototype.process_update = function(new_states) {
@@ -552,6 +550,10 @@ WSF_BUTTON_CONTROL = (function(_super) {
   };
 
   WSF_BUTTON_CONTROL.prototype.update = function(state) {
+    if (state.disabled !== void 0) {
+      this.state['disabled'] = state.disabled;
+      this.$el.prop('disabled', state.disabled);
+    }
     if (state.text != null) {
       this.state['text'] = state.text;
       return this.$el.text(state.text);
@@ -592,6 +594,10 @@ WSF_INPUT_CONTROL = (function(_super) {
   };
 
   WSF_INPUT_CONTROL.prototype.update = function(state) {
+    if (state.disabled !== void 0) {
+      this.state['disabled'] = state.disabled;
+      this.$el.prop('disabled', state.disabled);
+    }
     if (state.text != null) {
       this.state['text'] = state.text;
       return this.$el.val(state.text);
@@ -613,6 +619,9 @@ WSF_FILE_CONTROL = (function(_super) {
 
   WSF_FILE_CONTROL.prototype.start_upload = function() {
     var action, file, formData;
+    if (this.$el[0].files.length === 0) {
+      return;
+    }
     if (this.uploading) {
       return;
     }
@@ -665,14 +674,15 @@ WSF_FILE_CONTROL = (function(_super) {
 
   WSF_FILE_CONTROL.prototype.change = function() {
     var file;
-    this.state['file'] = null;
-    this.state['type'] = null;
-    this.state['size'] = null;
+    this.state['file_name'] = null;
+    this.state['file_type'] = null;
+    this.state['file_size'] = null;
+    this.state['file_id'] = null;
     if (this.$el[0].files.length > 0) {
       file = this.$el[0].files[0];
-      this.state['file'] = file.name;
-      this.state['type'] = file.type;
-      this.state['size'] = file.size;
+      this.state['file_name'] = file.name;
+      this.state['file_type'] = file.type;
+      this.state['file_size'] = file.size;
     }
     if (this.state['callback_change']) {
       this.trigger_callback(this.control_name, 'change');
@@ -685,10 +695,60 @@ WSF_FILE_CONTROL = (function(_super) {
   };
 
   WSF_FILE_CONTROL.prototype.update = function(state) {
-    if (state.upload_file != null) {
-      this.progressbar.hide();
-      this.$el.parent().append($("<p></p>").addClass("form-control-static").text(this.state['file']));
-      return this.state['upload_file'] = state.upload_file;
+    if (state.disabled !== void 0) {
+      this.state['disabled'] = state.disabled;
+      this.$el.prop('disabled', state.disabled);
+      this.refresh();
+    }
+    if (state.file_name !== void 0) {
+      this.state['file_name'] = state.file_name;
+    }
+    if (state.file_type !== void 0) {
+      this.state['file_type'] = state.file_type;
+    }
+    if (state.file_size !== void 0) {
+      this.state['file_size'] = state.file_size;
+    }
+    if (state.file_id !== void 0) {
+      if (this.state['file_id'] !== state.file_id) {
+        this.state['file_id'] = state.file_id;
+        if (this.state['callback_uploaddone']) {
+          this.trigger_callback(this.control_name, 'uploaddone');
+        }
+        this.uploading = false;
+      }
+      return this.refresh();
+    }
+  };
+
+  WSF_FILE_CONTROL.prototype.refresh = function() {
+    var fname, removebtn, self;
+    if (this.uploading) {
+      return;
+    }
+    this.progressbar.remove();
+    this.$el.parent().find("p").remove();
+    if (this.state['file_id'] !== null) {
+      this.$el.hide();
+      fname = $("<p></p>").addClass("form-control-static").text(this.state['file_name']);
+      this.$el.parent().append(fname);
+      if (!this.state['disabled']) {
+        fname.append(" ");
+        removebtn = $("<button />").text("Remove").addClass("btn btn-xs btn-danger");
+        self = this;
+        removebtn.click(function() {
+          self.progressbar.remove();
+          self.$el.parent().find("p").remove();
+          self.$el.show();
+          self.$el.val('');
+          return self.change();
+        });
+        return fname.append(removebtn);
+      }
+    } else {
+      this.$el.show();
+      this.$el.val('');
+      return this.change();
     }
   };
 

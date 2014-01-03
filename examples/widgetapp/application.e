@@ -81,6 +81,7 @@ feature -- Router and Filter
 			map_agent_uri ("/grid", agent grid_demo, Void)
 			map_agent_uri ("/repeater", agent repeater_demo, Void)
 			map_agent_uri ("/slider", agent slider_demo, Void)
+			map_agent_uri ("/upload", agent upload_demo, Void)
 			map_agent_uri ("/codeview", agent codeview, Void)
 
 				-- NOTE: you could put all those files in a specific folder, and use WSF_FILE_SYSTEM_HANDLER with "/"
@@ -130,6 +131,16 @@ feature -- Execution
 	slider_demo (request: WSF_REQUEST; response: WSF_RESPONSE)
 		local
 			page: SLIDER_PAGE
+		do
+				-- To send a response we need to setup, the status code and
+				-- the response headers.
+			create page.make (request, response)
+			page.execute
+		end
+
+	upload_demo (request: WSF_REQUEST; response: WSF_RESPONSE)
+		local
+			page: UPLOAD_PAGE
 		do
 				-- To send a response we need to setup, the status code and
 				-- the response headers.

@@ -34,6 +34,7 @@ feature {NONE} -- Initialization
 			make_multi_control
 			tag_name := "form"
 			label_width := w
+			add_class ("form-horizontal")
 		end
 
 feature

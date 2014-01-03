@@ -22,7 +22,7 @@ feature {NONE} -- Initialization
 	make (v: STRING)
 			-- Initialize with specified name and value
 		do
-			make_value_control ( "input")
+			make_value_control ("input")
 			type := "text"
 			text := v
 		end
@@ -42,6 +42,7 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 		do
 			create Result.make
 			Result.put_string (text, "text")
+			Result.put_boolean (disabled, "disabled")
 			Result.put_boolean (attached change_event, "callback_change")
 		end
 
@@ -53,9 +54,9 @@ feature --Event handling
 			change_event := e
 		end
 
-	handle_callback (cname: LIST[STRING]; event: STRING; event_parameter: detachable ANY)
-		do 
-			if Current.control_name.same_string (cname[1]) and attached change_event as cevent then
+	handle_callback (cname: LIST [STRING]; event: STRING; event_parameter: detachable ANY)
+		do
+			if Current.control_name.same_string (cname [1]) and attached change_event as cevent then
 				if event.same_string ("change") then
 					cevent.call (Void)
 				end
@@ -65,8 +66,17 @@ feature --Event handling
 feature -- Rendering
 
 	render: STRING
+		local
+			attr: STRING
 		do
-			Result := render_tag ("", "type=%"" + type + "%" value=%"" + text + "%"")
+			attr := "type=%"" + type + "%" value=%"" + text + "%" "
+			if attached attributes as a then
+				attr.append (a)
+			end
+			if disabled then
+				attr.append ("disabled=%"disabled%" ")
+			end
+			Result := render_tag ("", attr)
 		end
 
 feature -- Change
@@ -80,6 +90,14 @@ feature -- Change
 			end
 		end
 
+	set_disabled (b: BOOLEAN)
+		do
+			if disabled /= b then
+				disabled := b
+				state_changes.replace_with_boolean (disabled, "disabled")
+			end
+		end
+
 feature -- Implementation
 
 	value: STRING
@@ -88,6 +106,9 @@ feature -- Implementation
 		end
 
 feature -- Properties
+
+	disabled: BOOLEAN
+			-- Defines if the input field is editable
 
 	text: STRING
 			-- Text to be displayed

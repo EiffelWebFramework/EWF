@@ -9,7 +9,7 @@ class
 
 inherit
 
-	WSF_VALIDATOR [detachable WSF_PENDING_FILE]
+	WSF_VALIDATOR [detachable WSF_FILE]
 		rename
 			make as make_validator
 		redefine
@@ -30,7 +30,7 @@ feature {NONE} -- Initialization
 
 feature -- Implementation
 
-	is_valid (input: detachable WSF_PENDING_FILE): BOOLEAN
+	is_valid (input: detachable WSF_FILE): BOOLEAN
 		do
 			Result := True
 			if attached input as a_input then
