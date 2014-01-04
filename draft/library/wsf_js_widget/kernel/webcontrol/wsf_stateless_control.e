@@ -43,10 +43,15 @@ feature -- Change
 			css_classes.prune (cla)
 		end
 
-	set_attributes (a: STRING)
-			-- Set the attributes of this control
+	append_attribute (a: STRING)
+			-- Adds the specified attribute to the attribute string of this control
 		do
-			attributes := a
+			if attached attributes as attr then
+				attr.append (" ")
+				attr.append (a)
+			else
+				attributes := a
+			end
 		end
 
 feature -- Rendering

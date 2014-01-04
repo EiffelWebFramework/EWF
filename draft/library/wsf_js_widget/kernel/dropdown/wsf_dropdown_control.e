@@ -45,6 +45,7 @@ feature -- Change
 			li: WSF_MULTI_CONTROL [WSF_STATELESS_CONTROL]
 		do
 			create li.make_with_tag_name ("li")
+			li.append_attribute ("role=%"presentation%"")
 			li.add_control (c)
 			dropdown_menu.add_control (li)
 		end
@@ -59,7 +60,7 @@ feature -- Change
 
 	add_divider
 		do
-			dropdown_menu.add_control (create {WSF_BASIC_CONTROL}.make_with_body_class ("li", "", "divider", ""))
+			dropdown_menu.add_control (create {WSF_BASIC_CONTROL}.make_with_body_class ("li", "role=%"menuitem%"", "divider", ""))
 		end
 
 feature -- Properties
