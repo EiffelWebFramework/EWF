@@ -36,7 +36,7 @@ feature {NONE} -- Initialization
 		end
 
 	make_with_body_class (t, attr, c, b: STRING)
-			-- Initialize with specific attributes and body
+			-- Initialize with specific class, attributes and body
 		do
 			make_with_body (t, attr, b)
 			if not c.is_empty then
@@ -53,12 +53,6 @@ feature -- Rendering
 		end
 
 feature -- Change
-
-	set_attributes (a: STRING)
-			-- Set the attributes string of this control
-		do
-			attributes := a
-		end
 
 	set_body (b: STRING)
 			-- Set the body of this control

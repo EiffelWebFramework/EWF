@@ -19,7 +19,7 @@ inherit
 feature {NONE} -- Initialization
 
 	make (a_tag_name: STRING)
-			-- Initialize with specified control name and tag
+			-- Initialize with specified and tag
 		require
 			not a_tag_name.is_empty
 		do

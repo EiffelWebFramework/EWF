@@ -20,19 +20,19 @@ create
 
 feature {NONE} -- Initialization
 
-	make (  title: STRING)
+	make (title: STRING)
 			-- Make a dropdown control with div tag name and specified menu title
 		do
-			make_with_tag_name (  title, "div")
+			make_with_tag_name (title, "div")
 		end
 
-	make_with_tag_name ( title, t: STRING)
-			-- Make a dropdown control with specified tag name and menu title (such as li)
+	make_with_tag_name (title, t: STRING)
+			-- Make a dropdown control with specified tag name (such as li) and menu title
 		do
-			make_multi_control_with_tag_name ( t)
+			make_multi_control_with_tag_name (t)
 			add_class ("dropdown")
 			create {WSF_BASIC_CONTROL} dropdown_toggle.make_with_body_class ("a", "data-toggle=%"dropdown%" href=%"#%"", "dropdown-toggle", title + " <strong class=%"caret%"></strong>")
-			create dropdown_menu.make_with_tag_name ( "ul")
+			create dropdown_menu.make_with_tag_name ("ul")
 			dropdown_menu.add_class ("dropdown-menu")
 			add_control (dropdown_toggle)
 			add_control (dropdown_menu)

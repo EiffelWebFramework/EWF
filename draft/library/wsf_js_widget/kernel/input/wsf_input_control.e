@@ -20,7 +20,7 @@ create
 feature {NONE} -- Initialization
 
 	make (v: STRING)
-			-- Initialize with specified name and value
+			-- Initialize with specified value
 		do
 			make_value_control ("input")
 			type := "text"

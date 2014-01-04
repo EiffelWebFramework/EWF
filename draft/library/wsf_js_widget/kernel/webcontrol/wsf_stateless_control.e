@@ -43,6 +43,12 @@ feature -- Change
 			css_classes.prune (cla)
 		end
 
+	set_attributes (a: STRING)
+			-- Set the attributes of this control
+		do
+			attributes := a
+		end
+
 feature -- Rendering
 
 	render_tag (body: STRING; attrs: detachable STRING): STRING
