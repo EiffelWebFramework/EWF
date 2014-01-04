@@ -28,14 +28,14 @@ feature {NONE} -- Initialization
 			active_set := false
 			add_class ("navbar navbar-inverse navbar-fixed-top")
 			create nav.make_with_tag_name ("ul")
-			create nav_right.make_with_tag_name ( "ul")
-			controls.extend (nav)
-			controls.extend (nav_right)
+			create nav_right.make_with_tag_name ("ul")
+			add_control (nav)
+			add_control (nav_right)
 			nav.add_class ("nav navbar-nav")
 			nav_right.add_class ("nav navbar-nav navbar-right")
 		end
 
-	make_with_brand ( b: STRING)
+	make_with_brand (b: STRING)
 			-- Initialize with specified brand string
 		do
 			make
@@ -78,30 +78,6 @@ feature -- Change
 				nav_right.controls.i_th (tab - nav.controls.count).add_class ("active")
 			end
 			active_set := true
-		end
-
-	add_dropdown (l: WSF_STATELESS_CONTROL; d: WSF_STATELESS_CONTROL)
-			-- Add dropdown menu (in li tag with class dropdown) to navbar
-		local
-			li: WSF_MULTI_CONTROL [WSF_STATELESS_CONTROL]
-		do
-			create li.make_with_tag_name ("li")
-			li.add_class ("dropdown")
-			li.add_control (l)
-			li.add_control (d)
-			add_element (li)
-		end
-
-	add_dropdown_right (l: WSF_STATELESS_CONTROL; d: WSF_STATELESS_CONTROL)
-			-- Add dropdown menu (in li tag with class dropdown) to right aligned part of navbar
-		local
-			li: WSF_MULTI_CONTROL [WSF_STATELESS_CONTROL]
-		do
-			create li.make_with_tag_name ("li")
-			li.add_class ("dropdown")
-			li.add_control (l)
-			li.add_control (d)
-			add_element_right (li)
 		end
 
 	add_list_element_right (l: WSF_STATELESS_CONTROL)

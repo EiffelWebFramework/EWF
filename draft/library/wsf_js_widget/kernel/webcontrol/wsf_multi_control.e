@@ -164,7 +164,7 @@ feature -- Rendering
 				Result := Result + c.item.render
 			end
 			if not tag_name.is_empty then
-				Result := render_tag (Result, "")
+				Result := render_tag (Result, attributes)
 			end
 		end
 

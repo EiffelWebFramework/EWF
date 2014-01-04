@@ -25,24 +25,22 @@ create
 
 feature {NONE} -- Initialization
 
-	make (a_label: STRING; c: WSF_VALUE_CONTROL [G])
+	make (a_label: detachable STRING; c: WSF_VALUE_CONTROL [G])
 			-- Initialize form element control with a specific label and value control
 		do
 			make_with_validators (a_label, c, create {ARRAYED_LIST [WSF_VALIDATOR [G]]}.make (0))
 		end
 
-	make_with_validators (a_label: STRING; c: WSF_VALUE_CONTROL [G]; v: LIST [WSF_VALIDATOR [G]])
+	make_with_validators (a_label: detachable STRING; c: WSF_VALUE_CONTROL [G]; v: LIST [WSF_VALIDATOR [G]])
 			-- Initialize form element control with a specific label, value control and list of validators
 		do
 			make_control ("div")
 			add_class ("form-group")
-			if not attached {WSF_VALUE_CONTROL [LIST[ANY]]} c then
-
+			if not attached {WSF_VALUE_CONTROL [LIST [ANY]]} c then
 				c.add_class ("form-control")
 			else
 				c.add_class ("form-control-static")
 			end
-
 			label_width := 2
 			value_control := c
 			validators := v
@@ -146,10 +144,12 @@ feature -- Implementation
 			body: STRING
 		do
 			body := ""
-			if not label.is_empty then
-				body.append ("<label class=%"col-lg-"+label_width.out+" control-label%" for=%"" + value_control.control_name + "%">" + label + "</label>")
+			if attached label as l and then not l.is_empty then
+				body.append ("<label class=%"col-lg-" + label_width.out + " control-label%" for=%"" + value_control.control_name + "%">" + l + "</label>")
+				body.append ("<div class=%"col-lg-" + (12 - label_width).out + "%">")
+			else
+				body.append ("<div class=%"col-lg-12%">")
 			end
-			body.append ("<div class=%"col-lg-"+(12-label_width).out+"%">")
 			body.append (value_control.render)
 			body.append ("</div>")
 			Result := render_tag (body, "")
@@ -203,7 +203,7 @@ feature -- Properties
 	validators: LIST [WSF_VALIDATOR [G]]
 			-- The validators which check the input when validaton is performed
 
-	label: STRING
+	label: detachable STRING
 			-- The label of this form element control
 
 	error: STRING

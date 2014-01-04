@@ -31,9 +31,10 @@ feature {NONE} -- Initialization
 		do
 			make_multi_control_with_tag_name (t)
 			add_class ("dropdown")
-			create {WSF_BASIC_CONTROL} dropdown_toggle.make_with_body_class ("a", "data-toggle=%"dropdown%" href=%"#%"", "dropdown-toggle", title + " <strong class=%"caret%"></strong>")
+			create {WSF_BASIC_CONTROL} dropdown_toggle.make_with_body_class ("a", "data-toggle=%"dropdown%" href=%"#%" type=%"button%" id=%"" + control_name + "_toggle%"", "dropdown-toggle", title + " <strong class=%"caret%"></strong>")
 			create dropdown_menu.make_with_tag_name ("ul")
 			dropdown_menu.add_class ("dropdown-menu")
+			dropdown_menu.append_attribute ("role=%"menu%" aria-labelledby=%"" + control_name + "_toggle%"")
 			add_control (dropdown_toggle)
 			add_control (dropdown_menu)
 		end
@@ -46,6 +47,7 @@ feature -- Change
 		do
 			create li.make_with_tag_name ("li")
 			li.append_attribute ("role=%"presentation%"")
+			c.append_attribute ("role=%"menuitem%" tabindex=%"-1%"")
 			li.add_control (c)
 			dropdown_menu.add_control (li)
 		end

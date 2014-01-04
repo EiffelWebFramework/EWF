@@ -1,4 +1,3 @@
-
 note
 	description: "Summary description for {WSF_STATELESS_MULTI_CONTROL}."
 	author: ""
@@ -38,8 +37,6 @@ feature {NONE} -- Initialization
 
 feature
 
-
-
 	set_control_id (d: INTEGER)
 		do
 			control_id := d
@@ -74,6 +71,7 @@ feature
 				d.control_name_prefix := control_name_prefix + control_id.out + "_"
 			end
 		end
+
 feature -- Event handling
 
 	handle_callback (cname: LIST [STRING]; event: STRING; event_parameter: detachable ANY)

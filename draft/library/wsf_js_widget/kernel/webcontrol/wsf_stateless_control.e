@@ -86,6 +86,7 @@ feature -- Rendering
 				l_attributes.append_character ('%"')
 			end
 			Result := "<" + tag + " " + l_attributes
+				-- Check if we have to render a body. For some elements, this is not the case (like textareas) or only if the body is not empty.
 			if body.is_empty and not tag.same_string ("textarea") and not tag.same_string ("span") and not tag.same_string ("button") and not tag.same_string ("ul") and not tag.same_string ("div") then
 				Result.append (" />")
 			else
@@ -96,11 +97,7 @@ feature -- Rendering
 	render_tag_with_body (body: STRING): STRING
 			-- Generate HTML of this control with the specified body
 		do
-			if attached attributes as attrs then
-				Result := render_tag (body, attrs)
-			else
-				Result := render_tag (body, "")
-			end
+			Result := render_tag (body, attributes)
 		end
 
 	render: STRING
