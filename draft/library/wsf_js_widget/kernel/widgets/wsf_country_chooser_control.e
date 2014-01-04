@@ -26,17 +26,11 @@ inherit
 		end
 
 create
-	make, make_with_tag_name
+	make
 
 feature {NONE} -- Initialization
 
-	make (title: STRING)
-			-- Make a dropdown control with div tag name and specified menu title
-		do
-			make_with_tag_name (title, "div")
-		end
-
-	make_with_tag_name (title, t: STRING)
+	make (t: STRING)
 			-- Make a dropdown control with specified tag name (such as li) and menu title
 		local
 			temp: WSF_MULTI_CONTROL [WSF_STATELESS_CONTROL]
@@ -64,22 +58,6 @@ feature {NONE} -- Initialization
 			options.add_control (listbox)
 			add_control (options)
 		end
-			--	 <div class="bfh-selectbox bfh-countries" data-country="US"
-			--		data-flags="true">
-			--		<input name="country" type="hidden" value=""> <a
-			--			class="bfh-selectbox-toggle" role="button"
-			--			data-toggle="bfh-selectbox" href="#"> <span
-			--			class="bfh-selectbox-option input-medium" data-option=""></span>
-			--			<b class="caret" style="border-top-color: black !important;"></b>
-			--		</a>
-			--		<div class="bfh-selectbox-options">
-			--			<input type="text" class="bfh-selectbox-filter">
-			--			<div role="listbox">
-			--				<ul role="option">
-			--				</ul>
-			--			</div>
-			--		</div>
-			--	</div>
 
 feature -- Implementation
 
@@ -90,6 +68,6 @@ feature -- Implementation
 
 feature -- Properties
 
-	input:WSF_INPUT_CONTROL
+	input: WSF_INPUT_CONTROL
 
 end
