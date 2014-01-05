@@ -26,13 +26,13 @@ create
 feature {NONE} -- Initialization
 
 	make (a_label: detachable STRING; c: WSF_VALUE_CONTROL [G])
-			-- Initialize form element control with a specific label and value control
+			-- Initialize form element control with a specific label (or 'Void' for no label) and value control
 		do
 			make_with_validators (a_label, c, create {ARRAYED_LIST [WSF_VALIDATOR [G]]}.make (0))
 		end
 
 	make_with_validators (a_label: detachable STRING; c: WSF_VALUE_CONTROL [G]; v: LIST [WSF_VALIDATOR [G]])
-			-- Initialize form element control with a specific label, value control and list of validators
+			-- Initialize form element control with a specific label (or 'Void' for no label), value control and list of validators
 		do
 			make_control ("div")
 			add_class ("form-group")

@@ -40,7 +40,7 @@ feature {NONE} -- Initialization
 			append_attribute ("data-date=%"10-09-2013%" data-date-format=%"dd-mm-yyyy%"")
 			create input.make ("10-09-2013")
 			input.add_class ("form-control")
-			input.append_attribute ("value=%"10-09-2013%" type=%"text%" size=%"16%" readonly=%"%"")
+			input.append_attribute ("size=%"16%" readonly=%"%"")
 			add_control (input)
 			create span.make_with_tag_name ("span")
 			span.add_class ("input-group-addon")
@@ -57,6 +57,6 @@ feature -- Implementation
 
 feature -- Properties
 
-	input: WSF_INPUT_CONTROL
+	input: WSF_DATETIME_CONTROL
 
 end

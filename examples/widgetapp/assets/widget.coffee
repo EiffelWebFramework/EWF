@@ -552,9 +552,6 @@ class WSF_AUTOCOMPLETE_CONTROL extends WSF_INPUT_CONTROL
     @$el.on 'typeahead:blured',()->
         self.change() 
 
-class WSF_COUNTRY_CHOOSER_CONTROL extends WSF_INPUT_CONTROL
-  requirements: ['assets/bootstrap-formhelpers-countries.js', 'assets/bootstrap-formhelpers-countries-en-US.js', 'assets/bootstrap-formhelpers-selectbox.js', 'assets/bootstrap-formhelpers-countries.css', 'assets/bootstrap-formhelpers.css']
-
 class WSF_DATETIME_PICKER_CONTROL extends WSF_INPUT_CONTROL
   requirements: ['assets/bootstrap-datetimepicker.css', 'assets/bootstrap-datetimepicker.js']
 
