@@ -98,6 +98,11 @@ feature -- Change
 			end
 		end
 
+	set_type (t: STRING)
+		do
+			type := t
+		end
+
 feature -- Implementation
 
 	value: STRING

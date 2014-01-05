@@ -24,7 +24,7 @@ feature {NONE} -- Initialization
 	make (t: STRING)
 			-- Initialize with specified control name and text to be displayed in this textarea
 		do
-			make_input ( t)
+			make_input (t)
 			tag_name := "textarea"
 		end
 

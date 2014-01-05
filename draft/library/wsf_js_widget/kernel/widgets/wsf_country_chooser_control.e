@@ -31,7 +31,7 @@ create
 feature {NONE} -- Initialization
 
 	make (t: STRING)
-			-- Make a dropdown control with specified tag name (such as li) and menu title
+			-- Make a country chooser control with specified tag name (such as li) and menu title
 		local
 			temp: WSF_MULTI_CONTROL [WSF_STATELESS_CONTROL]
 			options: WSF_MULTI_CONTROL [WSF_STATELESS_CONTROL]
