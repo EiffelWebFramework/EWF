@@ -552,17 +552,15 @@ class WSF_AUTOCOMPLETE_CONTROL extends WSF_INPUT_CONTROL
     @$el.on 'typeahead:blured',()->
         self.change() 
 
-class WSF_DATETIME_PICKER_CONTROL extends WSF_INPUT_CONTROL
-  requirements: ['assets/bootstrap-datetimepicker.css', 'assets/bootstrap-datetimepicker.js']
+class WSF_DATE_PICKER_CONTROL extends WSF_INPUT_CONTROL
+  requirements: ['assets/datepicker.css', 'assets/bootstrap-datepicker.js']
 
   attach_events: () ->
-    super
-    self = @
-    console.log @$el
-    @$el.datetimepicker({
-      language : 'en'
-      pick12HourFormat : false
-      startDate : new Date()
+  	super
+  	self = @
+  	console.log @$el
+  	@$el.datepicker({
+      format: 'dd-mm-yyyy'
     })
 
 class WSF_CHECKBOX_CONTROL extends WSF_CONTROL
