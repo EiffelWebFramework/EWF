@@ -78,23 +78,26 @@ EWF provides 3 main kinds of mappings
 Note: in the future, a Regular-Expression based kind will be added in the future, and it is possible to use custom mapping on top of EWF.
 
 Code:
-> router.map ( create {WSF_URI_TEMPLATE_MAPPING}.make (
->  “/project/{name}”, project_handler) 
-> )
->	-- And precising the request methods
-> router.map_with_request_methods ( … , router.methods_GET_POST)
+
+    router.map ( create {WSF_URI_TEMPLATE_MAPPING}.make (
+       “/project/{name}”, project_handler) 
+    )
+         -- And precising the request methods
+    router.map_with_request_methods ( ... , router.methods_GET_POST)
 
 In the previous code, the `project_handler` is an object conforming to **WSF_HANDLER**, that will process the incoming requests matching URI-template “/project/{name}”.
 
-Usually, the service will inherit from WSF_ROUTED_SERVICE, which has a `router’ attribute.
-Configuring the URL scheme is done by implementing  `{WSF_ROUTED_SERVICE}.setup_router’.
+Usually, the service will inherit from WSF_ROUTED_SERVICE, which has a `router` attribute.
+Configuring the URL scheme is done by implementing  `{WSF_ROUTED_SERVICE}.setup_router`.
 
-To make life easier, by inheriting from WSF_URI_TEMPLATE_HELPER_FOR_ROUTED_SERVICE, a few help methods are available to `map’ URI template with agent, and so on.
+To make life easier, by inheriting from WSF_URI_TEMPLATE_HELPER_FOR_ROUTED_SERVICE, a few help methods are available to `map` URI template with agent, and so on.
 See 
 + `map_uri_template (a_tpl: STRING; h: WSF_URI_TEMPLATE_HANDLER)`
 + `map_uri_template_agent (a_tpl: READABLE_STRING_8; proc: PROCEDURE [ANY, TUPLE [req: WSF_REQUEST; res: WSF_RESPONSE]])`
 + and same with request methods ...
+
 ...
+
 Check WSF_\*_HELPER_FOR_ROUTED_SERVICE for other available helper classes.
 
 How we do that in EWF? : Router with (or without context).
