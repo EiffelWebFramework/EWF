@@ -26,7 +26,7 @@ This is the low level of the framework, at this point, `req` provides access to 
 The response `res` is the interface to send data back to the client.
 For convenience, the framework provides richer service interface that handles the most common needs (filter, router, ...).
 
-[Learn more about service](Documentation__Service)
+> [Learn more about service](Documentation__Service)
 
 <a name="wiki-request"/><a name="wiki-response"/><a name="wiki-request-and-response"/>
 # Request and Response
@@ -63,7 +63,7 @@ Currently 3 main connectors are available:
 At compilation time, you can use a default connector (by using the associated default lib), but you can also use a mixed of them and choose which one to execute at runtime.
 It is fairly easy to add new connector, it just has to follow the EWSGI interface
 
-[Learn more about connector](Documentation__Connector)
+> [Learn more about connector](Documentation__Connector)
 
 <a name="wiki-router"/>
 # Router or Request Dispatcher:
@@ -109,7 +109,7 @@ How we do that in EWF? : Router with (or without context).
 Related code: wsf_router,  wsf_router_context
 Examples
 
-[Learn more about router](Documentation__Router)
+> [Learn more about router](Documentation__Router)
 
 # EWF components 
 ## URI Handler:
