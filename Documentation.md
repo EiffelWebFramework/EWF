@@ -29,6 +29,7 @@ For convenience, the framework provides richer service interface that handles th
 <a name="wiki-request"/><a name="wiki-response"/><a name="wiki-request-and-response"/>
 # Request and Response
 > see interface: **WSF_REQUEST** and **WSF_RESPONSE** 
+
 Any incoming http request is represented by an new object of type **WSF_REQUEST**.
 
 **WSF_REQUEST** provides access to
@@ -107,6 +108,7 @@ Examples
 # EWF components 
 ## URI Handler:
 > Parses the details of the URI (scheme, path, query info, etc.) and exposes them for use.
+
 How we do that in EWF?: URI Templates, but we could also use regex.
 Related code: uri_template
 Examples: 
@@ -114,12 +116,14 @@ Examples:
 
 ## Mime Parser/ Content Negotiation: 
 > Handles the details of determining the media type, language, encoding, compression (conneg). 
+
 How do we do that in EWF? Content_Negotiation library.
 Example
 
 
 ## Request Handler
-> target of request dispatcher + uri handler. 
+> target of request dispatcher + uri handler.
+ 
 Here is where we handle GET, POST PUT, etc.
 
 ## Representation Mapping
@@ -131,20 +135,21 @@ to the developer to map their domain to the target representation.
 
 ## Http Client:
 > A simple library to make requests and handle responses from other http servers.
+
 How we do that in EWF? http client library
 examples:
 
 ## Authentication/Security: 
 > Handle different auth models. (Basic, Digest?, OAuth, OpenId)
+
 How we do that in EWF? http_authorization, OpenId, and Cypress 
 examples.
 
 ## Caching:
 > Support for Caching and conditional request
+
 How we do that in Eiffel? Policy framework on top of EWF. {{{need_review}}}
 examples 
-
-
 
 
 ## EWF HTML5 Widgets
