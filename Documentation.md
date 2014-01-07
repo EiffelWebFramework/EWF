@@ -14,6 +14,7 @@ The framework also provides a router component to help dispatching the incoming 
 
 A service can be a web api, a web interface, … what ever run on top of HTTP.
 
+<a name="wiki-service"/>
 # Service
 _ see interface: WSF_SERVICE _
 
