@@ -7,19 +7,19 @@
 Eiffel Web Framework, is mainly a collection of Eiffel libraries designed to be integrated with each other. One benefit is that it supports all core HTTP features, so enable you embrace HTTP as an application protocol to develop web applications. So you do not need to adapt your applications to the web, instead you use the web power. It means you can build different kind of web applications, from Web APIs following the Hypermedia API style (REST style), CRUD web services or just conventional web applications building a session on top of an stateless protocol. 
 
 # EWF core/kernel
-_The Web Server Foundation (WSF\_) is the core of the framework. It is compliant with the EWSGI interface (WGI\_)._
+_ The Web Server Foundation (WSF\_) is the core of the framework. It is compliant with the EWSGI interface (WGI\_). _
 
-To build a web [service](./Documentation#service), the framework provides a set of core components to launch the service, for each [#request request], access the data, and send the [[Documentation #response|response]]. 
-The framework also provides a router  component to help dispatching the incoming request.
+To build a web [service](#service), the framework provides a set of core components to launch the service, for each [request](#request-and-response), access the data, and send the [response](#request-and-response). 
+The framework also provides a router component to help dispatching the incoming request.
 
 A service can be a web api, a web interface, … what ever run on top of HTTP.
 
 # Service
-see interface: WSF_SERVICE
+_ see interface: WSF_SERVICE _
 
 Each incoming http request is processed by the following routine.
 
-{WSF_SERVICE}.execute (req: WSF_REQUEST; res: WSF_RESPONSE)
+`{WSF_SERVICE}.execute (req: WSF_REQUEST; res: WSF_RESPONSE)`
 
 This is the low level of the framework, at this point, `req’ provides access to the query and form parameters, input data, headers, … as specified by the Common Gateway Interface (CGI).
 The response `res’ is the interface to send data back to the client.
