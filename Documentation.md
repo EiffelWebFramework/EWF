@@ -26,6 +26,8 @@ This is the low level of the framework, at this point, `req` provides access to 
 The response `res` is the interface to send data back to the client.
 For convenience, the framework provides richer service interface that handles the most common needs (filter, router, ...).
 
+[Learn more about service](Documentation__Service)
+
 <a name="wiki-request"/><a name="wiki-response"/><a name="wiki-request-and-response"/>
 # Request and Response
 > see interface: **WSF_REQUEST** and **WSF_RESPONSE** 
@@ -46,7 +48,7 @@ Any incoming http request is represented by an new object of type **WSF_REQUEST*
 
 The **WSF_RESPONSE** represents the communication toward the client, a service need to provide correct headers, and content. For instance the `Content-Type`, and `Content-Length`. It also allows to send data with chunked encoding.
 
-{{Learn more}}
+> [Learn more about request](Documentation__Request) and [about response](Documentation__Response)
 
 <a name="wiki-connector"/>
 # Connectors: 
@@ -60,6 +62,8 @@ Currently 3 main connectors are available:
 
 At compilation time, you can use a default connector (by using the associated default lib), but you can also use a mixed of them and choose which one to execute at runtime.
 It is fairly easy to add new connector, it just has to follow the EWSGI interface
+
+[Learn more about connector](Documentation__Connector)
 
 <a name="wiki-router"/>
 # Router or Request Dispatcher:
@@ -104,6 +108,8 @@ Check WSF_\*_HELPER_FOR_ROUTED_SERVICE for other available helper classes.
 How we do that in EWF? : Router with (or without context).
 Related code: wsf_router,  wsf_router_context
 Examples
+
+[Learn more about router](Documentation__Router)
 
 # EWF components 
 ## URI Handler:
