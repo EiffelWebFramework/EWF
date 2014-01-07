@@ -16,36 +16,40 @@ A service can be a web api, a web interface, … what ever run on top of HTTP.
 
 <a name="wiki-service"/>
 # Service
-_ see interface: WSF_SERVICE _
+_ see interface: **WSF_SERVICE** _
 
 Each incoming http request is processed by the following routine.
 
-`{WSF_SERVICE}.execute (req: WSF_REQUEST; res: WSF_RESPONSE)`
+> `{WSF_SERVICE}.execute (req: WSF_REQUEST; res: WSF_RESPONSE)`
 
 This is the low level of the framework, at this point, `req’ provides access to the query and form parameters, input data, headers, … as specified by the Common Gateway Interface (CGI).
 The response `res’ is the interface to send data back to the client.
 For convenience, the framework provides richer service interface that handles the most common needs (filter, router, …).
 
+<a name="wiki-request"/><a name="wiki-response"/><a name="wiki-request-and-response"/>
 # Request and Response
-see interface: WSF_REQUEST and WSF_RESPONSE
-Any incoming http request is represented by an new object of type WSF_REQUEST.
-WSF_REQUEST provides access to
-meta variables: CGI variables (coming from the request http header)
-query parameters: from the uri ex: ?q=abc&type=pdf
-input data: the message of the request, if this is a web form, this is parsed to build the form parameters. It can be retrieved once.
-form parameters: standard parameters from the request input data.
-typically available when a web form is sent using POST as content of type multipart/form-data or application/x-www-form-urlencoded
-(advanced usage: it is possible to write mime handler that can processed other type of content, even custom format.)
-uploaded files: if files are uploaded, their value will be available from the form parameters, and from the uploaded files as well.
-cookies variable: cookies extracted from the http header.
-path parameters: note this is related to the router and carry the semantic of the mapping (see the section on router )
-execution variables: used by the application to keep value associated with the request.
+_ see interface: **WSF_REQUEST** and **WSF_RESPONSE** _
+Any incoming http request is represented by an new object of type **WSF_REQUEST**.
 
-The WSF_RESPONSE represents the communication toward the client, a service need to provide correct headers, and content. For instance the Content-Type, and Content-Length. It also allows to send data with chunked encoding.
+**WSF_REQUEST** provides access to
+* meta variables: CGI variables (coming from the request http header)
+* query parameters: from the uri ex: ?q=abc&type=pdf
+* input data: the message of the request, if this is a web form, this is parsed to build the form parameters. It can be retrieved once.
+* form parameters: standard parameters from the request input data.
+  *typically available when a web form is sent using POST as content of type `multipart/form-data` or `application/x-www-form-urlencoded`
+  *(advanced usage: it is possible to write mime handler that can processed other type of content, even custom format.)
+* uploaded files: if files are uploaded, their value will be available from the form parameters, and from the uploaded files as well.
+* cookies variable: cookies extracted from the http header.
+* path parameters: note this is related to the router and carry the semantic of the mapping (see the section on router )
+* execution variables: used by the application to keep value associated with the request.
+
+The **WSF_RESPONSE** represents the communication toward the client, a service need to provide correct headers, and content. For instance the `Content-Type`, and `Content-Length`. It also allows to send data with chunked encoding.
 
 {{Learn more}}
-Connectors: 
-see WGI_CONNECTOR
+
+<a name="wiki-connector"/>
+# Connectors: 
+_see **WGI_CONNECTOR**_
 Using EWF, your service is built on top of underlying httpd solution/connectors.
 Currently 3 main connectors are availables:
 CGI: following the CGI interface, this is an easy solution to run the service on any platform.
