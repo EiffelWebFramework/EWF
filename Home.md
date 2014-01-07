@@ -9,7 +9,7 @@ The official documentation/wiki is located at [https://github.com/EiffelWebFrame
 - For time to time we have [web meetings](./wiki/Meetings), and less frequently [physical meetings](./wiki/Meetings) that occurs usually during other Eiffel related events.
 
 ## Documentation ##
-- to redo
+- [Documentation](./wiki/Documentation)
 
 ## Contributions ##
 - You want to contribute or follow the progress/discussion, see the [collaboration page](./wiki/Community-collaboration)
