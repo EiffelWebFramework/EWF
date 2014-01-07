@@ -7,7 +7,7 @@
 Eiffel Web Framework, is mainly a collection of Eiffel libraries designed to be integrated with each other. One benefit is that it supports all core HTTP features, so enable you embrace HTTP as an application protocol to develop web applications. So you do not need to adapt your applications to the web, instead you use the web power. It means you can build different kind of web applications, from Web APIs following the Hypermedia API style (REST style), CRUD web services or just conventional web applications building a session on top of an stateless protocol. 
 
 # EWF core/kernel
-_ The Web Server Foundation (WSF\_) is the core of the framework. It is compliant with the EWSGI interface (WGI\_). _
+_The Web Server Foundation (WSF\_) is the core of the framework. It is compliant with the EWSGI interface (WGI\_)._
 
 To build a web [service](#service), the framework provides a set of core components to launch the service, for each [request](#request-and-response), access the data, and send the [response](#request-and-response). 
 The framework also provides a router component to help dispatching the incoming request.
