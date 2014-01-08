@@ -42,7 +42,7 @@ feature {NONE} -- Initialization
 			input.append_attribute ("size=%"16%" readonly=%"%"")
 			add_control (input)
 			create span.make_with_tag_name ("span")
-			span.add_class ("input-group-addon")
+			span.add_class ("input-group-addon add-on")
 			span.add_control (create {WSF_BASIC_CONTROL}.make_with_body_class ("span", "", "glyphicon glyphicon-calendar", ""))
 			add_control (span)
 		end
@@ -56,6 +56,6 @@ feature -- Implementation
 
 feature -- Properties
 
-	input: WSF_DATETIME_CONTROL
+	input: WSF_INPUT_CONTROL
 
 end
