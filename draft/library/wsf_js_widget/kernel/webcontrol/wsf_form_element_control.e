@@ -21,25 +21,33 @@ inherit
 	WSF_VALIDATABLE
 
 create
-	make, make_with_validators
+	make, make_without_border, make_with_validators
 
 feature {NONE} -- Initialization
+
+	make_without_border (a_label: detachable STRING; c: WSF_VALUE_CONTROL [G])
+			-- Initialize form element control with a specific label (or 'Void' for no label) and value control
+		do
+			make_with_validators (a_label, False, c, create {ARRAYED_LIST [WSF_VALIDATOR [G]]}.make (0))
+		end
 
 	make (a_label: detachable STRING; c: WSF_VALUE_CONTROL [G])
 			-- Initialize form element control with a specific label (or 'Void' for no label) and value control
 		do
-			make_with_validators (a_label, c, create {ARRAYED_LIST [WSF_VALIDATOR [G]]}.make (0))
+			make_with_validators (a_label, True, c, create {ARRAYED_LIST [WSF_VALIDATOR [G]]}.make (0))
 		end
 
-	make_with_validators (a_label: detachable STRING; c: WSF_VALUE_CONTROL [G]; v: LIST [WSF_VALIDATOR [G]])
+	make_with_validators (a_label: detachable STRING; show_border: BOOLEAN; c: WSF_VALUE_CONTROL [G]; v: LIST [WSF_VALIDATOR [G]])
 			-- Initialize form element control with a specific label (or 'Void' for no label), value control and list of validators
 		do
 			make_control ("div")
 			add_class ("form-group")
-			if not attached {WSF_VALUE_CONTROL [LIST [ANY]]} c then
-				c.add_class ("form-control")
-			else
-				c.add_class ("form-control-static")
+			if show_border then
+				if not attached {WSF_VALUE_CONTROL [LIST [ANY]]} c then
+					c.add_class ("form-control")
+				else
+					c.add_class ("form-control-static")
+				end
 			end
 			label_width := 2
 			value_control := c
@@ -51,6 +59,7 @@ feature {NONE} -- Initialization
 feature
 
 	set_label_width (w: INTEGER)
+			-- Set the label span (a value between 1 and 12 to specify the bootstrap column span or 0 for not displaying the label)
 		do
 			label_width := w
 		end
@@ -210,5 +219,6 @@ feature -- Properties
 			-- The error message that is displayed when client side validation fails
 
 	label_width: INTEGER
+			-- The bootstrap column span of the label of this form element control
 
 end
