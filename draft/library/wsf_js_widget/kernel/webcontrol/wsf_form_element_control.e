@@ -56,12 +56,19 @@ feature {NONE} -- Initialization
 			error := ""
 		end
 
-feature
+feature -- Modify
 
 	set_label_width (w: INTEGER)
 			-- Set the label span (a value between 1 and 12 to specify the bootstrap column span or 0 for not displaying the label)
 		do
 			label_width := w
+		end
+
+feature -- Access
+
+	value: G
+		do
+			Result := value_control.value
 		end
 
 feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
@@ -184,7 +191,7 @@ feature -- Validation
 		local
 			current_value: G
 		do
-			current_value := value_control.value
+			current_value := value
 			is_valid := True
 			across
 				validators as c
