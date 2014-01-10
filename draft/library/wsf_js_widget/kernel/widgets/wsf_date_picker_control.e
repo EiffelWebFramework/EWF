@@ -37,7 +37,7 @@ feature {NONE} -- Initialization
 		do
 			make_multi_control_with_tag_name (t)
 			add_class ("input-group date")
-			create input.make ("10-09-2013")
+			create input.make ((create {DATE_TIME}.make_now).formatted_out ("[0]dd-[0]mm-yyyy"))
 			input.add_class ("form-control")
 			input.append_attribute ("size=%"16%" readonly=%"%"")
 			add_control (input)
