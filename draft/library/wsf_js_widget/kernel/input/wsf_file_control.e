@@ -146,6 +146,11 @@ feature -- Change
 			end
 		end
 
+	set_value (v: detachable WSF_FILE)
+		do
+			file := v
+		end
+
 feature -- Properties
 
 	disabled: BOOLEAN

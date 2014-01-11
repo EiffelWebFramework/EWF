@@ -110,6 +110,11 @@ feature -- Implementation
 			Result := text
 		end
 
+	set_value (v: STRING)
+		do
+			text := v
+		end
+
 feature -- Properties
 
 	disabled: BOOLEAN

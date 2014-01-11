@@ -18,4 +18,8 @@ feature -- Access
 		deferred
 		end
 
+	set_value (v: G)
+		deferred
+		end
+
 end

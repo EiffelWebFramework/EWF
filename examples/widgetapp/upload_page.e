@@ -8,7 +8,7 @@ class
 	UPLOAD_PAGE
 
 inherit
-
+ 
 	BASE_PAGE
 		redefine
 			initialize_controls

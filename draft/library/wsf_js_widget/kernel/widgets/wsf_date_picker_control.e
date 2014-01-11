@@ -54,6 +54,11 @@ feature -- Implementation
 			Result := input.value
 		end
 
+	set_value (v: STRING)
+		do
+			input.set_value (v)
+		end
+
 feature -- Properties
 
 	input: WSF_INPUT_CONTROL
