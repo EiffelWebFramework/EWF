@@ -48,4 +48,13 @@ feature -- Implementation
 			end
 		end
 
+	set_value (v: LIST [STRING])
+		do
+			across
+				controls as c
+			loop
+				c.item.set_value (v.has (c.item.checked_value))
+			end
+		end
+
 end

@@ -10,7 +10,9 @@ class
 inherit
 
 	WSF_VALUE_CONTROL [STRING]
-	rename make as make_value_control end
+		rename
+			make as make_value_control
+		end
 
 create
 	make
@@ -20,7 +22,7 @@ feature {NONE} -- Initialization
 	make (t, v: STRING)
 			-- Initialize
 		do
-			make_value_control ( t)
+			make_value_control (t)
 			html := v
 		end
 
@@ -43,7 +45,7 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 
 feature --Event handling
 
-	handle_callback (cname: LIST[STRING]; event: STRING; event_parameter: detachable ANY)
+	handle_callback (cname: LIST [STRING]; event: STRING; event_parameter: detachable ANY)
 		do
 		end
 
@@ -66,6 +68,11 @@ feature -- Implementation
 	value: STRING
 		do
 			Result := html
+		end
+
+	set_value (v: STRING)
+		do
+			html := v
 		end
 
 feature -- Properties

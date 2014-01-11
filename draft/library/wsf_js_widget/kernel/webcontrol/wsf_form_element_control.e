@@ -71,6 +71,11 @@ feature -- Access
 			Result := value_control.value
 		end
 
+	set_value (v: G)
+		do
+			value_control.set_value (v)
+		end
+
 feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 
 	load_state (new_states: JSON_OBJECT)

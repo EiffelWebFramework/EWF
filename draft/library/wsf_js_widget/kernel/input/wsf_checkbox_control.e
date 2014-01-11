@@ -22,7 +22,7 @@ feature {NONE} -- Initialization
 	make (l, c: STRING)
 			-- Initialize with specified control name,
 		do
-			make_value_control ( "input")
+			make_value_control ("input")
 			label := l
 			checked_value := c
 		end
@@ -54,9 +54,9 @@ feature --Event handling
 			change_event := e
 		end
 
-	handle_callback (cname: LIST[STRING]; event: STRING; event_parameter: detachable ANY)
+	handle_callback (cname: LIST [STRING]; event: STRING; event_parameter: detachable ANY)
 		do
-			if Current.control_name.same_string (cname[1]) and attached change_event as cevent then
+			if Current.control_name.same_string (cname [1]) and attached change_event as cevent then
 				if event.same_string ("change") then
 					cevent.call (Void)
 				end
@@ -79,6 +79,11 @@ feature -- Implementation
 	value: BOOLEAN
 		do
 			Result := checked
+		end
+
+	set_value (v: BOOLEAN)
+		do
+			checked := v
 		end
 
 feature -- Properties
