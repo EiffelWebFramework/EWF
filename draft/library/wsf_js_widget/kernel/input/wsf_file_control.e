@@ -15,13 +15,19 @@ inherit
 		end
 
 create
-	make
+	make, make_with_image_preview
 
 feature {NONE} -- Initialization
 
 	make
 		do
 			make_value_control ("input")
+		end
+
+	make_with_image_preview
+		do
+			make
+			image_preview := True
 		end
 
 feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
@@ -36,6 +42,12 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 					id := a_id.unescaped_string_32
 				end
 				create file.make (new_name.unescaped_string_32, new_type.unescaped_string_32, new_size.item.to_integer_32, id);
+			end
+			if attached {JSON_BOOLEAN} new_state.item ("disabled") as a_disabled then
+				disabled := a_disabled.item
+			end
+			if attached {JSON_BOOLEAN} new_state.item ("image_preview") as a_image_preview then
+				image_preview := a_image_preview.item
 			end
 		end
 
@@ -52,6 +64,7 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 				Result.put_string (f.id, "file_id")
 			end
 			Result.put_boolean (disabled, "disabled")
+			Result.put_boolean (image_preview, "image_preview")
 		end
 
 feature -- Event handling
@@ -115,7 +128,7 @@ feature -- Implementation
 			if disabled then
 				attr.append ("disabled=%"disabled%" ")
 			end
-			Result := render_tag ("", attr)
+			Result := render_tag_with_tagname ("div", render_tag ("", attr), Void, "")
 		end
 
 feature -- Change
@@ -151,10 +164,21 @@ feature -- Change
 			file := v
 		end
 
+	set_image_preview (b: BOOLEAN)
+		do
+			if image_preview /= b then
+				image_preview := b
+				state_changes.replace_with_boolean (image_preview, "image_preview")
+			end
+		end
+
 feature -- Properties
 
 	disabled: BOOLEAN
 			-- Defines if the a file is selectable and if a file can be removed once it is uploaded
+
+	image_preview: BOOLEAN
+			-- Preview uploaded image
 
 	file: detachable WSF_FILE
 			-- Text to be displayed

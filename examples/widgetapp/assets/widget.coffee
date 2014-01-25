@@ -385,7 +385,7 @@ class WSF_FILE_CONTROL extends WSF_CONTROL
     @uploading = true
     @$el.hide()
     @progressbar = $ """<div class="progress progress-striped active upload"><div rstyle="width: 10%;" class="progress-bar"></div></div>"""
-    @$el.parent().append(@progressbar)
+    @$el.parent().prepend(@progressbar)
 
     formData = new FormData();
     action = @callback_url
@@ -433,6 +433,15 @@ class WSF_FILE_CONTROL extends WSF_CONTROL
       @state['file_name'] = file.name
       @state['file_type'] = file.type
       @state['file_size'] = file.size
+    if @state['image_preview']
+      reader = new FileReader();
+      reader.readAsDataURL(@$el[0].files[0]);
+      self = @
+      reader.onload = (e)->
+          self.$el.parent().find("img").remove() 
+          preview = $("""<img >""").addClass("media thumbnail")
+          preview[0].src = e.target.result
+          self.$el.parent().append(preview)
     if @state['callback_change']
       @trigger_callback(@control_name, 'change')
     @trigger('change')
@@ -441,6 +450,9 @@ class WSF_FILE_CONTROL extends WSF_CONTROL
     return @$el.val()
 
   update: (state) ->
+    if state.image_preview != undefined
+      @state['image_preview'] = state.image_preview 
+      @refresh()
     if state.disabled != undefined
       @state['disabled'] = state.disabled
       @$el.prop('disabled', state.disabled)
@@ -463,18 +475,21 @@ class WSF_FILE_CONTROL extends WSF_CONTROL
     if @uploading
       return
     @progressbar?.remove()
-    @$el.parent().find("p").remove()
+    @$el.parent().find("p, img").remove() 
     if @state['file_id'] != null
       @$el.hide()
       fname = $("""<p></p>""").addClass("form-control-static").text(@state['file_name'])
       @$el.parent().append(fname)
+      if @state['image_preview']
+        preview = $("""<img >""").attr('src', @state['file_id']).addClass("media thumbnail")
+        @$el.parent().append(preview)
       if not @state['disabled']
         fname.append(" ");
         removebtn = $("<button />").text("Remove").addClass("btn btn-xs btn-danger")
         self = @
         removebtn.click ()->
           self.progressbar?.remove()
-          self.$el.parent().find("p").remove()
+          self.$el.parent().find("p, img").remove()
           self.$el.show()
           self.$el.val('')
           self.change()
