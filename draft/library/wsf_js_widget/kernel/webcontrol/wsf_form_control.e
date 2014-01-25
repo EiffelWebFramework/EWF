@@ -42,7 +42,7 @@ feature
 	add_control (c: WSF_STATELESS_CONTROL)
 		do
 			Precursor (c)
-			if attached {WSF_FORM_ELEMENT_CONTROL[ANY]} c as fec then
+			if attached {WSF_FORM_ELEMENT_CONTROL[detachable ANY]} c as fec then
 				fec.set_label_width (label_width)
 			end
 		end

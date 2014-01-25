@@ -667,9 +667,10 @@ WSF_FILE_CONTROL = (function(_super) {
     var self;
     WSF_FILE_CONTROL.__super__.attach_events.apply(this, arguments);
     self = this;
-    return this.$el.change(function() {
+    this.$el.change(function() {
       return self.change();
     });
+    return this.refresh();
   };
 
   WSF_FILE_CONTROL.prototype.change = function() {
@@ -722,11 +723,13 @@ WSF_FILE_CONTROL = (function(_super) {
   };
 
   WSF_FILE_CONTROL.prototype.refresh = function() {
-    var fname, removebtn, self;
+    var fname, removebtn, self, _ref;
     if (this.uploading) {
       return;
     }
-    this.progressbar.remove();
+    if ((_ref = this.progressbar) != null) {
+      _ref.remove();
+    }
     this.$el.parent().find("p").remove();
     if (this.state['file_id'] !== null) {
       this.$el.hide();
@@ -737,7 +740,10 @@ WSF_FILE_CONTROL = (function(_super) {
         removebtn = $("<button />").text("Remove").addClass("btn btn-xs btn-danger");
         self = this;
         removebtn.click(function() {
-          self.progressbar.remove();
+          var _ref1;
+          if ((_ref1 = self.progressbar) != null) {
+            _ref1.remove();
+          }
           self.$el.parent().find("p").remove();
           self.$el.show();
           self.$el.val('');

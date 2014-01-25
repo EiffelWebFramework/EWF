@@ -420,6 +420,7 @@ class WSF_FILE_CONTROL extends WSF_CONTROL
     self = @
     @$el.change ()->
       self.change()
+    @refresh()
 
   change: ()->
     #update local state
@@ -461,7 +462,7 @@ class WSF_FILE_CONTROL extends WSF_CONTROL
   refresh: ()->
     if @uploading
       return
-    @progressbar.remove()
+    @progressbar?.remove()
     @$el.parent().find("p").remove()
     if @state['file_id'] != null
       @$el.hide()
@@ -472,7 +473,7 @@ class WSF_FILE_CONTROL extends WSF_CONTROL
         removebtn = $("<button />").text("Remove").addClass("btn btn-xs btn-danger")
         self = @
         removebtn.click ()->
-          self.progressbar.remove()
+          self.progressbar?.remove()
           self.$el.parent().find("p").remove()
           self.$el.show()
           self.$el.val('')
