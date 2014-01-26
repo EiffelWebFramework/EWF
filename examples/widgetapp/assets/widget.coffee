@@ -79,7 +79,12 @@ parseSuggestions = (data)->
         return d
   return null
 loaded = {}
-
+once = (f)->
+  executed = false
+  () ->
+    if not executed
+      executed = true
+      f.apply(this, arguments)
 lazy_load = (requirements,fn,that)->
   if requirements.length == 0
     return ()->
@@ -105,9 +110,23 @@ lazy_load = (requirements,fn,that)->
       loaded[r].done(done)
             
     done()
+find_control = (root, name) ->
+  children = root.children()
+  if children.length
+    matching = children.filter('[data-name='+name+']')
+    if matching.length
+      matching.first()
+    else
+      find_control children.filter(':not([data-name])'), name
+  else
+    null
 
 build_control = (control_name, state, control)->
-  $el = control.$el.find('[data-name='+control_name+']').first()
+  $el = find_control(control.$el, control_name)
+  if $el == null
+    return null
+  if $el.data('control')?
+    return $el.data('control')
   #get control type
   type = $el.data('type')
   #create class
@@ -159,6 +178,7 @@ class WSF_CONTROL
     @isolation = (""+@$el.data('isolation')=="1")
     @$el.data('control',@)
     @initialize = lazy_load @requirements, @attach_events, @
+    @initialize = once @initialize
     return
 
   load_subcontrols: ()->
@@ -195,14 +215,15 @@ class WSF_CONTROL
  
   process_update: (new_states)->
     try
-      if new_states.actions?
+      if new_states?.actions?
         @process_actions(new_states.actions)
-      if new_states[@control_name]?
+      if new_states?[@control_name]?
         @update(new_states[@control_name])
         for control in @controls
           if control?
             control.process_update(new_states[this.control_name]['controls'])
     catch e
+      console.error(e)
       return
     return
     
@@ -281,7 +302,7 @@ class WSF_CONTROL
 
   remove:()->
     for control in @controls
-      control.remove()
+      control?.remove()
     console.log "Removed #{@control_name}"
     @$el.remove()
 
@@ -296,6 +317,7 @@ class WSF_PAGE_CONTROL extends WSF_CONTROL
     @url_params = jQuery.unparam(@state['url_params'])
     @$el.data('control',@)
     @initialize = lazy_load @requirements, @attach_events, @
+    @initialize = once @initialize
     @load_subcontrols()
 
   process_update: (new_states)->
@@ -313,7 +335,7 @@ class WSF_PAGE_CONTROL extends WSF_CONTROL
 
   remove:()->
     for control in @controls
-      control.remove()
+      control?.remove()
     console.log "Removed #{@control_name}"
     @$el.remove()
     
@@ -507,15 +529,20 @@ class WSF_DYNAMIC_MULTI_CONTROL extends WSF_CONTROL
 
   update: (state)->
     console.log state
-    if state.items? and state.render? and state.newstate?
+    if state.items? and state.render? and state.newstate? 
       @state['items'] = state.items
       for control in @controls
-        control.remove()
-      @$el.html($(state.render).html())
-      @fullstate.controls = state.newstate
+        if not (control?.control_name of state.newstate)
+          control?.remove()
+      for el in $(state.render).children()
+        if @$el.children('[data-name='+$(el).data('name')+']').length == 0 
+          @$el.append(el)
+      for k,v of state.newstate
+        if not (k of @fullstate.controls)
+          @fullstate.controls[k] = v
       @load_subcontrols()
       for control in @controls
-        control.initialize()
+        control?.initialize() 
     return
 
 class WSF_PASSWORD_CONTROL extends   WSF_INPUT_CONTROL   

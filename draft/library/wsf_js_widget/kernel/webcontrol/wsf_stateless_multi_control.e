@@ -14,7 +14,8 @@ inherit
 			add_control,
 			set_control_name_prefix,
 			handle_callback,
-			set_control_id
+			set_control_id,
+			render_tag
 		end
 
 create
@@ -63,6 +64,20 @@ feature
 				d.control_id := controls.count
 				d.control_name_prefix := control_name_prefix + control_id.out + "_"
 			end
+		end
+
+	render_tag (body: STRING; attrs: detachable STRING): STRING
+			-- Generate HTML of this control with the specified body and attributes
+		local
+			css_classes_string: STRING
+		do
+			create css_classes_string.make_empty
+			across
+				css_classes as c
+			loop
+				css_classes_string.append (" " + c.item)
+			end
+			Result := render_tag_with_tagname (tag_name, body, attrs, css_classes_string)
 		end
 
 feature -- Event handling

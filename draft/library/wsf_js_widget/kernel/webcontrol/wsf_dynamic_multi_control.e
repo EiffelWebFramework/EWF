@@ -26,6 +26,7 @@ feature {NONE} -- Initialization
 		do
 			Precursor (tag)
 			create items.make_array
+			create pending_removes.make (1)
 		end
 
 feature {WSF_DYNAMIC_MULTI_CONTROL} -- Iternal functions
@@ -36,9 +37,49 @@ feature {WSF_DYNAMIC_MULTI_CONTROL} -- Iternal functions
 			controls.extend (c)
 			if attached {WSF_CONTROL} c as d then
 				d.control_id := id
-				max_id := id.max (max_id)
 			end
+			max_id := id.max (max_id)
 			items_changed := True
+		end
+
+	execute_pending_removes
+		local
+			found: BOOLEAN
+			fitem: detachable G
+			frow: detachable JSON_OBJECT
+		do
+			across
+				pending_removes as id
+			loop
+				across
+					controls as c
+				until
+					found
+				loop
+					if c.item.control_id = id.item then
+						fitem := c.item
+						found := True
+					end
+				end
+				if attached fitem as i then
+					controls.prune (i)
+				end
+				found := False
+				across
+					items.array_representation as c
+				until
+					found
+				loop
+					if attached {JSON_OBJECT} c.item as row and then attached {JSON_NUMBER} row.item ("id") as rid and then rid.item.to_integer_32 = id.item then
+						frow := row
+						found := True
+					end
+				end
+				if attached frow as r then
+					items.array_representation.prune (r)
+				end
+				items_changed := True
+			end
 		end
 
 feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
@@ -89,12 +130,19 @@ feature
 			end
 		end
 
+	remove_control_by_id (id: INTEGER)
+			--Add removes to pending removes list
+		do
+			pending_removes.extend (id)
+		end
+
 	read_state_changes (states: WSF_JSON_OBJECT)
 		local
 			new_state: WSF_JSON_OBJECT
 			sub_state: WSF_JSON_OBJECT
 		do
 			Precursor (states)
+			execute_pending_removes
 			if items_changed then
 				new_state := state
 				create sub_state.make
@@ -114,8 +162,13 @@ feature
 
 	items: JSON_ARRAY
 
+	pending_removes: ARRAYED_LIST [INTEGER]
+
 	items_changed: BOOLEAN
 
 	max_id: INTEGER
+
+invariant
+	all_items_exist: items.count = controls.count
 
 end
