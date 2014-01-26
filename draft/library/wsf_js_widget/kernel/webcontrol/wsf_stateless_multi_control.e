@@ -10,8 +10,6 @@ class
 inherit
 
 	WSF_MULTI_CONTROL [G]
-		rename
-			make_with_tag_name as make_with_tag_name_and_name
 		redefine
 			add_control,
 			set_control_name_prefix,
@@ -24,14 +22,9 @@ create
 
 feature {NONE} -- Initialization
 
-	make_with_tag_name (t: STRING)
-		do
-			make_with_tag_name_and_name (t)
-		end
-
 	make_tag_less
 		do
-			make_with_tag_name_and_name ("")
+			make_with_tag_name ("")
 			stateless := True
 		end
 

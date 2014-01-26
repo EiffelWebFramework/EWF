@@ -258,7 +258,7 @@ feature -- Basic operation
 				if f.exists then
 					f.rename_file (a_destination)
 					Result := True
-				end
+				end				
 			end
 		ensure
 			removed: not exists

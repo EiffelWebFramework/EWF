@@ -96,9 +96,6 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 	read_state_changes (states: WSF_JSON_OBJECT)
 			-- Add a new entry in the `states_changes` JSON object with the `control_name` as key and the `state` as value
 		do
-			if state_changes.count > 0 then
-				states.put (state_changes, control_name)
-			end
 			if actions.count > 0 then
 				if not attached states.item ("actions") then
 					states.put (create {JSON_ARRAY}.make_array, "actions")
@@ -127,7 +124,7 @@ feature -- Rendering
 	render_tag (body: STRING; attrs: detachable STRING): STRING
 			-- Render this control with the specified body and attributes
 		do
-			Result := render_tag_with_generator_name (generator, body, attrs)
+			Result := render_tag_with_generator_name (js_class, body, attrs)
 		end
 
 	render_tag_with_generator_name (a_generator, body: STRING; attrs: detachable STRING): STRING
@@ -150,6 +147,11 @@ feature -- Rendering
 				l_attributes.append (" data-isolation=%"1%"")
 			end
 			Result := render_tag_with_tagname (tag_name, body, l_attributes, css_classes_string)
+		end
+
+	js_class: STRING
+		do
+			Result := generator
 		end
 
 feature -- Event handling
@@ -185,7 +187,6 @@ feature -- Properties
 		end
 
 	control_name_prefix: STRING assign set_control_name_prefix
-
 
 	set_control_name_prefix (p: STRING)
 		do

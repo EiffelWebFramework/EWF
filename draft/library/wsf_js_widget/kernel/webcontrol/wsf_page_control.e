@@ -83,7 +83,7 @@ feature -- Implementation
 							set_state (sp)
 						end
 					end
-					event_parameter:=request.uploaded_files
+					event_parameter := request.uploaded_files
 				end
 				handle_callback (event_control_name.split ('-'), event, event_parameter)
 				create states_changes.make

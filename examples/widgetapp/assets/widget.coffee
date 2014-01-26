@@ -280,6 +280,8 @@ class WSF_CONTROL
     return @
 
   remove:()->
+    for control in @controls
+      control.remove()
     console.log "Removed #{@control_name}"
     @$el.remove()
 
@@ -310,6 +312,8 @@ class WSF_PAGE_CONTROL extends WSF_CONTROL
     state
 
   remove:()->
+    for control in @controls
+      control.remove()
     console.log "Removed #{@control_name}"
     @$el.remove()
     
@@ -476,7 +480,7 @@ class WSF_FILE_CONTROL extends WSF_CONTROL
       return
     @progressbar?.remove()
     @$el.parent().find("p, img").remove() 
-    if @state['file_id'] != null
+    if @state['file_id']?
       @$el.hide()
       fname = $("""<p></p>""").addClass("form-control-static").text(@state['file_name'])
       @$el.parent().append(fname)
@@ -499,6 +503,20 @@ class WSF_FILE_CONTROL extends WSF_CONTROL
       @$el.val('')
       @change()
 
+class WSF_DYNAMIC_MULTI_CONTROL extends WSF_CONTROL
+
+  update: (state)->
+    console.log state
+    if state.items? and state.render? and state.newstate?
+      @state['items'] = state.items
+      for control in @controls
+        control.remove()
+      @$el.html($(state.render).html())
+      @fullstate.controls = state.newstate
+      @load_subcontrols()
+      for control in @controls
+        control.initialize()
+    return
 
 class WSF_PASSWORD_CONTROL extends   WSF_INPUT_CONTROL   
 
