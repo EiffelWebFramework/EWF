@@ -1,5 +1,9 @@
 note
-	description: "Summary description for {WSF_FORM_ELEMENT_CONTROL}."
+	description: "[
+		A container class which encapsulates a form element (like input
+		fields) and, optionally, the corresponding validators and an
+		optional label.
+	]"
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"

@@ -1,5 +1,8 @@
 note
-	description: "Summary description for {WSF_BUTTON_CONTROL}."
+	description: "[
+		Represents a button control (button html keyword). Provides a
+		callback agent which will be invoked when the button is clicked.
+	]"
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"

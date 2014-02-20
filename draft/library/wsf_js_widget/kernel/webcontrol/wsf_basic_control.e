@@ -1,5 +1,9 @@
 note
-	description: "Summary description for {WSF_BASIC_CONTROL}."
+	description: "[
+		Represents a simple basic element with a user specified html tag.
+		This control is lightweight and can be used to create custom
+		stateless controls, e.g. headers.
+	]"
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"

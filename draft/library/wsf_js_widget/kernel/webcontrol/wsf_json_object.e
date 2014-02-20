@@ -1,5 +1,7 @@
 note
-	description: "Summary description for {WSF_JSON_OBJECT}."
+	description: "[
+		Advanced implementation of JSON_OBJECT with some helper	functions.
+	]"
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"

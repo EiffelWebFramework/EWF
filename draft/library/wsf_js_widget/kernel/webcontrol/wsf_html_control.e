@@ -1,5 +1,9 @@
 note
-	description: "Summary description for {WSF_html_CONTROL}."
+	description: "[
+		A convenience class that can be used to insert custom html code.
+		This class is a value control which means that the html text can
+		be updated.
+	]"
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"

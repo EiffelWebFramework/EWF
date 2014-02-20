@@ -1,5 +1,9 @@
 note
-	description: "Summary description for {WSF_PAGE_CONTROL}."
+	description: "[
+			The skeleton for a page control which represents a single page
+			of the web application. This class is the starting point for
+			event distribution, rendering and state handling.
+	]"
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"

@@ -1,5 +1,8 @@
 note
-	description: "Summary description for {WSF_CONTROL}."
+	description: "[
+			This class is the base class for all stateful controls, like
+			buttons or forms.
+	]"
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"

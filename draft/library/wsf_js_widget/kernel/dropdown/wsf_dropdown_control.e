@@ -1,5 +1,8 @@
 note
-	description: "Summary description for {WSF_DROPDOWN_CONTROL}."
+	description: "[
+		Represents a bootstrap dropdown control. This class contains
+		facilities to add items or dividers.
+	]"
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"

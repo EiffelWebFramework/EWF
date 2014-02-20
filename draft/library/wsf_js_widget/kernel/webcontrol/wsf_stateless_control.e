@@ -1,5 +1,10 @@
 note
-	description: "Summary description for {WSF_STATELESS_CONTROL}."
+	description: "[
+		This class is the base class of the framework.
+		Stateless controls are HTML elements which have no state (e.g.
+		headers, layout containers or static text fields. Stateful
+		controls (WSF_CONTROL) are subtypes	of this class.
+	]"
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"

@@ -1,5 +1,8 @@
 note
-	description: "Summary description for {WSF_DATETIME_PICKER_CONTROL}."
+	description: "[
+		A very basic datepicker widget based on the datepicker from
+		Stefan Petre (http://www.eyecon.ro/bootstrap-datepicker).
+	]"
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"

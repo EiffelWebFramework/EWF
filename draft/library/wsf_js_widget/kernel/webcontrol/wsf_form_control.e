@@ -1,5 +1,8 @@
 note
-	description: "Summary description for {WSF_FORM_CONTROL}."
+	description: "[
+		Represents a standard html form. Provides facilities for
+		validation.
+	]"
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"

@@ -1,5 +1,8 @@
 note
-	description: "Summary description for {WSF_LAYOUT_CONTROL}."
+	description: "[
+			A lightweight layout container to encapsulate the grid layout
+			provided by bootstrap.
+	]"
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"

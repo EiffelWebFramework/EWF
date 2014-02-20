@@ -1,5 +1,8 @@
 note
-	description: "Summary description for {WSF_VALUE_CONTROL}."
+	description: "[
+		Controls that can store a value inherit from this class.
+		Such controls are for example input fields, buttons or checkboxes.
+	]"
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"

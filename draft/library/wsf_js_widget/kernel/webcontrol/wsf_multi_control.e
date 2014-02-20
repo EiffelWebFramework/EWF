@@ -1,5 +1,8 @@
 note
-	description: "Summary description for {WSF_MULTI_CONTROL}."
+	description: "[
+		Mutli controls are used as containers for multiple controls, for
+		example a form is a multi control.
+	]"
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
