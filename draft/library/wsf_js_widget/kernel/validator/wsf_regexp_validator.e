@@ -1,5 +1,7 @@
 note
-	description: "Summary description for {WSF_REGEXP_VALIDATOR}."
+	description: "[
+		Validator implementation which validates the input based on a given regular expression
+	]"
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"

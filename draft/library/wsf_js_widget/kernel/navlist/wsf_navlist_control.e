@@ -1,5 +1,8 @@
 note
-	description: "Summary description for {WSF_NAVLIST_CONTROL}."
+	description: "[
+		WSF_NAVLIST_CONTROL encapsulates the linked items provided by bootstrap.
+		http://getbootstrap.com/components/#list-group-linked
+	]"
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
@@ -28,20 +31,22 @@ feature {NONE} -- Initialization
 feature -- Change
 
 	add_link (link, text: STRING)
+			-- Add a link to nav list
 		local
 			c: WSF_NAVLIST_ITEM_CONTROL
 		do
 			create c.make (link, text)
-			add_control(c)
+			add_control (c)
 		end
 
-	add_button (event:attached like {WSF_BUTTON_CONTROL}.click_event; text: STRING)
+	add_button (event: attached like {WSF_BUTTON_CONTROL}.click_event; text: STRING)
+			-- Add a button control to navlist
 		local
 			c: WSF_NAVLIST_ITEM_CONTROL
 		do
 			create c.make ("", text)
-			c.set_click_event(event)
-			add_control(c)
+			c.set_click_event (event)
+			add_control (c)
 		end
 
 end

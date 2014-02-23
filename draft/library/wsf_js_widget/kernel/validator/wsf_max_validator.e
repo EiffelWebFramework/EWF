@@ -1,5 +1,7 @@
 note
-	description: "Summary description for {WSF_MAX_VALIDATOR}."
+	description: "[
+		Validator implementation which make sure that the input is at most x long.
+	]"
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"

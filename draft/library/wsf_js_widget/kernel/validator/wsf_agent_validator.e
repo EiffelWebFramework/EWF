@@ -1,5 +1,7 @@
 note
-	description: "Summary description for {WSF_AGENT_VALIDATOR}."
+	description: "[
+		Wrapper whit which a agent can be used as validator
+	]"
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"

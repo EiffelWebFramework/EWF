@@ -1,5 +1,9 @@
 note
-	description: "Summary description for {WSF_NAVBAR_CONTROL}."
+	description: "[
+		WSF_NAVBAR_CONTROL encapsulates the navbar provided by bootstrap.
+		Simple menu items as well as dropdown lists and panels can be added to this control
+		http://getbootstrap.com/components/#navbar
+	]"
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"

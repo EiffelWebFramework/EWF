@@ -1,5 +1,7 @@
 note
-	description: "Summary description for {WSF_VALIDATABLE}."
+	description: "[
+		Defines that control can be validated.
+	]"
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"

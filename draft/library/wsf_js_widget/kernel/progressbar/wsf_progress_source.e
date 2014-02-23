@@ -1,11 +1,14 @@
 note
-	description: "Summary description for {WSF_PROGRESSSOURCE}."
+	description: "[
+			Provides the WSF_PROGRESS_CONTROL with the current progress state.
+			Represented by a number between 0 and 100
+	]"
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
 deferred class
-	WSF_PROGRESSSOURCE
+	WSF_PROGRESS_SOURCE
 
 feature -- Specification
 

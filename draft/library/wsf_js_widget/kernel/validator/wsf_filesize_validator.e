@@ -1,5 +1,7 @@
 note
-	description: "Summary description for {WSF_FILESIZE_VALIDATOR}."
+	description: "[
+		Validator implementation which make sure that the uploaded file is smaller than x bytes
+	]"
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
@@ -34,7 +36,7 @@ feature -- Implementation
 		do
 			Result := True
 			if attached input as a_input then
-				Result := a_input.size < max or a_input.size = max
+				Result := a_input.size < max
 			end
 		end
 

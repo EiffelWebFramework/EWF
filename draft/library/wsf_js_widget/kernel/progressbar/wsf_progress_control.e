@@ -1,5 +1,9 @@
 note
-	description: "Summary description for {WSF_PROGRESS_CONTROL}."
+	description: "[
+			WSF_PROGRESS_CONTROL encapsulates the progress bar provided by bootstrap.
+			The value of the progress bar can either be set directly using set_progress
+			or it can be fetched from a progress source.
+	]"
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
@@ -27,7 +31,7 @@ feature {NONE} -- Initialization
 			progress := 0
 		end
 
-	make_with_source ( p: WSF_PROGRESSSOURCE)
+	make_with_source ( p: WSF_PROGRESS_SOURCE)
 			-- Initialize with specified control name and progresssource
 		do
 			make
@@ -93,7 +97,7 @@ feature -- Implementation
 
 feature -- Properties
 
-	progress_source: detachable WSF_PROGRESSSOURCE
+	progress_source: detachable WSF_PROGRESS_SOURCE
 
 	progress: INTEGER
 

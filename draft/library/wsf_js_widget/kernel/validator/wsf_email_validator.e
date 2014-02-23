@@ -1,5 +1,7 @@
 note
-	description: "Summary description for {WSF_EMAIL_VALIDATOR}."
+	description: "[
+		Validator implementation which make sure that the input has a the format of an valid email address
+	]"
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"

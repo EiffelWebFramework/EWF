@@ -1,5 +1,7 @@
 note
-	description: "Summary description for {WSF_VALIDATOR}."
+	description: "[
+		Base validation class which can be added to the WSF_FORM_ELEMENT_CONTROL
+	]"
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"

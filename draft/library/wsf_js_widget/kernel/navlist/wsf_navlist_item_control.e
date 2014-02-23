@@ -1,5 +1,7 @@
 note
-	description: "Summary description for {WSF_NAVLIST_ITEM}."
+	description: "[
+		WSF_NAVLIST_ITEM_CONTROL represents a menu item in WSF_NAVLIST_CONTROL
+	]"
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
@@ -33,7 +35,7 @@ feature {NONE} -- Initialization
 feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 
 	set_state (new_state: JSON_OBJECT)
-			-- Restore text from json
+			-- Restore text and active state from json
 		do
 			Precursor {WSF_BUTTON_CONTROL} (new_state)
 			if attached {JSON_BOOLEAN} new_state.item ("active") as new_active then
@@ -42,7 +44,7 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 		end
 
 	state: WSF_JSON_OBJECT
-			-- Return state which contains the current text and if there is an event handle attached
+			-- Return state which contains the current text, if the control is active and if there is an event handle attached
 		do
 			Result := Precursor {WSF_BUTTON_CONTROL}
 			Result.put_boolean (active, "active")

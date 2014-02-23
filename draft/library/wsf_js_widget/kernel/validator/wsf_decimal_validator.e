@@ -1,5 +1,7 @@
 note
-	description: "Summary description for {WSF_DECIMAL_VALIDATOR}."
+	description: "[
+		Validator implementation which make sure that the input is a decimal number
+	]"
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"

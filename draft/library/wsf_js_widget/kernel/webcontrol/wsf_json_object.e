@@ -1,6 +1,8 @@
 note
 	description: "[
 		Advanced implementation of JSON_OBJECT with some helper	functions.
+		This class can be removed since the proposed changes where merged in
+		to https://github.com/eiffelhub/json
 	]"
 	author: ""
 	date: "$Date$"
