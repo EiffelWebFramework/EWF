@@ -99,6 +99,9 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 	read_state_changes (states: WSF_JSON_OBJECT)
 			-- Add a new entry in the `states_changes` JSON object with the `control_name` as key and the `state` as value
 		do
+			if state_changes.count > 0 then
+				states.put (state_changes, control_name)
+			end
 			if actions.count > 0 then
 				if not attached states.item ("actions") then
 					states.put (create {JSON_ARRAY}.make_array, "actions")
