@@ -8,7 +8,7 @@ class
 	UPLOAD_PAGE
 
 inherit
- 
+
 	BASE_PAGE
 		redefine
 			initialize_controls
@@ -29,13 +29,13 @@ feature -- Implementation
 			create filebox.make
 			filebox.set_upload_function (agent upload_file)
 			filebox.set_upload_done_event (agent submit_form)
-			create n0_container.make ("File Upload", filebox)
-			n0_container.add_validator (create {WSF_FILESIZE_VALIDATOR}.make (10000000, "File must be smaller than 10MB"))
-			form.add_control (n0_container)
+			create n1_container.make ("File Upload", filebox)
+			n1_container.add_validator (create {WSF_FILESIZE_VALIDATOR}.make (10000000, "File must be smaller than 10MB"))
+			form.add_control (n1_container)
 				--File
 			create filebox2.make
 			filebox2.set_upload_function (agent upload_file)
-			create n1_container.make ("Auto start Upload", filebox2)
+			create n2_container.make ("Auto start Upload", filebox2)
 			filebox2.set_change_event (agent
 				do
 					n1_container.validate
@@ -43,8 +43,15 @@ feature -- Implementation
 						filebox2.start_upload
 					end
 				end)
-			n1_container.add_validator (create {WSF_FILESIZE_VALIDATOR}.make (10000000, "File must be smaller than 10MB"))
-			form.add_control (n1_container)
+			n2_container.add_validator (create {WSF_FILESIZE_VALIDATOR}.make (10000000, "File must be smaller than 10MB"))
+			form.add_control (n2_container)
+				--Image
+			create filebox3.make_with_image_preview
+			filebox3.set_upload_function (agent upload_file)
+			filebox3.set_upload_done_event (agent submit_form)
+			create n3_container.make ("Image Upload", filebox3)
+			n3_container.add_validator (create {WSF_FILESIZE_VALIDATOR}.make (10000000, "File must be smaller than 10MB"))
+			form.add_control (n3_container)
 
 				--Button 1
 			create button1.make ("Update")
@@ -63,7 +70,9 @@ feature -- Implementation
 					if not f.is_uploaded then
 						filebox.set_disabled (true)
 						filebox.start_upload
-						filebox2.set_disabled (true)
+						filebox2.set_disabled (true) 
+						filebox3.set_disabled (true)
+						filebox3.start_upload
 						button1.set_disabled (true)
 						button1.set_text ("Uploading ...")
 					else
@@ -99,8 +108,12 @@ feature -- Properties
 
 	filebox2: WSF_FILE_CONTROL
 
-	n0_container: WSF_FORM_ELEMENT_CONTROL [detachable WSF_FILE]
+	filebox3: WSF_FILE_CONTROL
 
 	n1_container: WSF_FORM_ELEMENT_CONTROL [detachable WSF_FILE]
+
+	n2_container: WSF_FORM_ELEMENT_CONTROL [detachable WSF_FILE]
+
+	n3_container: WSF_FORM_ELEMENT_CONTROL [detachable WSF_FILE]
 
 end
