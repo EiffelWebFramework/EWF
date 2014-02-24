@@ -39,7 +39,7 @@ feature -- Impl
 	check_basic_auth_for_login_password (u,p: READABLE_STRING_32; a_title: READABLE_STRING_8)
 		local
 			h: HTTP_AUTHORIZATION
-			l_auth: READABLE_STRING_8
+			l_auth: detachable READABLE_STRING_8
 		do
 			create h.make_basic_auth (u, p)
 			assert (a_title + ":login", attached h.login as l_login and then l_login.same_string (u))
