@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<system xmlns="http://www.eiffel.com/developers/xml/configuration-1-10-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eiffel.com/developers/xml/configuration-1-10-0 http://www.eiffel.com/developers/xml/configuration-1-10-0.xsd" name="all" uuid="1172C52C-6979-4293-8F01-80FADA5A2B69">
+<system xmlns="http://www.eiffel.com/developers/xml/configuration-1-10-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eiffel.com/developers/xml/configuration-1-10-0 http://www.eiffel.com/developers/xml/configuration-1-10-0.xsd" name="all" uuid="1172C52C-6979-4293-8F01-80FADA5A2B69" library_target="all_stable">
 	<description>Integration project including many lib</description>
-	<target name="all">
+	<target name="all_stable">
 		<root all_classes="true"/>
 		<file_rule>
 			<exclude>/.git$</exclude>
@@ -14,7 +14,7 @@
 		<library name="client" location="..\examples\restbucksCRUD\client\client-safe.ecf" readonly="false"/>
 		<library name="upload_image" location="..\examples\upload_image\upload_image-safe.ecf" readonly="false"/>
 		<library name="http_client" location="..\library\network\http_client\http_client-safe.ecf" readonly="false"/>
-		<library name="conneg" location="..\library\network\protocol\CONNEG\conneg-safe.ecf" readonly="false"/>
+		<library name="conneg" location="..\library\network\protocol\content_negotiation\conneg-safe.ecf" readonly="false"/>
 		<library name="http" location="..\library\network\protocol\http\http-safe.ecf" readonly="false"/>
 		<library name="openid" location="..\library\security\openid\consumer\openid-safe.ecf" readonly="false"/>
 		<library name="demo-1" location="..\library\security\openid\consumer\demo\demo-safe.ecf" readonly="false"/>
@@ -50,12 +50,12 @@
 		<library name="wizard" location="..\tools\ise_wizard\ewf_ise_wizard-safe.ecf" readonly="false"/>
 		<library name="notification_email" location="..\library\runtime\process\notification_email\notification_email-safe.ecf" readonly="false"/>
 	</target>
-	<target name="all_windows" extends="all">
+	<target name="all_stable_windows" extends="all_stable">
 		<description>Compiling as Windows , on other platforms than Windows</description>
 		<root all_classes="true"/>
 		<setting name="platform" value="windows"/>
 	</target>
-	<target name="all_unix" extends="all">
+	<target name="all_stable_unix" extends="all_stable">
 		<description>Compiling as UNIX , on other platforms than Unix</description>
 		<root all_classes="true"/>
 		<setting name="platform" value="unix"/>
