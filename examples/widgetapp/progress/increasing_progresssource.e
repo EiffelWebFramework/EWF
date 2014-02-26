@@ -9,7 +9,7 @@ class
 
 inherit
 
-	WSF_PROGRESSSOURCE
+	WSF_PROGRESS_SOURCE
 
 create
 	make
