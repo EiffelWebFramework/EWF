@@ -19,7 +19,7 @@ The framework also provides a router component to help dispatching the incoming 
 
 A service can be a web api, a web interface, … what ever run on top of HTTP.
 
-<a name="wiki-service"/>
+<a name="wiki-service"></a>
 # Service
 > see interface: **WSF_SERVICE** 
 
@@ -33,7 +33,7 @@ For convenience, the framework provides richer service interface that handles th
 
 > [Learn more about service](Documentation__Service)
 
-<a name="wiki-request"/><a name="wiki-response"/><a name="wiki-request-and-response"/>
+<a name="wiki-request"></a><a name="wiki-response"></a><a name="wiki-request-and-response"></a>
 # Request and Response
 > see interface: **WSF_REQUEST** and **WSF_RESPONSE** 
 
@@ -55,7 +55,7 @@ The **WSF_RESPONSE** represents the communication toward the client, a service n
 
 > [Learn more about request](Documentation__Request) and [about response](Documentation__Response)
 
-<a name="wiki-connector"/>
+<a name="wiki-connector"></a>
 # Connectors: 
 > see **WGI_CONNECTOR**
 
@@ -70,7 +70,7 @@ It is fairly easy to add new connector, it just has to follow the EWSGI interfac
 
 > [Learn more about connector](Documentation__Connector)
 
-<a name="wiki-router"/>
+<a name="wiki-router"></a>
 # Router or Request Dispatcher:
 > Routes HTTP requests to the proper execution code
 
@@ -170,10 +170,10 @@ examples
 ## EWF application generators
 
 
-<a name="wiki-EWSGI"/>
+<a name="wiki-EWSGI"></a>
 # EWSGI Specification
 
-<a name="wiki-libraries"/>
+<a name="wiki-libraries"></a>
 # Libraries 
 
 External libraries are included, such as Cypress OAuth (Security), HTML parsing library, Template Engine Smarty.
