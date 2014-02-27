@@ -16,3 +16,10 @@ Eiffel Web Framework's documentation, included in this repo in the root director
 3. Open [http://localhost:9000](http://localhost:9000) in your browser, and voilà.
 
 Learn more about using Jekyll by reading their [documentation](http://jekyllrb.com/docs/home/).
+
+### Update the wiki pages
+1. git remote add -f ewf_wiki https://github.com/EiffelWebFramework/EWF.wiki.git
+2. git merge -s ours --no-commit --squash ewf_wiki/master
+3. git pull -X subtree=wiki ewf_wiki master
+4. then git commit if needed
+
