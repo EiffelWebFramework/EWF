@@ -1,3 +1,8 @@
+---
+layout: default
+title: EWSGI Open Questions
+base_url: ../../
+---
 ## STRING_32, UTF-8, ... ? ##
 Berend raised the point that using STRING_32 is consuming 4 times the space used for STRING_8.
 And CPU is cheaper than memory, so we should try to use as less memory as possible.

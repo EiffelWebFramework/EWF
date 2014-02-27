@@ -1,3 +1,8 @@
+---
+layout: default
+title: Filter
+base_url: ../../
+---
 # Introduction
 
 The basic idea of a filter is to pre-process incoming data and post-process outgoing data.

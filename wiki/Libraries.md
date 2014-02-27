@@ -1,3 +1,8 @@
+---
+layout: default
+title: Libraries
+base_url: ../../
+---
 ## libraries currently part of the Eiffel Web Framework ##
 * [[Library-EWSGI]]: Eiffel Web Server Gateway Interface  (prefix WGI_  for **W**eb**G**ateway**I**nterface)
 * [[Library-libFCGI]]: Eiffel wrapper of libfcgi SDK (http://www.fastcgi.com/devkit/libfcgi/)

@@ -1,3 +1,8 @@
+---
+layout: default
+title: Request and response
+base_url: ../../
+---
 # Request
 The class _WSF_REQUEST_ can be used to access data related to the HTTP request.
 

@@ -1,3 +1,8 @@
+---
+layout: default
+title: Task json
+base_url: ../../
+---
 ## Goal ##
 - Make this JSON library the default one for the community
 

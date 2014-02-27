@@ -1,3 +1,8 @@
+---
+layout: default
+title: EWSGI specification difference in main proposals
+base_url: ../../
+---
 Currently the **design of the EWSGI** is not going very fast, mainly due to conflicts for the core design.
 
 Let's try to summary today's **points of conflict** between Paul's proposal, and Jocelyn's proposal.

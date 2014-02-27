@@ -1,3 +1,8 @@
+---
+layout: default
+title: Web meeting 2012 09 18
+base_url: ../../
+---
 ## Participants
 
 * Jocelyn Fiat

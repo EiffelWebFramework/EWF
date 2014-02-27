@@ -1,3 +1,8 @@
+---
+layout: default
+title: Documentation
+base_url: ../../
+---
 # Current Status 
 * Official repository: <https://github.com/EiffelWebFramework/EWF>
 * Official website: <http://eiffelwebframework.github.io/EWF/getting-started/>

@@ -1,3 +1,8 @@
+---
+layout: default
+title: Community collaboration
+base_url: ../../
+---
 This project is a community project
 
 ## Mailing list ##

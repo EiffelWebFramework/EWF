@@ -1,3 +1,8 @@
+---
+layout: default
+title: Connectors
+base_url: ../../
+---
 The main goal of the connectors is to let you choose a target at compile time.
 This allows you to concentrate on your business during development time and then decide which target you choose at deployment time.
 The current connectors are:
