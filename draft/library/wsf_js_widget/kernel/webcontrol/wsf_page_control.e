@@ -1,8 +1,8 @@
 note
 	description: "[
-			The skeleton for a page control which represents a single page
-			of the web application. This class is the starting point for
-			event distribution, rendering and state handling.
+		The skeleton for a page control which represents a single page
+		of the web application. This class is the starting point for
+		event distribution, rendering and state handling.
 	]"
 	author: ""
 	date: "$Date$"
@@ -25,8 +25,14 @@ inherit
 feature {NONE} -- Initialization
 
 	make (req: WSF_REQUEST; res: WSF_RESPONSE)
+		do
+			make_with_base_path (req, res, "/")
+		end
+
+	make_with_base_path (req: WSF_REQUEST; res: WSF_RESPONSE; a_base_path: STRING_32)
 			-- Initialize
 		do
+			base_path := a_base_path
 			control_name := req.request_time_stamp.out
 			make_control ("body")
 			request := req
@@ -119,12 +125,20 @@ feature -- Implementation
 			create Result.make_empty
 			if not ajax then
 				Result.append ("<html><head>")
-				Result.append ("<link href=%"/assets/bootstrap.min.css%" rel=%"stylesheet%">")
-				Result.append ("<link href=%"/assets/widget.css%" rel=%"stylesheet%">")
+				Result.append ("<link href=%"")
+				Result.append (base_path)
+				Result.append ("assets/bootstrap.min.css%" rel=%"stylesheet%">")
+				Result.append ("<link href=%"")
+				Result.append (base_path)
+				Result.append ("assets/widget.css%" rel=%"stylesheet%">")
 				Result.append ("</head><body data-name=%"" + control_name + "%" data-type=%"WSF_PAGE_CONTROL%">")
 				Result.append (control.render)
-				Result.append ("<script src=%"/assets/jquery.min.js%"></script>")
-				Result.append ("<script src=%"/assets/widget.js%"></script>")
+				Result.append ("<script src=%"")
+				Result.append (base_path)
+				Result.append ("assets/jquery.min.js%"></script>")
+				Result.append ("<script src=%"")
+				Result.append (base_path)
+				Result.append ("assets/widget.js%"></script>")
 				Result.append ("<script type=%"text/javascript%">$(function() {var page= new WSF_PAGE_CONTROL(")
 				Result.append (full_state.representation)
 				Result.append (");page.initialize();});</script>")
@@ -197,6 +211,8 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 feature
 
 	control_name: STRING_32
+
+	base_path: STRING_32
 
 feature {NONE} -- Root control
 
