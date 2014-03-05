@@ -12,7 +12,7 @@ create
 
 feature {NONE}
 
-	make (a_name, a_type: STRING; a_size: INTEGER; a_id: detachable STRING)
+	make (a_name, a_type: STRING_32; a_size: INTEGER; a_id: detachable STRING_32)
 		do
 			name := a_name
 			type := a_type
@@ -22,7 +22,7 @@ feature {NONE}
 
 feature
 
-	set_id (a_id: detachable STRING)
+	set_id (a_id: detachable STRING_32)
 		do
 			id := a_id
 		end
@@ -34,16 +34,16 @@ feature --Properties
 			Result := attached id
 		end
 
-	name: STRING
+	name: STRING_32
 			-- File name
 
-	type: STRING
+	type: STRING_32
 			-- File mime type
 
 	size: INTEGER
 			-- File size
 
-	id: detachable STRING
+	id: detachable STRING_32
 			-- Server side file id (e.g. S3 filename)
 
 end

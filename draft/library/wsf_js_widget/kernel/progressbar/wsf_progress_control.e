@@ -55,7 +55,7 @@ feature -- State handling
 
 feature -- Event handling
 
-	handle_callback (cname: LIST[STRING]; event: STRING; event_parameter: detachable ANY)
+	handle_callback (cname: LIST[STRING_32]; event: STRING_32; event_parameter: detachable ANY)
 		do
 			if cname[1].same_string (control_name) and event.same_string ("progress_fetch") then
 				state_changes.put_integer (progress_value, "progress")
@@ -64,9 +64,9 @@ feature -- Event handling
 
 feature -- Rendering
 
-	render: STRING
+	render: STRING_32
 		local
-			p: STRING
+			p: STRING_32
 		do
 			p := progress_value.out
 			Result := render_tag_with_tagname ("div", "", "role=%"progressbar%" aria-valuenow=%"" + p + "%" aria-valuemin=%"0%" aria-valuemax=%"100%" style=%"width: " + p + "%%;%"", "progress-bar")

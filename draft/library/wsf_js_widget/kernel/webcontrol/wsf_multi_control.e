@@ -32,7 +32,7 @@ feature {NONE} -- Initialization
 			make_with_tag_name ("div")
 		end
 
-	make_with_tag_name (t: STRING)
+	make_with_tag_name (t: STRING_32)
 			-- Initialize with specified control name and tag
 		do
 			make_control (t)
@@ -135,7 +135,7 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 
 feature -- Event handling
 
-	handle_callback (cname: LIST [STRING]; event: STRING; event_parameter: detachable ANY)
+	handle_callback (cname: LIST [STRING_32]; event: STRING_32; event_parameter: detachable ANY)
 			-- Pass callback to subcontrols
 		do
 			if equal (cname [1], control_name) then
@@ -157,7 +157,7 @@ feature -- Event handling
 
 feature -- Rendering
 
-	render: STRING
+	render: STRING_32
 			-- HTML representation of this multi control
 		do
 			Result := ""

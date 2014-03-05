@@ -29,7 +29,7 @@ feature {NONE} -- Initialization
 
 feature -- Render
 
-	render_item (item: G): STRING
+	render_item (item: G): STRING_32
 			-- Render table row
 		do
 			Result := ""
@@ -41,7 +41,7 @@ feature -- Render
 			Result := render_tag_with_tagname ("tr", Result, "", "")
 		end
 
-	render_header: STRING
+	render_header: STRING_32
 			-- Render table header
 		do
 			Result := ""
@@ -53,10 +53,10 @@ feature -- Render
 			Result := render_tag_with_tagname ("thead", render_tag_with_tagname ("tr", Result, "", ""), "", "")
 		end
 
-	render: STRING
+	render: STRING_32
 			-- Render entre table and subcontrols
 		local
-			table: STRING
+			table: STRING_32
 		do
 			table := render_tag_with_tagname ("table", render_header + render_tag_with_tagname ("tbody", render_body, "", ""), "", "table table-striped")
 			Result := ""

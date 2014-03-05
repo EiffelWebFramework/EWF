@@ -48,7 +48,7 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 
 feature --Event handling
 
-	handle_callback (cname: LIST[STRING]; event: STRING; event_parameter: detachable ANY)
+	handle_callback (cname: LIST[STRING_32]; event: STRING_32; event_parameter: detachable ANY)
 			-- Handle goto/next/prev events
 		do
 			if Current.control_name.same_string (cname[1]) then
@@ -57,7 +57,7 @@ feature --Event handling
 				elseif event.same_string ("prev") then
 					datasource.set_page (datasource.page - 1)
 				elseif event.same_string ("goto") then
-					if attached {STRING}event_parameter as p and then attached p.to_integer as i then
+					if attached {STRING_32}event_parameter as p and then attached p.to_integer as i then
 						datasource.set_page (i)
 					end
 				end
@@ -67,12 +67,12 @@ feature --Event handling
 
 feature -- Render
 
-	render: STRING
+	render: STRING_32
 			-- Render paging control
 		local
 			paging_start: INTEGER
 			paging_end: INTEGER
-			cssclass: STRING
+			cssclass: STRING_32
 		do
 			Result := render_tag_with_tagname ("li", render_tag_with_tagname ("a", "&laquo;", "href=%"#%" data-nr=%"prev%"", ""), "", "")
 			paging_start := (datasource.page - 4).max (1)

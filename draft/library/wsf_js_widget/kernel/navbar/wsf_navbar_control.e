@@ -39,7 +39,7 @@ feature {NONE} -- Initialization
 			nav_right.add_class ("nav navbar-nav navbar-right")
 		end
 
-	make_with_brand (b: STRING)
+	make_with_brand (b: STRING_32)
 			-- Initialize with specified brand string
 		do
 			make
@@ -48,10 +48,10 @@ feature {NONE} -- Initialization
 
 feature -- Rendering
 
-	render: STRING
+	render: STRING_32
 		local
-			temp: STRING
-			nav_string: STRING
+			temp: STRING_32
+			nav_string: STRING_32
 		do
 			temp := render_tag_with_tagname ("span", "", "", "icon-bar")
 			temp.multiply (3)
@@ -129,7 +129,7 @@ feature -- Properties
 	active_set: BOOLEAN
 			-- This flag is set once a tab has been set as active tab
 
-	brand: detachable STRING
+	brand: detachable STRING_32
 			-- Optional brand of the navbar
 
 	nav: WSF_STATELESS_MULTI_CONTROL [WSF_STATELESS_CONTROL]

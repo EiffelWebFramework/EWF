@@ -11,7 +11,7 @@ deferred class
 
 feature {NONE} -- Initialization
 
-	make (e: STRING)
+	make (e: STRING_32)
 			-- Initialize with specified error message to be displayed on validation failure
 		do
 			error := e
@@ -34,6 +34,6 @@ feature -- Access
 
 feature -- Properties
 
-	error: STRING
+	error: STRING_32
 
 end

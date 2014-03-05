@@ -62,10 +62,10 @@ feature -- Implementation
 			-- Entry Point: If request is a callback, restore control states and execute handle then return new state json.
 			-- If request is not a callback. Run process and render the html page
 		local
-			event: detachable STRING
+			event: detachable STRING_32
 			event_parameter: detachable ANY
-			event_control_name: detachable STRING
-			states: STRING
+			event_control_name: detachable STRING_32
+			states: STRING_32
 			states_changes: WSF_JSON_OBJECT
 			json_parser: JSON_PARSER
 		do
@@ -111,7 +111,7 @@ feature -- Implementation
 			response.send (page)
 		end
 
-	render: STRING
+	render: STRING_32
 		local
 			ajax: BOOLEAN
 		do
@@ -146,7 +146,7 @@ feature -- Implementation
 			control.read_state_changes (states)
 		end
 
-	get_parameter (key: STRING): detachable STRING
+	get_parameter (key: STRING_32): detachable STRING_32
 			-- Read query parameter as string
 		local
 			value: detachable WSF_VALUE
@@ -160,7 +160,7 @@ feature -- Implementation
 
 feature -- Event handling
 
-	handle_callback (cname: LIST [STRING]; event: STRING; event_parameter: detachable ANY)
+	handle_callback (cname: LIST [STRING_32]; event: STRING_32; event_parameter: detachable ANY)
 			-- Forward callback to control
 		do
 			control.handle_callback (cname, event, event_parameter)
@@ -196,7 +196,7 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 
 feature
 
-	control_name: STRING
+	control_name: STRING_32
 
 feature {NONE} -- Root control
 

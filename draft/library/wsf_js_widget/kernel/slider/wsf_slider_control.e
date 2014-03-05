@@ -43,16 +43,16 @@ feature -- State handling
 
 feature -- Callback
 
-	handle_callback (cname: LIST[STRING]; event: STRING; event_parameter: detachable ANY)
+	handle_callback (cname: LIST[STRING_32]; event: STRING_32; event_parameter: detachable ANY)
 		do
 				-- Do nothing here
 		end
 
 feature -- Rendering
 
-	render: STRING
+	render: STRING_32
 		local
-			temp: STRING
+			temp: STRING_32
 		do
 			temp := list.render
 			temp.append (slide_wrapper.render)
@@ -63,7 +63,7 @@ feature -- Rendering
 
 feature -- Change
 
-	add_image_with_caption (src, alt, caption: STRING)
+	add_image_with_caption (src, alt, caption: STRING_32)
 		local
 			caption_control: detachable WSF_STATELESS_CONTROL
 		do
@@ -73,13 +73,13 @@ feature -- Change
 			add_image_with_caption_control (src, alt, caption_control)
 		end
 
-	add_image_with_caption_control (src, alt: STRING; caption: detachable WSF_STATELESS_CONTROL)
+	add_image_with_caption_control (src, alt: STRING_32; caption: detachable WSF_STATELESS_CONTROL)
 			-- Add a new image to the slider, with specified url, alternative text and caption element
 		do
 			add_control (create {WSF_BASIC_CONTROL}.make_with_body_class ("img", "src=%"" + src + "%" alt=%"" + alt + "%"", "", ""), Void)
 		end
 
-	add_image (src, alt: STRING)
+	add_image (src, alt: STRING_32)
 			-- Add a new image to the slider, with specified url and alternative text
 		do
 			add_image_with_caption (src, alt, "")
@@ -88,7 +88,7 @@ feature -- Change
 	add_control (c: WSF_STATELESS_CONTROL; caption: detachable WSF_STATELESS_CONTROL)
 			-- Add a new control to the slider
 		local
-			cl: STRING
+			cl: STRING_32
 			item: WSF_MULTI_CONTROL [WSF_STATELESS_CONTROL]
 		do
 			create item.make ()

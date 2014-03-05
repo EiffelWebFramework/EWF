@@ -60,12 +60,12 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 
 feature -- Rendering
 
-	render_item (item: G): STRING
+	render_item (item: G): STRING_32
 			--Render item
 		deferred
 		end
 
-	render_body: STRING
+	render_body: STRING_32
 			--Render Body
 		do
 			Result := ""
@@ -76,10 +76,10 @@ feature -- Rendering
 			end
 		end
 
-	render: STRING
+	render: STRING_32
 			--Render repeater inclusive paging if paging is available
 		local
-			content: STRING
+			content: STRING_32
 		do
 			content := render_tag_with_tagname ("div", render_body, "", "repeater_content")
 			Result := ""

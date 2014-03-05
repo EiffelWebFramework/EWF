@@ -23,7 +23,7 @@ create
 
 feature {NONE} -- Initialization
 
-	make (m: INTEGER; e: STRING)
+	make (m: INTEGER; e: STRING_32)
 			-- Initialize with specified maximum filesize and error message which will be displayed on validation failure
 		do
 			make_validator (e)

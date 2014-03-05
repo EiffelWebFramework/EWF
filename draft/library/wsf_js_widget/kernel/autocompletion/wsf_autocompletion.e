@@ -9,12 +9,12 @@ deferred class
 
 feature -- Access
 
-	autocompletion (input: STRING): JSON_ARRAY
+	autocompletion (input: STRING_32): JSON_ARRAY
 			-- JSON array of suggestions that fit the specific input
 		deferred
 		end
 
-	template: detachable STRING
+	template: detachable STRING_32
 			-- Customizable template
 
 end

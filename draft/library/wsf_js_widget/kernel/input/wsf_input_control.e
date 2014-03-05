@@ -9,7 +9,7 @@ class
 
 inherit
 
-	WSF_VALUE_CONTROL [STRING]
+	WSF_VALUE_CONTROL [STRING_32]
 		rename
 			make as make_value_control
 		end
@@ -19,7 +19,7 @@ create
 
 feature {NONE} -- Initialization
 
-	make (v: STRING)
+	make (v: STRING_32)
 			-- Initialize with specified value
 		do
 			make_value_control ("input")
@@ -54,7 +54,7 @@ feature --Event handling
 			change_event := e
 		end
 
-	handle_callback (cname: LIST [STRING]; event: STRING; event_parameter: detachable ANY)
+	handle_callback (cname: LIST [STRING_32]; event: STRING_32; event_parameter: detachable ANY)
 		do
 			if Current.control_name.same_string (cname [1]) and attached change_event as cevent then
 				if event.same_string ("change") then
@@ -65,9 +65,9 @@ feature --Event handling
 
 feature -- Rendering
 
-	render: STRING
+	render: STRING_32
 		local
-			attr: STRING
+			attr: STRING_32
 		do
 			attr := "type=%"" + type + "%" value=%"" + text + "%" "
 			if attached attributes as a then
@@ -81,7 +81,7 @@ feature -- Rendering
 
 feature -- Change
 
-	set_text (t: STRING)
+	set_text (t: STRING_32)
 			-- Set text to be displayed
 		do
 			if not t.same_string (text) then
@@ -98,19 +98,19 @@ feature -- Change
 			end
 		end
 
-	set_type (t: STRING)
+	set_type (t: STRING_32)
 		do
 			type := t
 		end
 
 feature -- Implementation
 
-	value: STRING
+	value: STRING_32
 		do
 			Result := text
 		end
 
-	set_value (v: STRING)
+	set_value (v: STRING_32)
 		do
 			text := v
 		end
@@ -120,10 +120,10 @@ feature -- Properties
 	disabled: BOOLEAN
 			-- Defines if the input field is editable
 
-	text: STRING
+	text: STRING_32
 			-- Text to be displayed
 
-	type: STRING
+	type: STRING_32
 			-- Type of this input control
 
 	change_event: detachable PROCEDURE [ANY, TUPLE]

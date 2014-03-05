@@ -16,7 +16,7 @@ create
 
 feature {NONE} -- Initialization
 
-	make (l: ITERABLE [STRING])
+	make (l: ITERABLE [STRING_32])
 			-- Initialize
 		do
 			list := l
@@ -24,7 +24,7 @@ feature {NONE} -- Initialization
 
 feature -- Implementation
 
-	autocompletion (input: STRING): JSON_ARRAY
+	autocompletion (input: STRING_32): JSON_ARRAY
 			-- Implementation
 		local
 			o: WSF_JSON_OBJECT
@@ -41,7 +41,7 @@ feature -- Implementation
 			end
 		end
 
-	list: ITERABLE [STRING]
+	list: ITERABLE [STRING_32]
 			-- List containing suggestions
 
 end

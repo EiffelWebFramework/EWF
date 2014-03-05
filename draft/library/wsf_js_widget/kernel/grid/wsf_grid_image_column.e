@@ -21,14 +21,14 @@ create
 
 feature {NONE} -- Initialization
 
-	make (a_header, a_field: STRING)
+	make (a_header, a_field: STRING_32)
 		do
 			make_column (a_header, a_field)
 		end
 
 feature -- Render
 
-	render_column (e: WSF_ENTITY): STRING
+	render_column (e: WSF_ENTITY): STRING_32
 			-- Return the rendered column image cell for a specific entity (row)
 		do
 			if attached e.item (field_name) as data then

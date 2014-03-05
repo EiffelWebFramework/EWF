@@ -21,7 +21,7 @@ create
 
 feature {NONE} -- Initialization
 
-	make (h: like handler; e: STRING)
+	make (h: like handler; e: STRING_32)
 		do
 			make_validator (e)
 			handler := h

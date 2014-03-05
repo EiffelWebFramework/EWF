@@ -22,7 +22,7 @@ create
 
 feature {NONE} -- Initialization
 
-	make (a_text: STRING)
+	make (a_text: STRING_32)
 			-- Initialize with specified control name and text
 		do
 			make_control ("button")
@@ -58,7 +58,7 @@ feature --Event handling
 			click_event := e
 		end
 
-	handle_callback (cname: LIST [STRING]; event: STRING; event_parameter: detachable ANY)
+	handle_callback (cname: LIST [STRING_32]; event: STRING_32; event_parameter: detachable ANY)
 		do
 			if Current.control_name.same_string (cname [1]) and attached click_event as cevent then
 				cevent.call (Void)
@@ -67,10 +67,10 @@ feature --Event handling
 
 feature -- Rendering
 
-	render: STRING
+	render: STRING_32
 			-- HTML representation of this control
 		local
-			attr: STRING
+			attr: STRING_32
 		do
 			create attr.make_empty
 			if attached attributes as a then
@@ -84,7 +84,7 @@ feature -- Rendering
 
 feature -- Change
 
-	set_text (t: STRING)
+	set_text (t: STRING_32)
 			-- Set text of that button
 		do
 			if not t.same_string (text) then
@@ -106,7 +106,7 @@ feature -- Properties
 	disabled: BOOLEAN
 			-- Defines if the button is editable
 
-	text: STRING
+	text: STRING_32
 			-- The text currently displayed on this button
 
 	click_event: detachable PROCEDURE [ANY, TUPLE]

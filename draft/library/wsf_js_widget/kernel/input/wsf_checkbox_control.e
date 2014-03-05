@@ -19,7 +19,7 @@ create
 
 feature {NONE} -- Initialization
 
-	make (l, c: STRING)
+	make (l, c: STRING_32)
 			-- Initialize with specified control name,
 		do
 			make_value_control ("input")
@@ -54,7 +54,7 @@ feature --Event handling
 			change_event := e
 		end
 
-	handle_callback (cname: LIST [STRING]; event: STRING; event_parameter: detachable ANY)
+	handle_callback (cname: LIST [STRING_32]; event: STRING_32; event_parameter: detachable ANY)
 		do
 			if Current.control_name.same_string (cname [1]) and attached change_event as cevent then
 				if event.same_string ("change") then
@@ -65,9 +65,9 @@ feature --Event handling
 
 feature -- Implementation
 
-	render: STRING
+	render: STRING_32
 		local
-			attrs: STRING
+			attrs: STRING_32
 		do
 			attrs := "type=%"checkbox%""
 			if checked then
@@ -88,13 +88,13 @@ feature -- Implementation
 
 feature -- Properties
 
-	label: STRING
+	label: STRING_32
 			-- The label of the checkbox control
 
 	checked: BOOLEAN
 			-- The checked value of the checkbox control
 
-	checked_value: STRING
+	checked_value: STRING_32
 			-- String checked value
 
 	change_event: detachable PROCEDURE [ANY, TUPLE]

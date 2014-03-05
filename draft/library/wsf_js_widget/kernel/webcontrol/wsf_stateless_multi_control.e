@@ -40,7 +40,7 @@ feature
 			set_subcontrol_prefixes
 		end
 
-	set_control_name_prefix (p: STRING)
+	set_control_name_prefix (p: STRING_32)
 		do
 			control_name_prefix := p
 			set_subcontrol_prefixes
@@ -69,10 +69,10 @@ feature
 			end
 		end
 
-	render_tag (body: STRING; attrs: detachable STRING): STRING
+	render_tag (body: STRING_32; attrs: detachable STRING_32): STRING_32
 			-- Generate HTML of this control with the specified body and attributes
 		local
-			css_classes_string: STRING
+			css_classes_string: STRING_32
 		do
 			create css_classes_string.make_empty
 			across
@@ -85,7 +85,7 @@ feature
 
 feature -- Event handling
 
-	handle_callback (cname: LIST [STRING]; event: STRING; event_parameter: detachable ANY)
+	handle_callback (cname: LIST [STRING_32]; event: STRING_32; event_parameter: detachable ANY)
 			-- Pass callback to subcontrols
 		do
 			across
