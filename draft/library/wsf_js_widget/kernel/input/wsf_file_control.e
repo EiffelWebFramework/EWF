@@ -9,7 +9,7 @@ class
 
 inherit
 
-	WSF_VALUE_CONTROL [detachable WSF_FILE]
+	WSF_VALUE_CONTROL [detachable WSF_FILE_DEFINITION]
 		rename
 			make as make_value_control
 		end
@@ -35,7 +35,7 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 	set_state (new_state: JSON_OBJECT)
 			-- Restore text from json
 		local
-			id: detachable STRING
+			id: detachable STRING_32
 		do
 			if attached {JSON_STRING} new_state.item ("file_name") as new_name and attached {JSON_STRING} new_state.item ("file_type") as new_type and attached {JSON_NUMBER} new_state.item ("file_size") as new_size then
 				if attached {JSON_STRING} new_state.item ("file_id") as a_id then
@@ -69,12 +69,12 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 
 feature -- Event handling
 
-	handle_callback (cname: LIST [STRING]; event: STRING; event_parameter: detachable ANY)
+	handle_callback (cname: LIST [STRING_32]; event: STRING_32; event_parameter: detachable ANY)
 		local
-			f_name: detachable STRING
-			f_type: detachable STRING
+			f_name: detachable STRING_32
+			f_type: detachable STRING_32
 			f_size: detachable INTEGER
-			f_id: detachable STRING
+			f_id: detachable STRING_32
 		do
 			if Current.control_name.same_string (cname [1]) then
 				if attached change_event as cevent and event.same_string ("change") then
@@ -112,14 +112,14 @@ feature -- Upload
 
 feature -- Implementation
 
-	value: detachable WSF_FILE
+	value: detachable WSF_FILE_DEFINITION
 		do
 			Result := file
 		end
 
-	render: STRING
+	render: STRING_32
 		local
-			attr: STRING
+			attr: STRING_32
 		do
 			attr := "type=%"file%"  "
 			if attached attributes as a then
@@ -159,7 +159,7 @@ feature -- Change
 			end
 		end
 
-	set_value (v: detachable WSF_FILE)
+	set_value (v: detachable WSF_FILE_DEFINITION)
 		do
 			file := v
 		end
@@ -180,7 +180,7 @@ feature -- Properties
 	image_preview: BOOLEAN
 			-- Preview uploaded image
 
-	file: detachable WSF_FILE
+	file: detachable WSF_FILE_DEFINITION
 			-- Text to be displayed
 
 	change_event: detachable PROCEDURE [ANY, TUPLE]
@@ -189,7 +189,7 @@ feature -- Properties
 	upload_done_event: detachable PROCEDURE [ANY, TUPLE]
 			-- Procedure to be execued when upload was successful
 
-	upload_function: detachable FUNCTION [ANY, TUPLE [ITERABLE [WSF_UPLOADED_FILE]], detachable STRING]
+	upload_function: detachable FUNCTION [ANY, TUPLE [ITERABLE [WSF_UPLOADED_FILE]], detachable STRING_32]
 			-- Store uploaded file and return server side file id
 
 end

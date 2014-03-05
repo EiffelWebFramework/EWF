@@ -31,7 +31,7 @@ feature {NONE} -- Initialization
 			end
 		end
 
-	make_with_agent (c: FUNCTION [ANY, TUPLE [STRING], JSON_ARRAY])
+	make_with_agent (c: FUNCTION [ANY, TUPLE [STRING_32], JSON_ARRAY])
 			-- Initialize with specified name and autocompletion function
 		do
 			make_input ( "")
@@ -49,7 +49,7 @@ feature -- State
 
 feature -- Callback
 
-	handle_callback (cname: LIST[STRING]; event: STRING; event_parameter: detachable ANY)
+	handle_callback (cname: LIST[STRING_32]; event: STRING_32; event_parameter: detachable ANY)
 		do
 			Precursor {WSF_INPUT_CONTROL} (cname, event, event_parameter)
 			if cname[1].same_string (control_name) and event.same_string ("autocomplete") then
@@ -59,8 +59,8 @@ feature -- Callback
 
 feature -- Properties
 
-	create_json_list: FUNCTION [ANY, TUPLE [STRING], JSON_ARRAY]
+	create_json_list: FUNCTION [ANY, TUPLE [STRING_32], JSON_ARRAY]
 
-	template: STRING
+	template: STRING_32
 
 end

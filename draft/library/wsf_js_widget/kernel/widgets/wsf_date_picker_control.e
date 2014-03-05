@@ -20,7 +20,7 @@ inherit
 			make_control
 		end
 
-	WSF_VALUE_CONTROL [STRING]
+	WSF_VALUE_CONTROL [STRING_32]
 		undefine
 			load_state,
 			full_state,
@@ -33,7 +33,7 @@ create
 
 feature {NONE} -- Initialization
 
-	make (t: STRING)
+	make (t: STRING_32)
 			-- Make a date picker control with specified tag name (such as li) and menu title
 		local
 			span: WSF_MULTI_CONTROL [WSF_STATELESS_CONTROL]
@@ -52,12 +52,12 @@ feature {NONE} -- Initialization
 
 feature -- Implementation
 
-	value: STRING
+	value: STRING_32
 		do
 			Result := input.value
 		end
 
-	set_value (v: STRING)
+	set_value (v: STRING_32)
 		do
 			input.set_value (v)
 		end

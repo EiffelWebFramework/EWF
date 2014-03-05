@@ -21,7 +21,7 @@ inherit
 
 feature {NONE} -- Initialization
 
-	make (a_tag_name: STRING)
+	make (a_tag_name: STRING_32)
 			-- Initialize with specified and tag
 		require
 			not a_tag_name.is_empty
@@ -36,7 +36,7 @@ feature {NONE} -- Initialization
 
 feature -- Actions
 
-	start_modal (url: STRING; title: STRING; big: BOOLEAN)
+	start_modal (url: STRING_32; title: STRING_32; big: BOOLEAN)
 			--Start a modal window containg an other or the same page
 		local
 			modal: WSF_JSON_OBJECT
@@ -52,7 +52,7 @@ feature -- Actions
 			actions.add (modal)
 		end
 
-	show_alert (message: STRING)
+	show_alert (message: STRING_32)
 			--Start a modal window containg an other or the same page
 		local
 			alert: WSF_JSON_OBJECT
@@ -63,7 +63,7 @@ feature -- Actions
 			actions.add (alert)
 		end
 
-	redirect (url: STRING)
+	redirect (url: STRING_32)
 			--Redirect to an other page
 		local
 			modal: WSF_JSON_OBJECT
@@ -127,17 +127,17 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 
 feature -- Rendering
 
-	render_tag (body: STRING; attrs: detachable STRING): STRING
+	render_tag (body: STRING_32; attrs: detachable STRING_32): STRING_32
 			-- Render this control with the specified body and attributes
 		do
 			Result := render_tag_with_generator_name (js_class, body, attrs)
 		end
 
-	render_tag_with_generator_name (a_generator, body: STRING; attrs: detachable STRING): STRING
+	render_tag_with_generator_name (a_generator, body: STRING_32; attrs: detachable STRING_32): STRING_32
 			-- Render this control with the specified generator name, body and attributes
 		local
-			css_classes_string: STRING
-			l_attributes: STRING
+			css_classes_string: STRING_32
+			l_attributes: STRING_32
 		do
 			css_classes_string := ""
 			across
@@ -155,14 +155,14 @@ feature -- Rendering
 			Result := render_tag_with_tagname (tag_name, body, l_attributes, css_classes_string)
 		end
 
-	js_class: STRING
+	js_class: STRING_32
 		do
 			Result := generator
 		end
 
 feature -- Event handling
 
-	handle_callback (cname: LIST [STRING]; event: STRING; event_parameter: detachable ANY)
+	handle_callback (cname: LIST [STRING_32]; event: STRING_32; event_parameter: detachable ANY)
 			-- Method called if any callback received. In this method you can route the callback to the event handler
 		deferred
 		end
@@ -187,14 +187,14 @@ feature -- Properties
 			control_id := d
 		end
 
-	control_name: STRING
+	control_name: STRING_32
 		do
 			Result := control_name_prefix + control_id.out
 		end
 
-	control_name_prefix: STRING assign set_control_name_prefix
+	control_name_prefix: STRING_32 assign set_control_name_prefix
 
-	set_control_name_prefix (p: STRING)
+	set_control_name_prefix (p: STRING_32)
 		do
 			control_name_prefix := p
 		end

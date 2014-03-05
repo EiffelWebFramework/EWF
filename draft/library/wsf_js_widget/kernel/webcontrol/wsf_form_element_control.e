@@ -29,19 +29,19 @@ create
 
 feature {NONE} -- Initialization
 
-	make_without_border (a_label: detachable STRING; c: WSF_VALUE_CONTROL [G])
+	make_without_border (a_label: detachable STRING_32; c: WSF_VALUE_CONTROL [G])
 			-- Initialize form element control with a specific label (or 'Void' for no label) and value control
 		do
 			make_with_validators (a_label, False, c, create {ARRAYED_LIST [WSF_VALIDATOR [G]]}.make (0))
 		end
 
-	make (a_label: detachable STRING; c: WSF_VALUE_CONTROL [G])
+	make (a_label: detachable STRING_32; c: WSF_VALUE_CONTROL [G])
 			-- Initialize form element control with a specific label (or 'Void' for no label) and value control
 		do
 			make_with_validators (a_label, True, c, create {ARRAYED_LIST [WSF_VALIDATOR [G]]}.make (0))
 		end
 
-	make_with_validators (a_label: detachable STRING; show_border: BOOLEAN; c: WSF_VALUE_CONTROL [G]; v: LIST [WSF_VALIDATOR [G]])
+	make_with_validators (a_label: detachable STRING_32; show_border: BOOLEAN; c: WSF_VALUE_CONTROL [G]; v: LIST [WSF_VALIDATOR [G]])
 			-- Initialize form element control with a specific label (or 'Void' for no label), value control and list of validators
 		do
 			make_control ("div")
@@ -145,7 +145,7 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 
 feature -- Event handling
 
-	handle_callback (cname: LIST [STRING]; event: STRING; event_parameter: detachable ANY)
+	handle_callback (cname: LIST [STRING_32]; event: STRING_32; event_parameter: detachable ANY)
 			-- Pass callback to subcontrols
 		do
 			if cname [1].same_string (control_name) then
@@ -163,10 +163,10 @@ feature -- Event handling
 
 feature -- Implementation
 
-	render: STRING
+	render: STRING_32
 			-- HTML Respresentation of this form element control
 		local
-			body: STRING
+			body: STRING_32
 		do
 			body := ""
 			if attached label as l and then not l.is_empty then
@@ -188,7 +188,7 @@ feature -- Validation
 			validators.extend (v)
 		end
 
-	set_error (e: STRING)
+	set_error (e: STRING_32)
 			-- Set the error message that will be displayed upon failure of client side validation
 		do
 			error := e
@@ -228,10 +228,10 @@ feature -- Properties
 	validators: LIST [WSF_VALIDATOR [G]]
 			-- The validators which check the input when validaton is performed
 
-	label: detachable STRING
+	label: detachable STRING_32
 			-- The label of this form element control
 
-	error: STRING
+	error: STRING_32
 			-- The error message that is displayed when client side validation fails
 
 	label_width: INTEGER

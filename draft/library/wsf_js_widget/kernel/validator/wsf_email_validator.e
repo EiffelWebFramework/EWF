@@ -21,7 +21,7 @@ create
 
 feature {NONE} -- Initialization
 
-	make (e: STRING)
+	make (e: STRING_32)
 			-- Initialize with specified error message which will be displayed on validation failure
 		do
 			make_regexp_validator ("^.*@.*$", e)

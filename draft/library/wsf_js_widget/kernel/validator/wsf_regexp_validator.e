@@ -11,7 +11,7 @@ class
 
 inherit
 
-	WSF_VALIDATOR [STRING]
+	WSF_VALIDATOR [STRING_32]
 		rename
 			make as make_validator
 		redefine
@@ -23,7 +23,7 @@ create
 
 feature {NONE} -- Initialization
 
-	make (r, e: STRING)
+	make (r, e: STRING_32)
 			-- Initialize with specified regular expression and error message which will be displayed on validation failure
 		do
 			make_validator (e)
@@ -33,7 +33,7 @@ feature {NONE} -- Initialization
 
 feature -- Implementation
 
-	is_valid (input: STRING): BOOLEAN
+	is_valid (input: STRING_32): BOOLEAN
 		do
 				--Only compile when used
 			if not regexp.is_compiled then
@@ -55,7 +55,7 @@ feature -- State
 
 feature -- Properties
 
-	regexp_string: STRING
+	regexp_string: STRING_32
 
 	regexp: REGULAR_EXPRESSION
 

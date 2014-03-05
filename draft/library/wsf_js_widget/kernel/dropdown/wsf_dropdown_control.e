@@ -23,13 +23,13 @@ create
 
 feature {NONE} -- Initialization
 
-	make (title: STRING)
+	make (title: STRING_32)
 			-- Make a dropdown control with div tag name and specified menu title
 		do
 			make_with_tag_name (title, "div")
 		end
 
-	make_with_tag_name (title, t: STRING)
+	make_with_tag_name (title, t: STRING_32)
 			-- Make a dropdown control with specified tag name (such as li) and menu title
 		do
 			make_multi_control_with_tag_name (t)
@@ -55,7 +55,7 @@ feature -- Change
 			dropdown_menu.add_control (li)
 		end
 
-	add_link_item (label, link: STRING)
+	add_link_item (label, link: STRING_32)
 		local
 			c: WSF_BASIC_CONTROL
 		do

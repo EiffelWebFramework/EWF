@@ -1,8 +1,8 @@
 note
 	description: "[
-			The skeleton for a page control which represents a single page
-			of the web application. This class is the starting point for
-			event distribution, rendering and state handling.
+		The skeleton for a page control which represents a single page
+		of the web application. This class is the starting point for
+		event distribution, rendering and state handling.
 	]"
 	author: ""
 	date: "$Date$"
@@ -25,8 +25,14 @@ inherit
 feature {NONE} -- Initialization
 
 	make (req: WSF_REQUEST; res: WSF_RESPONSE)
+		do
+			make_with_base_path (req, res, "/")
+		end
+
+	make_with_base_path (req: WSF_REQUEST; res: WSF_RESPONSE; a_base_path: STRING_32)
 			-- Initialize
 		do
+			base_path := a_base_path
 			control_name := req.request_time_stamp.out
 			make_control ("body")
 			request := req
@@ -62,10 +68,10 @@ feature -- Implementation
 			-- Entry Point: If request is a callback, restore control states and execute handle then return new state json.
 			-- If request is not a callback. Run process and render the html page
 		local
-			event: detachable STRING
+			event: detachable STRING_32
 			event_parameter: detachable ANY
-			event_control_name: detachable STRING
-			states: STRING
+			event_control_name: detachable STRING_32
+			states: STRING_32
 			states_changes: WSF_JSON_OBJECT
 			json_parser: JSON_PARSER
 		do
@@ -111,7 +117,7 @@ feature -- Implementation
 			response.send (page)
 		end
 
-	render: STRING
+	render: STRING_32
 		local
 			ajax: BOOLEAN
 		do
@@ -119,12 +125,20 @@ feature -- Implementation
 			create Result.make_empty
 			if not ajax then
 				Result.append ("<html><head>")
-				Result.append ("<link href=%"/assets/bootstrap.min.css%" rel=%"stylesheet%">")
-				Result.append ("<link href=%"/assets/widget.css%" rel=%"stylesheet%">")
+				Result.append ("<link href=%"")
+				Result.append (base_path)
+				Result.append ("assets/bootstrap.min.css%" rel=%"stylesheet%">")
+				Result.append ("<link href=%"")
+				Result.append (base_path)
+				Result.append ("assets/widget.css%" rel=%"stylesheet%">")
 				Result.append ("</head><body data-name=%"" + control_name + "%" data-type=%"WSF_PAGE_CONTROL%">")
 				Result.append (control.render)
-				Result.append ("<script src=%"/assets/jquery.min.js%"></script>")
-				Result.append ("<script src=%"/assets/widget.js%"></script>")
+				Result.append ("<script src=%"")
+				Result.append (base_path)
+				Result.append ("assets/jquery.min.js%"></script>")
+				Result.append ("<script src=%"")
+				Result.append (base_path)
+				Result.append ("assets/widget.js%"></script>")
 				Result.append ("<script type=%"text/javascript%">$(function() {var page= new WSF_PAGE_CONTROL(")
 				Result.append (full_state.representation)
 				Result.append (");page.initialize();});</script>")
@@ -146,7 +160,7 @@ feature -- Implementation
 			control.read_state_changes (states)
 		end
 
-	get_parameter (key: STRING): detachable STRING
+	get_parameter (key: STRING_32): detachable STRING_32
 			-- Read query parameter as string
 		local
 			value: detachable WSF_VALUE
@@ -160,7 +174,7 @@ feature -- Implementation
 
 feature -- Event handling
 
-	handle_callback (cname: LIST [STRING]; event: STRING; event_parameter: detachable ANY)
+	handle_callback (cname: LIST [STRING_32]; event: STRING_32; event_parameter: detachable ANY)
 			-- Forward callback to control
 		do
 			control.handle_callback (cname, event, event_parameter)
@@ -196,7 +210,9 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 
 feature
 
-	control_name: STRING
+	control_name: STRING_32
+
+	base_path: STRING_32
 
 feature {NONE} -- Root control
 

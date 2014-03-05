@@ -9,7 +9,7 @@ class
 
 inherit
 
-	WSF_VALUE_CONTROL [LIST [STRING]]
+	WSF_VALUE_CONTROL [LIST [STRING_32]]
 		rename
 			make as make_control
 		undefine
@@ -36,9 +36,9 @@ feature {NONE} -- Initializaton
 
 feature -- Implementation
 
-	value: LIST [STRING]
+	value: LIST [STRING_32]
 		do
-			create {ARRAYED_LIST [STRING]} Result.make (0)
+			create {ARRAYED_LIST [STRING_32]} Result.make (0)
 			across
 				controls as c
 			loop
@@ -48,7 +48,7 @@ feature -- Implementation
 			end
 		end
 
-	set_value (v: LIST [STRING])
+	set_value (v: LIST [STRING_32])
 		do
 			across
 				controls as c

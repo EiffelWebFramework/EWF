@@ -24,7 +24,7 @@ create
 
 feature {NONE} -- Initialization
 
-	make (link, t: STRING)
+	make (link, t: STRING_32)
 		do
 			make_control ("a")
 			text := t

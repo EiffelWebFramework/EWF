@@ -12,7 +12,7 @@ create
 
 feature {NONE} -- Initialization
 
-	make (a_header, a_field: STRING)
+	make (a_header, a_field: STRING_32)
 		do
 			header := a_header
 			field_name := a_field
@@ -21,7 +21,7 @@ feature {NONE} -- Initialization
 
 feature -- Render
 
-	render_column (e: WSF_ENTITY): STRING
+	render_column (e: WSF_ENTITY): STRING_32
 			-- Return the rendered column cell for a specific entity (row)
 		do
 			if attached e.item (field_name) as data then
@@ -33,12 +33,12 @@ feature -- Render
 
 feature -- Properties
 
-	header: STRING
+	header: STRING_32
 
 	sortable: BOOLEAN
 
-	sorting_name: STRING
+	sorting_name: STRING_32
 
-	field_name: STRING
+	field_name: STRING_32
 
 end

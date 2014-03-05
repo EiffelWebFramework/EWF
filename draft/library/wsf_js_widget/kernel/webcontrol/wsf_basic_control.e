@@ -25,13 +25,13 @@ create
 
 feature {NONE} -- Initialization
 
-	make (t: STRING)
+	make (t: STRING_32)
 			-- Initialize
 		do
 			make_with_body_class (t, "", "", "")
 		end
 
-	make_with_body (t, attr, b: STRING)
+	make_with_body (t, attr, b: STRING_32)
 			-- Initialize with specific attributes and body
 		do
 			make_stateless_control (t)
@@ -39,7 +39,7 @@ feature {NONE} -- Initialization
 			body := b
 		end
 
-	make_with_body_class (t, attr, c, b: STRING)
+	make_with_body_class (t, attr, c, b: STRING_32)
 			-- Initialize with specific class, attributes and body
 		do
 			make_with_body (t, attr, b)
@@ -50,7 +50,7 @@ feature {NONE} -- Initialization
 
 feature -- Rendering
 
-	render: STRING
+	render: STRING_32
 			-- HTML representation of this control
 		do
 			Result := render_tag (body, attributes)
@@ -58,7 +58,7 @@ feature -- Rendering
 
 feature -- Change
 
-	set_body (b: STRING)
+	set_body (b: STRING_32)
 			-- Set the body of this control
 		do
 			body := b
@@ -66,10 +66,10 @@ feature -- Change
 
 feature -- Access
 
-	attributes: STRING
+	attributes: STRING_32
 			-- Attributes of this control
 
-	body: STRING
+	body: STRING_32
 			-- Body of this control
 
 end

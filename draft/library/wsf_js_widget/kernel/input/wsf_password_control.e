@@ -19,7 +19,7 @@ create
 
 feature {NONE} -- Initialization
 
-	make (v: STRING)
+	make (v: STRING_32)
 			-- Initialize with specified control name and text
 		do
 			make_input (v)

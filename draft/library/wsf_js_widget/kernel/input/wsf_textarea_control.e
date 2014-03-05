@@ -21,7 +21,7 @@ create
 
 feature {NONE} -- Initialization
 
-	make (t: STRING)
+	make (t: STRING_32)
 			-- Initialize with specified control name and text to be displayed in this textarea
 		do
 			make_input (t)
@@ -30,7 +30,7 @@ feature {NONE} -- Initialization
 
 feature -- Rendering
 
-	render: STRING
+	render: STRING_32
 		do
 			Result := render_tag (text, "")
 		end

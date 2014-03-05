@@ -22,7 +22,7 @@ inherit
 
 feature {NONE} -- Initialization
 
-	make_with_tag_name (tag: STRING)
+	make_with_tag_name (tag: STRING_32)
 		do
 			Precursor (tag)
 			create items.make_array
@@ -113,11 +113,11 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 
 feature
 
-	create_control_from_tag (tag: STRING): detachable G
+	create_control_from_tag (tag: STRING_32): detachable G
 		deferred
 		end
 
-	add_control_from_tag (tag: STRING)
+	add_control_from_tag (tag: STRING_32)
 		local
 			item: WSF_JSON_OBJECT
 		do
@@ -153,7 +153,7 @@ feature
 			end
 		end
 
-	js_class: STRING
+	js_class: STRING_32
 		do
 			Result := "WSF_DYNAMIC_MULTI_CONTROL"
 		end

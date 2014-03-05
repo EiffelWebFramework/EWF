@@ -30,7 +30,7 @@ feature {NONE} -- Initialization
 
 feature -- Change
 
-	add_link (link, text: STRING)
+	add_link (link, text: STRING_32)
 			-- Add a link to nav list
 		local
 			c: WSF_NAVLIST_ITEM_CONTROL
@@ -39,7 +39,7 @@ feature -- Change
 			add_control (c)
 		end
 
-	add_button (event: attached like {WSF_BUTTON_CONTROL}.click_event; text: STRING)
+	add_button (event: attached like {WSF_BUTTON_CONTROL}.click_event; text: STRING_32)
 			-- Add a button control to navlist
 		local
 			c: WSF_NAVLIST_ITEM_CONTROL

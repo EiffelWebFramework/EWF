@@ -23,7 +23,7 @@ create
 
 feature {NONE} -- Initialization
 
-	make (n: STRING)
+	make (n: STRING_32)
 		do
 			make_with_tag_name ("div")
 			add_class ("row")
