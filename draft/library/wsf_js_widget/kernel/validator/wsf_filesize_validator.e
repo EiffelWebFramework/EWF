@@ -11,7 +11,7 @@ class
 
 inherit
 
-	WSF_VALIDATOR [detachable WSF_FILE]
+	WSF_VALIDATOR [detachable WSF_FILE_DEFINITION]
 		rename
 			make as make_validator
 		redefine
@@ -32,7 +32,7 @@ feature {NONE} -- Initialization
 
 feature -- Implementation
 
-	is_valid (input: detachable WSF_FILE): BOOLEAN
+	is_valid (input: detachable WSF_FILE_DEFINITION): BOOLEAN
 		do
 			Result := True
 			if attached input as a_input then

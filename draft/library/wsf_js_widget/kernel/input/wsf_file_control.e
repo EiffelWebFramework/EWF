@@ -9,7 +9,7 @@ class
 
 inherit
 
-	WSF_VALUE_CONTROL [detachable WSF_FILE]
+	WSF_VALUE_CONTROL [detachable WSF_FILE_DEFINITION]
 		rename
 			make as make_value_control
 		end
@@ -112,7 +112,7 @@ feature -- Upload
 
 feature -- Implementation
 
-	value: detachable WSF_FILE
+	value: detachable WSF_FILE_DEFINITION
 		do
 			Result := file
 		end
@@ -159,7 +159,7 @@ feature -- Change
 			end
 		end
 
-	set_value (v: detachable WSF_FILE)
+	set_value (v: detachable WSF_FILE_DEFINITION)
 		do
 			file := v
 		end
@@ -180,7 +180,7 @@ feature -- Properties
 	image_preview: BOOLEAN
 			-- Preview uploaded image
 
-	file: detachable WSF_FILE
+	file: detachable WSF_FILE_DEFINITION
 			-- Text to be displayed
 
 	change_event: detachable PROCEDURE [ANY, TUPLE]
