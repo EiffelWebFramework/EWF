@@ -27,16 +27,20 @@ create
 feature {NONE} -- Initialization
 
 	make
-			-- Initialize with specified control name and default tag "div"
+			-- Initialize with default tag "div"
 		do
 			make_with_tag_name ("div")
 		end
 
 	make_with_tag_name (t: STRING_32)
-			-- Initialize with specified control name and tag
+			-- Initialize with specified tag
+		require
+			t_not_empty: not t.is_empty
 		do
 			make_control (t)
 			controls := create {ARRAYED_LIST [G]}.make (5);
+			ensure
+				tag_name_set:tag_name.same_string (t)
 		end
 
 feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management

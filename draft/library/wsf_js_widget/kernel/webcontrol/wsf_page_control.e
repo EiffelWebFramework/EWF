@@ -38,6 +38,8 @@ feature {NONE} -- Initialization
 			request := req
 			response := res
 			initialize_controls
+		ensure
+			base_path_set: base_path.same_string (a_base_path)
 		end
 
 feature -- Access
@@ -107,7 +109,7 @@ feature -- Implementation
 		end
 
 	render_page
-			-- Render and send the HTML Page
+			-- Render and send the HTML page
 		local
 			page: WSF_PAGE_RESPONSE
 		do
@@ -118,6 +120,7 @@ feature -- Implementation
 		end
 
 	render: STRING_32
+			-- Render the HTML page
 		local
 			ajax: BOOLEAN
 		do
@@ -183,6 +186,7 @@ feature -- Event handling
 feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 
 	state: WSF_JSON_OBJECT
+			-- State of the page
 		do
 			create Result.make
 			Result.put_string (control_name, "id")
@@ -191,6 +195,7 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 		end
 
 	set_state (sp: JSON_OBJECT)
+			-- Set state
 		do
 			if attached {JSON_OBJECT} sp.item ("controls") as ct and then attached {JSON_OBJECT} ct.item (control.control_name) as value_state then
 				control.load_state (value_state)
@@ -211,8 +216,10 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 feature
 
 	control_name: STRING_32
+			-- Name of this page
 
 	base_path: STRING_32
+			-- The base path of the assets files
 
 feature {NONE} -- Root control
 

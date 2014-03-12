@@ -23,17 +23,21 @@ create
 
 feature {NONE} -- Initialization
 
-	make (t, v: STRING_32)
-			-- Initialize
+	make (tag, v: STRING_32)
+			-- Initialize with specified tag and HTML value
+		require
+			tag_not_empty: not tag.is_empty
 		do
-			make_value_control (t)
+			make_value_control (tag)
 			html := v
+		ensure
+			html_set: html.same_string (v)
 		end
 
 feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 
 	set_state (new_state: JSON_OBJECT)
-			-- Restore html from json
+			-- Restore HTML from json
 		do
 			if attached {JSON_STRING} new_state.item ("html") as new_html then
 				html := new_html.unescaped_string_32
@@ -50,6 +54,7 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 feature --Event handling
 
 	handle_callback (cname: LIST [STRING_32]; event: STRING_32; event_parameter: detachable ANY)
+			-- By default, this does nothing
 		do
 		end
 
@@ -61,26 +66,28 @@ feature -- Implementation
 			Result := render_tag (html, "")
 		end
 
-	set_html (t: STRING_32)
-		do
-			if not t.same_string (html) then
-				html := t
-				state_changes.replace_with_string (html, "html")
-			end
-		end
-
 	value: STRING_32
+			-- The HTML value of this HTML control
 		do
 			Result := html
+		ensure then
+			result_set: Result.same_string (html)
 		end
 
 	set_value (v: STRING_32)
+			-- Set HTML value of this control
 		do
-			html := v
+			if not v.same_string (html) then
+				html := v
+				state_changes.replace_with_string (html, "html")
+			end
+		ensure then
+			html_set: html.same_string (v)
 		end
 
 feature -- Properties
 
 	html: STRING_32
+			-- The HTML value of this HTML control
 
 end

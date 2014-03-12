@@ -1,7 +1,7 @@
 note
 	description: "[
-			A lightweight layout container to encapsulate the grid layout
-			provided by bootstrap.
+		A lightweight layout container to encapsulate the grid layout
+		provided by bootstrap.
 	]"
 	author: ""
 	date: "$Date$"
@@ -14,7 +14,7 @@ inherit
 
 	WSF_STATELESS_MULTI_CONTROL [WSF_STATELESS_CONTROL]
 		rename
-			make as make_multi_control,
+			make as make_stateless_multi_control,
 			add_control as add_control_raw
 		end
 
@@ -23,7 +23,8 @@ create
 
 feature {NONE} -- Initialization
 
-	make (n: STRING_32)
+	make
+			--Initialize
 		do
 			make_with_tag_name ("div")
 			add_class ("row")
@@ -32,6 +33,10 @@ feature {NONE} -- Initialization
 feature -- Add control
 
 	add_control_with_offset (c: WSF_STATELESS_CONTROL; span, offset: INTEGER)
+			-- Add a control as column with the specified span and offset
+		require
+			offset_in_range: offset >= 0 and offset <= 12
+			span_in_range: span >= 0 and span <= 12 - offset
 		local
 			div: WSF_STATELESS_MULTI_CONTROL [WSF_STATELESS_CONTROL]
 		do
@@ -42,6 +47,7 @@ feature -- Add control
 		end
 
 	add_control (col: INTEGER; c: WSF_STATELESS_CONTROL)
+			-- Add a control to the specified column
 		require
 			col >= 1 and col <= controls.count
 			attached {WSF_STATELESS_MULTI_CONTROL [WSF_STATELESS_CONTROL]} controls [col]
@@ -52,6 +58,9 @@ feature -- Add control
 		end
 
 	add_column (span: INTEGER)
+			-- Add a multi control as Bootstrap column with the specified span
+		require
+			span_in_range: span >= 0 and span <= 12
 		local
 			div: WSF_STATELESS_MULTI_CONTROL [WSF_STATELESS_CONTROL]
 		do

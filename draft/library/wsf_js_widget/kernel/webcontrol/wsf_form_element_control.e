@@ -66,18 +66,26 @@ feature -- Modify
 			-- Set the label span (a value between 1 and 12 to specify the bootstrap column span or 0 for not displaying the label)
 		do
 			label_width := w
+		ensure
+			label_width_set: label_width = w
 		end
 
 feature -- Access
 
 	value: G
+			-- Current value of this form element's value control
 		do
 			Result := value_control.value
+		ensure
+			result_set: Result = value_control.value
 		end
 
 	set_value (v: G)
+			-- Set the value of this form element's value control
 		do
 			value_control.set_value (v)
+		ensure
+			value_set: value_control.value = v
 		end
 
 feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
@@ -98,6 +106,7 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 		end
 
 	full_state: WSF_JSON_OBJECT
+			-- The full state of this form
 		local
 			controls_state: WSF_JSON_OBJECT
 		do
@@ -147,6 +156,8 @@ feature -- Event handling
 
 	handle_callback (cname: LIST [STRING_32]; event: STRING_32; event_parameter: detachable ANY)
 			-- Pass callback to subcontrols
+		require else
+			cname_not_empty: cname.count > 0
 		do
 			if cname [1].same_string (control_name) then
 				cname.go_i_th (1)
@@ -186,6 +197,8 @@ feature -- Validation
 			-- Add an additional validator that will check the input of the value control of this form element control on validation
 		do
 			validators.extend (v)
+		ensure
+			validator_added: validators.has (v)
 		end
 
 	set_error (e: STRING_32)
@@ -193,6 +206,8 @@ feature -- Validation
 		do
 			error := e
 			state_changes.replace (create {JSON_STRING}.make_json (e), "error")
+		ensure
+			error_set: error.same_string (e)
 		end
 
 	validate

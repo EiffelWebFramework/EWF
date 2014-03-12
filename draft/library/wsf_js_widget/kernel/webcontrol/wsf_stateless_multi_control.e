@@ -1,8 +1,8 @@
 note
 	description: "[
-			Mutli controls are used as containers for multiple controls, for
-			example a form is a multi control.
-			]"
+		Mutli controls are used as containers for multiple controls, for
+		example a form is a multi control.
+	]"
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
@@ -13,6 +13,8 @@ class
 inherit
 
 	WSF_MULTI_CONTROL [G]
+		rename
+			make as make_multi_control
 		redefine
 			add_control,
 			set_control_name_prefix,
@@ -22,11 +24,12 @@ inherit
 		end
 
 create
-	make_with_tag_name, make_tag_less
+	make_with_tag_name, make
 
 feature {NONE} -- Initialization
 
-	make_tag_less
+	make
+			-- Initialize
 		do
 			make_with_tag_name ("")
 			stateless := True
@@ -35,18 +38,25 @@ feature {NONE} -- Initialization
 feature
 
 	set_control_id (d: INTEGER)
+			-- Set id of this control and update subcontrol prefixes
 		do
 			control_id := d
 			set_subcontrol_prefixes
+		ensure then
+			control_id_set: control_id.abs = d
 		end
 
 	set_control_name_prefix (p: STRING_32)
+			-- Set control name prefix of this control
 		do
 			control_name_prefix := p
 			set_subcontrol_prefixes
+		ensure then
+			control_name_prefix_set: control_name_prefix.same_string (p)
 		end
 
 	set_subcontrol_prefixes
+			-- Update subcontrol prefixes
 		do
 			across
 				controls as e
@@ -67,6 +77,8 @@ feature
 				d.control_id := controls.count
 				d.control_name_prefix := control_name_prefix + control_id.out + "_"
 			end
+		ensure then
+			control_added: controls.has (c)
 		end
 
 	render_tag (body: STRING_32; attrs: detachable STRING_32): STRING_32

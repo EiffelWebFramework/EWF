@@ -17,7 +17,7 @@ feature {NONE} -- Initialization
 	make (a_tag_name: STRING_32)
 			-- Initialize with specified tag
 		require
-			not a_tag_name.is_empty
+			a_tag_name_not_empty: not a_tag_name.is_empty
 		do
 			tag_name := a_tag_name
 			create css_classes.make (0)
@@ -38,18 +38,29 @@ feature -- Change
 
 	add_class (c: STRING_32)
 			-- Add a css class to this control
+		require
+			c_not_empty: not c.is_empty
 		do
 			css_classes.force (c)
+		ensure
+			class_added: css_classes.has (c)
 		end
 
-	remove_class (cla: STRING_32)
-			-- Add a css class to this control
+	remove_class (c: STRING_32)
+			-- Remove a css class from this control
+		require
+			c_not_empty: not c.is_empty
 		do
-			css_classes.prune (cla)
+			css_classes.start
+			css_classes.prune_all (c)
+		ensure
+			c_removed: not css_classes.has (c)
 		end
 
 	append_attribute (a: STRING_32)
 			-- Adds the specified attribute to the attribute string of this control
+		require
+			a_not_empty: not a.is_empty
 		do
 			if attached attributes as attr then
 				attr.append (" ")
@@ -109,5 +120,8 @@ feature -- Rendering
 			-- Return html representation of control
 		deferred
 		end
+
+invariant
+	tag_name_not_empty: not tag_name.is_empty
 
 end

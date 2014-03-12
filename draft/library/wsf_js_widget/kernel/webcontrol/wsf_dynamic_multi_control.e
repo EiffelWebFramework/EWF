@@ -23,13 +23,16 @@ inherit
 feature {NONE} -- Initialization
 
 	make_with_tag_name (tag: STRING_32)
+			-- Initialize with specified tag
 		do
 			Precursor (tag)
 			create items.make_array
 			create pending_removes.make (1)
+		ensure then
+			tag_set: tag_name.same_string (tag)
 		end
 
-feature {WSF_DYNAMIC_MULTI_CONTROL} -- Iternal functions
+feature {WSF_DYNAMIC_MULTI_CONTROL} -- Internal functions
 
 	add_control (c: G; id: INTEGER_32)
 			-- Add a control to this multi control
@@ -40,9 +43,14 @@ feature {WSF_DYNAMIC_MULTI_CONTROL} -- Iternal functions
 			end
 			max_id := id.max (max_id)
 			items_changed := True
+		ensure
+			control_added: controls.has (c)
+			id_set: attached {WSF_CONTROL} c as d implies d.control_id = id
+			items_changed: items_changed
 		end
 
 	execute_pending_removes
+			-- Execute pending removes
 		local
 			found: BOOLEAN
 			fitem: detachable G
@@ -80,12 +88,15 @@ feature {WSF_DYNAMIC_MULTI_CONTROL} -- Iternal functions
 				end
 				items_changed := True
 			end
+			pending_removes.wipe_out
+		ensure
+			pending_removes_empty: pending_removes.is_empty
 		end
 
 feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 
 	set_state (new_state: JSON_OBJECT)
-			-- Before we process the callback. We restore the subcontrols
+			-- Before we process the callback, we restore the subcontrols
 		do
 			if attached {JSON_ARRAY} new_state.item ("items") as new_items then
 				items := new_items
@@ -154,6 +165,7 @@ feature
 		end
 
 	js_class: STRING_32
+			-- The default behvaiour of subclasses of the dynamic multi control is that they inherit the javascript functionality of this class
 		do
 			Result := "WSF_DYNAMIC_MULTI_CONTROL"
 		end
@@ -161,12 +173,16 @@ feature
 feature
 
 	items: JSON_ARRAY
+			-- Holds the current items in this control
 
 	pending_removes: ARRAYED_LIST [INTEGER]
+			-- Stores the removes that have to be executed
 
 	items_changed: BOOLEAN
+			-- Indicates whether a change to the controls has happened since the last state readout
 
 	max_id: INTEGER
+			-- Largest id of the controls in this multi control
 
 invariant
 	all_items_exist: items.count = controls.count

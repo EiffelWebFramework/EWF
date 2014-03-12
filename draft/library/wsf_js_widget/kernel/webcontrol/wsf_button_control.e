@@ -23,12 +23,14 @@ create
 feature {NONE} -- Initialization
 
 	make (a_text: STRING_32)
-			-- Initialize with specified control name and text
+			-- Initialize with specified text
 		do
 			make_control ("button")
 			add_class ("btn")
 			add_class ("btn-default")
 			text := a_text
+		ensure
+			text_set: text = a_text
 		end
 
 feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
@@ -56,9 +58,14 @@ feature --Event handling
 			-- Set button click event handle
 		do
 			click_event := e
+		ensure
+			click_event_set: click_event = e
 		end
 
 	handle_callback (cname: LIST [STRING_32]; event: STRING_32; event_parameter: detachable ANY)
+			-- Called if the button is clicked.
+		require else
+			cname_has_element: cname.count > 0
 		do
 			if Current.control_name.same_string (cname [1]) and attached click_event as cevent then
 				cevent.call (Void)
@@ -91,20 +98,26 @@ feature -- Change
 				text := t
 				state_changes.replace_with_string (text, "text")
 			end
+		ensure
+			text_set: text.same_string (t)
 		end
 
 	set_disabled (b: BOOLEAN)
+			-- Enables or disables this component, depending on the value of the parameter b.
+			-- A disabled button cannot be clicked.
 		do
 			if disabled /= b then
 				disabled := b
 				state_changes.replace_with_boolean (disabled, "disabled")
 			end
+		ensure
+			disabled_set: disabled = b
 		end
 
 feature -- Properties
 
 	disabled: BOOLEAN
-			-- Defines if the button is editable
+			-- Defines if the button is clickable or not
 
 	text: STRING_32
 			-- The text currently displayed on this button

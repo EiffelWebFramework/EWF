@@ -1,7 +1,7 @@
 note
 	description: "[
-			This class is the base class for all stateful controls, like
-			buttons or forms.
+		This class is the base class for all stateful controls, like
+		buttons or forms.
 	]"
 	author: ""
 	date: "$Date$"
@@ -22,22 +22,25 @@ inherit
 feature {NONE} -- Initialization
 
 	make (a_tag_name: STRING_32)
-			-- Initialize with specified and tag
+			-- Initialize with specified tag
 		require
-			not a_tag_name.is_empty
+			a_tag_name_not_empty: not a_tag_name.is_empty
 		do
 			make_stateless_control (a_tag_name)
 			create control_name_prefix.make_empty
 			create state_changes.make
 			create actions.make_array
 		ensure
-			attached state_changes
+			state_changes_attached: attached state_changes
 		end
 
 feature -- Actions
 
 	start_modal (url: STRING_32; title: STRING_32; big: BOOLEAN)
-			--Start a modal window containg an other or the same page
+			--Start a modal window containing an other or the same page
+		require
+			url_not_empty: not url.is_empty
+			title_not_empty: not title.is_empty
 		local
 			modal: WSF_JSON_OBJECT
 		do
@@ -54,6 +57,8 @@ feature -- Actions
 
 	show_alert (message: STRING_32)
 			--Start a modal window containg an other or the same page
+		require
+			message_not_empty: not message.is_empty
 		local
 			alert: WSF_JSON_OBJECT
 		do
@@ -65,6 +70,8 @@ feature -- Actions
 
 	redirect (url: STRING_32)
 			--Redirect to an other page
+		require
+			url_not_empty: not url.is_empty
 		local
 			modal: WSF_JSON_OBJECT
 		do
@@ -156,6 +163,10 @@ feature -- Rendering
 		end
 
 	js_class: STRING_32
+			-- The js_class is the name of the corresponding javascript class for this control. If this query is not redefined, it just
+			-- returns the name of the Eiffel class. In case of customized controls, either the according javascript functionality has to
+			-- be written in a coffeescript class of the same name or this query has to bee redefined and has to return the name of the
+			-- control Eiffel class of which the javascript functionality should be inherited.
 		do
 			Result := generator
 		end
@@ -163,13 +174,14 @@ feature -- Rendering
 feature -- Event handling
 
 	handle_callback (cname: LIST [STRING_32]; event: STRING_32; event_parameter: detachable ANY)
-			-- Method called if any callback received. In this method you can route the callback to the event handler
+			-- Method called if any callback received. In this method the callback can be routed to the event handler
 		deferred
 		end
 
 feature -- Change
 
 	set_isolation (p: BOOLEAN)
+			-- Set the isolation state of this control
 		do
 			isolate := p
 		end
@@ -177,24 +189,32 @@ feature -- Change
 feature -- Properties
 
 	isolate: BOOLEAN
+			-- The isolation state of this control
 
 	actions: JSON_ARRAY
+			-- An array of actions to be carried out, e.g. display a modal (see tutorial for more information about this)
 
 	control_id: INTEGER assign set_control_id
+			-- The id of this control
 
 	set_control_id (d: INTEGER)
+			-- Set the id of this control
 		do
 			control_id := d
 		end
 
 	control_name: STRING_32
+			-- The name of this control which is composed of the control name prefix and the id of the control
 		do
 			Result := control_name_prefix + control_id.out
 		end
 
 	control_name_prefix: STRING_32 assign set_control_name_prefix
+			-- Used to avoid name conflicts since the children stateful controls of stateless controls are appended to the parent
+			-- control state and therefore could have the same name
 
 	set_control_name_prefix (p: STRING_32)
+			-- Set the control name prefix
 		do
 			control_name_prefix := p
 		end

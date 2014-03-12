@@ -25,24 +25,30 @@ create
 
 feature {NONE} -- Initialization
 
-	make (t: STRING_32)
+	make (tag: STRING_32)
 			-- Initialize
+		require
+			tag_not_empty: not tag.is_empty
 		do
-			make_with_body_class (t, "", "", "")
+			make_with_body_class (tag, "", "", "")
 		end
 
-	make_with_body (t, attr, b: STRING_32)
+	make_with_body (tag, attr, b: STRING_32)
 			-- Initialize with specific attributes and body
+		require
+			tag_not_empty: not tag.is_empty
 		do
-			make_stateless_control (t)
+			make_stateless_control (tag)
 			attributes := attr
 			body := b
 		end
 
-	make_with_body_class (t, attr, c, b: STRING_32)
+	make_with_body_class (tag, attr, c, b: STRING_32)
 			-- Initialize with specific class, attributes and body
+		require
+			tag_not_empty: not tag.is_empty
 		do
-			make_with_body (t, attr, b)
+			make_with_body (tag, attr, b)
 			if not c.is_empty then
 				css_classes.extend (c)
 			end
@@ -62,6 +68,8 @@ feature -- Change
 			-- Set the body of this control
 		do
 			body := b
+		ensure
+			body_set: body = b
 		end
 
 feature -- Access
