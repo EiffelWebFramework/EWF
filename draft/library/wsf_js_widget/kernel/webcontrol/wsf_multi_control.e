@@ -55,6 +55,8 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 		end
 
 	load_subcontrol_state (newstate: JSON_OBJECT)
+			-- load the new state in to the subcontrols
+			-- If the subcontrol is a stateless multicontrol x. We load the controls_state in to the subcontrols of x directly. (Stateless multi controls do not add a hierarchy level)
 		do
 			across
 				controls as c
@@ -86,6 +88,8 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 		end
 
 	read_subcontrol_state (controls_state: JSON_OBJECT)
+			-- Read add subcontrol state in to the controls_state json object.
+			-- If the subcontrol is a stateless multicontrol x. We add the state of the subcontrols of x directly to controls_state. (Stateless multi controls do not add a hierarchy level)
 		do
 			across
 				controls as c
@@ -99,7 +103,7 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 		end
 
 	read_state_changes (states: WSF_JSON_OBJECT)
-			-- Read states_changes in subcontrols
+			-- Read states_changes in subcontrols and add them to the states json object under  `control name > "controls"
 		local
 			sub_states: WSF_JSON_OBJECT
 			control_state: WSF_JSON_OBJECT
@@ -118,15 +122,17 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 			end
 		end
 
-	read_subcontrol_state_changes (states: WSF_JSON_OBJECT)
+	read_subcontrol_state_changes (sub_states: WSF_JSON_OBJECT)
+			-- Read add subcontrol changes in to the sub_states json object.
+			-- If the subcontrol is a stateless multicontrol x. We add the state changes of subcontrols of x directly to sub_states. (Stateless multi controls do not add a hierarchy level)
 		do
 			across
 				controls as c
 			loop
 				if attached {WSF_STATELESS_MULTI_CONTROL [WSF_STATELESS_CONTROL]} c.item as cont then
-					cont.read_subcontrol_state_changes (states)
+					cont.read_subcontrol_state_changes (sub_states)
 				elseif attached {WSF_CONTROL} c.item as cont then
-					cont.read_state_changes (states)
+					cont.read_state_changes (sub_states)
 				end
 			end
 		end

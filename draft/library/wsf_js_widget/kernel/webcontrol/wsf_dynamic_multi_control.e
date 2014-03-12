@@ -1,5 +1,8 @@
 note
-	description: "Summary description for {WSF_DYNAMIC_MULTI_CONTROL}."
+	description: "[
+		Dynamic Mutli controls are multicontrols in which the subcontrols can be added or removed
+		on a callback. This is achived by ''serializing'' the subcrontrols using the tag array.
+	]"
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
@@ -125,10 +128,13 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 feature
 
 	create_control_from_tag (tag: STRING_32): detachable G
+			-- This function should return a control based on the tag string. The output of this function
+			-- should only be based on the tag argument.
 		deferred
 		end
 
 	add_control_from_tag (tag: STRING_32)
+			-- Adds a control based on the tag
 		local
 			item: WSF_JSON_OBJECT
 		do

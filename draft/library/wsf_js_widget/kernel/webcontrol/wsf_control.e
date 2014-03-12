@@ -211,7 +211,7 @@ feature -- Properties
 
 	control_name_prefix: STRING_32 assign set_control_name_prefix
 			-- Used to avoid name conflicts since the children stateful controls of stateless controls are appended to the parent
-			-- control state and therefore could have the same name
+			-- control state and therefore could have the same name (Stateless multi controls do not add a hierarchy level)
 
 	set_control_name_prefix (p: STRING_32)
 			-- Set the control name prefix
