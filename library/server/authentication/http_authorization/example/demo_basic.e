@@ -73,75 +73,163 @@ feature -- Basic operations
 			-- <Precursor>
 		local
 			auth: HTTP_AUTHORIZATION
+			l_authenticated_username: detachable READABLE_STRING_32
+			l_invalid_credential: BOOLEAN
 		do
 			if attached req.http_authorization as l_http_auth then
 				create auth.make (l_http_auth)
 				if attached auth.login as l_login and then is_valid_credential (l_login, auth.password) then
-					handle_authorized (l_login, req, res)
+					l_authenticated_username := auth.login
 				else
-					handle_unauthorized ("ERROR: Invalid credential", req, res)
+					l_invalid_credential := True
 				end
+			end
+			if l_invalid_credential then
+				handle_unauthorized ("ERROR: Invalid credential", req, res)
 			else
-				handle_unauthorized ("ERROR: Authentication information is missing ...", req, res)
+				if l_authenticated_username /= Void then
+					handle_authenticated (l_authenticated_username, req, res)
+				elseif req.path_info.same_string_general ("/login") then
+					handle_unauthorized ("Please provide credential ...", req, res)
+				elseif req.path_info.starts_with_general ("/protected/") then
+						-- any "/protected/*" url
+					handle_unauthorized ("Protected area, please sign in before", req, res)
+				else
+					handle_anonymous (req, res)
+				end
 			end
 		end
 
-	handle_authorized (a_username: READABLE_STRING_32; req: WSF_REQUEST; res: WSF_RESPONSE)
+	handle_authenticated (a_username: READABLE_STRING_32; req: WSF_REQUEST; res: WSF_RESPONSE)
 			-- User `a_username' is authenticated, execute request `req' with response `res'.
 		require
 			valid_username: not a_username.is_empty
 			known_username: is_known_login (a_username)
 		local
 			s: STRING
-			l_logout_url: STRING
+			page: WSF_HTML_PAGE_RESPONSE
 		do
 			create s.make_empty
-			s.append ("Welcome %"")
+
+			append_html_header (req, s)
+
+			s.append ("<p>The authenticated user is <strong>")
 			s.append (html_encoder.general_encoded_string (a_username))
-			s.append ("%" ...<br/>")
+			s.append ("</strong> ...</p>")
 
-			l_logout_url := req.absolute_script_url ("/")
-			l_logout_url.replace_substring_all ("://", "://_@") -- Hack to clear http authorization, i.e connect with bad username.
-			s.append ("<a href=%""+ l_logout_url +"%">logout</a>")
+			append_html_menu (a_username, req, s)
+			append_html_logout (a_username, req, s)
+			append_html_footer (req, s)
 
-				-- Append the raw header data for information
-			if attached req.raw_header_data as l_header then
-				s.append ("<hr/><pre>")
-				s.append (l_header)
-				s.append ("</pre>")
-			end
+			create page.make
+			page.set_body (s)
+			res.send (page)
+		end
 
-			res.put_header ({HTTP_STATUS_CODE}.ok, <<["Content-Type", "text/html"], ["Content-Length", s.count.out]>>)
-			res.put_string (s)
+	handle_anonymous (req: WSF_REQUEST; res: WSF_RESPONSE)
+			-- No user is authenticated, execute request `req' with response `res'.
+		local
+			s: STRING
+			page: WSF_HTML_PAGE_RESPONSE
+		do
+			create s.make_empty
+			append_html_header (req, s)
+
+			s.append ("Anonymous visitor ...<br/>")
+
+			append_html_login (req, s)
+			append_html_menu (Void, req, s)
+			append_html_footer (req, s)
+
+			create page.make
+			page.set_body (s)
+			res.send (page)
 		end
 
 	handle_unauthorized (a_description: STRING; req: WSF_REQUEST; res: WSF_RESPONSE)
-			-- Handle forbidden.
+			-- Restricted page, authenticated user is required.
+			-- Send `a_description' as part of the response.
 		local
 			h: HTTP_HEADER
 			s: STRING
+			page: WSF_HTML_PAGE_RESPONSE
 		do
 			create s.make_from_string (a_description)
 
-				-- Append the raw header data for information
-			if attached req.raw_header_data as l_header then
-				s.append ("<hr/><pre>")
-				s.append (l_header)
-				s.append ("</pre>")
-			end
+			append_html_login (req, s)
+			append_html_menu (Void, req, s)
+			append_html_footer (req, s)
 
-			create h.make
-			h.put_content_type_text_html
-			h.put_content_length (s.count)
-			h.put_current_date
-			h.put_header_key_value ({HTTP_HEADER_NAMES}.header_www_authenticate,
+			create page.make
+			page.set_status_code ({HTTP_STATUS_CODE}.unauthorized)
+			page.header.put_header_key_value ({HTTP_HEADER_NAMES}.header_www_authenticate,
 					"Basic realm=%"Please enter a valid username and password (demo [" + html_encoder.encoded_string (demo_credential) + "])%""
 					--| warning: for this example: a valid credential is provided in the message, of course that for real application.
 				)
-			res.set_status_code ({HTTP_STATUS_CODE}.unauthorized)
-			res.put_header_text (h.string)
-			res.put_string (s)
+			page.set_body (s)
+			res.send (page)
 		end
 
+feature -- Helper
+
+	append_html_header (req: WSF_REQUEST; s: STRING)
+			-- Append header paragraph to `s'.
+		do
+			s.append ("<p>The current page is " + html_encoder.encoded_string (req.path_info) + "</p>")
+		end
+
+	append_html_menu (a_username: detachable READABLE_STRING_32; req: WSF_REQUEST; s: STRING)
+			-- Append menu to `s'.
+			-- when an user is authenticated, `a_username' is attached.
+		do
+			if a_username /= Void then
+				s.append ("<li><a href=%""+ req.absolute_script_url ("") +"%">Your account</a> (displayed only is user is authenticated!)</li>")
+			end
+			s.append ("<li><a href=%""+ req.absolute_script_url ("") +"%">home</a></li>")
+			s.append ("<li><a href=%""+ req.script_url ("/public/area") +"%">public area</a></li>")
+			s.append ("<li><a href=%""+ req.script_url ("/protected/area") +"%">protected area</a></li>")
+		end
+
+	append_html_login (req: WSF_REQUEST; s: STRING)
+			-- Append login link to `s'.
+		do
+			s.append ("<li><a href=%""+ req.script_url ("/login") +"%">sign in</a></li>")
+		end
+
+	append_html_logout (a_username: detachable READABLE_STRING_32; req: WSF_REQUEST; s: STRING)
+			-- Append logout link to `s'.
+		local
+			l_logout_url: STRING
+		do
+			l_logout_url := req.absolute_script_url ("/login")
+			l_logout_url.replace_substring_all ("://", "://_@") -- Hack to clear http authorization, i.e connect with bad username "_".
+			s.append ("<li><a href=%""+ l_logout_url +"%">logout</a></li>")
+		end
+
+	append_html_footer (req: WSF_REQUEST; s: STRING)
+			-- Append html footer to `s'.
+		local
+			hauth: HTTP_AUTHORIZATION
+		do
+			s.append ("<hr/>")
+			if attached req.http_authorization as l_http_authorization then
+				s.append ("Has <em>Authorization:</em> header: ")
+				create hauth.make (req.http_authorization)
+				if attached hauth.login as l_login then
+					s.append (" login=<strong>" + html_encoder.encoded_string (l_login)+ "</strong>")
+				end
+				if attached hauth.password as l_password then
+					s.append (" password=<strong>" + html_encoder.encoded_string (l_password)+ "</strong>")
+				end
+				s.append ("<br/>")
+			end
+			if attached req.raw_header_data as l_header then
+					-- Append the raw header data for information
+				s.append ("Raw header data:")
+				s.append ("<pre>")
+				s.append (l_header)
+				s.append ("</pre>")
+			end
+		end
 
 end
