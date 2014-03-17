@@ -26,11 +26,6 @@ inherit
 	ITERABLE [READABLE_STRING_8]
 
 	HTTP_HEADER_BUILDER
-		redefine
-			add_header_key_value,
-			put_header_key_value,
-			put_header_key_values
-		end
 
 create
 	make,
@@ -141,6 +136,8 @@ feature -- Conversion
 			end
 			Result := res
 		end
+
+feature --
 
 	append_string_to (a_result: STRING_8)
 			-- Append current as string representation to `a_result'
@@ -298,33 +295,6 @@ feature -- Header change: general
 			force_header_by_name (header_name_colon (h), h)
 		end
 
-	add_header_key_value (k,v: READABLE_STRING_8)
-			-- Add header `k:v'.
-			-- If it already exists, there will be multiple header with same name
-			-- which can also be valid
-		do
-			Precursor (k, v)
-		ensure then
-			added: has_header_named (k)
-		end
-
-	put_header_key_value (k,v: READABLE_STRING_8)
-			-- Add header `k:v', or replace existing header of same header name/key
-		do
-			Precursor (k, v)
-		ensure then
-			added: has_header_named (k)
-		end
-
-	put_header_key_values (k: READABLE_STRING_8; a_values: ITERABLE [READABLE_STRING_8]; a_separator: detachable READABLE_STRING_8)
-			-- Add header `k: a_values', or replace existing header of same header values/key.
-			-- Use `comma_space' as default separator if `a_separator' is Void or empty.
-		do
-			Precursor (k, a_values, a_separator)
-		ensure then
-			added: has_header_named (k)
-		end
-
 feature -- Redirection
 
 	remove_location
@@ -363,13 +333,18 @@ feature {NONE} -- Implementation: Header change
 
 feature {NONE} -- Implementation: Header conversion
 
-	append_line_to (s: READABLE_STRING_8; h: STRING_8)
+	append_line_to (a_line: READABLE_STRING_8; h: STRING_8)
+			-- Append header line `a_line' to string `h'.
+			--| this is used to build the header text
+		require
+			not_ending_with_new_line: not a_line.ends_with_general ("%N")
 		do
-			h.append_string (s)
+			h.append_string (a_line)
 			append_end_of_line_to (h)
 		end
 
 	append_end_of_line_to (h: STRING_8)
+			-- Append the CRLN end of header line to string `h'.
 		do
 			h.append_character ('%R')
 			h.append_character ('%N')
