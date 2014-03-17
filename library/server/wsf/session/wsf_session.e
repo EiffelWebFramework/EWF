@@ -78,12 +78,21 @@ feature -- Control
 		deferred
 		end
 
-	apply_to (h: HTTP_HEADER; req: WSF_REQUEST; a_path: detachable READABLE_STRING_8)
+	apply_to (h: HTTP_HEADER_BUILDER; req: WSF_REQUEST; a_path: detachable READABLE_STRING_8)
+			-- Apply current session to header `h' for request `req' and optional path `a_path'.
+			-- note: either use `apply_to' or `apply', not both.
 		deferred
 		end
 
+	apply (req: WSF_REQUEST; res: WSF_RESPONSE; a_path: detachable READABLE_STRING_8)
+			-- Apply current session to response `res' for request `req' and optional path `a_path'.
+			-- note: either use `apply' or `apply_to', not both.
+		do
+			apply_to (res.header, req, a_path)
+		end
+
 note
-	copyright: "2011-2013, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
+	copyright: "2011-2014, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Colin Adams, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software
