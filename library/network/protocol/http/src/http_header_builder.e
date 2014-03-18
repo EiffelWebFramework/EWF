@@ -83,20 +83,21 @@ feature -- Status report
 			-- Has "Transfer-Encoding: chunked" header
 		do
 			if has_header_named ({HTTP_HEADER_NAMES}.header_transfer_encoding) then
-				Result := attached header_named_value ({HTTP_HEADER_NAMES}.header_transfer_encoding) as v and then v.same_string (str_chunked)
+				Result := attached item ({HTTP_HEADER_NAMES}.header_transfer_encoding) as v and then v.same_string (str_chunked)
 			end
 		end
 
 feature -- Access
 
-	header_named_value (a_name: READABLE_STRING_8): detachable STRING_8
+	item alias "[]" (a_header_name: READABLE_STRING_8): detachable READABLE_STRING_8 assign force
 			-- First header item found for `a_name' if any
 		local
+			res: STRING_8
 			n: INTEGER
 			l_line: READABLE_STRING_8
 			ic: like new_cursor
 		do
-			n := a_name.count
+			n := a_header_name.count
 
 			from
 				ic := new_cursor
@@ -104,49 +105,69 @@ feature -- Access
 				ic.after or Result /= Void
 			loop
 				l_line := ic.item
-				if has_same_header_name (l_line, a_name) then
-					Result := l_line.substring (n + 2, l_line.count)
-					Result.left_adjust
-					Result.right_adjust
+				if has_same_header_name (l_line, a_header_name) then
+					res := l_line.substring (n + 2, l_line.count)
+					res.left_adjust
+					res.right_adjust
+					Result := res
 				end
 				ic.forth
 			end
 		end
 
+	header_named_value (a_name: READABLE_STRING_8): like item
+			-- First header item found for `a_name' if any	
+		obsolete
+			"Use `item' [2014-03]"
+		do
+			Result := item (a_name)
+		end
+
 feature -- Header change: general
 
-	add_header_key_value (k,v: READABLE_STRING_8)
-			-- Add header `k:v'.
+	force (a_value: detachable READABLE_STRING_8; a_header_name: READABLE_STRING_8)
+			-- Put header `a_header_name:a_value' or replace existing header of name `a_header_name'.
+			--| this is used as assigner for `item'
+		do
+			if a_value = Void then
+				put_header_key_value (a_header_name, "")
+			else
+				put_header_key_value (a_header_name, a_value)
+			end
+		end
+
+	add_header_key_value (a_header_name, a_value: READABLE_STRING_8)
+			-- Add header `a_header_name:a_value'.
 			-- If it already exists, there will be multiple header with same name
 			-- which can also be valid
 		local
 			s: STRING_8
 		do
-			create s.make (k.count + 2 + v.count)
-			s.append (k)
+			create s.make (a_header_name.count + 2 + a_value.count)
+			s.append (a_header_name)
 			s.append (colon_space)
-			s.append (v)
+			s.append (a_value)
 			add_header (s)
 		ensure
-			added: has_header_named (k)
+			added: has_header_named (a_header_name)
 		end
 
-	put_header_key_value (k,v: READABLE_STRING_8)
-			-- Add header `k:v', or replace existing header of same header name/key
+	put_header_key_value (a_header_name, a_value: READABLE_STRING_8)
+			-- Add header `a_header_name:a_value', or replace existing header of same header name/key
 		local
 			s: STRING_8
 		do
-			create s.make (k.count + 2 + v.count)
-			s.append (k)
+			create s.make (a_header_name.count + 2 + a_value.count)
+			s.append (a_header_name)
 			s.append (colon_space)
-			s.append (v)
+			s.append (a_value)
 			put_header (s)
 		ensure
-			added: has_header_named (k)
+			added: has_header_named (a_header_name)
 		end
 
-	put_header_key_values (k: READABLE_STRING_8; a_values: ITERABLE [READABLE_STRING_8]; a_separator: detachable READABLE_STRING_8)
-			-- Add header `k: a_values', or replace existing header of same header values/key.
+	put_header_key_values (a_header_name: READABLE_STRING_8; a_values: ITERABLE [READABLE_STRING_8]; a_separator: detachable READABLE_STRING_8)
+			-- Add header `a_header_name: a_values', or replace existing header of same header values/key.
 			-- Use `comma_space' as default separator if `a_separator' is Void or empty.
 		local
 			s: STRING_8
@@ -167,10 +188,10 @@ feature -- Header change: general
 				s.append (c.item)
 			end
 			if not s.is_empty then
-				put_header_key_value (k, s)
+				put_header_key_value (a_header_name, s)
 			end
 		ensure
-			added: has_header_named (k)
+			added: has_header_named (a_header_name)
 		end
 
 feature -- Content related header

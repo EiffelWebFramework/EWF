@@ -1,6 +1,7 @@
 note
-	description: "Summary description for {WSF_RESPONSE_HEADER}."
-	author: ""
+	description: "[
+			 	Interface to build the http header associated with WSF_RESPONSE.
+			]"
 	date: "$Date$"
 	revision: "$Revision$"
 
