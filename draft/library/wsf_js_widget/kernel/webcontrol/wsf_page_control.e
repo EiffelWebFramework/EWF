@@ -142,6 +142,16 @@ feature -- Implementation
 				Result.append ("<script src=%"")
 				Result.append (base_path)
 				Result.append ("assets/widget.js%"></script>")
+				if attached additional_javascripts as ajs then
+					across
+						ajs as js
+					loop
+						Result.append ("<script src=%"")
+						Result.append (base_path)
+						Result.append (js.item)
+						Result.append ("%"></script>")
+					end
+				end
 				Result.append ("<script type=%"text/javascript%">$(function() {var page= new WSF_PAGE_CONTROL(")
 				Result.append (full_state.representation)
 				Result.append (");page.initialize();});</script>")
@@ -149,6 +159,16 @@ feature -- Implementation
 			else
 				Result.append ("<div data-name=%"" + control_name + "%" data-type=%"WSF_PAGE_CONTROL%">")
 				Result.append (control.render)
+				if attached additional_javascripts as ajs then
+					across
+						ajs as js
+					loop
+						Result.append ("<script src=%"")
+						Result.append (base_path)
+						Result.append (js.item)
+						Result.append ("%"></script>")
+					end
+				end
 				Result.append ("<script type=%"text/javascript%">$(function() {var page= new WSF_PAGE_CONTROL(")
 				Result.append (full_state.representation)
 				Result.append (");page.initialize();});</script>")
@@ -173,6 +193,19 @@ feature -- Implementation
 			if attached value and then value.is_string then
 				Result := value.as_string.value
 			end
+		end
+
+	add_javascript (path: STRING_32)
+		local
+			ajs: attached like additional_javascripts
+		do
+			if attached additional_javascripts as aajs then
+				ajs := aajs
+			else
+				create ajs.make (1)
+			end
+			ajs.extend (path)
+			additional_javascripts := ajs
 		end
 
 feature -- Event handling
@@ -225,5 +258,8 @@ feature {NONE} -- Root control
 
 	control: WSF_CONTROL
 			-- The root control of this page
+
+	additional_javascripts: detachable ARRAYED_LIST [STRING_32]
+			-- List containing the additional javascipt files
 
 end
