@@ -1,5 +1,8 @@
 note
-	description: "Summary description for {WSF_FILE_DEFINITION}."
+	description: "[
+		A container to encapsulate file information which is used by
+		WSF_FILE_CONTROL, such as name or type of the file.
+	]"
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
@@ -20,9 +23,10 @@ feature {NONE}
 			id := a_id
 		end
 
-feature
+feature -- Change
 
 	set_id (a_id: detachable STRING_32)
+			-- Set the id of this abstract file.
 		do
 			id := a_id
 		end
@@ -30,6 +34,7 @@ feature
 feature --Properties
 
 	is_uploaded: BOOLEAN
+			-- Whether the file denoted by this abstract file has been uploaded.
 		do
 			Result := attached id
 		end

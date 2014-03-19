@@ -32,7 +32,6 @@ feature {NONE} -- Initialization
 			-- Initialize
 		do
 			make_with_tag_name ("")
-			stateless := True
 		end
 
 feature

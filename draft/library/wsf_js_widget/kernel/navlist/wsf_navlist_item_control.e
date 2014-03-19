@@ -1,6 +1,6 @@
 note
 	description: "[
-		WSF_NAVLIST_ITEM_CONTROL represents a menu item in WSF_NAVLIST_CONTROL
+		This class represents a menu item in WSF_NAVLIST_CONTROL.
 	]"
 	author: ""
 	date: "$Date$"
@@ -25,11 +25,14 @@ create
 feature {NONE} -- Initialization
 
 	make (link, t: STRING_32)
+			-- Initialize with the given link and text
 		do
 			make_control ("a")
 			text := t
 			attributes := "href=%"" + link + "%"";
 			add_class ("list-group-item")
+		ensure
+			text_set: text = t
 		end
 
 feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
@@ -53,7 +56,7 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 feature -- Change
 
 	set_active (a: BOOLEAN)
-			-- Set text of that button
+			-- Set whether this item should be displayed as active or not
 		do
 			if active /= a then
 				active := a
@@ -64,10 +67,14 @@ feature -- Change
 				end
 				state_changes.replace (create {JSON_BOOLEAN}.make_boolean (a), "active")
 			end
+		ensure
+			active_set: active = a
+			state_changes_registered: old active /= active implies state_changes.has_key ("active")
 		end
 
 feature -- Properties
 
 	active: BOOLEAN
+			-- The active state of this item
 
 end

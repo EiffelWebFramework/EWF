@@ -53,17 +53,22 @@ feature {NONE} -- Initialization
 feature -- Implementation
 
 	value: STRING_32
+			-- The current value
 		do
 			Result := input.value
 		end
 
 	set_value (v: STRING_32)
+			-- Set the current date (has to be in format dd-mm-yyyy)
 		do
 			input.set_value (v)
+		ensure then
+			value_set: input.value = v
 		end
 
 feature -- Properties
 
 	input: WSF_INPUT_CONTROL
+			-- The input control which is used to display the selected date
 
 end

@@ -15,6 +15,8 @@ feature {NONE} -- Initialization
 			-- Initialize with specified error message to be displayed on validation failure
 		do
 			error := e
+		ensure
+			error_set: error = e
 		end
 
 feature -- Access
@@ -35,5 +37,6 @@ feature -- Access
 feature -- Properties
 
 	error: STRING_32
+			-- The error message if validation fails
 
 end

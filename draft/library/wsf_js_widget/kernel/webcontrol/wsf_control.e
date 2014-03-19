@@ -186,6 +186,18 @@ feature -- Change
 			isolate := p
 		end
 
+	set_control_name_prefix (p: STRING_32)
+			-- Set the control name prefix
+		do
+			control_name_prefix := p
+		end
+
+	set_control_id (d: INTEGER)
+			-- Set the id of this control
+		do
+			control_id := d
+		end
+
 feature -- Properties
 
 	isolate: BOOLEAN
@@ -197,12 +209,6 @@ feature -- Properties
 	control_id: INTEGER assign set_control_id
 			-- The id of this control
 
-	set_control_id (d: INTEGER)
-			-- Set the id of this control
-		do
-			control_id := d
-		end
-
 	control_name: STRING_32
 			-- The name of this control which is composed of the control name prefix and the id of the control
 		do
@@ -212,11 +218,5 @@ feature -- Properties
 	control_name_prefix: STRING_32 assign set_control_name_prefix
 			-- Used to avoid name conflicts since the children stateful controls of stateless controls are appended to the parent
 			-- control state and therefore could have the same name (Stateless multi controls do not add a hierarchy level)
-
-	set_control_name_prefix (p: STRING_32)
-			-- Set the control name prefix
-		do
-			control_name_prefix := p
-		end
 
 end

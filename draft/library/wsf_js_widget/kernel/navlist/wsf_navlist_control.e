@@ -1,7 +1,7 @@
 note
 	description: "[
-		WSF_NAVLIST_CONTROL encapsulates the linked items provided by bootstrap.
-		http://getbootstrap.com/components/#list-group-linked
+		This class encapsulates the linked items provided by bootstrap.
+		See http://getbootstrap.com/components/#list-group-linked
 	]"
 	author: ""
 	date: "$Date$"
@@ -23,6 +23,7 @@ create
 feature {NONE} -- Initialization
 
 	make
+			-- Initialize
 		do
 			make_multi_control
 			add_class ("list-group")

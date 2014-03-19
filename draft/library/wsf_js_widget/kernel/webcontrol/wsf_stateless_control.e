@@ -21,18 +21,9 @@ feature {NONE} -- Initialization
 		do
 			tag_name := a_tag_name
 			create css_classes.make (0)
+		ensure
+			tag_name_set: tag_name = a_tag_name
 		end
-
-feature -- Access
-
-	tag_name: STRING_32
-			-- The tag name
-
-	css_classes: ARRAYED_LIST [STRING_32]
-			-- List of classes (appear in the "class" attribute)
-
-	attributes: detachable STRING_32
-			-- Attributes string (without classes)
 
 feature -- Change
 
@@ -120,6 +111,17 @@ feature -- Rendering
 			-- Return html representation of control
 		deferred
 		end
+
+feature -- Properties
+
+	tag_name: STRING_32
+			-- The tag name
+
+	css_classes: ARRAYED_LIST [STRING_32]
+			-- List of classes (appear in the "class" attribute)
+
+	attributes: detachable STRING_32
+			-- Attributes string (without classes)
 
 invariant
 	tag_name_not_empty: not tag_name.is_empty

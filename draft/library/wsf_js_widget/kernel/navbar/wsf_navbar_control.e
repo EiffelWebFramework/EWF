@@ -1,8 +1,9 @@
 note
 	description: "[
-		WSF_NAVBAR_CONTROL encapsulates the navbar provided by bootstrap.
-		Simple menu items as well as dropdown lists and panels can be added to this control
-		http://getbootstrap.com/components/#navbar
+		WSF_NAVBAR_CONTROL encapsulates the navbar provided by
+		bootstrap. Simple menu items as well as dropdown lists and
+		panels can be added to this control.
+		See http://getbootstrap.com/components/#navbar
 	]"
 	author: ""
 	date: "$Date$"
@@ -44,6 +45,8 @@ feature {NONE} -- Initialization
 		do
 			make
 			brand := b
+		ensure
+			brand_set: brand = b
 		end
 
 feature -- Rendering
@@ -72,7 +75,7 @@ feature -- Rendering
 feature -- Change
 
 	set_active (tab: INTEGER)
-			-- Sets the given tab as current active tab
+			-- Sets the given tab as current active tab. This procedure must not be called more than once.
 		require
 			tab >= 1 and tab <= tab_count and not active_set
 		do
@@ -82,6 +85,8 @@ feature -- Change
 				nav_right.controls.i_th (tab - nav.controls.count).add_class ("active")
 			end
 			active_set := true
+		ensure
+			active_set_set: active_set
 		end
 
 	add_list_element_right (l: WSF_STATELESS_CONTROL)

@@ -1,5 +1,7 @@
 note
-	description: "Summary description for {WSF_IMAGE_SLIDER_CONTROL}."
+	description: "[
+		Represents the bootstraps's 'carousel'.
+	]"
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
@@ -20,11 +22,11 @@ create
 feature {NONE} -- Initialization
 
 	make
-			-- Initialize with specified name
+			-- Initialize
 		do
-			make_control ( "div")
+			make_control ("div")
 			add_class ("carousel slide")
-			create list.make_with_tag_name ( "ol")
+			create list.make_with_tag_name ("ol")
 			list.add_class ("carousel-indicators")
 			create slide_wrapper.make_with_tag_name ("div")
 			slide_wrapper.add_class ("carousel-inner")
@@ -33,19 +35,21 @@ feature {NONE} -- Initialization
 feature -- State handling
 
 	set_state (new_state: JSON_OBJECT)
+			-- Just implementation, nothing special to do here
 		do
 		end
 
 	state: WSF_JSON_OBJECT
+			-- Just implementation, nothing special to do here
 		do
 			create Result.make
 		end
 
 feature -- Callback
 
-	handle_callback (cname: LIST[STRING_32]; event: STRING_32; event_parameter: detachable ANY)
+	handle_callback (cname: LIST [STRING_32]; event: STRING_32; event_parameter: detachable ANY)
+			-- Just implementation, nothing special to do here
 		do
-				-- Do nothing here
 		end
 
 feature -- Rendering
@@ -64,6 +68,7 @@ feature -- Rendering
 feature -- Change
 
 	add_image_with_caption (src, alt, caption: STRING_32)
+			-- Add a new image to the slider with specified url, alternative text and caption
 		local
 			caption_control: detachable WSF_STATELESS_CONTROL
 		do

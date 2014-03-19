@@ -1,5 +1,7 @@
 note
-	description: "Summary description for {WSF_CHECKBOX_LIST_CONTROL}."
+	description: "[
+		Representation of a list of HTML checkboxes.
+	]"
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
@@ -37,23 +39,26 @@ feature {NONE} -- Initializaton
 feature -- Implementation
 
 	value: LIST [STRING_32]
+			-- Returns the values of all selected checkboxes in this list
 		do
 			create {ARRAYED_LIST [STRING_32]} Result.make (0)
 			across
 				controls as c
 			loop
-				if c.item.value then
+				if c.item.checked then
 					Result.extend (c.item.checked_value)
 				end
 			end
 		end
 
 	set_value (v: LIST [STRING_32])
+			-- Sets the checked state of each of the checkboxes in this list according to whether the value
+			-- of a checkbox occurs in the specified list or not
 		do
 			across
 				controls as c
 			loop
-				c.item.set_value (v.has (c.item.checked_value))
+				c.item.set_checked (v.has (c.item.checked_value))
 			end
 		end
 

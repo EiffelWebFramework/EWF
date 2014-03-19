@@ -1,5 +1,8 @@
 note
-	description: "Summary description for {WSF_PASSWORD_CONTROL}."
+	description: "[
+		This control represents an HTML input control with the 'type'
+		attribute set to 'password'.
+	]"
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"

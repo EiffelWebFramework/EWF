@@ -1,5 +1,9 @@
 note
-	description: "Summary description for {WSF_TEXT_CONTROL}."
+	description: "[
+		The basic <input> HTML element is represented by this control.
+		All controls that are used to gather some input from the user
+		basically can inherit from this class.
+	]"
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
@@ -25,6 +29,8 @@ feature {NONE} -- Initialization
 			make_value_control ("input")
 			type := "text"
 			text := v
+		ensure
+			text_set: text = v
 		end
 
 feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
@@ -52,6 +58,8 @@ feature --Event handling
 			-- Set text change event handle
 		do
 			change_event := e
+		ensure
+			change_event_set: change_event = e
 		end
 
 	handle_callback (cname: LIST [STRING_32]; event: STRING_32; event_parameter: detachable ANY)
@@ -88,31 +96,45 @@ feature -- Change
 				text := t
 				state_changes.replace (create {JSON_STRING}.make_json (text), "text")
 			end
+		ensure
+			text_same_string_as_t: text.same_string (t)
+			state_changes_registered: old text /= text implies state_changes.has_key ("text")
 		end
 
 	set_disabled (b: BOOLEAN)
+			-- Set the disabled state of this control
 		do
 			if disabled /= b then
 				disabled := b
 				state_changes.replace_with_boolean (disabled, "disabled")
 			end
+		ensure
+			disabled_set: disabled = b
+			state_changes_registered: old b /= b implies state_changes.has_key ("disabled")
 		end
 
 	set_type (t: STRING_32)
+			-- Set the type of this input control (HTML 'type' attribute)
 		do
 			type := t
+		ensure
+			type_set: type = t
 		end
 
 feature -- Implementation
 
 	value: STRING_32
+			-- The value of this input control
 		do
 			Result := text
 		end
 
 	set_value (v: STRING_32)
+			-- Set the value of this input control
 		do
 			text := v
+		ensure then
+			value_set: text = v
 		end
 
 feature -- Properties

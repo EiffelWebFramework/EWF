@@ -1,5 +1,7 @@
 note
-	description: "Summary description for {WSF_FILE_CONTROL}."
+	description: "[
+		A control that represents a file upload.
+	]"
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
@@ -20,11 +22,13 @@ create
 feature {NONE} -- Initialization
 
 	make
+			-- Initialize
 		do
 			make_value_control ("input")
 		end
 
 	make_with_image_preview
+			-- Initialize with image_preview set to true
 		do
 			make
 			image_preview := True
@@ -102,6 +106,7 @@ feature -- Event handling
 feature -- Upload
 
 	start_upload
+			-- Add start upload command to action list which then executes the javascript function to start upload on client side
 		local
 			upload: WSF_JSON_OBJECT
 		do
@@ -137,39 +142,56 @@ feature -- Change
 			-- Set text change event handle
 		do
 			change_event := e
+		ensure
+			change_event_set: change_event = e
 		end
 
 	set_upload_done_event (e: attached like upload_done_event)
 			-- Set text change event handle
 		do
 			upload_done_event := e
+		ensure
+			upload_done_event_set: upload_done_event = e
 		end
 
 	set_upload_function (e: attached like upload_function)
 			-- Set button click event handle
 		do
 			upload_function := e
+		ensure
+			upload_function_set: upload_function = e
 		end
 
 	set_disabled (b: BOOLEAN)
+			-- Set the disabled state of this file control
 		do
 			if disabled /= b then
 				disabled := b
 				state_changes.replace_with_boolean (disabled, "disabled")
 			end
+		ensure
+			disabled_set: disabled = b
+			state_changes_registered: old disabled /= disabled implies state_changes.has_key ("disabled")
 		end
 
 	set_value (v: detachable WSF_FILE_DEFINITION)
+			-- Set the file definition of this file control
 		do
 			file := v
+		ensure then
+			file_set: file = v
 		end
 
 	set_image_preview (b: BOOLEAN)
+			-- Set if the image should be previewed in the control
 		do
 			if image_preview /= b then
 				image_preview := b
 				state_changes.replace_with_boolean (image_preview, "image_preview")
 			end
+		ensure
+			image_preview_set: image_preview = b
+			state_changes_registered: old image_preview /= image_preview implies state_changes.has_key ("image_preview")
 		end
 
 feature -- Properties

@@ -194,8 +194,6 @@ feature
 
 feature -- Properties
 
-	stateless: BOOLEAN
-
 	controls: ARRAYED_LIST [G]
 			-- List of current controls in this multi control
 

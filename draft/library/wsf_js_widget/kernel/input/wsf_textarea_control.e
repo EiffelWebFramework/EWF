@@ -1,5 +1,9 @@
 note
-	description: "Summary description for {WSF_TEXT_CONTROL}."
+	description: "[
+		This control represents a textarea (the HTML 'textarea' tag).
+		It basically just inherits the functionality of an input
+		control.
+	]"
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"

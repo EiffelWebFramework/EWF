@@ -29,6 +29,7 @@ feature {NONE} -- Initialization
 			make_validator (e)
 			regexp_string := r
 			create regexp
+			ensure regexp_string_set: regexp_string = r
 		end
 
 feature -- Implementation
@@ -39,7 +40,6 @@ feature -- Implementation
 			if not regexp.is_compiled then
 				regexp.compile (regexp_string)
 			end
-
 			Result := (not input.is_empty) and regexp.matches (input)
 		end
 
@@ -56,7 +56,9 @@ feature -- State
 feature -- Properties
 
 	regexp_string: STRING_32
+			-- The regexp in string representation
 
 	regexp: REGULAR_EXPRESSION
+			-- The regexp of this validator
 
 end

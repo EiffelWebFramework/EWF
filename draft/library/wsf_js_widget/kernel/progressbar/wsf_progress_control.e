@@ -1,8 +1,8 @@
 note
 	description: "[
-			WSF_PROGRESS_CONTROL encapsulates the progress bar provided by bootstrap.
-			The value of the progress bar can either be set directly using set_progress
-			or it can be fetched from a progress source.
+		WSF_PROGRESS_CONTROL encapsulates the progress bar provided by bootstrap.
+		The value of the progress bar can either be set directly using set_progress
+		or it can be fetched from a progress source.
 	]"
 	author: ""
 	date: "$Date$"
@@ -24,23 +24,27 @@ create
 feature {NONE} -- Initialization
 
 	make
-			-- Initialize with specified control name
+			-- Initialize
 		do
 			make_control ("div")
 			add_class ("progress")
 			progress := 0
 		end
 
-	make_with_source ( p: WSF_PROGRESS_SOURCE)
-			-- Initialize with specified control name and progresssource
+	make_with_source (p: WSF_PROGRESS_SOURCE)
+			-- Initialize with specified progresssource
 		do
 			make
 			progress_source := p
+		ensure
+			progress_source_set: progress_source = p
 		end
 
 feature -- State handling
 
 	set_state (new_state: JSON_OBJECT)
+		require else
+			progress_in_range: attached {JSON_NUMBER} new_state.item ("progress") as new_progress implies new_progress.item.to_integer >= 0 and new_progress.item.to_integer <= 100
 		do
 			if attached {JSON_NUMBER} new_state.item ("progress") as new_progress then
 				progress := new_progress.item.to_integer
@@ -55,9 +59,9 @@ feature -- State handling
 
 feature -- Event handling
 
-	handle_callback (cname: LIST[STRING_32]; event: STRING_32; event_parameter: detachable ANY)
+	handle_callback (cname: LIST [STRING_32]; event: STRING_32; event_parameter: detachable ANY)
 		do
-			if cname[1].same_string (control_name) and event.same_string ("progress_fetch") then
+			if cname [1].same_string (control_name) and event.same_string ("progress_fetch") then
 				state_changes.put_integer (progress_value, "progress")
 			end
 		end
@@ -83,22 +87,33 @@ feature -- Change
 		do
 			progress := p
 			state_changes.put_integer (progress, "progress")
+		ensure
+			progress_set: progress = p
+			state_changes_registered: state_changes.has_key ("progress")
 		end
 
 feature -- Implementation
 
 	progress_value: INTEGER
+			-- The progress value of this progress control
 		do
 			Result := progress
 			if attached progress_source as ps then
 				Result := ps.progress
 			end
+		ensure
+			result_in_range: Result >= 0 and Result <= 100
 		end
 
 feature -- Properties
 
 	progress_source: detachable WSF_PROGRESS_SOURCE
+			-- The source which provides this progress control the progress value
 
 	progress: INTEGER
+			-- The progress value of this progress control
+
+invariant
+	progress_in_range: progress >= 0 and progress <= 100
 
 end

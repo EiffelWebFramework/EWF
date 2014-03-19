@@ -1,5 +1,7 @@
 note
-	description: "Summary description for {WSF_CHECKBOX_CONTROL}."
+	description: "[
+		Representation of an HTML checkbox.
+	]"
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
@@ -11,7 +13,9 @@ inherit
 
 	WSF_VALUE_CONTROL [BOOLEAN]
 		rename
-			make as make_value_control
+			make as make_value_control,
+			value as checked,
+			set_value as set_checked
 		end
 
 create
@@ -19,12 +23,14 @@ create
 
 feature {NONE} -- Initialization
 
-	make (l, c: STRING_32)
-			-- Initialize with specified control name,
+	make (l, value: STRING_32)
+			-- Initialize with specified label and value
+		require
+			value_not_empty: not value.is_empty
 		do
 			make_value_control ("input")
 			label := l
-			checked_value := c
+			checked_value := value
 		end
 
 feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
@@ -76,12 +82,8 @@ feature -- Implementation
 			Result := render_tag_with_tagname ("div", render_tag_with_tagname ("label", render_tag ("", attrs) + " " + label, "", ""), "", "checkbox")
 		end
 
-	value: BOOLEAN
-		do
-			Result := checked
-		end
-
-	set_value (v: BOOLEAN)
+	set_checked (v: BOOLEAN)
+			-- Set if the checkbox is checked
 		do
 			checked := v
 		end
@@ -95,7 +97,7 @@ feature -- Properties
 			-- The checked value of the checkbox control
 
 	checked_value: STRING_32
-			-- String checked value
+			-- The value of this checkbox
 
 	change_event: detachable PROCEDURE [ANY, TUPLE]
 			-- Function to be executed on change

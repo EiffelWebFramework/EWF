@@ -1,6 +1,9 @@
 note
 	description: "[
-		Validator implementation which make sure that the input has a the format of an valid email address
+		Validator implementation which make sure that the input has
+		the format of an valid email address. This is just a very
+		basic implementation that tests if the given input contains
+		a '@'.
 	]"
 	author: ""
 	date: "$Date$"
@@ -22,7 +25,7 @@ create
 feature {NONE} -- Initialization
 
 	make (e: STRING_32)
-			-- Initialize with specified error message which will be displayed on validation failure
+			-- Initialize with specified error message
 		do
 			make_regexp_validator ("^.*@.*$", e)
 		end
