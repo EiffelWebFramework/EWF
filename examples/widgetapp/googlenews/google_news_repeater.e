@@ -16,9 +16,9 @@ create
 
 feature
 
-	render_item (item: GOOGLE_NEWS): STRING
+	render_item (item: GOOGLE_NEWS): STRING_32
 		local
-			body: STRING
+			body: STRING_32
 		do
 			Result := ""
 			if attached item.image as image then

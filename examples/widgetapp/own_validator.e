@@ -9,7 +9,7 @@ class
 
 inherit
 
-	WSF_VALIDATOR [STRING]
+	WSF_VALIDATOR [STRING_32]
 
 create
 	make_own
@@ -23,7 +23,7 @@ feature {NONE}
 
 feature
 
-	is_valid (input: STRING): BOOLEAN
+	is_valid (input: STRING_32): BOOLEAN
 		do
 			Result := input.count < 5
 		end

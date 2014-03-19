@@ -21,30 +21,30 @@ feature
 
 	initialize_controls
 		local
-			n1_container: WSF_FORM_ELEMENT_CONTROL [STRING]
-			n2_container: WSF_FORM_ELEMENT_CONTROL [STRING]
-			n3_container: WSF_FORM_ELEMENT_CONTROL [STRING]
-			n4_container: WSF_FORM_ELEMENT_CONTROL [STRING]
-			n5_container: WSF_FORM_ELEMENT_CONTROL [STRING]
-			cats_container: WSF_FORM_ELEMENT_CONTROL [LIST [STRING]]
+			n1_container: WSF_FORM_ELEMENT_CONTROL [STRING_32]
+			n2_container: WSF_FORM_ELEMENT_CONTROL [STRING_32]
+			n3_container: WSF_FORM_ELEMENT_CONTROL [STRING_32]
+			n4_container: WSF_FORM_ELEMENT_CONTROL [STRING_32]
+			n5_container: WSF_FORM_ELEMENT_CONTROL [STRING_32]
+			cats_container: WSF_FORM_ELEMENT_CONTROL [LIST [STRING_32]]
 			source: INCREASING_PROGRESSSOURCE
 		do
 			Precursor
-			create form.make 
+			create form.make
 				--Number 1
-			create textbox1.make ("1")
-			create n1_container.make ("Number1", textbox1)
-			n1_container.add_validator (create {WSF_DECIMAL_VALIDATOR}.make ("Invalid Number"))
+			create textbox1.make ({STRING_32}"1")
+			create n1_container.make ({STRING_32}"Number1", textbox1)
+			n1_container.add_validator (create {WSF_DECIMAL_VALIDATOR}.make ({STRING_32}"Invalid Number"))
 			n1_container.add_validator (create {OWN_VALIDATOR}.make_own)
 			form.add_control (n1_container)
 				--Number 2
-			create textbox2.make ("2")
-			create n2_container.make ("Number2", textbox2)
-			n2_container.add_validator (create {WSF_DECIMAL_VALIDATOR}.make ("Invalid Number"))
+			create textbox2.make ({STRING_32}"2")
+			create n2_container.make ({STRING_32}"Number2", textbox2)
+			n2_container.add_validator (create {WSF_DECIMAL_VALIDATOR}.make ({STRING_32}"Invalid Number"))
 			form.add_control (n2_container)
 				--Flag autocomplete
 			create autocompletion1.make (create {FLAG_AUTOCOMPLETION}.make)
-			create n3_container.make ("Flag Autocomplete", autocompletion1)
+			create n3_container.make ({STRING_32}"Flag Autocomplete", autocompletion1)
 			form.add_control (n3_container)
 				--Contact autocomplete
 			create autocompletion2.make (create {CONTACT_AUTOCOMPLETION}.make)
@@ -60,8 +60,8 @@ feature
 			cklist.add_control (create {WSF_CHECKBOX_CONTROL}.make ("Operating Systems", "os"))
 			cklist.add_control (create {WSF_CHECKBOX_CONTROL}.make ("Formal Methods and Functional Programming", "fmfp"))
 			create cats_container.make ("Categories", cklist)
-			cats_container.add_validator (create {WSF_MIN_VALIDATOR [LIST [STRING]]}.make (1, "Choose at least one category"))
-			cats_container.add_validator (create {WSF_MAX_VALIDATOR [LIST [STRING]]}.make (2, "Choose at most two category"))
+			cats_container.add_validator (create {WSF_MIN_VALIDATOR [LIST [STRING_32]]}.make (1, "Choose at least one category"))
+			cats_container.add_validator (create {WSF_MAX_VALIDATOR [LIST [STRING_32]]}.make (2, "Choose at most two category"))
 			form.add_control (cats_container)
 				--Button 1
 			create button1.make ("Update")
@@ -74,7 +74,7 @@ feature
 			form.add_control (button2)
 				--Result
 			create result_html.make ("p", "")
-			form.add_control (create {WSF_FORM_ELEMENT_CONTROL [STRING]}.make ("Result", result_html))
+			form.add_control (create {WSF_FORM_ELEMENT_CONTROL [STRING_32]}.make ("Result", result_html))
 			control.add_control (form)
 
 				--Progress bar
@@ -102,7 +102,7 @@ feature
 					text.append ("<li>" + s.item + "</li>")
 				end
 				text.append ("</ul>")
-				result_html.set_html (text)
+				result_html.set_value (text)
 			else
 				show_alert ("VALIDATION ERROR")
 			end

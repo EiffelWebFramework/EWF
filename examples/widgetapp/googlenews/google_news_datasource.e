@@ -49,7 +49,7 @@ feature
 			list: LINKED_LIST [GOOGLE_NEWS]
 			l_json: detachable READABLE_STRING_8
 			json_parser: JSON_PARSER
-			query_str: STRING
+			query_str: STRING_32
 			cl: LIBCURL_HTTP_CLIENT
 			sess: HTTP_CLIENT_SESSION
 		do
@@ -89,11 +89,11 @@ feature
 
 feature
 
-	set_query (q: STRING)
+	set_query (q: STRING_32)
 		do
 			query := q
 		end
 
-	query: STRING
+	query: STRING_32
 
 end

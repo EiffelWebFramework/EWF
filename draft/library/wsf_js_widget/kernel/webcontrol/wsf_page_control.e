@@ -73,7 +73,7 @@ feature -- Implementation
 			event: detachable STRING_32
 			event_parameter: detachable ANY
 			event_control_name: detachable STRING_32
-			states: STRING_32
+			states: STRING_8
 			states_changes: WSF_JSON_OBJECT
 			json_parser: JSON_PARSER
 		do

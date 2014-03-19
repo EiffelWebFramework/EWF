@@ -27,7 +27,7 @@ feature
 			-- Function called on page load (not on callback)
 		local
 			l_file: PLAIN_TEXT_FILE
-			l_content: STRING
+			l_content: STRING_32
 		do
 			if attached get_parameter ("file") as f then
 				create l_file.make_open_read ("./"+f+".e")

@@ -25,7 +25,7 @@ feature {NONE} -- Initialization
 
 feature -- Implementation
 
-	autocompletion (input: STRING): JSON_ARRAY
+	autocompletion (input: STRING_32): JSON_ARRAY
 			-- Implementation
 		local
 			o: JSON_OBJECT

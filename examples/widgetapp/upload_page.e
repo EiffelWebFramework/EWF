@@ -70,7 +70,7 @@ feature -- Implementation
 					if not f.is_uploaded then
 						filebox.set_disabled (true)
 						filebox.start_upload
-						filebox2.set_disabled (true) 
+						filebox2.set_disabled (true)
 						filebox3.set_disabled (true)
 						filebox3.start_upload
 						button1.set_disabled (true)
@@ -84,7 +84,7 @@ feature -- Implementation
 			end
 		end
 
-	upload_file (f: ITERABLE [WSF_UPLOADED_FILE]): detachable String
+	upload_file (f: ITERABLE [WSF_UPLOADED_FILE]): detachable STRING_32
 		do
 				-- Store file on server and return link
 			across
@@ -110,10 +110,10 @@ feature -- Properties
 
 	filebox3: WSF_FILE_CONTROL
 
-	n1_container: WSF_FORM_ELEMENT_CONTROL [detachable WSF_FILE]
+	n1_container: WSF_FORM_ELEMENT_CONTROL [detachable WSF_FILE_DEFINITION]
 
-	n2_container: WSF_FORM_ELEMENT_CONTROL [detachable WSF_FILE]
+	n2_container: WSF_FORM_ELEMENT_CONTROL [detachable WSF_FILE_DEFINITION]
 
-	n3_container: WSF_FORM_ELEMENT_CONTROL [detachable WSF_FILE]
+	n3_container: WSF_FORM_ELEMENT_CONTROL [detachable WSF_FILE_DEFINITION]
 
 end

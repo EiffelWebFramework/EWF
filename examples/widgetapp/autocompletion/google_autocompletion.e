@@ -24,7 +24,7 @@ feature {NONE} -- Initialization
 
 feature -- Implementation
 
-	autocompletion (input: STRING): JSON_ARRAY
+	autocompletion (input: STRING_32): JSON_ARRAY
 			-- Implementation
 		local
 			cl: LIBCURL_HTTP_CLIENT
@@ -32,7 +32,7 @@ feature -- Implementation
 			l_json: detachable READABLE_STRING_8
 			o: JSON_OBJECT
 			json_parser: JSON_PARSER
-			query_str: STRING
+			query_str: STRING_32
 		do
 			query_str := input
 			query_str.replace_substring_all (" ", "+")
@@ -50,7 +50,7 @@ feature -- Implementation
 					loop
 						if attached {JSON_STRING} list.i_th (c.item) as row then
 							create o.make
-							o.put (create {JSON_STRING}.make_json (row.unescaped_string_32), "value")
+							o.put (create {JSON_STRING}.make_json (row.unescaped_STRING_32), "value")
 							Result.add (o)
 						end
 					end

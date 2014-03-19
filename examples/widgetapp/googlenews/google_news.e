@@ -19,10 +19,10 @@ feature {NONE}
 	make_from_json (json: JSON_OBJECT)
 		do
 			if attached {JSON_STRING} json.item ("title") as l_title then
-				title := l_title.unescaped_string_32
+				title := l_title.unescaped_STRING_32
 			end
 			if attached {JSON_STRING} json.item ("content") as l_content then
-				content := l_content.unescaped_string_32
+				content := l_content.unescaped_STRING_32
 			end
 			if
 				attached {JSON_OBJECT} json.item ("image") as img and then
@@ -34,11 +34,11 @@ feature {NONE}
 
 feature -- Access
 
-	title: detachable STRING
+	title: detachable STRING_32
 
-	content: detachable STRING
+	content: detachable STRING_32
 
-	image: detachable STRING
+	image: detachable STRING_32
 
 	item  alias "[]"  (a_field: READABLE_STRING_GENERAL): detachable ANY
 			-- <Precursor>
