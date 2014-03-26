@@ -1,5 +1,5 @@
 note
-	description: "Summary description for {IMAGE_SLIDER_PAGE}."
+	description: "Summary description for {SLIDER_PAGE}."
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"

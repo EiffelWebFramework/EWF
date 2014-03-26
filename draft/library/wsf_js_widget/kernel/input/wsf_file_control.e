@@ -41,11 +41,15 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 		local
 			id: detachable STRING_32
 		do
-			if attached {JSON_STRING} new_state.item ("file_name") as new_name and attached {JSON_STRING} new_state.item ("file_type") as new_type and attached {JSON_NUMBER} new_state.item ("file_size") as new_size then
+			if
+				attached {JSON_STRING} new_state.item ("file_name") as new_name and
+				attached {JSON_STRING} new_state.item ("file_type") as new_type and
+				attached {JSON_NUMBER} new_state.item ("file_size") as new_size
+			then
 				if attached {JSON_STRING} new_state.item ("file_id") as a_id then
 					id := a_id.unescaped_string_32
 				end
-				create file.make (new_name.unescaped_string_32, new_type.unescaped_string_32, new_size.item.to_integer_32, id);
+				create file.make (new_name.unescaped_string_32, new_type.unescaped_string_32, new_size.item.to_integer_32, id)
 			end
 			if attached {JSON_BOOLEAN} new_state.item ("disabled") as a_disabled then
 				disabled := a_disabled.item
@@ -73,14 +77,14 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 
 feature -- Event handling
 
-	handle_callback (cname: LIST [STRING_32]; event: STRING_32; event_parameter: detachable ANY)
+	handle_callback (cname: LIST [READABLE_STRING_GENERAL]; event: READABLE_STRING_GENERAL; event_parameter: detachable ANY)
 		local
 			f_name: detachable STRING_32
 			f_type: detachable STRING_32
 			f_size: detachable INTEGER
 			f_id: detachable STRING_32
 		do
-			if Current.control_name.same_string (cname [1]) then
+			if control_name.same_string_general (cname.first) then
 				if attached change_event as cevent and event.same_string ("change") then
 					cevent.call (Void)
 				elseif attached upload_done_event as udevent and event.same_string ("uploaddone") then
@@ -214,4 +218,14 @@ feature -- Properties
 	upload_function: detachable FUNCTION [ANY, TUPLE [ITERABLE [WSF_UPLOADED_FILE]], detachable STRING_32]
 			-- Store uploaded file and return server side file id
 
+;note
+	copyright: "2011-2014, Yassin Hassan, Severin Munger, Jocelyn Fiat, Eiffel Software and others"
+	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
+	source: "[
+			Eiffel Software
+			5949 Hollister Ave., Goleta, CA 93117 USA
+			Telephone 805-685-1006, Fax 805-685-6869
+			Website http://www.eiffel.com
+			Customer support http://support.eiffel.com
+		]"
 end

@@ -1,6 +1,5 @@
 note
-	description: "Summary description for {WSF_PAGABLE}."
-	author: ""
+	description: "Summary description for {WSF_PAGABLE_DATASOURCE}."
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -8,7 +7,6 @@ deferred class
 	WSF_PAGABLE_DATASOURCE [G -> WSF_ENTITY]
 
 inherit
-
 	WSF_DATASOURCE [G]
 		redefine
 			state,
@@ -16,16 +14,16 @@ inherit
 			update
 		end
 
-feature --Event handling
+feature -- Event handling
 
 	set_on_update_page_agent (f: PROCEDURE [ANY, TUPLE])
-			--Set paging update listener
+			-- Set paging update listener
 		do
 			on_update_page_agent := f
 		end
 
 	update
-			--Trigger update listeners
+			-- Trigger update listeners
 		do
 			Precursor
 			if attached on_update_page_agent as a then
@@ -81,4 +79,14 @@ feature -- Properties
 
 	on_update_page_agent: detachable PROCEDURE [ANY, TUPLE]
 
+;note
+	copyright: "2011-2014, Yassin Hassan, Severin Munger, Jocelyn Fiat, Eiffel Software and others"
+	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
+	source: "[
+			Eiffel Software
+			5949 Hollister Ave., Goleta, CA 93117 USA
+			Telephone 805-685-1006, Fax 805-685-6869
+			Website http://www.eiffel.com
+			Customer support http://support.eiffel.com
+		]"
 end

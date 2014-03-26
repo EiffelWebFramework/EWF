@@ -3,7 +3,6 @@ note
 		Mutli controls are used as containers for multiple controls, for
 		example a form is a multi control.
 	]"
-	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -11,7 +10,6 @@ class
 	WSF_STATELESS_MULTI_CONTROL [G -> WSF_STATELESS_CONTROL]
 
 inherit
-
 	WSF_MULTI_CONTROL [G]
 		rename
 			make as make_multi_control
@@ -34,7 +32,7 @@ feature {NONE} -- Initialization
 			make_with_tag_name ("")
 		end
 
-feature
+feature -- Change
 
 	set_control_id (d: INTEGER)
 			-- Set id of this control and update subcontrol prefixes
@@ -56,17 +54,22 @@ feature
 
 	set_subcontrol_prefixes
 			-- Update subcontrol prefixes
+		local
+			s: STRING_32
 		do
 			across
-				controls as e
+				controls as ic
 			loop
-				if attached {WSF_CONTROL} e.item as el then
-					el.control_name_prefix := control_name_prefix + control_id.out + "_"
+				if attached {WSF_CONTROL} ic.item as l_control then
+					create s.make_from_string (control_name_prefix)
+					s.append_integer (control_id)
+					s.append_character ('_')
+					l_control.set_control_name_prefix (s)
 				end
 			end
 		end
 
-feature
+feature -- Change
 
 	add_control (c: G)
 			-- Add a control to this multi control
@@ -80,7 +83,7 @@ feature
 			control_added: controls.has (c)
 		end
 
-	render_tag (body: STRING_32; attrs: detachable STRING_32): STRING_32
+	render_tag (body: READABLE_STRING_32; attrs: detachable READABLE_STRING_32): STRING_32
 			-- Generate HTML of this control with the specified body and attributes
 		local
 			css_classes_string: STRING_32
@@ -96,7 +99,7 @@ feature
 
 feature -- Event handling
 
-	handle_callback (cname: LIST [STRING_32]; event: STRING_32; event_parameter: detachable ANY)
+	handle_callback (cname: LIST [READABLE_STRING_GENERAL]; event: READABLE_STRING_GENERAL; event_parameter: detachable ANY)
 			-- Pass callback to subcontrols
 		do
 			across
@@ -110,4 +113,14 @@ feature -- Event handling
 			end
 		end
 
+note
+	copyright: "2011-2014, Yassin Hassan, Severin Munger, Jocelyn Fiat, Eiffel Software and others"
+	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
+	source: "[
+			Eiffel Software
+			5949 Hollister Ave., Goleta, CA 93117 USA
+			Telephone 805-685-1006, Fax 805-685-6869
+			Website http://www.eiffel.com
+			Customer support http://support.eiffel.com
+		]"
 end

@@ -62,12 +62,13 @@ feature --Event handling
 			click_event_set: click_event = e
 		end
 
-	handle_callback (cname: LIST [STRING_32]; event: STRING_32; event_parameter: detachable ANY)
+	handle_callback (cname: LIST [READABLE_STRING_GENERAL]; event: READABLE_STRING_GENERAL; event_parameter: detachable ANY)
 			-- Called if the button is clicked.
-		require else
-			cname_has_element: cname.count > 0
 		do
-			if Current.control_name.same_string (cname [1]) and attached click_event as cevent then
+			if
+				control_name.same_string_general (cname.first) and
+				attached click_event as cevent
+			then
 				cevent.call (Void)
 			end
 		end
@@ -84,7 +85,7 @@ feature -- Rendering
 				attr.append (a)
 			end
 			if disabled then
-				attr.append ("disabled=%"disabled%" ")
+				attr.append (" disabled=%"disabled%" ")
 			end
 			Result := render_tag (text, attr)
 		end
@@ -109,6 +110,8 @@ feature -- Change
 			if disabled /= b then
 				disabled := b
 				state_changes.replace_with_boolean (disabled, "disabled")
+			else
+				check (b = False) implies state_changes.has_key ("disabled") end
 			end
 		ensure
 			disabled_set: disabled = b
@@ -125,4 +128,14 @@ feature -- Properties
 	click_event: detachable PROCEDURE [ANY, TUPLE]
 			-- Event that is executed when button is clicked
 
+;note
+	copyright: "2011-2014, Yassin Hassan, Severin Munger, Jocelyn Fiat, Eiffel Software and others"
+	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
+	source: "[
+			Eiffel Software
+			5949 Hollister Ave., Goleta, CA 93117 USA
+			Telephone 805-685-1006, Fax 805-685-6869
+			Website http://www.eiffel.com
+			Customer support http://support.eiffel.com
+		]"
 end

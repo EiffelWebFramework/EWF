@@ -20,7 +20,7 @@ inherit
 
 feature {NONE} -- Initialization
 
-	make ( a_datasource: WSF_DATASOURCE [G])
+	make (a_datasource: WSF_DATASOURCE [G])
 		local
 			p: WSF_PAGINATION_CONTROL [G]
 		do
@@ -28,7 +28,7 @@ feature {NONE} -- Initialization
 			datasource := a_datasource
 			datasource.set_on_update_agent (agent update)
 			if attached {WSF_PAGABLE_DATASOURCE [G]} a_datasource as ds then
-				create p.make ( ds)
+				create p.make (ds)
 				add_control (p)
 				pagination_control := p
 			end
@@ -61,41 +61,52 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 feature -- Rendering
 
 	render_item (item: G): STRING_32
-			--Render item
+			-- Render item
 		deferred
 		end
 
 	render_body: STRING_32
-			--Render Body
+			-- Render Body
 		do
-			Result := ""
+			create Result.make_empty
 			across
-				datasource.data as entity
+				datasource.data as ic
 			loop
-				Result.append (render_item (entity.item))
+				Result.append (render_item (ic.item))
 			end
 		end
 
 	render: STRING_32
-			--Render repeater inclusive paging if paging is available
+			-- Render repeater inclusive paging if paging is available
 		local
 			content: STRING_32
 		do
 			content := render_tag_with_tagname ("div", render_body, "", "repeater_content")
-			Result := ""
+			create Result.make_empty
 			across
-				controls as c
+				controls as ic
 			loop
-				Result := c.item.render + Result
+					-- CHECK: Prepend ? or Append?
+				Result.prepend (ic.item.render)
 			end
 				-- Fix generator name since the user will extend this class to define item_render
 			Result := render_tag_with_generator_name ("WSF_REPEATER_CONTROL", content + Result, "")
 		end
 
-feature -- Properties
+feature -- Access
 
 	datasource: WSF_DATASOURCE [G]
 
 	pagination_control: detachable WSF_PAGINATION_CONTROL [G]
 
+;note
+	copyright: "2011-2014, Yassin Hassan, Severin Munger, Jocelyn Fiat, Eiffel Software and others"
+	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
+	source: "[
+			Eiffel Software
+			5949 Hollister Ave., Goleta, CA 93117 USA
+			Telephone 805-685-1006, Fax 805-685-6869
+			Website http://www.eiffel.com
+			Customer support http://support.eiffel.com
+		]"
 end

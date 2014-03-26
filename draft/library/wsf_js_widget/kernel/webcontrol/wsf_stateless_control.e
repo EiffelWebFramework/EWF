@@ -27,43 +27,43 @@ feature {NONE} -- Initialization
 
 feature -- Change
 
-	add_class (c: STRING_32)
+	add_class (a_css_class: STRING_32)
 			-- Add a css class to this control
 		require
-			c_not_empty: not c.is_empty
+			a_css_class_not_empty: not a_css_class.is_empty
 		do
-			css_classes.force (c)
+			css_classes.force (a_css_class)
 		ensure
-			class_added: css_classes.has (c)
+			class_added: css_classes.has (a_css_class)
 		end
 
-	remove_class (c: STRING_32)
+	remove_class (a_css_class: STRING_32)
 			-- Remove a css class from this control
 		require
-			c_not_empty: not c.is_empty
+			c_not_empty: not a_css_class.is_empty
 		do
 			css_classes.start
-			css_classes.prune_all (c)
+			css_classes.prune_all (a_css_class)
 		ensure
-			c_removed: not css_classes.has (c)
+			c_removed: not css_classes.has (a_css_class)
 		end
 
-	append_attribute (a: STRING_32)
+	append_attribute (att: READABLE_STRING_32)
 			-- Adds the specified attribute to the attribute string of this control
 		require
-			a_not_empty: not a.is_empty
+			att_not_empty: not att.is_empty
 		do
 			if attached attributes as attr then
-				attr.append (" ")
-				attr.append (a)
+				attr.append_character (' ')
+				attr.append (att)
 			else
-				attributes := a
+				create attributes.make_from_string (att)
 			end
 		end
 
 feature -- Rendering
 
-	render_tag (body: STRING_32; attrs: detachable STRING_32): STRING_32
+	render_tag (a_body: READABLE_STRING_32; attrs: detachable READABLE_STRING_32): STRING_32
 			-- Generate HTML of this control with the specified body and attributes
 		local
 			css_classes_string: STRING_32
@@ -74,10 +74,10 @@ feature -- Rendering
 			loop
 				css_classes_string.append (" " + c.item)
 			end
-			Result := render_tag_with_tagname (tag_name, body, attrs, css_classes_string)
+			Result := render_tag_with_tagname (tag_name, a_body, attrs, css_classes_string)
 		end
 
-	render_tag_with_tagname (tag, body: STRING_32; attrs: detachable STRING_32; css_classes_string: STRING_32): STRING_32
+	render_tag_with_tagname (tag, a_body: READABLE_STRING_32; attrs: detachable READABLE_STRING_32; css_classes_string: READABLE_STRING_32): STRING_32
 			-- Generate HTML of the specified tag with specified body, attributes and css classes
 		local
 			l_attributes: STRING_32
@@ -92,16 +92,33 @@ feature -- Rendering
 				l_attributes.append (css_classes_string)
 				l_attributes.append_character ('%"')
 			end
-			Result := "<" + tag + " " + l_attributes
+			create Result.make_empty
+			Result.append_character ('<')
+			Result.append (tag)
+			Result.append_character (' ')
+			Result.append (l_attributes)
 				-- Check if we have to render a body. For some elements, this is not the case (like textareas) or only if the body is not empty.
-			if body.is_empty and not tag.same_string ("textarea") and not tag.same_string ("span") and not tag.same_string ("button") and not tag.same_string ("ul") and not tag.same_string ("div") then
-				Result.append (" />")
+			if
+				a_body.is_empty and
+			 	not tag.same_string ("textarea") and
+			 	not tag.same_string ("span") and
+			 	not tag.same_string ("button") and
+			 	not tag.same_string ("ul") and
+			 	not tag.same_string ("div")
+			 then
+			 		-- Note: it should be ok to close for textarea, span, ... and so on.
+
+				Result.append ("/>")
 			else
-				Result.append (" >" + body + "</" + tag + ">")
+				Result.append (" >")
+				Result.append (a_body)
+				Result.append ("</")
+				Result.append (tag)
+				Result.append (">")
 			end
 		end
 
-	render_tag_with_body (body: STRING_32): STRING_32
+	render_tag_with_body (body: READABLE_STRING_32): STRING_32
 			-- Generate HTML of this control with the specified body
 		do
 			Result := render_tag (body, attributes)
@@ -126,4 +143,14 @@ feature -- Properties
 invariant
 	tag_name_not_empty: not tag_name.is_empty
 
+note
+	copyright: "2011-2014, Yassin Hassan, Severin Munger, Jocelyn Fiat, Eiffel Software and others"
+	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
+	source: "[
+			Eiffel Software
+			5949 Hollister Ave., Goleta, CA 93117 USA
+			Telephone 805-685-1006, Fax 805-685-6869
+			Website http://www.eiffel.com
+			Customer support http://support.eiffel.com
+		]"
 end

@@ -12,7 +12,7 @@ deferred class
 feature {NONE} -- Initialization
 
 	make (e: STRING_32)
-			-- Initialize with specified error message to be displayed on validation failure
+			-- Initialize with specified error message `e' to be displayed on validation failure.
 		do
 			error := e
 		ensure
@@ -27,9 +27,10 @@ feature -- Access
 			create Result.make
 			Result.put_string (generator, "name")
 			Result.put_string (error, "error")
+				-- FIXME: is that correct to always send error message??
 		end
 
-	is_valid (input: G): BOOLEAN
+	is_valid (a_input: G): BOOLEAN
 			-- Perform validation on given input and tell whether validation was successful or not
 		deferred
 		end
@@ -37,6 +38,16 @@ feature -- Access
 feature -- Properties
 
 	error: STRING_32
-			-- The error message if validation fails
+			-- The error message if validation fails.
 
+;note
+	copyright: "2011-2014, Yassin Hassan, Severin Munger, Jocelyn Fiat, Eiffel Software and others"
+	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
+	source: "[
+			Eiffel Software
+			5949 Hollister Ave., Goleta, CA 93117 USA
+			Telephone 805-685-1006, Fax 805-685-6869
+			Website http://www.eiffel.com
+			Customer support http://support.eiffel.com
+		]"
 end

@@ -11,7 +11,6 @@ deferred class
 	WSF_CONTROL
 
 inherit
-
 	WSF_STATELESS_CONTROL
 		rename
 			make as make_stateless_control
@@ -110,14 +109,14 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 				states.put (state_changes, control_name)
 			end
 			if actions.count > 0 then
-				if not attached states.item ("actions") then
+				if states.item ("actions") = Void then
 					states.put (create {JSON_ARRAY}.make_array, "actions")
 				end
 				if attached {JSON_ARRAY} states.item ("actions") as action_list then
 					across
-						actions.array_representation as action
+						actions.array_representation as ic
 					loop
-						action_list.add (action.item)
+						action_list.add (ic.item)
 					end
 				end
 			end
@@ -127,42 +126,43 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 			-- Returns the current state of the Control as JSON. This state will be transfered to the client.
 		deferred
 		ensure
-			controls_not_defined: not (attached Result.item ("controls"))
+			controls_not_defined: Result.item ("controls") = Void
 		end
 
 	state_changes: WSF_JSON_OBJECT
 
 feature -- Rendering
 
-	render_tag (body: STRING_32; attrs: detachable STRING_32): STRING_32
+	render_tag (body: READABLE_STRING_32; attrs: detachable READABLE_STRING_32): STRING_32
 			-- Render this control with the specified body and attributes
 		do
 			Result := render_tag_with_generator_name (js_class, body, attrs)
 		end
 
-	render_tag_with_generator_name (a_generator, body: STRING_32; attrs: detachable STRING_32): STRING_32
+	render_tag_with_generator_name (a_generator, body: READABLE_STRING_32; attrs: detachable READABLE_STRING_32): STRING_32
 			-- Render this control with the specified generator name, body and attributes
 		local
-			css_classes_string: STRING_32
+			l_css_classes_string: STRING_32
 			l_attributes: STRING_32
 		do
-			css_classes_string := ""
+			create l_css_classes_string.make_empty
 			across
-				css_classes as c
+				css_classes as ic
 			loop
-				css_classes_string := css_classes_string + " " + c.item
+				l_css_classes_string.append_character (' ')
+				l_css_classes_string.append (ic.item)
 			end
 			l_attributes := " data-name=%"" + control_name + "%" data-type=%"" + a_generator + "%" "
-			if attached attrs as a then
-				l_attributes := l_attributes + a
+			if attached attrs as l_attrs then
+				l_attributes.append (l_attrs)
 			end
 			if isolate then
 				l_attributes.append (" data-isolation=%"1%"")
 			end
-			Result := render_tag_with_tagname (tag_name, body, l_attributes, css_classes_string)
+			Result := render_tag_with_tagname (tag_name, body, l_attributes, l_css_classes_string)
 		end
 
-	js_class: STRING_32
+	js_class: READABLE_STRING_32
 			-- The js_class is the name of the corresponding javascript class for this control. If this query is not redefined, it just
 			-- returns the name of the Eiffel class. In case of customized controls, either the according javascript functionality has to
 			-- be written in a coffeescript class of the same name or this query has to bee redefined and has to return the name of the
@@ -173,8 +173,11 @@ feature -- Rendering
 
 feature -- Event handling
 
-	handle_callback (cname: LIST [STRING_32]; event: STRING_32; event_parameter: detachable ANY)
-			-- Method called if any callback received. In this method the callback can be routed to the event handler
+	handle_callback (cname: LIST [READABLE_STRING_GENERAL]; event: READABLE_STRING_GENERAL; event_parameter: detachable ANY)
+			-- Method called if any callback received.
+			-- In this method the callback can be routed to the event handler.
+		require
+			cname_is_not_empty: not cname.is_empty
 		deferred
 		end
 
@@ -219,4 +222,14 @@ feature -- Properties
 			-- Used to avoid name conflicts since the children stateful controls of stateless controls are appended to the parent
 			-- control state and therefore could have the same name (Stateless multi controls do not add a hierarchy level)
 
+;note
+	copyright: "2011-2014, Yassin Hassan, Severin Munger, Jocelyn Fiat, Eiffel Software and others"
+	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
+	source: "[
+			Eiffel Software
+			5949 Hollister Ave., Goleta, CA 93117 USA
+			Telephone 805-685-1006, Fax 805-685-6869
+			Website http://www.eiffel.com
+			Customer support http://support.eiffel.com
+		]"
 end

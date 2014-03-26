@@ -12,7 +12,6 @@ deferred class
 	WSF_PAGE_CONTROL
 
 inherit
-
 	WSF_CONTROL
 		rename
 			make as make_control
@@ -121,12 +120,26 @@ feature -- Implementation
 
 	render: STRING_32
 			-- Render the HTML page
-		local
-			ajax: BOOLEAN
 		do
-			ajax := attached get_parameter ("ajax")
 			create Result.make_empty
-			if not ajax then
+			if attached get_parameter ("ajax") as p_ajax then
+				Result.append ("<div data-name=%"" + control_name + "%" data-type=%"WSF_PAGE_CONTROL%">")
+				Result.append (control.render)
+				if attached additional_javascripts as l_additional_javascripts then
+					across
+						l_additional_javascripts as ic
+					loop
+						Result.append ("<script src=%"")
+						Result.append (base_path)
+						Result.append (ic.item)
+						Result.append ("%"></script>")
+					end
+				end
+				Result.append ("<script type=%"text/javascript%">$(function() {var page= new WSF_PAGE_CONTROL(")
+				Result.append (full_state.representation)
+				Result.append (");page.initialize();});</script>")
+				Result.append ("</div>")
+			else
 				Result.append ("<html><head>")
 				Result.append ("<link href=%"")
 				Result.append (base_path)
@@ -142,13 +155,13 @@ feature -- Implementation
 				Result.append ("<script src=%"")
 				Result.append (base_path)
 				Result.append ("assets/widget.js%"></script>")
-				if attached additional_javascripts as ajs then
+				if attached additional_javascripts as l_additional_javascripts then
 					across
-						ajs as js
+						l_additional_javascripts as ic
 					loop
 						Result.append ("<script src=%"")
 						Result.append (base_path)
-						Result.append (js.item)
+						Result.append (ic.item)
 						Result.append ("%"></script>")
 					end
 				end
@@ -156,23 +169,6 @@ feature -- Implementation
 				Result.append (full_state.representation)
 				Result.append (");page.initialize();});</script>")
 				Result.append ("</body></html>")
-			else
-				Result.append ("<div data-name=%"" + control_name + "%" data-type=%"WSF_PAGE_CONTROL%">")
-				Result.append (control.render)
-				if attached additional_javascripts as ajs then
-					across
-						ajs as js
-					loop
-						Result.append ("<script src=%"")
-						Result.append (base_path)
-						Result.append (js.item)
-						Result.append ("%"></script>")
-					end
-				end
-				Result.append ("<script type=%"text/javascript%">$(function() {var page= new WSF_PAGE_CONTROL(")
-				Result.append (full_state.representation)
-				Result.append (");page.initialize();});</script>")
-				Result.append ("</div>")
 			end
 		end
 
@@ -183,34 +179,31 @@ feature -- Implementation
 			control.read_state_changes (states)
 		end
 
-	get_parameter (key: STRING_32): detachable STRING_32
+	get_parameter (key: READABLE_STRING_GENERAL): detachable STRING_32
 			-- Read query parameter as string
-		local
-			value: detachable WSF_VALUE
 		do
-			Result := VOID
-			value := request.query_parameter (key)
-			if attached value and then value.is_string then
-				Result := value.as_string.value
+			if
+				attached {WSF_STRING} request.query_parameter (key) as l_value
+			then
+				Result := l_value.value
 			end
 		end
 
 	add_javascript (path: STRING_32)
 		local
-			ajs: attached like additional_javascripts
+			l_additional_javascripts: like additional_javascripts
 		do
-			if attached additional_javascripts as aajs then
-				ajs := aajs
-			else
-				create ajs.make (1)
+			l_additional_javascripts := additional_javascripts
+			if l_additional_javascripts = Void then
+				create l_additional_javascripts.make (1)
+				additional_javascripts := l_additional_javascripts
 			end
-			ajs.extend (path)
-			additional_javascripts := ajs
+			l_additional_javascripts.extend (path)
 		end
 
 feature -- Event handling
 
-	handle_callback (cname: LIST [STRING_32]; event: STRING_32; event_parameter: detachable ANY)
+	handle_callback (cname: LIST [READABLE_STRING_GENERAL]; event: READABLE_STRING_GENERAL; event_parameter: detachable ANY)
 			-- Forward callback to control
 		do
 			control.handle_callback (cname, event, event_parameter)
@@ -230,7 +223,10 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 	set_state (sp: JSON_OBJECT)
 			-- Set state
 		do
-			if attached {JSON_OBJECT} sp.item ("controls") as ct and then attached {JSON_OBJECT} ct.item (control.control_name) as value_state then
+			if
+				attached {JSON_OBJECT} sp.item ("controls") as ct and then
+				attached {JSON_OBJECT} ct.item (control.control_name) as value_state
+			then
 				control.load_state (value_state)
 			end
 		end
@@ -246,7 +242,7 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 			Result.put (state, "state")
 		end
 
-feature
+feature -- Access
 
 	control_name: STRING_32
 			-- Name of this page
@@ -262,4 +258,14 @@ feature {NONE} -- Root control
 	additional_javascripts: detachable ARRAYED_LIST [STRING_32]
 			-- List containing the additional javascipt files
 
+;note
+	copyright: "2011-2014, Yassin Hassan, Severin Munger, Jocelyn Fiat, Eiffel Software and others"
+	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
+	source: "[
+			Eiffel Software
+			5949 Hollister Ave., Goleta, CA 93117 USA
+			Telephone 805-685-1006, Fax 805-685-6869
+			Website http://www.eiffel.com
+			Customer support http://support.eiffel.com
+		]"
 end

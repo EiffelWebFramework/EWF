@@ -10,13 +10,13 @@ deferred class
 feature --Event handling
 
 	set_on_update_agent (f: PROCEDURE [ANY, TUPLE])
-			--Set update listener
+			-- Set update listener
 		do
 			on_update_agent := f
 		end
 
 	update
-			--Trigger update listener
+			-- Trigger update listener
 		do
 			if attached on_update_agent as a then
 				a.call (Void)
@@ -76,4 +76,14 @@ feature -- Properties
 
 	on_update_agent: detachable PROCEDURE [ANY, TUPLE]
 
+;note
+	copyright: "2011-2014, Yassin Hassan, Severin Munger, Jocelyn Fiat, Eiffel Software and others"
+	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
+	source: "[
+			Eiffel Software
+			5949 Hollister Ave., Goleta, CA 93117 USA
+			Telephone 805-685-1006, Fax 805-685-6869
+			Website http://www.eiffel.com
+			Customer support http://support.eiffel.com
+		]"
 end

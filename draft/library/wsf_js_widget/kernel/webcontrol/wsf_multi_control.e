@@ -11,7 +11,6 @@ class
 	WSF_MULTI_CONTROL [G -> WSF_STATELESS_CONTROL]
 
 inherit
-
 	WSF_CONTROL
 		rename
 			make as make_control
@@ -32,15 +31,15 @@ feature {NONE} -- Initialization
 			make_with_tag_name ("div")
 		end
 
-	make_with_tag_name (t: STRING_32)
-			-- Initialize with specified tag
+	make_with_tag_name (a_tag: STRING_32)
+			-- Initialize with specified tag `a_tag'.
 		require
-			t_not_empty: not t.is_empty
+			a_tag_not_empty: not a_tag.is_empty
 		do
-			make_control (t)
-			controls := create {ARRAYED_LIST [G]}.make (5);
-			ensure
-				tag_name_set:tag_name.same_string (t)
+			make_control (a_tag)
+			create {ARRAYED_LIST [G]} controls.make (5)
+		ensure
+			tag_name_set: tag_name.same_string (a_tag)
 		end
 
 feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
@@ -127,11 +126,11 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 			-- If the subcontrol is a stateless multicontrol x. We add the state changes of subcontrols of x directly to sub_states. (Stateless multi controls do not add a hierarchy level)
 		do
 			across
-				controls as c
+				controls as ic
 			loop
-				if attached {WSF_STATELESS_MULTI_CONTROL [WSF_STATELESS_CONTROL]} c.item as cont then
+				if attached {WSF_STATELESS_MULTI_CONTROL [WSF_STATELESS_CONTROL]} ic.item as cont then
 					cont.read_subcontrol_state_changes (sub_states)
-				elseif attached {WSF_CONTROL} c.item as cont then
+				elseif attached {WSF_CONTROL} ic.item as cont then
 					cont.read_state_changes (sub_states)
 				end
 			end
@@ -145,19 +144,19 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 
 feature -- Event handling
 
-	handle_callback (cname: LIST [STRING_32]; event: STRING_32; event_parameter: detachable ANY)
+	handle_callback (cname: LIST [READABLE_STRING_GENERAL]; event: READABLE_STRING_GENERAL; event_parameter: detachable ANY)
 			-- Pass callback to subcontrols
 		do
-			if equal (cname [1], control_name) then
-				cname.go_i_th (1)
+			if cname.first.same_string (control_name) then
+				cname.start
 				cname.remove
 				if not cname.is_empty then
 					across
-						controls as c
+						controls as ic
 					until
 						cname.is_empty
 					loop
-						if attached {WSF_CONTROL} c.item as cont then
+						if attached {WSF_CONTROL} ic.item as cont then
 							cont.handle_callback (cname, event, event_parameter)
 						end
 					end
@@ -183,11 +182,11 @@ feature -- Rendering
 
 feature
 
-	add_control (c: G)
-			-- Add a control to this multi control
+	add_control (a_control: G)
+			-- Add a control `a_control' to this multi control.
 		do
-			controls.extend (c)
-			if attached {WSF_CONTROL} c as d then
+			controls.extend (a_control)
+			if attached {WSF_CONTROL} a_control as d then
 				d.control_id := controls.count
 			end
 		end
@@ -197,4 +196,14 @@ feature -- Properties
 	controls: ARRAYED_LIST [G]
 			-- List of current controls in this multi control
 
+;note
+	copyright: "2011-2014, Yassin Hassan, Severin Munger, Jocelyn Fiat, Eiffel Software and others"
+	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
+	source: "[
+			Eiffel Software
+			5949 Hollister Ave., Goleta, CA 93117 USA
+			Telephone 805-685-1006, Fax 805-685-6869
+			Website http://www.eiffel.com
+			Customer support http://support.eiffel.com
+		]"
 end

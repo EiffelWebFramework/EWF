@@ -24,7 +24,7 @@ create
 feature {NONE} -- Initialization
 
 	make (m: INTEGER; e: STRING_32)
-			-- Initialize with specified maximum and error message which will be displayed on validation failure
+			-- Initialize with specified minimum `m' and error message `e' which will be displayed on validation failure.
 		do
 			make_validator (e)
 			max := m
@@ -32,9 +32,9 @@ feature {NONE} -- Initialization
 
 feature -- Implementation
 
-	is_valid (input: G): BOOLEAN
+	is_valid (a_input: G): BOOLEAN
 		do
-			Result := input.count < max or input.count = max
+			Result := a_input.count < max or a_input.count = max
 		end
 
 feature -- State
@@ -50,4 +50,14 @@ feature -- Properties
 	max: INTEGER
 			-- The maximal allowed value
 
+;note
+	copyright: "2011-2014, Yassin Hassan, Severin Munger, Jocelyn Fiat, Eiffel Software and others"
+	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
+	source: "[
+			Eiffel Software
+			5949 Hollister Ave., Goleta, CA 93117 USA
+			Telephone 805-685-1006, Fax 805-685-6869
+			Website http://www.eiffel.com
+			Customer support http://support.eiffel.com
+		]"
 end

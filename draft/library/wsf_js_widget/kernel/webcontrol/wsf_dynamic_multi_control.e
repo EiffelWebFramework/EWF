@@ -148,7 +148,7 @@ feature
 		end
 
 	remove_control_by_id (id: INTEGER)
-			--Add removes to pending removes list
+			-- Add removes to pending removes list
 		do
 			pending_removes.extend (id)
 		end
@@ -176,7 +176,7 @@ feature
 			Result := "WSF_DYNAMIC_MULTI_CONTROL"
 		end
 
-feature
+feature -- Access
 
 	items: JSON_ARRAY
 			-- Holds the current items in this control
@@ -193,4 +193,14 @@ feature
 invariant
 	all_items_exist: items.count = controls.count
 
+note
+	copyright: "2011-2014, Yassin Hassan, Severin Munger, Jocelyn Fiat, Eiffel Software and others"
+	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
+	source: "[
+			Eiffel Software
+			5949 Hollister Ave., Goleta, CA 93117 USA
+			Telephone 805-685-1006, Fax 805-685-6869
+			Website http://www.eiffel.com
+			Customer support http://support.eiffel.com
+		]"
 end

@@ -29,33 +29,36 @@ create
 
 feature {NONE} -- Initialization
 
-	make_without_border (a_label: detachable STRING_32; c: WSF_VALUE_CONTROL [G])
-			-- Initialize form element control with a specific label (or 'Void' for no label) and value control
+	make_without_border (a_label: detachable STRING_32; a_control: WSF_VALUE_CONTROL [G])
+			-- Initialize Current form element control with a specific label
+			-- (or 'Void' for no label) and value control `a_control'.
 		do
-			make_with_validators (a_label, False, c, create {ARRAYED_LIST [WSF_VALIDATOR [G]]}.make (0))
+			make_with_validators (a_label, False, a_control, create {ARRAYED_LIST [WSF_VALIDATOR [G]]}.make (0))
 		end
 
-	make (a_label: detachable STRING_32; c: WSF_VALUE_CONTROL [G])
-			-- Initialize form element control with a specific label (or 'Void' for no label) and value control
+	make (a_label: detachable STRING_32; a_control: WSF_VALUE_CONTROL [G])
+			-- Initialize Current form element control with a specific label
+			-- (or 'Void' for no label) and value control `a_control'.
 		do
-			make_with_validators (a_label, True, c, create {ARRAYED_LIST [WSF_VALIDATOR [G]]}.make (0))
+			make_with_validators (a_label, True, a_control, create {ARRAYED_LIST [WSF_VALIDATOR [G]]}.make (0))
 		end
 
-	make_with_validators (a_label: detachable STRING_32; show_border: BOOLEAN; c: WSF_VALUE_CONTROL [G]; v: LIST [WSF_VALIDATOR [G]])
-			-- Initialize form element control with a specific label (or 'Void' for no label), value control and list of validators
+	make_with_validators (a_label: detachable STRING_32; show_border: BOOLEAN; a_control: WSF_VALUE_CONTROL [G]; a_validators: LIST [WSF_VALIDATOR [G]])
+			-- Initialize Current form element control with a specific label (or 'Void' for no label),
+			-- value control `a_control' and list of validators `a_validators'
 		do
 			make_control ("div")
 			add_class ("form-group")
 			if show_border then
-				if not attached {WSF_VALUE_CONTROL [LIST [ANY]]} c then
-					c.add_class ("form-control")
+				if attached {WSF_VALUE_CONTROL [LIST [ANY]]} a_control then
+					a_control.add_class ("form-control-static")
 				else
-					c.add_class ("form-control-static")
+					a_control.add_class ("form-control")
 				end
 			end
 			label_width := 2
-			value_control := c
-			validators := v
+			value_control := a_control
+			validators := a_validators
 			label := a_label
 			error := ""
 		end
@@ -94,7 +97,10 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 			-- Pass new_states to subcontrols
 		do
 			Precursor (new_states)
-			if attached {JSON_OBJECT} new_states.item ("controls") as ct and then attached {JSON_OBJECT} ct.item (value_control.control_name) as value_state then
+			if
+				attached {JSON_OBJECT} new_states.item ("controls") as ct and then
+				attached {JSON_OBJECT} ct.item (value_control.control_name) as value_state
+			then
 				value_control.load_state (value_state)
 			end
 		end
@@ -154,13 +160,11 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 
 feature -- Event handling
 
-	handle_callback (cname: LIST [STRING_32]; event: STRING_32; event_parameter: detachable ANY)
+	handle_callback (cname: LIST [READABLE_STRING_GENERAL]; event: READABLE_STRING_GENERAL; event_parameter: detachable ANY)
 			-- Pass callback to subcontrols
-		require else
-			cname_not_empty: cname.count > 0
 		do
-			if cname [1].same_string (control_name) then
-				cname.go_i_th (1)
+			if cname.first.same_string (control_name) then
+				cname.start
 				cname.remove
 				if cname.is_empty then
 					if event.same_string ("validate") then
@@ -179,9 +183,9 @@ feature -- Implementation
 		local
 			body: STRING_32
 		do
-			body := ""
-			if attached label as l and then not l.is_empty then
-				body.append ("<label class=%"col-lg-" + label_width.out + " control-label%" for=%"" + value_control.control_name + "%">" + l + "</label>")
+			create body.make_empty
+			if attached label as l_label and then not l_label.is_empty then
+				body.append ("<label class=%"col-lg-" + label_width.out + " control-label%" for=%"" + value_control.control_name + "%">" + l_label + "</label>")
 				body.append ("<div class=%"col-lg-" + (12 - label_width).out + "%">")
 			else
 				body.append ("<div class=%"col-lg-12%">")
@@ -252,4 +256,14 @@ feature -- Properties
 	label_width: INTEGER
 			-- The bootstrap column span of the label of this form element control
 
+;note
+	copyright: "2011-2014, Yassin Hassan, Severin Munger, Jocelyn Fiat, Eiffel Software and others"
+	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
+	source: "[
+			Eiffel Software
+			5949 Hollister Ave., Goleta, CA 93117 USA
+			Telephone 805-685-1006, Fax 805-685-6869
+			Website http://www.eiffel.com
+			Customer support http://support.eiffel.com
+		]"
 end

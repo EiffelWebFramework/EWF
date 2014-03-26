@@ -32,7 +32,7 @@ feature
 			Precursor
 			create form.make
 				--Number 1
-			create textbox1.make ({STRING_32}"1")
+			create textbox1.make ({STRING_32} "1")
 			create n1_container.make ({STRING_32}"Number1", textbox1)
 			n1_container.add_validator (create {WSF_DECIMAL_VALIDATOR}.make ({STRING_32}"Invalid Number"))
 			n1_container.add_validator (create {OWN_VALIDATOR}.make_own)

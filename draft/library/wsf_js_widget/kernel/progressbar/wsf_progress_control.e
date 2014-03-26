@@ -59,9 +59,12 @@ feature -- State handling
 
 feature -- Event handling
 
-	handle_callback (cname: LIST [STRING_32]; event: STRING_32; event_parameter: detachable ANY)
+	handle_callback (cname: LIST [READABLE_STRING_GENERAL]; event: READABLE_STRING_GENERAL; event_parameter: detachable ANY)
 		do
-			if cname [1].same_string (control_name) and event.same_string ("progress_fetch") then
+			if
+				cname.first.same_string (control_name) and
+				event.same_string ("progress_fetch")
+			then
 				state_changes.put_integer (progress_value, "progress")
 			end
 		end
@@ -73,6 +76,7 @@ feature -- Rendering
 			p: STRING_32
 		do
 			p := progress_value.out
+				-- FIXME: string 32 truncated to string 8 !!!
 			Result := render_tag_with_tagname ("div", "", "role=%"progressbar%" aria-valuenow=%"" + p + "%" aria-valuemin=%"0%" aria-valuemax=%"100%" style=%"width: " + p + "%%;%"", "progress-bar")
 			Result := render_tag (Result, "")
 		end
@@ -82,7 +86,7 @@ feature -- Change
 	set_progress (p: INTEGER)
 			-- Set current progress value to specified value. Must be between 0 and 100. Must only be called when no progresssource has been set to this progress control
 		require
-			no_progress_source: not (attached progress_source)
+			no_progress_source: progress_source = Void
 			valid_input_value: p >= 0 and p <= 100
 		do
 			progress := p
@@ -116,4 +120,14 @@ feature -- Properties
 invariant
 	progress_in_range: progress >= 0 and progress <= 100
 
+note
+	copyright: "2011-2014, Yassin Hassan, Severin Munger, Jocelyn Fiat, Eiffel Software and others"
+	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
+	source: "[
+			Eiffel Software
+			5949 Hollister Ave., Goleta, CA 93117 USA
+			Telephone 805-685-1006, Fax 805-685-6869
+			Website http://www.eiffel.com
+			Customer support http://support.eiffel.com
+		]"
 end

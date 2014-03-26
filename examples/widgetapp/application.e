@@ -30,9 +30,22 @@ create
 
 feature {NONE} -- Initialization
 
+--	tt
+--		local
+--			lst: ARRAYED_LIST [READABLE_STRING_GENERAL]
+--		do
+--			create lst.make (3)
+--			lst.compare_objects
+--			lst.extend ({STRING_32} "abc")
+--			if lst.has ("abc") then
+--				print ("found%N")
+--			end
+--		end
+
 	initialize
 			-- Initialize current service.
 		do
+--			tt
 			initialize_router
 			initialize_filter
 			Precursor

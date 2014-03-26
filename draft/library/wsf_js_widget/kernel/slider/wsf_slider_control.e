@@ -47,7 +47,7 @@ feature -- State handling
 
 feature -- Callback
 
-	handle_callback (cname: LIST [STRING_32]; event: STRING_32; event_parameter: detachable ANY)
+	handle_callback (cname: LIST [READABLE_STRING_GENERAL]; event: READABLE_STRING_GENERAL; event_parameter: detachable ANY)
 			-- Just implementation, nothing special to do here
 		do
 		end
@@ -67,18 +67,21 @@ feature -- Rendering
 
 feature -- Change
 
-	add_image_with_caption (src, alt, caption: STRING_32)
+	add_image_with_caption (src, alt, a_caption: STRING_32)
 			-- Add a new image to the slider with specified url, alternative text and caption
 		local
-			caption_control: detachable WSF_STATELESS_CONTROL
+			caption_control: detachable WSF_BASIC_CONTROL
 		do
-			if attached caption as c and then not c.is_empty then
-				caption_control := create {WSF_BASIC_CONTROL}.make_with_body ("p", "", c)
+			if
+				a_caption /= Void and then
+				not a_caption.is_empty
+			then
+				create caption_control.make_with_body ("p", "", a_caption)
 			end
 			add_image_with_caption_control (src, alt, caption_control)
 		end
 
-	add_image_with_caption_control (src, alt: STRING_32; caption: detachable WSF_STATELESS_CONTROL)
+	add_image_with_caption_control (src, alt: STRING_32; a_caption: detachable WSF_STATELESS_CONTROL)
 			-- Add a new image to the slider, with specified url, alternative text and caption element
 		do
 			add_control (create {WSF_BASIC_CONTROL}.make_with_body_class ("img", "src=%"" + src + "%" alt=%"" + alt + "%"", "", ""), Void)
@@ -90,17 +93,17 @@ feature -- Change
 			add_image_with_caption (src, alt, "")
 		end
 
-	add_control (c: WSF_STATELESS_CONTROL; caption: detachable WSF_STATELESS_CONTROL)
+	add_control (a_control: WSF_STATELESS_CONTROL; a_caption: detachable WSF_STATELESS_CONTROL)
 			-- Add a new control to the slider
 		local
 			cl: STRING_32
 			item: WSF_MULTI_CONTROL [WSF_STATELESS_CONTROL]
 		do
-			create item.make ()
+			create item.make
 			item.add_class ("item")
-			item.add_control (c)
-			if attached caption as capt then
-				item.add_control (capt)
+			item.add_control (a_control)
+			if a_caption /= Void then
+				item.add_control (a_caption)
 			end
 			cl := ""
 			if slide_wrapper.controls.count = 0 then
@@ -119,4 +122,14 @@ feature -- Properties
 	slide_wrapper: WSF_STATELESS_MULTI_CONTROL [WSF_STATELESS_CONTROL]
 			-- List of the single slides
 
+;note
+	copyright: "2011-2014, Yassin Hassan, Severin Munger, Jocelyn Fiat, Eiffel Software and others"
+	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
+	source: "[
+			Eiffel Software
+			5949 Hollister Ave., Goleta, CA 93117 USA
+			Telephone 805-685-1006, Fax 805-685-6869
+			Website http://www.eiffel.com
+			Customer support http://support.eiffel.com
+		]"
 end

@@ -12,7 +12,6 @@ class
 	WSF_INPUT_CONTROL
 
 inherit
-
 	WSF_VALUE_CONTROL [STRING_32]
 		rename
 			make as make_value_control
@@ -62,12 +61,14 @@ feature --Event handling
 			change_event_set: change_event = e
 		end
 
-	handle_callback (cname: LIST [STRING_32]; event: STRING_32; event_parameter: detachable ANY)
+	handle_callback (cname: LIST [READABLE_STRING_GENERAL]; event: READABLE_STRING_GENERAL; event_parameter: detachable ANY)
 		do
-			if Current.control_name.same_string (cname [1]) and attached change_event as cevent then
-				if event.same_string ("change") then
-					cevent.call (Void)
-				end
+			if
+				control_name.same_string_general (cname.first) and
+				attached change_event as cevent and then
+				event.same_string ("change")
+			then
+				cevent.call (Void)
 			end
 		end
 
@@ -77,12 +78,17 @@ feature -- Rendering
 		local
 			attr: STRING_32
 		do
-			attr := "type=%"" + type + "%" value=%"" + text + "%" "
-			if attached attributes as a then
-				attr.append (a)
+			create attr.make (25)
+			attr.append ("type=%"")
+			attr.append (type)
+			attr.append ("%" value=%"")
+			attr.append (text)
+			attr.append ("%" ")
+			if attached attributes as l_attributes then
+				attr.append (l_attributes)
 			end
 			if disabled then
-				attr.append ("disabled=%"disabled%" ")
+				attr.append (" disabled=%"disabled%" ")
 			end
 			Result := render_tag ("", attr)
 		end
@@ -107,13 +113,15 @@ feature -- Change
 			if disabled /= b then
 				disabled := b
 				state_changes.replace_with_boolean (disabled, "disabled")
+			else
+				check has_key_disabled: (b = False) or else state_changes.has_key ("disabled") end
 			end
 		ensure
 			disabled_set: disabled = b
-			state_changes_registered: old b /= b implies state_changes.has_key ("disabled")
+			state_changes_registered: (old b) /= b implies state_changes.has_key ("disabled")
 		end
 
-	set_type (t: STRING_32)
+	set_type (t: READABLE_STRING_32)
 			-- Set the type of this input control (HTML 'type' attribute)
 		do
 			type := t
@@ -142,13 +150,23 @@ feature -- Properties
 	disabled: BOOLEAN
 			-- Defines if the input field is editable
 
-	text: STRING_32
+	text: READABLE_STRING_32
 			-- Text to be displayed
 
-	type: STRING_32
+	type: READABLE_STRING_32
 			-- Type of this input control
 
 	change_event: detachable PROCEDURE [ANY, TUPLE]
 			-- Procedure to be execued on change
 
+;note
+	copyright: "2011-2014, Yassin Hassan, Severin Munger, Jocelyn Fiat, Eiffel Software and others"
+	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
+	source: "[
+			Eiffel Software
+			5949 Hollister Ave., Goleta, CA 93117 USA
+			Telephone 805-685-1006, Fax 805-685-6869
+			Website http://www.eiffel.com
+			Customer support http://support.eiffel.com
+		]"
 end

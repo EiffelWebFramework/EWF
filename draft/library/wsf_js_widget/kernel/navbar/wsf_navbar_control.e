@@ -5,7 +5,7 @@ note
 		panels can be added to this control.
 		See http://getbootstrap.com/components/#navbar
 	]"
-	author: ""
+	EIS: "name=Bootstrap navbar", "protocol=URI", "src=http://getbootstrap.com/components/#navbar"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -27,10 +27,10 @@ create
 feature {NONE} -- Initialization
 
 	make
-			--Initialize
+			-- Initialize
 		do
 			make_multi_control
-			active_set := false
+			active_set := False
 			add_class ("navbar navbar-inverse navbar-fixed-top")
 			create nav.make_with_tag_name ("ul")
 			create nav_right.make_with_tag_name ("ul")
@@ -40,13 +40,13 @@ feature {NONE} -- Initialization
 			nav_right.add_class ("nav navbar-nav navbar-right")
 		end
 
-	make_with_brand (b: STRING_32)
-			-- Initialize with specified brand string
+	make_with_brand (a_brand: READABLE_STRING_32)
+			-- Initialize with specified `a_brand' string.
 		do
 			make
-			brand := b
+			brand := a_brand
 		ensure
-			brand_set: brand = b
+			brand_set: brand = a_brand
 		end
 
 feature -- Rendering
@@ -59,8 +59,8 @@ feature -- Rendering
 			temp := render_tag_with_tagname ("span", "", "", "icon-bar")
 			temp.multiply (3)
 			temp := render_tag_with_tagname ("button", temp, "data-target=%".navbar-collapse%" data-toggle=%"collapse%" type=%"button%"", "navbar-toggle")
-			if attached brand as b then
-				temp.append (render_tag_with_tagname ("a", b, "href=%"#%"", "navbar-brand"))
+			if attached brand as l_brand then
+				temp.append (render_tag_with_tagname ("a", l_brand, "href=%"#%"", "navbar-brand"))
 			end
 			temp := render_tag_with_tagname ("div", temp, "", "navbar-header")
 			nav_string := nav.render
@@ -89,36 +89,36 @@ feature -- Change
 			active_set_set: active_set
 		end
 
-	add_list_element_right (l: WSF_STATELESS_CONTROL)
+	add_list_element_right (a_control: WSF_STATELESS_CONTROL)
 			-- Add element in li tag to right aligned part of navbar
 		local
 			li: WSF_MULTI_CONTROL [WSF_STATELESS_CONTROL]
 		do
 			create li.make_with_tag_name ("li")
-			li.add_control (l)
+			li.add_control (a_control)
 			add_element_right (li)
 		end
 
-	add_list_element (l: WSF_STATELESS_CONTROL)
+	add_list_element (a_control: WSF_STATELESS_CONTROL)
 			-- Add element in li tag to main nav
 		local
 			li: WSF_MULTI_CONTROL [WSF_STATELESS_CONTROL]
 		do
 			create li.make_with_tag_name ("li")
-			li.add_control (l)
+			li.add_control (a_control)
 			add_element (li)
 		end
 
-	add_element_right (c: WSF_STATELESS_CONTROL)
+	add_element_right (a_control: WSF_STATELESS_CONTROL)
 			-- Add element to right aligned part of navbar
 		do
-			nav_right.add_control (c)
+			nav_right.add_control (a_control)
 		end
 
-	add_element (c: WSF_STATELESS_CONTROL)
+	add_element (a_control: WSF_STATELESS_CONTROL)
 			-- Add element to main nav
 		do
-			nav.add_control (c)
+			nav.add_control (a_control)
 		end
 
 feature -- Access
@@ -134,7 +134,7 @@ feature -- Properties
 	active_set: BOOLEAN
 			-- This flag is set once a tab has been set as active tab
 
-	brand: detachable STRING_32
+	brand: detachable READABLE_STRING_32
 			-- Optional brand of the navbar
 
 	nav: WSF_STATELESS_MULTI_CONTROL [WSF_STATELESS_CONTROL]
@@ -143,4 +143,14 @@ feature -- Properties
 	nav_right: WSF_STATELESS_MULTI_CONTROL [WSF_STATELESS_CONTROL]
 			-- Right nav
 
+;note
+	copyright: "2011-2014, Yassin Hassan, Severin Munger, Jocelyn Fiat, Eiffel Software and others"
+	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
+	source: "[
+			Eiffel Software
+			5949 Hollister Ave., Goleta, CA 93117 USA
+			Telephone 805-685-1006, Fax 805-685-6869
+			Website http://www.eiffel.com
+			Customer support http://support.eiffel.com
+		]"
 end

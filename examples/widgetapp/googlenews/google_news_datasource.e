@@ -18,7 +18,17 @@ inherit
 create
 	make_news
 
-feature --States
+
+feature {NONE} -- Initialization
+
+	make_news
+		do
+			page := 1
+			page_size := 8
+			query := "eiffel"
+		end
+
+feature -- States
 
 	state: WSF_JSON_OBJECT
 			-- Return state which contains the current html and if there is an event handle attached
@@ -35,14 +45,7 @@ feature --States
 			end
 		end
 
-feature
-
-	make_news
-		do
-			page := 1
-			page_size := 8
-			query := "eiffel"
-		end
+feature -- Access
 
 	data: ITERABLE [GOOGLE_NEWS]
 		local

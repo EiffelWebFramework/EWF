@@ -48,16 +48,19 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 
 feature --Event handling
 
-	handle_callback (cname: LIST[STRING_32]; event: STRING_32; event_parameter: detachable ANY)
+	handle_callback (cname: LIST [READABLE_STRING_GENERAL]; event: READABLE_STRING_GENERAL; event_parameter: detachable ANY)
 			-- Handle goto/next/prev events
 		do
-			if Current.control_name.same_string (cname[1]) then
+			if control_name.same_string_general (cname.first) then
 				if event.same_string ("next") then
 					datasource.set_page (datasource.page + 1)
 				elseif event.same_string ("prev") then
 					datasource.set_page (datasource.page - 1)
 				elseif event.same_string ("goto") then
-					if attached {STRING_32}event_parameter as p and then attached p.to_integer as i then
+					if
+						attached {READABLE_STRING_GENERAL} event_parameter as p and then
+						attached p.to_integer as i
+					then
 						datasource.set_page (i)
 					end
 				end
@@ -96,4 +99,14 @@ feature -- Properties
 
 	datasource: WSF_PAGABLE_DATASOURCE [G]
 
+;note
+	copyright: "2011-2014, Yassin Hassan, Severin Munger, Jocelyn Fiat, Eiffel Software and others"
+	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
+	source: "[
+			Eiffel Software
+			5949 Hollister Ave., Goleta, CA 93117 USA
+			Telephone 805-685-1006, Fax 805-685-6869
+			Website http://www.eiffel.com
+			Customer support http://support.eiffel.com
+		]"
 end
