@@ -1,6 +1,6 @@
 See WSF_REQUEST
 
-== About parameters ==
+## About parameters
 Note that by default there is a smart computation for the query/post/... parameters:
 for instance
 - `q=a&q=b` :  will create a **WSF_MULTIPLE_STRING** parameter with name **q** and value `[a,b]`
@@ -10,8 +10,8 @@ for instance
 
 Those rules are applied to query, post, path, .... parameters.
 
-== How to get the input data   (i.e entity-body) ?==
+## How to get the input data   (i.e entity-body) ?
 See <eiffel>{WSF_REQUEST}.read_input_data_into (buf: STRING)
 
-== How to get the raw header data   (i.e the http header text) ?==
+## How to get the raw header data   (i.e the http header text) ?
 See <eiffel>{WSF_REQUEST}.raw_header_data: detachable READABLE_STRING_32
