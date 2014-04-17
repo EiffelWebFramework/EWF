@@ -11,7 +11,7 @@ for instance
 Those rules are applied to query, post, path, .... parameters.
 
 ## How to get the input data   (i.e entity-body) ?
-See <eiffel>{WSF_REQUEST}.read_input_data_into (buf: STRING)
+See `{WSF_REQUEST}.read_input_data_into (buf: STRING)`
 
 ## How to get the raw header data   (i.e the http header text) ?
-See <eiffel>{WSF_REQUEST}.raw_header_data: detachable READABLE_STRING_32
+See `{WSF_REQUEST}.raw_header_data: detachable READABLE_STRING_32`
