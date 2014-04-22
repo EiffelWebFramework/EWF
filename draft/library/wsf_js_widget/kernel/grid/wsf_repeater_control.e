@@ -37,9 +37,9 @@ feature {NONE} -- Initialization
 feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 
 	update
-			-- Send new renederd control to client on update
+			-- Send new rendered control to client on update
 		do
-			state_changes.replace (create {JSON_STRING}.make_json (render_body), "_body")
+			state_changes.replace (create {JSON_STRING}.make_json_from_string_32 (render_body), "_body")
 			state_changes.replace (datasource.state, "datasource")
 		end
 

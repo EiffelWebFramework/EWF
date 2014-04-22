@@ -209,7 +209,7 @@ feature -- Validation
 			-- Set the error message that will be displayed upon failure of client side validation
 		do
 			error := e
-			state_changes.replace (create {JSON_STRING}.make_json (e), "error")
+			state_changes.replace (create {JSON_STRING}.make_json_from_string_32 (e), "error")
 		ensure
 			error_set: error.same_string (e)
 		end

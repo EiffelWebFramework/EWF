@@ -34,14 +34,14 @@ feature -- States
 			-- Return state which contains the current html and if there is an event handle attached
 		do
 			Result := Precursor
-			Result.put_string (query, create {JSON_STRING}.make_json ("query"))
+			Result.put_string (query, "query")
 		end
 
 	set_state (new_state: JSON_OBJECT)
 		do
 			Precursor (new_state)
-			if attached {JSON_STRING} new_state.item (create {JSON_STRING}.make_json ("query")) as new_query then
-				query := new_query.item
+			if attached {JSON_STRING} new_state.item ("query") as new_query then
+				query := new_query.unescaped_string_32
 			end
 		end
 
@@ -49,22 +49,24 @@ feature -- Access
 
 	data: ITERABLE [GOOGLE_NEWS]
 		local
-			list: LINKED_LIST [GOOGLE_NEWS]
+			list: detachable ARRAYED_LIST [GOOGLE_NEWS]
 			l_json: detachable READABLE_STRING_8
 			json_parser: JSON_PARSER
 			query_str: STRING_32
 			cl: LIBCURL_HTTP_CLIENT
 			sess: HTTP_CLIENT_SESSION
+			ctx: HTTP_CLIENT_REQUEST_CONTEXT
 		do
-			create list.make
 			row_count := 0
-			query_str := query.out
-			query_str.replace_substring_all (" ", "+")
+			query_str := query
+			query_str.replace_substring_all ({STRING_32} " ", {STRING_32} "+")
 			create cl.make
 			sess := cl.new_session ("https://ajax.googleapis.com/ajax/services/search")
 			sess.set_is_insecure (True)
 			if sess.is_available then
-				if attached {HTTP_CLIENT_RESPONSE} sess.get ("/news?v=1.0&q=" + query_str + "&rsz=" + page_size.out + "&start=" + (page_size * (page - 1)).out, Void) as l_response then
+				create ctx.make
+				ctx.add_query_parameter ("q", query_str)
+				if attached {HTTP_CLIENT_RESPONSE} sess.get ("/news?v=1.0&rsz=" + page_size.out + "&start=" + (page_size * (page - 1)).out, ctx) as l_response then
 					if not l_response.error_occurred then
 						l_json := l_response.body
 					end
@@ -73,10 +75,18 @@ feature -- Access
 			if l_json /= Void and then not l_json.is_empty then
 				create json_parser.make_parser (l_json)
 				if attached {JSON_OBJECT} json_parser.parse_json as sp then
-					if attached {JSON_OBJECT} sp.item (create {JSON_STRING}.make_json ("responseData")) as responsedata and then attached {JSON_ARRAY} responsedata.item (create {JSON_STRING}.make_json ("results")) as results then
-						if attached {JSON_OBJECT} responsedata.item (create {JSON_STRING}.make_json ("cursor")) as cursor and then attached {JSON_STRING} cursor.item (create {JSON_STRING}.make_json ("estimatedResultCount")) as count then
+					if
+						attached {JSON_OBJECT} sp.item ("responseData") as responsedata and then
+						attached {JSON_ARRAY} responsedata.item ("results") as results
+					then
+						row_count := 0
+						if
+							attached {JSON_OBJECT} responsedata.item ("cursor") as cursor and then
+							attached {JSON_STRING} cursor.item ("estimatedResultCount") as count
+						then
 							row_count := count.item.to_integer.min (64)
 						end
+						create list.make (results.count)
 						across
 							1 |..| results.count as c
 						loop
@@ -86,6 +96,9 @@ feature -- Access
 						end
 					end
 				end
+			end
+			if list = Void then
+				create list.make (0)
 			end
 			Result := list
 		end

@@ -17,6 +17,10 @@
 		<library name="time" location="$ISE_LIBRARY\library\time\time-safe.ecf"/>
 		<library name="uri_template" location="..\..\..\library\text\parser\uri_template\uri_template-safe.ecf"/>
 		<library name="wsf" location="..\..\..\library\server\wsf\wsf-safe.ecf"/>
-		<cluster name="kernel" location=".\kernel\" recursive="true"/>
+		<cluster name="kernel" location=".\kernel\" recursive="true">
+			<file_rule>
+				<exclude>/examples$</exclude>
+			</file_rule>
+		</cluster>
 	</target>
 </system>

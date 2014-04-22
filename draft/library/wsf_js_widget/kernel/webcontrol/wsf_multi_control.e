@@ -78,25 +78,27 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 	full_state: WSF_JSON_OBJECT
 			-- Read states in subcontrols
 		local
-			controls_state: WSF_JSON_OBJECT
+			l_state: WSF_JSON_OBJECT
 		do
 			Result := Precursor
-			create controls_state.make
-			read_subcontrol_state (controls_state)
-			Result.put (controls_state, "controls")
+			create l_state.make
+			add_sub_controls_states_to (l_state)
+			Result.put (l_state, "controls")
 		end
 
-	read_subcontrol_state (controls_state: JSON_OBJECT)
-			-- Read add subcontrol state in to the controls_state json object.
-			-- If the subcontrol is a stateless multicontrol x. We add the state of the subcontrols of x directly to controls_state. (Stateless multi controls do not add a hierarchy level)
+	add_sub_controls_states_to (a_controls_state: JSON_OBJECT)
+			-- Read add subcontrol state in to the `a_controls_state' json object.
+			-- If the subcontrol is a stateless multicontrol x,
+			--   the states of the subcontrols of x are directly added to `a_controls_state'.
+			-- (Stateless multi controls do not add a hierarchy level)
 		do
 			across
 				controls as c
 			loop
 				if attached {WSF_STATELESS_MULTI_CONTROL [WSF_STATELESS_CONTROL]} c.item as mcont then
-					mcont.read_subcontrol_state (controls_state)
+					mcont.add_sub_controls_states_to (a_controls_state)
 				elseif attached {WSF_CONTROL} c.item as cont then
-					controls_state.put (cont.full_state, cont.control_name)
+					a_controls_state.put (cont.full_state, cont.control_name)
 				end
 			end
 		end

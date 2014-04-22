@@ -163,7 +163,7 @@ feature
 			if items_changed then
 				new_state := state
 				create sub_state.make
-				read_subcontrol_state (sub_state)
+				add_sub_controls_states_to (sub_state)
 				new_state.put (sub_state, "newstate")
 				new_state.put_string (render, "render")
 				states.put (new_state, control_name)

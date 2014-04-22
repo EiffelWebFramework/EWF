@@ -43,7 +43,7 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 	update
 			-- Send new renederd control to client on update
 		do
-			state_changes.replace (create {JSON_STRING}.make_json (render), "_html")
+			state_changes.replace (create {JSON_STRING}.make_json_from_string_32 (render), "_html")
 		end
 
 feature --Event handling

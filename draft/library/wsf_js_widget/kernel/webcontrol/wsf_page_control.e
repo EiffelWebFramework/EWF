@@ -80,7 +80,7 @@ feature -- Implementation
 			event := get_parameter ("event")
 			event_parameter := get_parameter ("event_parameter")
 			if attached event and attached event_control_name and attached control then
-				if not event.is_equal ("uploadfile") then
+				if not event.same_string_general ("uploadfile") then
 					create states.make_empty
 					request.read_input_data_into (states)
 					create json_parser.make_parser (states)

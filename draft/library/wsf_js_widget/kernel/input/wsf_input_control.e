@@ -100,7 +100,7 @@ feature -- Change
 		do
 			if not t.same_string (text) then
 				text := t
-				state_changes.replace (create {JSON_STRING}.make_json (text), "text")
+				state_changes.replace (create {JSON_STRING}.make_json_from_string_32 (t), "text")
 			end
 		ensure
 			text_same_string_as_t: text.same_string (t)

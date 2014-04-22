@@ -16,6 +16,10 @@
 		<library name="pcre" location="$ISE_LIBRARY\unstable\library\text\regexp\pcre\pcre.ecf"/>
 		<library name="uri_template" location="..\..\..\library\text\parser\uri_template\uri_template.ecf"/>
 		<library name="wsf" location="..\..\..\library\server\wsf\wsf.ecf"/>
-		<cluster name="kernel" location=".\kernel\" recursive="true"/>
+		<cluster name="kernel" location=".\kernel\" recursive="true">
+			<file_rule>
+				<exclude>/examples$</exclude>
+			</file_rule>
+		</cluster>
 	</target>
 </system>
