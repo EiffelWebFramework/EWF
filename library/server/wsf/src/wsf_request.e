@@ -17,7 +17,7 @@ note
 				execution_variable (a_name: READABLE_STRING_GENERAL): detachable ANY
 					--| to keep value attached to the request
 
-			About https support: `is_https' precises if the request is made through an https connection or not.
+			About https support: `is_https' indicates if the request is made through an https connection or not.
 			
 			]"
 	date: "$Date$"
