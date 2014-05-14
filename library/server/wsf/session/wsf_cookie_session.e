@@ -60,7 +60,8 @@ feature {NONE} -- Initialization
 
 feature -- Cookie
 
-	apply_to (h: HTTP_HEADER_BUILDER; a_request: WSF_REQUEST; a_path: detachable READABLE_STRING_8)
+	apply_to (h: HTTP_HEADER_MODIFIER; a_request: WSF_REQUEST; a_path: detachable READABLE_STRING_8)
+			-- <Precursor>
 		local
 			dt: detachable DATE_TIME
 			l_domain: detachable READABLE_STRING_8
@@ -79,13 +80,18 @@ feature -- Cookie
 					create dt.make_now_utc
 					dt.day_add (40)
 				end
-				h.put_cookie_with_expiration_date (cookie_name, uuid, dt, a_path, l_domain, False, True)
+				h.put_cookie_with_expiration_date (cookie_name, id, dt, a_path, l_domain, False, True)
 			end
 		end
 
 	cookie_name: READABLE_STRING_8
 
-feature -- Access		
+feature -- Access	
+
+	id: READABLE_STRING_8
+		do
+			Result := uuid
+		end
 
 	uuid: READABLE_STRING_8
 
@@ -135,8 +141,8 @@ feature {NONE} -- Storage
 
 	load
 		do
-			if manager.session_exists (uuid) then
-				if attached manager.session_data (uuid) as d then
+			if manager.session_exists (id) then
+				if attached manager.session_data (id) as d then
 					data := d
 					set_expiration (data.expiration)
 				else
