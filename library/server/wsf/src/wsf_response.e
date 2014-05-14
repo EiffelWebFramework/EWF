@@ -172,7 +172,7 @@ feature {WSF_RESPONSE_EXPORTER} -- Header output operation
 
 feature -- Header access
 
-	header: HTTP_HEADER_BUILDER
+	header: HTTP_HEADER_MODIFIER
 			-- Associated header builder interface.
 		local
 			res: like internal_response_header

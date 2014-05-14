@@ -25,7 +25,7 @@ class
 inherit
 	ITERABLE [READABLE_STRING_8]
 
-	HTTP_HEADER_BUILDER
+	HTTP_HEADER_MODIFIER
 
 create
 	make,

@@ -1,6 +1,6 @@
 note
 	description: "[
-			The class provides an easy way to build HTTP header text
+			The class provides an easy way to build and modify HTTP header text
 			thanks to add_header (..) and put_header (..)
 			
 			You will also find some helper features to help coding most common usages
@@ -20,7 +20,7 @@ note
 	revision: "$Revision$"
 
 deferred class
-	HTTP_HEADER_BUILDER
+	HTTP_HEADER_MODIFIER
 
 inherit
 	ITERABLE [READABLE_STRING_8]
