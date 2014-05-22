@@ -16,6 +16,9 @@ note
 			And also has
 				execution_variable (a_name: READABLE_STRING_GENERAL): detachable ANY
 					--| to keep value attached to the request
+
+			About https support: `is_https' indicates if the request is made through an https connection or not.
+			
 			]"
 	date: "$Date$"
 	revision: "$Revision$"
@@ -120,6 +123,20 @@ feature {NONE} -- Initialization
 			if meta_variable ({WSF_META_NAMES}.request_time) = Void then
 				set_meta_string_variable ({WSF_META_NAMES}.request_time, date_time_utilities.unix_time_stamp (Void).out)
 			end
+
+				--| HTTPS support
+			is_https := False
+			if attached meta_string_variable ("HTTPS") as l_https and then not l_https.is_empty then
+				is_https := l_https.is_case_insensitive_equal_general ("on")
+						or else l_https.is_case_insensitive_equal_general ("yes")
+						or else l_https.is_case_insensitive_equal_general ("true")
+						or else l_https.is_case_insensitive_equal_general ("1")
+					--| Usually, if not empty, this means this is https
+					--| but it occurs that server (like IIS) sets "off" when this is NOT https
+					--| so, let's be flexible, and accepts other variants of "on"
+			else
+				check is_not_https: is_https = False end
+			end			
 		end
 
 	wgi_request: WGI_REQUEST
@@ -156,9 +173,14 @@ feature -- Destroy
 			raw_input_data_recorded := False
 			request_method := empty_string_8
 			set_uploaded_file_path (Void)
+			is_https := False
 		end
 
 feature -- Status report
+
+	is_https: BOOLEAN
+			-- Is https connection?
+			--| based on meta variable HTTPS=on .	
 
 	debug_output: STRING_8
 		do
@@ -294,24 +316,27 @@ feature -- Access: Input
 				until
 					l_step = 0 or l_input.end_of_input
 				loop
-					l_input.append_to_string (s, l_step)
-					nb := l_input.last_appended_count
-					l_size := l_size + nb.to_natural_64
-					len := len - nb.to_natural_64
-
-					debug ("wsf")
-						io.error.put_string ("   append (s, " + l_step.out + ") -> " + nb.out + " (" + l_size.out + " / "+ content_length_value.out + ")%N")
-					end
-
-					a_file.put_string (s)
-					if l_raw_data /= Void then
-						l_raw_data.append (s)
-					end
-					s.wipe_out
-					if nb < l_step then
-						l_step := 0
-					elseif len < l_step.to_natural_64 then
+					if len < l_step.to_natural_64 then
 						l_step := len.to_integer_32
+					end
+					if l_step > 0 then
+						l_input.append_to_string (s, l_step)
+						nb := l_input.last_appended_count
+						l_size := l_size + nb.to_natural_64
+						len := len - nb.to_natural_64
+
+						debug ("wsf")
+							io.error.put_string ("   append (s, " + l_step.out + ") -> " + nb.out + " (" + l_size.out + " / "+ content_length_value.out + ")%N")
+						end
+
+						a_file.put_string (s)
+						if l_raw_data /= Void then
+							l_raw_data.append (s)
+						end
+						s.wipe_out
+						if nb < l_step then
+							l_step := 0
+						end
 					end
 				end
 				a_file.flush
@@ -1262,41 +1287,43 @@ feature {NONE} -- Cookies
 		local
 			i,j,p,n: INTEGER
 			l_cookies: like internal_cookies_table
+			s32: READABLE_STRING_32
 			k,v,s: STRING
 		do
 			l_cookies := internal_cookies_table
 			if l_cookies = Void then
+				create l_cookies.make_equal (0)
 				if attached {WSF_STRING} meta_variable ({WSF_META_NAMES}.http_cookie) as val then
-					s := val.value
-					create l_cookies.make_equal (5)
-					from
-						n := s.count
-						p := 1
-						i := 1
-					until
-						p < 1
-					loop
-						i := s.index_of ('=', p)
-						if i > 0 then
-							j := s.index_of (';', i)
-							if j = 0 then
-								j := n + 1
-								k := s.substring (p, i - 1)
-								v := s.substring (i + 1, n)
+					s32 := val.value
+					if s32.is_valid_as_string_8 then
+						s := s32.to_string_8
+						from
+							n := s.count
+							p := 1
+							i := 1
+						until
+							p < 1
+						loop
+							i := s.index_of ('=', p)
+							if i > 0 then
+								j := s.index_of (';', i)
+								if j = 0 then
+									j := n + 1
+									k := s.substring (p, i - 1)
+									v := s.substring (i + 1, n)
 
-								p := 0 -- force termination
-							else
-								k := s.substring (p, i - 1)
-								v := s.substring (i + 1, j - 1)
-								p := j + 1
+									p := 0 -- force termination
+								else
+									k := s.substring (p, i - 1)
+									v := s.substring (i + 1, j - 1)
+									p := j + 1
+								end
+								k.left_adjust
+								k.right_adjust
+								add_value_to_table (k, v, l_cookies)
 							end
-							k.left_adjust
-							k.right_adjust
-							add_value_to_table (k, v, l_cookies)
 						end
 					end
-				else
-					create l_cookies.make_equal (0)
 				end
 				internal_cookies_table := l_cookies
 			end
@@ -1735,10 +1762,7 @@ feature -- URL Utility
 		do
 			s := internal_server_url
 			if s = Void then
-				if
-					server_protocol.count >= 5 and then
-					server_protocol.substring (1, 5).is_case_insensitive_equal ("https")
-				then
+				if is_https then
 					create s.make_from_string ("https://")
 				else
 					create s.make_from_string ("http://")
@@ -1746,8 +1770,14 @@ feature -- URL Utility
 				s.append (server_name)
 				p := server_port
 				if p > 0 then
-					s.append_character (':')
-					s.append_integer (p)
+					if is_https and p = 443 then
+							-- :443 is default for https, so no need to put it
+					elseif not is_https and p = 80 then
+							-- :80 is default for http, so no need to put it
+					else
+						s.append_character (':')
+						s.append_integer (p)
+					end
 				end
 			end
 			Result := s
@@ -2065,7 +2095,7 @@ invariant
 	wgi_request.content_type /= Void implies content_type /= Void
 
 note
-	copyright: "2011-2013, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Colin Adams, Eiffel Software and others"
+	copyright: "2011-2014, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Colin Adams, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

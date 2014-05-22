@@ -35,6 +35,10 @@ For more information please have a look at the related wiki:
 For download, check
 * https://github.com/EiffelWebFramework/EWF/downloads
 
+Tasks and issues are managed with github issue system
+* See https://github.com/EiffelWebFramework/EWF/issues
+* And visual dashboard: https://waffle.io/eiffelwebframework/ewf
+
 ## Requirements
 * Compiling from EiffelStudio 7.2 to 13.11 and more recent version of the compiler.
 * Developped using EiffelStudio 13.11 (on Windows, Linux)
