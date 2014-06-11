@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<system xmlns="http://www.eiffel.com/developers/xml/configuration-1-10-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eiffel.com/developers/xml/configuration-1-10-0 http://www.eiffel.com/developers/xml/configuration-1-10-0.xsd" name="wsf_tests" uuid="C4FF9CDA-B4E4-4841-97E0-7F799B85B657">
+<system xmlns="http://www.eiffel.com/developers/xml/configuration-1-13-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eiffel.com/developers/xml/configuration-1-13-0 http://www.eiffel.com/developers/xml/configuration-1-13-0.xsd" name="wsf_tests" uuid="C4FF9CDA-B4E4-4841-97E0-7F799B85B657">
 	<target name="server">
 		<root class="TEST" feature="make"/>
 		<file_rule>
@@ -7,7 +7,7 @@
 			<exclude>/EIFGENs$</exclude>
 			<exclude>/.svn$</exclude>
 		</file_rule>
-		<option debug="true" warning="true" full_class_checking="true" is_attached_by_default="true" void_safety="all" syntax="provisional">
+		<option debug="true" warning="true" full_class_checking="true" is_attached_by_default="true" void_safety="transitional" syntax="provisional">
 			<assertions precondition="true" postcondition="true" check="true" loop="true" supplier_precondition="true"/>
 		</option>
 		<setting name="concurrency" value="thread"/>
@@ -22,6 +22,7 @@
 		</library>
 		<library name="http" location="..\..\..\network\protocol\http\http-safe.ecf" readonly="false"/>
 		<library name="http_client" location="..\..\..\network\http_client\http_client-safe.ecf" readonly="false"/>
+		<library name="time" location="$ISE_LIBRARY\library\time\time-safe.ecf"/>
 		<library name="thread" location="$ISE_LIBRARY\library\thread\thread-safe.ecf"/>
 		<library name="wsf" location="..\wsf-safe.ecf" readonly="false">
 			<option>
