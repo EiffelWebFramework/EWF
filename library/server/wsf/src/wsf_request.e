@@ -18,10 +18,10 @@ note
 					--| to keep value attached to the request
 
 			About https support: `is_https' indicates if the request is made through an https connection or not.
-			
+
 			]"
-	date: "$Date$"
-	revision: "$Revision$"
+	date: "$Date: 2014-05-14 16:52:42 +0200 (mer., 14 mai 2014) $"
+	revision: "$Revision: 95057 $"
 
 class
 	WSF_REQUEST
@@ -91,14 +91,14 @@ feature {NONE} -- Initialization
 			init_mime_handlers
 			req := wgi_request
 
-			--| Content-Length
+				--| Content-Length
 			if attached content_length as s and then s.is_natural_64 then
 				content_length_value := s.to_natural_64
 			else
 				content_length_value := 0
 			end
 
-			-- Content-Type
+				--| Content-Type
 			s8 := req.content_type
 			if s8 /= Void then
 				create content_type.make_from_string (s8)
@@ -106,18 +106,11 @@ feature {NONE} -- Initialization
 				content_type := Void
 			end
 
-			--| Request Methods
+				--| Request Methods
 			request_method := req.request_method
 
-			--| PATH_INFO
-			percent_encoded_path_info := req.path_info
-			path_info := url_decoded_string (req.path_info)
-
-			--| PATH_TRANSLATED
-			s8 := req.path_translated
-			if s8 /= Void then
-				path_translated := url_decoded_string (s8)
-			end
+				--| PATH_INFO
+			unicode_path_info := url_decoded_string (req.path_info)
 
 				--| Here one can set its own environment entries if needed
 			if meta_variable ({WSF_META_NAMES}.request_time) = Void then
@@ -136,7 +129,7 @@ feature {NONE} -- Initialization
 					--| so, let's be flexible, and accepts other variants of "on"
 			else
 				check is_not_https: is_https = False end
-			end			
+			end
 		end
 
 	wgi_request: WGI_REQUEST
@@ -165,10 +158,9 @@ feature -- Destroy
 			internal_url_base := Void
 			form_parameters_table.wipe_out
 			mime_handlers := Void
-			path_info := empty_string_32
+			unicode_path_info := empty_string_32
 			path_parameters_source := Void
 			path_parameters_table := Void
-			path_translated := Void
 			raw_input_data := Void
 			raw_input_data_recorded := False
 			request_method := empty_string_8
@@ -832,8 +824,13 @@ feature -- Access: CGI meta parameters - 1.1
 			-- Non decoded PATH_INFO value from CGI.
 			-- See `path_info' for the related percent decoded value.
 			--| This value should be used by component dealing only with ASCII path
+		obsolete
+			"Use directly `path_info' which is not decoded [June/2014]"
+		do
+			Result := path_info
+		end
 
-	path_info: READABLE_STRING_32
+	path_info: READABLE_STRING_8
 			-- The PATH_INFO metavariable specifies a path to be interpreted
 			-- by the CGI script. It identifies the resource or sub-resource
 			-- to be returned by the CGI script, and it is derived from the
@@ -861,10 +858,15 @@ feature -- Access: CGI meta parameters - 1.1
 			-- The PATH_INFO value is case-sensitive, and the server MUST
 			-- preserve the case of the PATH_INFO element of the URI when
 			-- making it available to scripts.
-			--
-			-- See `percent_encoded_path_info' to get the original non decoded path info.
+		do
+			Result := wgi_request.path_info
+		end
 
-	path_translated: detachable READABLE_STRING_32
+	unicode_path_info: READABLE_STRING_32
+			-- Percent decoded version of `path_info'
+			-- See `path_info' to get the original non decoded path info.	
+
+	path_translated: detachable READABLE_STRING_8
 			-- PATH_TRANSLATED is derived by taking any path-info component
 			-- of the wgi_request URI (see section 6.1.6), decoding it (see
 			-- section 3.1), parsing it as a URI in its own right, and
@@ -907,6 +909,18 @@ feature -- Access: CGI meta parameters - 1.1
 			--
 			-- Servers SHOULD provide this metavariable to scripts if and
 			-- only if the wgi_request URI includes a path-info component.
+		do
+			Result := wgi_request.path_translated
+		end
+
+	unicode_path_translated: detachable READABLE_STRING_32
+			-- Percent decoded version of `path_translated'
+			-- See `path_translated' to get the original non decoded path info.	
+		do
+			if attached path_translated as s then
+				Result := url_decoded_string (s)
+			end
+		end
 
 	query_string: READABLE_STRING_8
 			-- A URL-encoded string; the <query> part of the Script-URI. (See
@@ -1823,7 +1837,7 @@ feature -- URL Utility
 							elseif spos > 0 then
 								i := spos
 							end
-							spos := l_rq_uri.substring_index (percent_encoded_path_info, i)
+							spos := l_rq_uri.substring_index (path_info, i)
 							if spos > 0 then
 								l_base_url := l_rq_uri.substring (1, spos - 1)
 							else
