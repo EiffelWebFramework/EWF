@@ -1,6 +1,5 @@
 note
 	description: "Summary description for {TEST_WSF_FILE_UTILITIES}."
-	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 

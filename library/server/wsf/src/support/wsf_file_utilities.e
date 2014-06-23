@@ -1,6 +1,5 @@
 note
 	description: "Summary description for {WSF_FILE_UTILITIES}."
-	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -137,6 +136,8 @@ feature -- Factory
 feature {NONE} -- Implementation
 
 	new_file_opened_for_writing (f: G): detachable G
+			-- Returns a new file object opened for writing if possible
+			-- otherwise returns Void.
 		local
 			retried: BOOLEAN
 		do
