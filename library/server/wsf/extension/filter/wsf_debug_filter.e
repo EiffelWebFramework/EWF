@@ -37,10 +37,10 @@ feature -- Basic operations
 			dbg.append_content_information_to (req, res, s)
 			dbg.append_path_parameters_to (req, res, s)
 			dbg.append_query_parameters_to (req, res, s)
-			dbg.append_path_parameters_to (req, res, s)
+			dbg.append_form_parameters_to (req, res, s)
 
 			if not s.is_empty then
-				s.append ("**DEBUG**%N")
+				s.prepend ("**DEBUG**%N")
 				if attached output as o then
 					o.put_string (s)
 				else
