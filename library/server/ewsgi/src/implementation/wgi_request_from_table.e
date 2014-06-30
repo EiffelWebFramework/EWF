@@ -319,6 +319,7 @@ feature {NONE} -- Element change: CGI meta parameter related to PATH_INFO
 			until
 				a_vars.after
 			loop
+					-- Warning: truncated value to ascii !!!
 				table.force (a_vars.item_for_iteration.to_string_8, a_vars.key_for_iteration)
 				a_vars.forth
 			end

@@ -74,8 +74,8 @@ feature -- Request processing
 			l_request_uri := a_handler.uri
 			l_headers_map := a_handler.request_header_map
 			create e
+			create enc
 			if attached e.starting_environment as vars then
-				create enc
 				create env.make_equal (vars.count)
 				across
 					vars as c
@@ -168,8 +168,22 @@ feature -- Request processing
 					if p > 0 then
 						l_path_info.keep_head (p - 1)
 					end
-					env.force (l_path_info, "PATH_INFO")
+					env.force (enc.decoded_utf_8_string (l_path_info), "PATH_INFO")
 					env.force (l_base, "SCRIPT_NAME")
+				else
+						-- This should not happen, this means the `base' is not correctly set.
+						-- It is better to consider base as empty, rather than having empty PATH_INFO
+					check valid_base_value: False end
+
+					l_path_info := l_request_uri
+					p := l_request_uri.index_of ('?', 1)
+					if p > 0 then
+						l_path_info := l_request_uri.substring (1, p - 1)
+					else
+						l_path_info := l_request_uri.string
+					end
+					env.force (enc.decoded_utf_8_string (l_path_info), "PATH_INFO")
+					env.force ("", "SCRIPT_NAME")
 				end
 			end
 
