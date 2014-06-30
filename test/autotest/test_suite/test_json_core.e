@@ -1,10 +1,13 @@
-class TEST_JSON_CORE
+class
+	TEST_JSON_CORE
 
 inherit
     SHARED_EJSON
-	  	rename default_create as shared_default_create end
+		undefine
+			default_create
+		end
+
 	EQA_TEST_SET
-		select default_create end
 
 feature -- Test
 
@@ -21,7 +24,7 @@ feature -- Test
             assert ("jn.representation.same_string (%"42%")", jn.representation.same_string ("42"))
             -- Eiffel value -> JSON value -> JSON representation with factory
             if attached {JSON_NUMBER} json.value (i) as l_jn then
-	            assert ("l_jn.representation.same_string (%"42%")", jn.representation.same_string ("42"))
+				assert ("l_jn.representation.same_string (%"42%")", jn.representation.same_string ("42"))
 			else
 				assert ("json.value (i) is a JSON_NUMBER", False)
             end
@@ -477,64 +480,60 @@ feature -- Test
 
     test_json_null
         local
-            a: detachable ANY
-            dummy_object: STRING
-            jn: detachable JSON_NULL
             jrep: STRING
+            jn: JSON_NULL
             parser: JSON_PARSER
         do
             -- Eiffel value -> JSON value -> JSON representation
             create jn
-            assert ("jn /= Void", jn /= Void)
-            assert ("jn.representation.is_equal (%"%"null%"%")", jn.representation.is_equal ("null"))
+            jrep := "null"
+
+            assert ("jn.representation.is_equal (%"%"null%"%")", jn.representation.is_equal (jrep))
             -- Eiffel value -> JSON value -> JSON representation with factory
-            jn ?= json.value (Void)
-            assert ("jn /= Void", jn /= Void)
-            if attached jn as l_jn then
-				assert ("jn.representation.is_equal (%"null%")", l_jn.representation.is_equal ("null"))
+            if attached {JSON_NULL} json.value (Void) as l_json_null then
+				assert ("jn.representation.is_equal (%"null%")", l_json_null.representation.is_equal ("null"))
+            else
+                assert ("json.value (Void) /= Void", False)
             end
 
             -- JSON representation -> JSON value -> Eiffel value
-            jrep := "null"
             create parser.make_parser (jrep)
-            jn := Void
-            jn ?= parser.parse
-            assert ("jn /= Void", jn /= Void)
-            create dummy_object.make_empty
-            a := dummy_object
-            a ?= json.object (jn, Void)
-            assert ("a = Void", a = Void)
+            if attached parser.parse as l_json_null then
+                assert ("a = Void", json.object (l_json_null, Void) = Void)
+            else
+                assert ("parser.parse /= Void", False)
+            end
         end
 
     test_json_string_and_character
         local
             c: CHARACTER
-            js: detachable JSON_STRING
             jrep: STRING
+            js: JSON_STRING
             parser: JSON_PARSER
         do
             c := 'a'
             -- Eiffel value -> JSON value -> JSON representation
             create js.make_json (c.out)
-            assert ("js /= Void", js /= Void)
+
             assert ("js.representation.is_equal (%"%"a%"%")", js.representation.is_equal ("%"a%""))
             -- Eiffel value -> JSON value -> JSON representation with factory
-            js ?= json.value (c)
-            assert ("js /= Void", js /= Void)
-            if attached js as l_js then
-				assert ("js.representation.is_equal (%"%"a%"%")", l_js.representation.is_equal ("%"a%""))
+            if attached {JSON_STRING} json.value (c) as l_json_str then
+				assert ("js.representation.is_equal (%"%"a%"%")", l_json_str.representation.is_equal ("%"a%""))
+            else
+                assert ("json.value (c) /= Void", False)
             end
 
             -- JSON representation -> JSON value -> Eiffel value
             jrep := "%"a%""
             create parser.make_parser (jrep)
-            js := Void
-            js ?= parser.parse
-            assert ("js /= Void", js /= Void)
-            if attached {STRING_32} json.object (js, Void) as ucs then
-				assert ("ucs.string.is_equal (%"a%")", ucs.string.is_equal ("a"))
-            end
-
+            if attached {JSON_STRING} parser.parse as l_json_str then
+				if attached {STRING_32} json.object (l_json_str, Void) as ucs then
+					assert ("ucs.string.is_equal (%"a%")", ucs.string.is_equal ("a"))
+				end
+			else
+				assert ("parser.parse /= Void", False)
+			end
         end
 
     test_json_string_and_string
@@ -545,94 +544,101 @@ feature -- Test
             parser: JSON_PARSER
         do
             s := "foobar"
+            jrep := "%"foobar%""
+
             -- Eiffel value -> JSON value -> JSON representation
             create js.make_json (s)
-            assert ("js /= Void", js /= Void)
-            assert ("js.representation.is_equal (%"%"foobar%"%")", js.representation.is_equal ("%"foobar%""))
+            assert ("js.representation.is_equal (%"%"foobar%"%")", js.representation.is_equal (jrep))
             -- Eiffel value -> JSON value -> JSON representation with factory
-            js ?= json.value (s)
-            assert ("js /= Void", js /= Void)
-            if attached js as l_js then
-				assert ("js.representation.is_equal (%"%"foobar%"%")", js.representation.is_equal ("%"foobar%""))
+            if attached {JSON_STRING} json.value (s) as l_js then
+				assert ("js.representation.is_equal (%"%"foobar%"%")", js.representation.is_equal (jrep))
+            else
+				assert ("json.value (s) /= Void", False)
             end
 
             -- JSON representation -> JSON value -> Eiffel value
-            jrep := "%"foobar%""
             create parser.make_parser (jrep)
-            js := Void
-            js ?= parser.parse
-            assert ("js /= Void", js /= Void)
-            if attached {STRING_32} json.object (js, Void) as l_ucs then
-            	assert ("ucs.string.is_equal (%"foobar%")", l_ucs.string.is_equal ("foobar"))
-            end
+			if attached {JSON_STRING} parser.parse as l_js then
+				if attached {STRING_32} json.object (l_js, Void) as l_ucs then
+					assert ("ucs.string.is_equal (%"foobar%")", l_ucs.string.is_equal (s))
+				end
+			else
+				assert ("parser.parse /= Void", False)
+			end
         end
 
     test_json_string_and_uc_string
         local
             js: detachable JSON_STRING
             ucs: detachable STRING_32
-            jrep: STRING
+            jrep, s: STRING
             parser: JSON_PARSER
         do
-            create ucs.make_from_string ("foobar")
+            s := "foobar"
+            jrep := "%"foobar%""
+            create ucs.make_from_string (s)
+
             -- Eiffel value -> JSON value -> JSON representation
             create js.make_json (ucs)
-            assert ("js /= Void", js /= Void)
-            assert ("js.representation.is_equal (%"%"foobar%"%")", js.representation.is_equal ("%"foobar%""))
+            assert ("js.representation.is_equal (%"%"foobar%"%")", js.representation.is_equal (jrep))
+
             -- Eiffel value -> JSON value -> JSON representation with factory
-            js ?= json.value (ucs)
-            assert ("js /= Void", js /= Void)
-            if attached js as l_js then
-	            assert ("js.representation.is_equal (%"%"foobar%"%")", l_js.representation.is_equal ("%"foobar%""))
+            if attached {JSON_STRING} json.value (ucs) as l_js then
+				assert ("js.representation.is_equal (%"%"foobar%"%")", l_js.representation.is_equal (jrep))
+            else
+				assert ("json.value (ucs) /= Void", False)
             end
 
             -- JSON representation -> JSON value -> Eiffel value
-            jrep := "%"foobar%""
             create parser.make_parser (jrep)
-            js := Void
-            js ?= parser.parse
-            assert ("js /= Void", js /= Void)
-            ucs := Void
-            ucs ?= json.object (js, Void)
-            if attached ucs as l_ucs then
-				assert ("ucs.string.is_equal (%"foobar%")", l_ucs.string.is_equal ("foobar"))
-            end
+            if attached {JSON_STRING} parser.parse as l_js then
+	            if attached {STRING_32} json.object (l_js, Void) as l_ucs then
+					assert ("ucs.string.is_equal (%"foobar%")", l_ucs.string.is_equal (s))
+				else
+					assert ("json.object (js, Void) /= Void", False)
+				end
+			else
+				assert ("parser.parse /= Void", False)
+			end
         end
 
     test_json_string_and_special_characters
         local
             js: detachable JSON_STRING
             s: detachable STRING_8
-            ucs: detachable STRING_32
             jrep: STRING
             parser: JSON_PARSER
         do
+            jrep := "%"foo\\bar%""
             create s.make_from_string ("foo\bar")
             create js.make_json (s)
 
-            assert ("js.representation.same_string (%"%"foo\\bar%"%")", js.representation.same_string ("%"foo\\bar%""))
+            assert ("js.representation.same_string (%"%"foo\\bar%"%")", js.representation.same_string (jrep))
 
             -- Eiffel value -> JSON value -> JSON representation with factory
-            js ?= json.value (s)
-            assert ("js /= Void", js /= Void)
-            if js /= Void then
-	            assert ("js.representation.is_equal (%"%"foobar%"%")", js.representation.same_string ("%"foo\\bar%""))
+            if attached {JSON_STRING} json.value (s) as l_js then
+	            assert ("js.representation.is_equal (%"%"foobar%"%")", l_js.representation.same_string (jrep))
+            else
+				assert ("json.value (s) /= Void", False)
             end
 
             -- JSON representation -> JSON value -> Eiffel value
-            jrep := "%"foo\\bar%""
             create parser.make_parser (jrep)
-            js ?= parser.parse
-            assert ("js /= Void", js /= Void)
-            ucs ?= json.object (js, Void)
-            if ucs /= Void then
-				assert ("ucs.same_string (%"foo\bar%")", ucs.same_string ("foo\bar"))
-            end
+            if attached {JSON_STRING} parser.parse as l_js then
+	            if attached {STRING_32} json.object (l_js, Void) as l_ucs then
+					assert ("ucs.same_string (%"foo\bar%")", l_ucs.same_string ("foo\bar"))
+	            end
+	        else
+				assert ("parser.parse /= Void", False)
+	        end
+
 
             jrep := "%"foo\\bar%""
 			create parser.make_parser (jrep)
 			if attached {JSON_STRING} parser.parse as jstring then
 				assert ("unescaped string %"foo\\bar%" to %"foo\bar%"", jstring.unescaped_string_8.same_string ("foo\bar"))
+			else
+				assert ("parser.parse /= Void", False)
 			end
 
             create js.make_json_from_string_32 ({STRING_32}"%/20320/%/22909/")
@@ -642,13 +648,14 @@ feature -- Test
 			create parser.make_parser (jrep)
 			if attached {JSON_STRING} parser.parse as jstring then
 				assert ("same unicode string32 %"%%/20320/%%/22909/%"", jstring.unescaped_string_32.same_string ({STRING_32}"%/20320/%/22909/"))
+			else
+				assert ("parser.parse /= Void", False)
 			end
         end
 
     test_json_array
         local
             ll: LINKED_LIST [INTEGER_8]
-            ll2: detachable LINKED_LIST [detachable ANY]
             ja: detachable JSON_ARRAY
             jn: JSON_NUMBER
             jrep: STRING
@@ -677,11 +684,10 @@ feature -- Test
             assert ("ja /= Void", ja /= Void)
             assert ("ja.representation.is_equal (%"[0,1,1,2,3,5]%")", ja.representation.is_equal ("[0,1,1,2,3,5]"))
             -- Eiffel value -> JSON value -> JSON representation with factory
-            ja := Void
-            ja ?= json.value (ll)
-            assert ("ja /= Void", ja /= Void)
-            if attached ja as l_ja then
+            if attached {JSON_ARRAY} json.value (ll) as l_ja then
             	assert ("ja.representation.is_equal (%"[0,1,1,2,3,5]%")", l_ja.representation.is_equal ("[0,1,1,2,3,5]"))
+            else
+				assert ("json.value (ll) /= Void", False)
             end
 
             -- JSON representation -> JSON value -> Eiffel value
@@ -691,22 +697,20 @@ feature -- Test
             -- values 0, 1, 1, 2, 3, 5
             jrep := "[0,1,1,2,3,5]"
             create parser.make_parser (jrep)
-            ja := Void
-            ja ?= parser.parse
-            assert ("ja /= Void", ja /= Void)
-            ll2 ?= json.object (ja, Void)
-            assert ("ll2 /= Void", ll2 /= Void)
-            --ll.compare_objects
-            --ll2.compare_objects
-            if attached ll2 as l_ll2 then
-				assert ("ll2.is_equal (ll)", l_ll2.is_equal (ll))
+            if attached {JSON_ARRAY} parser.parse as l_ja then
+				if attached {LINKED_LIST [detachable ANY]} json.object (ja, Void) as l_ll2 then
+					assert ("ll2.is_equal (ll)", l_ll2.is_equal (ll))
+				else
+					assert ("json.object (ja, Void) /= Void", False)
+				end
+			else
+				assert ("parser.parse /= Void", False)
             end
-
         end
 
     test_json_object
         local
-            t, t2: detachable HASH_TABLE [detachable ANY, STRING_GENERAL]
+            t: detachable HASH_TABLE [detachable ANY, STRING_GENERAL]
             i: INTEGER
             ucs_key, ucs: STRING_32
             a: ARRAY [INTEGER]
@@ -745,6 +749,7 @@ feature -- Test
             jo.put (ja, js_key)
             assert ("jo /= Void", jo /= Void)
             assert ("jo.representation.is_equal (%"{%"name%":%"foobar%",%"size%":42,%"contents%":[0,1,1,2,3,5]}%")", jo.representation.is_equal ("{%"name%":%"foobar%",%"size%":42,%"contents%":[0,1,1,2,3,5]}"))
+
             -- Eiffel value -> JSON value -> JSON representation with factory
             create t.make (3)
             create ucs_key.make_from_string ("name")
@@ -756,26 +761,28 @@ feature -- Test
             create ucs_key.make_from_string ("contents")
             a := <<0, 1, 1, 2, 3, 5>>
             t.put (a, ucs_key)
-            jo := Void
-            jo ?= json.value (t)
-            assert ("jo /= Void", jo /= Void)
-            if attached jo as l_jo then
+            if attached {JSON_OBJECT} json.value (t) as l_jo then
 				assert ("jo.representation.is_equal (%"{%"name%":%"foobar%",%"size%":42,%"contents%":[0,1,1,2,3,5]}%")", l_jo.representation.is_equal ("{%"name%":%"foobar%",%"size%":42,%"contents%":[0,1,1,2,3,5]}"))
+            else
+				assert ("json.value (t) /= Void", False)
             end
+
             -- JSON representation -> JSON value -> Eiffel value -> JSON value -> JSON representation
             jrep := "{%"name%":%"foobar%",%"size%":42,%"contents%":[0,1,1,2,3,5]}"
             create parser.make_parser (jrep)
-            jo := Void
-            jo ?= parser.parse
-            assert ("jo /= Void", jo /= Void)
-            t2 ?= json.object (jo, Void)
-            assert ("t2 /= Void", t2 /= Void)
-            jo ?= json.value (t2)
-            assert ("jo /= Void", jo /= Void)
-            if attached jo as l_jo then
-            	assert ("jrep.is_equal (jo.representation)", jrep.is_equal (jo.representation))
-            end
-
+			if attached {JSON_OBJECT} parser.parse as l_jo then
+				if attached {HASH_TABLE [detachable ANY, STRING_GENERAL]} json.object (l_jo, Void) as l_t2 then
+					if attached json.value (l_t2) as l_jo_2 then
+						assert ("jrep.is_equal (jo.representation)", jrep.is_equal (l_jo_2.representation))
+					else
+						assert ("json.value (t2) /= Void", False)
+					end
+				else
+					assert ("json.object (jo, Void) /= Void", False)
+				end
+			else
+				assert ("parser.parse /= Void", jo /= Void)
+			end
         end
 
     test_json_object_hash_code
@@ -802,7 +809,6 @@ feature -- Test
                 jv := json.value (gv)
             else
                 assert ("exceptions.is_developer_exception", json.is_developer_exception)
---                assert ("exceptions.is_developer_exception_of_name", json.is_developer_exception_of_name ("eJSON exception: Failed to convert Eiffel object to a JSON_VALUE: OPERATING_ENVIRONMENT"))
             end
         rescue
             exception := True
@@ -813,17 +819,15 @@ feature -- Test
             -- Test converting from a JSON value to an Eiffel object based on a
             -- class for which no JSON converter has been registered.
         local
-        	gv : detachable OPERATING_ENVIRONMENT
+			gv : detachable ANY
             jo: JSON_OBJECT
             exception: BOOLEAN
         do
             if not exception then
                 create jo.make
-                gv ?= json.object (jo, "OPERATING_ENVIRONMENT")
+                gv := json.object (jo, "OPERATING_ENVIRONMENT")
             else
                 assert ("exceptions.is_developer_exception", json.is_developer_exception)
---                assert ("exceptions.is_developer_exception_of_name", json.is_developer_exception_of_name ("eJSON exception: Failed to convert JSON_VALUE to an Eiffel object: JSON_OBJECT -> OPERATING_ENVIRONMENT"))
-
             end
         rescue
             exception := True
