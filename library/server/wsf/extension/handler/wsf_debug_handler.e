@@ -58,6 +58,7 @@ feature -- Access
 			s.append ("%N")
 
 			create dbg.make
+			dbg.set_is_verbose (True)
 			dbg.append_information_to (req, res, s)
 
 			s.append ("= END =")
