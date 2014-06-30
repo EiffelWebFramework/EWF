@@ -4,7 +4,8 @@ note
     date: "$Date$"
     revision: "$Revision$"
 
-class JSON_AUTHOR_CONVERTER
+class
+	JSON_AUTHOR_CONVERTER
 
 inherit
     JSON_CONVERTER
@@ -29,12 +30,10 @@ feature -- Access
 feature -- Conversion
 
     from_json (j: like to_json): detachable like object
-        local
-            ucs: detachable STRING_32
         do
-            ucs ?= json.object (j.item (name_key), Void)
-            check ucs /= Void end
-            create Result.make (ucs)
+            if attached {STRING_32} json.object (j.item (name_key), Void) as l_name then
+				create Result.make (l_name)
+            end
         end
 
     to_json (o: like object): JSON_OBJECT
@@ -43,9 +42,10 @@ feature -- Conversion
             Result.put (json.value (o.name), name_key)
         end
 
-feature    {NONE} -- Implementation
+feature {NONE} -- Implementation
 
     name_key: JSON_STRING
+			-- Author's name label.
         once
             create Result.make_json ("name")
         end
