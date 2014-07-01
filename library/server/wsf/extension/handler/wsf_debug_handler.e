@@ -52,6 +52,7 @@ feature -- Access
 			p: WSF_PAGE_RESPONSE
 			l_len: INTEGER
 			dbg: WSF_DEBUG_INFORMATION
+			utf: UTF_CONVERTER
 		do
 			create s.make (2048)
 			s.append ("= EWF DEBUG =")
@@ -59,6 +60,7 @@ feature -- Access
 
 			create dbg.make
 			dbg.set_is_verbose (True)
+			dbg.append_cgi_variables_to (req, res, s)
 			dbg.append_information_to (req, res, s)
 
 			s.append ("= END =")

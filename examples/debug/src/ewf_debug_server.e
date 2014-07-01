@@ -25,7 +25,7 @@ feature {NONE} -- Initialization
 			-- Initialize current service.
 		do
 			Precursor
-			set_service_option ("verbose", True)
+--			set_service_option ("verbose", True)
 			set_service_option ("port", 9090)
 --			set_service_option ("base", "/www-debug/debug_service.fcgi/")
 		end
@@ -34,6 +34,7 @@ feature {NONE} -- Initialization
 		local
 			dbg: WSF_DEBUG_HANDLER
 		do
+			res.put_error ("DEBUG" + req.request_uri + "%N")
 			create dbg.make
 			dbg.execute_starts_with ("", req, res)
 		end

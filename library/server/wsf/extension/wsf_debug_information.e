@@ -135,7 +135,7 @@ feature -- Execution
 			append_meta_variables_to (req, res, a_output)
 			if is_verbose then
 				append_execution_variables_to (req, res, a_output)
-				append_environment_variables_to (req, res, a_output)
+--				append_environment_variables_to (req, res, a_output)
 			end
 		end
 
@@ -292,12 +292,69 @@ feature {NONE} -- Implementation
 							a_output.append_character ('}')
 						end
 						a_output.append_character ('=')
-						s := c.item.string_representation
+						if attached {WSF_STRING} c.item as l_str then
+							s := l_str.url_encoded_value
+						else
+							s := c.item.string_representation
+						end
 						if s.is_valid_as_string_8 then
 							v := s.as_string_8
 						else
 							v := utf.escaped_utf_32_string_to_utf_8_string_8 (s)
 						end
+						if v.has ('%N') then
+							a_output.append (eol)
+							across
+								v.split ('%N') as v_cursor
+							loop
+								a_output.append ("     |")
+								a_output.append (v_cursor.item)
+								a_output.append (eol)
+							end
+						else
+							a_output.append (v)
+							a_output.append (eol)
+						end
+					end
+				end
+			else
+				if is_verbose then
+					a_output.append (" none")
+					a_output.append (eol)
+				end
+			end
+		end
+
+	append_iterable_string_to (a_title: READABLE_STRING_8; it: detachable TABLE_ITERABLE [READABLE_STRING_8, READABLE_STRING_GENERAL]; a_output: STRING_8)
+		local
+			n: INTEGER
+			v: READABLE_STRING_8
+			utf: UTF_CONVERTER
+		do
+			if is_verbose then
+				a_output.append (a_title)
+				a_output.append_character (':')
+			end
+			if it /= Void then
+				n := iterable_count (it)
+				if n = 0 then
+					if is_verbose then
+						a_output.append (" empty")
+						a_output.append (eol)
+					end
+				else
+					a_output.append (eol)
+					across
+						it as c
+					loop
+						a_output.append ("  - ")
+						if c.key.is_valid_as_string_8 then
+							a_output.append (c.key.as_string_8)
+						else
+							a_output.append (utf.utf_32_string_to_utf_8_string_8 (c.key))
+						end
+						a_output.append_character ('=')
+						v := c.item
 						if v.has ('%N') then
 							a_output.append (eol)
 							across
