@@ -17,8 +17,10 @@ EWF Deployment
 
 1. Build EWF application.
 
+    ```
     ec ­config app.ecf ­target app_cgi ­finalize ­c_compile ­project_path .
     Note: change app.ecf and target app_cgi  based on your own configuration.
+     ```
 2. Copy the generated exe file and the www content.
 
     ```
@@ -42,12 +44,14 @@ EWF Deployment
 
 *Tip:*
 To check the syntax of your httpd.conf file. From command line run the following.
-
+    
+    ```
     $>httpd - t
-
+    ```
 ####.htaccess CGI
 http://perishablepress.com/stupid­htaccess­trics/
 
+```
     Options +ExecCGI +Includes +FollowSymLinks ­Indexes
     AddHandler cgi­script exe
     <IfModule mod_rewrite.c>
@@ -59,7 +63,7 @@ http://perishablepress.com/stupid­htaccess­trics/
        RewriteRule ^(.*)$ $service/$1
        RewriteRule .* ­ [E=HTTP_AUTHORIZATION:%{HTTP:Authorization},L]
     </IfModule
-
+```
 Replace $service with the name of your executable service, for example app_service.exe
 
 
@@ -76,12 +80,13 @@ Replace $service with the name of your executable service, for example
 
 1. Build EWF application
 
+    ```
     ec ­config app.ecf ­target app_fcgi ­finalize ­c_compile ­project_path .
     Note: change app.ecf and target app_fcgi  based on your own configuration.
-
+    ```
 2. Copy the generated exe file and the www content
 
-    
+    ```
     Copy the app.exe and the folder "www"  into a folder served by apache2, for example under
     <APACHE_PATH>/htdocs.
     <APACHE_PATH> = path to your apache installation
@@ -92,11 +97,13 @@ Replace $service with the name of your executable service, for example
        AllowOverride All --
        Require all granted -- this is required in Apache 2.4.4
     </Directory>
-
+    ```
 Check that you have the following modules enabled.
 
+    ```
     LoadModule rewrite_module modules/mod_rewrite.so
     LoadModule fcgid_module modules/mod_fcgid.so
+    ```
 
 By default Apache does not comes with fcgid module, so you will need to
 download it, and put the module under Apache2/modules
@@ -104,6 +111,7 @@ download it, and put the module under Apache2/modules
 ####.htaccess FCGI
 http://perishablepress.com/stupid­htaccess­tricks/
 
+```
     Options +ExecCGI +Includes +FollowSymLinks ­Indexes
     <IfModule mod_fcgid.c>
       AddHandler fcgid­script .ews
@@ -119,7 +127,7 @@ http://perishablepress.com/stupid­htaccess­tricks/
        RewriteCond %{REQUEST_URI} !service.ews
        RewriteRule ^(.*)$ service.ews/$1  RewriteRule .* ­ [E=HTTP_AUTHORIZATION:%{HTTP:Authorization},L]
     </IfModule>
-
+```
 Replace $service with the name of your executable $service, for example app_service.exe
 You will need to create an service.ews file, this file will be located at the same place where you
 copy your app service executable.
