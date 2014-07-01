@@ -70,6 +70,7 @@ feature -- Request processing
 
 			e: EXECUTION_ENVIRONMENT
 			enc: URL_ENCODER
+			utf: UTF_CONVERTER
 		do
 			l_request_uri := a_handler.uri
 			l_headers_map := a_handler.request_header_map
@@ -80,13 +81,13 @@ feature -- Request processing
 				across
 					vars as c
 				loop
-					env.force (enc.encoded_string (c.item), enc.encoded_string (c.key))
+					env.force (utf.utf_32_string_to_utf_8_string_8 (c.item), utf.utf_32_string_to_utf_8_string_8 (c.key))
 				end
 			else
 				create env.make (0)
 			end
 
-			--| for Any Abc-Def-Ghi add (or replace) the HTTP_ABC_DEF_GHI variable to `env'
+				--| for Any Abc-Def-Ghi add (or replace) the HTTP_ABC_DEF_GHI variable to `env'
 			from
 				l_headers_map.start
 			until
