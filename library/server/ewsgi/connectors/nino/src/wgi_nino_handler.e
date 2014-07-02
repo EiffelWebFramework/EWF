@@ -169,7 +169,6 @@ feature -- Request processing
 					if p > 0 then
 						l_path_info.keep_head (p - 1)
 					end
-					env.force (enc.decoded_utf_8_string (l_path_info), "PATH_INFO")
 					env.force (l_base, "SCRIPT_NAME")
 				else
 						-- This should not happen, this means the `base' is not correctly set.
@@ -183,9 +182,11 @@ feature -- Request processing
 					else
 						l_path_info := l_request_uri.string
 					end
-					env.force (enc.decoded_utf_8_string (l_path_info), "PATH_INFO")
 					env.force ("", "SCRIPT_NAME")
 				end
+					--| Strip multiple slashes "////abc/def///end////" to "/abc/def/end/" ?
+				convert_multiple_slashes_to_single (l_path_info)
+				env.force (enc.decoded_utf_8_string (l_path_info), "PATH_INFO")
 			end
 
 			callback.process_request (env, a_handler.request_header, a_socket)
@@ -210,6 +211,35 @@ feature -- Request processing
 		do
 			if a_value /= Void then
 				env.force (a_value, a_var_name)
+			end
+		end
+
+feature {NONE} -- Implementation
+
+	convert_multiple_slashes_to_single (s: STRING_8)
+			-- Replace multiple slashes sequence by a single slash character.
+		local
+			i,n: INTEGER
+		do
+			from
+				i := 1
+				n := s.count
+			until
+				i > n
+			loop
+				if s[i] = '/' then
+						-- Remove following slashes '/'.
+					from 
+						i := i + 1
+					until 
+						i > n or s[i] /= '/' 
+					loop
+						s.remove (i)
+						n := n - 1
+					end
+				else
+					i := i + 1
+				end
 			end
 		end
 

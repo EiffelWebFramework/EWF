@@ -387,11 +387,8 @@ feature {NONE} -- Element change: CGI meta parameter related to PATH_INFO
 				end
 				l_request_uri := s8
 			end
-				--| FIXME: should it strip "////abc/def" to "/abc/def" ?
-				--| Not sure why this was done before.
---			l_request_uri := single_slash_starting_string (l_request_uri)
-			request_uri := l_request_uri
 			set_meta_string_variable ({WGI_META_NAMES}.request_uri, l_request_uri)
+			request_uri := l_request_uri
 		end
 
 	set_orig_path_info (s: READABLE_STRING_8)
@@ -418,6 +415,7 @@ feature {NONE} -- Element change: CGI meta parameter related to PATH_INFO
 			l_path_info: STRING
 		do
 			l_path_info := path_info
+
 			--| Warning
 			--| on IIS: we might have   PATH_INFO = /sample.exe/foo/bar
 			--| on apache:				PATH_INFO = /foo/bar
