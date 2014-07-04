@@ -12,22 +12,22 @@ create
 
 feature {NONE} -- Initialization
 
-    make (a_json: STRING)
-            -- Initialize Reader
-        do
-            set_representation (a_json)
-        end
+	make (a_json: STRING)
+			-- Initialize Reader
+		do
+			set_representation (a_json)
+		end
 
 feature -- Commands
 
-	 set_representation (a_json: STRING)
-            -- Set `representation'.
-        do
-        	a_json.left_adjust
-        	a_json.right_adjust
+	set_representation (a_json: STRING)
+			-- Set `representation'.
+		do
+			a_json.left_adjust
+			a_json.right_adjust
 			representation := a_json
-            index := 1
-        end
+			index := 1
+		end
 
 	read: CHARACTER
 			-- Read character
@@ -65,7 +65,7 @@ feature -- Commands
 			from
 				c := actual
 			until
-				(c /= ' ' and c /= '%N' and c /= '%R' and c /= '%U' and c /= '%T' ) or not has_next
+				(c /= ' ' and c /= '%N' and c /= '%R' and c /= '%U' and c /= '%T') or not has_next
 			loop
 				next
 				c := actual

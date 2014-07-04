@@ -5,32 +5,34 @@ note
 	revision: "$Revision$"
 	file: "$HeadURL: $"
 
-deferred class JSON_CONVERTER
+deferred class
+	JSON_CONVERTER
 
 inherit
-    SHARED_EJSON
+
+	SHARED_EJSON
 
 feature -- Access
 
-    object: ANY
-            -- Eiffel object
-        deferred
-        end
+	object: ANY
+			-- Eiffel object
+		deferred
+		end
 
 feature -- Conversion
 
-    from_json (j: attached like to_json): detachable like object
-            -- Convert from JSON value. 
+	from_json (j: attached like to_json): detachable like object
+			-- Convert from JSON value.
 			-- Returns Void if unable to convert
-        deferred
-        end
+		deferred
+		end
 
-    to_json (o: like object): detachable JSON_VALUE
-            -- Convert to JSON value
-        deferred
-        end
+	to_json (o: like object): detachable JSON_VALUE
+			-- Convert to JSON value
+		deferred
+		end
 
 invariant
-    has_eiffel_object: object /= Void -- An empty object must be created at creation time!
+	has_eiffel_object: object /= Void -- An empty object must be created at creation time!
 
 end

@@ -1,11 +1,8 @@
 note
-	description:
-
-		"JSON Visitor"
-
+	description: "JSON Visitor"
 	pattern: "Visitor"
 	author: "Javier Velilla"
-	license:"MIT (see http://www.opensource.org/licenses/mit-license.php)"
+	license: "MIT (see http://www.opensource.org/licenses/mit-license.php)"
 	date: "2008/08/24"
 	revision: "Revision 0.1"
 
@@ -49,7 +46,7 @@ feature -- Visitor Pattern
 		deferred
 		end
 
-    visit_json_string (a_json_string: JSON_STRING)
+	visit_json_string (a_json_string: JSON_STRING)
 			-- Visit `a_json_string'.
 		require
 			a_json_string_not_void: a_json_string /= Void

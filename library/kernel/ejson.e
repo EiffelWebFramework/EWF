@@ -5,9 +5,11 @@ note
 	revision: "$Revision$"
 	file: "$HeadURL: $"
 
-class EJSON
+class
+	EJSON
 
 inherit
+
 	EXCEPTIONS
 
 feature -- Access
@@ -19,9 +21,9 @@ feature -- Access
 			i: INTEGER
 			ja: JSON_ARRAY
 		do
-			-- Try to convert from basic Eiffel types. Note that we check with
-			-- `conforms_to' since the client may have subclassed the base class
-			-- that these basic types are derived from.
+				-- Try to convert from basic Eiffel types. Note that we check with
+				-- `conforms_to' since the client may have subclassed the base class
+				-- that these basic types are derived from.
 			if an_object = Void then
 				create {JSON_NULL} Result
 			elseif attached {BOOLEAN} an_object as b then
@@ -56,7 +58,9 @@ feature -- Access
 					if attached value (a @ i) as v then
 						ja.add (v)
 					else
-						check value_attached: False end
+						check
+							value_attached: False
+						end
 					end
 					i := i + 1
 				end
@@ -65,15 +69,13 @@ feature -- Access
 				create {JSON_STRING} Result.make_json (c8.out)
 			elseif attached {CHARACTER_32} an_object as c32 then
 				create {JSON_STRING} Result.make_json (c32.out)
-
 			elseif attached {STRING_8} an_object as s8 then
 				create {JSON_STRING} Result.make_json (s8)
 			elseif attached {STRING_32} an_object as s32 then
 				create {JSON_STRING} Result.make_json_from_string_32 (s32)
 			end
-
 			if Result = Void then
-				-- Now check the converters
+					-- Now check the converters
 				if an_object /= Void and then attached converter_for (an_object) as jc then
 					Result := jc.to_json (an_object)
 				else
@@ -84,7 +86,7 @@ feature -- Access
 
 	object (a_value: detachable JSON_VALUE; base_class: detachable STRING): detachable ANY
 			-- Eiffel object from JSON value. If `base_class' /= Void an eiffel
-			-- object based on `base_class' will be returned. Raises an "eJSON 
+			-- object based on `base_class' will be returned. Raises an "eJSON
 			-- exception" if unable to convert value.
 		local
 			i: INTEGER

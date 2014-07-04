@@ -5,20 +5,22 @@ note
 	revision: "$Revision$"
 	file: "$HeadURL: $"
 
-class JSON_LINKED_LIST_CONVERTER
+class
+	JSON_LINKED_LIST_CONVERTER
 
 inherit
-    JSON_LIST_CONVERTER
+
+	JSON_LIST_CONVERTER
 		redefine
 			object
 		end
 
 create
-    make
+	make
 
 feature -- Access
 
-    object: LINKED_LIST [detachable ANY]
+	object: LINKED_LIST [detachable ANY]
 
 feature {NONE} -- Factory
 

@@ -5,20 +5,22 @@ note
 	revision: "$Revision$"
 	file: "$HeadURL: $"
 
-class JSON_ARRAYED_LIST_CONVERTER
+class
+	JSON_ARRAYED_LIST_CONVERTER
 
 inherit
-    JSON_LIST_CONVERTER
+
+	JSON_LIST_CONVERTER
 		redefine
 			object
 		end
 
 create
-    make
+	make
 
 feature -- Access
 
-    object: ARRAYED_LIST [detachable ANY]
+	object: ARRAYED_LIST [detachable ANY]
 
 feature {NONE} -- Factory
 
