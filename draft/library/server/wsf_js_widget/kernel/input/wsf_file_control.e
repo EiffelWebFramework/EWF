@@ -69,7 +69,12 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 				Result.put_string (f.name, "file_name")
 				Result.put_string (f.type, "file_type")
 				Result.put_integer (f.size, "file_size")
-				Result.put_string (f.id, "file_id")
+				if attached f.id as fid then
+					Result.put_string (fid, "file_id")
+				else
+					Result.put (Void, "file_id")
+				end
+
 			end
 			Result.put_boolean (disabled, "disabled")
 			Result.put_boolean (image_preview, "image_preview")
@@ -98,11 +103,21 @@ feature -- Event handling
 						f_type := f.type
 						f_size := f.size
 						f_id := f.id
+
+						state_changes.replace_with_string (f_name, "file_name")
+						state_changes.replace_with_string (f_type, "file_type")
+						state_changes.replace_with_integer (f_size, "file_size")
+					else
+						state_changes.replace (Void, "file_name")
+						state_changes.replace (Void, "file_type")
+						state_changes.replace (Void, "file_size")
 					end
-					state_changes.replace_with_string (f_name, "file_name")
-					state_changes.replace_with_string (f_type, "file_type")
-					state_changes.replace_with_integer (f_size, "file_size")
-					state_changes.replace_with_string (f_id, "file_id")
+					if f_id /= Void then
+						state_changes.replace_with_string (f_id, "file_id")
+					else
+						state_changes.replace (Void, "file_id")
+					end
+
 				end
 			end
 		end
