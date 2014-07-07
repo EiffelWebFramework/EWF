@@ -89,7 +89,7 @@ feature -- Access
 		deferred
 		end
 
-	conneg (req: WSF_REQUEST): CONNEG_SERVER_SIDE
+	conneg (req: WSF_REQUEST): SERVER_CONTENT_NEGOTIATION
 			-- Content negotiation for `req';
 			-- This would normally be a once object, ignoring `req'.
 		require
@@ -103,7 +103,7 @@ feature -- Access
 			req_attached: req /= Void
 		deferred
 		ensure
-			mime_types_supported_includes_default: Result.has (conneg (req).mime_default)
+			mime_types_supported_includes_default: Result.has (conneg (req).default_media_type)
 		end
 
 	languages_supported (req: WSF_REQUEST): LIST [STRING]
@@ -112,7 +112,7 @@ feature -- Access
 			req_attached: req /= Void
 		deferred
 		ensure
-			languages_supported_includes_default: Result.has (conneg (req).language_default)
+			languages_supported_includes_default: Result.has (conneg (req).default_language)
 		end
 
 	charsets_supported (req: WSF_REQUEST): LIST [STRING]
@@ -121,7 +121,7 @@ feature -- Access
 			req_attached: req /= Void
 		deferred
 		ensure
-			charsets_supported_includes_default: Result.has (conneg (req).charset_default)
+			charsets_supported_includes_default: Result.has (conneg (req).default_charset)
 		end
 
 	encodings_supported (req: WSF_REQUEST): LIST [STRING]
@@ -130,7 +130,7 @@ feature -- Access
 			req_attached: req /= Void
 		deferred
 		ensure
-			encodings_supported_includes_default: Result.has (conneg (req).encoding_default)
+			encodings_supported_includes_default: Result.has (conneg (req).default_encoding)
 		end
 
 	additional_variant_headers (req: WSF_REQUEST): detachable LIST [STRING]
@@ -484,6 +484,8 @@ feature -- Execution
 				check_resource_exists (req, a_helper)
 				if a_helper.resource_exists then
 					a_helper.execute_existing_resource (req, res, Current)
+				elseif req.error_handler.has_error then
+					a_helper.write_error_response (req, res)
 				else
 					if attached req.http_if_match as l_if_match and then l_if_match.same_string ("*") then
 						a_helper.handle_precondition_failed (req, res)
@@ -536,9 +538,8 @@ feature {NONE} -- Implementation
 			body_sent: res.message_committed and then res.transfered_content_length > 0
 		end
 
-
 note
-	copyright: "2011-2013, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
+	copyright: "2011-2013, Colin Adams, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

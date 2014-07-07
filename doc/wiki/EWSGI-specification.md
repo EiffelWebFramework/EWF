@@ -4,7 +4,7 @@
 ## Preface 
 This specification is a proposition based on recent discussion on the mailing list.
 This is work in progress, so far nothing had been decided.
-You can find another proposal at http://eiffel.seibostudios.se/wiki/EWSGI , it has common background and goal, however still differ on specific parts.
+You can find another proposal at [http://eiffel.seibostudios.se/wiki/EWSGI](http://eiffel.seibostudios.se/wiki/EWSGI) , it has common background and goal, however still differ on specific parts.
 The main goal for now is to unified those 2 specifications.
 
 ---
@@ -12,7 +12,7 @@ Note the following is work in progress, and reflect a specification proposal, ra
 2011-08-01
 ---
 For now, the specification from EWF is done in Eiffel interface
-please see: https://github.com/Eiffel-World/Eiffel-Web-Framework/tree/master/library/server/ewsgi/specification
+please see: [https://github.com/Eiffel-World/Eiffel-Web-Framework/tree/master/library/server/ewsgi/specification](https://github.com/Eiffel-World/Eiffel-Web-Framework/tree/master/library/server/ewsgi/specification)
 
 WGI_APPLICATION
 

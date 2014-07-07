@@ -76,6 +76,8 @@ echo Install library: http_client
 %COPYCMD% %TMP_DIR%\library\network\http_client	%TMP_CONTRIB_DIR%\library\network\http_client
 echo Install library: http
 %COPYCMD% %TMP_DIR%\library\network\protocol\http	%TMP_CONTRIB_DIR%\library\network\protocol\http
+echo Install library: content_negotiation
+%COPYCMD% %TMP_DIR%\library\network\protocol\content_negotiation	%TMP_CONTRIB_DIR%\library\network\protocol\content_negotiation
 echo Install library: http_authorization
 %SAFE_MD% %TMP_CONTRIB_DIR%\library\network\authentication
 %COPYCMD% %TMP_DIR%\library\server\authentication\http_authorization	%TMP_CONTRIB_DIR%\library\network\authentication\http_authorization

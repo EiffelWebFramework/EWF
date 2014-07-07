@@ -36,9 +36,10 @@ feature {NONE} -- Initialization
 		end
 
 	set_defaults
+			-- Set default settings.
 		do
-			timeout := 5
-			connect_timeout := 1
+			timeout := 0 --| never timeout
+			connect_timeout := 0 --| never timeout
 			max_redirects := 5
 			set_basic_auth_type
 		end
@@ -76,10 +77,14 @@ feature -- Basic operation
 			end
 		end
 
+feature -- Custom		
+
 	custom (a_method: READABLE_STRING_8; a_path: READABLE_STRING_8; ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT): HTTP_CLIENT_RESPONSE
 			-- Response for `a_method' request based on Current, `a_path' and `ctx'.	
 		deferred
 		end
+
+feature -- Helper		
 
 	get (a_path: READABLE_STRING_8; ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT): HTTP_CLIENT_RESPONSE
 			-- Response for GET request based on Current, `a_path' and `ctx'.
@@ -99,6 +104,18 @@ feature -- Basic operation
 
 	post_file (a_path: READABLE_STRING_8; ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT; fn: detachable READABLE_STRING_8): HTTP_CLIENT_RESPONSE
 			-- Response for POST request based on Current, `a_path' and `ctx'
+			-- with uploaded data file `fn'	
+		deferred
+		end
+
+	patch (a_path: READABLE_STRING_8; ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT; data: detachable READABLE_STRING_8): HTTP_CLIENT_RESPONSE
+			-- Response for PATCH request based on Current, `a_path' and `ctx'
+			-- with input `data'	
+		deferred
+		end
+
+	patch_file (a_path: READABLE_STRING_8; ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT; fn: detachable READABLE_STRING_8): HTTP_CLIENT_RESPONSE
+			-- Response for PATCH request based on Current, `a_path' and `ctx'
 			-- with uploaded data file `fn'	
 		deferred
 		end
@@ -133,10 +150,12 @@ feature -- Status report
 feature -- Settings
 
 	timeout: INTEGER
-			-- HTTP transaction timeout in seconds. Defaults to 5 seconds.
+			-- HTTP transaction timeout in seconds.
+			-- Defaults to 0 second  i.e never timeout.
 
 	connect_timeout: INTEGER
-			-- HTTP connection timeout in seconds. Defaults to 1 second.
+			-- HTTP connection timeout in seconds.
+			-- Defaults to 0 second i.e never timeout.
 
 	max_redirects: INTEGER
     		-- Maximum number of times to follow redirects.
@@ -281,7 +300,7 @@ feature -- Element change
 		end
 
 note
-	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
+	copyright: "2011-2013, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

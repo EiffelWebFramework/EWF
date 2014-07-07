@@ -1,6 +1,5 @@
 note
-	description: "Summary description for {WSF_WIDGET_TEXT}."
-	author: ""
+	description: "Widget embedding html text/code, this will render as it is in target html"
 	date: "$Date$"
 	revision: "$Revision$"
 

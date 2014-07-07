@@ -2,7 +2,7 @@ note
 	description: "[
 			This class is to represent a media type
 			
-			the Internet Media Type [9] of the attached entity if the type
+			the Internet Media Type of the attached entity if the type
 			was provided via a "Content-type" field in the wgi_request header,
 			or if the server can determine it in the absence of a supplied
 			"Content-type" field. The syntax is the same as for the HTTP
@@ -29,6 +29,8 @@ note
 		]"
 	date: "$Date$"
 	revision: "$Revision$"
+	EIS: "name=Wikipedia/Media Type", "protocol=URI", "src=http://en.wikipedia.org/wiki/Internet_media_type"
+	EIS: "name=RFC2046", "protocol=URI", "src=http://tools.ietf.org/html/rfc2046"
 
 class
 	HTTP_MEDIA_TYPE
@@ -76,15 +78,7 @@ feature {NONE} -- Initialization
 				p := s.index_of (';', i)
 				if p > 0 then
 					t := s.substring (i, p - 1)
-					i := p + 1
-					p := s.index_of (';', i)
-					if p = 0 then
-						add_parameter_from_string (s, i, n)
-						i := n
-					else
-						add_parameter_from_string (s, i, p - 1)
-						i := p + 1
-					end
+					create parameters.make_from_substring (s, p + 1, s.count)
 				else
 					t := s.substring (i, n)
 				end
@@ -94,9 +88,14 @@ feature {NONE} -- Initialization
 					-- Extract type and subtype
 				p := t.index_of ('/', 1)
 				if p = 0 then
-					has_error := True
+					t.right_adjust
 					type := t
-					subtype := ""
+					if t.same_string ("*") then
+						--| Accept *; should be */*
+					else
+						has_error := True
+					end
+					subtype := "*"
 				else
 					subtype := t.substring (p + 1, t.count)
 					type := t
@@ -108,7 +107,7 @@ feature {NONE} -- Initialization
 				subtype := type
 			end
 		ensure
-			not has_error implies (create {HTTP_CONTENT_TYPE}.make_from_string (string)).same_string (string)
+			not has_error implies (create {HTTP_MEDIA_TYPE}.make_from_string (string)).same_string (string)
 		end
 
 feature -- Status report
@@ -141,7 +140,7 @@ feature -- Access
 			end
 		end
 
-	parameters: detachable HASH_TABLE [READABLE_STRING_8, READABLE_STRING_8]
+	parameters: detachable HTTP_PARAMETER_TABLE
 			-- Parameters
 
 feature -- Conversion
@@ -254,55 +253,12 @@ feature -- Element change
 			-- Remove parameter named `a_name'
 		do
 			if attached parameters as plst then
-				plst.prune (a_name)
+				plst.remove (a_name)
 				if plst.is_empty then
 					parameters := Void
 				end
 			end
 			internal_string := Void
-		end
-
-feature {NONE} -- Implementation
-
-	add_parameter_from_string (s: READABLE_STRING_8; start_index, end_index: INTEGER)
-			-- Add parameter from string   "  attribute=value  "
-		local
-			pn,pv: STRING_8
-			i: INTEGER
-			p: INTEGER
-			err: BOOLEAN
-		do
-			-- Skip spaces
-			from
-				i := start_index
-			until
-				i > end_index or not s[i].is_space
-			loop
-				i := i + 1
-			end
-			if i < end_index then
-				p := s.index_of ('=', i)
-				if p > 0 and p < end_index then
-					pn := s.substring (i, p - 1)
-					pv := s.substring (p + 1, end_index)
-					pv.right_adjust
-					if pv.count > 0 and pv [1] = '%"' then
-						if pv [pv.count] = '%"' then
-							pv := pv.substring (2, pv.count - 1)
-						else
-							err := True
-							-- missing closing double quote.
-						end
-					end
-					if not err then
-						add_parameter (pn, pv)
-					end
-				else
-					-- expecting: attribute "=" value
-					err := True
-				end
-			end
-			has_error := has_error or err
 		end
 
 feature {NONE} -- Internal
@@ -334,7 +290,7 @@ invariant
 	type_and_subtype_not_empty: not has_error implies not type.is_empty and not subtype.is_empty
 
 note
-	copyright: "2011-2012, Jocelyn Fiat, Eiffel Software and others"
+	copyright: "2011-2013, Jocelyn Fiat, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

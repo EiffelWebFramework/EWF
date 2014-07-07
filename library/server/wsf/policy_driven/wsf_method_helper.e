@@ -167,12 +167,12 @@ feature -- Content negotiation
 			res_attached: res /= Void
 			a_handler_attached: a_handler /= Void
 		local
-			l_conneg: CONNEG_SERVER_SIDE
+			l_conneg: SERVER_CONTENT_NEGOTIATION
 			h: HTTP_HEADER
-			l_media: MEDIA_TYPE_VARIANT_RESULTS
-			l_lang: LANGUAGE_VARIANT_RESULTS
-			l_charset: CHARACTER_ENCODING_VARIANT_RESULTS
-			l_encoding: COMPRESSION_VARIANT_RESULTS
+			l_media: HTTP_ACCEPT_MEDIA_TYPE_VARIANTS
+			l_lang: HTTP_ACCEPT_LANGUAGE_VARIANTS
+			l_charset: HTTP_ACCEPT_CHARSET_VARIANTS
+			l_encoding: HTTP_ACCEPT_ENCODING_VARIANTS
 			l_mime_types, l_langs, l_charsets, l_encodings: LIST [STRING]
 			l_vary_star: BOOLEAN
 		do
@@ -188,7 +188,7 @@ feature -- Content negotiation
 			l_conneg := a_handler.conneg (req)
 			l_mime_types := a_handler.mime_types_supported (req)
 			l_media := l_conneg.media_type_preference (l_mime_types, req.http_accept)
-			if not l_vary_star and l_mime_types.count > 1 and attached l_media.variant_header as l_media_variant then
+			if not l_vary_star and l_mime_types.count > 1 and attached l_media.media_type as l_media_variant then
 				h.add_header_key_value ({HTTP_HEADER_NAMES}.header_vary, l_media_variant)
 			end
 			if not l_media.is_acceptable then
@@ -196,26 +196,26 @@ feature -- Content negotiation
 			else
 				l_langs := a_handler.languages_supported (req)
 				l_lang := l_conneg.language_preference (l_langs, req.http_accept_language)
-				if not l_vary_star and l_langs.count > 1 and attached l_lang.variant_header as l_lang_variant then
+				if not l_vary_star and l_langs.count > 1 and attached l_lang.language as l_lang_variant then
 					h.add_header_key_value ({HTTP_HEADER_NAMES}.header_vary, l_lang_variant)
 				end
 				if not l_lang.is_acceptable then
 					handle_not_acceptable ("None of the requested languages were acceptable", l_langs, req, res)
 				else
-					if attached l_lang.language_type as l_language_type then
+					if attached l_lang.language as l_language_type then
 						h.put_content_language (l_language_type)
 						req.set_execution_variable (a_handler.Negotiated_language_execution_variable, l_language_type)
 					end
 					l_charsets := a_handler.charsets_supported (req)
 					l_charset := l_conneg.charset_preference (l_charsets, req.http_accept_charset)
-					if not l_vary_star and l_charsets.count > 1 and attached l_charset.variant_header as l_charset_variant then
+					if not l_vary_star and l_charsets.count > 1 and attached l_charset.charset as l_charset_variant then
 						h.add_header_key_value ({HTTP_HEADER_NAMES}.header_vary, l_charset_variant)
 					end
 					if not l_charset.is_acceptable then
 						handle_not_acceptable ("None of the requested character encodings were acceptable", l_charsets, req, res)
 					else
 						if attached l_media.media_type as l_media_type then
-							if attached l_charset.character_type as l_character_type  then
+							if attached l_charset.charset as l_character_type  then
 								h.put_content_type (l_media_type + "; charset=" + l_character_type)
 								req.set_execution_variable (a_handler.Negotiated_charset_execution_variable, l_charset)
 							else
@@ -225,13 +225,13 @@ feature -- Content negotiation
 						end
 						l_encodings := a_handler.encodings_supported (req)
 						l_encoding := l_conneg.encoding_preference (l_encodings, req.http_accept_encoding)
-						if not l_vary_star and l_encodings.count > 1 and attached l_encoding.variant_header as l_encoding_variant then
+						if not l_vary_star and l_encodings.count > 1 and attached l_encoding.encoding as l_encoding_variant then
 							h.add_header_key_value ({HTTP_HEADER_NAMES}.header_vary, l_encoding_variant)
 						end
 						if not l_encoding.is_acceptable then
 							handle_not_acceptable ("None of the requested transfer encodings were acceptable", l_encodings, req, res)
 						else
-							if attached l_encoding.compression_type as l_compression_type then
+							if attached l_encoding.encoding as l_compression_type then
 								h.put_content_encoding (l_compression_type)
 								req.set_execution_variable (a_handler.Negotiated_encoding_execution_variable, l_compression_type)
 							end
@@ -376,10 +376,11 @@ feature -- Error reporting
 		local
 			h: HTTP_HEADER
 			m: READABLE_STRING_8
+			utf: UTF_CONVERTER
 		do
-			m := req.error_handler.as_string_representation
+			m := utf.string_32_to_utf_8_string_8 (req.error_handler.as_string_representation)
 			create h.make
-			h.put_content_type_text_plain
+			h.put_content_type_utf_8_text_plain
 			h.put_content_length (m.count)
 			res.set_status_code (req.error_handler.primary_error_code)
 			res.put_header_lines (h)
@@ -586,7 +587,7 @@ feature -- Error reporting
 		end
 
 note
-	copyright: "2011-2013, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
+	copyright: "2011-2014, Colin Adams, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

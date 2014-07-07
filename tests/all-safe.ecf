@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<system xmlns="http://www.eiffel.com/developers/xml/configuration-1-10-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eiffel.com/developers/xml/configuration-1-10-0 http://www.eiffel.com/developers/xml/configuration-1-10-0.xsd" name="all" uuid="1172C52C-6979-4293-8F01-80FADA5A2B69">
+<system xmlns="http://www.eiffel.com/developers/xml/configuration-1-12-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eiffel.com/developers/xml/configuration-1-12-0 http://www.eiffel.com/developers/xml/configuration-1-12-0.xsd" name="all" uuid="0562209B-4C68-4E77-8B57-13CBF53D05BD" library_target="all">
 	<description>Integration project including many lib</description>
 	<target name="all">
 		<root all_classes="true"/>
@@ -10,13 +10,14 @@
 		</file_rule>
 		<option warning="true" full_class_checking="true" is_attached_by_default="true" void_safety="all" syntax="standard">
 		</option>
+		<library name="all-stable" location="all-stable-safe.ecf" readonly="false"/>
 		<library name="atom" location="..\draft\library\protocol\syndication\atom\atom-safe.ecf" readonly="false"/>
 		<library name="client" location="..\examples\restbucksCRUD\client\client-safe.ecf" readonly="false"/>
 		<library name="connector_cgi" location="..\library\server\ewsgi\connectors\cgi\cgi-safe.ecf" readonly="false"/>
 		<library name="connector_libfcgi" location="..\library\server\ewsgi\connectors\libfcgi\libfcgi-safe.ecf" readonly="false"/>
 		<library name="connector_nino" location="..\library\server\ewsgi\connectors\nino\nino-safe.ecf" readonly="false"/>
 		<library name="connector_null" location="..\library\server\ewsgi\connectors\null\null-safe.ecf" readonly="false"/>
-		<library name="conneg" location="..\library\network\protocol\CONNEG\conneg-safe.ecf" readonly="false"/>
+		<library name="conneg" location="..\library\network\protocol\content_negotiation\conneg-safe.ecf" readonly="false"/>
 		<library name="default_cgi" location="..\library\server\wsf\default\cgi-safe.ecf" readonly="false"/>
 		<library name="default_libfcgi" location="..\library\server\wsf\default\libfcgi-safe.ecf" readonly="false"/>
 		<library name="default_nino" location="..\library\server\wsf\default\nino-safe.ecf" readonly="false"/>
@@ -46,7 +47,6 @@
 		<library name="uri_template" location="..\library\text\parser\uri_template\uri_template-safe.ecf" readonly="false"/>
 		<library name="wizard" location="..\tools\ise_wizard\ewf_ise_wizard-safe.ecf" readonly="false"/>
 		<library name="wsf" location="..\library\server\wsf\wsf-safe.ecf" readonly="false"/>
-		<library name="wsf_policy_driven" location="..\library\server\wsf\wsf_policy_driven-safe.ecf" readonly="false"/>
 		<library name="wsf_all" location="..\library\server\wsf\connector\all-safe.ecf" readonly="false"/>
 		<library name="wsf_cgi" location="..\library\server\wsf\connector\cgi-safe.ecf" readonly="false"/>
 		<library name="wsf_extension" location="..\library\server\wsf\wsf_extension-safe.ecf" readonly="false"/>
@@ -54,6 +54,7 @@
 		<library name="wsf_libfcgi" location="..\library\server\wsf\connector\libfcgi-safe.ecf" readonly="false"/>
 		<library name="wsf_nino" location="..\library\server\wsf\connector\nino-safe.ecf" readonly="false"/>
 		<library name="wsf_openshift" location="..\library\server\wsf\connector\openshift-safe.ecf" readonly="false"/>
+		<library name="wsf_policy_driven" location="..\library\server\wsf\wsf_policy_driven-safe.ecf" readonly="false"/>
 		<library name="wsf_router_context" location="..\library\server\wsf\wsf_router_context-safe.ecf" readonly="false"/>
 		<library name="wsf_session" location="..\library\server\wsf\wsf_session-safe.ecf" readonly="false"/>
 		<library name="widgetapp" location="..\examples\widgetapp\widgetapp.ecf" readonly="false"/>

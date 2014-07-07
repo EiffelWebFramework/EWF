@@ -6,13 +6,13 @@ If you are a student, don't hesitate to pick one, or even suggest a new project,
 
 ## Evaluate EWF according to the following constraints ... 
 * _Suggested by **Javier**_
-* _Description_: According to http://www.amundsen.com/blog/archives/1130 , evaluate the current design of EWF to see if this match the different points. An other option would be to take the following REST implementation toolkit as a guide to evaluate EWF http://code.google.com/p/implementing-rest/wiki/RESTImplementationToolkit.
+* _Description_: According to [http://www.amundsen.com/blog/archives/1130](http://www.amundsen.com/blog/archives/1130) , evaluate the current design of EWF to see if this match the different points. An other option would be to take the following REST implementation toolkit as a guide to evaluate EWF [http://code.google.com/p/implementing-rest/wiki/RESTImplementationToolkit](http://code.google.com/p/implementing-rest/wiki/RESTImplementationToolkit).
 
 ## Road to Hypermedia API 
 * _Suggested by **Javier**_
 * _Supervisor_:
 * _Suitability_: 
-* _Description_:  describe differents types of Web API, and how you can build them using EWF. Describing Pros and Cons. This should be on http://martinfowler.com/articles/richardsonMaturityModel.html
+* _Description_:  describe differents types of Web API, and how you can build them using EWF. Describing Pros and Cons. This should be on [http://martinfowler.com/articles/richardsonMaturityModel.html](http://martinfowler.com/articles/richardsonMaturityModel.html)
 
 ## Build a video to demonstrate how an Hypermedia API works, and how to build it using EWF 
 * _Suggested by **Javier**_
@@ -55,8 +55,8 @@ If you are a student, don't hesitate to pick one, or even suggest a new project,
 * _Supervisor_:  
 * _Suitability_: TODO 
 * _Description_: EWF is relying on the notion of "connector" to achieve portability on various platform and underlying httpd server, currently EWF support any CGI or libFCGI system (i.e apache, IIS, ...), and provide a standalone version thanks to Eiffel Web Nino. The goal now, would be to support specific connector for:
-** LightHTTP (http://www.lighttpd.net/)
-** nginx (http://nginx.org/en/)
+** LightHTTP ([http://www.lighttpd.net/](http://www.lighttpd.net/))
+** nginx ([http://nginx.org/en/](http://nginx.org/en/))
 
 ## Concurrenty and EWF
 * _Suggested by **Jocelyn**_
@@ -75,7 +75,7 @@ If you are a student, don't hesitate to pick one, or even suggest a new project,
 * _Supervisor_:  
 * _Suitability_: TODO 
 * _Description_: Provide an implementation of websocket with EWF and eventually Eiffel Web Nino, then demonstrate it on a simple example. WebSocket is a web technology providing for bi-directional, full-duplex communications channels over a single TCP connection.
-* See http://en.wikipedia.org/wiki/Websocket
+* See [http://en.wikipedia.org/wiki/Websocket](http://en.wikipedia.org/wiki/Websocket)
 
 ----
 # Usage of EWF
@@ -84,13 +84,13 @@ If you are a student, don't hesitate to pick one, or even suggest a new project,
 * _Suggested by **Javier**_
 * _Supervisor_:  
 * _Suitability_: TODO 
-* _Description_: Build a HAL browser to discover an API using HAL mediatype. The browser will be able to follow the links, and display the transmitted data. This could be a vision2 application inspired by http://haltalk.herokuapp.com/explorer/hal_browser.html#/. HAL stands for Hypertext Application Language see http://stateless.co/hal_specification.html.
+* _Description_: Build a HAL browser to discover an API using HAL mediatype. The browser will be able to follow the links, and display the transmitted data. This could be a vision2 application inspired by [http://haltalk.herokuapp.com/explorer/hal_browser.html#/](http://haltalk.herokuapp.com/explorer/hal_browser.html#/). HAL stands for Hypertext Application Language see [http://stateless.co/hal_specification.html](http://stateless.co/hal_specification.html).
 
 ## Collection-JSON browser
 * _Suggested by **Javier**_
 * _Supervisor_:  
 * _Suitability_: TODO 
-* _Description_: Build a Collection/JSON browser to discover an API using Collection/JSON mediatype. The browser will be able to follow the links, and display the transmitted data. This could be a vision2 application inspired by http://haltalk.herokuapp.com/explorer/hal_browser.html#/. Collection+JSON is a JSON-based read/write hypermedia-type, see http://www.amundsen.com/media-types/collection/
+* _Description_: Build a Collection/JSON browser to discover an API using Collection/JSON mediatype. The browser will be able to follow the links, and display the transmitted data. This could be a vision2 application inspired by [http://haltalk.herokuapp.com/explorer/hal_browser.html#/](http://haltalk.herokuapp.com/explorer/hal_browser.html#/). Collection+JSON is a JSON-based read/write hypermedia-type, see [http://www.amundsen.com/media-types/collection/](http://www.amundsen.com/media-types/collection/)
 
 ## Build a simple CMS with EWF
 * _Suggested by **Jocelyn**_
@@ -119,7 +119,7 @@ If you are a student, don't hesitate to pick one, or even suggest a new project,
 * _Suggested by **Javier**_
 * _Supervisor_:  
 * _Suitability_: TODO 
-* _Description_: Use XHTML as a media type to for hypermedia API. See http://codeartisan.blogspot.com.ar/2012/07/using-html-as-media-type-for-your-api.html
+* _Description_: Use XHTML as a media type to for hypermedia API. See [http://codeartisan.blogspot.com.ar/2012/07/using-html-as-media-type-for-your-api.html](http://codeartisan.blogspot.com.ar/2012/07/using-html-as-media-type-for-your-api.html)
 
 ## Add support for Mediatype such as RSS, ATOM, ...
 * _Suggested by **Jocelyn**_
@@ -155,24 +155,24 @@ If you are a student, don't hesitate to pick one, or even suggest a new project,
 * _Suitability_: TODO 
 * _Description_: Design and build a Single Sign On implementation for Eiffel. That should include the authentication server, and at least one Eiffel client component (it would be convenient to also provide php, js, ...). In the same spirit, having Eiffel client for popular SSO server would be appreciated as well.
 * _Reference_: 
-    - http://en.wikipedia.org/wiki/Single_sign-on
-    - http://en.wikipedia.org/wiki/List_of_single_sign-on_implementations
+    - [http://en.wikipedia.org/wiki/Single_sign-on](http://en.wikipedia.org/wiki/Single_sign-on)
+    - [http://en.wikipedia.org/wiki/List_of_single_sign-on_implementations](http://en.wikipedia.org/wiki/List_of_single_sign-on_implementations)
 
 ## library: Template engine
 * _Suggested by **Jocelyn**_
 * _Supervisor_:  
 * _Suitability_: TODO 
 * _Description_: Get inspired by any existing template engine, and build one for Eiffel, this should be easily usable within a web application. This could be inspired, or implementation of standard template engine, this way people can reuse existing content, or migrate easily their application to EWF. For inspiration, one can look at:
-  - http://www.smarty.net/
-  - http://mustache.github.com/
-  - http://en.wikipedia.org/wiki/Template_engine_(web) ... they are plenty of them, a comparison of the different engine would help.
+  - [http://www.smarty.net/](http://www.smarty.net/)
+  - [http://mustache.github.com/](http://mustache.github.com/)
+  - [http://en.wikipedia.org/wiki/Web_template_system](http://en.wikipedia.org/wiki/Web_template_system) ... they are plenty of them, a comparison of the different engine would help.
 * This is not specific to EWF, but it will be very useful in website context.
 
 ## library: Wikitext, markdown parser and render engine
 * _Suggested by **Jocelyn**_
 * _Supervisor_:  
 * _Suitability_: TODO 
-* _Description_: Build component to support (read and write, and why not convert), lightweight markup language (see http://en.wikipedia.org/wiki/Lightweight_markup_language) such as wikitext, markdown, and other. The component should be able to read/scan, but also produce an HTML output. Focus first on wikitext, and markdown since they seems to be the most popular.
+* _Description_: Build component to support (read and write, and why not convert), lightweight markup language (see [http://en.wikipedia.org/wiki/Lightweight_markup_language](http://en.wikipedia.org/wiki/Lightweight_markup_language)) such as wikitext, markdown, and other. The component should be able to read/scan, but also produce an HTML output. Focus first on wikitext, and markdown since they seems to be the most popular.
 * Then , a nice addition would be to render those lightweight markup lang into Vision2 widget (not related to EWF, but could be useful to build (editor) desktop application)
 
 ## library: Web component to build HTML5 widget
@@ -195,16 +195,16 @@ If you are a student, don't hesitate to pick one, or even suggest a new project,
 * _Suitability_: TODO 
 * _Description_: TODO 
 * Generic client that can be customized (see design in slide 12)
-* http://s3.amazonaws.com/cimlabs/Oredev-Hypermedia-APIs.pdf
-* video http://vimeo.com/20781278
+* [http://s3.amazonaws.com/cimlabs/Oredev-Hypermedia-APIs.pdf](http://s3.amazonaws.com/cimlabs/Oredev-Hypermedia-APIs.pdf)
+* video [http://vimeo.com/20781278](http://vimeo.com/20781278)
 
 ## Create a Client Cache based on Apache commons Client Cache. 
 * _Suggested by **Javier**_
 * _Supervisor_:  
 * _Suitability_: TODO 
 * _Description_: TODO 
-* http://hc.apache.org/httpcomponents-client-ga/httpclient-cache/index.html
-* http://labs.xfinity.com/benchmarking-the-httpclient-caching-module
+* [http://hc.apache.org/httpcomponents-client-ga/httpclient-cache/index.html](http://hc.apache.org/httpcomponents-client-ga/httpclient-cache/index.html)
+* [http://labs.xfinity.com/benchmarking-the-httpclient-caching-module](http://labs.xfinity.com/benchmarking-the-httpclient-caching-module)
 
 ## Add SSL support to Eiffel Net
 * _Suggested by **Jocelyn**_
@@ -231,9 +231,9 @@ If you are a student, don't hesitate to pick one, or even suggest a new project,
 * _Supervisor_:  
 * _Suitability_: TODO 
 * _Description_: TODO 
-* See: http://en.wikipedia.org/wiki/Edge_Side_Includes
+* See: [http://en.wikipedia.org/wiki/Edge_Side_Includes](http://en.wikipedia.org/wiki/Edge_Side_Includes)
 
 ----
 # Feel free to add new idea below this line
 ----
-Use the following page [[Projects new suggestions]] to suggest new project, or request a feature.
+Use the following page [Projects new suggestions](./Projects new suggestions) to suggest new project, or request a feature.

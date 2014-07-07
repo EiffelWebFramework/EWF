@@ -1,7 +1,5 @@
 # Using the policy driven framework
 
-**This describes a new facility that is not yet in the EWF release**
-
 ## Introduction
 
 The aim of the policy-driven framework is to allow authors of web-servers to concentrate on the business logic (e.g., in the case of a GET request, generating the content), without having to worry about the details of the HTTP protocol (such as headers and response codes). However, there are so many possibilities in the HTTP protocol, that it is impossible to correctly guess what to do in all cases. Therefore the author has to supply policy decisions to the framework, in areas such as caching decisions. These are implemented as a set of deferred classes for which the author needs to provide effective implementations.

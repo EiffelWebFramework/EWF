@@ -21,7 +21,7 @@ feature {NONE} -- Initialization
 	make
 			-- Initialize `Current'.
 		do
-			create {ARRAYED_LIST [like errors.item]} errors.make (3)
+			create {ARRAYED_LIST [ERROR]} errors.make (3)
 			create error_added_actions
 		end
 
@@ -34,7 +34,7 @@ feature -- Access
 		do
 			Result := errors.first.code
 		end
-			
+
 feature -- Status
 
 	has_error: BOOLEAN
@@ -82,7 +82,7 @@ feature -- Synchronization
 		do
 			lst := synchronized_handlers
 			if lst = Void then
-				create {ARRAYED_LIST [like synchronized_handlers.item]} lst.make (0)
+				create {ARRAYED_LIST [ERROR_HANDLER]} lst.make (0)
 				lst.compare_references
 				synchronized_handlers := lst
 			end
@@ -260,7 +260,7 @@ feature -- Access
 			has_error_implies_result_attached: has_error implies Result /= Void
 		end
 
-	as_string_representation: STRING
+	as_string_representation: STRING_32
 			-- String representation of all error(s).
 		require
 			has_error
@@ -269,7 +269,7 @@ feature -- Access
 				Result := e.string_representation
 			else
 				check has_error: False end
-				Result := "Error occured"
+				Result := {STRING_32} "Error occured"
 			end
 		end
 
@@ -312,7 +312,7 @@ feature -- Element changes
 		end
 
 note
-	copyright: "2011-2012, Eiffel Software and others"
+	copyright: "2011-2014, Jocelyn Fiat, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

@@ -30,7 +30,7 @@ feature {NONE} -- Initialization
 
 feature -- Access
 
-	session_exists (a_session_uuid: like {WSF_SESSION}.uuid): BOOLEAN
+	session_exists (a_session_uuid: READABLE_STRING_8): BOOLEAN
 		local
 			f: RAW_FILE
 		do
@@ -38,7 +38,7 @@ feature -- Access
 			Result := f.exists and then f.is_readable
 		end
 
-	session_data (a_session_uuid: like {WSF_SESSION}.uuid): detachable like {WSF_SESSION}.data
+	session_data (a_session_uuid: READABLE_STRING_8): detachable WSF_SESSION_DATA
 		local
 			f: RAW_FILE
 		do
@@ -68,7 +68,7 @@ feature -- Persistence
 					delete_session (a_session)
 				else
 					ensure_session_folder_exists
-					create f.make_with_path (file_name (a_session.uuid))
+					create f.make_with_path (file_name (a_session.id))
 					if not f.exists or else f.is_writable then
 						f.create_read_write
 						a_session.data.set_expiration (a_session.expiration)
@@ -91,7 +91,7 @@ feature -- Persistence
 			rescued: BOOLEAN
 		do
 			if not rescued then
-				create f.make_with_path (file_name (a_session.uuid))
+				create f.make_with_path (file_name (a_session.id))
 				if f.exists then
 					f.delete
 				end
@@ -147,13 +147,13 @@ feature {NONE} -- Implementation
 			Result := d.exists and then d.is_writable
 		end
 
-	file_name (a_uuid: like {WSF_SESSION}.uuid): PATH
+	file_name (a_uuid: READABLE_STRING_GENERAL): PATH
 		do
-			Result := sessions_folder_name.extended (a_uuid.out).appended_with_extension ("session")
+			Result := sessions_folder_name.extended (a_uuid).appended_with_extension ("session")
 		end
 
 note
-	copyright: "2011-2013, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
+	copyright: "2011-2014, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Colin Adams, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

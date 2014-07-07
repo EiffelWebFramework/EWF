@@ -18,6 +18,8 @@ feature {NONE} -- Initialization
 			args: ARGUMENTS_32
 			cfg: detachable READABLE_STRING_32
 		do
+			create setup.make
+
 			create args
 			if args.argument_count > 0 then
 				cfg := args.argument (1)
@@ -28,13 +30,11 @@ feature {NONE} -- Initialization
 			execute
 		end
 
-feature -- Status
+	setup: GEWF_SETUP
 
 feature -- Access
 
 	config (k: READABLE_STRING_GENERAL): detachable READABLE_STRING_32
-		local
-			l_keys: LIST [READABLE_STRING_GENERAL]
 		do
 			if attached {JSON_STRING} json_item (json, k) as js then
 				Result := js.unescaped_string_32
@@ -95,6 +95,9 @@ feature -- Access
 
 			create p.make_parser (s)
 			json := p.parse
+			if attached config ("gewf.template_dir") as d then
+				setup.set_template_dir_from_string (d)
+			end
 		end
 
 	json: detachable JSON_VALUE
@@ -141,8 +144,7 @@ feature -- Execution
 			p: PATH
 			appname: detachable READABLE_STRING_GENERAL
 		do
-			create p.make_from_string ("template")
-			p := p.extended (tpl)
+			p := setup.template_dir.extended (tpl)
 			appname := vals.item ("APPNAME")
 			if appname = Void then
 				appname := "_generated"

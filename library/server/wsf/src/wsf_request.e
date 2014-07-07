@@ -16,6 +16,9 @@ note
 			And also has
 				execution_variable (a_name: READABLE_STRING_GENERAL): detachable ANY
 					--| to keep value attached to the request
+
+			About https support: `is_https' indicates if the request is made through an https connection or not.
+
 			]"
 	date: "$Date$"
 	revision: "$Revision$"
@@ -120,6 +123,20 @@ feature {NONE} -- Initialization
 			if meta_variable ({WSF_META_NAMES}.request_time) = Void then
 				set_meta_string_variable ({WSF_META_NAMES}.request_time, date_time_utilities.unix_time_stamp (Void).out)
 			end
+
+				--| HTTPS support
+			is_https := False
+			if attached meta_string_variable ("HTTPS") as l_https and then not l_https.is_empty then
+				is_https := l_https.is_case_insensitive_equal_general ("on")
+						or else l_https.is_case_insensitive_equal_general ("yes")
+						or else l_https.is_case_insensitive_equal_general ("true")
+						or else l_https.is_case_insensitive_equal_general ("1")
+					--| Usually, if not empty, this means this is https
+					--| but it occurs that server (like IIS) sets "off" when this is NOT https
+					--| so, let's be flexible, and accepts other variants of "on"
+			else
+				check is_not_https: is_https = False end
+			end
 		end
 
 	wgi_request: WGI_REQUEST
@@ -156,9 +173,14 @@ feature -- Destroy
 			raw_input_data_recorded := False
 			request_method := empty_string_8
 			set_uploaded_file_path (Void)
+			is_https := False
 		end
 
 feature -- Status report
+
+	is_https: BOOLEAN
+			-- Is https connection?
+			--| based on meta variable HTTPS=on .	
 
 	debug_output: STRING_8
 		do
@@ -270,7 +292,9 @@ feature -- Access: Input
 			s: STRING
 			l_input: WGI_INPUT_STREAM
 			l_raw_data: detachable STRING_8
-			n: INTEGER
+			len: NATURAL_64
+			nb, l_step: INTEGER
+			l_size: NATURAL_64
 		do
 			if raw_input_data_recorded and then attached raw_input_data as d then
 				a_file.put_string (d)
@@ -279,22 +303,47 @@ feature -- Access: Input
 					create l_raw_data.make_empty
 				end
 				l_input := input
+				len := content_length_value
+
+				debug ("wsf")
+					io.error.put_string (generator + ".read_input_data_into_file (a_file) content_length=" + len.out + "%N")
+				end
+
 				from
-					n := 8_192
-					create s.make (n)
+					l_size := 0
+					l_step := 8_192
+					create s.make (l_step)
 				until
-					n = 0 or l_input.end_of_input
+					l_step = 0 or l_input.end_of_input
 				loop
-					l_input.append_to_string (s, n)
-					a_file.put_string (s)
-					if l_raw_data /= Void then
-						l_raw_data.append (s)
+					if len < l_step.to_natural_64 then
+						l_step := len.to_integer_32
 					end
-					s.wipe_out
-					if l_input.last_appended_count < n then
-						n := 0
+					if l_step > 0 then
+						l_input.append_to_string (s, l_step)
+						nb := l_input.last_appended_count
+						l_size := l_size + nb.to_natural_64
+						len := len - nb.to_natural_64
+
+						debug ("wsf")
+							io.error.put_string ("   append (s, " + l_step.out + ") -> " + nb.out + " (" + l_size.out + " / "+ content_length_value.out + ")%N")
+						end
+
+						a_file.put_string (s)
+						if l_raw_data /= Void then
+							l_raw_data.append (s)
+						end
+						s.wipe_out
+						if nb < l_step then
+							l_step := 0
+						end
 					end
 				end
+				a_file.flush
+				debug ("wsf")
+					io.error.put_string ("offset =" + len.out + "%N")
+				end
+				check got_all_data: len = 0 end
 				if l_raw_data /= Void then
 					set_raw_input_data (l_raw_data)
 				end
@@ -351,31 +400,9 @@ feature -- Helper
 			-- Does client accepts content_type for the response?
 			--| Based on header "Accept:" that can be for instance
 			--| 	text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
-		local
-			i, j: INTEGER
 		do
-			if attached http_accept as l_accept then
-				i := l_accept.substring_index (a_content_type, 1)
-				if i > 0 then
-					-- contains the text, now check if this is the exact text
-					if
-						i = 1	-- At the beginning of text
-						or else l_accept[i-1].is_space -- preceded by space
-						or else l_accept[i-1] = ',' -- preceded by other mime type
-					then
-						j := i + a_content_type.count
-						if l_accept.valid_index (j) then
-							Result := l_accept[j] = ',' -- followed by other mime type
-										or else l_accept[j] = ';' -- followed by quality  ;q=...
-										or else l_accept[j].is_space -- followed by space
-						else -- end of text
-							Result := True
-						end
-					end
-				end
-				Result := l_accept.has_substring (a_content_type)
-			else
-				Result := True
+			if attached (create {SERVER_MEDIA_TYPE_NEGOTIATION}.make (a_content_type.as_string_8)).preference (<<a_content_type.as_string_8>>, http_accept) as l_variants then
+				Result := l_variants.is_acceptable
 			end
 		end
 
@@ -1260,41 +1287,43 @@ feature {NONE} -- Cookies
 		local
 			i,j,p,n: INTEGER
 			l_cookies: like internal_cookies_table
+			s32: READABLE_STRING_32
 			k,v,s: STRING
 		do
 			l_cookies := internal_cookies_table
 			if l_cookies = Void then
+				create l_cookies.make_equal (0)
 				if attached {WSF_STRING} meta_variable ({WSF_META_NAMES}.http_cookie) as val then
-					s := val.value
-					create l_cookies.make_equal (5)
-					from
-						n := s.count
-						p := 1
-						i := 1
-					until
-						p < 1
-					loop
-						i := s.index_of ('=', p)
-						if i > 0 then
-							j := s.index_of (';', i)
-							if j = 0 then
-								j := n + 1
-								k := s.substring (p, i - 1)
-								v := s.substring (i + 1, n)
+					s32 := val.value
+					if s32.is_valid_as_string_8 then
+						s := s32.to_string_8
+						from
+							n := s.count
+							p := 1
+							i := 1
+						until
+							p < 1
+						loop
+							i := s.index_of ('=', p)
+							if i > 0 then
+								j := s.index_of (';', i)
+								if j = 0 then
+									j := n + 1
+									k := s.substring (p, i - 1)
+									v := s.substring (i + 1, n)
 
-								p := 0 -- force termination
-							else
-								k := s.substring (p, i - 1)
-								v := s.substring (i + 1, j - 1)
-								p := j + 1
+									p := 0 -- force termination
+								else
+									k := s.substring (p, i - 1)
+									v := s.substring (i + 1, j - 1)
+									p := j + 1
+								end
+								k.left_adjust
+								k.right_adjust
+								add_value_to_table (k, v, l_cookies)
 							end
-							k.left_adjust
-							k.right_adjust
-							add_value_to_table (k, v, l_cookies)
 						end
 					end
-				else
-					create l_cookies.make_equal (0)
 				end
 				internal_cookies_table := l_cookies
 			end
@@ -1443,8 +1472,12 @@ feature {NONE} -- Query parameters: implementation
 							if j > 0 then
 								l_name := s.substring (1, j - 1)
 								l_value := s.substring (j + 1, s.count)
-								add_value_to_table (l_name, l_value, Result)
+							else
+									-- I.e variable without value
+								l_name := s
+								l_value := empty_string_8
 							end
+							add_value_to_table (l_name, l_value, Result)
 						end
 					end
 				end
@@ -1729,10 +1762,7 @@ feature -- URL Utility
 		do
 			s := internal_server_url
 			if s = Void then
-				if
-					server_protocol.count >= 5 and then
-					server_protocol.substring (1, 5).is_case_insensitive_equal ("https")
-				then
+				if is_https then
 					create s.make_from_string ("https://")
 				else
 					create s.make_from_string ("http://")
@@ -1740,8 +1770,14 @@ feature -- URL Utility
 				s.append (server_name)
 				p := server_port
 				if p > 0 then
-					s.append_character (':')
-					s.append_integer (p)
+					if is_https and p = 443 then
+							-- :443 is default for https, so no need to put it
+					elseif not is_https and p = 80 then
+							-- :80 is default for http, so no need to put it
+					else
+						s.append_character (':')
+						s.append_integer (p)
+					end
 				end
 			end
 			Result := s
@@ -1853,16 +1889,14 @@ feature {WSF_MIME_HANDLER} -- Temporary File handling
 		end
 
 	save_uploaded_file (a_up_file: WSF_UPLOADED_FILE; a_content: STRING)
-			-- Save uploaded file content to `a_filename'
+			-- Save uploaded file content `a_content' into `a_filename'.
 		local
-			bn: STRING
-			l_safe_name: STRING
-			f: RAW_FILE
 			dn: PATH
-			fn: PATH
 			d: DIRECTORY
-			n: INTEGER
 			rescued: BOOLEAN
+			temp_fac: WSF_FILE_UTILITIES [RAW_FILE]
+			l_prefix: STRING
+			dt: DATE_TIME
 		do
 			if not rescued then
 				if attached uploaded_file_path as p then
@@ -1873,26 +1907,24 @@ feature {WSF_MIME_HANDLER} -- Temporary File handling
 				end
 				create d.make_with_path (dn)
 				if d.exists and then d.is_writable then
-					l_safe_name := a_up_file.safe_filename
-					from
-						bn := "tmp-" + l_safe_name
-						fn := dn.extended (bn)
-						create f.make_with_path (fn)
-						n := 0
-					until
-						not f.exists
-						or else n > 1_000
-					loop
-						n := n + 1
-						bn := "tmp-" + n.out + "-" + l_safe_name
-						fn := dn.extended (bn)
-						f.make_with_path (fn)
-					end
+					create temp_fac
 
-					if not f.exists or else f.is_writable then
+					create l_prefix.make_from_string ("tmp_uploaded_")
+					create dt.make_now_utc
+					l_prefix.append_integer (dt.date.ordered_compact_date)
+					l_prefix.append_character ('_')
+					l_prefix.append_integer (dt.time.compact_time)
+					l_prefix.append_character ('.')
+					l_prefix.append_integer ((dt.time.fractional_second * 1_000_000_000).truncated_to_integer)
+
+					if attached temp_fac.new_temporary_file (d, l_prefix, a_up_file.filename) as f then
 						a_up_file.set_tmp_path (f.path)
-						a_up_file.set_tmp_basename (bn)
-						f.open_write
+						if attached f.path.entry as e then
+							a_up_file.set_tmp_basename (e.name)
+						else
+							a_up_file.set_tmp_basename (f.path.name) -- Should not occurs.
+						end
+						check f.is_open_write end
 						f.put_string (a_content)
 						f.close
 					else
@@ -2059,7 +2091,7 @@ invariant
 	wgi_request.content_type /= Void implies content_type /= Void
 
 note
-	copyright: "2011-2013, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
+	copyright: "2011-2014, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Colin Adams, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software
