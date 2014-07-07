@@ -184,7 +184,11 @@ feature -- Request processing
 					end
 					env.force ("", "SCRIPT_NAME")
 				end
-					--| Strip multiple slashes "////abc/def///end////" to "/abc/def/end/" ?
+					--| In order to have same path value for PATH_INFO on various connectors and servers
+					--| the multiple slashes must be stripped to single slash.
+					--| tested with: CGI+apache, libfcgi+apache on Windows and Linux
+					--| 
+					--| For example: "////abc/def///end////" to "/abc/def/end/" ?
 				convert_multiple_slashes_to_single (l_path_info)
 				env.force (enc.decoded_utf_8_string (l_path_info), "PATH_INFO")
 			end
