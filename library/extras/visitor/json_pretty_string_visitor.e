@@ -6,11 +6,11 @@ class
 	JSON_PRETTY_STRING_VISITOR
 
 inherit
+
 	JSON_VISITOR
 
 create
-	make,
-	make_custom
+	make, make_custom
 
 feature -- Initialization
 
@@ -26,7 +26,6 @@ feature -- Initialization
 			output := a_output
 			create indentation.make_empty
 			indentation_step := "%T"
-
 			object_count_inlining := a_object_count_inlining
 			array_count_inlining := a_array_count_inlining
 		end
@@ -34,7 +33,7 @@ feature -- Initialization
 feature -- Access
 
 	output: STRING_32
-		-- JSON representation
+			-- JSON representation
 
 	indentation: like output
 
@@ -60,6 +59,7 @@ feature -- Access
 		end
 
 	object_count_inlining: INTEGER
+
 	array_count_inlining: INTEGER
 
 feature -- Visitor Pattern
@@ -82,10 +82,7 @@ feature -- Visitor Pattern
 			until
 				l_json_array.off
 			loop
-				if
-					line_number > l_line or
-					l_multiple_lines
-				then
+				if line_number > l_line or l_multiple_lines then
 					new_line
 				end
 				value := l_json_array.item
@@ -96,10 +93,7 @@ feature -- Visitor Pattern
 				end
 			end
 			exdent
-			if 
-				line_number > l_line or
-				l_json_array.count >= array_count_inlining 
-			then
+			if line_number > l_line or l_json_array.count >= array_count_inlining then
 				new_line
 			end
 			output.append ("]")
@@ -140,10 +134,7 @@ feature -- Visitor Pattern
 			until
 				l_pairs.off
 			loop
-				if 
-					line_number > l_line or
-					l_multiple_lines
-				then
+				if line_number > l_line or l_multiple_lines then
 					new_line
 				end
 				l_pairs.key_for_iteration.accept (Current)
@@ -155,16 +146,13 @@ feature -- Visitor Pattern
 				end
 			end
 			exdent
-			if 
-				line_number > l_line or
-				l_pairs.count >= object_count_inlining 
-			then
+			if line_number > l_line or l_pairs.count >= object_count_inlining then
 				new_line
 			end
 			output.append ("}")
 		end
 
-    visit_json_string (a_json_string: JSON_STRING)
+	visit_json_string (a_json_string: JSON_STRING)
 			-- Visit `a_json_string'.
 		do
 			output.append ("%"")

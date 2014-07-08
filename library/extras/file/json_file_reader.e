@@ -26,7 +26,9 @@ feature -- Access
 					create template_content.make_empty
 					l_file.read_stream (l_file.count)
 					l_last_string := l_file.last_string
-					check l_last_string /= Void end -- implied by postcondition of `l_file.read_stream'
+					check
+						l_last_string /= Void
+					end -- implied by postcondition of `l_file.read_stream'
 					template_content.append (l_last_string.string)
 					Result := template_content
 					l_file.close

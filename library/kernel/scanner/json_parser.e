@@ -1,5 +1,4 @@
 note
-
 	description: "Parse serialized JSON data"
 	author: "jvelilla"
 	date: "2008/08/24"
@@ -9,7 +8,9 @@ class
 	JSON_PARSER
 
 inherit
+
 	JSON_READER
+
 	JSON_TOKENS
 
 create
@@ -62,18 +63,18 @@ feature -- Element change
 feature -- Commands
 
 	parse_json: detachable JSON_VALUE
-		    -- Parse JSON data `representation'
-		    -- start ::= object | array
+			-- Parse JSON data `representation'
+			-- start ::= object | array
 		do
-		   	if is_valid_start_symbol then
-		   	    Result := parse
-		        if extra_elements then
-		            is_parsed := False
-		        end
-		    else
-		        is_parsed := False
-		        report_error ("Syntax error unexpected token, expecting `{' or `['")
-		    end
+			if is_valid_start_symbol then
+				Result := parse
+				if extra_elements then
+					is_parsed := False
+				end
+			else
+				is_parsed := False
+				report_error ("Syntax error unexpected token, expecting `{' or `['")
+			end
 		end
 
 	parse: detachable JSON_VALUE
@@ -92,7 +93,7 @@ feature -- Commands
 				when j_ARRAY_OPEN then
 					Result := parse_array
 				else
-					if c.is_digit or c = j_MINUS  then
+					if c.is_digit or c = j_MINUS then
 						Result := parse_number
 					elseif is_null then
 						Result := create {JSON_NULL}
@@ -131,15 +132,19 @@ feature -- Commands
 			l_value: detachable JSON_VALUE
 		do
 			create Result.make
-			-- check if is an empty object {}
+				-- check if is an empty object {}
 			next
 			skip_white_spaces
 			if actual = j_OBJECT_CLOSE then
-				--is an empty object
+					--is an empty object
 			else
-				-- a complex object {"key" : "value"}
+					-- a complex object {"key" : "value"}
 				previous
-				from has_more := True until not has_more loop
+				from
+					has_more := True
+				until
+					not has_more
+				loop
 					next
 					skip_white_spaces
 					l_json_string := parse_string
@@ -153,7 +158,6 @@ feature -- Commands
 						report_error ("%N Input string is a not well formed JSON, expected: : found: " + actual.out)
 						has_more := False
 					end
-
 					l_value := parse
 					if is_parsed and then (l_value /= Void and l_json_string /= Void) then
 						Result.put (l_value, l_json_string)
@@ -168,7 +172,7 @@ feature -- Commands
 						end
 					else
 						has_more := False
-						-- explain the error
+							-- explain the error
 					end
 				end
 			end
@@ -241,11 +245,11 @@ feature -- Commands
 			c: like actual
 		do
 			create Result.make_array
-			--check if is an empty array []
+				--check if is an empty array []
 			next
 			skip_white_spaces
 			if actual = j_array_close then
-				--is an empty array
+					--is an empty array
 			else
 				previous
 				from
@@ -263,7 +267,7 @@ feature -- Commands
 						c := actual
 						if c = j_ARRAY_CLOSE then
 							flag := False
- 						elseif c /= ',' then
+						elseif c /= ',' then
 							flag := False
 							is_parsed := False
 							report_error ("Array is not well formed JSON,  found [" + c.out + " ]")
@@ -286,7 +290,6 @@ feature -- Commands
 		do
 			create sb.make_empty
 			sb.append_character (actual)
-
 			from
 				flag := True
 			until
@@ -294,16 +297,13 @@ feature -- Commands
 			loop
 				next
 				c := actual
-				if not has_next or is_close_token (c)
-					or c = ',' or c = '%N' or c = '%R'
-				then
+				if not has_next or is_close_token (c) or c = ',' or c = '%N' or c = '%R' then
 					flag := False
 					previous
 				else
 					sb.append_character (c)
 				end
 			end
-
 			if is_valid_number (sb) then
 				if sb.is_integer then
 					create Result.make_integer (sb.to_integer)
@@ -313,7 +313,7 @@ feature -- Commands
 				end
 			else
 				is_parsed := False
-				report_error ("Expected a number, found: [ " + sb  + " ]")
+				report_error ("Expected a number, found: [ " + sb + " ]")
 			end
 		end
 
@@ -324,7 +324,7 @@ feature -- Commands
 			l_string: STRING
 		do
 			l_null := null_id
-			l_string := json_substring (index,index + l_null.count - 1)
+			l_string := json_substring (index, index + l_null.count - 1)
 			if l_string.is_equal (l_null) then
 				Result := True
 			end
@@ -350,7 +350,7 @@ feature -- Commands
 			l_string: STRING
 		do
 			l_true := true_id
-			l_string := json_substring (index,index + l_true.count - 1)
+			l_string := json_substring (index, index + l_true.count - 1)
 			if l_string.is_equal (l_true) then
 				Result := True
 			end
@@ -376,12 +376,12 @@ feature -- Commands
 feature {NONE} -- Implementation
 
 	is_valid_number (a_number: STRING): BOOLEAN
-            -- is 'a_number' a valid number based on this regular expression
-            -- "-?(?: 0|[1-9]\d+)(?: \.\d+)?(?: [eE][+-]?\d+)?\b"?
+			-- is 'a_number' a valid number based on this regular expression
+			-- "-?(?: 0|[1-9]\d+)(?: \.\d+)?(?: [eE][+-]?\d+)?\b"?
 		local
 			s: detachable STRING
 			c: CHARACTER
-			i,n: INTEGER
+			i, n: INTEGER
 		do
 			create s.make_empty
 			n := a_number.count
@@ -390,34 +390,52 @@ feature {NONE} -- Implementation
 			else
 				Result := True
 				i := 1
-				--| "-?"
-				c := a_number[i]
+					--| "-?"
+				c := a_number [i]
 				if c = '-' then
-					s.extend (c); i := i + 1; c := a_number[i]
+					s.extend (c);
+					i := i + 1;
+					c := a_number [i]
 				end
-				--| "0|[1-9]\d*
+					--| "0|[1-9]\d*
 				if c.is_digit then
 					if c = '0' then
-						--| "0"
-						s.extend (c); i := i + 1; c := a_number[i]
+							--| "0"
+						s.extend (c);
+						i := i + 1;
+						c := a_number [i]
 					else
-						--| "[1-9]"
-						s.extend (c); i := i + 1; c := a_number[i]
-						--| "\d*"
-						from until i > n or not c.is_digit loop
-							s.extend (c); i := i + 1; c := a_number[i]
+							--| "[1-9]"
+						s.extend (c);
+						i := i + 1;
+						c := a_number [i]
+							--| "\d*"
+						from
+						until
+							i > n or not c.is_digit
+						loop
+							s.extend (c);
+							i := i + 1;
+							c := a_number [i]
 						end
 					end
 				end
 			end
 			if Result then
-					--| "(\.\d+)?"			
+					--| "(\.\d+)?"
 				if c = '.' then
-					--| "\.\d+"  =  "\.\d\d*"
-					s.extend (c); i := i + 1; c := a_number[i]
+						--| "\.\d+"  =  "\.\d\d*"
+					s.extend (c);
+					i := i + 1;
+					c := a_number [i]
 					if c.is_digit then
-						from until i > n or not c.is_digit loop
-							s.extend (c); i := i + 1; c := a_number[i]
+						from
+						until
+							i > n or not c.is_digit
+						loop
+							s.extend (c);
+							i := i + 1;
+							c := a_number [i]
 						end
 					else
 						Result := False --| expecting digit
@@ -426,23 +444,37 @@ feature {NONE} -- Implementation
 			end
 			if Result then --| "(?:[eE][+-]?\d+)?\b"
 				if c = 'e' or c = 'E' then
-					--| "[eE][+-]?\d+"
-					s.extend (c); i := i + 1; c := a_number[i]
+						--| "[eE][+-]?\d+"
+					s.extend (c);
+					i := i + 1;
+					c := a_number [i]
 					if c = '+' or c = '-' then
- 							s.extend (c); i := i + 1; c := a_number[i]
+						s.extend (c);
+						i := i + 1;
+						c := a_number [i]
 					end
 					if c.is_digit then
-						from until i > n or not c.is_digit loop
-							s.extend (c); i := i + 1; c := a_number[i]
+						from
+						until
+							i > n or not c.is_digit
+						loop
+							s.extend (c);
+							i := i + 1;
+							c := a_number [i]
 						end
 					else
-						Result := False --| expecting digit							
+						Result := False --| expecting digit
 					end
 				end
 			end
 			if Result then --| "\b"
-				from until i > n or not c.is_space loop
-					s.extend (c); i := i + 1; c := a_number[i]
+				from
+				until
+					i > n or not c.is_space
+				loop
+					s.extend (c);
+					i := i + 1;
+					c := a_number [i]
 				end
 				Result := i > n and then s.same_string (a_number)
 			end
@@ -454,19 +486,15 @@ feature {NONE} -- Implementation
 		local
 			i: INTEGER
 		do
-			if
-				a_unicode.count = 6 and then
-				a_unicode[1] = '\' and then
-				a_unicode[2] = 'u'
-			then
+			if a_unicode.count = 6 and then a_unicode [1] = '\' and then a_unicode [2] = 'u' then
 				from
 					Result := True
 					i := 3
 				until
 					i > 6 or Result = False
 				loop
-					inspect a_unicode[i]
-					when '0'..'9', 'a'..'f', 'A'..'F'  then
+					inspect a_unicode [i]
+					when '0'..'9', 'a'..'f', 'A'..'F' then
 					else
 						Result := False
 					end
@@ -493,11 +521,11 @@ feature {NONE} -- Implementation
 			Result := has_next
 		end
 
-	is_valid_start_symbol : BOOLEAN
+	is_valid_start_symbol: BOOLEAN
 			-- expecting `{' or `[' as start symbol
 		do
 			if attached representation as s and then s.count > 0 then
-				Result := s[1] = '{' or s[1] = '['
+				Result := s [1] = '{' or s [1] = '['
 			end
 		end
 
@@ -508,6 +536,5 @@ feature {NONE} -- Constants
 	true_id: STRING = "true"
 
 	null_id: STRING = "null"
-
 
 end
