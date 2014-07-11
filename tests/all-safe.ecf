@@ -57,6 +57,8 @@
 		<library name="wsf_policy_driven" location="..\library\server\wsf\wsf_policy_driven-safe.ecf" readonly="false"/>
 		<library name="wsf_router_context" location="..\library\server\wsf\wsf_router_context-safe.ecf" readonly="false"/>
 		<library name="wsf_session" location="..\library\server\wsf\wsf_session-safe.ecf" readonly="false"/>
+		<library name="wsf_js_widget" location="..\draft\library\server\wsf_js_widget\wsf_js_widget-safe.ecf" readonly="false"/>
+		<library name="wsf_js_widget_demo" location="..\draft\library\server\wsf_js_widget\examples\demo\demo.ecf" readonly="false"/>
 	</target>
 	<target name="all_windows" extends="all">
 		<description>Compiling as Windows , on other platforms than Windows</description>
