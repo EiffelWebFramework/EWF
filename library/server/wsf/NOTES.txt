@@ -57,30 +57,30 @@ prerequisites: "[<item_to_study_before_continuing>
 	- Void-safe or non-Void-safe
 	]"
 basics: "[<library_cluster_only_basics_of_design>
-	+---------------+		+---------------+ <--CGI		+---------------+
-	| Gateway		|		|	CGI			|	Interface	|				|
-	| Interface		|		|	FCGI		+---------------+				|
-	| (Apache2,	<---|---a	|	SCGI		|				|				+-------------------+
-	|  IIS,		 b--|---->	|				|				|	(2) WSF		|					|
-	|  LightTPD,	|		+---------------|	EWSGI		|				|					|
-	|  ningx)		| <-c->	|	mod_ewsgi	|	Connectors	|				|					|
-	|  				| <-d->	|	(WAMIE)		|				|	Eiffel		|	(1) Eiffel		|
-	+---------------+		+---------------+				|	Web			|	Application		|
-	|	Eiffel Web	| <-e->	|	Nino		|				|	Server		|					|
-	|	Nino		| 	|	|				+---------------+	Gateway		+-------------------+
-	+---------------+	|	+---------------+				|	Interface	|			<->
-			^			|		^							+---------------+		+---------------+
-			|			|		|													| Persistence	|
-			|			|		|													+---------------+
-			+			|		+													* (1) Storable, XML,
-			(4) HTTPD	|		(3) Gateway												JSON, SOS,
-			Server		|		Interface												NoSQL, ABEL,
-						|		Connectors												EiffelStore,
-						|																...
-						+
-						(3) Pipe,
-						Socket,
-						...
+	+-----------------------+	+---------------+ <--CGI	+---------------+
+	| Gateway		|	|	CGI	|   Interface	|		|
+	| Interface		|	|	FCGI	+---------------+		|
+	| (Apache2,         <---|---a	|	SCGI	|		|		+---------------+
+	|  IIS,		     b--|---->	|		|		|	(2) WSF	|		|
+	|  LightTPD,		|	+---------------|   EWSGI	|		|		|
+	|  ningx)		| <-c->	|   mod_ewsgi	|   Connectors	|		|		|
+	|  			| <-d->	|	(WAMIE)	|		|   Eiffel	|   (1) Eiffel	|
+	+-----------------------+	+---------------+		|   Web		|   Application	|
+	|	Eiffel Web	| <-e->	|	Nino	|		|   Server	|		|
+	|	Nino		|   ^	|		+---------------+   Gateway	+---------------+
+	+-----------------------+   |	+---------------+		|   Interface	|	   <->
+			^	    |			^		+---------------+	+---------------+
+			|	    |			|					| Persistence	|
+			|	    |			|					+---------------+
+			+	    |			+					* (1) Storable, XML,
+			(4) HTTPD   |			(3) Gateway				JSON, SOS,
+			Server	    |			Interface				NoSQL, ABEL,
+				    |			Connectors				EiffelStore,
+				    |								...
+				    +
+				   (3) Pipe,
+				       Socket,
+				       ...
 	1. An "Eiffel Application" with some possible persistence mechanism, talks to the WSF API.
 		This is where your code (as a library consumer) will plug in. From here ...
 	2. The WSF works wither various "connectors" to talk with either some form of CGI, WAMIE,
