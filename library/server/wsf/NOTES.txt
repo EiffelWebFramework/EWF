@@ -199,6 +199,10 @@ glossary: "[<terms_to_clear_potential_misunderstood_terms>"]
 			web server and web browser.
 		]"
 		EIS: "name=web_api", "protocol=URI", "src=http://en.wikipedia.org/wiki/Web_API", "tag=external_wiki"
+	term: "[
+		WSF (Web Server Framework): User friendly framework to build Eiffel Web server applications. It is built on 
+			top of EWSGI to benefit from the various EWSGI connectors.
+		]"
 examples: "[<optional_examples_of_non_obvious_calls>
 	
 	]"
