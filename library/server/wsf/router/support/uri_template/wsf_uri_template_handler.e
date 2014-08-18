@@ -1,6 +1,12 @@
 note
-	description: "Summary description for WSF_URI_TEMPLATE_HANDLER."
-	author: ""
+	description: "[
+		Abstract notion of a URI Template Handler.
+		]"
+	glossary: "[
+		URL Template: A URL Template is a way to specify a URL that includes parameters that 
+			must be substituted before the URL is resolved. The syntax is usually to enclose 
+			the parameter in Braces ({example}).
+		]"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -30,7 +36,7 @@ feature {WSF_ROUTER} -- Mapping
 		end
 
 note
-	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
+	copyright: "2011-2014, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Colin Adams, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software
