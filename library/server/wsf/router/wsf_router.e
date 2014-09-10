@@ -59,6 +59,8 @@ feature {NONE} -- Initialization
 			no_handler_set: count = 0
 		end
 
+feature {WSF_ROUTER} -- Access
+
 	mappings: ARRAYED_LIST [WSF_ROUTER_ITEM]
 			-- Existing mappings
 
@@ -89,6 +91,18 @@ feature -- Mapping
 			end
 			mappings.extend (create {WSF_ROUTER_ITEM}.make_with_request_methods (a_mapping, rqst_methods))
 			a_mapping.handler.on_mapped (a_mapping, rqst_methods)
+		end
+
+	import (a_router: WSF_ROUTER)
+			-- Importing an existing router definition `a_router'.
+		do
+			across a_router.mappings  as c loop
+				if attached c.item.request_methods as l_methods then
+					map_with_request_methods (c.item.mapping, l_methods)
+				else
+					map (c.item.mapping)
+				end
+			end
 		end
 
 feature -- Mapping handler
@@ -553,7 +567,7 @@ invariant
 	pre_execution_actions_attached: pre_execution_actions /= Void
 
 note
-	copyright: "2011-2013, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
+	copyright: "2011-2014, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Colin Adams, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software
