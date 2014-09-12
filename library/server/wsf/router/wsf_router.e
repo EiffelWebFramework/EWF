@@ -59,8 +59,6 @@ feature {NONE} -- Initialization
 			no_handler_set: count = 0
 		end
 
-feature {WSF_ROUTER} -- Access
-
 	mappings: ARRAYED_LIST [WSF_ROUTER_ITEM]
 			-- Existing mappings
 
@@ -79,30 +77,41 @@ feature -- Mapping
 		require
 			a_mapping_attached: a_mapping /= Void
 		do
+			extend (create {WSF_ROUTER_ITEM}.make_with_request_methods (a_mapping, rqst_methods))
+		end
+
+	import (a_mapping_items: ITERABLE [WSF_ROUTER_ITEM])
+			-- Import mapping items from `a_mapping_items'.
+			-- note: this `a_mapping_items' could be an instance of WSF_ROUTER.
+		do
+			across
+				a_mapping_items as ic
+			loop
+				extend (ic.item)
+			end
+		end
+
+feature {WSF_ROUTER} -- Mapping
+
+	extend (a_item: WSF_ROUTER_ITEM)
+			-- Extend `mappings' with `a_item'.
+		local
+			l_mapping: WSF_ROUTER_MAPPING
+		do
+			l_mapping := a_item.mapping
 			debug ("router")
 				-- Display conflict in mapping
-				if has_item_associated_with_resource (a_mapping.associated_resource, rqst_methods) then
-					io.error.put_string ("Mapping: " + a_mapping.debug_output + ": conflict with existing mapping")
-					if attached item_associated_with_resource (a_mapping.associated_resource, rqst_methods) as l_conflicted then
+				if has_item_associated_with_resource (l_mapping.associated_resource, a_item.request_methods) then
+					io.error.put_string ("Mapping: " + l_mapping.debug_output + ": conflict with existing mapping")
+					if attached item_associated_with_resource (l_mapping.associated_resource, a_item.request_methods) as l_conflicted then
 						io.error.put_string (": " + l_conflicted.debug_output)
 					end
 					io.error.put_string ("%N")
 				end
 			end
-			mappings.extend (create {WSF_ROUTER_ITEM}.make_with_request_methods (a_mapping, rqst_methods))
-			a_mapping.handler.on_mapped (a_mapping, rqst_methods)
-		end
 
-	import (a_router: WSF_ROUTER)
-			-- Importing an existing router definition `a_router'.
-		do
-			across a_router.mappings  as c loop
-				if attached c.item.request_methods as l_methods then
-					map_with_request_methods (c.item.mapping, l_methods)
-				else
-					map (c.item.mapping)
-				end
-			end
+			mappings.extend (a_item)
+			l_mapping.handler.on_mapped (l_mapping, a_item.request_methods)
 		end
 
 feature -- Mapping handler
