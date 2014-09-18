@@ -12,4 +12,4 @@ port:             9000
 
 # Custom vars
 repo:             https://github.com/EiffelWebFramework/EWF
-download:         https://github.com/EiffelWebFramework/EWF/archive/v0.3.1.zip
+download:         https://github.com/EiffelWebFramework/EWF/archive/v0.4.0.zip

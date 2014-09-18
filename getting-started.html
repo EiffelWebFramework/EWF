@@ -11,20 +11,17 @@ base_url: "../"
           <p>This page will help you to get started with EWF.
           We will first see how to install EWF and then how to compile and run the venerable <i>Hello World</i> example.</p>
           <h2>Installation</h2>
+          <h3>EiffelStudio</h3>
+          <p>EiffelStudio 14.05 comes with EWF version 0.4: there is nothing to do in this case.</p>
+          <p>If you are using an older version of EiffelStudio, we recommand to download the latest EWF version (0.4 as of this writing) instead of using the one that comes with EiffelStudio.</p>
           <h3>Download</h3>
           <p>Follow these steps to download and install EWF on your computer:</p>
           <ol>
-            <li><a href="https://github.com/EiffelWebFramework/EWF/archive/v0.3.1.zip">Dowload the archive</a></li>
+            <li><a href="{{ site.download }}">Dowload the archive</a></li>
             <li>Create a directory where you will put your custom Eiffel libraries</li>
             <li>Extract EWF in the newly created directory</li>
             <li>Define the environment variable EIFFEL_LIBRARY to point to the newly created directory</li>
           </ol>
-          <h3>EiffelStudio</h3>
-          <p>EWF version 0.2 is included in EiffelStudio 7.2 and version 0.3 is included in EiffelStudio 7.3.
-          We recommand to use the latest EWF version (0.3 as of this writing) even if you are using EiffelStudio 7.2.</p>
-          <div class="alert alert-info">
-            <strong>Note</strong>: The version that comes with EiffelStudio 7.3 does not include the examples.
-          </div>
           <h3>Source code</h3>
           <p>The source code is available on Github.
           You can get it by running the command:</p>
@@ -35,5 +32,14 @@ base_url: "../"
           <pre><code>estudio -config simple.ecf -target simple</code></pre>
           <p>Once the project is compiled, you can launch the application and point your browser to <a href="http://localhost:9090">http://localhost:9090</a>.
           You should now see a simple page with <i>Hello World</i>.</p>
+          <h2>Next steps</h2>
+          <ul>
+            <li>Take a look at the other examples</i></li>
+            <ul>
+              <li>located in <i>$ISE_EIFFEL/contrib/examples/web/ewf</i></li>
+              <li><a href="https://github.com/EiffelWebFramework/ewf_examples">available on Github</a></li>
+            </ul>
+            <li>Read the <a href="{{ page.base_url }}wiki/Documentation">Overview</a></li>
+          </ul>
         </div>
       </div>
