@@ -1,8 +1,8 @@
 note
-	description: "JSON Truth values"
-	author: "Javier Velilla"
-	date: "2008/08/24"
-	revision: "Revision 0.1"
+	description: "JSON Boolean values"
+	author: "$Author$"
+	date: "$Date$"
+	revision: "$Revision$"
 
 class
 	JSON_BOOLEAN
@@ -12,14 +12,36 @@ inherit
 	JSON_VALUE
 
 create
+	make,
+	make_true, make_false,
 	make_boolean
 
 feature {NONE} -- Initialization
 
-	make_boolean (an_item: BOOLEAN)
-			--Initialize.
+	make (a_value: BOOLEAN)
+			-- Initialize Current JSON boolean with `a_boolean'.
 		do
-			item := an_item
+			item := a_value
+		end
+
+	make_true
+			-- Initialize Current JSON boolean with True.
+		do
+			make (True)
+		end
+
+	make_false
+			-- Initialize Current JSON boolean with False.
+		do
+			make (False)
+		end
+
+	make_boolean (a_item: BOOLEAN)
+			-- Initialize.
+		obsolete
+			"Use `make' Sept/2014"
+		do
+			make (a_item)
 		end
 
 feature -- Access

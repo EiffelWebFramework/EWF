@@ -1,4 +1,4 @@
-﻿History file for EJSON
+History file for EJSON
 ======================
 
 team: ""

@@ -4,9 +4,9 @@ note
 		A string is a collection of zero or more Unicodes characters, wrapped in double
 		quotes, using blackslash espaces.
 	]"
-	author: "Javier Velilla"
-	date: "2008/08/24"
-	revision: "Revision 0.1"
+	author: "$Author$"
+	date: "$Date$"
+	revision: "$Revision$"
 	license: "MIT (see http://www.opensource.org/licenses/mit-license.php)"
 
 class
@@ -20,16 +20,73 @@ inherit
 		end
 
 create
-	make_json, make_json_from_string_32, make_with_escaped_json
+	make_from_string, make_from_string_32, make_from_string_general,
+	make_from_escaped_json_string,
+	make_with_escaped_json, make_json, make_json_from_string_32
 
 convert
-	make_json ({READABLE_STRING_8, STRING_8, IMMUTABLE_STRING_8}),
-	make_json_from_string_32 ({READABLE_STRING_32, STRING_32, IMMUTABLE_STRING_32})
+	make_from_string ({READABLE_STRING_8, STRING_8, IMMUTABLE_STRING_8}),
+	make_from_string_32 ({READABLE_STRING_32, STRING_32, IMMUTABLE_STRING_32}),
+	make_from_string_general ({READABLE_STRING_GENERAL, STRING_GENERAL, IMMUTABLE_STRING_GENERAL})
 
 feature {NONE} -- Initialization
 
+	make_from_string (s: READABLE_STRING_8)
+			-- Initialize from ascii string `s'.
+		require
+			s_not_void: s /= Void
+		do
+			make_from_escaped_json_string (escaped_json_string (s))
+		end
+
+	make_from_string_32 (s: READABLE_STRING_32)
+			-- Initialize from unicode string `s'.
+		require
+			s_not_void: s /= Void
+		do
+			make_from_escaped_json_string (escaped_json_string (s))
+		end
+
+	make_from_string_general (s: READABLE_STRING_GENERAL)
+			-- Initialize from string `s'.
+		require
+			s_not_void: s /= Void
+		do
+			if attached {READABLE_STRING_8} s as s8 then
+				make_from_string (s8)
+			else
+				make_from_string_32 (s.as_string_32)
+			end
+		end
+
+	make_from_escaped_json_string (a_escaped_string: READABLE_STRING_8)
+			-- Initialize with `a_escaped_string' already JSON escaped.
+		require
+			a_escaped_string_not_void: a_escaped_string /= Void
+		do
+			item := a_escaped_string
+		end
+
+	make_with_escaped_json (a_escaped_string: READABLE_STRING_8)
+			-- Initialize with `a_escaped_string' already JSON escaped.
+		obsolete
+			"Use `make_from_escaped_json_string' Sept/2014"
+		require
+			a_escaped_string_not_void: a_escaped_string /= Void
+		do
+			make_from_escaped_json_string (a_escaped_string)
+		end
+
+	make_from_json_string (a_json: JSON_STRING)
+			-- Initialize with `a_json' string value.
+		do
+			make_from_escaped_json_string (a_json.item)
+		end
+
 	make_json (s: READABLE_STRING_8)
 			-- Initialize.
+		obsolete
+			"Use `make_from_string' Sept/2014"
 		require
 			item_not_void: s /= Void
 		do
@@ -38,18 +95,12 @@ feature {NONE} -- Initialization
 
 	make_json_from_string_32 (s: READABLE_STRING_32)
 			-- Initialize from STRING_32 `s'.
+		obsolete
+			"Use `make_from_string_32' Sept/2014"
 		require
 			item_not_void: s /= Void
 		do
-			make_with_escaped_json (escaped_json_string_32 (s))
-		end
-
-	make_with_escaped_json (s: READABLE_STRING_8)
-			-- Initialize with an_item already escaped
-		require
-			item_not_void: s /= Void
-		do
-			item := s
+			make_with_escaped_json (escaped_json_string (s))
 		end
 
 feature -- Access
@@ -60,7 +111,7 @@ feature -- Access
 feature -- Conversion
 
 	unescaped_string_8: STRING_8
-			-- Unescaped string from `item'.
+			-- Unescaped ascii string from `item'.
 			--| note: valid only if `item' does not encode any unicode character.
 		local
 			s: like item
@@ -71,7 +122,7 @@ feature -- Conversion
 		end
 
 	unescaped_string_32: STRING_32
-			-- Unescaped string 32 from `item'
+			-- Unescaped uncode string from `item'
 			--| some encoders uses UTF-8 , and not the recommended pure json encoding
 			--| thus, let's support the UTF-8 encoding during decoding.
 		local
@@ -83,7 +134,7 @@ feature -- Conversion
 		end
 
 	representation: STRING
-			-- String representation of `item' with escaped entities if any
+			-- String representation of `item' with escaped entities if any.
 		do
 			create Result.make (item.count + 2)
 			Result.append_character ('%"')
@@ -110,11 +161,14 @@ feature -- Conversion
 				if c = '\' then
 					if i < n then
 						inspect s [i + 1]
+						when '%"' then
+							a_output.append_character ('%"')
+							i := i + 2
 						when '\' then
 							a_output.append_character ('\')
 							i := i + 2
-						when '%"' then
-							a_output.append_character ('%"')
+						when '/' then
+							a_output.append_character ('/')
 							i := i + 2
 						when 'b' then
 							a_output.append_character ('%B')
@@ -132,15 +186,15 @@ feature -- Conversion
 							a_output.append_character ('%T')
 							i := i + 2
 						when 'u' then
-								--| Leave Unicode \uXXXX unescaped
-							a_output.append_character ('\')
+								--| Leave unicode \uXXXX unescaped
+							a_output.append_character (c) -- '\'
 							i := i + 1
 						else
-							a_output.append_character ('\')
+							a_output.append_character (c) -- '\'
 							i := i + 1
 						end
 					else
-						a_output.append_character ('\')
+						a_output.append_character (c) -- '\'
 						i := i + 1
 					end
 				else
@@ -153,7 +207,7 @@ feature -- Conversion
 	unescape_to_string_32 (a_output: STRING_32)
 			-- Unescape string `item' into `a_output' string 32.
 			--| some encoders uses UTF-8 , and not the recommended pure json encoding
-			--| thus, let's support the UTF-8 encoding during decoding.
+			--| thus, let's support the UTF-8 encoding during decoding.	
 		local
 			s: READABLE_STRING_8
 			i, n: INTEGER
@@ -172,11 +226,14 @@ feature -- Conversion
 				if ch = '\' then
 					if i < n then
 						inspect s [i + 1]
+						when '%"' then
+							a_output.append_character ('%"')
+							i := i + 2
 						when '\' then
 							a_output.append_character ('\')
 							i := i + 2
-						when '%"' then
-							a_output.append_character ('%"')
+						when '/' then
+							a_output.append_character ('/')
 							i := i + 2
 						when 'b' then
 							a_output.append_character ('%B')
@@ -198,13 +255,13 @@ feature -- Conversion
 							if hex.count = 4 then
 								a_output.append_code (hexadecimal_to_natural_32 (hex))
 							end
-							i := i + 6 -- i +2 +4
+							i := i + 6 -- i+2+4
 						else
-							a_output.append_character ('\')
+							a_output.append_character (ch) -- '\'
 							i := i + 1
 						end
 					else
-						a_output.append_character ('\')
+						a_output.append_character (ch) -- '\'
 						i := i + 1
 					end
 				else
@@ -259,12 +316,48 @@ feature -- Comparison
 
 feature -- Change Element
 
-	append (a_string: STRING)
-			-- Add a_string
+	append (a_escaped_string: READABLE_STRING_8)
+			-- Add JSON escaped string `a_escaped_string'
 		require
-			a_string_not_void: a_string /= Void
+			a_escaped_string_not_void: a_escaped_string /= Void
 		do
-			item.append_string (a_string)
+			item.append_string (a_escaped_string)
+		end
+
+	append_json_string (a_json_string: JSON_STRING)
+			-- Add JSON string `a_json_string'
+		require
+			a_json_string_not_void: a_json_string /= Void
+		do
+			append (a_json_string.item)
+		end
+
+	append_string (s: READABLE_STRING_8)
+			-- Add ascii string `s'
+		require
+			s_not_void: s /= Void
+		do
+			append (escaped_json_string (s))
+		end
+
+	append_string_32 (s: READABLE_STRING_32)
+			-- Add unicode string `s'
+		require
+			s_not_void: s /= Void
+		do
+			append (escaped_json_string (s))
+		end
+
+	append_string_general (s: READABLE_STRING_GENERAL)
+			-- Add unicode string `s'
+		require
+			s_not_void: s /= Void
+		do
+			if attached {READABLE_STRING_8} s as s8 then
+				append_string (s.as_string_8)
+			else
+				append_string_32 (s.as_string_32)
+			end
 		end
 
 feature -- Status report
@@ -285,11 +378,11 @@ feature -- Status report
 
 feature {NONE} -- Implementation
 
-	is_hexadecimal (s: READABLE_STRING_8): BOOLEAN
-			-- Is `s' an hexadecimal value?
+ 	is_hexadecimal (s: READABLE_STRING_8): BOOLEAN
+ 			-- Is `s' an hexadecimal value?
 		local
 			i: INTEGER
-		do
+ 		do
 			from
 				Result := True
 				i := 1
@@ -299,7 +392,7 @@ feature {NONE} -- Implementation
 				Result := s [i].is_hexa_digit
 				i := i + 1
 			end
-		end
+ 		end
 
 	hexadecimal_to_natural_32 (s: READABLE_STRING_8): NATURAL_32
 			-- Hexadecimal string `s' converted to NATURAL_32 value
@@ -331,46 +424,8 @@ feature {NONE} -- Implementation
 			end
 		end
 
-	escaped_json_string (s: READABLE_STRING_8): STRING_8
-			-- JSON string with '"' and '\' characters escaped
-		require
-			s_not_void: s /= Void
-		local
-			i, n: INTEGER
-			c: CHARACTER_8
-		do
-			n := s.count
-			create Result.make (n + n // 10)
-			from
-				i := 1
-			until
-				i > n
-			loop
-				c := s.item (i)
-				inspect c
-				when '%"' then
-					Result.append_string ("\%"")
-				when '\' then
-					Result.append_string ("\\")
-				when '%B' then
-					Result.append_string ("\b")
-				when '%F' then
-					Result.append_string ("\f")
-				when '%N' then
-					Result.append_string ("\n")
-				when '%R' then
-					Result.append_string ("\r")
-				when '%T' then
-					Result.append_string ("\t")
-				else
-					Result.extend (c)
-				end
-				i := i + 1
-			end
-		end
-
-	escaped_json_string_32 (s: READABLE_STRING_32): STRING_8
-			-- JSON string with '"' and '\' characters and Unicode escaped
+	escaped_json_string (s: READABLE_STRING_GENERAL): STRING_8
+			-- JSON string with '"' and '\' characters and unicode escaped
 		require
 			s_not_void: s /= Void
 		local
@@ -394,6 +449,14 @@ feature {NONE} -- Implementation
 						Result.append_string ("\%"")
 					when '\' then
 						Result.append_string ("\\")
+					when '/' then
+							-- To avoid issue with Javascript  </script> ...
+							-- escape only  </  to <\/
+						if s.valid_index (i - 1) and then s.item (i - 1) = '<' then
+							Result.append_string ("\/")
+						else
+							Result.append_string ("/")
+						end
 					when '%B' then
 						Result.append_string ("\b")
 					when '%F' then
@@ -426,7 +489,7 @@ feature {NONE} -- Implementation
 						h.prepend_integer (0)
 					end
 					check
-						h.count = 4
+						hexastring_has_4_chars: h.count = 4
 					end
 					Result.append (h)
 				end

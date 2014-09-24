@@ -27,7 +27,7 @@ feature -- Access
 			if an_object = Void then
 				create {JSON_NULL} Result
 			elseif attached {BOOLEAN} an_object as b then
-				create {JSON_BOOLEAN} Result.make_boolean (b)
+				create {JSON_BOOLEAN} Result.make (b)
 			elseif attached {INTEGER_8} an_object as i8 then
 				create {JSON_NUMBER} Result.make_integer (i8)
 			elseif attached {INTEGER_16} an_object as i16 then
@@ -49,7 +49,7 @@ feature -- Access
 			elseif attached {REAL_64} an_object as r64 then
 				create {JSON_NUMBER} Result.make_real (r64)
 			elseif attached {ARRAY [detachable ANY]} an_object as a then
-				create ja.make_array
+				create ja.make (a.count)
 				from
 					i := a.lower
 				until
@@ -66,13 +66,13 @@ feature -- Access
 				end
 				Result := ja
 			elseif attached {CHARACTER_8} an_object as c8 then
-				create {JSON_STRING} Result.make_json (c8.out)
+				create {JSON_STRING} Result.make_from_string (c8.out)
 			elseif attached {CHARACTER_32} an_object as c32 then
-				create {JSON_STRING} Result.make_json (c32.out)
+				create {JSON_STRING} Result.make_from_string_32 (create {STRING_32}.make_filled (c32, 1))
 			elseif attached {STRING_8} an_object as s8 then
-				create {JSON_STRING} Result.make_json (s8)
+				create {JSON_STRING} Result.make_from_string (s8)
 			elseif attached {STRING_32} an_object as s32 then
-				create {JSON_STRING} Result.make_json_from_string_32 (s32)
+				create {JSON_STRING} Result.make_from_string_32 (s32)
 			end
 			if Result = Void then
 					-- Now check the converters
@@ -162,12 +162,10 @@ feature -- Access
 			-- "eJSON exception" if unable to convert value.
 		require
 			json_not_void: json /= Void
-		local
-			jv: detachable JSON_VALUE
 		do
 			json_parser.set_representation (json)
-			jv := json_parser.parse
-			if jv /= Void then
+			json_parser.parse_content
+			if json_parser.is_valid and then attached json_parser.parsed_json_value as jv then
 				Result := object (jv, base_class)
 			end
 		end
@@ -192,8 +190,8 @@ feature -- Access
 			js_key, js_value: JSON_STRING
 		do
 			create Result.make
-			create js_key.make_json ("$ref")
-			create js_value.make_json (s)
+			create js_key.make_from_string ("$ref")
+			create js_value.make_from_string (s)
 			Result.put (js_value, js_key)
 		end
 
@@ -207,7 +205,7 @@ feature -- Access
 		local
 			c: ITERATION_CURSOR [STRING]
 		do
-			create Result.make_array
+			create Result.make (l.count)
 			from
 				c := l.new_cursor
 			until
@@ -264,7 +262,7 @@ feature {NONE} -- Implementation (JSON parser)
 
 	json_parser: JSON_PARSER
 		once
-			create Result.make_parser ("")
+			create Result.make_with_string ("{}")
 		end
 
 end -- class EJSON

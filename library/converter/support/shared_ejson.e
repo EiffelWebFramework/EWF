@@ -14,7 +14,7 @@ note
 class
 	SHARED_EJSON
 
-feature
+feature -- Access
 
 	json: EJSON
 			-- A shared EJSON instance with default converters for

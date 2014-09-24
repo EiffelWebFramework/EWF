@@ -51,13 +51,13 @@ feature -- Test
 				if attached {HASH_TABLE [ANY, HASHABLE]} json.object (l_value, "HASH_TABLE") as t2 then
 					create l_ucs_key.make_from_string ("1")
 					if attached {STRING_32} t2 [l_ucs_key] as l_ucs_value then
-						assert ("ucs_value.string.is_equal (%"foo%")", l_ucs_value.string.is_equal ("foo"))
+						assert ("ucs_value.string.is_equal (%"foo%")", l_ucs_value.same_string_general ("foo"))
 					else
 						assert ("ucs_value /= Void", False)
 					end
 					create l_ucs_key.make_from_string ("2")
 					if attached {STRING_32} t2 [l_ucs_key] as l_ucs_value then
-						assert ("ucs_value.string.is_equal (%"bar%")", l_ucs_value.string.is_equal ("bar"))
+						assert ("ucs_value.string.is_equal (%"bar%")", l_ucs_value.same_string_general ("bar"))
 					else
 						assert ("ucs_value /= Void", False)
 					end

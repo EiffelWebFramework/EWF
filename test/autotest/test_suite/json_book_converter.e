@@ -45,7 +45,7 @@ feature -- Conversion
 
 	to_json (o: like object): JSON_OBJECT
 		do
-			create Result.make
+			create Result.make_with_capacity (3)
 			Result.put (json.value (o.title), title_key)
 			Result.put (json.value (o.isbn), isbn_key)
 			Result.put (json.value (o.author), author_key)
@@ -56,19 +56,19 @@ feature {NONE} -- Implementation
 	title_key: JSON_STRING
 			-- Book's title label.
 		once
-			create Result.make_json ("title")
+			create Result.make_from_string ("title")
 		end
 
 	isbn_key: JSON_STRING
 			-- Book ISBN label.
 		once
-			create Result.make_json ("isbn")
+			create Result.make_from_string ("isbn")
 		end
 
 	author_key: JSON_STRING
 			-- Author label.
 		once
-			create Result.make_json ("author")
+			create Result.make_from_string ("author")
 		end
 
 end -- class JSON_BOOK_CONVERTER
