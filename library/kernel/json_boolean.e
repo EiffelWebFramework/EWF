@@ -81,4 +81,7 @@ feature -- Status report
 			Result := item.out
 		end
 
+note
+	copyright: "2010-2014, Javier Velilla and others https://github.com/eiffelhub/json."
+	license: "https://github.com/eiffelhub/json/blob/master/License.txt"
 end

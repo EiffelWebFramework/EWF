@@ -1,8 +1,8 @@
 note
 	description: "Parse serialized JSON data"
-	author: "jvelilla"
-	date: "2008/08/24"
-	revision: "Revision 0.1"
+	author: "$Author$"
+	date: "$Date$"
+	revision: "$Revision$"
 
 class
 	JSON_PARSER
@@ -637,4 +637,7 @@ feature {NONE} -- Constants
 
 	null_id: STRING = "null"
 
+note
+	copyright: "2010-2014, Javier Velilla and others https://github.com/eiffelhub/json."
+	license: "https://github.com/eiffelhub/json/blob/master/License.txt"
 end

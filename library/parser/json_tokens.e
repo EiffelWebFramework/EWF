@@ -84,4 +84,7 @@ feature -- Status report
 			Result := c = token_exp or else c.as_lower = token_exp
 		end
 
+note
+	copyright: "2010-2014, Javier Velilla and others https://github.com/eiffelhub/json."
+	license: "https://github.com/eiffelhub/json/blob/master/License.txt"
 end

@@ -1,4 +1,5 @@
-Copyright (c)  2010 Javier Velilla and others, http://ejson.origo.ethz.ch
+Copyright (c)  2010-2014 Javier Velilla and others,
+https://github.com/eiffelhub/json .
 
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
