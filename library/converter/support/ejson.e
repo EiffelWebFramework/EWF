@@ -8,6 +8,9 @@ note
 class
 	EJSON
 
+obsolete
+	"This JSON converter design has issues [Sept/2014]."
+
 inherit
 
 	EXCEPTIONS
@@ -265,4 +268,7 @@ feature {NONE} -- Implementation (JSON parser)
 			create Result.make_with_string ("{}")
 		end
 
+note
+	copyright: "2010-2014, Javier Velilla and others https://github.com/eiffelhub/json."
+	license: "https://github.com/eiffelhub/json/blob/master/License.txt"
 end -- class EJSON
