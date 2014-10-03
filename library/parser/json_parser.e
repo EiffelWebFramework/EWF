@@ -172,6 +172,7 @@ feature -- Obsolete commands
 			"Use restricted `next_parsed_json_value' [sept/2014]."
 		do
 			Result := next_parsed_json_value
+			is_parsed := is_valid
 		end
 
 feature {JSON_PARSER_ACCESS} -- Obsolete commands: restricted area		
