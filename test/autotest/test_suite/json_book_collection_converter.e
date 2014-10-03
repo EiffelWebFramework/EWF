@@ -60,7 +60,7 @@ feature -- Conversion
 
 	to_json (o: like object): JSON_OBJECT
 		do
-			create Result.make
+			create Result.make_with_capacity (2)
 			Result.put (json.value (o.name), name_key)
 			Result.put (json.value (o.books), books_key)
 		end
@@ -70,13 +70,13 @@ feature {NONE} -- Implementation
 	name_key: JSON_STRING
 			-- Collection's name label.
 		once
-			create Result.make_json ("name")
+			create Result.make_from_string ("name")
 		end
 
 	books_key: JSON_STRING
 			-- Book list label.
 		once
-			create Result.make_json ("books")
+			create Result.make_from_string ("books")
 		end
 
 end -- class JSON_BOOK_COLLECTION_CONVERTER

@@ -20,13 +20,19 @@ feature {NONE} -- Initialization
 
 feature -- Commands
 
+	reset
+			-- Reset reader
+		do
+			index := 1
+		end
+
 	set_representation (a_json: STRING)
 			-- Set `representation'.
 		do
 			a_json.left_adjust
 			a_json.right_adjust
 			representation := a_json
-			index := 1
+			reset
 		end
 
 	read: CHARACTER
@@ -115,4 +121,7 @@ feature {NONE} -- Implementation
 invariant
 	representation_not_void: representation /= Void
 
+note
+	copyright: "2010-2014, Javier Velilla and others https://github.com/eiffelhub/json."
+	license: "https://github.com/eiffelhub/json/blob/master/License.txt"
 end

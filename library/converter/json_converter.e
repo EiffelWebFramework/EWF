@@ -8,6 +8,9 @@ note
 deferred class
 	JSON_CONVERTER
 
+obsolete
+	"This JSON converter design has issues [Sept/2014]."
+
 inherit
 
 	SHARED_EJSON
@@ -35,4 +38,7 @@ feature -- Conversion
 invariant
 	has_eiffel_object: object /= Void -- An empty object must be created at creation time!
 
+note
+	copyright: "2010-2014, Javier Velilla and others https://github.com/eiffelhub/json."
+	license: "https://github.com/eiffelhub/json/blob/master/License.txt"
 end

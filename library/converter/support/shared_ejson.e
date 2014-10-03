@@ -14,7 +14,10 @@ note
 class
 	SHARED_EJSON
 
-feature
+obsolete
+	"This JSON converter design has issues [Sept/2014]."
+
+feature -- Access
 
 	json: EJSON
 			-- A shared EJSON instance with default converters for
@@ -32,5 +35,9 @@ feature
 			create jhtc.make
 			Result.add_converter (jhtc)
 		end
+
+note
+	copyright: "2010-2014, Javier Velilla and others https://github.com/eiffelhub/json."
+	license: "https://github.com/eiffelhub/json/blob/master/License.txt"
 
 end -- class SHARED_EJSON

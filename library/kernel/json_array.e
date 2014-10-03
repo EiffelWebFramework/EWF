@@ -7,9 +7,9 @@ note
 		    []
 		    [elements]
 	]"
-	author: "Javier Velilla"
-	date: "2008/08/24"
-	revision: "Revision 0.1"
+	author: "$Author$"
+	date: "$date$"
+	revision: "$Revision$"
 
 class
 	JSON_ARRAY
@@ -23,14 +23,29 @@ inherit
 	DEBUG_OUTPUT
 
 create
+	make, make_empty,
 	make_array
 
 feature {NONE} -- Initialization
 
+	make (nb: INTEGER)
+			-- Initialize JSON array with capacity of `nb' items.
+		do
+			create items.make (nb)
+		end
+
+	make_empty
+			-- Initialize empty JSON array.
+		do
+			make (0)
+		end
+
 	make_array
 			-- Initialize JSON Array
+		obsolete
+			"Use `make' Sept/2014"
 		do
-			create values.make (10)
+			make (10)
 		end
 
 feature -- Access
@@ -40,24 +55,19 @@ feature -- Access
 		require
 			is_valid_index: valid_index (i)
 		do
-			Result := values.i_th (i)
+			Result := items.i_th (i)
 		end
 
 	representation: STRING
-		local
-			i: INTEGER
 		do
 			Result := "["
-			from
-				i := 1
-			until
-				i > count
+			across
+				items as ic
 			loop
-				Result.append (i_th (i).representation)
-				i := i + 1
-				if i <= count then
+				if Result.count > 1 then
 					Result.append_character (',')
 				end
+				Result.append (ic.item.representation)
 			end
 			Result.append_character (']')
 		end
@@ -76,7 +86,7 @@ feature -- Access
 	new_cursor: ITERATION_CURSOR [JSON_VALUE]
 			-- Fresh cursor associated with current structure
 		do
-			Result := values.new_cursor
+			Result := items.new_cursor
 		end
 
 feature -- Mesurement
@@ -84,7 +94,7 @@ feature -- Mesurement
 	count: INTEGER
 			-- Number of items.
 		do
-			Result := values.count
+			Result := items.count
 		end
 
 feature -- Status report
@@ -101,18 +111,18 @@ feature -- Change Element
 		require
 			v_not_void: v /= Void
 		do
-			values.put_front (v)
+			items.put_front (v)
 		ensure
-			has_new_value: old values.count + 1 = values.count and values.first = v
+			has_new_value: old items.count + 1 = items.count and items.first = v
 		end
 
 	add, extend (v: JSON_VALUE)
 		require
 			v_not_void: v /= Void
 		do
-			values.extend (v)
+			items.extend (v)
 		ensure
-			has_new_value: old values.count + 1 = values.count and values.has (v)
+			has_new_value: old items.count + 1 = items.count and items.has (v)
 		end
 
 	prune_all (v: JSON_VALUE)
@@ -120,41 +130,44 @@ feature -- Change Element
 		require
 			v_not_void: v /= Void
 		do
-			values.prune_all (v)
+			items.prune_all (v)
 		ensure
-			not_has_new_value: not values.has (v)
+			not_has_new_value: not items.has (v)
 		end
 
 	wipe_out
 			-- Remove all items.
 		do
-			values.wipe_out
-		end
+			items.wipe_out
+ 		end
 
 feature -- Report
 
 	hash_code: INTEGER
 			-- Hash code value
+		local
+			l_started: BOOLEAN
 		do
-			from
-				values.start
-				Result := values.item.hash_code
-			until
-				values.off
+			across
+				items as ic
 			loop
-				Result := ((Result \\ 8388593) |<< 8) + values.item.hash_code
-				values.forth
+				if l_started then
+					Result := ((Result \\ 8388593) |<< 8) + ic.item.hash_code
+				else
+					Result := ic.item.hash_code
+					l_started := True
+				end
 			end
-			Result := Result \\ values.count
+			Result := Result \\ items.count
 		end
 
 feature -- Conversion
 
 	array_representation: ARRAYED_LIST [JSON_VALUE]
-			-- Representation as a sequences of values
-			-- be careful, modifying the return object may have impact on the original JSON_ARRAY object
+			-- Representation as a sequences of values.
+			-- be careful, modifying the return object may have impact on the original JSON_ARRAY object.		
 		do
-			Result := values
+			Result := items
 		end
 
 feature -- Status report
@@ -167,10 +180,13 @@ feature -- Status report
 
 feature {NONE} -- Implementation
 
-	values: ARRAYED_LIST [JSON_VALUE]
+	items: ARRAYED_LIST [JSON_VALUE]
 			-- Value container
 
 invariant
-	value_not_void: values /= Void
+	items_not_void: items /= Void
 
+note
+	copyright: "2010-2014, Javier Velilla and others https://github.com/eiffelhub/json."
+	license: "https://github.com/eiffelhub/json/blob/master/License.txt"
 end

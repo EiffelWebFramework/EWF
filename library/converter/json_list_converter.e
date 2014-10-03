@@ -8,6 +8,9 @@ note
 deferred class
 	JSON_LIST_CONVERTER
 
+obsolete
+	"This JSON converter design has issues [Sept/2014]."
+
 inherit
 
 	JSON_CONVERTER
@@ -51,17 +54,15 @@ feature -- Conversion
 	to_json (o: like object): detachable JSON_ARRAY
 		local
 			c: ITERATION_CURSOR [detachable ANY]
-			jv: detachable JSON_VALUE
 			failed: BOOLEAN
 		do
-			create Result.make_array
+			create Result.make (o.count)
 			from
 				c := o.new_cursor
 			until
 				c.after
 			loop
-				jv := json.value (c.item)
-				if jv /= Void then
+				if attached json.value (c.item) as jv then
 					Result.add (jv)
 				else
 					failed := True
@@ -73,4 +74,7 @@ feature -- Conversion
 			end
 		end
 
+note
+	copyright: "2010-2014, Javier Velilla and others https://github.com/eiffelhub/json."
+	license: "https://github.com/eiffelhub/json/blob/master/License.txt"
 end -- class JSON_ARRAYED_LIST_CONVERTER

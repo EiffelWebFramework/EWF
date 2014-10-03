@@ -8,6 +8,9 @@ note
 class
 	JSON_HASH_TABLE_CONVERTER
 
+obsolete
+	"This JSON converter design has issues [Sept/2014]."
+
 inherit
 
 	JSON_CONVERTER
@@ -52,31 +55,34 @@ feature -- Conversion
 
 	to_json (o: like object): detachable JSON_OBJECT
 		local
-			c: HASH_TABLE_ITERATION_CURSOR [ANY, HASHABLE]
 			js: JSON_STRING
 			failed: BOOLEAN
 		do
 			create Result.make
-			from
-				c := o.new_cursor
-			until
-				c.after
+			across
+				o as c
 			loop
 				if attached {JSON_STRING} json.value (c.key) as l_key then
 					js := l_key
 				else
-					create js.make_json (c.key.out)
+					if attached {READABLE_STRING_GENERAL} c.key as s_key then
+						create js.make_from_string_general (s_key)
+					else
+						create js.make_from_string (c.key.out)
+					end
 				end
 				if attached json.value (c.item) as jv then
 					Result.put (jv, js)
 				else
 					failed := True
 				end
-				c.forth
 			end
 			if failed then
 				Result := Void
 			end
 		end
 
+note
+	copyright: "2010-2014, Javier Velilla and others https://github.com/eiffelhub/json."
+	license: "https://github.com/eiffelhub/json/blob/master/License.txt"
 end -- class JSON_HASH_TABLE_CONVERTER

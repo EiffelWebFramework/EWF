@@ -48,7 +48,7 @@ feature {NONE} -- Implementation
 	name_key: JSON_STRING
 			-- Author's name label.
 		once
-			create Result.make_json ("name")
+			create Result.make_from_string ("name")
 		end
 
 end -- class JSON_AUTHOR_CONVERTER

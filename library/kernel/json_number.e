@@ -1,8 +1,8 @@
 note
 	description: "JSON Numbers, octal and hexadecimal formats are not used."
-	author: "Javier Velilla"
-	date: "2008/08/24"
-	revision: "Revision 0.1"
+	author: "$Author$"
+	date: "$Date$"
+	revision: "$Revision$"
 	license: "MIT (see http://www.opensource.org/licenses/mit-license.php)"
 
 class
@@ -24,27 +24,30 @@ feature {NONE} -- initialization
 			-- Initialize an instance of JSON_NUMBER from the integer value of `an_argument'.
 		do
 			item := an_argument.out
-			numeric_type := INTEGER_TYPE
+			numeric_type := integer_type
 		end
 
 	make_natural (an_argument: NATURAL_64)
 			-- Initialize an instance of JSON_NUMBER from the unsigned integer value of `an_argument'.
 		do
 			item := an_argument.out
-			numeric_type := NATURAL_TYPE
+			numeric_type := natural_type
 		end
 
-	make_real (an_argument: DOUBLE)
+	make_real (an_argument: REAL_64)
 			-- Initialize an instance of JSON_NUMBER from the floating point value of `an_argument'.
 		do
 			item := an_argument.out
-			numeric_type := DOUBLE_TYPE
+			numeric_type := double_type
 		end
 
 feature -- Access
 
 	item: STRING
 			-- Content
+
+	numeric_type: INTEGER
+			-- Type of number (integer, natural or real).
 
 	hash_code: INTEGER
 			--Hash code value
@@ -55,6 +58,52 @@ feature -- Access
 	representation: STRING
 		do
 			Result := item
+		end
+
+feature -- Conversion
+
+	integer_64_item: INTEGER_64
+			-- Associated integer value.
+		require
+			is_integer: is_integer
+		do
+			Result := item.to_integer_64
+		end
+
+	natural_64_item: NATURAL_64
+			-- Associated natural value.
+		require
+			is_natural: is_natural
+		do
+			Result := item.to_natural_64
+		end
+
+	double_item, real_64_item: REAL_64
+			-- Associated real value.
+		require
+			is_real: is_real
+		do
+			Result := item.to_real_64
+		end
+
+feature -- Status report
+
+	is_integer: BOOLEAN
+			-- Is Current an integer number?
+		do
+			Result := numeric_type = integer_type
+		end
+
+	is_natural: BOOLEAN
+			-- Is Current a natural number?
+		do
+			Result := numeric_type = natural_type
+		end
+
+	is_double, is_real: BOOLEAN
+			-- Is Current a real number?
+		do
+			Result := numeric_type = real_type
 		end
 
 feature -- Visitor pattern
@@ -85,15 +134,16 @@ feature -- Status report
 
 feature -- Implementation
 
-	INTEGER_TYPE: INTEGER = 1
+	integer_type: INTEGER = 1
 
-	DOUBLE_TYPE: INTEGER = 2
+	double_type, real_type: INTEGER = 2
 
-	NATURAL_TYPE: INTEGER = 3
-
-	numeric_type: INTEGER
+	natural_type: INTEGER = 3
 
 invariant
 	item_not_void: item /= Void
 
+note
+	copyright: "2010-2014, Javier Velilla and others https://github.com/eiffelhub/json."
+	license: "https://github.com/eiffelhub/json/blob/master/License.txt"
 end
