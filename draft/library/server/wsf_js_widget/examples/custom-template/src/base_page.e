@@ -23,7 +23,7 @@ feature
 			control.add_class ("container")
 			create navbar.make_with_brand ("EWF JS WIDGET TEMPLATE")
 			navbar.add_list_element (create {WSF_BASIC_CONTROL}.make_with_body ("a", "href=%"/%"", "Home"))
-			create main_control.make ("main_control")
+			create main_control.make
 			control.add_control (navbar)
 			control.add_control (main_control)
 		end

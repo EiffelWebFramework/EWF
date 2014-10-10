@@ -12,6 +12,7 @@
 		<library name="base" location="$ISE_LIBRARY\library\base\base-safe.ecf"/>
 		<library name="http" location="..\..\..\..\..\..\library\network\protocol\http\http-safe.ecf"/>
 		<library name="http_client" location="$ISE_LIBRARY\contrib\library\network\http_client\http_client-safe.ecf"/>
+		<library name="json" location="..\..\..\..\..\..\contrib\library\text\parser\json\library\json-safe.ecf"/>
 		<library name="wsf" location="..\..\..\..\..\..\library\server\wsf\wsf-safe.ecf"/>
 		<library name="wsf_js_widget" location="..\..\wsf_js_widget-safe.ecf" readonly="false"/>
 	</target>
@@ -21,7 +22,6 @@
 			<assertions precondition="true" postcondition="true" check="true" invariant="true" loop="true" supplier_precondition="true"/>
 		</option>
 		<library name="default_nino" location="..\..\..\..\..\..\library\server\wsf\default\nino-safe.ecf"/>
-		<library name="json" location="..\..\..\..\..\..\contrib\library\text\parser\json\library\json-safe.ecf"/>
 		<cluster name="demo" location=".\" recursive="true"/>
 	</target>
 	<target name="demo_cgi" extends="common">
