@@ -5,6 +5,8 @@ team: ""
 date: "2011-07-06"
 revision: "0.3.0"
 
+WARNING: THIS FILE IS NOT UP TO DATE
+
 
 +++++++++++++++++++++Important Changes since 0.2.0 version++++++++++++++++++++++++++++++++++++++++++++++
 

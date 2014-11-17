@@ -8,7 +8,7 @@
 			<exclude>/CVS$</exclude>
 			<exclude>/.svn$</exclude>
 		</file_rule>
-		<option trace="false" profile="false" debug="false" warning="true" full_class_checking="true" is_attached_by_default="true" void_safety="transitional" syntax="standard" namespace="EJSON.Library">
+		<option trace="false" profile="false" debug="false" warning="true" full_class_checking="true" is_attached_by_default="true" void_safety="all" syntax="standard" namespace="EJSON.Library">
 			<assertions/>
 		</option>
 		<library name="base" location="$ISE_LIBRARY\library\base\base-safe.ecf" readonly="true"/>

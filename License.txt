@@ -1,4 +1,4 @@
-Copyright (c)  2010-2014 Javier Velilla and others,
+Copyright (c)  2010-2014 Javier Velilla, Jocelyn Fiat and others,
 https://github.com/eiffelhub/json .
 
 
