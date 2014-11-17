@@ -1227,7 +1227,13 @@ feature -- HTTP_*
 		do
 			Result := wgi_request.http_range
 		end
-
+	
+	http_content_range: detachable READABLE_STRING_8
+			-- Partial range of selected representation enclosed in message payload
+		do
+			Result := wgi_request.http_content_range
+		end
+	
 feature -- Extra CGI environment variables
 
 	request_uri: READABLE_STRING_8

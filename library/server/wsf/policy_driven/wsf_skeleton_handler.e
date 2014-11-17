@@ -464,7 +464,9 @@ feature -- Execution
 			if req.is_request_method ({HTTP_REQUEST_METHODS}.method_options) then
 				execute_options (req, res, router)
 			else
-				if attached new_method_helper (req.request_method) as l_helper then
+				if req.is_request_method ({HTTP_REQUEST_METHODS}.method_put) and attached req.http_content_range then
+					handle_invalid_content_range (res)
+				elseif attached new_method_helper (req.request_method) as l_helper then
 					execute_method (req, res, l_helper)
 				else
 					handle_internal_server_error (res)
@@ -515,7 +517,29 @@ feature -- Execution
 		end
 
 feature {NONE} -- Implementation
-
+	
+	handle_invalid_content_range (res: WSF_RESPONSE)
+			-- Write "Bad Request" response to `res' for Content-Range header present in PUT request.
+		require
+			res_attached: res /= Void
+		local
+			h: HTTP_HEADER
+			m: STRING_8
+		do
+			create h.make
+			h.put_content_type_text_plain
+			m := "Content-Range header present in PUT request"
+			h.put_content_length (m.count)
+			h.put_current_date
+			res.set_status_code ({HTTP_STATUS_CODE}.bad_request)
+			res.put_header_lines (h)
+			res.put_string (m)
+		ensure
+			response_status_is_set: res.status_is_set
+			status_is_service_unavailable: res.status_code = {HTTP_STATUS_CODE}.internal_server_error
+			body_sent: res.message_committed and then res.transfered_content_length > 0
+		end
+	
 	handle_internal_server_error (res: WSF_RESPONSE)
 			-- Write "Internal Server Error" response to `res'.
 		require

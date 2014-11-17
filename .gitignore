@@ -3,4 +3,5 @@ tests/temp/
 .svn/
 *.swp
 *~
+*.scm
 *#
