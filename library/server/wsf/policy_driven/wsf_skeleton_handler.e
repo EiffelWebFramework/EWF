@@ -146,6 +146,17 @@ feature -- Access
 			Result := True
 			-- redefine to return `False', so as to induce a Vary: * header
 		end
+	
+	allowed_cross_origins (req: WSF_REQUEST): detachable STRING
+			-- Value for Access-Control-Allow-Origin header;
+			-- If supplied, should be a single URI, or the values "*" or "null".
+			-- This is currently supported only for GET requests, and POSTs that functions as GET.
+		note
+			EIS: "name=specification", "protocol=URI", "src=http://www.w3.org/TR/cors/#http-access-control-allow-origin"
+		require
+			req_attached: req /= Void
+		deferred
+		end
 
 	matching_etag (req: WSF_REQUEST; a_etag: READABLE_STRING_32; a_strong: BOOLEAN): BOOLEAN
 			-- Is `a_etag' a match for resource requested in `req'?
@@ -171,7 +182,7 @@ feature -- Access
 			-- When representation of resource selected in `req' was last modified;
 			-- SHOULD be set whenever it can reasonably be determined.
 		note
-			specification: "https://tools.ietf.org/html/rfc7232#section-2.2.1"
+			EIS: "name=specification", "protocol=URI", "src=https://tools.ietf.org/html/rfc7232#section-2.2.1"
 		require
 			req_attached: req /= Void
 		deferred
