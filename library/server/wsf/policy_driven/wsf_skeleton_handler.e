@@ -166,6 +166,16 @@ feature -- Access
 			req_attached: req /= Void
 		deferred
 		end
+	
+	last_modified (req: WSF_REQUEST): detachable DATE_TIME
+			-- When representation of resource selected in `req' was last modified;
+			-- SHOULD be set whenever it can reasonably be determined.
+		note
+			specification: "https://tools.ietf.org/html/rfc7232#section-2.2.1"
+		require
+			req_attached: req /= Void
+		deferred
+		end
 
 	modified_since (req: WSF_REQUEST; a_date_time: DATE_TIME): BOOLEAN
 			-- Has resource requested in `req' been modified since `a_date_time' (UTC)?
