@@ -442,7 +442,7 @@ feature -- PUT/POST
 
 	check_request (req: WSF_REQUEST; res: WSF_RESPONSE)
 			-- Check that the request entity is a valid request.
-			-- The entity is available as `req.execution_variable (Conflict_check_code_execution_variable)'.
+			-- The entity is available as `req.execution_variable (Request_entity_execution_variable)'.
 			-- Set `req.execution_variable (Request_check_code_execution_variable)' to {NATURAL} zero if OK, or 400 if not.
 			-- In the latter case, write the full error response to `res'.
 		require
