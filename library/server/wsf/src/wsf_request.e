@@ -1234,6 +1234,12 @@ feature -- HTTP_*
 			Result := wgi_request.http_content_range
 		end
 	
+	http_content_encoding: detachable READABLE_STRING_8
+			-- Encoding (usually compression) of message payload
+		do
+			Result := wgi_request.http_content_encoding
+		end
+	
 feature -- Extra CGI environment variables
 
 	request_uri: READABLE_STRING_8

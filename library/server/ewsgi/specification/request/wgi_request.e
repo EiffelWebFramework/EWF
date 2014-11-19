@@ -644,6 +644,11 @@ feature -- HTTP_*
 		deferred
 		end
 
+	http_content_encoding: detachable READABLE_STRING_8
+			-- Encoding (usually compression) of message payload
+		deferred
+		end
+
 feature -- Extra CGI environment variables
 
 	request_uri: READABLE_STRING_8

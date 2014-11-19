@@ -295,6 +295,13 @@ feature -- Access: HTTP_* CGI meta parameters - 1.1
 		do
 			Result := meta_string_variable ({WGI_META_NAMES}.http_content_range)
 		end
+
+	http_content_encoding: detachable READABLE_STRING_8
+			-- Encoding (usually compression) of message payload
+		do
+			Result := meta_string_variable ({WGI_META_NAMES}.http_content_encoding)
+		end
+	
 	
 feature -- Access: Extension to CGI meta parameters - 1.1
 

@@ -46,6 +46,8 @@ feature -- Access
 	
 	http_content_range: STRING = "HTTP_CONTENT_RANGE"
 
+	http_content_encoding: STRING = "HTTP_CONTENT_ENCODING"
+
 	http_expect: STRING = "HTTP_EXPECT"
 
 	http_referer: STRING = "HTTP_REFERER"
