@@ -145,7 +145,9 @@ feature -- Access
 			-- If supplied, should be a single URI, or the values "*" or "null".
 			-- This is currently supported only for GET requests, and POSTs that functions as GET.
 		do
-			-- To implement
+			if req.is_get_head_request_method then
+				Result := "*"
+			end
 		end
 
 	matching_etag (req: WSF_REQUEST; a_etag: READABLE_STRING_32; a_strong: BOOLEAN): BOOLEAN
@@ -180,7 +182,6 @@ feature -- Access
 			-- When representation of resource selected in `req' was last modified;
 			-- SHOULD be set whenever it can reasonably be determined.
 		do
-			-- To Implement
 		end
 
 	modified_since (req: WSF_REQUEST; a_date_time: DATE_TIME): BOOLEAN
