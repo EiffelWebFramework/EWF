@@ -112,13 +112,13 @@ feature -- Execution
 			a_output.append ("Environment vars:")
 			a_output.append (eol)
 			across
-				(create {EXECUTION_ENVIRONMENT}).starting_environment_variables as ic
+				(create {EXECUTION_ENVIRONMENT}).starting_environment as ic
 			loop
 				a_output.append_character (' ')
 				a_output.append_character ('-')
-				a_output.append_string (ic.key)
+				a_output.append_string (html_encoder.general_encoded_string (ic.key))
 				a_output.append_character ('=')
-				a_output.append_string (ic.item)
+				a_output.append_string (html_encoder.general_encoded_string (ic.item))
 				a_output.append (eol)
 			end
 			a_output.append (eol)

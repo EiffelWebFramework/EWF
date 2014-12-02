@@ -52,7 +52,6 @@ feature -- Access
 			p: WSF_PAGE_RESPONSE
 			l_len: INTEGER
 			dbg: WSF_DEBUG_INFORMATION
-			utf: UTF_CONVERTER
 		do
 			create s.make (2048)
 			s.append ("= EWF DEBUG =")

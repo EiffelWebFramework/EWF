@@ -28,7 +28,7 @@ feature -- Basic operations
 			-- Execute the filter
 		local
 			s: STRING_8
-			dbg: WSF_DEBUG_OUTPUT
+			dbg: WSF_DEBUG_INFORMATION
 		do
 			create s.make (2048)
 			create dbg.make
