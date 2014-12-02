@@ -75,6 +75,52 @@ feature -- Tests
 			assert ("#4 cookie name1", attached {WSF_STRING} req.cookie ("name1") as v and then v.value.is_case_insensitive_equal ("value1"))
 			assert ("#4 cookie namewithoutvalue", attached {WSF_STRING} req.cookie ("namewithoutvalue") as v and then v.value.is_empty)
 
+			req := new_request (<<
+						["REQUEST_METHOD", "GET"],
+						["QUERY_STRING", ""],
+						["REQUEST_URI", "/cookie"],
+						["HTTP_COOKIE", "name1=value1; foo=;"]
+					>>
+				)
+			assert ("#5 cookie name1", attached {WSF_STRING} req.cookie ("name1") as v and then v.value.is_case_insensitive_equal ("value1"))
+			assert ("#5 cookie foo", attached {WSF_STRING} req.cookie ("foo") as v and then v.value.is_empty)
+
+			req := new_request (<<
+						["REQUEST_METHOD", "GET"],
+						["QUERY_STRING", ""],
+						["REQUEST_URI", "/cookie"],
+						["HTTP_COOKIE", "name1=value1; foo="]
+					>>
+				)
+			assert ("#6 cookie name1", attached {WSF_STRING} req.cookie ("name1") as v and then v.value.is_case_insensitive_equal ("value1"))
+			assert ("#6 cookie foo", attached {WSF_STRING} req.cookie ("foo") as v and then v.value.is_empty)
+
+			req := new_request (<<
+						["REQUEST_METHOD", "GET"],
+						["QUERY_STRING", ""],
+						["REQUEST_URI", "/cookie"],
+						["HTTP_COOKIE", "foo="]
+					>>
+				)
+			assert ("#7 cookie foo", attached {WSF_STRING} req.cookie ("foo") as v and then v.value.is_empty)
+
+			req := new_request (<<
+						["REQUEST_METHOD", "GET"],
+						["QUERY_STRING", ""],
+						["REQUEST_URI", "/cookie"],
+						["HTTP_COOKIE", "foo"]
+					>>
+				)
+			assert ("#8 cookie foo", attached {WSF_STRING} req.cookie ("foo") as v and then v.value.is_empty)
+
+			req := new_request (<<
+						["REQUEST_METHOD", "GET"],
+						["QUERY_STRING", ""],
+						["REQUEST_URI", "/cookie"],
+						["HTTP_COOKIE", "foo;"]
+					>>
+				)
+			assert ("#9 cookie foo", attached {WSF_STRING} req.cookie ("foo") as v and then v.value.is_empty)
 		end
 
 feature {NONE} -- Implementation
