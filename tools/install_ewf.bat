@@ -126,16 +126,16 @@ rem #--- Update ecf files ---#
 :ecf_updating
 cd %TMP_TARGET_DIR%
 
-if -%ECF_UPDATER_PATH%- == -- goto use_bin_dir
-set TMP_ECF_UPDATER_CMD=%ECF_UPDATER_PATH%\ecf_updater.exe
+if -%ECF_TOOL_PATH%- == -- goto use_bin_dir
+set TMP_ECF_TOOL_CMD=%ECF_TOOL_PATH%\ecf_tool.exe
 goto call_ecf_update
 
 :use_bin_dir
-set TMP_ECF_UPDATER_CMD=%~dp0\bin\ecf_updater.bat
+set TMP_ECF_TOOL_CMD=%~dp0\bin\ecf_tool.bat
 goto call_ecf_update
 
 :call_ecf_update
-call %TMP_ECF_UPDATER_CMD% --force %2 %3 %4 %5 %6 %7 %8 %9 contrib
+call %TMP_ECF_TOOL_CMD% updater --root %TMP_TARGET_DIR% --force %2 %3 %4 %5 %6 %7 %8 %9 %TMP_TARGET_DIR%\contrib
 
 :end
 del %TMP_EXCLUDE%
