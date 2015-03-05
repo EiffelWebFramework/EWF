@@ -1,8 +1,8 @@
 note
-	description : "Objects that ..."
-	author      : "$Author$"
-	date        : "$Date$"
-	revision    : "$Revision$"
+	description: "Summary description for {EWF_WIZARD}."
+	author: ""
+	date: "$Date$"
+	revision: "$Revision$"
 
 class
 	EWF_WIZARD
@@ -13,150 +13,198 @@ inherit
 create
 	make
 
-feature {NONE} -- Initialization
-
-	make
-			-- Initialize `Current'.
-		do
-			initialize
-			get_information
-			if is_valid and attached layout as lay then
-				generate_project (lay)
-			end
-		end
-
 feature -- Access
 
-	project_directory_name: detachable READABLE_STRING_8
+	title: STRING_32 = "Web Application Wizard"
 
-	projet_name: detachable READABLE_STRING_8
+feature -- Factory	
 
-	use_router: BOOLEAN
-
-	router_type: detachable READABLE_STRING_8
-
-	connector: detachable READABLE_STRING_8
-
-feature -- Form
-
-	get_information
-		local
-			e: EXECUTION_ENVIRONMENT
+	wizard_generator : EWF_WIZARD_GENERATOR
 		do
-			create e
-			project_directory_name := e.get ("ISE_PROJECTS")
-			if
-				attached project_directory_name as pdn and then
-				attached string_question ("Project directory (default=" + pdn + ")? ", <<["q", Void]>>, pdn, False) as r_pdn
-			then
-				project_directory_name := r_pdn.string
-			elseif attached string_question ("Project directory ? ", <<["q", Void]>>, Void, False) as r_pdn then
-				project_directory_name := r_pdn.string
-			end
-			if project_directory_name = Void then
-				die (-1)
-			end
-
-			if attached string_question ("Project name ? ", Void, Void, False) as pn then
-				projet_name := pn.string
-			else
-				projet_name := "ewf"
-			end
-
-			if boolean_question ("Do you want to use WSF_ROUTER (Y|n) ? ", <<["y", True], ["Y", True]>>, "Y") then
-				use_router := True
-				router_type := "uri-template"
-			else
-				use_router := False
-			end
-
-			if attached string_question ("[
-				Default connector  ? 
-				  1 - Eiffel Web Nino (standalone web server)
-				  2 - CGI application (requires to setup httpd server)
-				  3 - libFCGI application (requires to setup httpd server)
-				Your choice:
-				]", <<["1", "nino"], ["2", "cgi"], ["3", "libfcgi"]>>, "1", True) as conn
-			then
-				connector := conn
-			else
-				connector := "nino"
-			end
+			create Result.make (Current)
 		end
 
-	is_valid: BOOLEAN
-		do
-			Result := project_directory_name /= Void and projet_name /= Void
+feature -- Pages		
+
+	first_page: WIZARD_PAGE
+		once
+			Result := new_page ("first")
+			Result.set_title ("Web Application Wizard")
+			Result.set_subtitle ("Based on the EWF libraries...")
+			Result.add_section_text ("Create Web server application with EWF.")
+			Result.add_text ("[
+		
+Using the Eiffel Web Framework (EWF), the generated application
+will run on any platforms.
+Depending on the connector(s), you may need to use a 
+third-party httpd server (such as apache, nginx, ...)
+
+			]")
 		end
 
-	generate_project (a_layout: WIZARD_LAYOUT)
-		require
-			is_valid
+	project_page: WIZARD_PAGE
+		once
+			Result := new_page ("project")
+			Result.set_title ("Project Name and Project Location")
+			Result.set_subtitle ("You can choose the name of the project and%Nthe directory where the project will be generated.")
+			Result.add_text ("[
+Please fill in:
+	The name of the project (without space).
+	The directory where you want the eiffel classes to be generated.
+	]")
+			Result.extend (Result.new_string_question ("Project name:", "name", "ASCII name, without space"))
+			Result.add_directory_question ("Project location:", "location", "Valid directory path, it will be created if missing")
+
+			Result.data.force ("ewf_app", "name")
+			Result.data.force (application.available_directory_path ("ewf_app", application.layout.default_projects_location.extended ("ewf")).name, "location")
+
+			Result.set_validation (agent (a_page: WIZARD_PAGE)
+				do
+					if
+						not attached a_page.data.item ("name") as l_name
+						or else l_name.is_whitespace
+					then
+						a_page.report_error ("Invalid value for `name'!")
+					end
+					if not a_page.data.has ("location") then
+						a_page.report_error ("Missing value for `location'!")
+					end
+				end)
+		end
+
+	connectors_page: WIZARD_PAGE
+		once
+			Result := new_page ("connectors")
+			Result.set_title ("Connectors selection")
+			Result.set_subtitle ("You can choose one or multiple connectors%Nto use as the same time.")
+			Result.add_text ("[
+Web application runs on top of connectors 
+(i.e layer handling httpd incoming connections)
+
+Select connectors you want to support:
+	]")
+			Result.add_boolean_question ("Standalone", "use_standalone", "Using the Eiffel Web nino server")
+			Result.add_boolean_question ("CGI", "use_cgi", "Require a httpd server")
+			Result.add_boolean_question ("libFCGI", "use_libfcgi", "Require a httpd server")
+
+			Result.data.force ("yes", "use_standalone")
+			Result.data.force ("yes", "use_cgi")
+			Result.data.force ("yes", "use_libfcgi")
+		end
+
+	standalone_connector_page: WIZARD_PAGE
+		once
+			Result := new_page ("standalone_connector")
+			Result.set_title ("Standalone (nino) connector")
+			Result.set_subtitle ("Set options .")
+			Result.add_integer_question ("Port number", "port", "It happens port 80 is already taken, thus choose another one.")
+			Result.add_boolean_question ("Verbose", "verbose", "Verbose output")
+
+			Result.data.force ("80", "port")
+			Result.data.force ("no", "verbose")
+		end
+
+	routers_page: WIZARD_PAGE
+		once
+			Result := new_page ("routers")
+			Result.set_title ("Use Router (URL dispatching)")
+			Result.set_subtitle ("Use the router component to easily map url patterns to handlers.")
+			Result.add_text ("[
+Use the router component to easily map URL patterns to handlers:
+	]")
+			Result.add_boolean_question ("use the router component", "use_router", "Check generated code to see how to configure it.")
+
+			Result.data.force ("yes", "use_router")
+		end
+
+	final_page: WIZARD_PAGE
 		local
-			d: DIRECTORY
-			dn: DIRECTORY_NAME
-			tfn: FILE_NAME
-			res: WIZARD_SUCCEED_RESPONSE
+--			s,sv: STRING_32
+--			l_settings: ARRAYED_LIST [TUPLE [title: READABLE_STRING_GENERAL; value: READABLE_STRING_GENERAL]]
+--			l_project_settings: STRING_32
+--			l_ewf_settings: STRING_32
+			txt1, txt2: WIZARD_PAGE_TEXT_ITEM
+		once
+			Result := new_page ("final")
+			Result.set_title ("Completing the New Web Application Wizard")
+			Result.add_text ("You have specified the following settings:%N%N")
+			txt1 := Result.new_fixed_size_text_item ("...")
+--			Result.add_fixed_size_text ("...", "projects_settings")
+			Result.extend (txt1)
+
+			txt2 := Result.new_fixed_size_text_item ("...")
+--			Result.add_fixed_size_text ("...", "ewf_settings")
+			Result.extend (txt2)
+
+			Result.update_actions.extend (agent (a_page: WIZARD_PAGE; a_txt1, a_txt2: WIZARD_PAGE_TEXT_ITEM)
+				local
+					sv: STRING_32
+					l_settings: ARRAYED_LIST [TUPLE [title: READABLE_STRING_GENERAL; value: READABLE_STRING_GENERAL]]
+				do
+						-- Project
+					create l_settings.make (10)
+					if attached project_page.field_value ("name") as l_project_name then
+						l_settings.force (["Project name", l_project_name])
+					end
+					if attached project_page.field_value ("location") as l_project_location then
+						l_settings.force (["Location", l_project_location])
+					end
+					a_txt1.set_text (formatted_title_value_items (l_settings))
+
+						-- EWF
+					create l_settings.make (5)
+					create sv.make_empty
+					if connectors_page.boolean_field_value ("use_standalone") then
+						if not sv.is_empty then
+							sv.append (", ")
+						end
+						sv.append ("standalone")
+					end
+					if connectors_page.boolean_field_value ("use_cgi") then
+						if not sv.is_empty then
+							sv.append (", ")
+						end
+						sv.append ("cgi")
+					end
+					if connectors_page.boolean_field_value ("use_libfcgi") then
+						if not sv.is_empty then
+							sv.append (", ")
+						end
+						sv.append ("libfcgi")
+					end
+
+					l_settings.force (["Connectors", sv])
+
+					if routers_page.boolean_field_value ("use_router") then
+						l_settings.force (["Use Router", "yes"])
+					end
+
+					a_txt2.set_text (formatted_title_value_items (l_settings))
+				end(Result, txt1, txt2))
+		end
+
+feature -- Events
+
+	next_page (a_current_page: detachable WIZARD_PAGE): WIZARD_PAGE
 		do
-			if attached project_directory_name as pdn then
-				if attached projet_name as pn then
-					variables.force (pn, "TARGET_NAME")
-					variables.force (new_uuid, "UUID")
-					variables.force ("none", "CONCURRENCY")
-					if attached connector as conn then
-						variables.force (conn, "EWF_CONNECTOR")
-					end
-					variables.force ("9999", "EWF_NINO_PORT")
-
-					create dn.make_from_string (pdn)
-					dn.extend (pn)
-					create d.make (dn.string)
-					if not d.exists then
-						d.recursive_create_dir
-					end
-					create tfn.make_from_string (dn.string)
-					tfn.set_file_name (pn)
-					tfn.add_extension ("ecf")
-					copy_resource_template ("template.ecf", tfn.string)
-
-					create res.make (tfn.string, d.name)
-
-					create tfn.make_from_string (dn.string)
-
-					tfn.set_file_name ("ewf")
-					tfn.add_extension ("ini")
-					copy_resource_template ("ewf.ini", tfn.string)
-
-					create dn.make_from_string (pdn)
-					dn.extend (pn)
-					dn.extend ("src")
-					create d.make (dn.string)
-					if not d.exists then
-						d.recursive_create_dir
-					end
-					create tfn.make_from_string (dn.string)
-					tfn.set_file_name ("ewf_application")
-					tfn.add_extension ("e")
-					if attached router_type as rt then
-						check rt.same_string ("uri-template") end
-						copy_resource_template ("ewf_application-"+ rt +".e", tfn.string)
-					else
-						copy_resource_template ("ewf_application.e", tfn.string)
-					end
-
-
-					send_response (res)
+			Result := notfound_page
+			if a_current_page = Void then
+				Result := first_page
+			elseif a_current_page = first_page then
+				Result := project_page
+			elseif a_current_page = project_page then
+				Result := connectors_page
+			elseif a_current_page = connectors_page then
+				if connectors_page.boolean_field_value ("use_standalone") then
+					Result := standalone_connector_page
+				else
+					Result := routers_page
 				end
+			elseif a_current_page = standalone_connector_page then
+				Result := routers_page
+			elseif a_current_page = routers_page then
+				Result := final_page
 			end
 		end
-
-feature -- Output
-
-
-
-feature {NONE} -- Implementation
-
-invariant
---	invariant_clause: True
 
 end

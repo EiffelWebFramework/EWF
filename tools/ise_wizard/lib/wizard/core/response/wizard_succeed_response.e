@@ -23,8 +23,8 @@ feature {NONE} -- Initialization
 
 feature -- Access
 
-	configuration_file_name: READABLE_STRING_8
-	directory_name: READABLE_STRING_8
+	configuration_file_name: PATH
+	directory_name: PATH
 
 	compile_enabled: BOOLEAN
 	freeze_required: BOOLEAN
@@ -51,8 +51,8 @@ feature -- Output
 	send (f: FILE)
 		do
 			f.put_string ("Success=%"yes%"%N")
-			f.put_string ("Ace=%"" + configuration_file_name + "%"%N")
-			f.put_string ("Directory=%"" + directory_name + "%"%N")
+			f.put_string ("Ace=%"" + configuration_file_name.utf_8_name + "%"%N")
+			f.put_string ("Directory=%"" + directory_name.utf_8_name + "%"%N")
 			if compile_enabled then
 				f.put_string ("Compilation=%"yes%"%N")
 			else
