@@ -14,9 +14,10 @@ inherit
 
 feature {NONE} -- Initialization
 
-	make (a_url: READABLE_STRING_8; a_session: like session; ctx: like context)
+	make (a_url: READABLE_STRING_8; a_request_method: like request_method; a_session: like session; ctx: like context)
 			-- Initialize `Current'.
 		do
+			request_method := a_request_method
 			session := a_session
 			url := a_url
 			headers := session.headers.twin
@@ -28,6 +29,8 @@ feature {NONE} -- Initialization
 			context_set: context = ctx
 			ctx_header_set: ctx /= Void implies across ctx.headers as ctx_h all attached headers.item (ctx_h.key) as v and then v.same_string (ctx_h.item) end
 		end
+
+feature {NONE} -- Internal		
 
 	session: HTTP_CLIENT_SESSION
 
@@ -44,12 +47,17 @@ feature -- Status report
 feature -- Access
 
 	request_method: READABLE_STRING_8
-		deferred
-		end
+			-- Request method associated with Current request.
 
 	url: READABLE_STRING_8
 
 	headers: HASH_TABLE [READABLE_STRING_8, READABLE_STRING_8]
+
+	response: HTTP_CLIENT_RESPONSE
+			-- Execute the request and return the response.
+			-- note: two consecutive calls will trigger two executions!
+		deferred
+		end
 
 feature {HTTP_CLIENT_SESSION} -- Execution
 
@@ -65,10 +73,6 @@ feature {HTTP_CLIENT_SESSION} -- Execution
 					--| and use `force' to overwrite the "session" value if any
 				l_headers.force (ctx_headers.item, ctx_headers.key)
 			end
-		end
-
-	execute: HTTP_CLIENT_RESPONSE
-		deferred
 		end
 
 feature -- Authentication
@@ -220,7 +224,7 @@ feature {NONE} -- Utilities: encoding
 		end
 
 note
-	copyright: "2011-2013, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
+	copyright: "2011-2015, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

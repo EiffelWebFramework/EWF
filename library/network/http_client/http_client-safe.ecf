@@ -11,7 +11,7 @@
 		</option>
 		<library name="base" location="$ISE_LIBRARY\library\base\base-safe.ecf"/>
 		<library name="curl" location="$ISE_LIBRARY\library\cURL\cURL-safe.ecf"/>
-		<library name="encoder" location="..\..\text\encoder\encoder-safe.ecf"/>
+		<library name="encoder" location="../../web/framework/ewf/text/encoder/encoder-safe.ecf"/>
 		<library name="net" location="$ISE_LIBRARY\library\net\net-safe.ecf"/>
 		<cluster name="src" location=".\src\" recursive="true"/>
 	</target>

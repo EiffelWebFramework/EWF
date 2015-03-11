@@ -1,6 +1,9 @@
 note
 	description: "[
 				Specific implementation of HTTP_CLIENT_REQUEST based on Eiffel cURL library
+
+				WARNING: Do not forget to have the dynamic libraries libcurl (.dll or .so) 
+				and related accessible to the executable (i.e in same directory, or in the PATH)
 			]"
 	date: "$Date$"
 	revision: "$Revision$"
@@ -10,9 +13,8 @@ class
 
 inherit
 	HTTP_CLIENT_REQUEST
-		rename
-			make as make_request
 		redefine
+			make,
 			session
 		end
 
@@ -23,8 +25,7 @@ feature {NONE} -- Initialization
 
 	make (a_url: READABLE_STRING_8; a_request_method: like request_method; a_session: like session; ctx: like context)
 		do
-			make_request (a_url, a_session, ctx)
-			request_method := a_request_method
+			Precursor (a_url, a_request_method, a_session, ctx)
 			apply_workaround
 		end
 
@@ -38,13 +39,10 @@ feature {NONE} -- Initialization
 
 	session: LIBCURL_HTTP_CLIENT_SESSION
 
-feature -- Access
-
-	request_method: READABLE_STRING_8
-
 feature -- Execution
 
-	execute: HTTP_CLIENT_RESPONSE
+	response: HTTP_CLIENT_RESPONSE
+			-- <Precursor>
 		local
 			l_result: INTEGER
 			l_curl_string: detachable CURL_STRING
@@ -390,7 +388,7 @@ feature {NONE} -- Implementation
 		end
 
 note
-	copyright: "2011-2013, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
+	copyright: "2011-2015, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software
