@@ -19,7 +19,7 @@ note
 class
 	WSF_RESPONSE
 
-create {WSF_TO_WGI_SERVICE}
+create {WSF_TO_WGI_SERVICE, WSF_EXECUTION}
 	make_from_wgi
 
 create {WSF_RESPONSE}
@@ -520,7 +520,7 @@ feature -- Error reporting
 		end
 
 note
-	copyright: "2011-2014, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Colin Adams, Eiffel Software and others"
+	copyright: "2011-2015, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Colin Adams, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software
