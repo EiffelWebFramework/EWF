@@ -3,7 +3,7 @@ note
 			This class represents the value of a HTTP cookie, transferred in a request.
 			The class has features to build an HTTP cookie.
 			
-			Following a newer RFC standard for Cookies RCF6265.
+			Following a newer RFC standard for Cookies http://tools.ietf.org/html/rfc6265 
 			
 			Domain
 			* WARNING: Some existing user agents treat an absent Domain attribute as if the Domain attribute were present and contained the current host name.  
@@ -20,7 +20,7 @@ note
 ]"
 	date: "$Date$"
 	revision: "$Revision$"
-	EIS: "name=HTTP Cookie specification", "src=https://httpwg.github.io/specs/rfc6265.html", "protocol=uri"
+	EIS: "name=HTTP Cookie specification", "src=http://tools.ietf.org/html/rfc6265", "protocol=uri"
 class
 	HTTP_COOKIE
 
@@ -29,7 +29,7 @@ create
 
 feature {NONE} -- Initialization
 
-	make (a_name: READABLE_STRING_32; a_value: READABLE_STRING_32)
+	make (a_name: READABLE_STRING_8; a_value: READABLE_STRING_8)
 			-- Create an object instance of cookie with name `a_name' and value `a_value'.
 		require
 			make_sense: (a_name /= Void and a_value /= Void) and then (not a_name.is_empty and not a_value.is_empty)
@@ -45,21 +45,21 @@ feature {NONE} -- Initialization
 
 feature -- Access
 
-	name: STRING_32
+	name: STRING_8
 		-- name of the cookie.
 
-	value: STRING_32
+	value: STRING_8
 		-- value of the cookie.
 
-	expiration: detachable STRING
+	expiration: detachable STRING_8
 		-- Value of the Expires attribute.
 
-	path: detachable STRING_32
+	path: detachable STRING_8
 		-- Value of the Path attribute.
 		-- Path to which the cookie applies.
 		--| The path "/", specify a cookie that apply to all URLs in your site.
 
-	domain: detachable STRING_32
+	domain: detachable STRING_8
 		-- Value of the Domain attribute.
 		-- Domain to which the cookies apply.
 
@@ -79,23 +79,22 @@ feature -- Access
 		--| By default max_age < 0 indicate a cookie will last only for the current user-agent (Browser, etc) session.
 		--|	A value of 0 instructs the user-agent to delete the cookie.
 
-	has_valid_characters (a_name: READABLE_STRING_32):BOOLEAN
+	has_valid_characters (a_name: READABLE_STRING_GENERAL):BOOLEAN
 			-- Has `a_name' valid characters for cookies?
 		local
 			l_iterator: STRING_ITERATION_CURSOR
 			l_found: BOOLEAN
 		do
 			create l_iterator.make (a_name)
-			from
-				l_iterator.start
+
+			across
+				l_iterator as ic
 			until
-				l_iterator.after or l_found
+				l_found
 			loop
-				if valid_characters.index_of (l_iterator.item.to_character_8, 0) = -1 then
+				if is_valid_character (ic.item.to_character_8) then
 					Result := False
 					l_found := True
-				else
-					l_iterator.forth
 				end
 			end
 		end
@@ -110,28 +109,28 @@ feature -- Access
 
 feature -- Change Element
 
-	set_name (a_name: READABLE_STRING_32)
+	set_name (a_name: READABLE_STRING_GENERAL)
 			-- Set `name' with `a_name'.
 		do
-			name := a_name
+			name := a_name.as_string_8
 		ensure
 			name_set: name = a_name
 		end
 
-	set_value (a_value: READABLE_STRING_32)
+	set_value (a_value: READABLE_STRING_GENERAL)
 			-- Set `value' with `a_value'.
 		do
-			value := a_value
+			value := a_value.as_string_8
 		ensure
 			value_set:  value = a_value
 		end
 
-	set_expiration (a_date: READABLE_STRING_32)
+	set_expiration (a_date: READABLE_STRING_GENERAL)
 			-- Set `expiration' with `a_date'
 		do
-			expiration := a_date
+			expiration := a_date.as_string_32
 		ensure
-			expiration_set: attached expiration as l_expiration and then l_expiration.same_string (a_date)
+			expiration_set: attached expiration as l_expiration and then l_expiration.same_string (a_date.as_string_8)
 		end
 
 	set_expiration_date (a_date: DATE_TIME)
@@ -142,22 +141,22 @@ feature -- Change Element
 			expiration_set: attached expiration as l_expiration and then l_expiration.same_string (date_to_rfc1123_http_date_format (a_date))
 		end
 
-	set_path (a_path: READABLE_STRING_32)
+	set_path (a_path: READABLE_STRING_GENERAL)
 			-- Set `path' with `a_path'
 		do
-			path := a_path
+			path := a_path.as_string_8
 		ensure
 			path_set: path = a_path
 		end
 
-	set_domain (a_domain: READABLE_STRING_32)
+	set_domain (a_domain: READABLE_STRING_GENERAL)
 			-- Set `domain' with `a_domain'
 			-- Note: you should avoid using "localhost" as `domain' for local cookies
 			--       since they are not always handled by browser (for instance Chrome)
 		require
 			domain_without_port_info: a_domain /= Void implies a_domain.index_of (':', 1) = 0
 		do
-			domain := a_domain
+			domain := a_domain.as_string_8
 		ensure
 			domain_set: domain = a_domain
 		end
@@ -236,7 +235,7 @@ feature -- Date Utils
 
 feature -- Output
 
-	cookie_header: STRING
+	header_line: STRING
 			-- String representation of Set-Cookie header of current.
 		local
 			s: STRING
@@ -306,6 +305,31 @@ feature {NONE} -- Constants
 		once
 			Result := ("!#$%%&'()*+-./0123456789:<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_`abcdefghijklmnopqrstuvwxyz{|}~").area
 		end
+
+
+	is_valid_character (c: CHARACTER): BOOLEAN
+			-- RFC6265 that specifies that the following is valid for characters in cookies. Cookies are also supposed to be double quoted.
+			-- The following character ranges are valid:http://tools.ietf.org/html/rfc6265#section-4.1.1
+			-- %x21 / %x23-2B / %x2D-3A / %x3C-5B / %x5D-7E
+			-- 0x21: !
+			-- 0x23-2B: #$%&'()*+
+			-- 0x2D-3A: -./0123456789:
+			-- 0x3C-5B: <=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[
+			-- 0x5D-7E: ]^_`abcdefghijklmnopqrstuvwxyz{|}~
+			note
+				EIS: "name=valid-characters", "src=http://tools.ietf.org/html/rfc6265#section-4.1.1", "protocol=uri"
+			do
+				Result := True
+				inspect c.natural_32_code
+				when 0x21 then
+				when 0x23 .. 0x2B then
+				when 0x2D .. 0x3A then
+				when 0x3C .. 0x5B then
+				when 0x5D .. 0x7E then
+				else
+					Result := False
+				end
+			end
 
 note
 	copyright: "2011-2015, Jocelyn Fiat, Eiffel Software and others"
