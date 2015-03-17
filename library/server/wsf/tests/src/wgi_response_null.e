@@ -1,5 +1,9 @@
 note
-	description: "Summary description for {WGI_RESPONSE_NULL}."
+	description: "[
+	Mock implementation of the WGI_RESPONSE interface.
+
+	Used for testing the ewf core and also web applications.
+	]"
 	date: "$Date$"
 	revision: "$Revision$"
 

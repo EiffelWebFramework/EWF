@@ -1,6 +1,9 @@
 note
-	description: "Summary description for {WSF_SERVICE_NULL}."
-	author: ""
+	description: "[
+	Mock implementation of the WGI_SERVICE interface.
+
+	Used for testing the ewf core and also web applications
+	]"
 	date: "$Date$"
 	revision: "$Revision$"
 

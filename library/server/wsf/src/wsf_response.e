@@ -325,19 +325,16 @@ feature -- Header add cookie
   			--| the same response with the same cookie-name.
 		local
 			l_same_cookie_name: BOOLEAN
-			l_cookie_header: STRING
-			l_cn: STRING
 			l_nv: STRING
 		do
-			across internal_header.headers as ic until l_same_cookie_name loop
+			across
+				internal_header.headers as ic
+			until l_same_cookie_name
+			loop
 				if ic.item.starts_with ("Set-Cookie") then
-					l_cookie_header := ic.item.twin
-					l_cookie_header.to_lower
-					l_cn := a_cookie.name
-					l_cn.to_lower
-					l_nv := l_cookie_header.split (';').at (1).split (':').at (2)
+					l_nv := ic.item.split (';').at (1).split (':').at (2)
 					l_nv.adjust
-					if l_nv.starts_with (l_cn) then
+					if l_nv.starts_with (a_cookie.name) then
 						l_same_cookie_name := True
 					end
 				end
