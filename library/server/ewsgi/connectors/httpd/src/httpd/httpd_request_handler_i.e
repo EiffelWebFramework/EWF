@@ -28,6 +28,8 @@ feature {NONE} -- Initialization
 			end
 			client_socket := Void
 
+			listening_socket := Void
+
 				-- FIXME: optimize to just wipe_out if needed
 			create method.make_empty
 			create uri.make_empty
@@ -39,6 +41,8 @@ feature {NONE} -- Initialization
 feature -- Access
 
 	client_socket: detachable HTTPD_STREAM_SOCKET
+
+	listening_socket: detachable separate HTTPD_STREAM_SOCKET
 
 	request_header: STRING
 			-- Header' source
