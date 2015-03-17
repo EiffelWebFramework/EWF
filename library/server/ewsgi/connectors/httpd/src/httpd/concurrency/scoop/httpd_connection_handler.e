@@ -94,7 +94,9 @@ feature {HTTPD_SERVER_I} -- Execution
 				dbglog (generator + ".ENTER process_request_handler_on_accept")
 			end
 
-			hdl.accept_from_listening_socket (a_listening_socket)
+			hdl.set_listening_socket (a_listening_socket)
+
+--			hdl.accept_from_listening_socket (a_listening_socket)
 			if hdl.has_error then
 				log ("Internal error (accept_from_listening_socket failed)")
 			else

@@ -22,6 +22,11 @@ inherit
 
 feature -- Change
 
+	set_listening_socket (a_listening_socket: separate HTTPD_STREAM_SOCKET)
+		do
+			listening_socket := a_listening_socket
+		end
+
 	accept_from_listening_socket (a_listening_socket: separate HTTPD_STREAM_SOCKET)
 		local
 			retried: BOOLEAN
@@ -32,8 +37,21 @@ feature -- Change
 			else
 				create s.make_empty
 				client_socket := s
+				debug ("dbglog")
+					dbglog ("before accept_to")
+				end
+				print ("[EWF/DBG] <#" + processor_id_from_object (Current).out + "> accept_to%N")
 				a_listening_socket.accept_to (s)
-				if not s.is_created then
+
+				if s.is_created then
+					debug ("dbglog")
+						dbglog ("after accept_to " + s.descriptor.out)
+					end
+				else
+					debug ("dbglog")
+						dbglog ("after accept_to ERROR")
+					end
+
 					has_error := True
 					client_socket := Void
 				end
@@ -47,10 +65,16 @@ feature -- Execution
 
 	separate_execution: BOOLEAN
 		do
-			if attached client_socket as s then
-				execute (s)
+			Result := False
+			if attached listening_socket as l_listening_socket then
+				accept_from_listening_socket (l_listening_socket)
+				if not has_error then
+					if attached client_socket as s then
+						execute (s)
+						Result := True
+					end
+				end
 			end
-			Result := True
 		end
 
 feature {CONCURRENT_POOL, HTTPD_CONNECTION_HANDLER_I} -- Basic operation		

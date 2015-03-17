@@ -23,6 +23,7 @@ feature {NONE} -- Initialization
 			print ("Hello%N")
 			create fac
 			create server.make (fac)
+			server.configuration.set_max_concurrent_connections (100)
 			server.configuration.set_http_server_port (9090)
 			server.launch
 		end
