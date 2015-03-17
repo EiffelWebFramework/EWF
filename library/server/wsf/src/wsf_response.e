@@ -316,6 +316,37 @@ feature -- Header output operation: helpers
 			end
 		end
 
+feature -- Header add cookie
+
+	add_cookie (a_cookie: WSF_COOKIE)
+			-- Add a Set-Cookie header field to the response, iff there is not exist
+			-- a Set-Cookie header field with the same cookie-name.
+			--| Servers SHOULD NOT include more than one Set-Cookie header field in
+  			--| the same response with the same cookie-name.
+		local
+			l_same_cookie_name: BOOLEAN
+			l_cookie_header: STRING
+			l_cn: STRING
+			l_nv: STRING
+		do
+			across internal_header.headers as ic until l_same_cookie_name loop
+				if ic.item.starts_with ("Set-Cookie") then
+					l_cookie_header := ic.item.twin
+					l_cookie_header.to_lower
+					l_cn := a_cookie.name
+					l_cn.to_lower
+					l_nv := l_cookie_header.split (';').at (1).split (':').at (2)
+					l_nv.adjust
+					if l_nv.starts_with (l_cn) then
+						l_same_cookie_name := True
+					end
+				end
+			end
+			if not l_same_cookie_name then
+				internal_header.add_header (a_cookie.header_line)
+			end
+		end
+
 feature -- Output report
 
 	transfered_content_length: NATURAL_64
@@ -520,7 +551,7 @@ feature -- Error reporting
 		end
 
 note
-	copyright: "2011-2014, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Colin Adams, Eiffel Software and others"
+	copyright: "2011-2015, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Colin Adams, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software
