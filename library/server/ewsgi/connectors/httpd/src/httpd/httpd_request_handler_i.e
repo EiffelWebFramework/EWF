@@ -23,21 +23,22 @@ feature {NONE} -- Initialization
 			version := Void
 			remote_info := Void
 
---			if attached client_socket as l_sock then
---				l_sock.cleanup
---			end
---			client_socket := Void
+			if attached client_socket as l_sock then
+				l_sock.cleanup
+			end
+			client_socket := Void
 
 				-- FIXME: optimize to just wipe_out if needed
 			create method.make_empty
 			create uri.make_empty
 			create request_header.make_empty
 			create request_header_map.make (10)
+
 		end
 
 feature -- Access
 
---	client_socket: detachable TCP_STREAM_SOCKET
+	client_socket: detachable HTTPD_STREAM_SOCKET
 
 	request_header: STRING
 			-- Header' source
@@ -68,16 +69,6 @@ feature -- Status report
 			-- Error occurred during `analyze_request_message'
 
 feature -- Change
-
---	set_client_socket (a_socket: separate TCP_STREAM_SOCKET)
---		require
---			socket_attached: a_socket /= Void
---			socket_valid: a_socket.is_open_read and then a_socket.is_open_write
---			a_http_socket: not a_socket.is_closed
---		deferred
---		ensure
---			attached client_socket as s implies s.descriptor = a_socket.descriptor
---		end
 
 	set_is_verbose (b: BOOLEAN)
 		do
@@ -265,7 +256,7 @@ invariant
 	request_header_attached: request_header /= Void
 
 note
-	copyright: "2011-2014, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
+	copyright: "2011-2015, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

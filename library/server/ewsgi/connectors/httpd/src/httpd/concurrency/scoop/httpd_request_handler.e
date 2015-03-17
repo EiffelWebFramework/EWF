@@ -12,9 +12,7 @@ deferred class
 inherit
 	HTTPD_REQUEST_HANDLER_I
 		redefine
---			set_client_socket,			
-			release,
-			reset
+			release
 		end
 
 	CONCURRENT_POOL_ITEM
@@ -22,42 +20,23 @@ inherit
 			release as release_pool_item
 		end
 
-feature {NONE} -- Initialization
-
-	reset
-		do
-			if attached client_socket_source as l_sock then
-				cleanup_separate_socket (l_sock)
-			end
-			Precursor
-			client_socket_source := Void
-		end
-
-	cleanup_separate_socket (a_socket: attached like client_socket_source)
-		do
-			a_socket.cleanup
-		end
-
-feature -- Access
-
-	client_socket: detachable HTTPD_STREAM_SOCKET
-
-	client_socket_source: detachable separate HTTPD_STREAM_SOCKET
-				-- Associated original client socket
-				-- kept to avoid being closed when disposed,
-				-- and thus avoid closing related `client_socket'.		
-
 feature -- Change
 
-	set_client_socket (a_socket: separate HTTPD_STREAM_SOCKET)
+	accept_from_listening_socket (a_listening_socket: separate HTTPD_STREAM_SOCKET)
 		local
 			retried: BOOLEAN
+			s: like client_socket
 		do
 			if retried then
 				has_error := True
 			else
-				create client_socket.make_from_separate (a_socket)
-				client_socket_source := a_socket
+				create s.make_empty
+				client_socket := s
+				a_listening_socket.accept_to (s)
+				if not s.is_created then
+					has_error := True
+					client_socket := Void
+				end
 			end
 		rescue
 			retried := True
@@ -99,7 +78,7 @@ feature {CONCURRENT_POOL, HTTPD_CONNECTION_HANDLER_I} -- Basic operation
 		end
 
 note
-	copyright: "2011-2014, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
+	copyright: "2011-2015, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

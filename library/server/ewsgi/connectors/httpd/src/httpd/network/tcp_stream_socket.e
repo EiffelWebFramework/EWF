@@ -15,11 +15,11 @@ inherit
 create
 	make_server_by_address_and_port,
 	make_server_by_port,
-	make_from_separate
+	make_from_separate,
+	make_empty
 
 create {NETWORK_STREAM_SOCKET}
-	make_from_descriptor_and_address,
-	make_empty
+	make_from_descriptor_and_address
 
 feature {NONE} -- Initialization
 
@@ -27,7 +27,9 @@ feature {NONE} -- Initialization
 			-- Create a network stream socket.
 		do
 			Precursor
-			set_reuse_address
+			debug
+				set_reuse_address
+			end
 		end
 
 	make_server_by_address_and_port (an_address: INET_ADDRESS; a_port: INTEGER)

@@ -126,8 +126,7 @@ feature -- Listening
 			-- Creates a socket and connects to the http server.
 			-- `a_server': The main server object
 		local
-			l_listening_socket,
-			l_accepted_socket: detachable HTTPD_STREAM_SOCKET
+			l_listening_socket: detachable HTTPD_STREAM_SOCKET
 			l_http_port: INTEGER
 			l_connection_handler: HTTPD_CONNECTION_HANDLER
 		do
@@ -164,23 +163,18 @@ feature -- Listening
 				until
 					is_shutdown_requested
 				loop
-					l_listening_socket.accept
-					if not is_shutdown_requested then
-						l_accepted_socket := l_listening_socket.accepted
-						if l_accepted_socket /= Void then
-							request_counter := request_counter + 1
-							if is_verbose then
-								log ("#" + request_counter.out + "# Incoming connection...(socket:" + l_accepted_socket.descriptor.out + ")")
-							end
-							debug ("dbglog")
-								dbglog (generator + ".before process_incoming_connection {" + l_accepted_socket.descriptor.out + "}" )
-							end
-							l_connection_handler.process_incoming_connection (l_accepted_socket)
-							debug ("dbglog")
-								dbglog (generator + ".after process_incoming_connection {" + l_accepted_socket.descriptor.out + "}")
-							end
-						end
+					request_counter := request_counter + 1
+					if is_verbose then
+						log ("#" + request_counter.out + "# Waiting connection...(listening socket:" + l_listening_socket.descriptor.out + ")")
 					end
+					debug ("dbglog")
+						dbglog (generator + ".before process_waiting_incoming_connection")
+					end
+					l_connection_handler.accept_incoming_connection (l_listening_socket)
+					debug ("dbglog")
+						dbglog (generator + ".after process_waiting_incoming_connection")
+					end
+
 					update_is_shutdown_requested (l_connection_handler)
 				end
 				wait_for_connection_handler_completion (l_connection_handler)
@@ -304,7 +298,7 @@ feature -- Output
 		end
 
 note
-	copyright: "2011-2014, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
+	copyright: "2011-2015, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software
