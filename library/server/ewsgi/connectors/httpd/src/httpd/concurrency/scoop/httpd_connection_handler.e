@@ -57,45 +57,33 @@ feature {HTTPD_SERVER_I} -- Execution
 			p.gracefull_stop
 		end
 
-	process_incoming_connection (a_socket: HTTPD_STREAM_SOCKET)
-			-- <Precursor>
+	accept_incoming_connection (a_listening_socket: HTTPD_STREAM_SOCKET)
 		do
-			debug ("dbglog")
-				dbglog (generator + ".before process_incoming_connection {"+ a_socket.descriptor.out +"} -- SCOOP WAIT!")
-			end
---			if is_shutdown_requested then
---				a_socket.cleanup
---			else
-				process_connection_on_pool (a_socket, pool) -- Wait on not pool.is_full or is_stop_requested
---			end
-			debug ("dbglog")
-				dbglog (generator + ".after process_incoming_connection {"+ a_socket.descriptor.out +"}")
-			end
+			accept_connection_on_pool (a_listening_socket, pool) -- Wait on not pool.is_full or is_stop_requested
 		end
 
-	process_connection_on_pool (a_socket: HTTPD_STREAM_SOCKET; a_pool: like pool)
-			-- Process incoming connection
+	accept_connection_on_pool (a_listening_socket: HTTPD_STREAM_SOCKET; a_pool: like pool)
+			-- Process accept connection
 			-- note that the precondition matters for scoop synchronization.
 		require
 			concurrency: not a_pool.is_full or is_shutdown_requested or a_pool.stop_requested
 		do
 			debug ("dbglog")
-				dbglog (generator + ".ENTER process_connection {"+ a_socket.descriptor.out +"}")
+				dbglog (generator + ".ENTER accept_connection_on_pool")
 			end
 			if is_shutdown_requested then
-				a_socket.cleanup
+					-- Cancel
 			elseif attached a_pool.separate_item (factory) as h then
-				process_request_handler (h, a_socket)
+				process_request_handler_on_accept (h, a_listening_socket)
 			else
 				check is_not_full: False end
-				a_socket.cleanup
 			end
 			debug ("dbglog")
-				dbglog (generator + ".LEAVE process_connection {"+ a_socket.descriptor.out +"}")
+				dbglog (generator + ".LEAVE accept_connection_on_pool")
 			end
 		end
 
-	process_request_handler (hdl: separate HTTPD_REQUEST_HANDLER; a_socket: HTTPD_STREAM_SOCKET)
+	process_request_handler_on_accept (hdl: separate HTTPD_REQUEST_HANDLER; a_listening_socket: HTTPD_STREAM_SOCKET)
 		require
 			not hdl.has_error
 		do
@@ -103,20 +91,21 @@ feature {HTTPD_SERVER_I} -- Execution
 				--| also handle permanent connection...?
 
 			debug ("dbglog")
-				dbglog (generator + ".ENTER process_request_handler {"+ a_socket.descriptor.out +"}")
+				dbglog (generator + ".ENTER process_request_handler_on_accept")
 			end
 
-			hdl.set_client_socket (a_socket)
+			hdl.accept_from_listening_socket (a_listening_socket)
 			if hdl.has_error then
-				log ("Internal error (set_client_socket failed)")
+				log ("Internal error (accept_from_listening_socket failed)")
 			else
 --				hdl.set_logger (server)
 				if attached hdl.separate_execution as l_result then
+
 				end
 				hdl.separate_release
 			end
 			debug ("dbglog")
-				dbglog (generator + ".LEAVE process_request_handler {"+ a_socket.descriptor.out +"}")
+				dbglog (generator + ".LEAVE process_request_handler_on_accept")
 			end
 		rescue
 			log ("Releasing handler after exception!")

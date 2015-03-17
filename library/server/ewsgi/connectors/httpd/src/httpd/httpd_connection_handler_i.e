@@ -38,7 +38,7 @@ feature {NONE} -- Access
 
 feature {HTTPD_SERVER_I} -- Execution
 
-	process_incoming_connection (a_socket: HTTPD_STREAM_SOCKET)
+	accept_incoming_connection (a_listening_socket: HTTPD_STREAM_SOCKET)
 		deferred
 		end
 
@@ -72,7 +72,7 @@ feature {NONE} -- Output
 		end
 
 note
-	copyright: "2011-2014, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
+	copyright: "2011-2015, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

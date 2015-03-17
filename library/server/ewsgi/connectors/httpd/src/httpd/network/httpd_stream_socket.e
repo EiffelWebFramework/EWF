@@ -12,7 +12,8 @@ class
 create
 	make_server_by_address_and_port,
 	make_server_by_port,
-	make_from_separate
+	make_from_separate,
+	make_empty
 
 create {HTTPD_STREAM_SOCKET}
 	make
@@ -34,6 +35,11 @@ feature {NONE} -- Initialization
 			descriptor_available: s.descriptor_available
 		do
 			create {TCP_STREAM_SOCKET} socket.make_from_separate (s.socket)
+		end
+
+	make_empty
+		do
+			create {TCP_STREAM_SOCKET} socket.make_empty
 		end
 
 	retrieve_socket (s: HTTPD_STREAM_SOCKET): INTEGER
@@ -147,6 +153,13 @@ feature -- Status Report
 			end
 		end
 
+	is_created: BOOLEAN
+		do
+			if attached {NETWORK_SOCKET} socket as l_socket then
+				Result := l_socket.is_created
+			end
+		end
+
 	socket_ok: BOOLEAN
 		do
 			Result := socket.socket_ok
@@ -194,6 +207,18 @@ feature -- Status Report
 			socket.accept
 		end
 
+	accept_to (other: separate HTTPD_STREAM_SOCKET)
+			-- Accept a new connection on listen socket.
+			-- Socket of accepted connection is available in `other'.
+		do
+			if
+				attached {NETWORK_STREAM_SOCKET} socket as l_socket and then
+				attached {separate NETWORK_STREAM_SOCKET} other.socket as l_other_socket
+			then
+				l_socket.accept_to (l_other_socket)
+			end
+		end
+
 	set_blocking
 		do
 			socket.set_blocking
@@ -225,7 +250,7 @@ feature -- Status Report
 
 	accepted: detachable HTTPD_STREAM_SOCKET
 		do
-			if attached socket.accepted as l_accepted then
+			if attached {NETWORK_STREAM_SOCKET} socket.accepted as l_accepted then
 				create Result.make (l_accepted)
 			end
 		end
@@ -239,8 +264,15 @@ feature {HTTPD_STREAM_SOCKET} -- Implementation
 
 	socket: STREAM_SOCKET
 
+	network_stream_socket: detachable NETWORK_STREAM_SOCKET
+		do
+			if attached {NETWORK_STREAM_SOCKET} socket as s then
+				Result := s
+			end
+		end
+
 ;note
-	copyright: "2011-2014, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
+	copyright: "2011-2015, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software
