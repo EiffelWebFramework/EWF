@@ -124,7 +124,7 @@ feature -- Error reporting
 			end
 		end
 
-feature {EQA_TEST_SET} -- Implementation: Access
+feature -- Implementation: Access
 
 	output: STRING
 			-- Server output channel

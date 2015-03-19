@@ -331,12 +331,8 @@ feature -- Header add cookie
 				internal_header.headers as ic
 			until l_same_cookie_name
 			loop
-				if ic.item.starts_with ("Set-Cookie") then
-					l_nv := ic.item.split (';').at (1).split (':').at (2)
-					l_nv.adjust
-					if l_nv.starts_with (a_cookie.name) then
-						l_same_cookie_name := True
-					end
+				if is_cookie_line (ic.item) then
+					l_same_cookie_name := has_cookie_name (ic.item, a_cookie.name)
 				end
 			end
 			if not l_same_cookie_name then
@@ -545,6 +541,46 @@ feature -- Error reporting
 			-- This might be used by the underlying connector
 		do
 			wgi_response.put_error (a_message)
+		end
+
+feature {NONE} -- Implemenation
+
+	has_cookie_name (a_cookie_line, a_cookie_name: READABLE_STRING_32 ): BOOLEAN
+ 			-- Has the cookie line `a_cookie_line', the cookie name `a_cookie_name'?
+ 		local
+ 			i,j: INTEGER
+ 		do
+ 			Result := False
+ 			i := a_cookie_line.index_of ('=', 1)
+			j := a_cookie_line.index_of (':', 1)
+
+			if i > j and j > 0 then
+			   i := i - 1
+			   j := j + 1
+			   from until not a_cookie_line[j].is_space loop
+			     j := j + 1
+			   end
+			   if a_cookie_line.substring (j, i).same_string (a_cookie_name) then
+			      Result := True
+			   end
+			end
+		end
+
+
+	is_cookie_line (a_line: READABLE_STRING_32): BOOLEAN
+			-- Is the line `a_line' a cookie line?
+			--| Set-Cookie: user_id=%"u12;345%"; Domain=www.example.com; Path=/; Expires=Sat, 18 Apr 2015 21:22:05 GMT; Max-Age=-1; Secure; HttpOnly
+		local
+			j: INTEGER
+		do
+			Result := False
+			j := a_line.index_of (':', 1)
+			if j > 0 then
+			   j := j - 1
+			   if a_line.substring (1, j).same_string ("Set-Cookie") then
+			      Result := True
+			   end
+			end
 		end
 
 note

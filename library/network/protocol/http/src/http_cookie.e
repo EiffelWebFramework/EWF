@@ -95,7 +95,7 @@ feature -- Access
 			until
 				l_found
 			loop
-				if not is_valid_character (ic.item.to_character_8) then
+				if not is_valid_character (ic.item.natural_32_code) then
 					Result := False
 					l_found := True
 				end
@@ -304,7 +304,7 @@ feature {NONE} -- Constants
 		end
 
 
-	is_valid_character (c: CHARACTER): BOOLEAN
+	is_valid_character (c: NATURAL_32): BOOLEAN
 			-- RFC6265 that specifies that the following is valid for characters in cookies.
 			-- The following character ranges are valid:http://tools.ietf.org/html/rfc6265#section-4.1.1
 			-- %x21 / %x23-2B / %x2D-3A / %x3C-5B / %x5D-7E
@@ -317,7 +317,7 @@ feature {NONE} -- Constants
 				EIS: "name=valid-characters", "src=http://tools.ietf.org/html/rfc6265#section-4.1.1", "protocol=uri"
 			do
 				Result := True
-				inspect c.natural_32_code
+				inspect c
 				when 0x21 then
 				when 0x23 .. 0x2B then
 				when 0x2D .. 0x3A then
