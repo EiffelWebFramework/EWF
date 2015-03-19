@@ -331,7 +331,7 @@ feature -- Header add cookie
 				internal_header.headers as ic
 			until l_same_cookie_name
 			loop
-				if is_cookie_line (ic.item) then
+				if ic.item.starts_with ("Set-Cookie:") then
 					l_same_cookie_name := has_cookie_name (ic.item, a_cookie.name)
 				end
 			end
@@ -560,24 +560,7 @@ feature {NONE} -- Implemenation
 			   from until not a_cookie_line[j].is_space loop
 			     j := j + 1
 			   end
-			   if a_cookie_line.substring (j, i).same_string (a_cookie_name) then
-			      Result := True
-			   end
-			end
-		end
-
-
-	is_cookie_line (a_line: READABLE_STRING_32): BOOLEAN
-			-- Is the line `a_line' a cookie line?
-			--| Set-Cookie: user_id=%"u12;345%"; Domain=www.example.com; Path=/; Expires=Sat, 18 Apr 2015 21:22:05 GMT; Max-Age=-1; Secure; HttpOnly
-		local
-			j: INTEGER
-		do
-			Result := False
-			j := a_line.index_of (':', 1)
-			if j > 0 then
-			   j := j - 1
-			   if a_line.substring (1, j).same_string ("Set-Cookie") then
+			   if a_cookie_name.same_characters (a_cookie_line, j, i, 1) then
 			      Result := True
 			   end
 			end

@@ -33,7 +33,6 @@ feature {NONE} -- Initialization
 			-- Create an object instance of cookie with name `a_name' and value `a_value'.
 		require
 			a_name_not_blank: a_name /= Void and then not a_name.is_whitespace
-			a_value_not_empty: a_value /= Void and then not a_value.is_empty
 			a_name_has_valid_characters: a_name /= Void and then has_valid_characters (a_name)
 			a_value_has_valid_characters: a_value /= Void and then has_valid_characters (a_value)
 		do
@@ -110,6 +109,16 @@ feature -- Access
 		-- Does the Set-Cookie header include Expires attribute?
 		--|By default will include both.	
 
+
+	is_valid_rfc1123_date (a_string: READABLE_STRING_8): BOOLEAN
+			-- Is the date represented by `a_string' a valid rfc1123 date?
+		local
+			d: HTTP_DATE
+		do
+			create d.make_from_string (a_string)
+			Result := not d.has_error and then d.rfc1123_string.same_string (a_string)
+		end
+		
 feature -- Change Element
 
 	set_name (a_name: READABLE_STRING_8)
@@ -126,7 +135,6 @@ feature -- Change Element
 	set_value (a_value: READABLE_STRING_8)
 			-- Set `value' with `a_value'.
 		require
-			a_value_not_empty: a_value /= Void and then not a_value.is_empty
 			a_value_has_valid_characters: a_value /= Void and then has_valid_characters (a_value)
 		do
 			value := a_value
@@ -136,6 +144,8 @@ feature -- Change Element
 
 	set_expiration (a_date: READABLE_STRING_8)
 			-- Set `expiration' with `a_date'
+		require
+			rfc1133_date: a_date /= Void and then is_valid_rfc1123_date (a_date)
 		do
 			expiration := a_date
 		ensure
@@ -163,7 +173,7 @@ feature -- Change Element
 			-- Note: you should avoid using "localhost" as `domain' for local cookies
 			--       since they are not always handled by browser (for instance Chrome)
 		require
-			domain_without_port_info: a_domain /= Void implies a_domain.index_of (':', 1) = 0
+			domain_without_port_info: a_domain /= Void implies not a_domain.has (':')
 		do
 			domain := a_domain
 		ensure

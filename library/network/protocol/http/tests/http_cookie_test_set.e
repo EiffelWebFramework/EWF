@@ -36,6 +36,15 @@ feature -- Test routines
 			assert ("Not valid Dquote", not l_cookie.has_valid_characters ("Use!%"12"))
 		end
 
+	test_cookie_empty_value
+			-- values (cookie name and value)
+		local
+			l_cookie: HTTP_COOKIE
+		do
+			create l_cookie.make ("user_id", "")
+			assert("Expected", l_cookie.header_line.same_string ("Set-Cookie: user_id=; Max-Age=-1"))
+		end
+
 	test_cookie_full_attributes
 		local
 			l_cookie: HTTP_COOKIE
@@ -122,6 +131,22 @@ feature -- Test routines
 			create l_cookie.make ("user_id", "u12345")
 			l_cookie.set_max_age (120)
 			assert("Expected", l_cookie.header_line.same_string ("Set-Cookie: user_id=u12345; Max-Age=120"))
+		end
+
+	test_cookie_date_rfc1123_valid
+		local
+			l_cookie: HTTP_COOKIE
+		do
+			create l_cookie.make ("user_id", "u12345")
+			assert ("Valid RFC1123", l_cookie.is_valid_rfc1123_date ("Thu, 19 Mar 2015 16:14:03 GMT"))
+		end
+
+	test_cookie_date_rfc1123_invalid
+		local
+			l_cookie: HTTP_COOKIE
+		do
+			create l_cookie.make ("user_id", "u12345")
+			assert ("Invalid RFC1123", not l_cookie.is_valid_rfc1123_date ("Thuesday, 19 Mar 2015 16:14:03 GMT"))
 		end
 
 
