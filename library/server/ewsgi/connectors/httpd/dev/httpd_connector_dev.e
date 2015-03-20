@@ -17,12 +17,17 @@ feature {NONE} -- Initialization
 	make
 			-- Initialize `Current'.
 		local
-			server: HTTPD_SERVER
+			server: separate HTTPD_SERVER
 			fac: separate WSF_HTTPD_REQUEST_HANDLER_FACTORY [APP_WSF_EXECUTION]
 		do
 			print ("Hello%N")
 			create fac
 			create server.make (fac)
+			launch_server (server)
+		end
+
+	launch_server (server: separate HTTPD_SERVER)
+		do
 			server.configuration.set_max_concurrent_connections (100)
 			server.configuration.set_http_server_port (9090)
 			server.launch

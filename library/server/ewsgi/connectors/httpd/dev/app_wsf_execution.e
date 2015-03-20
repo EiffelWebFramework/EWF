@@ -10,6 +10,8 @@ class
 inherit
 	WSF_EXECUTION
 
+	SHARED_EXECUTION_ENVIRONMENT
+
 create
 	make
 
@@ -18,11 +20,21 @@ feature -- Execution
 	execute
 		local
 			s: STRING
+			i64: INTEGER_64
 		do
 			s := "Hello Concurrent EWF"
 			s.append (" (counter=")
 			s.append_integer (next_cell_counter_item (counter_cell))
 			s.append (")%N")
+
+			if attached {WSF_STRING} request.query_parameter ("sleep") as p_sleep then
+				if attached p_sleep.value.is_integer then
+					s.append ("sleep for ")
+					i64 := p_sleep.value.to_integer_64 * {INTEGER_64} 1_000_000_000
+					s.append_integer_64 (i64)
+					execution_environment.sleep (i64)
+				end
+			end
 
 			response.set_status_code (200)
 			response.put_header_line ("X-EWF-Dev: v1.0")

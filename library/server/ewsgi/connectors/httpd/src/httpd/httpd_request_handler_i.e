@@ -23,12 +23,10 @@ feature {NONE} -- Initialization
 			version := Void
 			remote_info := Void
 
-			if attached client_socket as l_sock then
+			if attached internal_client_socket as l_sock then
 				l_sock.cleanup
 			end
-			client_socket := Void
-
-			listening_socket := Void
+			internal_client_socket := Void
 
 				-- FIXME: optimize to just wipe_out if needed
 			create method.make_empty
@@ -36,13 +34,24 @@ feature {NONE} -- Initialization
 			create request_header.make_empty
 			create request_header_map.make (10)
 
+			is_waiting := False
 		end
 
 feature -- Access
 
-	client_socket: detachable HTTPD_STREAM_SOCKET
+	internal_client_socket: detachable HTTPD_STREAM_SOCKET
 
-	listening_socket: detachable separate HTTPD_STREAM_SOCKET
+	client_socket: HTTPD_STREAM_SOCKET
+		local
+			s: like internal_client_socket
+		do
+			s := internal_client_socket
+			if s = Void then
+				create s.make_empty
+				internal_client_socket := s
+			end
+			Result := s
+		end
 
 	request_header: STRING
 			-- Header' source
@@ -68,6 +77,8 @@ feature -- Settings
 	is_verbose: BOOLEAN
 
 feature -- Status report
+
+	is_waiting: BOOLEAN
 
 	has_error: BOOLEAN
 			-- Error occurred during `analyze_request_message'
@@ -96,7 +107,7 @@ feature -- Execution
 				end
 			else
 				debug ("dbglog")
-					dbglog (generator + ".ENTER execute {" + a_socket.descriptor.out + "}")
+					dbglog (generator + ".execute {" + a_socket.descriptor.out + "} ENTER")
 				end
 				from until l_continue loop
 					if a_socket.ready_for_reading then
@@ -110,7 +121,7 @@ feature -- Execution
 						end
 	            		analyze_request_message (a_socket)
 	            	else
-						log (generator + ".WAITING execute {" + a_socket.descriptor.out + "}")
+						log (generator + ".execute {" + a_socket.descriptor.out + "} WAITING")
 	            	end
 				end
 
@@ -124,15 +135,17 @@ feature -- Execution
 					process_request (a_socket)
 	            end
 	            debug ("dbglog")
-		            dbglog (generator + ".LEAVE execute {" + a_socket.descriptor.out + "}")
+		            dbglog (generator + ".execute {" + a_socket.descriptor.out + "} LEAVE")
 	            end
 			end
 --            release (a_socket)
 		end
 
-	release (a_socket: HTTPD_STREAM_SOCKET)
+	release (a_socket: detachable HTTPD_STREAM_SOCKET)
 		do
-			a_socket.cleanup
+			if a_socket /= Void then
+				a_socket.cleanup
+			end
 			reset
 		end
 

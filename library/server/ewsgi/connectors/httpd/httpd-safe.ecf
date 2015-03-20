@@ -7,15 +7,19 @@
 			<exclude>/\.git$</exclude>
 			<exclude>/\.svn$</exclude>
 		</file_rule>
-		<option warning="true" full_class_checking="true" is_attached_by_default="true" void_safety="all" syntax="transitional">
+		<option debug="true" warning="true" full_class_checking="true" is_attached_by_default="true" void_safety="all" syntax="transitional">
+			<debug name="dbglog" enabled="true"/>
 		</option>
 		<setting name="concurrency" value="scoop"/>
 		<library name="base" location="$ISE_LIBRARY\library\base\base-safe.ecf"/>
 		<library name="encoder" location="..\..\..\..\text\encoder\encoder-safe.ecf"/>
 		<library name="ewsgi" location="..\..\ewsgi-safe.ecf" readonly="false"/>
-		<library name="wsf" location="..\..\..\wsf\wsf-safe.ecf" readonly="false"/>
 		<library name="http" location="..\..\..\..\network\protocol\http\http-safe.ecf"/>
-		<library name="net" location="$ISE_LIBRARY\library\net\net-safe.ecf"/>
+		<library name="net" location="$ISE_LIBRARY\library\net\net-safe.ecf">
+			<option>
+				<assertions precondition="true" postcondition="true" check="true"/>
+			</option>
+		</library>
 		<library name="net_ssl" location="$ISE_LIBRARY\unstable\library\network\socket\netssl\net_ssl-safe.ecf">
 			<condition>
 				<custom name="httpd_ssl_enabled" value="true"/>
@@ -27,12 +31,13 @@
 			</condition>
 		</library>
 		<library name="time" location="$ISE_LIBRARY\library\time\time-safe.ecf"/>
+		<library name="wsf" location="..\..\..\wsf\wsf-safe.ecf" readonly="false"/>
 		<cluster name="httpd_server" location=".\src\httpd\" recursive="true">
 			<file_rule>
-				<exclude>/ssl$</exclude>
+				<exclude>/concurrency$</exclude>
 				<exclude>/EIFGENs$</exclude>
 				<exclude>/no_ssl$</exclude>
-				<exclude>/concurrency$</exclude>
+				<exclude>/ssl$</exclude>
 			</file_rule>
 			<cluster name="no_ssl" location="$|no_ssl\" recursive="true">
 				<condition>
@@ -68,6 +73,10 @@
 	</target>
 	<target name="dev" extends="connector_httpd">
 		<root class="HTTPD_CONNECTOR_DEV" feature="make"/>
+		<option debug="true">
+			<debug name="dbglog" enabled="true"/>
+			<assertions precondition="true" postcondition="true" check="true" supplier_precondition="true"/>
+		</option>
 		<setting name="concurrency" value="scoop"/>
 		<cluster name="dev" location="dev\" recursive="true"/>
 	</target>

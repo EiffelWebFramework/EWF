@@ -59,14 +59,16 @@ feature {HTTPD_SERVER_I} -- Execution
 
 	accept_incoming_connection (a_listening_socket: HTTPD_STREAM_SOCKET)
 		do
-			accept_connection_on_pool (a_listening_socket, pool) -- Wait on not pool.is_full or is_stop_requested
+			accept_connection_on_pool (pool, a_listening_socket) -- Wait on not pool.is_full or is_stop_requested
 		end
 
-	accept_connection_on_pool (a_listening_socket: HTTPD_STREAM_SOCKET; a_pool: like pool)
+	accept_connection_on_pool (a_pool: like pool; a_listening_socket: HTTPD_STREAM_SOCKET)
 			-- Process accept connection
 			-- note that the precondition matters for scoop synchronization.
 		require
 			concurrency: not a_pool.is_full or is_shutdown_requested or a_pool.stop_requested
+		local
+			cl: separate HTTPD_STREAM_SOCKET
 		do
 			debug ("dbglog")
 				dbglog (generator + ".ENTER accept_connection_on_pool")
@@ -74,7 +76,9 @@ feature {HTTPD_SERVER_I} -- Execution
 			if is_shutdown_requested then
 					-- Cancel
 			elseif attached a_pool.separate_item (factory) as h then
-				process_request_handler_on_accept (h, a_listening_socket)
+				cl := separate_client_socket (h)
+				a_listening_socket.accept_to (cl)
+				process_handler (h)
 			else
 				check is_not_full: False end
 			end
@@ -83,36 +87,16 @@ feature {HTTPD_SERVER_I} -- Execution
 			end
 		end
 
-	process_request_handler_on_accept (hdl: separate HTTPD_REQUEST_HANDLER; a_listening_socket: HTTPD_STREAM_SOCKET)
-		require
-			not hdl.has_error
+	separate_client_socket (hdl: separate HTTPD_REQUEST_HANDLER): separate HTTPD_STREAM_SOCKET
 		do
-				--| FIXME jfiat [2011/11/03] : should use a Pool of Threads/Handler to process this connection
-				--| also handle permanent connection...?
+			Result := hdl.client_socket
+		end
 
-			debug ("dbglog")
-				dbglog (generator + ".ENTER process_request_handler_on_accept")
-			end
-
-			hdl.set_listening_socket (a_listening_socket)
-
---			hdl.accept_from_listening_socket (a_listening_socket)
-			if hdl.has_error then
-				log ("Internal error (accept_from_listening_socket failed)")
-			else
---				hdl.set_logger (server)
-				if attached hdl.separate_execution as l_result then
-
-				end
-				hdl.separate_release
-			end
-			debug ("dbglog")
-				dbglog (generator + ".LEAVE process_request_handler_on_accept")
-			end
-		rescue
-			log ("Releasing handler after exception!")
-			hdl.separate_release
---			a_socket.cleanup
+	process_handler (hdl: separate HTTPD_REQUEST_HANDLER)
+		require
+			hdl.is_connected
+		do
+			hdl.separate_execute
 		end
 
 feature {HTTPD_SERVER_I} -- Status report
