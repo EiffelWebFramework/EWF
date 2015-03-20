@@ -96,7 +96,7 @@ feature {HTTPD_SERVER_I} -- Execution
 		require
 			hdl.is_connected
 		do
-			hdl.separate_execute
+			hdl.safe_execute
 		end
 
 feature {HTTPD_SERVER_I} -- Status report
