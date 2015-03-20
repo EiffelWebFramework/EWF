@@ -20,77 +20,52 @@ inherit
 			release as release_pool_item
 		end
 
-feature -- Change
+feature -- Status report
 
-	set_listening_socket (a_listening_socket: separate HTTPD_STREAM_SOCKET)
+	is_connected: BOOLEAN
+			-- Is handler connected to incoming request via `client_socket'?
 		do
-			listening_socket := a_listening_socket
+			Result := client_socket.descriptor_available
 		end
 
-	accept_from_listening_socket (a_listening_socket: separate HTTPD_STREAM_SOCKET)
+feature -- Execution
+
+	separate_execute
 		local
 			retried: BOOLEAN
-			s: like client_socket
 		do
 			if retried then
-				has_error := True
+				release (client_socket)
 			else
-				create s.make_empty
-				client_socket := s
-				debug ("dbglog")
-					dbglog ("before accept_to")
+				if
+					not has_error and then
+					is_connected
+				then
+					execute (client_socket)
 				end
-				print ("[EWF/DBG] <#" + processor_id_from_object (Current).out + "> accept_to%N")
-				a_listening_socket.accept_to (s)
-
-				if s.is_created then
-					debug ("dbglog")
-						dbglog ("after accept_to " + s.descriptor.out)
-					end
-				else
-					debug ("dbglog")
-						dbglog ("after accept_to ERROR")
-					end
-
-					has_error := True
-					client_socket := Void
-				end
+				separate_release
 			end
 		rescue
 			retried := True
 			retry
 		end
 
-feature -- Execution
-
-	separate_execution: BOOLEAN
-		do
-			Result := False
-			if attached listening_socket as l_listening_socket then
-				accept_from_listening_socket (l_listening_socket)
-				if not has_error then
-					if attached client_socket as s then
-						execute (s)
-						Result := True
-					end
-				end
-			end
-		end
-
 feature {CONCURRENT_POOL, HTTPD_CONNECTION_HANDLER_I} -- Basic operation		
 
 	separate_release
 		do
-			if attached client_socket as s then
-				release (s)
-			end
+			release (client_socket)
 		end
 
-	release (a_socket: HTTPD_STREAM_SOCKET)
+	release (a_socket: detachable HTTPD_STREAM_SOCKET)
 		local
 			d: STRING
 		do
-			d := a_socket.descriptor.out
+			if a_socket /= Void then
+				d := a_socket.descriptor.out
+			else
+				d := "N/A"
+			end
 			debug ("dbglog")
 				dbglog (generator + ".release: ENTER {" + d + "}")
 			end

@@ -154,10 +154,12 @@ feature -- Listening
 				create l_connection_handler.make (Current)
 				from
 					l_listening_socket.listen (configuration.max_tcp_clients)
-					if is_verbose and then configuration.is_secure then
-						log ("%NHTTP Connection Server ready on port " + l_http_port.out +" : https://localhost:" + l_http_port.out + "/")
-					elseif is_verbose then
-						log ("%NHTTP Connection Server ready on port " + l_http_port.out +" : http://localhost:" + l_http_port.out + "/")
+					if is_verbose then
+						if configuration.is_secure then
+							log ("%NHTTP Connection Server ready on port " + l_http_port.out +" : https://localhost:" + l_http_port.out + "/")
+						else
+							log ("%NHTTP Connection Server ready on port " + l_http_port.out +" : http://localhost:" + l_http_port.out + "/")
+						end
 					end
 					on_launched (l_http_port)
 				until

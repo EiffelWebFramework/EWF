@@ -12,9 +12,20 @@ feature {NONE} -- Output
 	dbglog (m: READABLE_STRING_8)
 		require
 			not m.ends_with_general ("%N")
+		local
+			s: STRING
 		do
 			debug ("dbglog")
-				print ("[EWF/DBG] <#" + processor_id_from_object (Current).out + "> " + m + "%N")
+				create s.make (24)
+				s.append ("[EWF/DBG] <#")
+				s.append_integer (processor_id_from_object (Current))
+				s.append ("> ")
+				s.append (generator)
+				s.append (create {STRING}.make_filled (' ', (46 - s.count).max (0)))
+				s.append (" | ")
+				s.append (m)
+				s.append ("%N")
+				print (s)
 			end
 		end
 
@@ -28,7 +39,7 @@ feature -- runtime
 		end
 
 note
-	copyright: "2011-2014, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
+	copyright: "2011-2015, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

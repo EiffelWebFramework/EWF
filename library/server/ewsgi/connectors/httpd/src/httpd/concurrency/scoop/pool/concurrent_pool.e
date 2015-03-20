@@ -88,6 +88,7 @@ feature -- Access
 					count := count + 1
 					busy_items [pos] := True
 					Result := l_item
+					a_factory.update_item (l_item)
 				end
 			end
 		end
@@ -159,17 +160,13 @@ feature -- Change
 
 feature {NONE} -- Implementation
 
---	new_separate_item: separate G
---		deferred
---		end
-
 	register_item (a_item: separate G)
 		do
 			a_item.set_pool (Current)
 		end
 
 note
-	copyright: "2011-2014, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
+	copyright: "2011-2015, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software
