@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<system xmlns="http://www.eiffel.com/developers/xml/configuration-1-13-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eiffel.com/developers/xml/configuration-1-13-0 http://www.eiffel.com/developers/xml/configuration-1-13-0.xsd" name="connector_httpd" uuid="49C99A6E-CCC1-4015-81F6-D7C43B592034" library_target="connector_httpd">
+	<target name="connector_httpd">
+		<root all_classes="true"/>
+		<file_rule>
+			<exclude>/EIFGENs$</exclude>
+			<exclude>/\.git$</exclude>
+			<exclude>/\.svn$</exclude>
+		</file_rule>
+		<option debug="true" warning="true" full_class_checking="true" is_attached_by_default="true" void_safety="all" syntax="transitional">
+			<debug name="dbglog" enabled="true"/>
+		</option>
+		<setting name="concurrency" value="scoop"/>
+		<library name="base" location="$ISE_LIBRARY\library\base\base-safe.ecf"/>
+		<library name="encoder" location="..\..\..\..\text\encoder\encoder-safe.ecf"/>
+		<library name="ewsgi" location="..\..\ewsgi-safe.ecf" readonly="false"/>
+		<library name="http" location="..\..\..\..\network\protocol\http\http-safe.ecf"/>
+		<library name="net" location="$ISE_LIBRARY\library\net\net-safe.ecf">
+			<option>
+				<assertions precondition="true" postcondition="true" check="true"/>
+			</option>
+		</library>
+		<library name="net_ssl" location="$ISE_LIBRARY\unstable\library\network\socket\netssl\net_ssl-safe.ecf">
+			<condition>
+				<custom name="httpd_ssl_enabled" value="true"/>
+			</condition>
+		</library>
+		<library name="thread" location="$ISE_LIBRARY\library\thread\thread-safe.ecf">
+			<condition>
+				<concurrency excluded_value="none"/>
+			</condition>
+		</library>
+		<library name="time" location="$ISE_LIBRARY\library\time\time-safe.ecf"/>
+		<library name="wsf" location="..\..\..\wsf\wsf-safe.ecf" readonly="false"/>
+		<cluster name="httpd_server" location=".\src\httpd\" recursive="true">
+			<file_rule>
+				<exclude>/concurrency$</exclude>
+				<exclude>/EIFGENs$</exclude>
+				<exclude>/no_ssl$</exclude>
+				<exclude>/ssl$</exclude>
+			</file_rule>
+			<cluster name="no_ssl" location="$|no_ssl\" recursive="true">
+				<condition>
+					<custom name="httpd_ssl_enabled" excluded_value="true"/>
+				</condition>
+			</cluster>
+			<cluster name="ssl" location="$|ssl\" recursive="true">
+				<condition>
+					<custom name="httpd_ssl_enabled" value="true"/>
+				</condition>
+			</cluster>
+			<cluster name="concurrency_none" location="$|concurrency\none\" recursive="true">
+				<condition>
+					<concurrency value="none"/>
+				</condition>
+			</cluster>
+			<cluster name="concurrency_thread" location="$|concurrency\thread\" recursive="true">
+				<condition>
+					<concurrency value="thread"/>
+				</condition>
+			</cluster>
+			<cluster name="concurrency_scoop" location="$|concurrency\scoop\" recursive="true">
+				<condition>
+					<concurrency value="scoop"/>
+				</condition>
+			</cluster>
+		</cluster>
+		<cluster name="src" location=".\src\" recursive="true">
+			<file_rule>
+				<exclude>/httpd$</exclude>
+			</file_rule>
+		</cluster>
+	</target>
+	<target name="dev" extends="connector_httpd">
+		<root class="HTTPD_CONNECTOR_DEV" feature="make"/>
+		<option debug="true">
+			<debug name="dbglog" enabled="true"/>
+			<assertions precondition="true" postcondition="true" check="true" supplier_precondition="true"/>
+		</option>
+		<setting name="concurrency" value="scoop"/>
+		<cluster name="dev" location="dev\" recursive="true"/>
+	</target>
+	<target name="dev_mt" extends="dev">
+		<setting name="concurrency" value="thread"/>
+	</target>
+	<target name="dev_none" extends="dev">
+		<setting name="concurrency" value="none"/>
+	</target>
+</system>
