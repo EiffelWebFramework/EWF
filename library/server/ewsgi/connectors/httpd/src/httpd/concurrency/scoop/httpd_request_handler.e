@@ -20,56 +20,21 @@ inherit
 			release as release_pool_item
 		end
 
-feature -- Status report
-
-	is_connected: BOOLEAN
-			-- Is handler connected to incoming request via `client_socket'?
-		do
-			Result := client_socket.descriptor_available
-		end
-
-feature -- Execution
-
-	separate_execute
-		local
-			retried: BOOLEAN
-		do
-			if retried then
-				release (client_socket)
-			else
-				if
-					not has_error and then
-					is_connected
-				then
-					execute (client_socket)
-				end
-				separate_release
-			end
-		rescue
-			retried := True
-			retry
-		end
-
 feature {CONCURRENT_POOL, HTTPD_CONNECTION_HANDLER_I} -- Basic operation		
 
-	separate_release
-		do
-			release (client_socket)
-		end
-
-	release (a_socket: detachable HTTPD_STREAM_SOCKET)
+	release
 		local
 			d: STRING
 		do
-			if a_socket /= Void then
-				d := a_socket.descriptor.out
+			if attached internal_client_socket as l_socket then
+				d := l_socket.descriptor.out
 			else
 				d := "N/A"
 			end
 			debug ("dbglog")
 				dbglog (generator + ".release: ENTER {" + d + "}")
 			end
-			Precursor {HTTPD_REQUEST_HANDLER_I} (a_socket)
+			Precursor {HTTPD_REQUEST_HANDLER_I}
 			release_pool_item
 			debug ("dbglog")
 				dbglog (generator + ".release: LEAVE {" + d + "}")

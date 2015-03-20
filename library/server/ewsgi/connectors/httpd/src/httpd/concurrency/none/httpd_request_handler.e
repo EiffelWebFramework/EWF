@@ -10,15 +10,10 @@ deferred class
 inherit
 	HTTPD_REQUEST_HANDLER_I
 
-feature -- Change
 
-	set_client_socket (a_socket: HTTPD_STREAM_SOCKET)
-		do
-			client_socket := a_socket
-		end
 
 note
-	copyright: "2011-2014, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
+	copyright: "2011-2015, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

@@ -31,40 +31,23 @@ feature -- Access
 
 feature -- Execution
 
-	process_incoming_connection (a_socket: HTTPD_STREAM_SOCKET)
-			-- Process incoming connection
-			-- note that the precondition matters for scoop synchronization.
+	accept_incoming_connection (a_listening_socket: HTTPD_STREAM_SOCKET)
+		local
+			cl: HTTPD_STREAM_SOCKET
 		do
 			is_shutdown_requested := is_shutdown_requested or shutdown_requested (server)
 			if is_shutdown_requested then
-				a_socket.cleanup
-			elseif attached server.factory.new_handler as h then
-				process_connection_handler (h, a_socket)
+					-- Cancel
+			elseif attached factory.new_handler as h then
+				cl := h.client_socket
+				a_listening_socket.accept_to (cl)
+				if h.is_connected then
+					h.execute
+				end
 			else
 				check is_not_full: False end
-				a_socket.cleanup
 			end
 			update_is_shutdown_requested
-		end
-
-	process_connection_handler (hdl: HTTPD_REQUEST_HANDLER; a_socket: HTTPD_STREAM_SOCKET)
-		require
-			not hdl.has_error
-		do
-				--| FIXME jfiat [2011/11/03] : should use a Pool of Threads/Handler to process this connection
-				--| also handle permanent connection...?
-
-			hdl.set_client_socket (a_socket)
-			if not hdl.has_error then
---				hdl.set_logger (server)
-				hdl.execute
-			else
-				log ("Internal error (set_client_socket failed)")
-			end
-		rescue
-			log ("Releasing handler after exception!")
-			hdl.release
-			a_socket.cleanup
 		end
 
 	update_is_shutdown_requested
@@ -89,7 +72,7 @@ feature {HTTPD_SERVER_I} -- Status report
 		end
 
 note
-	copyright: "2011-2014, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
+	copyright: "2011-2015, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

@@ -80,4 +80,10 @@
 		<setting name="concurrency" value="scoop"/>
 		<cluster name="dev" location="dev\" recursive="true"/>
 	</target>
+	<target name="dev_mt" extends="dev">
+		<setting name="concurrency" value="thread"/>
+	</target>
+	<target name="dev_none" extends="dev">
+		<setting name="concurrency" value="none"/>
+	</target>
 </system>

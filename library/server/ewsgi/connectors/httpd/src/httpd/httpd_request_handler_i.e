@@ -34,7 +34,14 @@ feature {NONE} -- Initialization
 			create request_header.make_empty
 			create request_header_map.make (10)
 
-			is_waiting := False
+		end
+
+feature -- Status report
+
+	is_connected: BOOLEAN
+			-- Is handler connected to incoming request via `client_socket'?
+		do
+			Result := client_socket.descriptor_available
 		end
 
 feature -- Access
@@ -78,8 +85,6 @@ feature -- Settings
 
 feature -- Status report
 
-	is_waiting: BOOLEAN
-
 	has_error: BOOLEAN
 			-- Error occurred during `analyze_request_message'
 
@@ -92,36 +97,60 @@ feature -- Change
 
 feature -- Execution
 
-	execute (a_socket: HTTPD_STREAM_SOCKET)
+	safe_execute
+		local
+			retried: BOOLEAN
+		do
+			if retried then
+				release
+			else
+				if
+					not has_error and then
+					is_connected
+				then
+					execute
+				end
+				release
+			end
+		rescue
+			retried := True
+			retry
+		end
+
+	execute
 		require
-			socket_attached: a_socket /= Void
-			socket_valid: a_socket.is_open_read and then a_socket.is_open_write
-			a_http_socket: not a_socket.is_closed
+			is_connected: is_connected
 		local
 			l_remote_info: detachable like remote_info
 			l_continue: BOOLEAN
+			l_socket: like client_socket
 		do
-			if a_socket.is_closed then
+			l_socket := client_socket
+			check
+				socket_attached: l_socket /= Void
+				socket_valid: l_socket.is_open_read and then l_socket.is_open_write
+			end
+			if l_socket.is_closed then
 				debug ("dbglog")
 					dbglog (generator + ".execute {socket is Closed!}")
 				end
 			else
 				debug ("dbglog")
-					dbglog (generator + ".execute {" + a_socket.descriptor.out + "} ENTER")
+					dbglog (generator + ".execute  socket=" + l_socket.descriptor.out + " ENTER")
 				end
 				from until l_continue loop
-					if a_socket.ready_for_reading then
+					if l_socket.ready_for_reading then
 	            		l_continue := True
 						create l_remote_info
-						if attached a_socket.peer_address as l_addr then
+						if attached l_socket.peer_address as l_addr then
 							l_remote_info.addr := l_addr.host_address.host_address
 							l_remote_info.hostname := l_addr.host_address.host_name
 							l_remote_info.port := l_addr.port
 							remote_info := l_remote_info
 						end
-	            		analyze_request_message (a_socket)
+	            		analyze_request_message (l_socket)
 	            	else
-						log (generator + ".execute {" + a_socket.descriptor.out + "} WAITING")
+						log (generator + ".execute socket=" + l_socket.descriptor.out + "} WAITING")
 	            	end
 				end
 
@@ -132,20 +161,16 @@ feature -- Execution
 						log ("ERROR: invalid HTTP incoming request")
 					end
 				else
-					process_request (a_socket)
+					process_request (l_socket)
 	            end
 	            debug ("dbglog")
-		            dbglog (generator + ".execute {" + a_socket.descriptor.out + "} LEAVE")
+		            dbglog (generator + ".execute {" + l_socket.descriptor.out + "} LEAVE")
 	            end
 			end
---            release (a_socket)
 		end
 
-	release (a_socket: detachable HTTPD_STREAM_SOCKET)
+	release
 		do
-			if a_socket /= Void then
-				a_socket.cleanup
-			end
 			reset
 		end
 
