@@ -1,11 +1,11 @@
 note
-	description: "Summary description for {WSF_HTTPD_REQUEST_HANDLER}."
+	description: "Summary description for {WGI_HTTPD_REQUEST_HANDLER}."
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
 class
-	WSF_HTTPD_REQUEST_HANDLER [G -> WSF_EXECUTION create make end]
+	WGI_HTTPD_REQUEST_HANDLER [G -> WGI_EXECUTION create make end]
 
 inherit
 	HTTPD_REQUEST_HANDLER
@@ -15,7 +15,18 @@ inherit
 	REFACTORING_HELPER
 
 create
-	make
+	make,
+	make_with_connector
+
+feature {NONE} -- Initialization
+
+	make_with_connector (conn: like connector)
+		do
+			make
+			connector := conn
+		end
+
+	connector: detachable separate WGI_CONNECTOR
 
 feature -- Request processing
 
@@ -27,8 +38,7 @@ feature -- Request processing
 			l_error: WGI_ERROR_STREAM
 			req: WGI_REQUEST_FROM_TABLE
 			res: detachable WGI_HTTPD_RESPONSE_STREAM
-
-			exec: WSF_EXECUTION
+			exec: detachable WGI_EXECUTION
 			retried: BOOLEAN
 		do
 			if not retried then
@@ -36,26 +46,39 @@ feature -- Request processing
 				create {WGI_HTTPD_OUTPUT_STREAM} l_output.make (a_socket)
 				create {WGI_HTTPD_ERROR_STREAM} l_error.make_stderr (a_socket.descriptor.out)
 
-				create req.make (httpd_environment (a_socket), l_input, Void)
+				create req.make (httpd_environment (a_socket), l_input, connector)
 				create res.make (l_output, l_error)
 
 				req.set_meta_string_variable ("RAW_HEADER_DATA", request_header)
 
-				exec := new_execution (req, res)
+				create {G} exec.make (req, res)
 				exec.execute
+				res.flush
 				res.push
+				exec.clean
 			else
+				if attached (create {EXCEPTION_MANAGER}).last_exception as e and then attached e.exception_trace as l_trace then
+					if res /= Void then
+						if not res.status_is_set then
+							res.set_status_code ({HTTP_STATUS_CODE}.internal_server_error, Void)
+						end
+						if res.message_writable then
+							res.put_string ("<pre>")
+							res.put_string (l_trace)
+							res.put_string ("</pre>")
+						end
+						res.push
+					end
+				end
+				if exec /= Void then
+					exec.clean
+				end
 			end
 		rescue
 			if not retried then
 				retried := True
 				retry
 			end
-		end
-
-	new_execution (req: WGI_REQUEST; res: WGI_RESPONSE): WSF_EXECUTION
-		do
-			create {G} Result.make (req, res)
 		end
 
 	base: detachable READABLE_STRING_8

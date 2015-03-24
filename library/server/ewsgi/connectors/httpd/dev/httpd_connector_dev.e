@@ -17,32 +17,15 @@ feature {NONE} -- Initialization
 	make
 			-- Initialize `Current'.
 		local
-			server: separate HTTPD_SERVER
-			fac: separate WSF_HTTPD_REQUEST_HANDLER_FACTORY [APP_WSF_EXECUTION]
+			conn: WGI_HTTPD_CONNECTOR [APP_WSF_EXECUTION]
 		do
-			print ("Hello%N")
-			create fac
-			create server.make (fac)
-			launch_server (server)
+			print ("Starting httpd server ...%N")
+
+			create conn.make
+			conn.set_port_number (9090)
+			conn.set_max_concurrent_connections (100)
+			conn.launch
 		end
-
-	launch_server (server: separate HTTPD_SERVER)
-		do
-			server.configuration.set_max_concurrent_connections (100)
-			server.configuration.set_http_server_port (9090)
-			server.launch
-		end
-
-feature -- Status
-
-feature -- Access
-
-feature -- Change
-
-feature {NONE} -- Implementation
-
-invariant
---	invariant_clause: True
 
 note
 	copyright: "2011-2015, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"

@@ -4,20 +4,10 @@ note
 	revision: "$Revision$"
 
 class
-	WGI_CGI_CONNECTOR
+	WGI_CGI_CONNECTOR [G -> WGI_EXECUTION create make end]
 
 inherit
 	WGI_CONNECTOR
-
-create
-	make
-
-feature {NONE} -- Initialization
-
-	make (a_service: like service)
-		do
-			service := a_service
-		end
 
 feature -- Access
 
@@ -27,24 +17,23 @@ feature -- Access
 	Version: STRING_8 = "0.1"
 			-- Version of Current connector	
 
-feature {NONE} -- Access
-
-	service: WGI_SERVICE
-			-- Gateway Service			
-
 feature -- Execution
 
 	launch
 		local
 			req: WGI_REQUEST_FROM_TABLE
 			res: detachable WGI_RESPONSE_STREAM
+			exec: detachable WGI_EXECUTION
 			rescued: BOOLEAN
 		do
 			if not rescued then
 				create req.make ((create {EXECUTION_ENVIRONMENT}).starting_environment_variables, create {WGI_CGI_INPUT_STREAM}.make, Current)
 				create res.make (create {WGI_CGI_OUTPUT_STREAM}.make, create {WGI_CGI_ERROR_STREAM}.make)
-				service.execute (req, res)
+				create {G} exec.make (req, res)
+				exec.execute
+				res.flush
 				res.push
+				exec.clean
 			else
 				if attached (create {EXCEPTION_MANAGER}).last_exception as e and then attached e.exception_trace as l_trace then
 					if res /= Void then
@@ -58,6 +47,9 @@ feature -- Execution
 						end
 						res.push
 					end
+				end
+				if exec /= Void then
+					exec.clean
 				end
 			end
 		rescue

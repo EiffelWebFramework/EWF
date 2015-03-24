@@ -57,7 +57,7 @@ feature -- EWSGI access
 
 	wgi_implementation: STRING = "Eiffel Web Framework 0.1"
 
-	wgi_connector: detachable WGI_CONNECTOR
+	wgi_connector: detachable separate WGI_CONNECTOR
 
 feature -- Access: CGI meta parameters
 

@@ -1,22 +1,16 @@
 note
-	description: "[
-			Default launcher for WSF_SERVICE based on {WSF_NINO_SERVICE_LAUNCHER}
-		]"
+	description: "Summary description for {WSF_DEFAULT_SERVICE}."
 	date: "$Date$"
 	revision: "$Revision$"
 
-class
-	WSF_DEFAULT_SERVICE_LAUNCHER [G -> WSF_EXECUTION create make end]
+deferred class
+	WSF_DEFAULT_SERVICE [G -> WSF_EXECUTION create make end]
 
 inherit
-	WSF_NINO_SERVICE_LAUNCHER [G]
-
-create
-	make,
-	make_and_launch
+	WSF_DEFAULT_SERVICE_I [WSF_DEFAULT_SERVICE_LAUNCHER [G]]
 
 note
-	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
+	copyright: "2011-2015, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software
@@ -25,5 +19,4 @@ note
 			Website http://www.eiffel.com
 			Customer support http://support.eiffel.com
 		]"
-
 end

@@ -1,21 +1,19 @@
 note
-	description: "Summary description for {WSF_HTTPD_REQUEST_HANDLER_FACTORY}."
-	author: ""
+	description: "[
+			Default launcher for WSF_SERVICE based on {WSF_HTTPD_SERVICE_LAUNCHER}
+		]"
 	date: "$Date$"
 	revision: "$Revision$"
 
 class
-	WSF_HTTPD_REQUEST_HANDLER_FACTORY [G -> WSF_EXECUTION create make end]
+	WSF_DEFAULT_SERVICE_LAUNCHER [G -> WSF_EXECUTION create make end]
 
 inherit
-	HTTPD_REQUEST_HANDLER_FACTORY
+	WSF_HTTPD_SERVICE_LAUNCHER [G]
 
-feature -- Factory
-
-	new_handler: separate WSF_HTTPD_REQUEST_HANDLER [G]
-		do
-			create Result.make
-		end
+create
+	make,
+	make_and_launch
 
 note
 	copyright: "2011-2015, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
@@ -27,4 +25,5 @@ note
 			Website http://www.eiffel.com
 			Customer support http://support.eiffel.com
 		]"
+
 end

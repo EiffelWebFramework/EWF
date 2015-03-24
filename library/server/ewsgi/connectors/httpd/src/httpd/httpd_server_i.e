@@ -16,6 +16,8 @@ feature {NONE} -- Initialization
 	make (a_factory: like factory)
 			-- `a_cfg': server configuration
 			-- `a_factory': connection handler builder
+		require
+			fac_is_separated: {PLATFORM}.is_scoop_capable implies not attached {HTTPD_REQUEST_HANDLER_FACTORY} a_factory
 		do
 			make_configured (create {like configuration}.make, a_factory)
 		end
