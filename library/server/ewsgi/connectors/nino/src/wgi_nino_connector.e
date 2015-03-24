@@ -4,7 +4,7 @@ note
 	revision: "$Revision$"
 
 class
-	WGI_NINO_CONNECTOR
+	WGI_NINO_CONNECTOR [G -> WGI_EXECUTION create make end]
 
 inherit
 	WGI_CONNECTOR
@@ -118,7 +118,7 @@ feature -- Server
 		do
 			launched := False
 			port := 0
-			create {WGI_NINO_HANDLER} l_http_handler.make_with_callback (server, Current)
+			create {WGI_NINO_HANDLER [G]} l_http_handler.make_with_callback (server, Current)
 			if configuration.is_verbose then
 				if attached base as l_base then
 					io.error.put_string ("Base=" + l_base + "%N")
@@ -128,17 +128,40 @@ feature -- Server
 		end
 
 	process_request (env: STRING_TABLE [READABLE_STRING_8]; a_headers_text: STRING; a_socket: TCP_STREAM_SOCKET)
+			-- Process request ...
 		local
 			req: WGI_REQUEST_FROM_TABLE
 			res: detachable WGI_NINO_RESPONSE_STREAM
+			exec: detachable WGI_EXECUTION
 			retried: BOOLEAN
 		do
 			if not retried then
 				create req.make (env, create {WGI_NINO_INPUT_STREAM}.make (a_socket), Current)
 				create res.make (create {WGI_NINO_OUTPUT_STREAM}.make (a_socket), create {WGI_NINO_ERROR_STREAM}.make_stderr (a_socket.descriptor.out))
 				req.set_meta_string_variable ("RAW_HEADER_DATA", a_headers_text)
-				service.execute (req, res)
+				
+				create {G} exec.make (req, res)
+				exec.execute
+				res.flush
 				res.push
+				exec.clean
+			else
+				if attached (create {EXCEPTION_MANAGER}).last_exception as e and then attached e.exception_trace as l_trace then
+					if res /= Void then
+						if not res.status_is_set then
+							res.set_status_code ({HTTP_STATUS_CODE}.internal_server_error, Void)
+						end
+						if res.message_writable then
+							res.put_string ("<pre>")
+							res.put_string (l_trace)
+							res.put_string ("</pre>")
+						end
+						res.push
+					end
+				end
+				if exec /= Void then
+					exec.clean
+				end				
 			end
 		rescue
 			if not retried then

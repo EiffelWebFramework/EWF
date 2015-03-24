@@ -41,7 +41,7 @@ inherit
 			{NONE} all
 		end
 
-create {WSF_TO_WGI_SERVICE, WSF_EXECUTION}
+create {WSF_TO_WGI_SERVICE, WSF_EXECUTION, WGI_EXPORTER}
 	make_from_wgi
 
 convert
@@ -426,7 +426,7 @@ feature -- Eiffel WGI access
 			Result := wgi_request.wgi_implementation
 		end
 
-	wgi_connector: detachable WGI_CONNECTOR
+	wgi_connector: detachable separate WGI_CONNECTOR
 			-- Associated Eiffel WGI connector
 		do
 			Result := wgi_request.wgi_connector

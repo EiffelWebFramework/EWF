@@ -2,10 +2,10 @@ note
 	description: "[
 			Component to launch the service using the default connector
 
-				Eiffel Web Nino for this class
+				Eiffel Web httpd for this class
 
 
-				The Nino default connector support options:
+				The httpd default connector support options:
 					port: numeric such as 8099 (or equivalent string as "8099")
 					base: base_url (very specific to standalone server)
 					verbose: to display verbose output, useful for Nino
@@ -17,7 +17,7 @@ note
 	revision: "$Revision$"
 
 class
-	WSF_NINO_SERVICE_LAUNCHER [G -> WSF_EXECUTION create make end]
+	WSF_HTTPD_SERVICE_LAUNCHER [G -> WSF_EXECUTION create make end]
 
 inherit
 	WSF_SERVICE_LAUNCHER [G]
@@ -67,19 +67,30 @@ feature {NONE} -- Initialization
 					verbose := l_verbose_str.as_lower.same_string ("true")
 				end
 			end
-			create conn.make (Current)
-			connector := conn
 
+			create conn.make
+			connector := conn
 			conn.on_launched_actions.extend (agent on_launched)
 			conn.on_stopped_actions.extend (agent on_stopped)
 			conn.set_base (base_url)
-			if single_threaded then
-				conn.configuration.set_force_single_threaded (True)
-			end
-			conn.configuration.set_is_verbose (verbose)
+
+			update_configuration (conn.configuration)
 		end
 
 feature -- Execution
+
+	update_configuration (cfg: separate HTTPD_CONFIGURATION)
+		do
+			if single_threaded then
+				cfg.set_force_single_threaded (True)
+			end
+			cfg.set_is_verbose (verbose)
+			if attached server_name as l_server_name then
+				cfg.set_http_server_name (l_server_name)
+			end
+--			conn.set_port_number (port_number)
+			cfg.http_server_port := port_number
+		end
 
 	launch
 			-- <Precursor/>
@@ -89,10 +100,6 @@ feature -- Execution
 		do
 			conn := connector
 			conn.set_base (base_url)
-			if single_threaded then
-				conn.configuration.set_force_single_threaded (True)
-			end
-			conn.configuration.set_is_verbose (verbose)
 			debug ("nino")
 				if verbose then
 					io.error.put_string ("Launching Nino web server on port " + port_number.out)
@@ -103,10 +110,7 @@ feature -- Execution
 					end
 				end
 			end
-			if attached server_name as l_server_name then
-				conn.configuration.set_http_server_name (l_server_name)
-			end
-			conn.configuration.http_server_port := port_number
+			update_configuration (conn.configuration)
 			conn.launch
 		end
 
@@ -142,7 +146,7 @@ feature {NONE} -- Implementation
 
 feature -- Status report
 
-	connector: WGI_NINO_CONNECTOR [G]
+	connector: WGI_HTTPD_CONNECTOR [G]
 			-- Default connector
 
 	launchable: BOOLEAN

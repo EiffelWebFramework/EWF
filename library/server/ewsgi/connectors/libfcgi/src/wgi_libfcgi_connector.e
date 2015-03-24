@@ -6,19 +6,19 @@ note
 	revision: "$Revision$"
 
 class
-	WGI_LIBFCGI_CONNECTOR
+	WGI_LIBFCGI_CONNECTOR [G -> WGI_EXECUTION create make end]
 
 inherit
 	WGI_CONNECTOR
-
-create
-	make
+		redefine
+			default_create
+		end
 
 feature {NONE} -- Initialization
 
-	make (a_service: like service)
+	default_create
 		do
-			service := a_service
+			Precursor
 			create fcgi.make
 			create input.make (fcgi)
 			create output.make (fcgi)
@@ -31,11 +31,6 @@ feature -- Access
 
 	Version: STRING_8 = "0.1"
 			-- Version of Current connector		
-
-feature {NONE} -- Access
-
-	service: WGI_SERVICE
-			-- Gateway Service			
 
 feature -- Server
 
@@ -59,14 +54,18 @@ feature -- Execution
 		local
 			req: WGI_REQUEST_FROM_TABLE
 			res: detachable WGI_RESPONSE_STREAM
+			exec: detachable WGI_EXECUTION
 			rescued: BOOLEAN
 		do
 			if not rescued then
 				a_input.reset
 				create req.make (vars, a_input, Current)
 				create res.make (a_output, a_output)
-				service.execute (req, res)
+				create {G} exec.make (req, res)
+				exec.execute
+				res.flush
 				res.push
+				exec.clean
 			else
 				if attached (create {EXCEPTION_MANAGER}).last_exception as e and then attached e.exception_trace as l_trace then
 					if res /= Void then
@@ -80,6 +79,9 @@ feature -- Execution
 						end
 						res.push
 					end
+				end
+				if exec /= Void then
+					exec.clean
 				end
 			end
 		rescue

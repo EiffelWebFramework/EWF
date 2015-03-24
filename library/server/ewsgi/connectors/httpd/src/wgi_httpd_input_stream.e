@@ -22,7 +22,7 @@ feature {NONE} -- Initialization
 			set_source (a_source)
 		end
 
-feature {WGI_NINO_CONNECTOR, WGI_SERVICE} -- Nino
+feature {WGI_HTTPD_CONNECTOR, WGI_SERVICE} -- Nino
 
 	set_source (i: like source)
 		do

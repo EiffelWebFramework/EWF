@@ -42,7 +42,7 @@ feature -- Execution
 				cl := h.client_socket
 				a_listening_socket.accept_to (cl)
 				if h.is_connected then
-					h.execute
+					h.safe_execute
 				end
 			else
 				check is_not_full: False end

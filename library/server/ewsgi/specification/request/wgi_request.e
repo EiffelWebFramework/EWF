@@ -157,7 +157,7 @@ feature -- Eiffel WGI access
 		deferred
 		end
 
-	wgi_connector: detachable WGI_CONNECTOR
+	wgi_connector: detachable separate WGI_CONNECTOR
 			-- Associated Eiffel WGI connector
 		deferred
 		end

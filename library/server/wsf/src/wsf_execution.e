@@ -7,6 +7,17 @@ note
 deferred class
 	WSF_EXECUTION
 
+inherit
+	WGI_EXECUTION
+		rename
+			request as wgi_request,
+			response as wgi_response
+		redefine
+			make,
+			execute,
+			clean
+		end
+
 --create
 --	make
 
@@ -14,24 +25,72 @@ feature {NONE} -- Initialization
 
 	make (req: WGI_REQUEST; res: WGI_RESPONSE)
 		do
-			create request.make_from_wgi (req)
-			create response.make_from_wgi (res)
+			Precursor (req, res)
+			create request.make_from_wgi (wgi_request)
+			create response.make_from_wgi (wgi_response)
 		end
 
+feature {NONE} -- Access
+
 	request: WSF_REQUEST
+			-- Access to request data.
+			-- Header, Query, Post, Input data..
 
 	response: WSF_RESPONSE
+			-- Access to output stream, back to the client.
+
+feature -- Status report
+
+	message_writable: BOOLEAN
+		do
+			Result := response.message_writable
+		end
+
+feature -- Helpers
+
+	put_character (c: CHARACTER_8)
+		require
+			message_writable: message_writable
+		do
+			response.put_character (c)
+		end
+
+	put_string (s: READABLE_STRING_8)
+		require
+			message_writable: message_writable
+		do
+			response.put_string (s)
+		end
+
+	put_error (err: READABLE_STRING_8)
+		require
+			message_writable: message_writable
+		do
+			response.put_error (err)
+		end
 
 feature -- Execution
 
 	execute
+			-- Execute Current `request',
+			-- getting data from `request'
+			-- and response to client via `response'.
 		deferred
-		ensure
-			response.status_is_set
+		ensure then
+			status_is_set: response.status_is_set
+		end
+
+feature -- Cleaning
+
+	clean
+			-- Precursor
+		do
+			Precursor
+			request.destroy
 		end
 
 note
-	copyright: "2011-2015, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
+	copyright: "2011-2015, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Colin Adams, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software
