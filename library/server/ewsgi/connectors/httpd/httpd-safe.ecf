@@ -16,55 +16,7 @@
 		<library name="encoder" location="..\..\..\..\text\encoder\encoder-safe.ecf"/>
 		<library name="ewsgi" location="..\..\ewsgi-safe.ecf" readonly="false"/>
 		<library name="http" location="..\..\..\..\network\protocol\http\http-safe.ecf"/>
-		<library name="net" location="$ISE_LIBRARY\library\net\net-safe.ecf">
-			<option>
-				<assertions precondition="true" postcondition="true" check="true"/>
-			</option>
-		</library>
-		<library name="net_ssl" location="$ISE_LIBRARY\unstable\library\network\socket\netssl\net_ssl-safe.ecf">
-			<condition>
-				<custom name="httpd_ssl_enabled" value="true"/>
-			</condition>
-		</library>
-		<library name="thread" location="$ISE_LIBRARY\library\thread\thread-safe.ecf">
-			<condition>
-				<concurrency excluded_value="none"/>
-			</condition>
-		</library>
-		<library name="time" location="$ISE_LIBRARY\library\time\time-safe.ecf"/>
-		<cluster name="httpd_server" location=".\src\httpd\" recursive="true">
-			<file_rule>
-				<exclude>/ssl$</exclude>
-				<exclude>/EIFGENs$</exclude>
-				<exclude>/no_ssl$</exclude>
-				<exclude>/concurrency$</exclude>
-			</file_rule>
-			<cluster name="no_ssl" location="$|no_ssl\" recursive="true">
-				<condition>
-					<custom name="httpd_ssl_enabled" excluded_value="true"/>
-				</condition>
-			</cluster>
-			<cluster name="ssl" location="$|ssl\" recursive="true">
-				<condition>
-					<custom name="httpd_ssl_enabled" value="true"/>
-				</condition>
-			</cluster>
-			<cluster name="concurrency_none" location="$|concurrency\none\" recursive="true">
-				<condition>
-					<concurrency value="none"/>
-				</condition>
-			</cluster>
-			<cluster name="concurrency_thread" location="$|concurrency\thread\" recursive="true">
-				<condition>
-					<concurrency value="thread"/>
-				</condition>
-			</cluster>
-			<cluster name="concurrency_scoop" location="$|concurrency\scoop\" recursive="true">
-				<condition>
-					<concurrency value="scoop"/>
-				</condition>
-			</cluster>
-		</cluster>
+		<library name="httpd" location="src\httpd\httpd-safe.ecf"/>
 		<cluster name="src" location=".\src\" recursive="true">
 			<file_rule>
 				<exclude>/httpd$</exclude>

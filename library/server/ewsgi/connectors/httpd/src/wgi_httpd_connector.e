@@ -46,7 +46,7 @@ feature {NONE} -- Initialization
 			set_base (a_base)
 		end
 
-	set_factory_connector (conn: detachable separate WGI_CONNECTOR; fac: separate WGI_HTTPD_REQUEST_HANDLER_FACTORY [G])
+	set_factory_connector (conn: detachable separate WGI_HTTPD_CONNECTOR [G]; fac: separate WGI_HTTPD_REQUEST_HANDLER_FACTORY [G])
 		do
 			fac.set_connector (conn)
 		end
@@ -129,8 +129,15 @@ feature -- Element change
 		end
 
 	set_max_concurrent_connections (nb: INTEGER)
+		require
+			nb_positive_or_zero: nb >= 0
 		do
+			set_max_concurrent_connections_on_configuration (nb, configuration)
+		end
 
+	set_is_verbose (b: BOOLEAN)
+		do
+			set_is_verbose_on_configuration (b, configuration)
 		end
 
 feature {NONE} -- Implementation
@@ -143,6 +150,11 @@ feature {NONE} -- Implementation
 	set_max_concurrent_connections_on_configuration (nb: INTEGER; cfg: like configuration)
 		do
 			cfg.set_max_concurrent_connections (nb)
+		end
+
+	set_is_verbose_on_configuration (b: BOOLEAN; cfg: like configuration)
+		do
+			cfg.set_is_verbose (b)
 		end
 
 feature -- Server

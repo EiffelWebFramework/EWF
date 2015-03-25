@@ -12,7 +12,7 @@ inherit
 
 feature -- Access
 
-	connector: detachable separate WGI_CONNECTOR
+	connector: detachable separate WGI_HTTPD_CONNECTOR [G]
 
 feature -- Element change
 

@@ -30,7 +30,15 @@ feature -- Execution
 			-- Execute the request based on `request' and `response'.
 		deferred
 		ensure
-			status_is_set: response.status_is_set
+			is_valid_end_of_execution: is_valid_end_of_execution
+		end
+
+feature -- Status report
+
+	is_valid_end_of_execution: BOOLEAN
+			-- Last `execute' completed in valid state?
+		do
+			Result := True
 		end
 
 feature -- Cleaning
@@ -39,6 +47,11 @@ feature -- Cleaning
 			-- Clean request data.
 		do
 		end
+
+invariant
+
+	wgi_request_set: request /= Void
+	wgi_response_set: response /= Void
 
 
 note

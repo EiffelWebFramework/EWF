@@ -34,9 +34,6 @@ note
 deferred class
 	WSF_SERVICE_LAUNCHER [G -> WSF_EXECUTION create make end]
 
-inherit
-	WSF_TO_WGI_SERVICE
-
 feature {NONE} -- Initialization
 
 	frozen make (a_options: like options)
