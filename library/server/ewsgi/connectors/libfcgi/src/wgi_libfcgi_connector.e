@@ -14,11 +14,16 @@ inherit
 			default_create
 		end
 
+	SHARED_HTML_ENCODER
+		redefine
+			default_create
+		end
+
 feature {NONE} -- Initialization
 
 	default_create
 		do
-			Precursor
+			Precursor {WGI_CONNECTOR}
 			create fcgi.make
 			create input.make (fcgi)
 			create output.make (fcgi)
@@ -63,23 +68,10 @@ feature -- Execution
 				create res.make (a_output, a_output)
 				create {G} exec.make (req, res)
 				exec.execute
-				res.flush
 				res.push
 				exec.clean
 			else
-				if attached (create {EXCEPTION_MANAGER}).last_exception as e and then attached e.exception_trace as l_trace then
-					if res /= Void then
-						if not res.status_is_set then
-							res.set_status_code ({HTTP_STATUS_CODE}.internal_server_error, Void)
-						end
-						if res.message_writable then
-							res.put_string ("<pre>")
-							res.put_string (l_trace)
-							res.put_string ("</pre>")
-						end
-						res.push
-					end
-				end
+				process_rescue (res)
 				if exec /= Void then
 					exec.clean
 				end
@@ -88,6 +80,23 @@ feature -- Execution
 			if not rescued then
 				rescued := True
 				retry
+			end
+		end
+	
+	process_rescue (res: detachable WGI_RESPONSE)
+		do
+			if attached (create {EXCEPTION_MANAGER}).last_exception as e and then attached e.trace as l_trace then
+				if res /= Void then
+					if not res.status_is_set then
+						res.set_status_code ({HTTP_STATUS_CODE}.internal_server_error, Void)
+					end
+					if res.message_writable then
+						res.put_string ("<pre>")
+						res.put_string (html_encoder.encoded_string (l_trace))
+						res.put_string ("</pre>")
+					end
+					res.push
+				end
 			end
 		end
 

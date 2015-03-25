@@ -15,7 +15,8 @@ inherit
 		redefine
 			make,
 			execute,
-			clean
+			clean,
+			is_valid_end_of_execution
 		end
 
 --create
@@ -47,7 +48,23 @@ feature {NONE} -- Access
 	response: WSF_RESPONSE
 			-- Access to output stream, back to the client.
 
+feature -- Execution
+
+	execute
+			-- Execute Current `request',
+			-- getting data from `request'
+			-- and response to client via `response'.
+		deferred
+		end
+
 feature -- Status report
+
+	is_valid_end_of_execution: BOOLEAN
+			-- <Precursor>
+		do
+				--| Note: overwrite precursor implementation
+			Result := Precursor and response.status_is_set
+		end
 
 	message_writable: BOOLEAN
 		do
@@ -77,16 +94,6 @@ feature -- Helpers
 			response.put_error (err)
 		end
 
-feature -- Execution
-
-	execute
-			-- Execute Current `request',
-			-- getting data from `request'
-			-- and response to client via `response'.
-		deferred
-		ensure then
-			status_is_set: response.status_is_set
-		end
 
 feature -- Cleaning
 
@@ -96,6 +103,11 @@ feature -- Cleaning
 			Precursor
 			request.destroy
 		end
+
+invariant
+
+	wsf_request_set: request /= Void
+	wsf_response_set: response /= Void
 
 note
 	copyright: "2011-2015, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Colin Adams, Eiffel Software and others"

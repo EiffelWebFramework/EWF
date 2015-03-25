@@ -8,7 +8,7 @@ note
 	revision: "$Revision$"
 
 deferred class
-	WSF_RESPONSE_SERVICE
+	WSF_RESPONSE_SERVICE [G -> WSF_EXECUTION create make end]
 
 inherit
 	WSF_SERVICE
@@ -29,7 +29,7 @@ feature -- Execution
 		end
 
 note
-	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
+	copyright: "2011-2015, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Colin Adams, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

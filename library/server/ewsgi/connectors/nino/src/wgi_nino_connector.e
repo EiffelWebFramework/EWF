@@ -9,18 +9,18 @@ class
 inherit
 	WGI_CONNECTOR
 
+	SHARED_HTML_ENCODER
+
 create
 	make,
 	make_with_base
 
 feature {NONE} -- Initialization
 
-	make --(a_service: like service)
+	make
 		local
 			cfg: HTTP_SERVER_CONFIGURATION
 		do
---			service := a_service
-
 			create cfg.make
 			create server.make (cfg)
 
@@ -44,11 +44,6 @@ feature -- Access
 
 	version: STRING_8 = "0.1"
 			-- Version of Current connector
-
---feature {NONE} -- Access
-
---	service: WGI_SERVICE
---			-- Gateway Service		
 
 feature -- Access
 
@@ -142,23 +137,10 @@ feature -- Server
 
 				create {G} exec.make (req, res)
 				exec.execute
-				res.flush
 				res.push
 				exec.clean
 			else
-				if attached (create {EXCEPTION_MANAGER}).last_exception as e and then attached e.exception_trace as l_trace then
-					if res /= Void then
-						if not res.status_is_set then
-							res.set_status_code ({HTTP_STATUS_CODE}.internal_server_error, Void)
-						end
-						if res.message_writable then
-							res.put_string ("<pre>")
-							res.put_string (l_trace)
-							res.put_string ("</pre>")
-						end
-						res.push
-					end
-				end
+				process_rescue (res)
 				if exec /= Void then
 					exec.clean
 				end
@@ -169,6 +151,23 @@ feature -- Server
 				retry
 			end
 		end
+
+	process_rescue (res: detachable WGI_RESPONSE)
+		do
+			if attached (create {EXCEPTION_MANAGER}).last_exception as e and then attached e.trace as l_trace then
+				if res /= Void then
+					if not res.status_is_set then
+						res.set_status_code ({HTTP_STATUS_CODE}.internal_server_error, Void)
+					end
+					if res.message_writable then
+						res.put_string ("<pre>")
+						res.put_string (html_encoder.encoded_string (l_trace))
+						res.put_string ("</pre>")
+					end
+					res.push
+				end
+			end
+		end		
 
 note
 	copyright: "2011-2015, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"

@@ -14,6 +14,8 @@ inherit
 
 	REFACTORING_HELPER
 
+	SHARED_HTML_ENCODER
+
 create
 	make,
 	make_with_connector
@@ -26,7 +28,21 @@ feature {NONE} -- Initialization
 			connector := conn
 		end
 
-	connector: detachable separate WGI_CONNECTOR
+	connector: detachable separate WGI_HTTPD_CONNECTOR [G]
+
+	base: detachable IMMUTABLE_STRING_8
+		do
+			if attached connector as conn then
+				if attached connector_base (conn) as l_base then
+					create Result.make_from_separate (l_base)
+				end
+			end
+		end
+
+	connector_base (conn: separate WGI_HTTPD_CONNECTOR [G]): detachable separate READABLE_STRING_8
+		do
+			Result := conn.base
+		end
 
 feature -- Request processing
 
@@ -53,23 +69,10 @@ feature -- Request processing
 
 				create {G} exec.make (req, res)
 				exec.execute
-				res.flush
 				res.push
 				exec.clean
 			else
-				if attached (create {EXCEPTION_MANAGER}).last_exception as e and then attached e.exception_trace as l_trace then
-					if res /= Void then
-						if not res.status_is_set then
-							res.set_status_code ({HTTP_STATUS_CODE}.internal_server_error, Void)
-						end
-						if res.message_writable then
-							res.put_string ("<pre>")
-							res.put_string (l_trace)
-							res.put_string ("</pre>")
-						end
-						res.push
-					end
-				end
+				process_rescue (res)
 				if exec /= Void then
 					exec.clean
 				end
@@ -81,10 +84,21 @@ feature -- Request processing
 			end
 		end
 
-	base: detachable READABLE_STRING_8
+	process_rescue (res: detachable WGI_RESPONSE)
 		do
-			--TODO
-			to_implement ("Base url support")
+			if attached (create {EXCEPTION_MANAGER}).last_exception as e and then attached e.trace as l_trace then
+				if res /= Void then
+					if not res.status_is_set then
+						res.set_status_code ({HTTP_STATUS_CODE}.internal_server_error, Void)
+					end
+					if res.message_writable then
+						res.put_string ("<pre>")
+						res.put_string (html_encoder.encoded_string (l_trace))
+						res.put_string ("</pre>")
+					end
+					res.push
+				end
+			end
 		end
 
 	httpd_environment (a_socket: HTTPD_STREAM_SOCKET): STRING_TABLE [READABLE_STRING_8]
@@ -93,6 +107,7 @@ feature -- Request processing
 			l_request_uri, l_script_name, l_query_string, l_path_info: STRING
 			l_server_name, l_server_port: detachable STRING
 			l_headers_map: HASH_TABLE [STRING, STRING]
+			l_base: detachable READABLE_STRING_8
 			vn: STRING
 
 			e: EXECUTION_ENVIRONMENT
@@ -189,7 +204,11 @@ feature -- Request processing
 			set_environment_variable ({HTTPD_CONFIGURATION}.Server_details, "SERVER_SOFTWARE", Result)
 
 				--| Apply `base' value
-			if attached base as l_base and then l_request_uri /= Void then
+			l_base := base
+			if l_base = Void then
+				l_base := ""
+			end
+			if l_request_uri /= Void then
 				if l_request_uri.starts_with (l_base) then
 					l_path_info := l_request_uri.substring (l_base.count + 1, l_request_uri.count)
 					p := l_path_info.index_of ('?', 1)

@@ -79,7 +79,7 @@ feature {NONE} -- Initialization
 
 feature -- Execution
 
-	update_configuration (cfg: separate HTTPD_CONFIGURATION)
+	update_configuration (cfg: like connector.configuration)
 		do
 			if single_threaded then
 				cfg.set_force_single_threaded (True)
