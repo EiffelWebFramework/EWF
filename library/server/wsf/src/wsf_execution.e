@@ -28,6 +28,14 @@ feature {NONE} -- Initialization
 			Precursor (req, res)
 			create request.make_from_wgi (wgi_request)
 			create response.make_from_wgi (wgi_response)
+			initialize
+		end
+
+	initialize
+			-- Initialize Current object.
+			--| To be redefined if needed.
+		do
+
 		end
 
 feature {NONE} -- Access

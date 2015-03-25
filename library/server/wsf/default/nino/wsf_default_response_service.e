@@ -4,15 +4,15 @@ note
 	revision: "$Revision$"
 
 deferred class
-	WSF_DEFAULT_RESPONSE_SERVICE	
+	WSF_DEFAULT_RESPONSE_SERVICE [G -> WSF_EXECUTION create make end]
 
 inherit
-	WSF_DEFAULT_SERVICE
+	WSF_DEFAULT_SERVICE [G]
 
-	WSF_RESPONSE_SERVICE
+	WSF_RESPONSE_SERVICE [G]
 
 note
-	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
+	copyright: "2011-2015, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

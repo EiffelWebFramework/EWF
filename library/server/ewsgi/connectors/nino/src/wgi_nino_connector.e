@@ -15,11 +15,11 @@ create
 
 feature {NONE} -- Initialization
 
-	make (a_service: like service)
+	make --(a_service: like service)
 		local
 			cfg: HTTP_SERVER_CONFIGURATION
 		do
-			service := a_service
+--			service := a_service
 
 			create cfg.make
 			create server.make (cfg)
@@ -29,11 +29,11 @@ feature {NONE} -- Initialization
 			create on_stopped_actions
 		end
 
-	make_with_base (a_service: like service; a_base: like base)
+	make_with_base (a_base: like base)
 		require
 			a_base_starts_with_slash: (a_base /= Void and then not a_base.is_empty) implies a_base.starts_with ("/")
 		do
-			make (a_service)
+			make -- (a_service)
 			set_base (a_base)
 		end
 
@@ -45,10 +45,10 @@ feature -- Access
 	version: STRING_8 = "0.1"
 			-- Version of Current connector
 
-feature {NONE} -- Access
+--feature {NONE} -- Access
 
-	service: WGI_SERVICE
-			-- Gateway Service		
+--	service: WGI_SERVICE
+--			-- Gateway Service		
 
 feature -- Access
 
@@ -139,7 +139,7 @@ feature -- Server
 				create req.make (env, create {WGI_NINO_INPUT_STREAM}.make (a_socket), Current)
 				create res.make (create {WGI_NINO_OUTPUT_STREAM}.make (a_socket), create {WGI_NINO_ERROR_STREAM}.make_stderr (a_socket.descriptor.out))
 				req.set_meta_string_variable ("RAW_HEADER_DATA", a_headers_text)
-				
+
 				create {G} exec.make (req, res)
 				exec.execute
 				res.flush
@@ -161,7 +161,7 @@ feature -- Server
 				end
 				if exec /= Void then
 					exec.clean
-				end				
+				end
 			end
 		rescue
 			if not retried then
@@ -171,7 +171,7 @@ feature -- Server
 		end
 
 note
-	copyright: "2011-2013, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
+	copyright: "2011-2015, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software
