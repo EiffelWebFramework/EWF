@@ -67,7 +67,7 @@ feature {NONE} -- Initialization
 					verbose := l_verbose_str.as_lower.same_string ("true")
 				end
 			end
-			create conn.make (Current)
+			create conn.make --(Current)
 			connector := conn
 
 			conn.on_launched_actions.extend (agent on_launched)
