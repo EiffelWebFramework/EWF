@@ -7,6 +7,20 @@ note
 deferred class
 	WSF_ROUTED_EXECUTION
 
+inherit
+	WSF_EXECUTION
+		redefine
+			initialize
+		end
+
+feature {NONE} -- Initialize
+
+	initialize
+		do
+			Precursor
+			initialize_router
+		end
+
 feature -- Router
 
 	initialize_router
@@ -34,14 +48,6 @@ feature -- Router
 
 feature -- Access
 
-	request: WSF_REQUEST
-		deferred
-		end
-
-	response: WSF_RESPONSE
-		deferred
-		end
-
 	router: WSF_ROUTER
 			-- Router used to dispatch the request according to the WSF_REQUEST object
 			-- and associated request methods		
@@ -51,19 +57,22 @@ feature -- Execution
 	execute
 			-- Dispatch the request
 			-- and if handler is not found, execute the default procedure `execute_default'.
+		do
+			router_execute (request, response)
+		end
+
+	router_execute (req: WSF_REQUEST; res: WSF_RESPONSE)
 		local
 			sess: WSF_ROUTER_SESSION
 		do
 			create sess
-			router.dispatch (request, response, sess)
+			router.dispatch (req, res, sess)
 			if not sess.dispatched then
-				execute_default
+				execute_default (req, res)
 			end
-		ensure
-			response_status_is_set: response.status_is_set
 		end
 
-	execute_default
+	execute_default (req: WSF_REQUEST; res: WSF_RESPONSE)
 			-- Dispatch requests without a matching handler.
 		local
 			msg: WSF_DEFAULT_ROUTER_RESPONSE
@@ -73,4 +82,14 @@ feature -- Execution
 			response.send (msg)
 		end
 
+note
+	copyright: "2011-2015, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Colin Adams, Eiffel Software and others"
+	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
+	source: "[
+			Eiffel Software
+			5949 Hollister Ave., Goleta, CA 93117 USA
+			Telephone 805-685-1006, Fax 805-685-6869
+			Website http://www.eiffel.com
+			Customer support http://support.eiffel.com
+		]"
 end
