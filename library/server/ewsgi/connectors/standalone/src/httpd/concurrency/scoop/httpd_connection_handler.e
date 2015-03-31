@@ -1,5 +1,7 @@
 note
-	description: "Summary description for {HTTPD_CONNECTION_HANDLER}."
+	description: "[
+			Implementation of HTTPD_CONNECTION_HANDLER_I for concurrency mode: SCOOP
+		]"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -36,8 +38,10 @@ feature {NONE} -- Initialization
 feature -- Access
 
 	is_shutdown_requested: BOOLEAN
+			-- <Precursor>
 
 	max_concurrent_connections (a_server: like server): INTEGER
+			-- Max concurrent connection settings from server `a_server'.
 		do
 			Result := a_server.configuration.max_concurrent_connections
 		end
@@ -87,11 +91,6 @@ feature {HTTPD_SERVER_I} -- Execution
 			end
 		end
 
-	separate_client_socket (hdl: separate HTTPD_REQUEST_HANDLER): separate HTTPD_STREAM_SOCKET
-		do
-			Result := hdl.client_socket
-		end
-
 	process_handler (hdl: separate HTTPD_REQUEST_HANDLER)
 		require
 			hdl.is_connected
@@ -99,22 +98,28 @@ feature {HTTPD_SERVER_I} -- Execution
 			hdl.safe_execute
 		end
 
+	separate_client_socket (hdl: separate HTTPD_REQUEST_HANDLER): separate HTTPD_STREAM_SOCKET
+		do
+			Result := hdl.client_socket
+		end
+
 feature {HTTPD_SERVER_I} -- Status report
 
 	wait_for_completion
-			-- Wait until Current is ready for shutdown
+			-- Wait until Current is ready for shutdown.
 		do
 			wait_for_pool_completion (pool)
 		end
 
 	wait_for_pool_completion (p: like pool)
+			-- Wait until concurrent pool is empty and terminated.
 		require
-			p.is_empty
+			p.is_empty -- SCOOP wait condition.
 		do
 			p.terminate
 		end
 
-feature {NONE} -- Access
+feature {NONE} -- Implementation
 
 	pool: separate CONCURRENT_POOL [HTTPD_REQUEST_HANDLER]
 			-- Pool of separate connection handlers.

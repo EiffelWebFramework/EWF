@@ -1,6 +1,5 @@
 note
-	description: "Summary description for {CONCURRENT_POOL}."
-	author: ""
+	description: "Concurrent pool for SCOOP concurrency mode."
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -19,7 +18,6 @@ feature {NONE} -- Initialization
 		do
 			capacity := n
 			create items.make_empty (n)
---			create busy_items.make_filled (False, n)
 			create busy_items.make_empty (n)
 		end
 

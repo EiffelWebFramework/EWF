@@ -1,13 +1,13 @@
 note
 	description: "[
-			Objects that ...
+			Testing+developping the standalone connector, no need to review.
 		]"
 	author: "$Author$"
 	date: "$Date$"
 	revision: "$Revision$"
 
 class
-	HTTPD_CONNECTOR_DEV
+	TEST_STANDALONE_CONNECTOR
 
 create
 	make
@@ -17,7 +17,7 @@ feature {NONE} -- Initialization
 	make
 			-- Initialize `Current'.
 		local
-			conn: WGI_STANDALONE_CONNECTOR [APP_WSF_EXECUTION]
+			conn: WGI_STANDALONE_CONNECTOR [TEST_EXECUTION]
 		do
 			print ("Starting httpd server ...%N")
 

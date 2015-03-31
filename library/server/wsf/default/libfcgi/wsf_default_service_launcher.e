@@ -1,6 +1,5 @@
 note
-	description: "Summary description for {WSF_DEFAULT_SERVICE_LAUNCHER}."
-	author: ""
+	description: "Launcher for default connector: libFCGI"
 	date: "$Date$"
 	revision: "$Revision$"
 

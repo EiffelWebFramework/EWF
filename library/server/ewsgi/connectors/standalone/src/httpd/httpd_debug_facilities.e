@@ -1,6 +1,5 @@
 note
-	description: "Summary description for {HTTPD_DEBUG_FACILITIES}."
-	author: ""
+	description: " Routines used for debug logging."
 	date: "$Date$"
 	revision: "$Revision$"
 

@@ -1,5 +1,5 @@
 note
-	description: "Summary description for {WGI_CGI_CONNECTOR}."
+	description: "CGI connector, see CGI interface, and CGI scripts."
 	date: "$Date$"
 	revision: "$Revision$"
 

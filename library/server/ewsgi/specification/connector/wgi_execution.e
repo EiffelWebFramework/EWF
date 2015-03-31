@@ -1,6 +1,5 @@
 note
-	description: "Summary description for {WGI_EXECUTION}."
-	author: ""
+	description: "Common interface for any request execution."
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -13,6 +12,7 @@ deferred class
 feature {NONE} -- Initialization
 
 	make (req: WGI_REQUEST; res: WGI_RESPONSE)
+			-- Create current execution with request `req' and response `res'.
 		do
 			request := req
 			response := res
@@ -21,8 +21,10 @@ feature {NONE} -- Initialization
 feature {NONE} -- Access
 
 	request: WGI_REQUEST
+			-- Request data.
 
 	response: WGI_RESPONSE
+			-- Response interface.
 
 feature -- Execution
 

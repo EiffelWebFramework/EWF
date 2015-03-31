@@ -1,6 +1,6 @@
 note
-	description: "Summary description for {WSF_DEBUG_HANDLER}."
-	author: ""
+	description: "Handler returning debug information."
+
 	date: "$Date: 2013-06-28 16:14:02 +0200 (ven., 28 juin 2013) $"
 	revision: "$Revision: 92754 $"
 

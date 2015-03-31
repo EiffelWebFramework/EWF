@@ -1,6 +1,5 @@
 note
-	description: "Summary description for {WSF_STARTS_WITH_CONTEXT_ROUTED_SERVICE}."
-	author: ""
+	description: "Helper for routed execution with context."
 	date: "$Date$"
 	revision: "$Revision$"
 

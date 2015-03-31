@@ -1,6 +1,8 @@
 note
-	description: "Summary description for {CONCURRENT_POOL_ITEM}."
-	author: ""
+	description: "[
+			Item create by the CONCURRENT_POOL_FACTORY, and managed by the CONCURRENT_POOL 
+			for SCOOP concurrency mode.
+		]"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -10,10 +12,12 @@ deferred class
 feature	{NONE} -- Access
 
 	pool: detachable separate CONCURRENT_POOL [CONCURRENT_POOL_ITEM]
+			-- Associated concurrent pool component.
 
 feature {CONCURRENT_POOL} -- Change
 
 	set_pool (p: like pool)
+			-- Set associated `pool' to `p'.
 		do
 			pool := p
 		end

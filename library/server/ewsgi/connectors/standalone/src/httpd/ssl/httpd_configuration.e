@@ -1,5 +1,5 @@
 note
-	description: "Summary description for {HTTPD_CONFIGURATION}."
+	description: "Standalone server configuration (ssl supported)."
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -25,7 +25,7 @@ feature {NONE} -- Initialization
 
 feature -- Access
 
-	Server_details: STRING_8 = "Server : NINO Eiffel Server (https)"
+	Server_details: STRING_8 = "Server: Standalone Eiffel Server (https)"
 
 	has_ssl_support: BOOLEAN = True
 			-- Precursor		

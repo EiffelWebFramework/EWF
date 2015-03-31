@@ -1,6 +1,8 @@
 note
-	description: "Summary description for {HTTPD_CONTROLLER}."
-	author: ""
+	description: "[
+			Object used to control (i.e shutdown) the server.
+			Mostly needed in SCOOP concurrency mode.
+		]"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -10,11 +12,15 @@ class
 feature -- Operation
 
 	shutdown
+			-- Request the associated server to be shutdown.
 		do
 			shutdown_requested := True
 		end
 
+feature -- Status report.		
+
 	shutdown_requested: BOOLEAN
+			-- Shutdown requested.
 
 ;note
 	copyright: "2011-2013, Javier Velilla, Jocelyn Fiat and others"

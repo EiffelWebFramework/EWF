@@ -1,5 +1,5 @@
 note
-	description: "Summary description for {WGI_NINO_CONNECTOR}."
+	description: "Standalone Eiffel Web nino server connector."
 	date: "$Date$"
 	revision: "$Revision$"
 

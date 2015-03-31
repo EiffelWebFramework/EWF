@@ -1,5 +1,5 @@
 note
-	description: "Summary description for {WGI_RESPONSE}."
+	description: "Interface to send response back to the client"
 	date: "$Date$"
 	revision: "$Revision$"
 

@@ -1,6 +1,7 @@
 note
-	description: "Summary description for {HTTPD_CONNECTION_HANDLER}."
-	author: ""
+	description: "[
+			Implementation of HTTPD_CONNECTION_HANDLER_I for concurrency mode: none
+		]"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -29,7 +30,7 @@ feature -- Access
 			Result := a_server.controller.shutdown_requested
 		end
 
-feature -- Execution
+feature {HTTPD_SERVER_I} -- Execution
 
 	accept_incoming_connection (a_listening_socket: HTTPD_STREAM_SOCKET)
 		local

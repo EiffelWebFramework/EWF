@@ -1,11 +1,11 @@
 note
-	description: "Summary description for {APP_WSF_EXECUTION}."
+	description: "Summary description for {TEST_EXECUTION}."
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
 class
-	APP_WSF_EXECUTION
+	TEST_EXECUTION
 
 inherit
 	WSF_EXECUTION
@@ -22,6 +22,7 @@ feature -- Execution
 			s: STRING
 			i64: INTEGER_64
 		do
+			i64 := {INTEGER_64} 1_000_000_000 
 			s := "Hello Concurrent EWF"
 			s.append (" (counter=")
 			s.append_integer (next_cell_counter_item (counter_cell))
@@ -30,7 +31,7 @@ feature -- Execution
 			if attached {WSF_STRING} request.query_parameter ("sleep") as p_sleep then
 				if attached p_sleep.value.is_integer then
 					s.append ("sleep for ")
-					i64 := p_sleep.value.to_integer_64 * {INTEGER_64} 1_000_000_000
+					i64 := p_sleep.value.to_integer_64 * ({INTEGER_64} 1_000_000_000)
 					s.append_integer_64 (i64)
 					execution_environment.sleep (i64)
 				end
@@ -49,7 +50,7 @@ feature -- Execution
 			Result := cl.next_item
 		end
 
-	counter_cell: separate APP_COUNTER
+	counter_cell: separate TEST_COUNTER
 		once ("PROCESS")
 			create Result.put (0)
 		end

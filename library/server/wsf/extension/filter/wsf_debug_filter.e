@@ -1,5 +1,5 @@
 note
-	description: "Summary description for {WSF_DEBUG_FILTER}."
+	description: "Filter implementing debug output in error stream, or `output' file."
 	date: "$Date: 2013-05-23 21:54:29 +0200 (jeu., 23 mai 2013) $"
 	revision: "$Revision: 92585 $"
 

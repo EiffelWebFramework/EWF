@@ -1,6 +1,9 @@
 note
-	description: "Summary description for {WGI_STANDALONE_SERVER_OBSERVER}."
-	author: ""
+	description: "[
+			Server status observer for the Standalone Web Server connector.
+			This is used to get information related to the port number
+			and the status of the server.
+		]"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -38,7 +41,6 @@ feature -- Event
 			port := 0
 			terminated := True
 		end
-
 
 note
 	copyright: "2011-2015, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"

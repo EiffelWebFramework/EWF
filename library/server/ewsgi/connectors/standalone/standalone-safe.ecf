@@ -21,20 +21,4 @@
 			<cluster name="implementation" location="$|implementation\" hidden="true"/>
 		</cluster>
 	</target>
-	<target name="dev_scoop" extends="connector_standalone">
-		<root class="HTTPD_CONNECTOR_DEV" feature="make"/>
-		<option debug="true">
-			<debug name="dbglog" enabled="true"/>
-			<assertions precondition="true" postcondition="true" check="true" supplier_precondition="true"/>
-		</option>
-		<setting name="concurrency" value="scoop"/>
-		<library name="wsf" location="..\..\..\wsf\wsf-safe.ecf" readonly="false"/>
-		<cluster name="dev" location="dev\" recursive="true"/>
-	</target>
-	<target name="dev_mt" extends="dev_scoop">
-		<setting name="concurrency" value="thread"/>
-	</target>
-	<target name="dev_none" extends="dev_scoop">
-		<setting name="concurrency" value="none"/>
-	</target>
 </system>

@@ -1,12 +1,7 @@
 note
-	description: "Summary description for {WGI_STANDALONE_CONNECTOR}."
-	author: ""
-	todo: "[
-		Check if server and configuration has to be 'separate' ? 
-		currently yes, due to WGI_REQUEST.wgi_connector setting.
-		But we may get rid of this one...
-		See `{WGI_REQUEST}.wgi_connector' and `{WSF_REQUEST}.wgi_connector' ...
-	]"
+	description: "[
+			Standalone Web Server connector
+		]"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -23,6 +18,7 @@ create
 feature {NONE} -- Initialization
 
 	make
+			-- Create current standalone connector.
 		local
 			fac: separate WGI_HTTPD_REQUEST_HANDLER_FACTORY [G]
 		do
@@ -40,6 +36,7 @@ feature {NONE} -- Initialization
 		end
 
 	make_with_base (a_base: like base)
+			-- Create current standalone connector with base url `a_base'
 		require
 			a_base_starts_with_slash: (a_base /= Void and then not a_base.is_empty) implies a_base.starts_with ("/")
 		do
@@ -47,12 +44,12 @@ feature {NONE} -- Initialization
 			set_base (a_base)
 		end
 
+feature {NONE} -- Separate helper
+
 	initialize_server (a_server: like server)
 		do
 			a_server.set_observer (observer)
 		end
-
-feature {NONE} -- Separate helper
 
 	set_factory_connector (conn: detachable separate WGI_STANDALONE_CONNECTOR [G]; fac: separate WGI_HTTPD_REQUEST_HANDLER_FACTORY [G])
 		do
@@ -75,12 +72,16 @@ feature -- Access
 feature -- Access
 
 	server: separate HTTPD_SERVER
+			-- HTTPd server object.
 
 	controller: separate HTTPD_CONTROLLER
+			-- Controller used to shutdown server.
 
 	observer: separate WGI_STANDALONE_SERVER_OBSERVER
+			-- Observer providing information related to port number, and server status.
 
 	configuration: separate HTTPD_CONFIGURATION
+			-- Server configuration.
 
 feature -- Access
 
@@ -116,16 +117,18 @@ feature -- Event
 
 feature -- Element change
 
-	set_base (b: like base)
+	set_base (v: like base)
+			-- Set base url `base' to `v'.
 		require
-			b_starts_with_slash: (b /= Void and then not b.is_empty) implies b.starts_with ("/")
+			b_starts_with_slash: (v /= Void and then not v.is_empty) implies v.starts_with ("/")
 		do
-			base := b
+			base := v
 		ensure
 			valid_base: (attached base as l_base and then not l_base.is_empty) implies l_base.starts_with ("/")
 		end
 
 	set_port_number (a_port_number: INTEGER)
+			-- Set port number to `a_port_number'.
 		require
 			a_port_number_positive_or_zero: a_port_number >= 0
 		do
@@ -133,6 +136,7 @@ feature -- Element change
 		end
 
 	set_max_concurrent_connections (nb: INTEGER)
+			-- Set maximum concurrent connections to `nb'.
 		require
 			nb_positive_or_zero: nb >= 0
 		do
@@ -140,31 +144,16 @@ feature -- Element change
 		end
 
 	set_is_verbose (b: BOOLEAN)
+			-- Set verbose mode.
 		do
 			set_is_verbose_on_configuration (b, configuration)
 		end
 
-feature {NONE} -- Implementation
-
-	set_port_on_configuration (a_port_number: INTEGER; cfg: like configuration)
-		do
-			cfg.set_http_server_port (a_port_number)
-		end
-
-	set_max_concurrent_connections_on_configuration (nb: INTEGER; cfg: like configuration)
-		do
-			cfg.set_max_concurrent_connections (nb)
-		end
-
-	set_is_verbose_on_configuration (b: BOOLEAN; cfg: like configuration)
-		do
-			is_verbose := b
-			cfg.set_is_verbose (b)
-		end
 
 feature -- Server
 
 	launch
+			-- Launch web server listening.
 		do
 			launched := False
 			port := 0
@@ -173,6 +162,7 @@ feature -- Server
 		end
 
 	shutdown_server
+			-- Shutdown web server listening.
 		do
 			if launched then
 					-- FIXME jfiat [2015/03/27] : prevent multiple calls (otherwise it hangs)
@@ -180,18 +170,24 @@ feature -- Server
 			end
 		end
 
-	server_controller (a_server: like server): separate HTTPD_CONTROLLER
-		do
-			Result := a_server.controller
-		end
+feature -- Events
 
 	on_server_started (obs: like observer)
+			-- Server started and listeing on port `obs.port'.
 		require
-			obs.started
+			obs.started -- SCOOP wait condition.
 		do
 			if obs.port > 0 then
 				on_launched (obs.port)
 			end
+		end
+
+
+feature {NONE} -- Implementation
+
+	server_controller (a_server: like server): separate HTTPD_CONTROLLER
+		do
+			Result := a_server.controller
 		end
 
 	configure_server (a_configuration: like configuration)
@@ -209,8 +205,6 @@ feature -- Server
 			a_server.launch
 		end
 
-feature {NONE} -- Implementation
-
 	separate_server_terminated (a_server: like server): BOOLEAN
 		do
 			Result := a_server.is_terminated
@@ -219,6 +213,24 @@ feature {NONE} -- Implementation
 	separate_shutdown_server_on_controller (a_controller: separate HTTPD_CONTROLLER)
 		do
 			a_controller.shutdown
+		end
+
+feature {NONE} -- Implementation: element change
+
+	set_port_on_configuration (a_port_number: INTEGER; cfg: like configuration)
+		do
+			cfg.set_http_server_port (a_port_number)
+		end
+
+	set_max_concurrent_connections_on_configuration (nb: INTEGER; cfg: like configuration)
+		do
+			cfg.set_max_concurrent_connections (nb)
+		end
+
+	set_is_verbose_on_configuration (b: BOOLEAN; cfg: like configuration)
+		do
+			is_verbose := b
+			cfg.set_is_verbose (b)
 		end
 
 
