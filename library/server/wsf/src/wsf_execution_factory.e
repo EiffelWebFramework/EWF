@@ -1,18 +1,26 @@
 note
-	description: "Summary description for {WSF_DEFAULT_RESPONSE_SERVICE}."
+	description: "Summary description for {WSF_EXECUTION_FACTORY}."
+	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
 deferred class
-	WSF_DEFAULT_RESPONSE_SERVICE	
+	WSF_EXECUTION_FACTORY
 
 inherit
-	WSF_DEFAULT_SERVICE
+	WGI_EXECUTION_FACTORY
+		redefine
+			execution
+		end
 
-	WSF_RESPONSE_SERVICE
+feature -- Factory
+
+	execution (req: WGI_REQUEST; res: WGI_RESPONSE): WSF_EXECUTION
+		deferred
+		end
 
 note
-	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
+	copyright: "2011-2015, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Colin Adams, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

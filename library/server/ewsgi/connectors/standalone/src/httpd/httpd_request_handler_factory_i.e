@@ -1,21 +1,20 @@
 note
-	description: "Summary description for {WSF_URI_ROUTED_SERVICE}."
+	description: "Summary description for {HTTPD_REQUEST_HANDLER_FACTORY_I}."
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
 deferred class
-	WSF_URI_ROUTED_SERVICE
+	HTTPD_REQUEST_HANDLER_FACTORY_I
 
-obsolete "Inherit from WSF_ROUTED_SERVICE and WSF_URI_HELPER_FOR_ROUTED_SERVICE [2013-mar-19]"
+feature -- Factory
 
-inherit
-	WSF_ROUTED_SERVICE
-
-	WSF_URI_HELPER_FOR_ROUTED_SERVICE
+	new_handler: separate HTTPD_REQUEST_HANDLER
+		deferred
+		end
 
 note
-	copyright: "2011-2013, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
+	copyright: "2011-2014, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

@@ -1,18 +1,32 @@
 note
-	description: "Summary description for {WSF_DEFAULT_RESPONSE_SERVICE}."
+	description: "Summary description for {APP_COUNTER}."
+	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
-deferred class
-	WSF_DEFAULT_RESPONSE_SERVICE	
+class
+	APP_COUNTER
 
-inherit
-	WSF_DEFAULT_SERVICE
+create
+	put
 
-	WSF_RESPONSE_SERVICE
+feature
+
+	item: INTEGER
+
+	put, replace (i: INTEGER)
+		do
+			item := i
+		end
+
+	next_item: INTEGER
+		do
+			Result := item + 1
+			item := Result
+		end
 
 note
-	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
+	copyright: "2011-2015, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

@@ -1,18 +1,22 @@
 note
-	description: "Summary description for {WSF_DEFAULT_RESPONSE_SERVICE}."
+	description: "Summary description for {HTTPD_REQUEST_HANDLER_FACTORY}."
+	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
 deferred class
-	WSF_DEFAULT_RESPONSE_SERVICE	
+	HTTPD_REQUEST_HANDLER_FACTORY
 
 inherit
-	WSF_DEFAULT_SERVICE
+	HTTPD_REQUEST_HANDLER_FACTORY_I
 
-	WSF_RESPONSE_SERVICE
+	CONCURRENT_POOL_FACTORY [HTTPD_REQUEST_HANDLER]
+		rename
+			new_separate_item as new_handler
+		end
 
 note
-	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
+	copyright: "2011-2015, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

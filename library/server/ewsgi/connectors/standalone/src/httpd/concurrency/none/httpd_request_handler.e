@@ -1,18 +1,19 @@
 note
-	description: "Summary description for {WSF_DEFAULT_RESPONSE_SERVICE}."
-	date: "$Date$"
-	revision: "$Revision$"
+	description : "Concurrent specific feature to implemente HTTPD_REQUEST_HANDLER"
+	author      : "$Author$"
+	date        : "$Date$"
+	revision    : "$Revision$"
 
 deferred class
-	WSF_DEFAULT_RESPONSE_SERVICE	
+	HTTPD_REQUEST_HANDLER
 
 inherit
-	WSF_DEFAULT_SERVICE
+	HTTPD_REQUEST_HANDLER_I
 
-	WSF_RESPONSE_SERVICE
+
 
 note
-	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
+	copyright: "2011-2015, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software
