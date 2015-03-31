@@ -7,9 +7,6 @@ note
 class
 	HELLO_WORLD
 
-inherit
-	WGI_SERVICE
-
 create
 	make
 

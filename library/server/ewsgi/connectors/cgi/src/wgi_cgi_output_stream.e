@@ -1,5 +1,5 @@
 note
-	description: "Summary description for WGI_CGI_OUTPUT_STREAM."
+	description: "Output stream for CGI connector."
 	legal: "See notice at end of class."
 	status: "See notice at end of class."
 	date: "$Date$"

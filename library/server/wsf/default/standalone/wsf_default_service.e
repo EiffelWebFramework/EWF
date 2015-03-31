@@ -1,5 +1,5 @@
 note
-	description: "Summary description for {WSF_DEFAULT_SERVICE}."
+	description: "Service using default connector launcher: Standalone"
 	date: "$Date$"
 	revision: "$Revision$"
 

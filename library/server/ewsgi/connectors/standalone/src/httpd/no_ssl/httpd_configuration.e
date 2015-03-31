@@ -1,5 +1,5 @@
 note
-	description: "Summary description for {HTTPD_CONFIGURATION}."
+	description: "Standalone server configuration (ssl NOT supported)."
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -14,7 +14,7 @@ create
 
 feature -- Status
 
-	Server_details: STRING_8 = "Server : NINO Eiffel Server"
+	Server_details: STRING_8 = "Server: Standalone Eiffel Server"
 
 	has_ssl_support: BOOLEAN = False
 			-- Precursor

@@ -1,5 +1,5 @@
 note
-	description: "Summary description for {HTTPD_CONFIGURATION_I}."
+	description: "Configuration for the standalone HTTPd server."
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -24,6 +24,7 @@ feature {NONE} -- Initialization
 feature -- Access
 
 	Server_details: STRING_8
+			-- Detail of the server.
 		deferred
 		end
 

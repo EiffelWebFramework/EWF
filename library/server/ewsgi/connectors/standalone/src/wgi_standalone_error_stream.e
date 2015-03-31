@@ -1,5 +1,7 @@
 note
-	description: "Summary description for WGI_STANDALONE_ERROR_STREAM."
+	description: "[
+			Error stream for the Standalone Web Server connector.
+		]"
 	legal: "See notice at end of class."
 	status: "See notice at end of class."
 	date: "$Date$"

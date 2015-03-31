@@ -1,5 +1,7 @@
 note
-	description: "Summary description for {WGI_FILTER_RESPONSE}."
+	description: "[
+				WGI response acting as a filter. 
+			]"
 	date: "$Date$"
 	revision: "$Revision$"
 

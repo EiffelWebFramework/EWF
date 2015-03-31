@@ -25,6 +25,7 @@ inherit
 feature {NONE} -- Initialization
 
 	make (req: WGI_REQUEST; res: WGI_RESPONSE)
+			-- Create Current execution with request `req' and response `res'.
 		do
 			Precursor (req, res)
 			create request.make_from_wgi (wgi_request)
@@ -39,7 +40,7 @@ feature {NONE} -- Initialization
 
 		end
 
-feature {NONE} -- Access
+feature -- Access
 
 	request: WSF_REQUEST
 			-- Access to request data.

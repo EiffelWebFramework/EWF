@@ -1,6 +1,7 @@
 note
-	description: "Summary description for {HTTPD_CONNECTION_HANDLER}."
-	author: ""
+	description: "[
+			Implementation of HTTPD_CONNECTION_HANDLER_I for concurrency mode: Thread
+		]"
 	date: "$Date$"
 	revision: "$Revision$"
 

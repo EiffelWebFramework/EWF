@@ -1,7 +1,7 @@
 note
 	description: "[
 			WGI Response implemented using stream buffer
-
+			for the standalone Eiffel web server connector.
 		]"
 	date: "$Date$"
 	revision: "$Revision$"

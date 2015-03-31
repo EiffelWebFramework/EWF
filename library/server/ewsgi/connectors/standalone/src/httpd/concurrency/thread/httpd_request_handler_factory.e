@@ -1,6 +1,5 @@
 note
-	description: "Summary description for {HTTPD_REQUEST_HANDLER_FACTORY}."
-	author: ""
+	description: "Implementation of request handler factory for concurrency mode: Thread"
 	date: "$Date$"
 	revision: "$Revision$"
 

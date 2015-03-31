@@ -1,5 +1,5 @@
 note
-	description: "Summary description for {WSF_ROUTED_SKELETON_EXECUTION}."
+	description: "Skeleton execution based on router."
 	date: "$Date$"
 	revision: "$Revision$"
 

@@ -1,6 +1,5 @@
 note
-	description: "Summary description for {WGI_EXPORTER}."
-	author: ""
+description: "Interface giving access to restricting features of EWSGI components."
 	date: "$Date$"
 	revision: "$Revision$"
 

@@ -1,6 +1,5 @@
 note
-	description: "Summary description for {SSL_TCP_STREAM_SOCKET}."
-	author: ""
+	description: "SSL tcp stream socket."
 	date: "$Date$"
 	revision: "$Revision$"
 

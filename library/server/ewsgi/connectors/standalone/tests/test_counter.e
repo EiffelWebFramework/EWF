@@ -1,11 +1,10 @@
 note
-	description: "Summary description for {APP_COUNTER}."
-	author: ""
+	description: "Simple counter component."
 	date: "$Date$"
 	revision: "$Revision$"
 
 class
-	APP_COUNTER
+	TEST_COUNTER
 
 create
 	put

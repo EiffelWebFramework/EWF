@@ -1,6 +1,5 @@
 note
-	description: "Summary description for {WSF_ROUTED_EXECUTION}."
-	author: ""
+	description: "Execution based on router."
 	date: "$Date$"
 	revision: "$Revision$"
 

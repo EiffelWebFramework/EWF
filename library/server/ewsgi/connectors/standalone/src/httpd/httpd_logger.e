@@ -1,6 +1,5 @@
 note
-	description: "Summary description for {HTTPD_LOGGER}."
-	author: ""
+	description: "Logging facilities component"
 	date: "$Date$"
 	revision: "$Revision$"
 

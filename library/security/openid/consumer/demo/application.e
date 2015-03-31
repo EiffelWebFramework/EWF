@@ -7,9 +7,8 @@ class
 	APPLICATION
 
 inherit
-
-	WSF_SERVICE
-
+	ANY
+	
 	SHARED_EXECUTION_ENVIRONMENT
 		export
 			{NONE} all
