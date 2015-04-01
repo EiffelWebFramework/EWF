@@ -76,6 +76,13 @@ feature -- Request processing
 
 				create req.make (httpd_environment (a_socket), l_input, connector)
 				create res.make (l_output, l_error)
+				if is_http_version_1_0 then
+					l_output.set_http_version ({HTTP_CONSTANTS}.http_version_1_0)
+					res.set_http_version_1_0
+				else
+					l_output.set_http_version (version)
+				end
+				res.set_is_persistent_connection_requested (keep_alive_requested)
 
 				req.set_meta_string_variable ("RAW_HEADER_DATA", request_header)
 

@@ -39,7 +39,7 @@ feature {NONE} -- Initialization
 			create request_header.make_empty
 			create request_header_map.make (10)
 
-			keep_alive_enabled := False
+			keep_alive_requested := False
 		end
 
 feature -- Status report
@@ -85,8 +85,10 @@ feature -- Access
 	remote_info: detachable TUPLE [addr: STRING; hostname: STRING; port: INTEGER]
 			-- Information related to remote client
 
-	keep_alive_enabled: BOOLEAN
-			-- Inside a persistent connection?
+	keep_alive_requested: BOOLEAN
+			-- Persistent connection requested?
+			-- either has "Connection: Keep-Alive" header,
+			-- or is HTTP/1.1 and no header "Connection: close".
 
 	is_http_version_1_0: BOOLEAN
 		do
@@ -117,7 +119,6 @@ feature -- Change
 	set_is_verbose (b: BOOLEAN)
 		do
 			is_verbose := b
-			print ("set_is_verbose " + b.out + "%N")
 		end
 
 feature -- Execution
@@ -164,7 +165,9 @@ feature -- Execution
 				n := n + 1
 					-- FIXME: it seems to be called one more time, mostly to see this is done.
 				execute_request
-				l_exit := has_error or l_socket.is_closed or not l_socket.is_open_read or not keep_alive_enabled
+				l_exit := not {HTTPD_SERVER}.is_persistent_connection_supported
+						or has_error or l_socket.is_closed or not l_socket.is_open_read
+						or not keep_alive_requested
 				reset_request
 			end
 		end
@@ -297,20 +300,19 @@ feature -- Parsing
 						line := next_line (a_socket)
 					end
 				end
-				if not {HTTPD_SERVER}.is_persistent_connection_supported then
-					keep_alive_enabled := False
-				elseif is_http_version_1_0 then
-					keep_alive_enabled := attached request_header_map.item ("Connection") as l_connection and then
+					-- Except for HTTP/1.0, persistent connection is the default.
+				keep_alive_requested := True
+				if is_http_version_1_0 then
+					keep_alive_requested := attached request_header_map.item ("Connection") as l_connection and then
 								l_connection.is_case_insensitive_equal_general ("keep-alive")
 				else
 						-- By default HTTP:1/1 support persistent connection.
 					if attached request_header_map.item ("Connection") as l_connection then
-						print ("Connection -> " + l_connection + "%N")
 						if l_connection.is_case_insensitive_equal_general ("close") then
-							keep_alive_enabled := False
+							keep_alive_requested := False
 						end
 					else
-						keep_alive_enabled := True
+						keep_alive_requested := True
 					end
 				end
 			end

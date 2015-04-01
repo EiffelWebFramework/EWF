@@ -50,7 +50,12 @@ feature -- Status writing
 			m: detachable READABLE_STRING_8
 		do
 			create s.make (16)
-			s.append ({HTTP_CONSTANTS}.http_version_1_1)
+			if attached http_version as v then
+				s.append (v)
+			else
+					-- Default to 1.1
+				s.append ({HTTP_CONSTANTS}.http_version_1_1)
+			end
 			s.append_character (' ')
 			s.append_integer (a_code)
 			m := a_reason_phrase

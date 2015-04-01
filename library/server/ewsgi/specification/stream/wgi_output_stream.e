@@ -74,6 +74,9 @@ feature -- Status writing
 
 feature -- Status report
 
+	http_version: detachable READABLE_STRING_8
+			-- Optional HTTP version.
+
 	is_available: BOOLEAN
 			-- Is output available?
 			--| i.e: no issue with associated output stream, like closed socket, or related?
@@ -83,6 +86,16 @@ feature -- Status report
 	is_open_write: BOOLEAN
 			-- Can items be written to output stream?
 		deferred
+		end
+
+feature -- Element change
+
+	set_http_version (v: like http_version)
+			-- Set `http_version' to `v'.
+		require
+			valid_version: v /= Void implies v.starts_with ("HTTP/")
+		do
+			http_version := v
 		end
 
 feature -- Basic operations
