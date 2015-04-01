@@ -58,7 +58,7 @@ feature	-- Access
 
 	factory: separate HTTPD_REQUEST_HANDLER_FACTORY
 
-	is_persistent_connection_supported: BOOLEAN = False
+	is_persistent_connection_supported: BOOLEAN = True
 			-- Is persistent connection supported?
 			--| For now, disabled during dev.
 
