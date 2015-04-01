@@ -20,7 +20,7 @@ feature -- Basic operations
 		do
 			-- To send a response we need to setup, the status code and
 			-- the response headers.
-			s := "Hello World!<img src=%"foobar.png%" />"
+			s := "Hello World!"
 			response.put_header ({HTTP_STATUS_CODE}.ok, <<["Content-Type", "text/html"], ["Content-Length", s.count.out]>>)
 			response.set_status_code ({HTTP_STATUS_CODE}.ok)
 			response.header.put_content_type_text_html
