@@ -39,7 +39,7 @@ feature {NONE} -- Initialization
 			create request_header.make_empty
 			create request_header_map.make (10)
 
-			keep_alive_requested := False
+			is_persistent_connection_requested := False
 		end
 
 feature -- Status report
@@ -85,9 +85,9 @@ feature -- Access
 	remote_info: detachable TUPLE [addr: STRING; hostname: STRING; port: INTEGER]
 			-- Information related to remote client
 
-	keep_alive_requested: BOOLEAN
+	is_persistent_connection_requested: BOOLEAN
 			-- Persistent connection requested?
-			-- either has "Connection: Keep-Alive" header,
+			-- either has "Connection: keep-alive" header,
 			-- or is HTTP/1.1 and no header "Connection: close".
 
 	is_http_version_1_0: BOOLEAN
@@ -167,7 +167,7 @@ feature -- Execution
 				execute_request
 				l_exit := not {HTTPD_SERVER}.is_persistent_connection_supported
 						or has_error or l_socket.is_closed or not l_socket.is_open_read
-						or not keep_alive_requested
+						or not is_persistent_connection_requested
 				reset_request
 			end
 		end
@@ -301,18 +301,18 @@ feature -- Parsing
 					end
 				end
 					-- Except for HTTP/1.0, persistent connection is the default.
-				keep_alive_requested := True
+				is_persistent_connection_requested := True
 				if is_http_version_1_0 then
-					keep_alive_requested := attached request_header_map.item ("Connection") as l_connection and then
+					is_persistent_connection_requested := attached request_header_map.item ("Connection") as l_connection and then
 								l_connection.is_case_insensitive_equal_general ("keep-alive")
 				else
 						-- By default HTTP:1/1 support persistent connection.
 					if attached request_header_map.item ("Connection") as l_connection then
 						if l_connection.is_case_insensitive_equal_general ("close") then
-							keep_alive_requested := False
+							is_persistent_connection_requested := False
 						end
 					else
-						keep_alive_requested := True
+						is_persistent_connection_requested := True
 					end
 				end
 			end

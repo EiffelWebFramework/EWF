@@ -82,7 +82,7 @@ feature -- Request processing
 				else
 					l_output.set_http_version (version)
 				end
-				res.set_is_persistent_connection_requested (keep_alive_requested)
+				res.set_is_persistent_connection_requested (is_persistent_connection_requested)
 
 				req.set_meta_string_variable ("RAW_HEADER_DATA", request_header)
 
