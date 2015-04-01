@@ -18,23 +18,47 @@ inherit
 create
 	make
 
-feature -- Header output operation		
+feature -- Header output operation
 
 	put_header_text (a_text: READABLE_STRING_8)
 		local
 			o: like output
+			l_connection: detachable STRING
+			s: STRING
+			i,j: INTEGER
 		do
 			o := output
-			o.put_string (a_text)
+			create s.make_from_string (a_text)
 
-			if not {HTTPD_SERVER}.is_persistent_connection_supported then
+				-- FIXME: check if HTTP versions 1.0 or else.
+
+			i := s.substring_index ("%NConnection:", 1)
+			if i > 0 then
+				j := s.index_of ('%R', i + 12)
+			end
+			if {HTTPD_SERVER}.is_persistent_connection_supported then
+				if i = 0 then
+					s.append ("Connection: Keep-Alive")
+					s.append (o.crlf)
+				end
+			else
 					-- standalone does not support persistent connection for now
-				o.put_string ("Connection: close")
-				o.put_crlf
+				if j > 0 then
+					l_connection := s.substring (i + 12, j - 1)
+					l_connection.adjust
+					if not l_connection.is_case_insensitive_equal_general ("close") then
+						s.replace_substring ("Connection: close", i + 1, j - 1)
+					end
+				else
+					s.append ("Connection: close")
+					s.append (o.crlf)
+				end
 			end
 
-			-- end of headers
-			o.put_crlf
+				-- end of headers
+			s.append (o.crlf)
+
+			o.put_string (s)
 
 			header_committed := True
 		end
