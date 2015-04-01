@@ -18,6 +18,28 @@ inherit
 create
 	make
 
+feature -- Settings
+
+	is_http_version_1_0: BOOLEAN
+			-- Is associated request using HTTP/1.0 ?
+
+	is_persistent_connection_requested: BOOLEAN
+			-- Is persistent connection requested?
+
+feature -- Settings change
+
+	set_http_version_1_0
+			-- Set associated request is using HTTP/1.0.
+		do
+			is_http_version_1_0 := True
+		end
+
+	set_is_persistent_connection_requested (b: BOOLEAN)
+			-- Set `is_persistent_connection_requested' to `b'.
+		do
+			is_persistent_connection_requested := b
+		end
+
 feature -- Header output operation
 
 	put_header_text (a_text: READABLE_STRING_8)
@@ -30,26 +52,64 @@ feature -- Header output operation
 			o := output
 			create s.make_from_string (a_text)
 
-				-- FIXME: check if HTTP versions 1.0 or else.
-
 			i := s.substring_index ("%NConnection:", 1)
-			if i > 0 then
-				j := s.index_of ('%R', i + 12)
-			end
 			if {HTTPD_SERVER}.is_persistent_connection_supported then
-				if i = 0 then
-					s.append ("Connection: Keep-Alive")
-					s.append (o.crlf)
-				end
-			else
-					-- standalone does not support persistent connection for now
-				if j > 0 then
-					l_connection := s.substring (i + 12, j - 1)
-					l_connection.adjust
-					if not l_connection.is_case_insensitive_equal_general ("close") then
-						s.replace_substring ("Connection: close", i + 1, j - 1)
+					-- Current standalone support persistent connection.
+					-- If HTTP/1.1:
+					--		by default all connection are persistent
+					--			then no need to return "Connection:" header
+					--		unless header has "Connection: close"
+					--			then return "Connection: close"
+					-- If HTTP/1.0:
+					--		by default, connection is not persistent
+					--		unless header has "Connection: Keep-Alive"
+					--			then return "Connection: Keep-Alive"
+					--		if header has "Connection: Close"
+					--			then return "Connection: close"					
+				if is_persistent_connection_requested then
+					if is_http_version_1_0 then
+						if i = 0 then
+								-- Existing response header does not has "Connection: " header.
+							s.append ("Connection: Keep-Alive")
+							s.append (o.crlf)
+						else
+								-- Do not override the application decision.
+						end
 					end
 				else
+						-- If HTTP/1.1 and persistent connection is not requested,
+						-- then return "close"
+					if i = 0 and not is_http_version_1_0 then
+							-- Existing response header does not has "Connection: " header.
+						s.append ("Connection: close")
+						s.append (o.crlf)
+					else
+							-- Do not override the application decision.
+					end
+				end
+			else
+					-- persistent connection support is disabled.
+					-- Return "Connection: close" in any case.
+					-- Except for HTTP/1.0 since not required.
+				if i > 0 then
+					j := s.index_of ('%R', i + 12)
+				end
+				if j > 0 then
+							-- Replace existing "Connection:" header with "Connection: close"
+					l_connection := s.substring (i + 12, j - 1)
+					l_connection.adjust
+					if
+						not is_http_version_1_0 and
+						not l_connection.is_case_insensitive_equal_general ("close")
+					then
+						s.replace_substring ("Connection: close", i + 1, j - 1)
+					end
+				elseif not is_http_version_1_0 then
+						-- HTTP/1.1: always return "close" since persistent connection is not supported.
+					s.append ("Connection: close")
+					s.append (o.crlf)
+				elseif is_persistent_connection_requested then
+						-- For HTTP/1.0, return "Connection: close", only if client sent a "Connection: Keep-Alive"
 					s.append ("Connection: close")
 					s.append (o.crlf)
 				end
