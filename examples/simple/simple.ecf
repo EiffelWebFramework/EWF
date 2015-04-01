@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<system xmlns="http://www.eiffel.com/developers/xml/configuration-1-10-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eiffel.com/developers/xml/configuration-1-10-0 http://www.eiffel.com/developers/xml/configuration-1-10-0.xsd" name="simple" uuid="C28C4F53-9963-46C0-A080-8F13E94E7486" library_target="simple">
+<system xmlns="http://www.eiffel.com/developers/xml/configuration-1-13-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eiffel.com/developers/xml/configuration-1-13-0 http://www.eiffel.com/developers/xml/configuration-1-13-0.xsd" name="simple" uuid="C28C4F53-9963-46C0-A080-8F13E94E7486" library_target="simple">
 	<target name="common" abstract="true">
 		<file_rule>
 			<exclude>/EIFGENs$</exclude>
 			<exclude>/CVS$</exclude>
 			<exclude>/.svn$</exclude>
 		</file_rule>
-		<option warning="true" is_attached_by_default="true" void_safety="all" syntax="transitional">
+		<option warning="true" full_class_checking="false" is_attached_by_default="true" void_safety="transitional" syntax="transitional">
 			<assertions precondition="true" postcondition="true" check="true" invariant="true" loop="true" supplier_precondition="true"/>
 		</option>
 		<library name="base" location="$ISE_LIBRARY\library\base\base-safe.ecf"/>
@@ -15,15 +15,16 @@
 	</target>
 	<target name="simple_standalone" extends="common">
 		<root class="APPLICATION" feature="make_and_launch"/>
-		<option warning="true" is_attached_by_default="true" void_safety="all" syntax="transitional">
+		<option warning="true" is_attached_by_default="true" void_safety="transitional" syntax="transitional">
 			<assertions precondition="true" postcondition="true" check="true" invariant="true" loop="true" supplier_precondition="true"/>
 		</option>
+		<setting name="concurrency" value="scoop"/>
 		<library name="default_standalone" location="..\..\library\server\wsf\default\standalone-safe.ecf"/>
 		<cluster name="simple" location=".\" recursive="true"/>
 	</target>
 	<target name="simple_nino" extends="common">
 		<root class="APPLICATION" feature="make_and_launch"/>
-		<option warning="true" is_attached_by_default="true" void_safety="all" syntax="transitional">
+		<option warning="true" is_attached_by_default="true" void_safety="transitional" syntax="transitional">
 			<assertions precondition="true" postcondition="true" check="true" invariant="true" loop="true" supplier_precondition="true"/>
 		</option>
 		<library name="default_nino" location="..\..\library\server\wsf\default\nino-safe.ecf"/>
@@ -31,7 +32,7 @@
 	</target>
 	<target name="simple_cgi" extends="common">
 		<root class="APPLICATION" feature="make_and_launch"/>
-		<option warning="true" is_attached_by_default="true" void_safety="all" syntax="transitional">
+		<option warning="true" is_attached_by_default="true" void_safety="transitional" syntax="transitional">
 			<assertions precondition="true" postcondition="true" check="true" invariant="true" loop="true" supplier_precondition="true"/>
 		</option>
 		<library name="default_cgi" location="..\..\library\server\wsf\default\cgi-safe.ecf"/>
@@ -39,7 +40,7 @@
 	</target>
 	<target name="simple_libfcgi" extends="common">
 		<root class="APPLICATION" feature="make_and_launch"/>
-		<option warning="true" is_attached_by_default="true" void_safety="all" syntax="transitional">
+		<option warning="true" is_attached_by_default="true" void_safety="transitional" syntax="transitional">
 			<assertions precondition="true" postcondition="true" check="true" invariant="true" loop="true" supplier_precondition="true"/>
 		</option>
 		<library name="default_libfcgi" location="..\..\library\server\wsf\default\libfcgi-safe.ecf"/>
