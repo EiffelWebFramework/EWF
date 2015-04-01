@@ -62,15 +62,15 @@ feature -- Header output operation
 					--			then return "Connection: close"
 					-- If HTTP/1.0:
 					--		by default, connection is not persistent
-					--		unless header has "Connection: Keep-Alive"
-					--			then return "Connection: Keep-Alive"
+					--		unless header has "Connection: keep-alive"
+					--			then return "Connection: keep-alive"
 					--		if header has "Connection: Close"
 					--			then return "Connection: close"					
 				if is_persistent_connection_requested then
 					if is_http_version_1_0 then
 						if i = 0 then
 								-- Existing response header does not has "Connection: " header.
-							s.append ("Connection: Keep-Alive")
+							s.append ("Connection: keep-alive")
 							s.append (o.crlf)
 						else
 								-- Do not override the application decision.
@@ -109,7 +109,7 @@ feature -- Header output operation
 					s.append ("Connection: close")
 					s.append (o.crlf)
 				elseif is_persistent_connection_requested then
-						-- For HTTP/1.0, return "Connection: close", only if client sent a "Connection: Keep-Alive"
+						-- For HTTP/1.0, return "Connection: close", only if client sent a "Connection: keep-alive"
 					s.append ("Connection: close")
 					s.append (o.crlf)
 				end
