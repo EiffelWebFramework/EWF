@@ -22,9 +22,10 @@ feature -- Execution
 			s: STRING
 			i64: INTEGER_64
 		do
-			i64 := {INTEGER_64} 1_000_000_000 
-			s := "Hello Concurrent EWF"
-			s.append (" (counter=")
+			i64 := {INTEGER_64} 1_000_000_000
+			s := "Test Concurrent EWF ["
+			s.append (request.percent_encoded_path_info)
+			s.append ("] (counter=")
 			s.append_integer (next_cell_counter_item (counter_cell))
 			s.append (")%N")
 

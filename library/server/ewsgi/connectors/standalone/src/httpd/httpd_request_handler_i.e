@@ -174,7 +174,6 @@ feature -- Execution
 			is_connected: is_connected
 		local
 			l_remote_info: detachable like remote_info
-			l_continue: BOOLEAN
 			l_socket: like client_socket
 			l_ready_for_reading: BOOLEAN
 		do
@@ -192,25 +191,20 @@ feature -- Execution
 					dbglog (generator + ".execute_request  socket=" + l_socket.descriptor.out + " ENTER")
 				end
 				l_socket.set_timeout (5) -- 5 seconds!
-				from until l_continue loop
-						-- Use timeout from l_socket!
-					l_ready_for_reading := l_socket.ready_for_reading
-					if l_ready_for_reading then
-	            		l_continue := True
-						create l_remote_info
-						if attached l_socket.peer_address as l_addr then
-							l_remote_info.addr := l_addr.host_address.host_address
-							l_remote_info.hostname := l_addr.host_address.host_name
-							l_remote_info.port := l_addr.port
-							remote_info := l_remote_info
-						end
-	            		analyze_request_message (l_socket)
-	            	else
-						has_error := True
-	            		l_continue := True
-						debug ("dbglog")
-							dbglog (generator + ".execute_request socket=" + l_socket.descriptor.out + "} WAITING")
-						end
+				l_ready_for_reading := l_socket.ready_for_reading
+				if l_ready_for_reading then
+					create l_remote_info
+					if attached l_socket.peer_address as l_addr then
+						l_remote_info.addr := l_addr.host_address.host_address
+						l_remote_info.hostname := l_addr.host_address.host_name
+						l_remote_info.port := l_addr.port
+						remote_info := l_remote_info
+					end
+            		analyze_request_message (l_socket)
+            	else
+					has_error := True
+					debug ("dbglog")
+						dbglog (generator + ".execute_request socket=" + l_socket.descriptor.out + "} timeout!")
 	            	end
 				end
 
@@ -310,11 +304,11 @@ feature -- Parsing
 								l_connection.is_case_insensitive_equal_general ("keep-alive")
 				else
 						-- By default HTTP:1/1 support persistent connection.
-					if
-						attached request_header_map.item ("Connection") as l_connection and then
-						l_connection.is_case_insensitive_equal_general ("close")
-					then
-						keep_alive_enabled := False
+					if attached request_header_map.item ("Connection") as l_connection then
+						print ("Connection -> " + l_connection + "%N")
+						if l_connection.is_case_insensitive_equal_general ("close") then
+							keep_alive_enabled := False
+						end
 					else
 						keep_alive_enabled := True
 					end
