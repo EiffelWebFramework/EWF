@@ -46,12 +46,27 @@ feature {NONE} -- Initialization
 		do
 			Result := s.socket.descriptor
 		end
+
 feature -- Change
+
+	set_timeout (n: INTEGER)
+		do
+			if attached {NETWORK_STREAM_SOCKET} socket as l_socket then
+				l_socket.set_timeout (n)
+			end
+		end
+
+	set_connect_timeout (n: INTEGER)
+		do
+			if attached {NETWORK_STREAM_SOCKET} socket as l_socket then
+				l_socket.set_connect_timeout (n)
+			end
+		end
 
 	set_accept_timeout (n: INTEGER)
 		do
 			if attached {NETWORK_STREAM_SOCKET} socket as l_socket then
-				l_socket.set_accept_timeout (500_000)
+				l_socket.set_accept_timeout (n)
 			end
 		end
 

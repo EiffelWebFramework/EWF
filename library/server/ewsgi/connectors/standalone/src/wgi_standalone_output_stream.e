@@ -26,6 +26,7 @@ feature {NONE} -- Initialization
 	make (a_target: like target)
 		do
 			set_target (a_target)
+			last_target_call_succeed := True
 		end
 
 feature {WGI_STANDALONE_CONNECTOR, WGI_SERVICE} -- Nino
@@ -36,6 +37,9 @@ feature {WGI_STANDALONE_CONNECTOR, WGI_SERVICE} -- Nino
 		end
 
 	target: HTTPD_STREAM_SOCKET
+
+	last_target_call_succeed: BOOLEAN
+			-- Last target call succeed?
 
 feature -- Status writing
 
@@ -65,21 +69,34 @@ feature -- Output
 	put_readable_string_8 (s: READABLE_STRING_8)
 			-- Send `s' to http client
 		do
+			last_target_call_succeed := False
 			target.put_readable_string_8 (s)
+			last_target_call_succeed := True
 		end
 
 	put_string (s: READABLE_STRING_8)
 			-- Send `s' to http client
 		do
+			last_target_call_succeed := False
 			target.put_readable_string_8 (s)
+			last_target_call_succeed := True
 		end
 
 	put_character (c: CHARACTER_8)
 		do
+			last_target_call_succeed := False
 			target.put_character (c)
+			last_target_call_succeed := True
 		end
 
 feature -- Status report
+
+	is_available: BOOLEAN
+			-- <Precursor>
+			-- for instance IO failure due to socket disconnection.
+		do
+			Result := not last_target_call_succeed
+		end
 
 	is_open_write: BOOLEAN
 			-- Can items be written to output stream?
