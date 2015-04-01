@@ -176,6 +176,7 @@ feature -- Execution
 			l_remote_info: detachable like remote_info
 			l_continue: BOOLEAN
 			l_socket: like client_socket
+			l_ready_for_reading: BOOLEAN
 		do
 			l_socket := client_socket
 			check
@@ -190,9 +191,11 @@ feature -- Execution
 				debug ("dbglog")
 					dbglog (generator + ".execute_request  socket=" + l_socket.descriptor.out + " ENTER")
 				end
+				l_socket.set_timeout (5) -- 5 seconds!
 				from until l_continue loop
-					if l_socket.try_ready_for_reading then
---					ready_for_reading then
+						-- Use timeout from l_socket!
+					l_ready_for_reading := l_socket.ready_for_reading
+					if l_ready_for_reading then
 	            		l_continue := True
 						create l_remote_info
 						if attached l_socket.peer_address as l_addr then

@@ -1,6 +1,6 @@
 note
 	description: "[
-				WGI response acting as a filter. 
+				WGI response acting as a filter.
 			]"
 	date: "$Date$"
 	revision: "$Revision$"
@@ -147,7 +147,7 @@ feature -- Error reporting
 		end
 
 note
-	copyright: "2011-2013, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
+	copyright: "2011-2015, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

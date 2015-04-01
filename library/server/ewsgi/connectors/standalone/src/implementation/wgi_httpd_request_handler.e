@@ -62,7 +62,7 @@ feature -- Request processing
 			-- Process request ...
 		local
 			l_input: WGI_INPUT_STREAM
-			l_output: WGI_OUTPUT_STREAM
+			l_output: detachable WGI_OUTPUT_STREAM
 			l_error: WGI_ERROR_STREAM
 			req: WGI_REQUEST_FROM_TABLE
 			res: detachable WGI_STANDALONE_RESPONSE_STREAM
@@ -84,12 +84,15 @@ feature -- Request processing
 				res.push
 				exec.clean
 			else
-				process_rescue (res)
+				if not has_error then
+					process_rescue (res)
+				end
 				if exec /= Void then
 					exec.clean
 				end
 			end
 		rescue
+			has_error := l_output = Void or else not l_output.is_available
 			if not retried then
 				retried := True
 				retry

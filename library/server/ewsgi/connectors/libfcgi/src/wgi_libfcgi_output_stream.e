@@ -38,6 +38,11 @@ feature -- Status report
 			Result := True
 		end
 
+feature -- Status report
+
+	is_available: BOOLEAN = True
+			-- <Precursor>
+
 feature -- Status writing
 
 	put_status_line (a_code: INTEGER; a_reason_phrase: detachable READABLE_STRING_8)
@@ -100,7 +105,7 @@ invariant
 	fcgi_attached: fcgi /= Void
 
 note
-	copyright: "2011-2011, Eiffel Software and others"
+	copyright: "2011-2015, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

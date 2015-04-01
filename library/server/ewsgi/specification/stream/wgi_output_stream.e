@@ -74,6 +74,12 @@ feature -- Status writing
 
 feature -- Status report
 
+	is_available: BOOLEAN
+			-- Is output available?
+			--| i.e: no issue with associated output stream, like closed socket, or related?
+		deferred
+		end
+
 	is_open_write: BOOLEAN
 			-- Can items be written to output stream?
 		deferred
@@ -93,7 +99,7 @@ feature -- Constant
 	crlf: STRING = "%R%N"
 
 note
-	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
+	copyright: "2011-2015, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software
