@@ -18,7 +18,7 @@ feature {NONE} -- Initialization
 			response := res
 		end
 
-feature {NONE} -- Access
+feature {WGI_EXECUTION} -- Access
 
 	request: WGI_REQUEST
 			-- Request data.
