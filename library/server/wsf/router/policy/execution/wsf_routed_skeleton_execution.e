@@ -19,17 +19,19 @@ inherit
 feature -- Execution
 
 	execute
+			-- <Precursor>
+		do
+			execute_skeleton (request, response)
+		end
+
+	execute_skeleton (req: WSF_REQUEST; res: WSF_RESPONSE)
 			-- If the service is available, and request URI is not too long, dispatch the request
 			-- and if handler is not found, execute the default procedure `execute_default'.
 		local
 			l_sess: WSF_ROUTER_SESSION
-			req: WSF_REQUEST; res: WSF_RESPONSE
 		do
-			req := request
-			res := response
-
-			--| When we reach here, the request has already passed check for 400 (Bad request),
-			--|  which is implemented in WSF_REQUEST.make_from_wgi (when it calls `analyze').
+				--| When we reach here, the request has already passed check for 400 (Bad request),
+				--|  which is implemented in WSF_REQUEST.make_from_wgi (when it calls `analyze').
 			if unavailable then
 				handle_unavailable (res)
 			elseif requires_proxy (req) then
