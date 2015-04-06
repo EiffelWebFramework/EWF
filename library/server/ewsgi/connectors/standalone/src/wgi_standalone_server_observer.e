@@ -16,12 +16,16 @@ inherit
 feature -- Access
 
 	started: BOOLEAN
+			-- is the server started?
 
 	stopped: BOOLEAN
+			-- is the server stoped?
 
 	terminated: BOOLEAN
+			-- is the server terminated?
 
 	port: INTEGER
+			-- Server listening on port.
 
 feature -- Event
 
@@ -29,17 +33,24 @@ feature -- Event
 		do
 			started := True
 			port := a_port
+		ensure then
+			started_set: started = True
+			port_set: port = a_port
 		end
 
 	on_stopped
 		do
 			stopped := True
+		ensure then
+			stopped_set: stopped = True
 		end
 
 	on_terminated
 		do
 			port := 0
 			terminated := True
+		ensure then
+			terminated_set: terminated = True
 		end
 
 note
