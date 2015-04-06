@@ -1,6 +1,8 @@
 note
-	description: "Summary description for {WGI_HTTPD_REQUEST_HANDLER}."
-	author: ""
+	description: "[
+			WGI implementation of HTTPD_REQUEST_HANDLER, will process the incoming connection
+			 and extract information on the request and the server
+			 ]"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -34,8 +36,10 @@ feature {NONE} -- Initialization
 feature -- Access		
 
 	connector: detachable separate WGI_STANDALONE_CONNECTOR [G]
+			-- httpd solution.
 
 	base: detachable IMMUTABLE_STRING_8
+			-- Root url base.
 		do
 			if attached connector as conn then
 				if attached connector_base (conn) as l_base then
@@ -47,6 +51,7 @@ feature -- Access
 feature -- SCOOP helpers		
 
 	connector_base (conn: separate WGI_STANDALONE_CONNECTOR [G]): detachable separate READABLE_STRING_8
+			-- Rool url based from a connector `conn'.
 		do
 			Result := conn.base
 		end
