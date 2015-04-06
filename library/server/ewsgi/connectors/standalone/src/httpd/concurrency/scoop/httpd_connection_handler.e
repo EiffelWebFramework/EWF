@@ -31,6 +31,8 @@ feature {NONE} -- Initialization
 		end
 
 	initialize_pool (p: like pool; n: INTEGER)
+			--  Initialize pool of separate connection handlers.
+			--| set the pool capacity to n.
  		do
 			p.set_count (n)
  		end
@@ -49,6 +51,7 @@ feature -- Access
 feature {HTTPD_SERVER_I} -- Execution
 
 	shutdown
+			-- <Precursor>
 		do
 			if not is_shutdown_requested then
 				is_shutdown_requested := True
@@ -57,11 +60,13 @@ feature {HTTPD_SERVER_I} -- Execution
 		end
 
 	pool_gracefull_stop (p: like pool)
+			-- Graceful stop pool of separate connection handlers.
 		do
 			p.gracefull_stop
 		end
 
 	accept_incoming_connection (a_listening_socket: HTTPD_STREAM_SOCKET)
+			-- <Precursor>
 		do
 			accept_connection_on_pool (pool, a_listening_socket) -- Wait on not pool.is_full or is_stop_requested
 		end
@@ -92,6 +97,7 @@ feature {HTTPD_SERVER_I} -- Execution
 		end
 
 	process_handler (hdl: separate HTTPD_REQUEST_HANDLER)
+			-- Process request handler `hdl' with exclusive access.
 		require
 			hdl.is_connected
 		do
@@ -99,6 +105,7 @@ feature {HTTPD_SERVER_I} -- Execution
 		end
 
 	separate_client_socket (hdl: separate HTTPD_REQUEST_HANDLER): separate HTTPD_STREAM_SOCKET
+			-- Separate client socket from a request handler `hdl'.
 		do
 			Result := hdl.client_socket
 		end
