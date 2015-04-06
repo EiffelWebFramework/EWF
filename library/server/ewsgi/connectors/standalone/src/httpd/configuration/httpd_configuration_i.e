@@ -57,8 +57,10 @@ feature -- Access: SSL
 			 -- Is SSL/TLS session?.
 
 	ca_crt: STRING
+			-- the signed certificate.
 
 	ca_key: STRING
+			-- private key to the sertificate.
 
 	ssl_protocol: NATURAL
 		-- By default protocol is tls 1.2.
@@ -78,31 +80,49 @@ feature -- Element change
 	unset_http_server_name
 		do
 			http_server_name := Void
+				--| Missing postcondition
+				--| ensure 	
+				--| unser_http_server_name: http_server_name = Void.
 		end
 
 	set_http_server_port (v: like http_server_port)
+			-- Set `http_server_port' with `v'.
 		do
 			http_server_port := v
+		ensure
+			http_server_port_set: http_server_port = v
 		end
 
 	set_max_tcp_clients (v: like max_tcp_clients)
+			-- Set `max_tcp_clients' with `v'.
 		do
 			max_tcp_clients := v
+		ensure
+			max_tcp_clients_set: max_tcp_clients = v
 		end
 
 	set_max_concurrent_connections (v: like max_concurrent_connections)
+			-- Set `max_concurrent_connections' with `v'.
 		do
 			max_concurrent_connections := v
+		ensure
+			max_concurrent_connections_set : max_concurrent_connections = v
 		end
 
 	set_socket_accept_timeout (v: like socket_accept_timeout)
+			-- Set `socket_accept_timeout' with `v'
 		do
 			socket_accept_timeout := v
+		ensure
+			socket_accept_timeout_set: socket_accept_timeout = v
 		end
 
 	set_socket_connect_timeout (v: like socket_connect_timeout)
+			-- Set `socket_connect_timeout' with `v'
 		do
 			socket_connect_timeout := v
+		ensure
+			socket_connect_timeout_set:  socket_connect_timeout = v
 		end
 
 	set_force_single_threaded (v: like force_single_threaded)
@@ -110,12 +130,17 @@ feature -- Element change
 			if v then
 				set_max_concurrent_connections (0)
 			end
+			--|Missing postcondition
+			--| force_single_thread_set: v implies max_concurrent_connections = 0	
+			--| not_single_thread: not v implies max_concurrent_connections > 0	
 		end
 
 	set_is_verbose (b: BOOLEAN)
 			-- Set `is_verbose' to `b'
 		do
 			is_verbose := b
+		ensure
+			is_verbose_set:  is_verbose = b
 		end
 
 	set_keep_alive_timeout (a_seconds: like keep_alive_timeout)
@@ -137,6 +162,12 @@ feature -- Element change
 			else
 				is_secure := False
 			end
+			--| Missing postcondition
+			--| ensure
+			--		is_secure_set : has_ssl_support implies is_secure
+			--	    http_server_port_set: has_ssl_support implies http_server_port = 443
+			--      is_not_secure: not has_ssl_support implies not is_secure
+			-- 		default_port: not has_ssl_support implies http_server_port = 80
 		end
 
 feature -- Element change
