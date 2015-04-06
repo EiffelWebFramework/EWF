@@ -1,6 +1,5 @@
 note
 	description: "Summary description for {INCREASING_PROGRESSSOURCE}."
-	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 

@@ -1,6 +1,5 @@
 note
-	description: "Summary description for {WSF_EXECUTION}."
-	author: ""
+	description: "Object that represent a request execution with request and response. "
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -75,6 +74,7 @@ feature -- Status report
 feature -- Helpers
 
 	put_character (c: CHARACTER_8)
+			-- Send the character `c'.
 		require
 			message_writable: message_writable
 		do
@@ -82,6 +82,7 @@ feature -- Helpers
 		end
 
 	put_string (s: READABLE_STRING_8)
+			-- Send the string `s'.
 		require
 			message_writable: message_writable
 		do
@@ -89,6 +90,7 @@ feature -- Helpers
 		end
 
 	put_error (err: READABLE_STRING_8)
+			-- Report error described by `a_message'.
 		require
 			message_writable: message_writable
 		do

@@ -1,6 +1,5 @@
 note
-	description: "Summary description for {HTTPD_REQUEST_HANDLER_I}."
-	author: ""
+	description: "Represent a handler interface for components that process HTTP requests."
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -117,13 +116,17 @@ feature -- Status report
 feature -- Change
 
 	set_is_verbose (b: BOOLEAN)
+			-- Set `is_verbose' with `b'.
 		do
 			is_verbose := b
+		ensure
+			is_verbose_set: is_verbose = b
 		end
 
 feature -- Execution
 
 	safe_execute
+			-- Execute incoming request.
 		local
 			retried: BOOLEAN
 		do
@@ -194,6 +197,8 @@ feature -- Execution
 					dbglog (generator + ".execute_request  socket=" + l_socket.descriptor.out + " ENTER")
 				end
 				l_socket.set_timeout (5) -- 5 seconds!
+					--| TODO: add configuration options for socket timeout.
+					--| set by default 5 seconds.
 				l_ready_for_reading := l_socket.ready_for_reading
 				if l_ready_for_reading then
 					create l_remote_info
@@ -364,11 +369,15 @@ feature -- Output
 	logger: detachable HTTPD_LOGGER
 
 	set_logger (a_logger: like logger)
+			-- Set `logger' with `a_logger'.
 		do
 			logger := a_logger
+		ensure
+			logger_set: logger = a_logger
 		end
 
 	log (m: STRING)
+			-- Log message `m'.
 		do
 			if attached logger as l_logger then
 				l_logger.log (m)
