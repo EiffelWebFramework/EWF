@@ -1,5 +1,5 @@
 note
-	description: "Represent a handler interface for components that process HTTP requests."
+	description: "Represent a handler interface that process HTTP requests."
 	date: "$Date$"
 	revision: "$Revision$"
 
