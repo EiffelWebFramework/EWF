@@ -1,5 +1,5 @@
 note
-	description: "Summary description for {HTTPD_SERVER_I}."
+	description: "HTTPD server interface"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -14,7 +14,6 @@ inherit
 feature {NONE} -- Initialization
 
 	make (a_factory: like factory)
-			-- `a_cfg': server configuration
 			-- `a_factory': connection handler builder
 		require
 			fac_is_separated: {PLATFORM}.is_scoop_capable implies not attached {HTTPD_REQUEST_HANDLER_FACTORY} a_factory
@@ -67,6 +66,7 @@ feature -- Callbacks
 	observer: detachable separate HTTPD_SERVER_OBSERVER
 
 	set_observer (obs: like observer)
+			-- Set `observer' with `obs'
 		do
 			observer := obs
 		end
@@ -320,8 +320,11 @@ feature -- Output
 	output: detachable FILE
 
 	set_log_output (f: FILE)
+			-- Set `output' with `f'.
 		do
 			output := f
+		ensure
+			output_set: output = f
 		end
 
 	log (a_message: separate READABLE_STRING_8)
