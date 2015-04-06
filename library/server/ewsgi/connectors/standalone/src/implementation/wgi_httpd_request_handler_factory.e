@@ -1,6 +1,5 @@
 note
 	description: "Summary description for {WGI_HTTPD_REQUEST_HANDLER_FACTORY}."
-	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -13,10 +12,12 @@ inherit
 feature -- Access
 
 	connector: detachable separate WGI_STANDALONE_CONNECTOR [G]
+			-- httpd solution.
 
 feature -- Element change
 
 	set_connector (conn: like connector)
+			-- Set `connector' with `conn'.
 		do
 			connector := conn
 		end
