@@ -18,9 +18,12 @@ create
 feature {NONE} -- Initialization
 
 	make
+			-- Create a new instance and set ssl protocol to tls_1_2.
 		do
 			Precursor
-			ssl_protocol := {SSL_PROTOCOL}.tls_1_2
+			set_ssl_protocol_to_tls_1_2
+		ensure then
+			ssl_protocol_set: ssl_protocol = {SSL_PROTOCOL}.tls_1_2
 		end
 
 feature -- Access

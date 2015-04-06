@@ -1,5 +1,5 @@
 note
-	description: "Summary description for {WGI_HTTPD_REQUEST_HANDLER_FACTORY}."
+	description: "Implementation of WGI request handler factory for WGI_STANDALOE_CONNECTOR."
 	date: "$Date$"
 	revision: "$Revision$"
 
