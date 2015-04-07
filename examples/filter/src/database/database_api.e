@@ -46,8 +46,6 @@ feature -- Access
 			-- User with id `a_id' or name `a_name'.
 		require
 			a_id > 0 xor a_name /= Void
-		local
-			n: like {USER}.name
 		do
 			if a_id > 0 then
 				Result := user_by_id (a_id)

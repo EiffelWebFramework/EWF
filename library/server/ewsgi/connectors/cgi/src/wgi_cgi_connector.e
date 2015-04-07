@@ -24,6 +24,7 @@ feature -- Access
 feature -- Execution
 
 	launch
+			-- Launch execution of CGI application.
 		local
 			req: WGI_REQUEST_FROM_TABLE
 			res: detachable WGI_RESPONSE_STREAM
@@ -51,6 +52,7 @@ feature -- Execution
 		end
 
 	process_rescue (res: detachable WGI_RESPONSE)
+			-- Handle rescued execution of current request.
 		do
 			if attached (create {EXCEPTION_MANAGER}).last_exception as e and then attached e.trace as l_trace then
 				if res /= Void then
@@ -68,7 +70,7 @@ feature -- Execution
 		end
 
 note
-	copyright: "2011-2013, Eiffel Software and others"
+	copyright: "2011-2015, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software
