@@ -1,6 +1,5 @@
 note
 	description: "Summary description for {APPLICATION_EXECUTION}."
-	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 

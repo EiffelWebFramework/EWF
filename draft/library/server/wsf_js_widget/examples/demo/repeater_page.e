@@ -1,6 +1,5 @@
 note
 	description: "Summary description for {REPEATER_PAGE}."
-	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 

@@ -1,6 +1,5 @@
 note
 	description: "Summary description for {OWN_VALIDATOR}."
-	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 

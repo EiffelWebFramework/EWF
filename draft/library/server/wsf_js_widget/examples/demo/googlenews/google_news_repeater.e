@@ -1,6 +1,5 @@
 note
 	description: "Summary description for {GOOGLE_NEWS_REPEATER}."
-	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 

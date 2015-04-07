@@ -1,6 +1,5 @@
 note
-	description: "Summary description for {WSF_EXECUTION}."
-	author: ""
+	description: "Request execution based on attributes `request' and `response'. "
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -52,7 +51,7 @@ feature -- Access
 feature -- Execution
 
 	execute
-			-- Execute Current `request',
+			-- Execute Current request,
 			-- getting data from `request'
 			-- and response to client via `response'.
 		deferred
@@ -75,6 +74,7 @@ feature -- Status report
 feature -- Helpers
 
 	put_character (c: CHARACTER_8)
+			-- Send the character `c'.
 		require
 			message_writable: message_writable
 		do
@@ -82,6 +82,7 @@ feature -- Helpers
 		end
 
 	put_string (s: READABLE_STRING_8)
+			-- Send the string `s'.
 		require
 			message_writable: message_writable
 		do
@@ -89,12 +90,12 @@ feature -- Helpers
 		end
 
 	put_error (err: READABLE_STRING_8)
+			-- Report error message `err' on the error output of the associated connector.
 		require
 			message_writable: message_writable
 		do
 			response.put_error (err)
 		end
-
 
 feature -- Cleaning
 

@@ -79,6 +79,7 @@ feature {NONE} -- Implementation
 		end
 
 	separate_server_log (a_server: like server; a_message: separate READABLE_STRING_8)
+			-- Concurrent call to `a_server.log (a_message)'.
 		do
 			a_server.log (a_message)
 		end

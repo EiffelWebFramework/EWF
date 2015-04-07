@@ -1,5 +1,5 @@
 note
-	description: "Summary description for {HTTPD_SERVER_I}."
+	description: "HTTPD server interface"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -14,10 +14,10 @@ inherit
 feature {NONE} -- Initialization
 
 	make (a_factory: like factory)
-			-- `a_cfg': server configuration
+			-- Create current httpd server with `a_factory' of connection handlers.
 			-- `a_factory': connection handler builder
 		require
-			fac_is_separated: {PLATFORM}.is_scoop_capable implies not attached {HTTPD_REQUEST_HANDLER_FACTORY} a_factory
+			a_factory_is_separated: {PLATFORM}.is_scoop_capable implies not attached {HTTPD_REQUEST_HANDLER_FACTORY} a_factory
 		do
 			make_configured (create {like configuration}.make, a_factory)
 		end
@@ -67,6 +67,7 @@ feature -- Callbacks
 	observer: detachable separate HTTPD_SERVER_OBSERVER
 
 	set_observer (obs: like observer)
+			-- Set `observer' to `obs'.
 		do
 			observer := obs
 		end
@@ -252,7 +253,6 @@ feature -- Event
 		require
 			not_launched: not is_launched
 		do
---			print ("port=" + a_port.out + "%N")
 			is_launched := True
 			port := a_port
 			if attached observer as obs then
@@ -320,12 +320,15 @@ feature -- Output
 	output: detachable FILE
 
 	set_log_output (f: FILE)
+			-- Set `output' to `f'.
 		do
 			output := f
+		ensure
+			output_set: output = f
 		end
 
 	log (a_message: separate READABLE_STRING_8)
-			-- Log `a_message'
+			-- Log `a_message'.
 		local
 			m: STRING
 		do
