@@ -30,23 +30,27 @@ feature -- Implementation
 		local
 			o: JSON_OBJECT
 		do
-			create Result.make_array
+			create Result.make_empty
 			across
 				list as c
 			loop
-				if attached {STRING} c.item.item (1) as value and attached {STRING} c.item.item (3) as img and attached {STRING} c.item.item (2) as company then
+				if
+					attached c.item.value as value and
+					attached c.item.img as img and
+					attached c.item.company as company
+				then
 					if value.as_lower.has_substring (input.as_lower) then
 						create o.make
-						o.put (create {JSON_STRING}.make_json (img), "img")
-						o.put (create {JSON_STRING}.make_json (value), "value")
-						o.put (create {JSON_STRING}.make_json (company), "company")
+						o.put (create {JSON_STRING}.make_from_string (img), "img")
+						o.put (create {JSON_STRING}.make_from_string (value), "value")
+						o.put (create {JSON_STRING}.make_from_string (company), "company")
 						Result.add (o)
 					end
 				end
 			end
 		end
 
-	list: ITERABLE [TUPLE [STRING, STRING]]
+	list: ITERABLE [TUPLE [value: STRING; company: STRING; img: STRING]]
 			-- List of contacts
 
 end

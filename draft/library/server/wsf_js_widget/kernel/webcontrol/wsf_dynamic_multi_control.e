@@ -29,7 +29,7 @@ feature {NONE} -- Initialization
 			-- Initialize with specified tag
 		do
 			Precursor (tag)
-			create items.make_array
+			create items.make_empty
 			create pending_removes.make (1)
 		ensure then
 			tag_set: tag_name.same_string (tag)
@@ -194,7 +194,7 @@ invariant
 	all_items_exist: items.count = controls.count
 
 note
-	copyright: "2011-2014, Yassin Hassan, Severin Munger, Jocelyn Fiat, Eiffel Software and others"
+	copyright: "2011-2015, Yassin Hassan, Severin Munger, Jocelyn Fiat, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

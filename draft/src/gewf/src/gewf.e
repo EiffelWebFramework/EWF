@@ -51,7 +51,7 @@ feature -- Access
 			if attached {JSON_OBJECT} j as jo then
 				l_keys := k.split ('.')
 				l_keys.start
-				create js.make_json_from_string_32 (l_keys.item.as_readable_string_32)
+				create js.make_from_string_general (l_keys.item)
 				v := jo.item (js)
 				l_keys.remove
 				if l_keys.count > 0 then
@@ -93,8 +93,9 @@ feature -- Access
 				f.close
 			end
 
-			create p.make_parser (s)
-			json := p.parse
+			create p.make_with_string (s)
+			p.parse_content
+			json := p.parsed_json_value
 			if attached config ("gewf.template_dir") as d then
 				setup.set_template_dir_from_string (d)
 			end
@@ -159,7 +160,7 @@ invariant
 --	invariant_clause: True
 
 note
-	copyright: "2011-2013, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
+	copyright: "2011-2015, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

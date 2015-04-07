@@ -43,7 +43,7 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 	update
 			-- Send new renederd control to client on update
 		do
-			state_changes.replace (create {JSON_STRING}.make_json_from_string_32 (render), "_html")
+			state_changes.replace (create {JSON_STRING}.make_from_string_32 (render), "_html")
 		end
 
 feature --Event handling
@@ -100,7 +100,7 @@ feature -- Properties
 	datasource: WSF_PAGABLE_DATASOURCE [G]
 
 ;note
-	copyright: "2011-2014, Yassin Hassan, Severin Munger, Jocelyn Fiat, Eiffel Software and others"
+	copyright: "2011-2015, Yassin Hassan, Severin Munger, Jocelyn Fiat, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

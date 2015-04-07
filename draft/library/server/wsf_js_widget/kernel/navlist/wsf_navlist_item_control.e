@@ -65,7 +65,7 @@ feature -- Change
 				else
 					remove_class ("active")
 				end
-				state_changes.replace (create {JSON_BOOLEAN}.make_boolean (a), "active")
+				state_changes.replace (create {JSON_BOOLEAN}.make (a), "active")
 			end
 		ensure
 			active_set: active = a
@@ -77,4 +77,14 @@ feature -- Properties
 	active: BOOLEAN
 			-- The active state of this item
 
+;note
+	copyright: "2011-2015, Yassin Hassan, Severin Munger, Jocelyn Fiat, Eiffel Software and others"
+	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
+	source: "[
+			Eiffel Software
+			5949 Hollister Ave., Goleta, CA 93117 USA
+			Telephone 805-685-1006, Fax 805-685-6869
+			Website http://www.eiffel.com
+			Customer support http://support.eiffel.com
+		]"
 end

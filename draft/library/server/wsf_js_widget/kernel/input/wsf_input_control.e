@@ -100,7 +100,7 @@ feature -- Change
 		do
 			if not t.same_string (text) then
 				text := t
-				state_changes.replace (create {JSON_STRING}.make_json_from_string_32 (t), "text")
+				state_changes.replace (create {JSON_STRING}.make_from_string_32 (t), "text")
 			end
 		ensure
 			text_same_string_as_t: text.same_string (t)
@@ -160,7 +160,7 @@ feature -- Properties
 			-- Procedure to be execued on change
 
 ;note
-	copyright: "2011-2014, Yassin Hassan, Severin Munger, Jocelyn Fiat, Eiffel Software and others"
+	copyright: "2011-2015, Yassin Hassan, Severin Munger, Jocelyn Fiat, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software
