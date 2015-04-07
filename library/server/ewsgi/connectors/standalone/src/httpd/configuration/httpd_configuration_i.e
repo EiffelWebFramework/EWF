@@ -82,7 +82,7 @@ feature -- Element change
 		do
 			http_server_name := Void
 		ensure 	
-			unset_http_server_name: http_server_name = Void.
+			unset_http_server_name: http_server_name = Void
 		end
 
 	set_http_server_port (v: like http_server_port)
