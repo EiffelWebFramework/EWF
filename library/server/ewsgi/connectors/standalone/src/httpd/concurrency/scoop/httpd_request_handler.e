@@ -23,6 +23,7 @@ inherit
 feature {CONCURRENT_POOL, HTTPD_CONNECTION_HANDLER_I} -- Basic operation		
 
 	release
+			-- <Precursor>
 		local
 			d: STRING
 		do

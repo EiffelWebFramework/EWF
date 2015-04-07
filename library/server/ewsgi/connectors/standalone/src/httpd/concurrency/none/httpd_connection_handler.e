@@ -23,6 +23,7 @@ feature {NONE} -- Initialization
 feature -- Access
 
 	is_shutdown_requested: BOOLEAN
+			-- <Precursor>
 
 	shutdown_requested (a_server: like server): BOOLEAN
 		do

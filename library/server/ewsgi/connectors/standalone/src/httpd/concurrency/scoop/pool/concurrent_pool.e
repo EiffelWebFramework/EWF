@@ -24,24 +24,32 @@ feature {NONE} -- Initialization
 feature -- Access
 
 	count: INTEGER
+			-- Number of concurrent items managed by Current pool.
+
+	capacity: INTEGER
+			-- Maximum number of concurrent items managed by Current pool.
+
+feature -- Status report
 
 	is_full: BOOLEAN
+			-- Pool is full?
 		do
 			Result := count >= capacity
 		end
 
 	is_empty: BOOLEAN
+			-- No concurrent item waiting in current pool.
 		do
 			Result := count = 0
 		end
 
-	capacity: INTEGER
-
 	stop_requested: BOOLEAN
+			-- Current pool received a request to terminate.
 
 feature -- Access
 
 	separate_item (a_factory: separate CONCURRENT_POOL_FACTORY [G]): detachable separate G
+			-- Reused, or new separate item of type {G} created by `a_factory'.
 		require
 			is_not_full: not is_full
 		local
@@ -94,6 +102,7 @@ feature -- Access
 feature -- Basic operation
 
 	gracefull_stop
+			-- Request the Current pool to terminate.
 		do
 			stop_requested := True
 		end
@@ -101,8 +110,10 @@ feature -- Basic operation
 feature {NONE} -- Internal
 
 	items: SPECIAL [detachable separate G]
+			-- List of concurrent items.
 
 	busy_items: SPECIAL [BOOLEAN]
+			-- Map of items being proceed.
 
 feature {CONCURRENT_POOL_ITEM} -- Change
 
@@ -140,6 +151,7 @@ feature {CONCURRENT_POOL_ITEM} -- Change
 feature -- Change
 
 	set_count (n: INTEGER)
+			-- Set capacity of Current pool to `n'.
 		local
 			g: detachable separate G
 		do
@@ -149,6 +161,7 @@ feature -- Change
 		end
 
 	terminate
+			-- Terminate current pool.
 		local
 			l_items: like items
 		do
@@ -159,6 +172,7 @@ feature -- Change
 feature {NONE} -- Implementation
 
 	register_item (a_item: separate G)
+			-- Adopt `a_item' in current pool.
 		do
 			a_item.set_pool (Current)
 		end

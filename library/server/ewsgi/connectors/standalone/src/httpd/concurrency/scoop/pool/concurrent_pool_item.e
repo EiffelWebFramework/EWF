@@ -25,6 +25,7 @@ feature {CONCURRENT_POOL} -- Change
 feature {CONCURRENT_POOL, HTTPD_CONNECTION_HANDLER_I} -- Basic operation
 
 	release
+			-- Release Current pool item from associated pool.
 		do
 			if attached pool as p then
 				pool_release (p)

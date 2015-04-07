@@ -22,6 +22,7 @@ inherit
 feature {NONE} -- Initialization
 
 	default_create
+			-- Create libFCGI connector.
 		do
 			Precursor {WGI_CONNECTOR}
 			create fcgi.make
@@ -40,6 +41,7 @@ feature -- Access
 feature -- Server
 
 	launch
+			-- Launch libFCGI server.
 		local
 			res: INTEGER
 		do
@@ -56,6 +58,7 @@ feature -- Server
 feature -- Execution
 
 	process_fcgi_request (vars: STRING_TABLE [READABLE_STRING_8]; a_input: like input; a_output: like output)
+			-- Process the request with variables `vars', input `a_input' and output `a_output'.
 		local
 			req: WGI_REQUEST_FROM_TABLE
 			res: detachable WGI_RESPONSE_STREAM
@@ -82,8 +85,9 @@ feature -- Execution
 				retry
 			end
 		end
-	
+
 	process_rescue (res: detachable WGI_RESPONSE)
+			-- Handle rescued execution of current request.
 		do
 			if attached (create {EXCEPTION_MANAGER}).last_exception as e and then attached e.trace as l_trace then
 				if res /= Void then
@@ -116,7 +120,7 @@ invariant
 	fcgi_attached: fcgi /= Void
 
 note
-	copyright: "2011-2013, Eiffel Software and others"
+	copyright: "2011-2015, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

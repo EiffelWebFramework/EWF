@@ -97,17 +97,11 @@ feature {HTTPD_SERVER_I} -- Execution
 		end
 
 	process_handler (hdl: separate HTTPD_REQUEST_HANDLER)
-			-- Process request handler `hdl' with exclusive access.
+			-- Process request handler `hdl' concurrently.
 		require
 			hdl.is_connected
 		do
 			hdl.safe_execute
-		end
-
-	separate_client_socket (hdl: separate HTTPD_REQUEST_HANDLER): separate HTTPD_STREAM_SOCKET
-			-- Separate client socket from a request handler `hdl'.
-		do
-			Result := hdl.client_socket
 		end
 
 feature {HTTPD_SERVER_I} -- Status report
@@ -127,6 +121,12 @@ feature {HTTPD_SERVER_I} -- Status report
 		end
 
 feature {NONE} -- Implementation
+
+	separate_client_socket (hdl: separate HTTPD_REQUEST_HANDLER): separate HTTPD_STREAM_SOCKET
+			-- Client socket for handler `hdl'.
+		do
+			Result := hdl.client_socket
+		end
 
 	pool: separate CONCURRENT_POOL [HTTPD_REQUEST_HANDLER]
 			-- Pool of separate connection handlers.
