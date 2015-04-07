@@ -1,6 +1,5 @@
 note
-	description : "Concurrent specific feature to implemente HTTPD_REQUEST_HANDLER"
-	author      : "$Author$"
+	description : "Concurrent specific feature to implement HTTPD_REQUEST_HANDLER"
 	date        : "$Date$"
 	revision    : "$Revision$"
 
@@ -9,8 +8,6 @@ deferred class
 
 inherit
 	HTTPD_REQUEST_HANDLER_I
-
-
 
 note
 	copyright: "2011-2015, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
