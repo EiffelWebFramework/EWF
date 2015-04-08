@@ -43,11 +43,13 @@ feature -- Implementation
 			if attached sess.get ("/complete/search?client=chrome", ctx) as resp and then not resp.error_occurred then
 				l_json := resp.body
 			end
-			create Result.make_array
+			create Result.make_empty
 			if l_json /= Void and then not l_json.is_empty then
-				create json_parser.make_parser (l_json)
+				create json_parser.make_with_string (l_json)
+				json_parser.parse_content
 				if
-					attached {JSON_ARRAY} json_parser.parse_json as data and then
+					json_parser.is_valid and then
+					attached {JSON_ARRAY} json_parser.parsed_json_value as data and then
 					data.valid_index (2) and then
 					attached {JSON_ARRAY} data.i_th (2) as list
 				then
@@ -56,7 +58,7 @@ feature -- Implementation
 					loop
 						if attached {JSON_STRING} list.i_th (c.item) as row then
 							create o.make
-							o.put (create {JSON_STRING}.make_with_escaped_json (row.item), "value")
+							o.put (create {JSON_STRING}.make_from_escaped_json_string (row.item), "value")
 							Result.add (o)
 						end
 					end

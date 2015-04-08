@@ -35,7 +35,7 @@ feature -- Implementation
 			l_lowered_input: READABLE_STRING_GENERAL
 			l_lowered_item: READABLE_STRING_GENERAL
 		do
-			create Result.make_array
+			create Result.make_empty
 			l_lowered_input := a_input.as_lower
  			across
 				list as c
@@ -50,7 +50,7 @@ feature -- Implementation
 		end
 
 ;note
-	copyright: "2011-2014, Yassin Hassan, Severin Munger, Jocelyn Fiat, Eiffel Software and others"
+	copyright: "2011-2015, Yassin Hassan, Severin Munger, Jocelyn Fiat, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

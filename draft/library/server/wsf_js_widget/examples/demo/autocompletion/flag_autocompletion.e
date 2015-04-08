@@ -132,7 +132,7 @@ feature -- Implementation
 					["ZM", {STRING_32} "Zambia"], ["ZW", {STRING_32} "Zimbabwe"]
 				>>
 
-			create Result.make_array
+			create Result.make_empty
 			across
 				list as c
 			loop
@@ -142,8 +142,8 @@ feature -- Implementation
 				then
 					if second.as_lower.has_substring (input.as_lower) then
 						create o.make
-						o.put (create {JSON_STRING}.make_json (first.as_lower), "flag")
-						o.put (create {JSON_STRING}.make_json_from_string_32 (second), "value")
+						o.put (create {JSON_STRING}.make_from_string (first.as_lower), "flag")
+						o.put (create {JSON_STRING}.make_from_string_32 (second), "value")
 						Result.add (o)
 					end
 				end

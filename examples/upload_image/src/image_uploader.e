@@ -12,6 +12,8 @@ inherit
 
 	WSF_DEFAULT_SERVICE [IMAGE_UPLOADER_EXECUTION]
 
+	SHARED_EXECUTION_ENVIRONMENT
+
 create
 	make
 
@@ -24,11 +26,6 @@ feature {NONE} -- Initialization
 				-- Uncomment the following line
 			set_service_option ("port", 9090)
 			make_and_launch
-		end
-
-	setup_router
-		do
-
 		end
 
 note

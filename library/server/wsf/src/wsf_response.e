@@ -325,7 +325,6 @@ feature -- Header add cookie
   			--| the same response with the same cookie-name.
 		local
 			l_same_cookie_name: BOOLEAN
-			l_nv: STRING
 		do
 			across
 				internal_header.headers as ic

@@ -28,7 +28,7 @@ feature {NONE} -- Initialization
 			make_stateless_control (a_tag_name)
 			create control_name_prefix.make_empty
 			create state_changes.make
-			create actions.make_array
+			create actions.make_empty
 		ensure
 			state_changes_attached: attached state_changes
 		end
@@ -110,7 +110,7 @@ feature {WSF_PAGE_CONTROL, WSF_CONTROL} -- State management
 			end
 			if actions.count > 0 then
 				if states.item ("actions") = Void then
-					states.put (create {JSON_ARRAY}.make_array, "actions")
+					states.put (create {JSON_ARRAY}.make_empty, "actions")
 				end
 				if attached {JSON_ARRAY} states.item ("actions") as action_list then
 					across
@@ -223,7 +223,7 @@ feature -- Properties
 			-- control state and therefore could have the same name (Stateless multi controls do not add a hierarchy level)
 
 ;note
-	copyright: "2011-2014, Yassin Hassan, Severin Munger, Jocelyn Fiat, Eiffel Software and others"
+	copyright: "2011-2015, Yassin Hassan, Severin Munger, Jocelyn Fiat, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

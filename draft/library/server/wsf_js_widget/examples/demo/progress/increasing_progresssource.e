@@ -17,7 +17,7 @@ feature {NONE} -- Initialization
 
 	control: detachable WSF_PROGRESS_CONTROL
 
-	make ()
+	make
 		do
 		end
 

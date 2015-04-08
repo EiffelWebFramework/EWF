@@ -72,8 +72,12 @@ feature -- Access
 				end
 			end
 			if l_json /= Void and then not l_json.is_empty then
-				create json_parser.make_parser (l_json)
-				if attached {JSON_OBJECT} json_parser.parse_json as sp then
+				create json_parser.make_with_string (l_json)
+				json_parser.parse_content
+				if
+					json_parser.is_valid and then
+					attached {JSON_OBJECT} json_parser.parsed_json_value as sp
+				then
 					if
 						attached {JSON_OBJECT} sp.item ("responseData") as responsedata and then
 						attached {JSON_ARRAY} responsedata.item ("results") as results

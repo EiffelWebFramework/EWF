@@ -83,14 +83,22 @@ feature -- Implementation
 				if not event.same_string_general ("uploadfile") then
 					create states.make_empty
 					request.read_input_data_into (states)
-					create json_parser.make_parser (states)
-					if attached {JSON_OBJECT} json_parser.parse_json as sp then
+					create json_parser.make_with_string (states)
+					json_parser.parse_content
+					if
+						json_parser.is_valid and then
+						attached {JSON_OBJECT} json_parser.parsed_json_value as sp
+					then
 						set_state (sp)
 					end
 				else
 					if attached request.form_parameter ("state") as statedata then
-						create json_parser.make_parser (statedata.as_string.value)
-						if attached {JSON_OBJECT} json_parser.parse_json as sp then
+						create json_parser.make_with_string (statedata.as_string.value)
+						json_parser.parse_content
+						if
+							json_parser.is_valid and then
+							attached {JSON_OBJECT} json_parser.parsed_json_value as sp
+						then
 							set_state (sp)
 						end
 					end
@@ -259,7 +267,7 @@ feature {NONE} -- Root control
 			-- List containing the additional javascipt files
 
 ;note
-	copyright: "2011-2014, Yassin Hassan, Severin Munger, Jocelyn Fiat, Eiffel Software and others"
+	copyright: "2011-2015, Yassin Hassan, Severin Munger, Jocelyn Fiat, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software
