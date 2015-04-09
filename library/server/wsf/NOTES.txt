@@ -1,0 +1,215 @@
+title: "[
+	The Eiffel Web Framework
+	]"
+description: "[<description_of_Current_for_returning_reader>
+	The target platform to build web applications and services with Eiffel.
+	]"
+brief: "[
+	<An_overview_of_current>
+	The Eiffel Web Framework (EWF) provides Eiffel users with a layer to build 
+	anything on top of the http protocol such as websites, web API's or web
+	services.
+
+	This layer is multi-platform: it can be set on Windows, Linux operating systems, 
+	and in addition it can run on top of any httpd servers such as Apache2, IIS, 
+	nginx, or lighttpd. Additionally, EWF includes a standalone httpd web server 
+	component (written in Eiffel) which enables users to run easily a web server on 
+	their machine, or even embed this component in any application written with Eiffel.
+
+	Currently EWF offers a collection of Eiffel libraries designed to be integrated 
+	with together. Among other functionalities, it gives simple access to the client
+	request data, handling of content negotiation, a URL dispatcher, integration with 
+	the OpenID system, and so on.
+
+	There is a growing ecosystem around EWF, that provides useful components:
+
+	- OpenID and OAuth consumer library
+	- Various hypermedia format such as HAL, Collection+json, …
+	- Websocket server and client
+	- Template engine
+	- API Auto-documentation with swagger
+	- A simple experimental CMS.
+	...
+
+	So if you want to build a website, a web api, RESTful service, …or even if you 
+	want to consume other web api, EWF is a solution.
+
+	EWF brings with it all the advantages of the Eiffel technology and tools with 
+	its powerful features such as Design by Contract, debugging, testing tools which 
+	enable to build efficient systems expected to be repeatedly refined, extended, 
+	and improved in a predictable and controllable way so as to become (with time) 
+	bug-free systems. Enjoy the full power of debugging your web server application 
+	from the IDE.
+	]"
+purpose: "[<what_is_the_purpose_Current>
+	To facilitate the design and implementation of web sites, services, and other
+	web-based products based completely on Eiffel with either Eiffel-based web server (Nino)
+	or other HTTPD systems (e.g. Apache, IIS, nginx, etcetera).
+	]"
+how: "[<how_does_Current_fulfill_its_purpose>
+	By utilizing the eWSGI, LibFCGI, WSF, and other libraries, build a common API to
+	manage incoming web-based client requests and produce server-based responses to
+	them, delivering them through the common API without having to be concerned about
+	the underlying connectors (or very little).
+	]"
+prerequisites: "[<item_to_study_before_continuing>
+	- EiffelStudio 13.11 or better.
+	- Void-safe or non-Void-safe
+	]"
+basics: "[<library_cluster_only_basics_of_design>
+	+-----------------------+	+---------------+ <--CGI	+---------------+
+	| Gateway		|	|	CGI	|   Interface	|		|
+	| Interface		|	|	FCGI	+---------------+		|
+	| (Apache2,         <---|---a	|	SCGI	|		|		+---------------+
+	|  IIS,		     b--|---->	|		|		|	(2) WSF	|		|
+	|  LightTPD,		|	+---------------|   EWSGI	|		|		|
+	|  ningx)		| <-c->	|   mod_ewsgi	|   Connectors	|		|		|
+	|  			| <-d->	|	(WAMIE)	|		|   Eiffel	|   (1) Eiffel	|
+	+-----------------------+	+---------------+		|   Web		|   Application	|
+	|	Eiffel Web	| <-e->	|	Nino	|		|   Server	|		|
+	|	Nino		|   ^	|		+---------------+   Gateway	+---------------+
+	+-----------------------+   |	+---------------+		|   Interface	|	   <->
+			^	    |			^		+---------------+	+---------------+
+			|	    |			|					| Persistence	|
+			|	    |			|					+---------------+
+			+	    |			+					* (1) Storable, XML,
+			(4) HTTPD   |			(3) Gateway				JSON, SOS,
+			Server	    |			Interface				NoSQL, ABEL,
+				    |			Connectors				EiffelStore,
+				    |								...
+				    +
+				   (3) Pipe,
+				       Socket,
+				       ...
+	1. An "Eiffel Application" with some possible persistence mechanism, talks to the WSF API.
+		This is where your code (as a library consumer) will plug in. From here ...
+	2. The WSF works wither various "connectors" to talk with either some form of CGI, WAMIE,
+		or Nino. You will specify through WSF_ROUTER, what HTTPD to connect with as well as
+		specifying how to connect.
+	3. Connectors work through pipes, sockets, or others (a to e) to link to the target (4) HTTPD Server.
+	4. It is the responsibility of the Server to facilitate communication between the server
+		and the client browser, offering services or serving HTML (et al) to the client,
+		handling both requests and responses.
+	]"
+usage: "[<optional_statement_of_designer_intended_use>
+	Main Server Classes
+	
+		- WSF_REQUEST: Server request context of the HTTPD request (see class notes for more).
+		- WSF_RESPONSE: Main interface to send message back to the client (see class notes for more).
+		- HTTP_HEADER: The class represents a HTTP header, and it provides simple routine
+			to build it.
+		- WSF_ROUTER: URL dispatching of request. Map a route to an handler according to the 
+			request method and path. See REQUEST_URI_ROUTER or REQUEST_URI_TEMPLATE_ROUTER.
+		- WSF_HANDLER: Represents the ancestor of all the WSF_ROUTER handler.
+			(See USER_MESSAGE_HANDLER for example of a template handler).
+		- Service Launcher (e.g. WSF_NINO_SERVICE_LAUNCHER): Component to launch the service 
+			using the default or other specified connector.
+		- Values: WSF_VALUE <-- WSF_STRING, WSF_MULTIPLE_STRING, WSF_TABLE, WSF_UPLOADED_FILE, WSF_ANY
+	]"
+cautions: "[<things_to_watch_out_for>
+	
+	]"
+generics: "[<any_clarification_needed_for_generic_parameters>
+	
+	]"
+compilation: "[<optional_compilation_requirements>
+	
+	]"
+dependencies: "[<optional_list_of_dependencies_internal_or_external>
+	
+	]"
+history: "[<optional_significant_history_of_Current>
+	
+	]"
+BNF: "[<optional_BNF_structure>
+	
+	]"
+BNF_info: "[<optional_BNF_informative_text>
+	
+	]"
+glossary: "[<terms_to_clear_potential_misunderstood_terms>"]
+	term: "[
+		Apache2 Web Server. HTTPD - Apache2 Web Server. Apache is the most commonly used Web Server 
+			on Linux systems. Web Servers are used to serve Web Pages requested by client computers.
+		]"
+	term: "[
+		CGI: a standard method used to generate dynamic content on Web pages and Web applications. CGI, 
+			when implemented on a Web server, provides an interface between the Web server and programs 
+			that generate the Web content. These programs are known as CGI scripts or simply CGIs; they 
+			are usually written in a scripting language, but can be written in any programming language
+			(including Eiffel).
+		]"
+		EIS: "name=FSGI", "protocol=URI", "src=http://en.wikipedia.org/wiki/Common_Gateway_Interface", "tag=external_wiki"
+	term: "[
+		EWSGI: Eiffel Web Server Gateway Interface: The main goal of this library is to provide a common 
+			layer on top of many different connectors. A connector is a library used for the integration 
+			of Eiffel web server application with an underlying httpd server technology such as CGI, 
+			libFCGI, or even standalone Eiffel Web Nino (which is a httpd server written in Eiffel).
+			Then one can build an Eiffel web service compliant with EWSGI specification, and thus with 
+			the same code (or almost), this could be compiled to run on any available connectors.
+		]"
+		EIS: "name=EWSGI", "protocol=URI", "src=https://github.com/EiffelWebFramework/EWF/tree/master/library/server/ewsgi", "tag=external"
+	term: "[
+		FCGI (FastCGI): a protocol for interfacing interactive programs with a web server. FastCGI is a 
+			variation on the earlier Common Gateway Interface (CGI); FastCGI's main aim is to reduce the 
+			overhead associated with interfacing the web server and CGI programs, allowing a server to 
+			handle more web page requests at once.
+		]"
+		EIS: "name=FSGI", "protocol=URI", "src=http://en.wikipedia.org/wiki/FastCGI", "tag=external_wiki"
+	term: "[
+		httpd stands for Hypertext Transfer Protocol Daemon (i.e. web server). The implied meaning 
+			can be: The abstract web server concept. Apache HTTP Server.
+		]"
+	term: "[
+		Internet Information Services (IIS, formerly Internet Information Server) is an extensible web 
+			server created by Microsoft for use with Windows NT family.[2] IIS supports HTTP, HTTPS, FTP, 
+			FTPS, SMTP and NNTP. It has been an integral part of the Windows NT family since Windows NT 
+			4.0, though it may be absent from some editions (e.g. Windows XP Home edition). IIS is not 
+			turned on by default when Windows is installed. The IIS Manager is accessed through the 
+			Microsoft Management Console or Administrative Tools in the Control Panel.
+		]"
+		EIS: "name=IIS", "protocol=URI", "src=http://en.wikipedia.org/wiki/Internet_Information_Services", "tag=external_wiki"
+	term: "[
+		lighttpd: (pronounced "lighty")[2] is an open-source web server optimized for speed-critical 
+			environments while remaining standards-compliant, secure and flexible.
+		]"
+	term: "[
+		nginx:  (pronounced "engine-x") is an open source reverse proxy server for HTTP, HTTPS, 
+			SMTP, POP3, and IMAP protocols, as well as a load balancer, HTTP cache, and a web 
+			server (origin server). The nginx project started with a strong focus on high 
+			concurrency, high performance and low memory usage.
+		]"
+	term: "[
+		Nino: Web server written in Eiffel. Eiffel Nino HTTPD. Eiffel Nino is and HTTPD server. A work 
+			in progress, so maybe it will be re-factored. The goal of is to provide a simple web server for 
+			development (like Java, Python and Ruby provide). The code is based on Xebra and Emu Web Server.
+		]"
+	term: "[
+		WAMIE: "Writing Apache Module in Eiffel"
+		]"
+	term: "[
+		(Web) Content Negotiation: a mechanism defined in the HTTP specification that 
+			makes it possible to serve different versions of a document (or more 
+			generally, a resource representation) at the same URI, so that user 
+			agents can specify which version fit their capabilities the best.
+		"]
+		EIS: "name=web_content_negociation", "protocol=URI", "src=http://en.wikipedia.org/wiki/Content_negotiation", "tag=external_wiki"
+	term: "[
+		Web API: A web API is the application programming interface (API) for both the 
+			web server and web browser.
+		]"
+		EIS: "name=web_api", "protocol=URI", "src=http://en.wikipedia.org/wiki/Web_API", "tag=external_wiki"
+	term: "[
+		WSF (Web Server Framework): User friendly framework to build Eiffel Web server applications. It is built on 
+			top of EWSGI to benefit from the various EWSGI connectors.
+		]"
+examples: "[<optional_examples_of_non_obvious_calls>
+	
+	]"
+clusters: "[(optional--for libraries or clusters with sub-clusters)
+		<folder_names_and_brief_descriptions>
+	
+	]"
+see_also: "[<references_to_relevant_additional_or_related_information>
+	
+	]"

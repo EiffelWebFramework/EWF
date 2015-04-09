@@ -14,10 +14,17 @@ inherit
 
 feature {NONE} -- Initialization
 
-	make (s: READABLE_STRING_8; h: like handler)
+	make (a_template_string: READABLE_STRING_8; a_handler: like handler)
 			-- <Precursor>
+		note
+			purpose: "[
+				To set up router mapping between `a_template_string' and handler `a_handler'.
+				]"
+			how: "[
+				By creating a computed URI_TEMPLATE and linking it to the `a_handler' handler.
+				]"
 		do
-			make_from_template (create {URI_TEMPLATE}.make (s), h)
+			make_from_template (create {URI_TEMPLATE}.make (a_template_string), a_handler)
 		end
 
 	make_from_template (tpl: URI_TEMPLATE; h: like handler)
@@ -126,7 +133,7 @@ feature {NONE} -- Implementation
 		end
 
 note
-	copyright: "2011-2013, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
+	copyright: "2011-2014, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Colin Adams, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

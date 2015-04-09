@@ -5,3 +5,4 @@ tests/temp/
 *~
 *.scm
 *#
+*.exe
