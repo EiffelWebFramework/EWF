@@ -1,4 +1,4 @@
-Menu :: [[Doc_Getting_Started|Getting Started]] :: [[Doc_Community|Community]]
+Menu :: [[Doc_Getting_Started.mediawiki|Getting Started]] :: [[Community-collaboration.md|Community]]
 
 = Eiffel Web Framework =
 Framework to build web applications in Eiffel
