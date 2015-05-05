@@ -1,10 +1,10 @@
 ---
 layout: default
-title: EWSGI
+title: README
 base_url: ../../
 ---
-- See proposed specifications: [EWSGI specification](../EWSGI-specification)
-- See [Open questions](../EWSGI-Open-Questions)
+- See proposed specifications: [EWSGI specification](EWSGI-specification.md)
+- See [Open questions](EWSGI-Open-Questions.md)
 - And below the various proposals and associated decision
 
 ----

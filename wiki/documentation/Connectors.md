@@ -51,3 +51,6 @@ It's fairly easy to write your own connector. Just inherit from these classes:
 * WGI_INPUT_STREAM
 * WGI_OUTPUT_STREAM
 * WSF_SERVICE_LAUNCHER
+
+
+See WSF_CONNECTOR

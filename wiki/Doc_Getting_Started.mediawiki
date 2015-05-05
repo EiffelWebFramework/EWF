@@ -1,4 +1,4 @@
-Menu :: [[Doc_Getting_Started|Getting Started]] :: [[Doc_Community|Community]]
+Menu :: [[Doc_Getting_Started.mediawiki|Getting Started]] :: [[Community-collaboration.md|Community]]
 
 = Getting Started =
 This page will help you to get started with EWF. We will first see how to install EWF and then how to compile and run the venerable Hello World example.

@@ -3,7 +3,7 @@ layout: default
 title: Tasks Roadmap
 base_url: ../../
 ---
-Check new roadmap wiki page: [roadmap](../roadmap)
+Check new roadmap wiki page: [roadmap](roadmap.md)
 ## Future
 * Focus on REST API
     - Hypermedia API
@@ -37,5 +37,5 @@ Check new roadmap wiki page: [roadmap](../roadmap)
 * Installation scripts
 
 ## Contributors ##
-  - See [the collaboration page](../Community-collaboration)
+  - See [the collaboration page](../community.md)
 

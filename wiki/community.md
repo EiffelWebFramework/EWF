@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Community collaboration
+title: community
 base_url: ../../
 ---
 This project is a community project

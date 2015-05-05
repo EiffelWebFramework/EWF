@@ -1,6 +1,6 @@
 ---
 layout: default
-title: EWSGI Open Questions
+title: Open Questions
 base_url: ../../
 ---
 ## STRING_32, UTF-8, ... ? ##

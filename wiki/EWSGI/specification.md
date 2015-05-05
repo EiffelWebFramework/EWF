@@ -1,6 +1,6 @@
 ---
 layout: default
-title: EWSGI specification
+title: specification
 base_url: ../../
 ---
 **WARNING** **THIS PAGE IS IN PROGRESS, AS IT IS NOW, IT NEEDS UPDATE SINCE IT DOES NOT REFLECT THE FUTURE INTERFACE**

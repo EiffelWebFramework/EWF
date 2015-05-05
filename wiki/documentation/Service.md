@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Documentation Service
+title: Service
 base_url: ../../
 ---
 EWF Services

@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Documentation Response
+title: Response
 base_url: ../../
 ---
 See WSF_RESPONSE
