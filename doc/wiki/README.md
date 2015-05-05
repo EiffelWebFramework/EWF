@@ -9,7 +9,7 @@ The official documentation/wiki is located at [https://github.com/EiffelWebFrame
 - For time to time we have [web meetings](project/Meetings.md), and less frequently [physical meetings](project/Meetings.md) that occurs usually during other Eiffel related events.
 
 ## Documentation ##
-- [Documentation](documentation/index.md)
+- [Documentation](documentation/README.md)
 
 ## Contributions ##
 - You want to contribute or follow the progress/discussion, see the [collaboration page](community.md)
@@ -18,7 +18,7 @@ The official documentation/wiki is located at [https://github.com/EiffelWebFrame
 ## See also ##
    - [list of tasks, and a potential roadmap](project/Tasks-Roadmap.md)
    - [General source structure of this project](Source-structure.md)
-   - EWSGI: [Eiffel Web Server Gateway Interface](EWSGI/index.md)
+   - EWSGI: [Eiffel Web Server Gateway Interface](EWSGI/README.md)
    - [Overview of the server side architecture](Spec-Server-Architecture.md)
    - This project is also a collection of [Libraries](Libraries.md) related to the Web
 
