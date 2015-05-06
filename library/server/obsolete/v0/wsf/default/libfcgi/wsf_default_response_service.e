@@ -1,20 +1,18 @@
 note
-	description: "[
-			This class is the link between WGI_SERVICE and WSF_SERVICE
-			It makes a WSF_SERVICE callable from the WGI_ world.
-
-		]"
+	description: "Summary description for {WSF_DEFAULT_RESPONSE_SERVICE}."
 	date: "$Date$"
 	revision: "$Revision$"
 
-class
-	WSF_TO_WGI_SERVICE
+deferred class
+	WSF_DEFAULT_RESPONSE_SERVICE	
 
 inherit
-	WGI_SERVICE
+	WSF_DEFAULT_SERVICE
+
+	WSF_RESPONSE_SERVICE
 
 note
-	copyright: "2011-2015, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Colin Adams, Eiffel Software and others"
+	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

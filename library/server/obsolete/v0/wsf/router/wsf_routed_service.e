@@ -1,28 +1,16 @@
 note
-	description: "Execution based on router."
+	description: "Summary description for {WSF_ROUTED_SERVICE}."
+	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
 deferred class
-	WSF_ROUTED_EXECUTION
+	WSF_ROUTED_SERVICE
 
 inherit
-	WSF_EXECUTION
-		redefine
-			initialize
-		end
-
 	WSF_ROUTED
 
-feature {NONE} -- Initialize
-
-	initialize
-		do
-			Precursor
-			initialize_router
-		end
-
-feature -- Router
+feature -- Initialization
 
 	initialize_router
 			-- Initialize router
@@ -47,22 +35,14 @@ feature -- Router
 		deferred
 		end
 
-feature -- Access
-
-	router: WSF_ROUTER
-			-- Router used to dispatch the request according to the WSF_REQUEST object
-			-- and associated request methods		
-
 feature -- Execution
 
-	execute
+	execute (req: WSF_REQUEST; res: WSF_RESPONSE)
 			-- Dispatch the request
 			-- and if handler is not found, execute the default procedure `execute_default'.
-		do
-			router_execute (request, response)
-		end
-
-	router_execute (req: WSF_REQUEST; res: WSF_RESPONSE)
+		require
+			req_attached: req /= Void
+			res_attached: res /= Void
 		local
 			sess: WSF_ROUTER_SESSION
 		do
@@ -71,20 +51,31 @@ feature -- Execution
 			if not sess.dispatched then
 				execute_default (req, res)
 			end
+		ensure
+			response_status_is_set: res.status_is_set
 		end
 
 	execute_default (req: WSF_REQUEST; res: WSF_RESPONSE)
 			-- Dispatch requests without a matching handler.
+		require
+			req_attached: req /= Void
+			res_attached: res /= Void
 		local
 			msg: WSF_DEFAULT_ROUTER_RESPONSE
 		do
-			create msg.make_with_router (request, router)
+			create msg.make_with_router (req, router)
 			msg.set_documentation_included (True)
-			response.send (msg)
+			res.send (msg)
 		end
 
-note
-	copyright: "2011-2015, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Colin Adams, Eiffel Software and others"
+feature -- Access
+
+	router: WSF_ROUTER
+			-- Router used to dispatch the request according to the WSF_REQUEST object
+			-- and associated request methods
+
+;note
+	copyright: "2011-2013, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software
