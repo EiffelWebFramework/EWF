@@ -1,5 +1,5 @@
 note
-	description: "Represent a handler interface that process HTTP requests."
+	description: "HTTPD handler interface processing request."
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -126,7 +126,7 @@ feature -- Change
 feature -- Execution
 
 	safe_execute
-			-- Execute incoming request.
+			-- Execute accepted incoming connection as request.
 		local
 			retried: BOOLEAN
 		do
@@ -219,7 +219,6 @@ feature -- Execution
 	            if has_error then
 --					check catch_bad_incoming_connection: False end
 					if is_verbose then
---						check invalid_incoming_request: False end
 						log ("ERROR: invalid HTTP incoming request")
 					end
 				else

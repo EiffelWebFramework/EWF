@@ -31,8 +31,7 @@ feature {NONE} -- Initialization
 		end
 
 	initialize_pool (p: like pool; n: INTEGER)
-			--  Initialize pool of separate connection handlers.
-			--| set the pool capacity to n.
+			-- Initialize Concurrent pool of `n' potential separate connection handlers.
  		do
 			p.set_count (n)
  		end
@@ -60,7 +59,7 @@ feature {HTTPD_SERVER_I} -- Execution
 		end
 
 	pool_gracefull_stop (p: like pool)
-			-- Graceful stop pool of separate connection handlers.
+			-- Graceful stop concurrent pool of separate connection handlers.
 		do
 			p.gracefull_stop
 		end
@@ -97,7 +96,7 @@ feature {HTTPD_SERVER_I} -- Execution
 		end
 
 	process_handler (hdl: separate HTTPD_REQUEST_HANDLER)
-			-- Process request handler `hdl' concurrently.
+			-- Process request handler `hdl' as soon as `hdl' is connected to accepted socket.
 		require
 			hdl.is_connected
 		do
@@ -123,7 +122,7 @@ feature {HTTPD_SERVER_I} -- Status report
 feature {NONE} -- Implementation
 
 	separate_client_socket (hdl: separate HTTPD_REQUEST_HANDLER): separate HTTPD_STREAM_SOCKET
-			-- Client socket for handler `hdl'.
+			-- Client socket for request handler `hdl'.
 		do
 			Result := hdl.client_socket
 		end

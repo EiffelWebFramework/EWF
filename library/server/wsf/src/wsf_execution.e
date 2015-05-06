@@ -1,5 +1,5 @@
 note
-	description: "Object that represent a request execution with request and response. "
+	description: "Request execution based on attributes `request' and `response'. "
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -51,7 +51,7 @@ feature -- Access
 feature -- Execution
 
 	execute
-			-- Execute Current `request',
+			-- Execute Current request,
 			-- getting data from `request'
 			-- and response to client via `response'.
 		deferred
@@ -90,13 +90,12 @@ feature -- Helpers
 		end
 
 	put_error (err: READABLE_STRING_8)
-			-- Report error described by `a_message'.
+			-- Report error message `err' on the error output of the associated connector.
 		require
 			message_writable: message_writable
 		do
 			response.put_error (err)
 		end
-
 
 feature -- Cleaning
 

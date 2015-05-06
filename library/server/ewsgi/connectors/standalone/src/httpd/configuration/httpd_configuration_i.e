@@ -63,7 +63,7 @@ feature -- Access: SSL
 			-- private key to the certificate.
 
 	ssl_protocol: NATURAL
-		-- By default protocol is tls 1.2.
+			-- By default protocol is tls 1.2.
 
 feature -- Element change
 
@@ -71,7 +71,6 @@ feature -- Element change
 		do
 			if v = Void then
 				unset_http_server_name
---				http_server_name := Void
 			else
 				create {IMMUTABLE_STRING_8} http_server_name.make_from_separate (v)
 			end
@@ -79,6 +78,7 @@ feature -- Element change
 		end
 
 	unset_http_server_name
+			-- Unset `http_server_name' value.
 		do
 			http_server_name := Void
 		ensure 	
@@ -162,12 +162,11 @@ feature -- Element change
 			else
 				is_secure := False
 			end
-			--| Missing postcondition
-			--| ensure
-			--		is_secure_set : has_ssl_support implies is_secure
-			--	    http_server_port_set: has_ssl_support implies http_server_port = 443
-			--      is_not_secure: not has_ssl_support implies not is_secure
-			-- 		default_port: not has_ssl_support implies http_server_port = 80
+		ensure
+			is_secure_set: has_ssl_support implies is_secure
+			-- http_server_port_set: has_ssl_support implies http_server_port = 443
+			is_not_secure: not has_ssl_support implies not is_secure
+			-- default_port: not has_ssl_support implies http_server_port = 80
 		end
 
 feature -- Element change
