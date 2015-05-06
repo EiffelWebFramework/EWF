@@ -1,22 +1,13 @@
 note
-	description: "Facilities inheritance to add URI base routing to a routed execution"
+	description: "Facilities inheritance to add URI base routing to a routed object."
 
 	date: "$Date$"
 	revision: "$Revision$"
 
-deferred class WSF_URI_HELPER_FOR_ROUTED_EXECUTION
+deferred class WSF_ROUTED_URI_HELPER
 
-feature -- Access
-
-	router: WSF_ROUTER
-			-- Router used to dispatch the request according to the WSF_REQUEST object
-			-- and associated request methods;
-			-- This should not be implemented by descendants. Instead, you gain an effective
-			--  version by also inheriting from WSF_ROUTED_EXECUTION, or one of it's descendants.
-		deferred
-		ensure
-			router_not_void: Result /= Void
-		end	
+inherit
+	WSF_ROUTED
 
 feature -- Mapping helper: uri
 
@@ -47,7 +38,7 @@ feature -- Mapping helper: uri agent
 		end
 
 note
-	copyright: "2011-2013, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
+	copyright: "2011-2015, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Colin Adams, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

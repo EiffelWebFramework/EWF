@@ -1,37 +1,23 @@
 note
-	description: "Summary description for {WSF_FILTERED_EXECUTION}."
-	author: ""
+	description: "Summary description for {WSF_FILTERED_SERVICE}."
 	date: "$Date$"
 	revision: "$Revision$"
 
 deferred class
-	WSF_FILTERED_EXECUTION
+	WSF_FILTERED_SERVICE
 
 inherit
-	WSF_EXECUTION
-		redefine
-			initialize
-		end
-
 	WSF_FILTERED
-
-feature {NONE} -- Initialization
-
-	initialize
-		do
-			Precursor
-			initialize_filter
-		end
 
 feature -- Execution
 
-	execute
+	execute (req: WSF_REQUEST; res: WSF_RESPONSE)
 		do
-			filter.execute (request, response)
-		end
+			filter.execute (req, res)
+		end	
 
 ;note
-	copyright: "2011-2015, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Colin Adams, Eiffel Software and others"
+	copyright: "2011-2013, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software
