@@ -38,11 +38,12 @@ For download, check
 Tasks and issues are managed with github issue system
 * See https://github.com/EiffelWebFramework/EWF/issues
 * And visual dashboard: https://waffle.io/eiffelwebframework/ewf
+* Forum/group post: https://groups.google.com/forum/#!forum/eiffel-web-framework
 
 ## Requirements
-* Compiling from EiffelStudio 14.05 and more recent version of the compiler.
-* Developped using EiffelStudio 15.05 (on Windows, Linux)
-* Tested using EiffelStudio 15.05 with "jenkins" CI server (not anymore compatible with 6.8 due to use of `TABLE_ITERABLE')
+* Compiling from EiffelStudio 13.11 to 15.05 and more recent version of the compiler.
+* Currently being developped using EiffelStudio 15.01 (on Windows, Linux)
+* Tested using EiffelStudio 15.01 with "jenkins" CI server (not anymore compatible with 6.8 due to use of `TABLE_ITERABLE')
 * The code have to allow __void-safe__ compilation and non void-safe system (see [more about void-safety](http://docs.eiffel.com/book/method/void-safe-programming-eiffel) )
 
 ## How to get the source code?
@@ -100,6 +101,7 @@ review the [guidelines for contributing](CONTRIBUTING.md).
 Keep track of development and community news.
 
 * Follow [@EiffelWeb](https://twitter.com/EiffelWeb) on Twitter
+* [Forum](https://groups.google.com/forum/#!forum/eiffel-web-framework) on Google groups.
 * Follow our [page](https://plus.google.com/u/0/110650349519032194479) and [community](https://plus.google.com/communities/110457383244374256721) on Google+
 * Have a question that's not a feature request or bug report? [Ask on the mailing list](http://groups.google.com/group/eiffel-web-framework)
 

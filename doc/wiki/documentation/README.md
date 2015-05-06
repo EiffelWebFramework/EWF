@@ -27,7 +27,7 @@ This is the low level of the framework, at this point, `req` provides access to 
 The response `res` is the interface to send data back to the client.
 For convenience, the framework provides richer service interface that handles the most common needs (filter, router, ...).
 
-> [Learn more about service](Documentation__Service)
+> [Learn more about service](Service.md)
 
 <a name="wiki-request"></a><a name="wiki-response"></a><a name="wiki-request-and-response"></a>
 <a name="request"></a><a name="response"></a><a name="request-and-response"></a>
@@ -50,7 +50,7 @@ Any incoming http request is represented by an new object of type **WSF_REQUEST*
 
 The **WSF_RESPONSE** represents the communication toward the client, a service need to provide correct headers, and content. For instance the `Content-Type`, and `Content-Length`. It also allows to send data with chunked encoding.
 
-> [Learn more about request](Documentation__Request) and [about response](Documentation__Response)
+> [Learn more about request](Request.md) and [about response](Response.md)
 
 <a name="wiki-connector"></a>
 <a name="connector"></a>
@@ -66,7 +66,7 @@ Currently 3 main connectors are available:
 At compilation time, you can use a default connector (by using the associated default lib), but you can also use a mixed of them and choose which one to execute at runtime.
 It is fairly easy to add new connector, it just has to follow the EWSGI interface
 
-> [Learn more about connector](Documentation__Connector)
+> [Learn more about connector](Connector.md)
 
 <a name="wiki-router"></a>
 <a name="router"></a>
@@ -113,7 +113,7 @@ How we do that in EWF? : Router with (or without context).
 Related code: wsf_router,  wsf_router_context
 Examples
 
-> [Learn more about router](Documentation__Router)
+> [Learn more about router](Router.md)
 
 # EWF components 
 ## URI Handler:
@@ -180,25 +180,26 @@ examples
 External libraries are included, such as Cypress OAuth (Security), HTML parsing library, Template Engine Smarty.
 
 ## server
-* __ewsgi__: Eiffel Web Server Gateway Interface read more
+* __ewsgi__: Eiffel Web Server Gateway Interface [read more](../EWSGI/index.md).
   * connectors: various web server connectors for EWSGI
 * __libfcgi__: Wrapper for libfcgi SDK
-* __wsf__: Web Server Framework [read more]
-  * __router__: URL dispatching/routing based on uri, uri_template, or custom read more
+* __wsf__: Web Server Framework 
+  * __router__: URL dispatching/routing based on uri, uri_template, or custom [read more](Router.md).
+  * __filter__: Filter chain [read more](Filter.md).
   * __wsf_html__: (html  and css) Content generator from the server side.
     * CMS example: <https://github.com/EiffelWebFramework/cms/tree/master/example>
 
 ## protocol
-* __http__: HTTP related classes, constants for status code, content types, ... read more
-* __uri_template__: URI Template library (parsing and expander) read more
-* __content_negotiation__: CONNEG library (Content-type Negociation) read more
+* __http__: HTTP related classes, constants for status code, content types, ... 
+* __uri_template__: URI Template library (parsing and expander) 
+* __content_negotiation__: [CONNEG](Library-conneg.md) library (Content-type Negociation) 
 
 ## Client
-* __http_client__: simple HTTP client based on cURL readmore
+* __http_client__: simple [HTTP client](HTTP-client.library.md) based on cURL 
 * __Firebase API__: <https://github.com/EiffelWebFramework/Redwood>
 
 ## Text
-* __encoder__: Various simple encoders: base64, url-encoder, xml entities, html entities read more
+* __encoder__: Various simple encoders: base64, url-encoder, xml entities, html entities 
 
 ## Utils
 * __error__: very simple/basic library to handle error
