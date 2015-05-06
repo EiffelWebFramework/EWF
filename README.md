@@ -40,9 +40,9 @@ Tasks and issues are managed with github issue system
 * And visual dashboard: https://waffle.io/eiffelwebframework/ewf
 
 ## Requirements
-* Compiling from EiffelStudio 7.2 to 13.11 and more recent version of the compiler.
-* Developped using EiffelStudio 13.11 (on Windows, Linux)
-* Tested using EiffelStudio 13.11 with "jenkins" CI server (not anymore compatible with 6.8 due to use of `TABLE_ITERABLE')
+* Compiling from EiffelStudio 14.05 and more recent version of the compiler.
+* Developped using EiffelStudio 15.05 (on Windows, Linux)
+* Tested using EiffelStudio 15.05 with "jenkins" CI server (not anymore compatible with 6.8 due to use of `TABLE_ITERABLE')
 * The code have to allow __void-safe__ compilation and non void-safe system (see [more about void-safety](http://docs.eiffel.com/book/method/void-safe-programming-eiffel) )
 
 ## How to get the source code?
