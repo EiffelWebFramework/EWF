@@ -1,0 +1,14 @@
+package nino
+
+project
+	nino = "nino-safe.ecf"
+	nino = "nino.ecf"
+
+note
+	title: Eiffel Nino Web Server
+	description: Simple HTTPd server written in Eiffel
+	tags: web, httpd, server
+	license: Eiffel Forum v2
+	copyright: Javier Velilla, Jocelyn Fiat.
+
+end
