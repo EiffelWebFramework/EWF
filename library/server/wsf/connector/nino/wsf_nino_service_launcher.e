@@ -147,11 +147,11 @@ feature -- Status report
 
 	launchable: BOOLEAN
 		do
-			Result := Precursor and port_number >= 0
+			Result := Precursor and 0 <= port_number and port_number <= {NATURAL_16}.max_value
 		end
 
 ;note
-	copyright: "2011-2013, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
+	copyright: "2011-2015, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software
