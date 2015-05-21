@@ -1,26 +1,28 @@
 note
-	description: "Summary description for {WSF_FORM_INPUT}."
-	author: ""
+	description: "Summary description for {WSF_FORM_MONTH_INPUT}."
 	date: "$Date$"
 	revision: "$Revision$"
+	EIS: "name=month", "src=https://html.spec.whatwg.org/multipage/forms.html#month-state-(type=month)"
 
 class
-	WSF_FORM_SUBMIT_INPUT
+	WSF_FORM_MONTH_INPUT
 
 inherit
+
 	WSF_FORM_INPUT
 		redefine
 			specific_input_attributes_string
 		end
-	WSF_FORM_WITH_ATLERNATIVE_ACTIONS
-	
+
+	WSF_FORM_WITH_NUMERIC_ATTRIBUTE
+
 create
 	make,
 	make_with_text
 
 feature -- Access
 
-	input_type: STRING = "submit"
+	input_type: STRING = "month"
 
 
 feature {NONE} -- Conversion
@@ -30,6 +32,6 @@ feature {NONE} -- Conversion
 			-- To redefine if needed
 		do
 			create Result.make_empty
-			append_submit_image_input_attributes_to (Result)
+			append_numeric_input_attributes_to (Result)
 		end
 end

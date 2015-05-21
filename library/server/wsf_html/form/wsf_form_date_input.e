@@ -1,26 +1,30 @@
 note
-	description: "Summary description for {WSF_FORM_INPUT}."
-	author: ""
+	description: "[
+		Example:
+		<name="startdate" min="2012-01-01" max="2013-01-01" type="date">
+	]"
 	date: "$Date$"
 	revision: "$Revision$"
+	EIS: "name=date",  "src=https://html.spec.whatwg.org/multipage/forms.html#date-state-(type=date)"
 
 class
-	WSF_FORM_SUBMIT_INPUT
-
+	WSF_FORM_DATE_INPUT
 inherit
+
 	WSF_FORM_INPUT
 		redefine
 			specific_input_attributes_string
 		end
-	WSF_FORM_WITH_ATLERNATIVE_ACTIONS
-	
+
+	WSF_FORM_WITH_NUMERIC_ATTRIBUTE
+
 create
 	make,
 	make_with_text
 
 feature -- Access
 
-	input_type: STRING = "submit"
+	input_type: STRING = "date"
 
 
 feature {NONE} -- Conversion
@@ -30,6 +34,6 @@ feature {NONE} -- Conversion
 			-- To redefine if needed
 		do
 			create Result.make_empty
-			append_submit_image_input_attributes_to (Result)
+			append_numeric_input_attributes_to (Result)
 		end
 end
