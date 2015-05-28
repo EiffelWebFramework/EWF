@@ -39,7 +39,7 @@ feature -- Change element
 			placeholder_set: attached placeholder as l_placeholder implies l_placeholder = a_placeholder
 		end
 
-	set_autofocus
+	enable_autofocus
 			-- Set autofocus in True.
 		do
 			autofocus := True
@@ -47,7 +47,7 @@ feature -- Change element
 			autofocus_true: autofocus
 		end
 
-	unset_autofocus
+	disable_autofocus
 			-- Set autofocus in False
 		do
 			autofocus := False
@@ -55,7 +55,7 @@ feature -- Change element
 			autofocus_false: not autofocus
 		end
 
-	turn_off_autocomplete
+	disable_autocomplete
 			-- Turn off the autocompelte. The default behavior is on.
 		do
 			autocomplete := True
@@ -63,7 +63,7 @@ feature -- Change element
 			autocomplete_true: autocomplete
 		end
 
-	turn_on_autocomplete
+	enable_autocomplete
 			-- Set autocomplete in False, Set default behavior.
 		do
 			autocomplete := False
@@ -71,7 +71,7 @@ feature -- Change element
 			autocomplete_false: not autocomplete
 		end
 
-	set_required
+	enable_required
 			-- Set required to True.
 		do
 			required := True
@@ -79,7 +79,7 @@ feature -- Change element
 			required_true: required
 		end
 
-	unset_required
+	disable_required
 			-- Set rquired to False.
 		do
 			required := False
@@ -147,7 +147,7 @@ feature -- Conversion
 		do
 			if attached placeholder as l_placeholder then
 				a_target.append (" placeholder=%"")
-				a_target.append (l_placeholder)
+				a_target.append ((create {HTML_ENCODER}).encoded_string (l_placeholder))
 				a_target.append_character ('%"')
 			end
 				--TODO check how we can add xhtml5 support
@@ -166,7 +166,7 @@ feature -- Conversion
 			end
 			if attached pattern as l_pattern then
 				a_target.append (" pattern=%"")
-				a_target.append (l_pattern)
+				a_target.append ((create {HTML_ENCODER}).encoded_string (l_pattern))
 				a_target.append_character ('%"')
 			end
 		end

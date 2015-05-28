@@ -13,7 +13,7 @@ inherit
 			specific_input_attributes_string
 		end
 
-	WSF_FORM_WITH_NUMERIC_ATTRIBUTE
+	WSF_FORM_FIELD_WITH_NUMERIC_ATTRIBUTE
 
 create
 	make,

@@ -44,21 +44,21 @@ feature {NONE} -- Initialization
 
 				-- autofocus
 			create l_text_input.make ("fullname")
-			l_text_input.set_autofocus
+			l_text_input.enable_autofocus
 			print (l_text_input.to_html (l_theme))
 
 			io.put_new_line
 
 				-- autocomplete
 			create l_text_input.make ("fullname")
-			l_text_input.turn_off_autocomplete
+			l_text_input.disable_autocomplete
 			print (l_text_input.to_html (l_theme))
 
 			io.put_new_line
 
 				-- required
 			create l_text_input.make ("fullname")
-			l_text_input.set_required
+			l_text_input.enable_required
 			print (l_text_input.to_html (l_theme))
 
 			io.put_new_line

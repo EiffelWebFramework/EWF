@@ -1,13 +1,14 @@
 ﻿note
 	description: "[
 		Represent alternative actions for forms
-		The formaction, formenctype, formmethod, and formtarget attributes.		
+		The formaction, formenctype, formmethod, and formtarget attributes.
 	]"
 	date: "$Date$"
 	revision: "$Revision$"
+	EIS: "name=form submission", "src=https://html.spec.whatwg.org/multipage/forms.html#form-submission"
 
 class
-	WSF_FORM_WITH_ATLERNATIVE_ACTIONS
+	WSF_FORM_WITH_ALTERNATIVE_ACTIONS
 
 feature -- Access
 

@@ -5,17 +5,18 @@ note
 	]"
 	date: "$Date$"
 	revision: "$Revision$"
+	EIS: "name=numeric attributes", "src=https://html.spec.whatwg.org/multipage/forms.html#common-input-element-attributes"
 
 class
-	WSF_FORM_WITH_NUMERIC_ATTRIBUTE
+	WSF_FORM_FIELD_WITH_NUMERIC_ATTRIBUTE
 
 feature -- Access
 
 	min: detachable READABLE_STRING_32
-			-- Represent the minimun value the field will accept
+			-- minimun value accepted by Current field.
 
 	max: detachable READABLE_STRING_32
-			-- Represent the maximun value the field will accept.
+			-- maximun value accepted by Current field.
 
 	step: detachable READABLE_STRING_32
 			--  step is the increment that the value should adjust up or down, with the default step value being 1.
@@ -79,21 +80,21 @@ feature {NONE} -- Conversion
 				--min
 			if attached min as l_min then
 				a_target.append (" min=%"")
-				a_target.append (l_min)
+				a_target.append ((create {HTML_ENCODER}).encoded_string (l_min))
 				a_target.append_character ('%"')
 			end
 
 				--max
 			if attached max as l_max then
 				a_target.append (" max=%"")
-				a_target.append (l_max)
+				a_target.append ((create {HTML_ENCODER}).encoded_string (l_max))
 				a_target.append_character ('%"')
 			end
 
 				--step
 			if attached step as l_step then
 				a_target.append (" step=%"")
-				a_target.append (l_step)
+				a_target.append ((create {HTML_ENCODER}).encoded_string (l_step))
 				a_target.append_character ('%"')
 			end
 		end

@@ -1,15 +1,14 @@
 note
 	description: "[
-		Represent the input type number.
-		Example:
-		<input type="number" min="5" max="18" step="0.5" value="9" name="shoe-size">
+		Represent an input type range
+		Example
+		<input type="range" min=0 max=100 step=20 value=50>
 	]"
 	date: "$Date$"
 	revision: "$Revision$"
-	EIS: "name= Number", "src=https://html.spec.whatwg.org/multipage/forms.html#number-state-(type=number)"
 
 class
-	WSF_FORM_NUMBER_INPUT
+	WSF_FORM_RANGE_INPUT
 
 inherit
 
@@ -18,7 +17,7 @@ inherit
 			specific_input_attributes_string
 		end
 
-	WSF_FORM_WITH_NUMERIC_ATTRIBUTE
+	WSF_FORM_FIELD_WITH_NUMERIC_ATTRIBUTE
 
 create
 	make,
@@ -26,7 +25,8 @@ create
 
 feature -- Access
 
-	input_type: STRING = "number"
+	input_type: STRING = "range"
+
 
 feature {NONE} -- Conversion
 

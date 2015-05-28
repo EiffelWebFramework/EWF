@@ -12,7 +12,7 @@ inherit
 		redefine
 			specific_input_attributes_string
 		end
-	WSF_FORM_WITH_ATLERNATIVE_ACTIONS
+	WSF_FORM_WITH_ALTERNATIVE_ACTIONS
 
 
 create

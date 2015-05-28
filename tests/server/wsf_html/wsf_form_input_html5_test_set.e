@@ -43,11 +43,11 @@ feature -- Test routines
 			create l_theme.make
 
 			create l_text_input.make ("fullname")
-			l_text_input.set_autofocus
+			l_text_input.enable_autofocus
 
 			assert ("expected input with autofocus",l_text_input.to_html (l_theme).is_case_insensitive_equal_general (l_autofocus) )
 
-			l_text_input.unset_autofocus
+			l_text_input.disable_autofocus
 			l_autofocus := "<div><input type=%"text%" name=%"fullname%"/></div>"
 			assert ("expected input without autofocus",l_text_input.to_html (l_theme).is_case_insensitive_equal_general (l_autofocus) )
 
@@ -65,10 +65,10 @@ feature -- Test routines
 			create l_theme.make
 
 			create l_text_input.make ("fullname")
-			l_text_input.turn_off_autocomplete
+			l_text_input.disable_autocomplete
 			assert ("expected input with autocomplete in off",l_text_input.to_html (l_theme).is_case_insensitive_equal_general (l_autocomplete) )
 
-			l_text_input.turn_on_autocomplete
+			l_text_input.enable_autocomplete
 			l_autocomplete := "<div><input type=%"text%" name=%"fullname%"/></div>"
 			assert ("expected input without autocomplete",l_text_input.to_html (l_theme).is_case_insensitive_equal_general (l_autocomplete) )
 
@@ -85,11 +85,11 @@ feature -- Test routines
 			create l_theme.make
 
 			create l_text_input.make ("fullname")
-			l_text_input.set_required
+			l_text_input.enable_required
 
 			assert ("expected input with required",l_text_input.to_html (l_theme).is_case_insensitive_equal_general (l_required) )
 
-			l_text_input.unset_required
+			l_text_input.disable_required
 			l_required := "<div><input type=%"text%" name=%"fullname%"/></div>"
 			assert ("expected input without required",l_text_input.to_html (l_theme).is_case_insensitive_equal_general (l_required) )
 
