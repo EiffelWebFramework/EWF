@@ -104,6 +104,9 @@ feature -- Change element
 		end
 
 
+		-- The attribues `form',`list', and `multiple' are not supported yet.
+		-- For example the list attribute need datalist support.
+
 		-- list: detachable READABLE_STRING_32
 		-- The list attribute enables the user to associate a list of options with a particular field.
 		-- The value of the list attribute must be the same as the ID of a datalist element that resides in the same document.
