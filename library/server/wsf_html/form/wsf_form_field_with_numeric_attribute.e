@@ -17,13 +17,13 @@ inherit
 
 feature -- Access
 
-	min: detachable READABLE_STRING_32
+	min: detachable READABLE_STRING_8
 			-- minimun value accepted by Current field.
 
-	max: detachable READABLE_STRING_32
+	max: detachable READABLE_STRING_8
 			-- maximun value accepted by Current field.
 
-	step: detachable READABLE_STRING_32
+	step: detachable READABLE_STRING_8
 			--  step is the increment that the value should adjust up or down, with the default step value being 1.
 
 feature -- Element Change
@@ -52,28 +52,46 @@ feature -- Element Change
 			step_set: attached step as l_step implies l_step.same_string (a_val.out)
 		end
 
-	set_min_string (a_val: READABLE_STRING_32)
+	set_min_string (a_val: READABLE_STRING_GENERAL)
 			-- Set `min' with `a_val'.
+		require
+			is_valid_number: a_val.is_integer
 		do
-			min := a_val
+			if a_val.is_string_32 then
+		 		min := html_encoder.encoded_string (a_val.as_string_32)
+		 	elseif a_val.is_string_8 then
+		 		min := a_val.as_string_8
+		 	end
 		ensure
-			min_set: attached min as l_min implies l_min = a_val
+			min_set: attached min as l_min implies l_min.same_string_general (a_val)
 		end
 
-	set_max_string (a_val: READABLE_STRING_32)
+	set_max_string (a_val: READABLE_STRING_GENERAL)
 			-- Set `max' with `a_val'.
+		require
+			is_valid_number: a_val.is_integer
 		do
-			max := a_val
+			if a_val.is_string_32 then
+		 		max := html_encoder.encoded_string (a_val.as_string_32)
+		 	elseif a_val.is_string_8 then
+		 		max := a_val.as_string_8
+		 	end
 		ensure
-			max_set: attached max as l_max implies l_max = a_val
+			max_set: attached max as l_max implies l_max.same_string_general (a_val)
 		end
 
-	set_step_string (a_val: READABLE_STRING_32)
+	set_step_string (a_val: READABLE_STRING_GENERAL)
 			-- Set `step' with `a_val'.
-		do
-			step := a_val
+		require
+			is_valid_sequence: a_val.is_number_sequence or else a_val.is_real_sequence
+ 		do
+ 			if a_val.is_string_32 then
+ 				step := html_encoder.encoded_string (a_val.as_string_32)
+ 			elseif a_val.is_string_8 then
+ 				step := a_val.as_string_8
+ 			end
 		ensure
-			step_set: attached step as l_step implies l_step = a_val
+			step_set: attached step as l_step implies l_step.same_string_general (a_val)
 		end
 
 
@@ -85,21 +103,21 @@ feature {NONE} -- Conversion
 				--min
 			if attached min as l_min then
 				a_target.append (" min=%"")
-				a_target.append (html_encoder.encoded_string (l_min))
+				a_target.append(l_min)
 				a_target.append_character ('%"')
 			end
 
 				--max
 			if attached max as l_max then
 				a_target.append (" max=%"")
-				a_target.append (html_encoder.encoded_string (l_max))
+				a_target.append (l_max)
 				a_target.append_character ('%"')
 			end
 
 				--step
 			if attached step as l_step then
 				a_target.append (" step=%"")
-				a_target.append (html_encoder.encoded_string (l_step))
+				a_target.append (l_step)
 				a_target.append_character ('%"')
 			end
 		end

@@ -1,5 +1,9 @@
 note
-	description: "Summary description for {WSF_FORM_MONTH_INPUT}."
+	description: "[
+				Represent an input type Month
+			Example:
+			<input id="expiry" name="expiry" type="month" required>
+	]"
 	date: "$Date$"
 	revision: "$Revision$"
 	EIS: "name=month", "src=https://html.spec.whatwg.org/multipage/forms.html#month-state-(type=month)"

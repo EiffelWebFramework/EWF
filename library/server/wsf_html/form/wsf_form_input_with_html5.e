@@ -60,7 +60,7 @@ feature -- Change element
 		end
 
 	disable_autocomplete
-			-- Turn off the autocompelte. The default behavior is on.
+			-- Turn off the autocomplete. The default behavior is on.
 		do
 			autocomplete := True
 		ensure
