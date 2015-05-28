@@ -7,6 +7,10 @@
 deferred class
 	WSF_FORM_INPUT_WITH_HTML5
 
+inherit
+
+	SHARED_HTML_ENCODER
+
 feature -- Access
 
 	placeholder: detachable READABLE_STRING_32
@@ -147,7 +151,7 @@ feature -- Conversion
 		do
 			if attached placeholder as l_placeholder then
 				a_target.append (" placeholder=%"")
-				a_target.append ((create {HTML_ENCODER}).encoded_string (l_placeholder))
+				a_target.append (html_encoder.encoded_string (l_placeholder))
 				a_target.append_character ('%"')
 			end
 				--TODO check how we can add xhtml5 support
@@ -166,7 +170,7 @@ feature -- Conversion
 			end
 			if attached pattern as l_pattern then
 				a_target.append (" pattern=%"")
-				a_target.append ((create {HTML_ENCODER}).encoded_string (l_pattern))
+				a_target.append ( html_encoder.encoded_string (l_pattern))
 				a_target.append_character ('%"')
 			end
 		end

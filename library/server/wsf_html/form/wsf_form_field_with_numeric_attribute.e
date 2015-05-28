@@ -10,6 +10,11 @@ note
 class
 	WSF_FORM_FIELD_WITH_NUMERIC_ATTRIBUTE
 
+inherit
+
+	SHARED_HTML_ENCODER
+
+
 feature -- Access
 
 	min: detachable READABLE_STRING_32
@@ -80,21 +85,21 @@ feature {NONE} -- Conversion
 				--min
 			if attached min as l_min then
 				a_target.append (" min=%"")
-				a_target.append ((create {HTML_ENCODER}).encoded_string (l_min))
+				a_target.append (html_encoder.encoded_string (l_min))
 				a_target.append_character ('%"')
 			end
 
 				--max
 			if attached max as l_max then
 				a_target.append (" max=%"")
-				a_target.append ((create {HTML_ENCODER}).encoded_string (l_max))
+				a_target.append (html_encoder.encoded_string (l_max))
 				a_target.append_character ('%"')
 			end
 
 				--step
 			if attached step as l_step then
 				a_target.append (" step=%"")
-				a_target.append ((create {HTML_ENCODER}).encoded_string (l_step))
+				a_target.append (html_encoder.encoded_string (l_step))
 				a_target.append_character ('%"')
 			end
 		end
