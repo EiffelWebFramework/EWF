@@ -1,6 +1,5 @@
 note
-	description: "Summary description for {WSF_URI_TEMPLATE_CONTEXT_ROUTER_HELPER}."
-	author: ""
+	description: "Helper for execution based on router and uri template mapping context."
 	date: "$Date$"
 	revision: "$Revision$"
 

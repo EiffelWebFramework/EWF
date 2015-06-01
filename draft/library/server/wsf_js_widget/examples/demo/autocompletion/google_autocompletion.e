@@ -1,6 +1,5 @@
 note
 	description: "Summary description for {GOOGLE_AUTOCOMPLETION}."
-	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
