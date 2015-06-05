@@ -23,6 +23,6 @@
 				<exclude>/.*_service.e$</exclude>
 			</file_rule>
 		</cluster>
-		<cluster name="src" location=".\src\" recursive="true"/>
+		<cluster name="src_v0" location=".\src\" recursive="true" />
 	</target>
 </system>

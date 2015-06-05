@@ -20,14 +20,15 @@
 		<root class="EWF_DEBUG_SERVER" feature="make_and_launch"/>
 		<setting name="concurrency" value="scoop"/>
 		<library name="cgi" location="..\..\library\server\wsf\connector\cgi-safe.ecf" readonly="false"/>
-		<library name="standalone" location="..\..\library\server\wsf\connector\standalone-safe.ecf" readonly="false"/>
 		<library name="libfcgi" location="..\..\library\server\wsf\connector\libfcgi-safe.ecf" readonly="false"/>
 		<library name="nino" location="..\..\library\server\wsf\connector\nino-safe.ecf" readonly="false"/>
+		<library name="standalone" location="..\..\library\server\wsf\connector\standalone-safe.ecf" readonly="false"/>
 		<cluster name="launcher" location=".\launcher\any\" recursive="true"/>
 		<cluster name="src" location=".\src\" recursive="true"/>
 	</target>
 	<target name="debug_standalone" extends="common">
 		<root class="EWF_DEBUG_SERVER" feature="make_and_launch"/>
+		<setting name="concurrency" value="scoop"/>
 		<library name="default_standalone" location="..\..\library\server\wsf\default\standalone-safe.ecf" readonly="false"/>
 		<cluster name="launcher" location=".\launcher\default\" recursive="true"/>
 		<cluster name="src" location=".\src\" recursive="true"/>

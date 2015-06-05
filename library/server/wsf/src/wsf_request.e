@@ -41,7 +41,7 @@ inherit
 			{NONE} all
 		end
 
-create {WSF_TO_WGI_SERVICE, WSF_EXECUTION, WGI_EXPORTER}
+create {WSF_EXECUTION, WGI_EXPORTER}
 	make_from_wgi
 
 convert

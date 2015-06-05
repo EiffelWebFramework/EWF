@@ -108,6 +108,16 @@ feature -- Settings
 
 	is_verbose: BOOLEAN
 
+	is_persistent_connection_supported: BOOLEAN
+			-- Is persistent connection supported?
+		do
+			Result := {HTTPD_SERVER}.is_persistent_connection_supported
+		end	
+
+	persistent_connection_timeout: INTEGER = 5 -- seconds
+			-- Number of seconds for persistent connection timeout.
+			-- Default: 5 sec.
+
 feature -- Status report
 
 	has_error: BOOLEAN
@@ -168,7 +178,7 @@ feature -- Execution
 				n := n + 1
 					-- FIXME: it seems to be called one more time, mostly to see this is done.
 				execute_request
-				l_exit := not {HTTPD_SERVER}.is_persistent_connection_supported
+				l_exit := not is_persistent_connection_supported
 						or has_error or l_socket.is_closed or not l_socket.is_open_read
 						or not is_persistent_connection_requested
 				reset_request
@@ -196,10 +206,21 @@ feature -- Execution
 				debug ("dbglog")
 					dbglog (generator + ".execute_request  socket=" + l_socket.descriptor.out + " ENTER")
 				end
-				l_socket.set_timeout (5) -- 5 seconds!
+
 					--| TODO: add configuration options for socket timeout.
 					--| set by default 5 seconds.
-				l_ready_for_reading := l_socket.ready_for_reading
+--				l_socket.set_timeout (persistent_connection_timeout) -- 5 seconds!
+				l_socket.set_timeout (1) -- 1 second!
+				from
+					i := persistent_connection_timeout -- * 1 sec
+				until
+					l_ready_for_reading or i <= 0 or has_error
+				loop
+					l_ready_for_reading := l_socket.ready_for_reading
+					check not l_socket.is_closed end
+					i := i - 1
+				end
+
 				if l_ready_for_reading then
 					create l_remote_info
 					if attached l_socket.peer_address as l_addr then
@@ -217,9 +238,11 @@ feature -- Execution
 				end
 
 	            if has_error then
---					check catch_bad_incoming_connection: False end
-					if is_verbose then
-						log ("ERROR: invalid HTTP incoming request")
+					if l_ready_for_reading then
+	--					check catch_bad_incoming_connection: False end
+						if is_verbose then
+							log ("ERROR: invalid HTTP incoming request")
+						end
 					end
 				else
 					process_request (l_socket)
