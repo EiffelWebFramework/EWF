@@ -147,7 +147,7 @@ feature -- Status report
 
 	launchable: BOOLEAN
 		do
-			Result := Precursor and port_number >= 0
+			Result := Precursor and 0 <= port_number and port_number <= {NATURAL_16}.max_value
 		end
 
 ;note

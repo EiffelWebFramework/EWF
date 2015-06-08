@@ -191,7 +191,8 @@ feature -- Execution
 		local
 			l_remote_info: detachable like remote_info
 			l_socket: like client_socket
-			l_ready_for_reading: BOOLEAN
+			l_is_ready: BOOLEAN
+			i: INTEGER
 		do
 			l_socket := client_socket
 			check
@@ -214,14 +215,14 @@ feature -- Execution
 				from
 					i := persistent_connection_timeout -- * 1 sec
 				until
-					l_ready_for_reading or i <= 0 or has_error
+					l_is_ready or i <= 0 or has_error
 				loop
-					l_ready_for_reading := l_socket.ready_for_reading
+					l_is_ready := l_socket.ready_for_reading
 					check not l_socket.is_closed end
 					i := i - 1
 				end
 
-				if l_ready_for_reading then
+				if l_is_ready then
 					create l_remote_info
 					if attached l_socket.peer_address as l_addr then
 						l_remote_info.addr := l_addr.host_address.host_address
@@ -238,7 +239,7 @@ feature -- Execution
 				end
 
 	            if has_error then
-					if l_ready_for_reading then
+					if l_is_ready then
 	--					check catch_bad_incoming_connection: False end
 						if is_verbose then
 							log ("ERROR: invalid HTTP incoming request")
