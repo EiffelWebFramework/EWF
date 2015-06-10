@@ -65,11 +65,13 @@ feature {NONE} -- Initialization
 feature -- Mapping
 
 	map (a_mapping: WSF_ROUTER_MAPPING; rqst_methods: detachable WSF_REQUEST_METHODS)
-			-- Map `a_mapping'.
+			-- Map `a_mapping',
+			-- if `rqst_methods' is set, accept only request method in `rqst_methods'.
+			-- if `rqst_method' is Void, accept any request methods.
 		require
 			a_mapping_attached: a_mapping /= Void
 		do
-			extend (create {WSF_ROUTER_ITEM}.make_with_request_methods (a_mapping, rqst_methods))
+			extend (create {WSF_ROUTER_ITEM}.make (a_mapping, rqst_methods))
 		end
 
 	map_with_request_methods (a_mapping: WSF_ROUTER_MAPPING; rqst_methods: detachable WSF_REQUEST_METHODS)
@@ -120,6 +122,8 @@ feature -- Mapping handler
 
 	handle (a_resource: READABLE_STRING_8; f: WSF_ROUTER_MAPPING_FACTORY; rqst_methods: detachable WSF_REQUEST_METHODS)
 			-- Map the mapping created by factory `f' for resource `a_resource'.
+			-- if `rqst_methods' is set, accept only request method in `rqst_methods'.
+			-- if `rqst_method' is Void, accept any request methods.
 		require
 			a_resource_attached: a_resource /= Void
 			f_attached: f /= Void

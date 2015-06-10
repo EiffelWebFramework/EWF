@@ -45,11 +45,11 @@ feature -- Execution
 			req := request
 
 			create router.make (3)
-			router.handle ("/test/{var}", create {WSF_URI_TEMPLATE_AGENT_HANDLER}.make (agent handle_test))
-			router.handle ("/env", create {WSF_URI_AGENT_HANDLER}.make (agent handle_env))
-			router.handle ("/exit", create {WSF_URI_TEMPLATE_AGENT_HANDLER}.make (agent handle_exit))
+			router.handle ("/test/{var}", create {WSF_URI_TEMPLATE_AGENT_HANDLER}.make (agent handle_test), Void)
+			router.handle ("/env", create {WSF_URI_AGENT_HANDLER}.make (agent handle_env), Void)
+			router.handle ("/exit", create {WSF_URI_TEMPLATE_AGENT_HANDLER}.make (agent handle_exit), Void)
 			create fs.make_with_path ((create {EXECUTION_ENVIRONMENT}).current_working_path.extended ("files"))
-			router.handle ("/files", fs)
+			router.handle ("/files", fs, Void)
 			create sess
 			router.dispatch (req, response, sess)
 			if not sess.dispatched then

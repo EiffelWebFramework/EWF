@@ -12,7 +12,7 @@ inherit
 feature -- Mapping helper: uri template
 
 	map_uri_template (a_tpl: STRING; h: WSF_URI_TEMPLATE_HANDLER; rqst_methods: detachable WSF_REQUEST_METHODS)
-			-- Map `h' as handler for `a_tpl'.
+			-- Map `h' as handler for `a_tpl', according to `rqst_methods'.
 		require
 			a_tpl_attached: a_tpl /= Void
 			h_attached: h /= Void
@@ -43,7 +43,7 @@ feature -- Mapping helper: uri template
 feature -- Mapping helper: uri template agent
 
 	map_uri_template_agent (a_tpl: READABLE_STRING_8; proc: PROCEDURE [ANY, TUPLE [req: WSF_REQUEST; res: WSF_RESPONSE]]; rqst_methods: detachable WSF_REQUEST_METHODS)
-			-- Map `proc' as handler for `a_tpl'
+			-- Map `proc' as handler for `a_tpl', according to `rqst_methods'.
 		require
 			a_tpl_attached: a_tpl /= Void
 			proc_attached: proc /= Void
