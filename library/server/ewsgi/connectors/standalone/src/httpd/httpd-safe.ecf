@@ -27,7 +27,6 @@
 		<library name="time" location="$ISE_LIBRARY\library\time\time-safe.ecf"/>
 		<cluster name="httpd_server" location=".\" recursive="true">
 			<file_rule>
-				<exclude>/EIFGENs$</exclude>
 				<exclude>/concurrency$</exclude>
 				<exclude>/ssl$</exclude>
 				<exclude>/no_ssl$</exclude>
