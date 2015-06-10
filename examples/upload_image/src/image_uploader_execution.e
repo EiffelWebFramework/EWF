@@ -38,7 +38,7 @@ feature {NONE} -- Initialization
 			www: WSF_FILE_SYSTEM_HANDLER
 		do
 			map_uri_template_agent_with_request_methods ("/upload/{name}{?nb}", agent execute_upload_put, router.methods_put)
-			map_uri_template_agent ("/upload{?nb}", agent execute_upload)
+			map_uri_template_agent ("/upload{?nb}", agent execute_upload, Void)
 
 			create www.make_with_path (document_root)
 			www.set_directory_index (<<"index.html">>)

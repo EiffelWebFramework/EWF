@@ -11,42 +11,64 @@ inherit
 
 feature -- Mapping helper: uri template
 
-	map_uri_template (a_tpl: STRING; h: WSF_URI_TEMPLATE_HANDLER)
-			-- Map `h' as handler for `a_tpl'
+	map_uri_template (a_tpl: STRING; h: WSF_URI_TEMPLATE_HANDLER; rqst_methods: detachable WSF_REQUEST_METHODS)
+			-- Map `h' as handler for `a_tpl'.
 		require
 			a_tpl_attached: a_tpl /= Void
 			h_attached: h /= Void
 		do
-			map_uri_template_with_request_methods (a_tpl, h, Void)
+			router.map (create {WSF_URI_TEMPLATE_MAPPING}.make (a_tpl, h), rqst_methods)
 		end
 
 	map_uri_template_with_request_methods (a_tpl: READABLE_STRING_8; h: WSF_URI_TEMPLATE_HANDLER; rqst_methods: detachable WSF_REQUEST_METHODS)
 			-- Map `h' as handler for `a_tpl' for request methods `rqst_methods'.
+		obsolete
+			"Use directly `map_uri_template' [June/2015]"
 		require
 			a_tpl_attached: a_tpl /= Void
 			h_attached: h /= Void
 		do
-			router.map_with_request_methods (create {WSF_URI_TEMPLATE_MAPPING}.make (a_tpl, h), rqst_methods)
+			map_uri_template (a_tpl, h, rqst_methods)
+		end
+
+	map_uri_template_response (a_tpl: READABLE_STRING_8; h: WSF_URI_TEMPLATE_RESPONSE_HANDLER; rqst_methods: detachable WSF_REQUEST_METHODS)
+			-- Map `h' as response handler for `a_tpl' for request methods `rqst_methods'.
+		require
+			a_tpl_attached: a_tpl /= Void
+			h_attached: h /= Void
+		do
+			router.map (create {WSF_URI_TEMPLATE_MAPPING}.make (a_tpl, h), rqst_methods)
 		end
 
 feature -- Mapping helper: uri template agent
 
-	map_uri_template_agent (a_tpl: READABLE_STRING_8; proc: PROCEDURE [ANY, TUPLE [req: WSF_REQUEST; res: WSF_RESPONSE]])
+	map_uri_template_agent (a_tpl: READABLE_STRING_8; proc: PROCEDURE [ANY, TUPLE [req: WSF_REQUEST; res: WSF_RESPONSE]]; rqst_methods: detachable WSF_REQUEST_METHODS)
 			-- Map `proc' as handler for `a_tpl'
 		require
 			a_tpl_attached: a_tpl /= Void
 			proc_attached: proc /= Void
 		do
-			map_uri_template_agent_with_request_methods (a_tpl, proc, Void)
+			map_uri_template (a_tpl, create {WSF_URI_TEMPLATE_AGENT_HANDLER}.make (proc), rqst_methods)
 		end
 
 	map_uri_template_agent_with_request_methods (a_tpl: READABLE_STRING_8; proc: PROCEDURE [ANY, TUPLE [req: WSF_REQUEST; res: WSF_RESPONSE]]; rqst_methods: detachable WSF_REQUEST_METHODS)
 			-- Map `proc' as handler for `a_tpl' for request methods `rqst_methods'.
+		obsolete
+			"Use directly `map_uri_template_agent' [June/2015]"
 		require
 			a_tpl_attached: a_tpl /= Void
 			proc_attached: proc /= Void
 		do
-			map_uri_template_with_request_methods (a_tpl, create {WSF_URI_TEMPLATE_AGENT_HANDLER}.make (proc), rqst_methods)
+			map_uri_template_agent (a_tpl, proc, rqst_methods)
+		end
+
+	map_uri_template_response_agent (a_tpl: READABLE_STRING_8; a_action: like {WSF_URI_TEMPLATE_RESPONSE_AGENT_HANDLER}.action; rqst_methods: detachable WSF_REQUEST_METHODS)
+			-- Map `a_action' as response handler for `a_tpl' for request methods `rqst_methods'.
+		require
+			a_tpl_attached: a_tpl /= Void
+			a_action_attached: a_action /= Void
+		do
+			map_uri_template_response (a_tpl, create {WSF_URI_TEMPLATE_RESPONSE_AGENT_HANDLER}.make (a_action), rqst_methods)
 		end
 
 note

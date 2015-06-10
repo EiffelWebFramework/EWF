@@ -64,6 +64,10 @@ echo Install library: ewf/wsf_html
 echo Install library: ewf/encoder
 %COPYCMD% %TMP_DIR%\library\text\encoder	%TMP_CONTRIB_DIR%\library\web\framework\ewf\text\encoder
 
+
+echo Install library: ewf/obsolete
+%COPYCMD% %TMP_DIR%\library\server\obsolete	%TMP_CONTRIB_DIR%\library\web\framework\ewf\obsolete
+
 echo Install examples
 %SAFE_MD% %TMP_CONTRIB_DIR%\examples
 %SAFE_MD% %TMP_CONTRIB_DIR%\examples\web

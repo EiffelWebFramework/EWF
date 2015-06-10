@@ -29,8 +29,8 @@ feature {NONE} -- Initialization
 
 	setup_router
 		do
-			map_uri_template_agent ("/", agent handle_root)
-			map_uri_template_agent ("/openid", agent handle_openid)
+			map_uri_template_agent ("/", agent handle_root, Void)
+			map_uri_template_agent ("/openid", agent handle_openid, Void)
 		end
 
 	handle_root (req: WSF_REQUEST; res: WSF_RESPONSE)

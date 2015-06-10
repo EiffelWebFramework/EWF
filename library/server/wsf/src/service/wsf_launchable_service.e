@@ -37,6 +37,16 @@ feature -- Basic operation
 
 feature -- Default service options
 
+	import_service_options (opts: WSF_SERVICE_LAUNCHER_OPTIONS)
+			-- Import service options `opts' into `service_options'.
+		do
+			if attached service_options as l_opts then
+				l_opts.append_options (opts)
+			else
+				service_options := opts
+			end
+		end
+
 	set_service_option (a_name: READABLE_STRING_GENERAL; a_value: detachable ANY)
 			-- Set options related to WSF_SERVICE_LAUNCHER
 		local

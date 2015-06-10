@@ -23,6 +23,14 @@ feature -- Mapping helper: uri
 			router.map_with_request_methods (create {WSF_URI_MAPPING}.make (a_uri, h), rqst_methods)
 		end
 
+	map_uri_response (a_uri: READABLE_STRING_8; h: WSF_URI_RESPONSE_HANDLER; rqst_methods: detachable WSF_REQUEST_METHODS)
+			-- Map `h' as response handler for `a_uri' for request methods `rqst_methods'.
+		require
+			h_attached: h /= Void
+		do
+			router.map_with_request_methods (create {WSF_URI_MAPPING}.make (a_uri, h), rqst_methods)
+		end
+
 feature -- Mapping helper: uri agent		
 
 	map_uri_agent (a_uri: READABLE_STRING_8; proc: PROCEDURE [ANY, TUPLE [req: WSF_REQUEST; res: WSF_RESPONSE]])
@@ -35,6 +43,14 @@ feature -- Mapping helper: uri agent
 			-- Map `proc' as handler for `a_uri' for request methods `rqst_methods'.
 		do
 			map_uri_with_request_methods (a_uri, create {WSF_URI_AGENT_HANDLER}.make (proc), rqst_methods)
+		end
+
+	map_uri_response_agent (a_uri: READABLE_STRING_8; a_action: like {WSF_URI_RESPONSE_AGENT_HANDLER}.action; rqst_methods: detachable WSF_REQUEST_METHODS)
+			-- Map `a_action' as response handler for `a_uri' for request methods `rqst_methods'.
+		require
+			a_action_attached: a_action /= Void
+		do
+			map_uri_response (a_uri, create {WSF_URI_RESPONSE_AGENT_HANDLER}.make (a_action), rqst_methods)
 		end
 
 note
