@@ -1,6 +1,5 @@
 note
 	description: "Summary description for {GOOGLE_NEWS_DATASOURCE}."
-	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
