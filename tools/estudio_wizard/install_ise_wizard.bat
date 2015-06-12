@@ -12,7 +12,7 @@ move %WIZ_TARGET%\ewf.dsc %WIZ_TARGET%\..\ewf.dsc
 
 rd /q/s tmp
 mkdir tmp
-ecb -config ewf_ise_wizard-safe.ecf -target %TMP_TARGETNAME% -finalize -c_compile -project_path tmp
+ecb -config wizard.ecf -target %TMP_TARGETNAME% -finalize -c_compile -project_path tmp
 rd /q/s %WIZ_TARGET%\spec
 mkdir %WIZ_TARGET%\spec
 mkdir %WIZ_TARGET%\spec\%ISE_PLATFORM%

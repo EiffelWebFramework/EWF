@@ -77,8 +77,6 @@ echo Install EWF wizard
 %COPYCMD% %TMP_DIR%\tools\estudio_wizard	%TMP_TARGET_DIR%\help\wizards\ewf
 rename %TMP_TARGET_DIR%\help\wizards\ewf\install_ise_wizard.bat %TMP_TARGET_DIR%\help\wizards\ewf\install.bat
 rename %TMP_TARGET_DIR%\help\wizards\ewf\install_ise_wizard.sh %TMP_TARGET_DIR%\help\wizards\ewf\install.sh
-rename %TMP_TARGET_DIR%\help\wizards\ewf\ewf_ise_wizard-safe.ecf %TMP_TARGET_DIR%\help\wizards\ewf\wizard.ecf
-rename %TMP_TARGET_DIR%\help\wizards\ewf\ewf_ise_console_wizard-safe.ecf %TMP_TARGET_DIR%\help\wizards\ewf\console_wizard.ecf
 %SAFE_MD% %TMP_TARGET_DIR%\help\wizards\ewf\rootdir\pixmaps
 %SAFE_MD% %TMP_TARGET_DIR%\help\wizards\ewf\rootdir\templates
 
