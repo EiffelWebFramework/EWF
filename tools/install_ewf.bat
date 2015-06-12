@@ -64,7 +64,6 @@ echo Install library: ewf/wsf_html
 echo Install library: ewf/encoder
 %COPYCMD% %TMP_DIR%\library\text\encoder	%TMP_CONTRIB_DIR%\library\web\framework\ewf\text\encoder
 
-
 echo Install library: ewf/obsolete
 %COPYCMD% %TMP_DIR%\library\server\obsolete	%TMP_CONTRIB_DIR%\library\web\framework\ewf\obsolete
 
@@ -73,6 +72,15 @@ echo Install examples
 %SAFE_MD% %TMP_CONTRIB_DIR%\examples\web
 %COPYCMD% %TMP_DIR%\examples	%TMP_CONTRIB_DIR%\examples\web\ewf
 %COPYCMD% %TMP_DIR%\precomp		%TMP_CONTRIB_DIR%\examples\web\ewf_precomp
+
+echo Install EWF wizard
+%COPYCMD% %TMP_DIR%\tools\estudio_wizard	%TMP_TARGET_DIR%\help\wizards\ewf
+rename %TMP_TARGET_DIR%\help\wizards\ewf\install_ise_wizard.bat %TMP_TARGET_DIR%\help\wizards\ewf\install.bat
+rename %TMP_TARGET_DIR%\help\wizards\ewf\install_ise_wizard.sh %TMP_TARGET_DIR%\help\wizards\ewf\install.sh
+rename %TMP_TARGET_DIR%\help\wizards\ewf\ewf_ise_wizard-safe.ecf %TMP_TARGET_DIR%\help\wizards\ewf\wizard.ecf
+rename %TMP_TARGET_DIR%\help\wizards\ewf\ewf_ise_console_wizard-safe.ecf %TMP_TARGET_DIR%\help\wizards\ewf\console_wizard.ecf
+%SAFE_MD% %TMP_TARGET_DIR%\help\wizards\ewf\rootdir\pixmaps
+%SAFE_MD% %TMP_TARGET_DIR%\help\wizards\ewf\rootdir\templates
 
 echo Install library: error
 %COPYCMD% %TMP_DIR%\library\utility\general\error	%TMP_CONTRIB_DIR%\library\utility\general\error
