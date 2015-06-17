@@ -15,9 +15,6 @@ inherit
 		end
 
 	TRANSFER_COMMAND_CONSTANTS
-		undefine
-			is_equal
-		end
 
 	REFACTORING_HELPER
 
