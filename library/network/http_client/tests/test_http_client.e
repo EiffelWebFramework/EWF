@@ -15,7 +15,7 @@ inherit
 
 feature -- Test routines
 
-	test_http_client
+	test_libcurl_http_client
 			-- New test routine
 		local
 			sess: LIBCURL_HTTP_CLIENT_SESSION
@@ -41,6 +41,53 @@ feature -- Test routines
 			else
 				assert ("Not found", False)
 			end
+		end
+		
+	test_socket_http_client
+			-- New test routine
+		local
+			sess: NET_HTTP_CLIENT_SESSION
+			h: STRING_8
+		do
+			create sess.make ("http://www.google.com")
+			if attached sess.get ("/search?q=eiffel", Void) as res then
+				assert ("Get returned without error", not res.error_occurred)
+				create h.make_empty
+				if attached res.headers as hds then
+					across
+						hds as c
+					loop
+						h.append (c.item.name + ": " + c.item.value + "%R%N")
+					end
+				end
+				if attached res.body as l_body then
+					assert ("body not empty", not l_body.is_empty)
+				else
+					assert ("missing body", False)
+				end
+				assert ("same headers", h.same_string (res.raw_header))
+			else
+				assert ("Not found", False)
+			end
+		end
+
+	test_socket_http_client_requestbin
+		local
+			sess: NET_HTTP_CLIENT_SESSION
+			h: STRING_8
+		do
+			--| Add your code here
+			create sess.make("http://requestb.in")
+			create h.make_empty
+			if attached sess.get ("/1a0q2h61", Void).headers as hds then
+				across
+					hds as c
+				loop
+					h.append (c.item.name + ": " + c.item.value + "%R%N")
+				end
+			end
+
+			print (h)
 		end
 
 	test_headers
