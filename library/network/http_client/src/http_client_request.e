@@ -57,6 +57,8 @@ feature -- Access
 			-- Execute the request and return the response.
 			-- note: two consecutive calls will trigger two executions!
 		deferred
+		ensure
+			Result_set: Result /= Void
 		end
 
 feature {HTTP_CLIENT_SESSION} -- Execution
