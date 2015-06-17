@@ -13,7 +13,7 @@ create
 
 feature {NONE} -- Initialization
 
-	make (a_url: like url)
+	make (a_url: READABLE_STRING_8)
 			-- Initialize `Current'.
 		do
 				--| Default values
@@ -115,7 +115,7 @@ feature -- Access
 				loop
 					l_start := pos
 						--| Left justify
-					from until not h[l_start].is_space loop
+					from until not h [l_start].is_space loop
 						l_start := l_start + 1
 					end
 					pos := h.index_of ('%N', l_start)
@@ -129,7 +129,7 @@ feature -- Access
 					end
 					if l_end > 0 then
 							--| Right justify
-						from until not h[l_end].is_space loop
+						from until not h [l_end].is_space loop
 							l_end := l_end - 1
 						end
 						c := h.index_of (':', l_start)
@@ -308,7 +308,7 @@ feature {NONE} -- Implementation
 			-- Internal cached value for the headers			
 
 ;note
-	copyright: "2011-2012, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
+	copyright: "2011-2015, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software
