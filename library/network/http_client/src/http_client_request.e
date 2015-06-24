@@ -17,6 +17,7 @@ feature {NONE} -- Initialization
 	make (a_url: READABLE_STRING_8; a_request_method: like request_method; a_session: like session; ctx: like context)
 			-- Initialize `Current'.
 		do
+			current_redirects := 0
 			request_method := a_request_method
 			session := a_session
 			url := a_url
@@ -35,6 +36,8 @@ feature {NONE} -- Internal
 	session: HTTP_CLIENT_SESSION
 
 	context: detachable HTTP_CLIENT_REQUEST_CONTEXT
+
+	current_redirects: INTEGER_32
 
 feature -- Status report
 
