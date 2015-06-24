@@ -82,9 +82,6 @@ feature -- Access
 				l_request_uri.append (l_query)
 			end
 
-				-- user agent header
-				-- User-Agent: eiffelhttpclient/0.1 .. and so on
-				-- Namen, Version und Kommentar
 			if {PLATFORM}.is_unix then
 				l_platform := "Unix"
 			else
