@@ -24,6 +24,7 @@ create
 feature {NONE} -- Internal	
 
 	session: NET_HTTP_CLIENT_SESSION
+	net_http_client_version: STRING = "0.1"
 
 feature -- Access
 
@@ -41,6 +42,10 @@ feature -- Access
 			l_content_length: INTEGER
 			l_location: detachable READABLE_STRING_8
 			l_port: INTEGER
+			l_authorization: HTTP_AUTHORIZATION
+			l_session: NET_HTTP_CLIENT_SESSION
+			l_platform: STRING
+			l_useragent: STRING
 		do
 			create Result.make (url)
 
@@ -61,14 +66,37 @@ feature -- Access
 				l_host := l_url.host
 			end
 			if attached l_uri.userinfo as l_userinfo then
-					-- TODO: Add support for HTTP Authorization
-					-- See {HTTP_AUTHORIZATION} from http_authorization EWF library.
+				if attached l_uri.username as u_name then
+					if attached l_uri.password as u_pass then
+						create l_authorization.make_basic_auth (u_name, u_pass)
+						if attached l_authorization.http_authorization as auth then
+							headers.extend (auth, "Authorization")
+						end
+					end
+				end
 			end
 
 			create l_request_uri.make_from_string (l_uri.path)
 			if attached l_uri.query as l_query then
 				l_request_uri.append_character ('?')
 				l_request_uri.append (l_query)
+			end
+
+				-- user agent header
+				-- User-Agent: eiffelhttpclient/0.1 .. and so on
+				-- Namen, Version und Kommentar
+			if {PLATFORM}.is_unix then
+				l_platform := "Unix"
+			else
+				if {PLATFORM}.is_mac then
+					l_platform := "Mac"
+				else
+					l_platform := "Windows"
+				end
+			end
+			if l_platform /= Void then
+				l_useragent := "eiffelhttpclient/" + net_http_client_version + " (" + l_platform + ")"
+				headers.extend (l_useragent, "User-Agent")
 			end
 
 				-- Connect			
@@ -87,6 +115,7 @@ feature -- Access
 				s.append (Http_host_header)
 				s.append (": ")
 				s.append (l_host)
+				s.append (http_end_of_header_line)
 				if headers.is_empty then
 					s.append (Http_end_of_command)
 				else
@@ -176,11 +205,15 @@ feature -- Access
 						end
 					end
 				end
+
 				if l_location /= Void then
-						-- TODO: add redirection support.
-						-- See if it could be similar to libcurl implementation
-						-- otherwise, maybe update the class HTTP_CLIENT_RESPONSE.					
+					if current_redirects < max_redirects then
+						current_redirects := current_redirects + 1
+						url := l_location
+						Result := response
+					end
 				end
+				current_redirects := 0
 			else
 				Result.set_error_message ("Could not connect")
 			end
