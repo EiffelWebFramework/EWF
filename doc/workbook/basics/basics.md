@@ -14,67 +14,73 @@ Nav: [Workbook](../workbook.md) | [Handling Requests: Form/Query Parameter](/wor
 <a name="structure"/>
 ## EWF service structure
 
-The following code describes the basic structure of an EWF basic service that handles HTTP requests.
+The following code describes the basic structure of an EWF basic service that handles HTTP requests. We will need to define a Service Launcher and a Request Execution implementation. 
 
 ```eiffel
 class
-	SERVICE_TEMPLATE
+    APPLICACTION
 
 inherit
-	WSF_DEFAULT_SERVICE  -- Todo explain this, and the concept of launchers and connectors ()
+    WSF_DEFAULT_SERVICE [APPLICATION_EXECUTION] 
 
 create
-	make_and_launch
+    make_and_launch
 
-feature -- Basic operations
-
-	execute (req: WSF_REQUEST; res: WSF_RESPONSE)
-		do
-			-- To read incoming HTTP request, we need to use `req'
-
-			-- May require talking to databases or other services.	
- 
-			-- To send a response we need to setup, the status code and
-			-- the response headers and the content we want to send out our client
-		end
 end
 ```
 
-When using the "nino" connector, by default the service listens on port 80, but often this port is already used by other applications, so it is recommended to use another port.
-To define another port, redefine the feature `initialize' and set up a new port number using the service options (see below).
+The class ```APPLICATION``` inherit from 
+```WSF_DEFAULT_SERVICE [G ->WSF_EXECUTION create make end]``` it will be responsible to launch the service an set optional options.
+
+The class ```APPLICATION_EXECUTION``` is an implementation ```WSF_EXECUTION``` interface, which is instantiated for each incoming request.
 
 ```eiffel
 class
-	SERVICE_TEMPLATE
+    APPLICATION_EXECUTION
+
 inherit
-	WSF_DEFAULT_SERVICE
-		redefine
+    WSF_EXECUTION
+
+create
+    make
+
+feature -- Basic operations
+
+   execute (req: WSF_REQUEST; res: WSF_RESPONSE)
+        do
+            -- To read incoming HTTP request, we need to use `req'
+
+            -- May require talking to databases or other services.  
+
+            -- To send a response we need to setup, the status code and
+            -- the response headers and the content we want to send out our client
+        end
+end
+```
+
+When using the "nino" connector or the new "standalone" connector, by default the service listens on port 80, but often this port is already used by other applications, so it is recommended to use another port.
+To define another port, redefine the feature `initialize' and set up a new port number using the service options (see below).
+
+
+```eiffel
+class
+    APPLICATION
+
+inherit
+    WSF_DEFAULT_SERVICE [APPLICATION_EXECUTION] 
+    	redefine
 			initialize
 		end
 
 create
-	make_and_launch
+    make_and_launch
 
 feature {NONE} -- Initialization
 
 	initialize
 			-- Initialize current service.
-			-- on port 9090
 		do
 			set_service_option ("port", 9090)
-		end
-
-feature -- Basic operations
-
-	execute (req: WSF_REQUEST; res: WSF_RESPONSE)
-			-- Execute the incoming request.
-		do
-			-- To read incoming HTTP requires, we need to use `req'
-
-			-- May require talking to databases or other services.	
- 
-			-- To send a response we need to setup, the status code and
-			-- the response headers and the content we want to send out client
 		end
 end
 ```
@@ -82,15 +88,15 @@ end
 The **WSF_REQUEST** gives access to the incoming data; the class provides features to get information such as request method, form data, query parameters, uploaded files, HTTP request headers, and hostname of the client among others. 
 The **WSF_RESPONSE** provides features to define the response with information such as HTTP status codes (10x,20x, 30x, 40x, and 50x), response headers (Content-Type, Content-Length, etc.) and obviously the body of the message itself.
 
-**SERVICE_TEMPLATE** is the root class of our example, it launches the application, using the corresponding connector, Which connector? this depends how you want to run it cgi, fcgi or nino. For development is recommended to use Nino, a standalone web server written in Eiffel, and run the execution within the EiffelStudio debugger. For production fcgi (or cgi) using Apache or another popular web server.
+**APPLICATION** is the root class of our example, it launches the application, using the corresponding connector, Which connector? this depends how you want to run it cgi, fcgi, or standalone. For development is recommended to use a standalone web server written in Eiffel, and run the execution within the EiffelStudio debugger. For production fcgi (or cgi) using Apache or another popular web server.
 
-The **SERVICE_TEMPLATE** class inherits from _WSF_DEFAULT_SERVICE_ class, and this one also inherits from other interfaces. Let’s describe them in a few words.
+The **APPLICATION_EXECUTION** class inherits from _WSF_EXECUTION_ interface,  which is instantiated for each incoming request. Let’s describe them in a few words.
 
-![Service Template Hierarchy](/workbook/SERVICE_TEMPLATE.png "Service Template")
+![Execution Hierarchy](/workbook/APPLICATION_EXECUTION.png "Application ExecUtion ")
 
 **WS_LAUNCHABLE_SERVICE** inherit from **WS_SERVICE** class, which is the low level entry point in EWF, handling each incoming request with a single procedure ```execute (req: WSF_REQUEST; res: WSF_RESPONSE) ...```. And also provides a way to launch our application using different kind of connectors. Below a [BON diagram] (http://www.bon-method.com/index_normal.htm) showing the different kind of connectors.
 
-![Launcher Hierarchy](/app/doc/WSF_SERVICE_LAUNCHER.png "Launcher")
+![Launcher Hierarchy](./basic/Launcher Hierarchy.png "Launcher Hierarchy")
 
 A basic EWF service inherits from **WSF_DEFAULT_SERVICE** (for other options see [?]).
 And then you only need to implement the **execute** feature, get data from the request *req* and write the response in *res*.
