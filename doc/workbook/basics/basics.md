@@ -113,8 +113,6 @@ Im the **APPLICATION_EXECUTION** class class you will need to implement implemen
 
 The WSF_EXECUTION instance, in this case ```APPLICATION_EXECUTION``` is created per request, with two main attributes request: ```WSF_REQUEST``` and response: ```WSF_RESPONSE```.
 
-
-
 <a name="text"/>
 ## A simple Service to Generate Plain Text.
 
@@ -122,45 +120,34 @@ Before to continue, it is recommended to review the getting started guided.
 
 ```eiffel
 class
-	APPLICATION
+	APPLICATION_EXECUTION
 
 inherit
-	WSF_DEFAULT_SERVICE
-		redefine
-			initialize
-		end
+	WSF_EXECUTION
 
 create
-	make_and_launch
-
-feature {NONE} -- Initialization
-
-	initialize
-			-- Initialize current service.
-		do
-			set_service_option ("port", 9090)
-		end
+	make
 
 feature -- Basic operations
 
-	execute (req: WSF_REQUEST; res: WSF_RESPONSE)
+	execute
 			-- Execute the incomming request
 		do
 				-- To send a response we need to setup, the status code and
 				-- the response headers.
-			res.put_header ({HTTP_STATUS_CODE}.ok, <<["Content-Type", "text/plain"], ["Content-Length", "11"]>>)
-			res.put_string ("Hello World")
+			response.put_header ({HTTP_STATUS_CODE}.ok, <<["Content-Type", "text/plain"], ["Content-Length", "11"]>>)
+			response.put_string ("Hello World")
 		end
-
 end
+
 ```
 <a name="source_1"></a>
 ##### Source code
 The source code is available on Github. You can get it by running the command:
 
-```git clone https://github.com/EiffelWebFramework/ewf_examples.git```
+```git clone https://github.com/EiffelWebFramework/ewf.git```
 
-The example of simple service that generate plain text response is located in the directory $PATH/ewf_examples/workbook/basics/simple, where $PATH is where you run ```git clone``` . Just double click on the simple.ecf file and select the simple_nino target or if you prefer the command line, run the command:
+The example of simple service that generate plain text response is located in the directory $PATH/ewd/doc/workbook/basics/simple, where $PATH is where you run ```git clone``` . Just double click on the simple.ecf file and select the simple_nino target or if you prefer the command line, run the command:
 
 ```estudio -config simple.ecf -target simple_nino```
 
@@ -173,36 +160,24 @@ To generate HTML, it's needed
 
 ```eiffel
 class
-	APPLICATION
+	APPLICATION_EXECUTION
 
 inherit
-	WSF_DEFAULT_SERVICE
-		redefine
-			initialize
-		end
+	WSF_EXECUTION
 
 create
-	make_and_launch
-
-feature {NONE} -- Initialization
-
-	initialize
-			-- Initialize current service.
-		do
-			set_service_option ("port", 9090)
-		end
+	make
 
 feature -- Basic operations
 
-	execute (req: WSF_REQUEST; res: WSF_RESPONSE)
+	execute
 			-- Execute the incomming request
 		do
 				-- To send a response we need to setup, the status code and
 				-- the response headers.
-			res.put_header ({HTTP_STATUS_CODE}.ok, <<["Content-Type", "text/html"], ["Content-Length", web_page.count.out]>>)
-			res.put_string (web_page)
+			response.put_header ({HTTP_STATUS_CODE}.ok, <<["Content-Type", "text/html"], ["Content-Length", web_page.count.out]>>)
+			response.put_string (web_page)
 		end
-
 
 	web_page: STRING = "[ 	
 	<!DOCTYPE html>
@@ -221,9 +196,9 @@ end
 ##### Source code
 The source code is available on Github. You can get it by running the command:
 
-```git clone https://github.com/EiffelWebFramework/ewf_examples.git```
+```git clone https://github.com/EiffelWebFramework/ewf.git```
 
-The example of the service that generates HTML is located in the directory $PATH/ewf_examples/workbook/basics/simple_html, where $PATH is where you run ```git clone``` . Just double click on the simple_html.ecf file and select the simple_html_nino target or if you prefer the command line, run the command:
+The example of the service that generates HTML is located in the directory $PATH/ewf/doc/workbook/basics/simple_html, where $PATH is where you run ```git clone``` . Just double click on the simple_html.ecf file and select the simple_html_nino target or if you prefer the command line, run the command:
 
 ```estudio -config simple_html.ecf -target simple_html_nino```
 
