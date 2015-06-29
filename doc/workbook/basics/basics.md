@@ -88,18 +88,32 @@ end
 The **WSF_REQUEST** gives access to the incoming data; the class provides features to get information such as request method, form data, query parameters, uploaded files, HTTP request headers, and hostname of the client among others. 
 The **WSF_RESPONSE** provides features to define the response with information such as HTTP status codes (10x,20x, 30x, 40x, and 50x), response headers (Content-Type, Content-Length, etc.) and obviously the body of the message itself.
 
-**APPLICATION** is the root class of our example, it launches the application, using the corresponding connector, Which connector? this depends how you want to run it cgi, fcgi, or standalone. For development is recommended to use a standalone web server written in Eiffel, and run the execution within the EiffelStudio debugger. For production fcgi (or cgi) using Apache or another popular web server.
-
-The **APPLICATION_EXECUTION** class inherits from _WSF_EXECUTION_ interface,  which is instantiated for each incoming request. Let’s describe them in a few words.
-
-![Execution Hierarchy](/doc/workbook/basics/APPLICATION_EXECUTION.png "Application ExecUtion ")
-
-**WS_LAUNCHABLE_SERVICE** inherit from **WS_SERVICE** class, which is the low level entry point in EWF, handling each incoming request with a single procedure ```execute (req: WSF_REQUEST; res: WSF_RESPONSE) ...```. And also provides a way to launch our application using different kind of connectors. Below a [BON diagram] (http://www.bon-method.com/index_normal.htm) showing the different kind of connectors.
+**APPLICATION** is the root class of our example, it launches the application, using the corresponding connector, Which connector? this depends how you want to run it cgi, fcgi, or nino or standalone. For development is recommended to use a standalone web server written in Eiffel, and run the execution within the EiffelStudio debugger. For producti
+on fcgi (or cgi) using Apache or another popular web server.
 
 ![Launcher Hierarchy](/doc/workbook/basics/Launcher Hierarchy.png "Launcher Hierarchy")
 
-A basic EWF service inherits from **WSF_DEFAULT_SERVICE** (for other options see [?]).
-And then you only need to implement the **execute** feature, get data from the request *req* and write the response in *res*.
+**WS_LAUNCHABLE_SERVICE** inherit from **WS_SERVICE** class, which is a marker interface in EWF. And also provides a way to launch our application using different kind of connectors.  The class **WSF_DEFAULT_SERVICE_I**, inherit from **WS_LAUNCHABLE_SERVICE**  and has a formal generic that should conform to **WSF_SERVICE_LAUNCHER [WSF_EXECUTION]**. Below a [BON diagram] (http://www.bon-method.com/index_normal.htm) showing one of the possible options.
+
+![Nino Launcher](/doc/workbook/basics/WSF_SERVICE_LAUNCHER_NINO.png" Nino Hierarchy")
+Other connectors:
+
+**WSF_STANDALONE_SERVICE_LAUNCHER**
+**WSF_CGI_SERVICE_LAUNCHER**  
+**WSF_NINO_SERVICE_LAUNCHER**  
+**WSF_LIBFCGI_SERVICE_LAUNCHER** 
+
+A basic EWF service inherits from **WSF_DEFAULT_SERVICE**, which has  a formal generic that should conform to **WSF_EXECUTION** class with a `make' creation procedure, in our case the class **APPLICATION_EXECUTION**.
+
+	
+The **APPLICATION_EXECUTION** class inherits from **WSF_EXECUTION** interface,  which is instantiated for each incoming request. **WSF_EXECUTION** inherit from **WGI_EXECUTION** which is the low level entry point in EWF, handling each incoming request with a single procedure ```execute (req: WSF_REQUEST; res: WSF_RESPONSE) ...```.
+Im the **APPLICATION_EXECUTION** class class you will need to implement implement the **execute** feature, get data from the request *req* and write the response in *res*.
+
+![Execution Hierarchy](/doc/workbook/basics/APPLICATION_EXECUTION.png "Application Execution ")
+
+The WSF_EXECUTION instance, in this case ```APPLICATION_EXECUTION``` is created per request, with two main attributes request: ```WSF_REQUEST``` and response: ```WSF_RESPONSE```.
+
+
 
 <a name="text"/>
 ## A simple Service to Generate Plain Text.
