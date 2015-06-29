@@ -95,7 +95,7 @@ on fcgi (or cgi) using Apache or another popular web server.
 
 **WS_LAUNCHABLE_SERVICE** inherit from **WS_SERVICE** class, which is a marker interface in EWF. And also provides a way to launch our application using different kind of connectors.  The class **WSF_DEFAULT_SERVICE_I**, inherit from **WS_LAUNCHABLE_SERVICE**  and has a formal generic that should conform to **WSF_SERVICE_LAUNCHER [WSF_EXECUTION]**. Below a [BON diagram] (http://www.bon-method.com/index_normal.htm) showing one of the possible options.
 
-![Nino Launcher](/doc/workbook/basics/WSF_SERVICE_LAUNCHER_NINO.png" Nino Hierarchy")
+![Standalone Launcher](/doc/workbook/basics/WSF_SERVICE_LAUNCHER_STANDALONE.png "Standalone Hierarchy")
 Other connectors:
 
 **WSF_STANDALONE_SERVICE_LAUNCHER**
