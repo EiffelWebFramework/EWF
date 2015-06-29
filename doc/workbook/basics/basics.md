@@ -1,4 +1,4 @@
-Nav: [Workbook](../workbook.md) | [Handling Requests: Form/Query Parameter](/workbook/handling_request/form.md)
+Nav: [Workbook](../workbook.md) | [Handling Requests: Form/Query Parameter](/doc/workbook/handling_request/form.md)
 
 
 ## EWF basic service
@@ -92,11 +92,11 @@ The **WSF_RESPONSE** provides features to define the response with information s
 
 The **APPLICATION_EXECUTION** class inherits from _WSF_EXECUTION_ interface,  which is instantiated for each incoming request. Let’s describe them in a few words.
 
-![Execution Hierarchy](/doc/workbook/basic/APPLICATION_EXECUTION.png "Application ExecUtion ")
+![Execution Hierarchy](/doc/workbook/basics/APPLICATION_EXECUTION.png "Application ExecUtion ")
 
 **WS_LAUNCHABLE_SERVICE** inherit from **WS_SERVICE** class, which is the low level entry point in EWF, handling each incoming request with a single procedure ```execute (req: WSF_REQUEST; res: WSF_RESPONSE) ...```. And also provides a way to launch our application using different kind of connectors. Below a [BON diagram] (http://www.bon-method.com/index_normal.htm) showing the different kind of connectors.
 
-![Launcher Hierarchy](/doc/workbook/basic/Launcher Hierarchy.png "Launcher Hierarchy")
+![Launcher Hierarchy](/doc/workbook/basics/Launcher Hierarchy.png "Launcher Hierarchy")
 
 A basic EWF service inherits from **WSF_DEFAULT_SERVICE** (for other options see [?]).
 And then you only need to implement the **execute** feature, get data from the request *req* and write the response in *res*.
@@ -213,5 +213,5 @@ The example of the service that generates HTML is located in the directory $PATH
 
 ```estudio -config simple_html.ecf -target simple_html_nino```
 
-Nav: [Workbook](../workbook.md) |  [Handling Requests: Form/Query Parameter](/workbook/handling_request/form.md)
+Nav: [Workbook](../workbook.md) |  [Handling Requests: Form/Query Parameter](/doc/workbook/handling_request/form.md)
 
