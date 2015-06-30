@@ -1,5 +1,5 @@
 
-Nav: [Workbook](../workbook.md) | [Handling Requests: Header Fields](/workbook/handling_request/headers.md) | [Handling Cookies](/workbook/handling_cookies/handling_cookies.md) 
+Nav: [Workbook](../workbook.md) | [Handling Requests: Header Fields](/doc/workbook/handling_request/headers.md) | [Handling Cookies](/doc/workbook/handling_cookies/handling_cookies.md) 
 
 
 ## EWF Generating Response
@@ -164,24 +164,13 @@ Note: use ```res.set_status_code({HTTP_STATUS_CODE}.bad_request)``` rather than 
 Basic Service that builds a simple web page to show the most common status codes
 ```eiffel
 class
-	APPLICATION
+	APPLICATION_EXECUTION
 
 inherit
-	WSF_DEFAULT_SERVICE
-		redefine
-			initialize
-		end
+	WSF_EXECUTION
 
 create
-	make_and_launch
-
-feature {NONE} -- Initialization
-
-	initialize
-			-- Initialize current service.
-		do
-			set_service_option ("port", 9090)
-		end
+	make
 
 feature -- Basic operations
 
@@ -321,24 +310,13 @@ note
 	revision    : "$Revision$"
 
 class
-	APPLICATION
+	APPLICATION_EXECUTION
 
 inherit
-	WSF_DEFAULT_SERVICE
-		redefine
-			initialize
-		end
+	WSF_EXECUTION
 
 create
-	make_and_launch
-
-feature {NONE} -- Initialization
-
-	initialize
-			-- Initialize current service.
-		do
-			set_service_option ("port", 9090)
-		end
+	make
 
 feature -- Basic operations
 
@@ -1018,4 +996,4 @@ There are four categories for response header fields:
 
 
 
-| [Handling Requests: Header Fields](/workbook/handling_request/headers.md) | [Handling Cookies](/workbook/handling_cookies/handling_cookies.md)
+Nav: [Workbook](../workbook.md) | [Handling Requests: Header Fields](/doc/workbook/handling_request/headers.md) | [Handling Cookies](/doc/workbook/handling_cookies/handling_cookies.md)

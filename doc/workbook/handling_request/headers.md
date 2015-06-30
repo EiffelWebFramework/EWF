@@ -170,7 +170,7 @@ included in the Referer header when the browser requests Web page B.
 <a name="example"></a>
 #### Building a Table of All Request Headers
 
-The following [EWF service](/doc/workbook/headers/header_fields/application.e) code simply uses an ```html_template``` to fill a table (names and values) with all the headers fields it receives.
+The following [EWF service](/doc/workbook/handling_request/headers/header_fields/application.e) code simply uses an ```html_template``` to fill a table (names and values) with all the headers fields it receives.
 
 The service accomplishes this task by calling ```req.meta_variables``` feature to get an ```ITERABLE [WSF_STRING]```, an structure that can be iterated over using ```across...loop...end```, then it checks if the name has the prefix ```HTTP_``` and if it is true, put the header name and value in a row. (the name in the left cell, the value in the right cell).
 
@@ -284,7 +284,7 @@ To be completed.
 
 #### Detecting Browser Types
 
-The User-Agent header identifies the specific browser/client that is sending the request. The following code shows a [EWF service](/doc/workbook/headers/browser_name/application.e) that sends browser-specific responses.
+The User-Agent header identifies the specific browser/client that is sending the request. The following code shows a [EWF service](/doc/workbook/handling_request/headers/browser_name/application.e) that sends browser-specific responses.
 
 The examples uses the ideas based on the [Browser detection using the user agent](https://developer.mozilla.org/en-US/docs/Browser_detection_using_the_user_agent) article.
 Basically the code check if the header user_agent exist and then call the ```browser_name (a_user_agent: READABLE_STRING_8): READABLE_STRING_32```
@@ -429,7 +429,7 @@ As an exercise, try to write a similar service to retrieve the OS family using t
 	* [SERVER_SOFTWARE](https://tools.ietf.org/html/rfc3875#section-4.1.16)
 
 **Example**
-An [EWF service](/doc/workbook/headers/cgi_variables/application.e) that shows the CGI variables, creates a table showing the values of all the CGI variables.
+An [EWF service](/doc/workbook/handling_request/headers/cgi_variables/application.e) that shows the CGI variables, creates a table showing the values of all the CGI variables.
 
 
 Nav: [Workbook](../workbook.md) | [Handling Requests: Form/Query parameters] (/doc/workbook/handling_request/form.md) | [Generating Responses](/doc/workbook/generating_response/generating_response.md)
