@@ -1,4 +1,4 @@
-Nav: [Workbook](../workbook.md) | [Handling Requests: Form/Query parameters] (/workbook/handling_request/form.md) | [Generating Responses](/workbook/generating_response/generating_response.md)
+Nav: [Workbook](../workbook.md) | [Handling Requests: Form/Query parameters] (/doc/workbook/handling_request/form.md) | [Generating Responses](/doc/workbook/generating_response/generating_response.md)
 
 
 #Handling Requests: Headers
@@ -165,35 +165,26 @@ included in the Referer header when the browser requests Web page B.
  * [User-Agent](https://httpwg.github.io/specs/rfc7231.html#header.user-agent)
  	- The "User-Agent" header field contains information about the user agent of the request, which is often used by servers to help identify the scope of reported interoperability problems, to work around or tailor responses to avoid particular user agent limitations, and for analytics regarding browser or operating system use or device.
 
+**Note**: the example shows the **WSF_EXECUTION** implementation, that will be used by the service launcher.
+
 <a name="example"></a>
 #### Building a Table of All Request Headers
 
-The following [EWF service](./headers/header_fields/application.e) code simply uses an ```html_template``` to fill a table (names and values) with all the headers fields it receives.
+The following [EWF service](/doc/workbook/headers/header_fields/application.e) code simply uses an ```html_template``` to fill a table (names and values) with all the headers fields it receives.
+
 The service accomplishes this task by calling ```req.meta_variables``` feature to get an ```ITERABLE [WSF_STRING]```, an structure that can be iterated over using ```across...loop...end```, then it checks if the name has the prefix ```HTTP_``` and if it is true, put the header name and value in a row. (the name in the left cell, the value in the right cell).
 
 The service also writes three components of the main request line (method, URI, and protocol), and also the raw header. 
 
 ```eiffel
 class
-	APPLICATION
+	APPLICATION_EXECUTION
 
 inherit
-	WSF_DEFAULT_SERVICE
-		redefine
-			initialize
-		end
+	WSF_EXECUTION
 
 create
-	make_and_launch
-
-feature {NONE} -- Initialization
-
-	initialize
-			-- Initialize current service.
-		do
-			set_service_option ("port", 9090)
-			set_service_option ("verbose", true)
-		end
+	make
 
 feature -- Basic operations
 
@@ -293,32 +284,21 @@ To be completed.
 
 #### Detecting Browser Types
 
-The User-Agent header identifies the specific browser/client that is sending the request. The following code shows a [EWF service](./headers/browser_name/application.e) that sends browser-specific responses.
+The User-Agent header identifies the specific browser/client that is sending the request. The following code shows a [EWF service](/doc/workbook/headers/browser_name/application.e) that sends browser-specific responses.
+
 The examples uses the ideas based on the [Browser detection using the user agent](https://developer.mozilla.org/en-US/docs/Browser_detection_using_the_user_agent) article.
 Basically the code check if the header user_agent exist and then call the ```browser_name (a_user_agent: READABLE_STRING_8): READABLE_STRING_32```
 feature to retrieve the current browser name or Unknown in other case. 
 
 ```eiffel
 class
-	APPLICATION
+	APPLICATION_EXECUTION
 
 inherit
-	WSF_DEFAULT_SERVICE
-		redefine
-			initialize
-		end
+	WSF_EXECUTION
 
 create
-	make_and_launch
-
-feature {NONE} -- Initialization
-
-	initialize
-			-- Initialize current service.
-		do
-			set_service_option ("port", 9090)
-			set_service_option ("verbose", true)
-		end
+	make
 
 feature -- Basic operations
 
@@ -329,8 +309,8 @@ feature -- Basic operations
 			l_page_response: STRING
 			l_rows: STRING
 		do
-			create l_page_response.make_from_string (html_template)
-			if  req.path_info.same_string ("/") then
+			create l_page_response.make_from_string (html_template)	
+		if  req.path_info.same_string ("/") then
 
 					-- retrieve the user-agent
 				if attached req.http_user_agent as l_user_agent then
@@ -404,7 +384,7 @@ end
 ```
 Let see some results, we will show the html returned
 
-Internet Explorer
+**Internet Explorer**
 ---
 ```
 <h1>EWF service example: Showing Browser Dectection Using User-Agent</h1></br>
@@ -414,7 +394,7 @@ Internet Explorer
 <h2> Enjoy using Internet Explorer </h2>
 ```
 
-Chrome
+**Chrome**
 ---
 ```
 <h1>EWF service example: Showing Browser Dectection Using User-Agent</h1></br>
@@ -448,10 +428,11 @@ As an exercise, try to write a similar service to retrieve the OS family using t
 	* [SERVER_PROTOCOL](https://tools.ietf.org/html/rfc3875#section-4.1.15)
 	* [SERVER_SOFTWARE](https://tools.ietf.org/html/rfc3875#section-4.1.16)
 
-An [EWF service](./headers/cgi_variables/application.e) that shows the CGI variables, creates a table showing the values of all the CGI variables.
+**Example**
+An [EWF service](/doc/workbook/headers/cgi_variables/application.e) that shows the CGI variables, creates a table showing the values of all the CGI variables.
 
 
-Nav: [Workbook](../workbook.md) | [Handling Requests: Form/Query parameters] (/workbook/handling_request/form.md) | [Generating Responses](/workbook/generating_response/generating_response.md)
+Nav: [Workbook](../workbook.md) | [Handling Requests: Form/Query parameters] (/doc/workbook/handling_request/form.md) | [Generating Responses](/doc/workbook/generating_response/generating_response.md)
 
 
 
