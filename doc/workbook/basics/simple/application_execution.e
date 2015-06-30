@@ -22,5 +22,4 @@ feature -- Basic operations
 			response.put_header ({HTTP_STATUS_CODE}.ok, <<["Content-Type", "text/plain"], ["Content-Length", "11"]>>)
 			response.put_string ("Hello World")
 		end
-
 end

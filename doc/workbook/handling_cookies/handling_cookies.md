@@ -1,4 +1,4 @@
-Nav: [Workbook](../workbook.md) | [Generating Responses](/workbook/generating_response/generating_response.md)
+Nav: [Workbook](../workbook.md) | [Generating Responses](/doc/workbook/generating_response/generating_response.md)
 
 # Handling Cookies
 
@@ -146,25 +146,13 @@ note
 	revision    : "$Revision$"
 
 class
-	APPLICATION
+	APPLICATION_EXECUTION
 
 inherit
-	WSF_DEFAULT_SERVICE
-		redefine
-			initialize
-		end
+	WSF_EXECUTION
 
 create
-	make_and_launch
-
-feature {NONE} -- Initialization
-
-	initialize
-			-- Initialize current service.
-		do
-			set_service_option ("port", 9090)
-			set_service_option ("verbose",True)
-		end
+	make
 
 feature -- Basic operations
 
@@ -297,4 +285,4 @@ end
 ```
 
 
-Nav: [Workbook](../workbook.md) | [Generating Responses](/workbook/generating_response/generating_response.md)
+Nav: [Workbook](../workbook.md) | [Generating Responses](/doc/workbook/generating_response/generating_response.md)

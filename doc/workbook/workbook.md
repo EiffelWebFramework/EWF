@@ -19,20 +19,20 @@ Before reading (or walking throught) the workbook, to get a quick overview of EW
 
 <a name="introduction"></a>
 ## Introduction
-[Basic Concepts] (/workbook/basics/basics.md).
+[Basic Concepts] (/doc/workbook/basics/basics.md).
 
 <a name="form_query_parameters"></a>
 ## Handling Requests: Form/Query Parameter
-[Handling Requests: Form/Query Parameter] (/workbook/handling_request/form.md).
+[Handling Requests: Form/Query Parameter] (/doc/workbook/handling_request/form.md).
 
 <a name="header_fields"></a>
 ## Handling Requests: Header Fields
-[Handling Requests: Header Fields](/workbook/handling_request/headers.md).
+[Handling Requests: Header Fields](/doc/workbook/handling_request/headers.md).
 
 <a name="header_fields"></a>
 ## Generating Response
-[Generating Responses](/workbook/generating_response/generating_response.md)
+[Generating Responses](/doc/workbook/generating_response/generating_response.md)
 
 ## Handling Cookies
-[Handling Cookies](/workbook/handling_cookies/handling_cookies.md) 
+[Handling Cookies](/doc/workbook/handling_cookies/handling_cookies.md) 
 
