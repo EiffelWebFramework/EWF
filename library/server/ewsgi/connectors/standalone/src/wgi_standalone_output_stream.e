@@ -100,7 +100,7 @@ feature -- Status report
 			-- <Precursor>
 			-- for instance IO failure due to socket disconnection.
 		do
-			Result := not last_target_call_succeed
+			Result := last_target_call_succeed
 		end
 
 	is_open_write: BOOLEAN
