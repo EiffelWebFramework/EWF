@@ -1,41 +1,45 @@
 note
-	description : "[
-			NOTIFICATION_MAILER using sendmail as mailtool
-			]"
-	author: "$Author: jfiat $"
+	description: "Summary description for {NOTIFICATION_STORAGE_MAILER}."
+	author: ""
 	date: "$Date: 2015-06-30 15:49:56 +0200 (mar., 30 juin 2015) $"
 	revision: "$Revision: 97588 $"
 
 class
-	NOTIFICATION_SENDMAIL_MAILER
+	NOTIFICATION_STORAGE_MAILER
 
 inherit
-	NOTIFICATION_EXTERNAL_MAILER
-		redefine
-			default_create
-		end
+	NOTIFICATION_MAILER
 
 create
-	default_create,
-	make_with_location
+	make
 
 feature {NONE} -- Initialization
 
-	make_with_location (a_path: READABLE_STRING_GENERAL)
+	make (a_storage: NOTIFICATION_EMAIL_STORAGE)
 		do
-			make (a_path, <<"-t">>)
-			set_stdin_mode (True, "%N.%N%N")
+			storage := a_storage
 		end
 
-	default_create
+	storage: NOTIFICATION_EMAIL_STORAGE
+
+feature -- Status report
+
+	is_available: BOOLEAN
+			-- <Precursor>	
 		do
-			Precursor
-			make_with_location ("/usr/sbin/sendmail")
-			if not is_available then
-				make_with_location ("/usr/bin/sendmail")
+			Result := storage.is_available
+		end
+
+feature -- Basic operation		
+
+	process_email (a_email: NOTIFICATION_EMAIL)
+			-- <Precursor>
+		do
+			storage.put (a_email)
+			if storage.has_error then
+				report_error ("Issue storing email.")
 			end
 		end
-
 
 note
 	copyright: "2011-2015, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
