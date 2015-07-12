@@ -136,9 +136,10 @@ feature {NONE} -- Implementation
 			create {NET_HTTP_CLIENT_REQUEST} req.make (base_url + a_path, a_method, Current, ctx)
 			Result := req.response
 
-			if f /= Void then
-				f.delete
-			end
+			-- FIXME file should be deleted, but uncommenting the following leads to a PERMISSION DENIED exception..
+			--if f /= Void then
+			--	f.delete
+			--end
 			if l_data /= Void and a_ctx /= Void then
 				a_ctx.set_upload_filename (Void)
 				a_ctx.set_upload_data (l_data)

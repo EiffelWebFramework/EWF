@@ -46,7 +46,13 @@ feature -- Access
 			l_session: NET_HTTP_CLIENT_SESSION
 			l_platform: STRING
 			l_useragent: STRING
+			l_upload_data: detachable READABLE_STRING_8
+			ctx: like context
+			l_has_content: BOOLEAN
+			l_upload_file: detachable RAW_FILE
+			l_upload_filename: detachable READABLE_STRING_GENERAL
 		do
+			ctx := context
 			create Result.make (url)
 
 				-- Get URL data
@@ -59,12 +65,15 @@ feature -- Access
 					l_port := 80
 				end
 			end
+
 			if attached l_uri.host as h then
 				l_host := h
 			else
 				create l_url.make (url)
 				l_host := l_url.host
 			end
+
+			-- add headers for authorization
 			if attached l_uri.userinfo as l_userinfo then
 				if attached l_uri.username as u_name then
 					if attached l_uri.password as u_pass then
@@ -82,6 +91,7 @@ feature -- Access
 				l_request_uri.append (l_query)
 			end
 
+			-- add headers for user agent
 			if {PLATFORM}.is_unix then
 				l_platform := "Unix"
 			else
@@ -96,7 +106,57 @@ feature -- Access
 				headers.extend (l_useragent, "User-Agent")
 			end
 
-				-- Connect			
+			-- handle sending data
+			if attached ctx then
+				if ctx.has_upload_filename then
+					l_upload_filename := ctx.upload_filename
+				end
+
+				if ctx.has_upload_data then
+					l_upload_data := ctx.upload_data
+				end
+
+				-- handle post requests
+				if request_method.is_case_insensitive_equal ("POST") then
+					if ctx /= Void then
+						if ctx.has_upload_data then
+							l_upload_data := ctx.upload_data
+							if l_upload_data /= Void then
+								headers.extend ("application/x-www-form-urlencoded", "Content-Type")
+								headers.extend (l_upload_data.count.out, "Content-Length")
+							end
+						elseif ctx.has_upload_filename then
+							if l_upload_filename /= Void then
+								create l_upload_file.make_with_name (l_upload_filename)
+								if l_upload_file.exists and then l_upload_file.is_readable then
+									headers.extend (l_upload_file.count.out, "Content-Length")
+									l_upload_file.open_read
+								end
+							end
+						end
+					end
+				end
+
+				-- handle put requests
+				if request_method.is_case_insensitive_equal ("PUT") then
+					if ctx /= Void then
+						if ctx.has_upload_filename then
+							if l_upload_filename /= Void then
+								create l_upload_file.make_with_name (l_upload_filename)
+								if l_upload_file.exists and then l_upload_file.is_readable then
+									headers.extend (l_upload_file.count.out, "Content-Length")
+									l_upload_file.open_read
+								end
+							end
+
+						end
+					end
+
+
+				end
+			end
+
+			-- Connect			
 			create socket.make_client_by_port (l_port, l_host)
 			socket.set_timeout (timeout)
 			socket.set_connect_timeout (connect_timeout)
@@ -113,6 +173,9 @@ feature -- Access
 				s.append (": ")
 				s.append (l_host)
 				s.append (http_end_of_header_line)
+				if attached session.cookie as cookie then
+					s.append ("Cookie: " + cookie + http_end_of_header_line)
+				end
 				if headers.is_empty then
 					s.append (Http_end_of_command)
 				else
@@ -127,9 +190,25 @@ feature -- Access
 					s.append (Http_end_of_header_line)
 				end
 
+				if l_upload_data /= Void then
+					s.append (l_upload_data)
+					s.append (http_end_of_header_line)
+				end
+				if attached l_upload_file then
+					if not l_upload_file.after then
+						from
+						until
+							l_upload_file.after
+						loop
+							l_upload_file.read_line
+							s.append (l_upload_file.last_string)
+						end
+					end
+				end
+
 				socket.put_string (s)
 
-					-- Get header message
+				-- Get header message
 				from
 					l_content_length := -1
 					create l_message.make_empty
@@ -162,6 +241,12 @@ feature -- Access
 						s.left_adjust -- Remove startung spaces
 						s.right_adjust -- Remove trailing %R
 						l_location := s
+					elseif s.starts_with_general ("Set-Cookie:") then
+						i := s.index_of (':', 1)
+						s.remove_head (i)
+						s.left_adjust
+						s.right_adjust
+						session.set_cookie (s)
 					end
 						-- Next iteration
 					socket.read_line
@@ -180,6 +265,7 @@ feature -- Access
 					end
 					l_message.append (socket.last_string)
 				end
+
 				Result.set_response_message (l_message, context)
 					-- Get status code.
 				if attached Result.status_line as l_status_line then
@@ -203,6 +289,7 @@ feature -- Access
 					end
 				end
 
+				-- follow redirect
 				if l_location /= Void then
 					if current_redirects < max_redirects then
 						current_redirects := current_redirects + 1
@@ -210,6 +297,7 @@ feature -- Access
 						Result := response
 					end
 				end
+
 				current_redirects := 0
 			else
 				Result.set_error_message ("Could not connect")
