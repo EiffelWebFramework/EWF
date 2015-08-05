@@ -8,7 +8,7 @@
 		</file_rule>
 		<option full_class_checking="false" void_safety="all">
 		</option>
-		<setting name="concurrency" value="scoop"/>
+		<setting name="concurrency" value="thread"/>
 		<library name="base" location="$ISE_LIBRARY\library\base\base-safe.ecf"/>
 		<library name="connector_standalone" location="..\..\library\server\ewsgi\connectors\standalone\standalone-safe.ecf" readonly="false">
 			<option debug="true">

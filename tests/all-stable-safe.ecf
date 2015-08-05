@@ -40,7 +40,8 @@
 		<library name="restbucks" location="..\examples\restbucksCRUD\restbucks-safe.ecf" readonly="false"/>
 		<library name="upload_image" location="..\examples\upload_image\upload_image-safe.ecf" readonly="false"/>
 		<library name="uri_template" location="..\library\text\parser\uri_template\uri_template-safe.ecf" readonly="false"/>
-		<library name="wizard" location="..\tools\estudio_wizard\ewf_ise_wizard-safe.ecf" readonly="false"/>
+		<library name="wizard" location="..\tools\estudio_wizard\wizard.ecf" readonly="false"/>
+		<library name="console_wizard" location="..\tools\estudio_wizard\console_wizard.ecf" readonly="false"/>
 		<library name="wsf" location="..\library\server\wsf\wsf-safe.ecf" readonly="false"/>
 		<library name="wsf_all" location="..\library\server\wsf\connector\all-safe.ecf" readonly="false"/>
 		<library name="wsf_cgi" location="..\library\server\wsf\connector\cgi-safe.ecf" readonly="false"/>

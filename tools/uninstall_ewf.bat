@@ -48,6 +48,9 @@ echo Uninstall ewf examples
 %RDCMD% %TMP_CONTRIB_DIR%\examples\web\ewf
 %RDCMD% %TMP_CONTRIB_DIR%\examples\ewb\ewf_precomp
 
+echo Uninstall ewf wizard
+%RDCMD% %TMP_TARGET_DIR%\help\wizards\ewf
+
 echo Uninstall library: error
 %RDCMD% %TMP_CONTRIB_DIR%\library\utility\general\error
 echo Uninstall library: http_client

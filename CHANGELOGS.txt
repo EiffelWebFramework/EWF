@@ -1,38 +1,7 @@
 History for Eiffel-Web-Framework
+[2015-06-10]
+	* Updated EWF design to better support concurrency, including SCOOP via
+	the new standalone connector.
 
-[2011-09-23] Jocelyn
-	* library "ewsgi": 
-		- NEW simple autotest cases using Nino web server
-		-fixed issue with RAW_POST_DATA being added in form_data_parameters 
-			instead of meta_variables ...
-		- Implemented WGI_VALUE for parameter's type (query_parameter,
-			form_data_parameter, item ...)
-	* Nino connector: added feature to shutdown the server from the WGI	application
-	* NEW library "http_client": a new library to perform simple http requests
-		such as get, head, post, put, ... (currently implemented with Eiffel cURL)
-	* NEW library "http_authorization": added simple library to support
-		HTTP_AUTHORIZATION. For now only "Basic" auth type is supported ..
 
-[2011-09-22] Javier
-	* NEW Example: added partial Restbuck example
-
-[2011-09-21] Jocelyn
-	* Nino connector: fixed an issue with missing value for Content-Type and Content-Length 
-
-[2011-09-13] Jocelyn
-	* library "router": now using a generic design to allow customization of
-	request handler context class.
-	* NEW library "server/request/rest": first attempt to provide a library to
-	help building RESTful application (the interfaces are likely to change
-	soon) EXPERIMENTAL
-
-[2011-09-09] Jocelyn
-	* library "uri-template": better support for {/vars} and {?vars}
-
-[2011-09-07] Jocelyn
-	* library "router": now routing depends on uri (or uri template) and request methods
-	* Nino connector: Fixed issue where HTTP_ prefix were missing for header meta variable.
-
-[2011-09-07] Jocelyn
-	* changelog: starting to write down changelogs file
-
+[Previous  ] Many significant changes in v0
