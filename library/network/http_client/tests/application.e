@@ -121,7 +121,7 @@ feature {NONE} -- Initialization
 			when 7 then
 				-- GET REQUEST WITH AUTHENTICATION, see http://browserspy.dk/password.php
 				-- check header WWW-Authendicate is received (authentication successful)
-				create sess.make("http://test:test1@browserspy.dk")
+				create sess.make("http://test:test@browserspy.dk")
 				if attached sess.get ("/password-ok.php", Void).headers as hds then
 					across
 						hds as c
