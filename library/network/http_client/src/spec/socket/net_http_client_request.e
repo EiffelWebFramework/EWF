@@ -47,13 +47,20 @@ feature -- Access
 			l_platform: STRING
 			l_useragent: STRING
 			l_upload_data: detachable READABLE_STRING_8
+			l_form_data: detachable HASH_TABLE [READABLE_STRING_32, READABLE_STRING_32]
 			ctx: like context
-			l_has_content: BOOLEAN
 			l_upload_file: detachable RAW_FILE
 			l_upload_filename: detachable READABLE_STRING_GENERAL
+			l_form_string: STRING
+			l_mime_type_mapping: HTTP_FILE_EXTENSION_MIME_MAPPING
+			l_mime_type: STRING
+			l_fn_extension: READABLE_STRING_GENERAL
+			l_i: INTEGER
 		do
 			ctx := context
 			create Result.make (url)
+
+			create l_form_string.make_empty
 
 				-- Get URL data
 			create l_uri.make_from_string (url)
@@ -81,6 +88,7 @@ feature -- Access
 						if attached l_authorization.http_authorization as auth then
 							headers.extend (auth, "Authorization")
 						end
+						check headers.has_key ("Authorization") end
 					end
 				end
 			end
@@ -106,6 +114,7 @@ feature -- Access
 				headers.extend (l_useragent, "User-Agent")
 			end
 
+
 			-- handle sending data
 			if attached ctx then
 				if ctx.has_upload_filename then
@@ -116,44 +125,110 @@ feature -- Access
 					l_upload_data := ctx.upload_data
 				end
 
-				-- handle post requests
-				if request_method.is_case_insensitive_equal ("POST") then
-					if ctx /= Void then
-						if ctx.has_upload_data then
-							l_upload_data := ctx.upload_data
-							if l_upload_data /= Void then
-								headers.extend ("application/x-www-form-urlencoded", "Content-Type")
-								headers.extend (l_upload_data.count.out, "Content-Length")
+				if ctx.has_form_data then
+					l_form_data := ctx.form_parameters
+					check non_empty_form_data: not l_form_data.is_empty end
+					if l_upload_data = Void and l_upload_filename = Void then
+						-- Send as form-urlencoded
+						headers.extend ("application/x-www-form-urlencoded", "Content-Type")
+						l_upload_data := ctx.form_parameters_to_url_encoded_string
+						headers.extend (l_upload_data.count.out, "Content-Length")
+
+					else
+						-- create form
+						headers.extend ("multipart/form-data; boundary=----------------------------5eadfcf3bb3e", "Content-Type")
+						if attached l_form_data then
+							headers.extend ("*/*", "Accept")
+							from
+								l_form_data.start
+							until
+								l_form_data.after
+							loop
+								l_form_string.append ("------------------------------5eadfcf3bb3e")
+								l_form_string.append (http_end_of_header_line)
+								l_form_string.append ("Content-Disposition: form-data; name=")
+								l_form_string.append ("%"" + l_form_data.key_for_iteration + "%"")
+								l_form_string.append (http_end_of_header_line)
+								l_form_string.append (http_end_of_header_line)
+								l_form_string.append (l_form_data.item_for_iteration)
+								l_form_string.append (http_end_of_header_line)
+								l_form_data.forth
 							end
-						elseif ctx.has_upload_filename then
-							if l_upload_filename /= Void then
+
+							if  l_upload_filename /= Void then
+								-- get file extension, otherwise set default
+								l_mime_type := "application/octet-stream"
+								create l_mime_type_mapping.make_default
+								l_fn_extension := l_upload_filename.tail (l_upload_filename.count - l_upload_filename.last_index_of ('.', l_upload_filename.count))
+								if attached l_mime_type_mapping.mime_type (l_fn_extension) as mime then
+									l_mime_type := mime
+								end
+
+								l_form_string.append ("------------------------------5eadfcf3bb3e")
+								l_form_string.append (http_end_of_header_line)
+								l_form_string.append ("Content-Disposition: form-data; name=%"" + l_upload_filename.as_string_32 + "%"")
+							    l_form_string.append ("; filename=%"" + l_upload_filename + "%"")
+								l_form_string.append (http_end_of_header_line)
+								l_form_string.append ("Content-Type: ")
+								l_form_string.append (l_mime_type)
+								l_form_string.append (http_end_of_header_line)
+								l_form_string.append (http_end_of_header_line)
+
 								create l_upload_file.make_with_name (l_upload_filename)
 								if l_upload_file.exists and then l_upload_file.is_readable then
-									headers.extend (l_upload_file.count.out, "Content-Length")
 									l_upload_file.open_read
+									l_upload_file.read_stream (l_upload_file.count)
+									l_form_string.append (l_upload_file.last_string)
+									end
+								l_form_string.append (http_end_of_header_line)
+							end
+							l_form_string.append ("------------------------------5eadfcf3bb3e--")
+
+							l_upload_data := l_form_string
+							headers.extend (l_upload_data.count.out, "Content-Length")
+						end
+					end
+				else
+					if request_method.is_case_insensitive_equal ("POST") then
+						if ctx /= Void then
+							if ctx.has_upload_data then
+								l_upload_data := ctx.upload_data
+								if l_upload_data /= Void then
+									headers.extend ("application/x-www-form-urlencoded", "Content-Type")
+									headers.extend (l_upload_data.count.out, "Content-Length")
+								end
+							elseif ctx.has_upload_filename then
+								if l_upload_filename /= Void then
+									create l_upload_file.make_with_name (l_upload_filename)
+									if l_upload_file.exists and then l_upload_file.is_readable then
+										headers.extend (l_upload_file.count.out, "Content-Length")
+										l_upload_file.open_read
+									end
+									check l_upload_file /= Void end
 								end
 							end
 						end
 					end
 				end
+			end
 
-				-- handle put requests
-				if request_method.is_case_insensitive_equal ("PUT") then
-					if ctx /= Void then
-						if ctx.has_upload_filename then
-							if l_upload_filename /= Void then
-								create l_upload_file.make_with_name (l_upload_filename)
-								if l_upload_file.exists and then l_upload_file.is_readable then
-									headers.extend (l_upload_file.count.out, "Content-Length")
-									l_upload_file.open_read
-								end
+			-- handle put requests
+			if request_method.is_case_insensitive_equal ("PUT") then
+				if ctx /= Void then
+					if ctx.has_upload_filename then
+						if l_upload_filename /= Void then
+							create l_upload_file.make_with_name (l_upload_filename)
+							if l_upload_file.exists and then l_upload_file.is_readable then
+								headers.extend (l_upload_file.count.out, "Content-Length")
+								l_upload_file.open_read
 							end
-
+							check l_upload_filename /= Void end
 						end
+
 					end
-
-
 				end
+
+
 			end
 
 			-- Connect			

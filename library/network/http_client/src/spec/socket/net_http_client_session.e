@@ -140,6 +140,7 @@ feature {NONE} -- Implementation
 			--if f /= Void then
 			--	f.delete
 			--end
+
 			if l_data /= Void and a_ctx /= Void then
 				a_ctx.set_upload_filename (Void)
 				a_ctx.set_upload_data (l_data)
