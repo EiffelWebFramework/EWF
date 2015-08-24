@@ -37,13 +37,13 @@ feature {NONE} -- Initialization
 		local
 			www: WSF_FILE_SYSTEM_HANDLER
 		do
-			map_uri_template_agent_with_request_methods ("/upload/{name}{?nb}", agent execute_upload_put, router.methods_put)
-			map_uri_template_agent ("/upload{?nb}", agent execute_upload)
+			map_uri_template_agent ("/upload/{name}{?nb}", agent execute_upload_put, router.methods_put)
+			map_uri_template_agent ("/upload{?nb}", agent execute_upload, Void)
 
 			create www.make_with_path (document_root)
 			www.set_directory_index (<<"index.html">>)
 			www.set_not_found_handler (agent execute_not_found)
-			router.handle_with_request_methods ("", www, router.methods_GET)
+			router.handle ("", www, router.methods_GET)
 		end
 
 feature -- Configuration		

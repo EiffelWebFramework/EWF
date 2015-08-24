@@ -1,4 +1,4 @@
-Nav: [Workbook](../workbook.md) | [Basic Concepts] (/workbook/basics/basics.md) | [Handling Requests: Header Fields](/workbook/handling_request/headers.md) 
+Nav: [Workbook](../workbook.md) | [Basic Concepts] (/doc/workbook/basics/basics.md) | [Handling Requests: Header Fields](/doc/workbook/handling_request/headers.md) 
 
 
 #Handling Requests: Form/Query Data
@@ -285,25 +285,23 @@ and a simple message.
 ```
 The source code is available on Github. You can get it by running the command:
 
-```git clone https://github.com/EiffelWebFramework/ewf_examples.git```
+```git clone https://github.com/EiffelWebFramework/ewf.git```
 
-The example is located in the directory $PATH/ewf_examples/workbook/upload_file where $PATH is where you run git clone.
+The example is located in the directory $PATH/ewf/doc/workbook/upload_file where $PATH is where you run git clone.
 
 
 <a name=examples>
 ## Examples
 The source code is available on Github. You can get it by running the command:
 
-```git clone https://github.com/EiffelWebFramework/ewf_examples.git```
+```git clone https://github.com/EiffelWebFramework/ewf.git```
 
-The GET example is located in the directory $PATH/ewf_examples/workbook/form/get, and the post example is located in the directory $PATH/ewf_examples/workbook/form/post where $PATH is where you run git clone . To run open it using Eiffel Studio or just run theg following command
+The GET example is located in the directory $PATH/ewf/doc/workbook/form/get, and the post example is located in the directory $PATH/ewf_examples/workbook/form/post where $PATH is where you run git clone . To run open it using Eiffel Studio or just run theg following command
 
 ```estudio -config  <ecf_name>.ecf -target <target_name>```
 
 >Note: replace <ecf_name> and<target_name> with the corresponding values.
 
 
-
-
-Nav: [Workbook](../workbook.md) | [Basic Concepts] (/workbook/basics/basics.md) | [Handling Requests: Header Fields](/workbook/handling_request/headers.md) 
+Nav: [Workbook](../workbook.md) | [Basic Concepts] (/doc/workbook/basics/basics.md) | [Handling Requests: Header Fields](/doc/workbook/handling_request/headers.md) 
 

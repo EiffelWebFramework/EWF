@@ -1,0 +1,23 @@
+package ewsgi
+
+project
+	ewsgi = "ewsgi-safe.ecf"
+	ewsgi = "ewsgi.ecf"
+	ewsgi_spec = "ewsgi_spec-safe.ecf"
+	ewsgi_spec = "ewsgi_spec.ecf"
+	connector_cgi = "connectors/cgi/cgi-safe.ecf"
+	connector_cgi = "connectors/cgi/cgi.ecf"
+	connector_libfcgi = "connectors/libfcgi/libfcgi-safe.ecf"
+	connector_libfcgi = "connectors/libfcgi/libfcgi.ecf"
+	connector_nino = "connectors/nino/nino-safe.ecf"
+	connector_nino = "connectors/nino/nino.ecf"
+	connector_null = "connectors/null/null-safe.ecf"
+	connector_null = "connectors/null/null.ecf"
+
+note
+	title: EWSGI
+	description: EWSGI specification, and a few connectors.
+	tags: web, httpd, ewf
+	license: Eiffel Forum v2
+
+end

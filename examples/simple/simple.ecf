@@ -18,7 +18,7 @@
 		<option warning="true" is_attached_by_default="true" void_safety="transitional" syntax="transitional">
 			<assertions precondition="true" postcondition="true" check="true" invariant="true" loop="true" supplier_precondition="true"/>
 		</option>
-		<setting name="concurrency" value="scoop"/>
+		<setting name="concurrency" value="thread"/>
 		<library name="default_standalone" location="..\..\library\server\wsf\default\standalone-safe.ecf"/>
 		<cluster name="simple" location=".\" recursive="true"/>
 	</target>

@@ -27,7 +27,7 @@
 	</target>
 	<target name="filter_standalone" extends="common">
 		<root class="FILTER_SERVER" feature="make"/>
-		<setting name="concurrency" value="scoop"/>
+		<setting name="concurrency" value="thread"/>
 		<library name="default_standalone" location="..\..\library\server\wsf\default\standalone-safe.ecf" readonly="true"/>
 		<cluster name="filter" location="src\" recursive="true"/>
 	</target>

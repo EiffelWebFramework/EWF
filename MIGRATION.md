@@ -1,4 +1,4 @@
-Date: 2015-mar-31
+Date: 2015-june
 
 # Goal:
 =======
@@ -7,7 +7,7 @@ Date: 2015-mar-31
 
 # Status: 
 =========
-- The current version of EWF has mainly 3 connectors: CGI, libFCGI, and nino. 
+- The version v0 of EWF has mainly 3 connectors: CGI, libFCGI, and nino. 
   - CGI and libFCGI connectors does not need any concurrency support.
   - But the nino connector had a pseudo concurrency support with Thread, however one could do write code that result in hasardeous concurrency execution. 
 

@@ -59,7 +59,7 @@ feature {NONE} -- Initialization
 			create l_methods
 			l_methods.enable_options
 			l_methods.enable_get
-			router.handle_with_request_methods ("/user/{userid}", create {WSF_URI_TEMPLATE_AGENT_HANDLER}.make (agent l_options_filter.execute), l_methods)
+			router.handle ("/user/{userid}", create {WSF_URI_TEMPLATE_AGENT_HANDLER}.make (agent l_options_filter.execute), l_methods)
 		end
 
 	initialize_json

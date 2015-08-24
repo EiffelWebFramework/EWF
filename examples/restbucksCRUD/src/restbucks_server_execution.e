@@ -37,10 +37,10 @@ feature {NONE} -- Initialization
 			doc: WSF_ROUTER_SELF_DOCUMENTATION_HANDLER
 		do
 			create order_handler.make_with_router (router)
-			router.handle_with_request_methods ("/order", order_handler, router.methods_POST)
-			router.handle_with_request_methods ("/order/{orderid}", order_handler, router.methods_GET + router.methods_DELETE + router.methods_PUT)
+			router.handle ("/order", order_handler, router.methods_POST)
+			router.handle ("/order/{orderid}", order_handler, router.methods_GET + router.methods_DELETE + router.methods_PUT)
 			create doc.make_hidden (router)
-			router.handle_with_request_methods ("/api/doc", doc, router.methods_GET)
+			router.handle ("/api/doc", doc, router.methods_GET)
 		end
 
 
