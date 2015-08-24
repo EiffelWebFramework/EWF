@@ -57,9 +57,9 @@ echo Uninstall library: http
 echo Uninstall library: content_negotiation
 %RDCMD% %TMP_CONTRIB_DIR%\library\network\protocol\content_negotiation
 echo Uninstall library: http_authorization
-%RDCMD% %TMP_CONTRIB_DIR%\library\network\authentication\http_authorization
+%RDCMD% %TMP_CONTRIB_DIR%\library\web\authentication\http_authorization
 echo Uninstall library: security\openid
-%RDCMD% %TMP_CONTRIB_DIR%\library\security\openid
+%RDCMD% %TMP_CONTRIB_DIR%\library\web\authentication\openid
 echo Uninstall library: uri_template
 %RDCMD% %TMP_CONTRIB_DIR%\library\text\parser\uri_template
 echo Uninstall library: runtime\process\notification_email
