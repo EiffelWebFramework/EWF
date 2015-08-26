@@ -64,4 +64,9 @@
 		<root all_classes="true"/>
 		<setting name="platform" value="unix"/>
 	</target>
+	<target name="all_stable_with_ssl" extends="all_stable">
+		<description>Compiling with ssl enabled</description>
+		<root all_classes="true"/>
+		<variable name="httpd_ssl_enabled" value="true"/>
+	</target>
 </system>
