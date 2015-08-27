@@ -11,7 +11,7 @@
 		</option>
 		<library name="base" location="$ISE_LIBRARY\library\base\base-safe.ecf"/>
 		<library name="curl" location="$ISE_LIBRARY\library\cURL\cURL-safe.ecf"/>
-		<library name="encoder" location="..\..\text\encoder\encoder-safe.ecf"/>
+		<library name="encoder" location="../../web/framework/ewf/text/encoder/encoder.ecf"/>
 		<library name="http" location="../../web/framework/ewf/text/encoder-safe.ecf"/>
 		<library name="http_authorization" location="$ISE_LIBRARY\library\server\authentication\http_authorization\http_authorization-safe.ecf"/>
 		<library name="net" location="$ISE_LIBRARY\library\net\net-safe.ecf"/>
