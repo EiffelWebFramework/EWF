@@ -2,7 +2,7 @@
 <system xmlns="http://www.eiffel.com/developers/xml/configuration-1-13-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eiffel.com/developers/xml/configuration-1-13-0 http://www.eiffel.com/developers/xml/configuration-1-13-0.xsd" name="httptest" uuid="C8DFC1BA-78CA-4518-B0F2-2241E42808FF">
 	<target name="httptest">
 		<root class="APPLICATION" feature="make"/>
-		<option warning="true" void_safety="none">
+		<option warning="true" void_safety="transitional">
 			<assertions precondition="true" postcondition="true" check="true" invariant="true" loop="true" supplier_precondition="true"/>
 		</option>
 		<setting name="console_application" value="true"/>
