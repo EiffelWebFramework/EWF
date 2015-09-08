@@ -1,6 +1,5 @@
 note
-	description: "Summary description for {FEED_GENERATOR}."
-	author: ""
+	description: "Common ancestor for feed generator."
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -10,12 +9,27 @@ deferred class
 inherit
 	XML_UTILITIES
 
-feature {NONE} -- Helpers
+feature {NONE} -- Initialization
 
-	initialize
+	make (a_buffer: STRING_8)
 		do
+			buffer := a_buffer
 			create indentation.make_empty
 		end
+
+feature -- Access		
+
+	buffer: STRING_8
+			-- Output of feed conversion.
+
+feature -- 	Conversion
+
+	process_feed (a_feed: FEED)
+			-- Convert `a_feed' into string representation in `buffer'.
+		deferred
+		end
+
+feature {NONE} -- Helpers
 
 	indent
 		do

@@ -98,6 +98,8 @@ echo Install library: openid
 
 echo Install library: uri_template
 %COPYCMD% %TMP_DIR%\library\text\parser\uri_template %TMP_CONTRIB_DIR%\library\text\parser\uri_template
+echo Install library: feed
+%COPYCMD% %TMP_DIR%\library\text\parser\feed %TMP_CONTRIB_DIR%\library\text\parser\feed
 
 echo Install library: notification_email
 %SAFE_MD% %TMP_CONTRIB_DIR%\library\runtime

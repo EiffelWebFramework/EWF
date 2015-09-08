@@ -48,7 +48,7 @@ feature -- Access
 			then
 				l_title := t
 				create Result.make (l_title)
-				Result.set_description (xml_element_text (x_feed, "subtitle"))
+				Result.set_description (xml_element_text (x_feed, "subtitle"), "plain")
 				Result.set_id (xml_element_text (x_feed, "id"))
 				Result.set_updated_date_with_text (xml_element_text (x_feed, "updated"))
 				if attached links_from_xml (x_feed, "link") as l_links then

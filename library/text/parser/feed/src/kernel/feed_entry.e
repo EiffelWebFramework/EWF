@@ -1,6 +1,5 @@
 note
-	description: "Summary description for {FEED_ENTRY}."
-	author: ""
+	description: "Item of feed."
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -169,7 +168,5 @@ feature -- Visitor
 		do
 			vis.visit_entry (Current)
 		end
-
-invariant
 
 end

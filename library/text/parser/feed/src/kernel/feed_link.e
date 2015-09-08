@@ -1,6 +1,5 @@
 note
-	description: "Summary description for {FEED_LINK}."
-	author: ""
+	description: "Link mentioned in feed and feed entry."
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -21,10 +20,13 @@ feature {NONE} -- Initialization
 feature -- Access
 
 	href: READABLE_STRING_8
+			-- Location of Current link.
 
 	relation: READABLE_STRING_32
+			-- Relation associated with Current link.
 
 	type: detachable READABLE_STRING_8
+			-- Optional type of link.
 
 feature -- Element change
 

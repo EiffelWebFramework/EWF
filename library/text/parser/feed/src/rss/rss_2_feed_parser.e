@@ -51,7 +51,7 @@ feature -- Access
 					if attached x_rss.element_by_name ("channel") as x_channel then
 						if attached xml_element_text (x_channel, "title") as x_title then
 							create Result.make (x_title)
-							Result.set_description (xml_element_text (x_channel, "description"))
+							Result.set_description (xml_element_text (x_channel, "description"), "xhtml")
 							Result.set_updated_date_with_text (xml_element_text (x_channel, "lastBuildDate"))
 							if attached links_from_xml (x_channel, "link") as l_links then
 								across

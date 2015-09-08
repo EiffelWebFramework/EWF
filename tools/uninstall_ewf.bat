@@ -65,6 +65,8 @@ echo Uninstall library: security\openid
 %RDCMD% %TMP_CONTRIB_DIR%\library\web\authentication\openid
 echo Uninstall library: uri_template
 %RDCMD% %TMP_CONTRIB_DIR%\library\text\parser\uri_template
+echo Uninstall library: feed
+%RDCMD% %TMP_CONTRIB_DIR%\library\text\parser\feed
 echo Uninstall library: runtime\process\notification_email
 %RDCMD% %TMP_CONTRIB_DIR%\library\runtime\process\notification_email
 

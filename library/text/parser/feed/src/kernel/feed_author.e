@@ -1,6 +1,5 @@
 note
-	description: "Summary description for {FEED_AUTHOR}."
-	author: ""
+	description: "Object representing author of Feed or feed entry."
 	date: "$Date$"
 	revision: "$Revision$"
 

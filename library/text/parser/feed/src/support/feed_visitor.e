@@ -1,6 +1,5 @@
 note
-	description: "Summary description for {FEED_VISITOR}."
-	author: ""
+	description: "Interface to visit Feed objects."
 	date: "$Date$"
 	revision: "$Revision$"
 

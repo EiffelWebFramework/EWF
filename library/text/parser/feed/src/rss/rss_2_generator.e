@@ -10,19 +10,12 @@ inherit
 	FEED_VISITOR
 
 	FEED_GENERATOR
+		rename
+			process_feed as visit_feed
+		end
 
 create
 	make
-
-feature {NONE} -- Initialization
-
-	make (a_buffer: STRING_8)
-		do
-			buffer := a_buffer
-			initialize
-		end
-
-	buffer: STRING_8
 
 feature -- Visitor
 

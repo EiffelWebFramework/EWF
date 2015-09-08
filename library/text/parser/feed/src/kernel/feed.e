@@ -1,6 +1,5 @@
 note
-	description: "Summary description for {FEED}."
-	author: ""
+	description: "FEED interface, could be RSS, ATOM, ..."
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -30,6 +29,10 @@ feature -- Access
 	description: detachable IMMUTABLE_STRING_32
 			-- Associated description/subtitle.
 
+	description_content_type: detachable READABLE_STRING_8
+			-- Optional content type for `description'.
+			-- By default, this should be text/plain.
+
 	id: detachable IMMUTABLE_STRING_32
 			-- Id associated with Current feed if any.
 
@@ -44,12 +47,15 @@ feature -- Access
 
 feature -- Element change	
 
-	set_description (a_description: detachable READABLE_STRING_GENERAL)
+	set_description (a_description: detachable READABLE_STRING_GENERAL; a_description_content_type: like description_content_type)
+			-- Set `description' with `a_description' and optional content type `text:$a_description_content_type'.
 		do
 			if a_description = Void then
 				description := Void
+				description_content_type := Void
 			else
 				create description.make_from_string_general (a_description)
+				description_content_type := a_description_content_type
 			end
 		end
 
@@ -82,7 +88,5 @@ feature -- Visitor
 		do
 			vis.visit_feed (Current)
 		end
-
-invariant
 
 end
