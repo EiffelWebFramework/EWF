@@ -7,49 +7,27 @@ note
 	revision: "$Revision$"
 	testing: "type/manual"
 
-class
-	TEST_HTTP_CLIENT
+deferred class
+	TEST_HTTP_CLIENT_I
 
 inherit
 	EQA_TEST_SET
 
+feature -- Factory
+
+	new_session (a_url: READABLE_STRING_8): HTTP_CLIENT_SESSION
+		deferred
+		end
+
 feature -- Test routines
 
-	test_libcurl_http_client
+	test_http_client
 			-- New test routine
 		local
-			sess: LIBCURL_HTTP_CLIENT_SESSION
+			sess: like new_session
 			h: STRING_8
 		do
-			create sess.make ("http://www.google.com")
-			if attached sess.get ("/search?q=eiffel", Void) as res then
-				assert ("Get returned without error", not res.error_occurred)
-				create h.make_empty
-				if attached res.headers as hds then
-					across
-						hds as c
-					loop
-						h.append (c.item.name + ": " + c.item.value + "%R%N")
-					end
-				end
-				if attached res.body as l_body then
-					assert ("body not empty", not l_body.is_empty)
-				else
-					assert ("missing body", False)
-				end
-				assert ("same headers", h.same_string (res.raw_header))
-			else
-				assert ("Not found", False)
-			end
-		end
-		
-	test_socket_http_client
-			-- New test routine
-		local
-			sess: NET_HTTP_CLIENT_SESSION
-			h: STRING_8
-		do
-			create sess.make ("http://www.google.com")
+			sess := new_session ("http://www.google.com")
 			if attached sess.get ("/search?q=eiffel", Void) as res then
 				assert ("Get returned without error", not res.error_occurred)
 				create h.make_empty
@@ -71,13 +49,13 @@ feature -- Test routines
 			end
 		end
 
-	test_socket_http_client_requestbin
+	test_http_client_requestbin
 		local
-			sess: NET_HTTP_CLIENT_SESSION
+			sess: like new_session
 			h: STRING_8
 		do
 			--| Add your code here
-			create sess.make("http://requestb.in")
+			sess := new_session ("http://requestb.in")
 			create h.make_empty
 			if attached sess.get ("/1a0q2h61", Void).headers as hds then
 				across
