@@ -20,15 +20,22 @@ feature {NONE} -- Initialization
 			current_redirects := 0
 			request_method := a_request_method
 			session := a_session
+			initialize (a_url, ctx)
+		ensure
+			context_set: context = ctx
+			ctx_header_set: ctx /= Void implies across ctx.headers as ctx_h all attached headers.item (ctx_h.key) as v and then v.same_string (ctx_h.item) end
+		end
+
+	initialize (a_url: READABLE_STRING_8; ctx: like context)
+		do
 			url := a_url
 			headers := session.headers.twin
 			if ctx /= Void then
 				context := ctx
 				import (ctx)
+			else
+				context := Void
 			end
-		ensure
-			context_set: context = ctx
-			ctx_header_set: ctx /= Void implies across ctx.headers as ctx_h all attached headers.item (ctx_h.key) as v and then v.same_string (ctx_h.item) end
 		end
 
 feature {NONE} -- Internal		

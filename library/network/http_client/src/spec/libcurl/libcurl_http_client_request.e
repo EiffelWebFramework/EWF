@@ -61,6 +61,7 @@ feature -- Execution
 			l_upload_data: detachable READABLE_STRING_8
 			l_upload_filename: detachable READABLE_STRING_GENERAL
 			l_headers: like headers
+			l_is_http_1_0: BOOLEAN
 		do
 			if not retried then
 				curl := session.curl
@@ -69,6 +70,10 @@ feature -- Execution
 				curl.global_init
 
 				ctx := context
+
+				if ctx /= Void then
+					l_is_http_1_0 := attached ctx.http_version as l_http_version and then l_http_version.same_string ("HTTP/1.0")
+				end
 
 				--| Configure cURL session
 				initialize_curl_session (ctx, curl, curl_easy, curl_handle)
@@ -84,7 +89,11 @@ feature -- Execution
 					io.put_new_line
 				end
 				curl_easy.setopt_string (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_url, l_url)
-
+				if l_is_http_1_0 then
+					curl_easy.setopt_integer (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_http_version, {CURL_OPT_CONSTANTS}.curl_http_version_1_0)
+				else
+					curl_easy.setopt_integer (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_http_version, {CURL_OPT_CONSTANTS}.curl_http_version_none)
+				end
 				l_headers := headers
 
 				-- Context
