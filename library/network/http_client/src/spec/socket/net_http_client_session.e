@@ -1,15 +1,12 @@
 note
 	description: "[
-				Specific implementation of HTTP_CLIENT_SESSION based on Eiffel cURL library
-				
-				WARNING: Do not forget to have the dynamic libraries libcurl (.dll or .so) 
-				and related accessible to the executable (i.e in same directory, or in the PATH)
+				Specific implementation of HTTP_CLIENT_SESSION based on Eiffel NET library
 			]"
 	date: "$Date$"
 	revision: "$Revision$"
 
 class
-	LIBCURL_HTTP_CLIENT_SESSION
+	NET_HTTP_CLIENT_SESSION
 
 inherit
 	HTTP_CLIENT_SESSION
@@ -21,18 +18,12 @@ feature {NONE} -- Initialization
 
 	initialize
 		do
-			create curl -- cURL externals
-			create curl_easy -- cURL easy externals
-			curl_easy.set_curl_function (create {LIBCURL_DEFAULT_FUNCTION}.make)
 		end
 
 feature -- Status report
 
-	is_available: BOOLEAN
+	is_available: BOOLEAN = True
 			-- Is interface usable?
-		do
-			Result := curl.is_dynamic_library_exists
-		end
 
 feature -- Custom
 
@@ -40,7 +31,7 @@ feature -- Custom
 		local
 			req: HTTP_CLIENT_REQUEST
 		do
-			create {LIBCURL_HTTP_CLIENT_REQUEST} req.make (base_url + a_path, a_method, Current, ctx)
+			create {NET_HTTP_CLIENT_REQUEST} req.make (base_url + a_path, a_method, Current, ctx)
 			Result := req.response
 		end
 
@@ -142,28 +133,21 @@ feature {NONE} -- Implementation
 				end
 			end
 
-			create {LIBCURL_HTTP_CLIENT_REQUEST} req.make (base_url + a_path, a_method, Current, ctx)
+			create {NET_HTTP_CLIENT_REQUEST} req.make (base_url + a_path, a_method, Current, ctx)
 			Result := req.response
 
-			if f /= Void then
-				f.delete
-			end
+			-- FIXME file should be deleted, but uncommenting the following leads to a PERMISSION DENIED exception..
+			--if f /= Void then
+			--	f.delete
+			--end
+
 			if l_data /= Void and a_ctx /= Void then
 				a_ctx.set_upload_filename (Void)
 				a_ctx.set_upload_data (l_data)
 			end
 		end
 
-feature {LIBCURL_HTTP_CLIENT_REQUEST} -- Curl implementation
-
-	curl: CURL_EXTERNALS
-			-- cURL externals
-
-	curl_easy: CURL_EASY_EXTERNALS
-			-- cURL easy externals
-
-
-;note
+note
 	copyright: "2011-2015, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[

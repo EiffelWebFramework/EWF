@@ -185,6 +185,9 @@ feature -- Access
 	headers: HASH_TABLE [READABLE_STRING_8, READABLE_STRING_8]
 			-- Headers common to any request created by Current session.
 
+	cookie: detachable READABLE_STRING_8
+			-- Cookie for the current base_url
+
 feature -- Authentication
 
 	auth_type: STRING
@@ -212,6 +215,12 @@ feature -- Element change
 	set_base_url (u: like base_url)
 		do
 			base_url := u
+			cookie := Void
+		end
+
+	set_cookie (c: READABLE_STRING_8)
+		do
+			cookie := c
 		end
 
 	set_timeout (n_seconds: like timeout)
@@ -300,7 +309,7 @@ feature -- Element change
 		end
 
 note
-	copyright: "2011-2013, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
+	copyright: "2011-2015, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software
