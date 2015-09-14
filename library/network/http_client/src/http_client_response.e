@@ -54,6 +54,9 @@ feature -- Access
 
 	status_line: detachable READABLE_STRING_8
 
+	http_version: detachable READABLE_STRING_8
+			-- http version associated with `status_line'.
+
 	raw_header: READABLE_STRING_8
 			-- Raw http header of the response.	
 
@@ -190,15 +193,54 @@ feature -- Access
 
 feature -- Change
 
+	set_http_version (v: like http_version)
+			-- Set `http_version' to `v'.
+		do
+			http_version := v
+		end
+
 	set_status (s: INTEGER)
 			-- Set response `status' code to `s'
 		do
 			status := s
 		end
 
+	set_status_line (a_line: detachable READABLE_STRING_8)
+			-- Set status line to `a_line',
+			-- and also `status' extracted from `a_line' if possible.
+		local
+			i,j: INTEGER
+			s: READABLE_STRING_8
+		do
+			status_line := a_line
+			http_version := Void
+
+			if a_line /= Void then
+				if a_line.starts_with ("HTTP/") then
+					i := a_line.index_of (' ', 1)
+					if i > 0 then
+						http_version := a_line.substring (1 + 5, i - 1) -- ("HTTP/").count = 5
+						i := i + 1
+					end
+				else
+					i := 1
+				end
+					-- Get status code token.
+				if i > 0 then
+					j := a_line.index_of (' ', i)
+					if j > i then
+						s := a_line.substring (i, j - 1)
+						if s.is_integer then
+							set_status (s.to_integer)
+						end
+					end
+				end
+			end
+		end
+
 	set_response_message (a_source: READABLE_STRING_8; ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT)
 			-- Parse `a_source' response message
-			-- and set `header' and `body'.
+			-- and set `status_line', `status', `header' and `body'.
 			--| ctx is the context associated with the request
 			--| it might be useful to deal with redirection customization...
 		local
@@ -234,7 +276,7 @@ feature -- Change
 
 					j := i + 2
 					pos := j
-					status_line := l_status_line
+					set_status_line (l_status_line)
 					set_raw_header (h)
 
 --					libcURL does not cache redirection content.

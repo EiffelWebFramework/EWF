@@ -1,12 +1,17 @@
 note
-	description: "[
-				Specific implementation of HTTP_CLIENT_SESSION based on Eiffel NET library
+	description : "[
+				HTTP_CLIENT_SESSION represents a session
+				and is used to call get, post, .... request
+				with predefined settings such as 
+					base_url
+					specific common headers
+					timeout and so on ...
 			]"
 	date: "$Date$"
 	revision: "$Revision$"
 
 class
-	NET_HTTP_CLIENT_SESSION
+	NULL_HTTP_CLIENT_SESSION
 
 inherit
 	HTTP_CLIENT_SESSION
@@ -20,19 +25,11 @@ feature {NONE} -- Initialization
 		do
 		end
 
-feature -- Status report
-
-	is_available: BOOLEAN = True
-			-- Is interface usable?
-
 feature -- Custom
 
 	custom (a_method: READABLE_STRING_8; a_path: READABLE_STRING_8; ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT): HTTP_CLIENT_RESPONSE
-		local
-			req: HTTP_CLIENT_REQUEST
 		do
-			create {NET_HTTP_CLIENT_REQUEST} req.make (base_url + a_path, a_method, Current, ctx)
-			Result := req.response
+			create Result.make (base_url + a_path)
 		end
 
 	custom_with_upload_data (a_method: READABLE_STRING_8; a_path: READABLE_STRING_8; a_ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT; data: READABLE_STRING_8): HTTP_CLIENT_RESPONSE
@@ -95,34 +92,14 @@ feature -- Helper
 feature {NONE} -- Implementation
 
 	impl_custom (a_method: READABLE_STRING_8; a_path: READABLE_STRING_8; a_ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT; data: detachable READABLE_STRING_8; fn: detachable READABLE_STRING_8): HTTP_CLIENT_RESPONSE
-		local
-			req: HTTP_CLIENT_REQUEST
-			ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT
-			l_data: detachable READABLE_STRING_8
 		do
-			ctx := a_ctx
-			if data /= Void then
-				if ctx = Void then
-					create ctx.make
-				end
-				ctx.set_upload_data (data)
-			end
-			if fn /= Void then
-				if ctx = Void then
-					create ctx.make
-				end
-				ctx.set_upload_filename (fn)
-			end
-			if ctx /= Void then
-				l_data := ctx.upload_data
-				if l_data /= Void and a_method.is_case_insensitive_equal_general ("PUT") then
-					check put_conflict_file_and_data: not ctx.has_upload_filename end
-				end
-			end
-
-			create {NET_HTTP_CLIENT_REQUEST} req.make (base_url + a_path, a_method, Current, ctx)
-			Result := req.response
+			Result := custom (a_method, a_path, a_ctx)
 		end
+
+feature -- Status report
+
+	is_available: BOOLEAN = False
+			-- Is interface usable?
 
 note
 	copyright: "2011-2015, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"

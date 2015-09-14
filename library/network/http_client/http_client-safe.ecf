@@ -10,12 +10,34 @@
 		<option warning="true" full_class_checking="true" is_attached_by_default="true" void_safety="all" syntax="provisional">
 		</option>
 		<library name="base" location="$ISE_LIBRARY\library\base\base-safe.ecf"/>
-		<library name="curl" location="$ISE_LIBRARY\library\cURL\cURL-safe.ecf"/>
+		<library name="curl" location="$ISE_LIBRARY\library\cURL\cURL-safe.ecf">
+			<condition>
+				<custom name="libcurl_http_client_disabled" excluded_value="true"/>
+			</condition>
+		</library>
+
 		<library name="encoder" location="..\..\text\encoder\encoder-safe.ecf"/>
 		<library name="http" location="..\protocol\http\http-safe.ecf"/>
 		<library name="http_auth" location="..\..\server\authentication\http_authorization\http_authorization-safe.ecf"/>
-		<library name="net" location="$ISE_LIBRARY\library\net\net-safe.ecf"/>
+		<library name="net" location="$ISE_LIBRARY\library\net\net-safe.ecf">
+			<condition>
+				<custom name="net_http_client_disabled" excluded_value="true"/>
+			</condition>
+		</library>
+
 		<library name="uri" location="$ISE_LIBRARY\library\text\uri\uri-safe.ecf"/>
-		<cluster name="src" location=".\src\" recursive="true"/>
+		<cluster name="src" location=".\src\">
+			<cluster name="spec_null" location="$|spec/null" recursive="true"/>
+			<cluster name="spec_net" location="$|spec/socket" recursive="true">
+				<condition>
+					<custom name="net_http_client_disabled" excluded_value="true"/>
+				</condition>
+			</cluster>
+			<cluster name="spec_libcurl" location="$|spec/libcurl" recursive="true">
+				<condition>
+					<custom name="libcurl_http_client_disabled" excluded_value="true"/>
+				</condition>
+			</cluster>
+		</cluster>
 	</target>
 </system>
