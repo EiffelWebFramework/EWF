@@ -6,7 +6,13 @@ create
 feature -- Init
 
 	make
+		local
+			null: NULL_HTTP_CLIENT
 		do
+			create null
+			if attached null.new_session ("http://example.com/") as l_sess then
+				check not l_sess.is_available end
+			end
 			test_http_client
 		end
 
@@ -42,7 +48,7 @@ feature -- Init
 		do
 			if not b then
 				create e
-				e.set_message (m)
+				e.set_description (m)
 				e.raise
 			end
 		end

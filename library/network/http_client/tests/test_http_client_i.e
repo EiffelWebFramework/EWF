@@ -44,8 +44,6 @@ feature -- Test routines
 					assert ("missing body", False)
 				end
 				assert ("same headers", h.same_string (res.raw_header))
-			else
-				assert ("Not found", False)
 			end
 		end
 
@@ -54,7 +52,6 @@ feature -- Test routines
 			sess: like new_session
 			h: STRING_8
 		do
-			--| Add your code here
 			sess := new_session ("http://requestb.in")
 			create h.make_empty
 			if attached sess.get ("/1a0q2h61", Void).headers as hds then
@@ -64,7 +61,6 @@ feature -- Test routines
 					h.append (c.item.name + ": " + c.item.value + "%R%N")
 				end
 			end
-
 			print (h)
 		end
 

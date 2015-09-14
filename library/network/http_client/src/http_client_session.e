@@ -218,9 +218,9 @@ feature -- Element change
 			cookie := Void
 		end
 
-	set_cookie (c: READABLE_STRING_8)
+	set_cookie (a_cookie: detachable READABLE_STRING_8)
 		do
-			cookie := c
+			cookie := a_cookie
 		end
 
 	set_timeout (n_seconds: like timeout)
@@ -253,12 +253,26 @@ feature -- Element change
 			headers.prune (k)
 		end
 
-	set_credentials (u: like username; p: like password)
+	set_credentials (u,p: detachable READABLE_STRING_GENERAL)
+		local
+			s: STRING_32
 		do
-			username := u
-			password := p
+			if u = Void then
+				username := Void
+			else
+				create {STRING_32} username.make_from_string_general (u)
+			end
+			if p = Void then
+				password := Void
+			else
+				create {STRING_32} password.make_from_string_general (p)
+			end
 			if u /= Void and p /= Void then
-				credentials := u + ":" + p
+				create s.make (u.count + 1 + p.count)
+				s.append_string_general (u)
+				s.append_character (':')
+				s.append_string_general (p)
+				credentials := s
 			else
 				credentials := Void
 			end
