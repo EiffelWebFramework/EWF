@@ -47,21 +47,30 @@ feature -- Test routines
 			end
 		end
 
-	test_http_client_requestbin
+	test_http_client_ssl
+			-- New test routine
 		local
 			sess: like new_session
 			h: STRING_8
 		do
-			sess := new_session ("http://requestb.in")
-			create h.make_empty
-			if attached sess.get ("/1a0q2h61", Void).headers as hds then
-				across
-					hds as c
-				loop
-					h.append (c.item.name + ": " + c.item.value + "%R%N")
+			sess := new_session ("https://www.eiffel.org")
+			if attached sess.get ("/welcome", Void) as res then
+				assert ("Get returned without error", not res.error_occurred)
+				create h.make_empty
+				if attached res.headers as hds then
+					across
+						hds as c
+					loop
+						h.append (c.item.name + ": " + c.item.value + "%R%N")
+					end
 				end
+				if attached res.body as l_body then
+					assert ("body not empty", not l_body.is_empty)
+				else
+					assert ("missing body", False)
+				end
+				assert ("same headers", h.same_string (res.raw_header))
 			end
-			print (h)
 		end
 
 	test_headers

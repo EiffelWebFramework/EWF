@@ -28,6 +28,16 @@ feature {NONE} -- Internal
 	session: NET_HTTP_CLIENT_SESSION
 	net_http_client_version: STRING = "0.1"
 
+
+	new_socket (a_host: READABLE_STRING_8; a_port: INTEGER; a_is_https: BOOLEAN; ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT): NETWORK_STREAM_SOCKET
+		do
+			if a_is_https then
+				create {SSL_NETWORK_STREAM_SOCKET} Result.make_client_by_port (a_port, a_host)
+			else
+				create Result.make_client_by_port (a_port, a_host)
+			end
+		end
+
 feature -- Access
 
 	response: HTTP_CLIENT_RESPONSE
@@ -40,12 +50,13 @@ feature -- Access
 			l_cookie: detachable READABLE_STRING_8
 			l_request_uri: STRING
 			l_url: HTTP_URL
-			socket: NETWORK_STREAM_SOCKET
+			l_socket: NETWORK_STREAM_SOCKET
 			s: STRING
 			l_message: STRING
 			l_content_length: INTEGER
 			l_location: detachable READABLE_STRING_8
 			l_port: INTEGER
+			l_is_https: BOOLEAN
 			l_authorization: HTTP_AUTHORIZATION
 			l_platform: STRING
 			l_upload_data: detachable READABLE_STRING_8
@@ -69,13 +80,13 @@ feature -- Access
 				end
 				create Result.make (url)
 
-				create l_form_string.make_empty
 
 					-- Get URL data
+				l_is_https := url.starts_with_general ("https://")
 				create l_uri.make_from_string (url)
 				l_port := l_uri.port
 				if l_port = 0 then
-					if url.starts_with_general ("https://") then
+					if l_is_https then
 						l_port := 443
 					else
 						l_port := 80
@@ -88,144 +99,147 @@ feature -- Access
 					l_host := l_url.host
 				end
 
-					-- add headers for authorization
-				if not headers.has ("Authorization") then
-					if
-						attached username as u_name and
-						attached password as u_pass
-					then
-						create l_authorization.make_basic_auth (u_name, u_pass)
-						if attached l_authorization.http_authorization as auth then
-							headers.extend (auth, "Authorization")
-						end
-						check headers.has_key ("Authorization") end
-					end
-				end
-
-				create l_request_uri.make_from_string (l_uri.path)
-				if attached l_uri.query as l_query then
-					l_request_uri.append_character ('?')
-					l_request_uri.append (l_query)
-				end
-
-					-- add computed header User-Agent if not yet set.
-				if not headers.has ("User-Agent") then
-					if {PLATFORM}.is_unix then
-						l_platform := "Unix"
-					elseif {PLATFORM}.is_windows then
-						l_platform := "Windows"
-					elseif {PLATFORM}.is_mac then
-						l_platform := "Mac"
-					elseif {PLATFORM}.is_vms then
-						l_platform := "VMS"
-					elseif {PLATFORM}.is_vxworks then
-						l_platform := "VxWorks"
-					else
-						l_platform := "Unknown"
-					end
-					headers.extend ("eiffelhttpclient/" + net_http_client_version + " (" + l_platform + ")", "User-Agent")
-				end
-
-					-- handle sending data
-				if ctx /= Void then
-					if ctx.has_upload_filename then
-						l_upload_filename := ctx.upload_filename
-					end
-
-					if ctx.has_upload_data then
-						l_upload_data := ctx.upload_data
-					end
-
-					if ctx.has_form_data then
-						l_form_data := ctx.form_parameters
-						check non_empty_form_data: not l_form_data.is_empty end
-						if l_upload_data = Void and l_upload_filename = Void then
-								-- Send as form-urlencoded
-							headers.extend ("application/x-www-form-urlencoded", "Content-Type")
-							l_upload_data := ctx.form_parameters_to_url_encoded_string
-							headers.force (l_upload_data.count.out, "Content-Length")
-
-						else
-								-- create form
-							l_boundary := new_mime_boundary
-							headers.extend ("multipart/form-data; boundary=" + l_boundary, "Content-Type")
-							if l_form_data /= Void then
-								headers.extend ("*/*", "Accept")
-								from
-									l_form_data.start
-								until
-									l_form_data.after
-								loop
-									l_form_string.append (l_boundary)
-									l_form_string.append (http_end_of_header_line)
-									l_form_string.append ("Content-Disposition: form-data; name=")
-									l_form_string.append ("%"" + l_form_data.key_for_iteration + "%"")
-									l_form_string.append (http_end_of_header_line)
-									l_form_string.append (http_end_of_header_line)
-									l_form_string.append (l_form_data.item_for_iteration)
-									l_form_string.append (http_end_of_header_line)
-									l_form_data.forth
-								end
-
-								if l_upload_filename /= Void then
-										-- get file extension, otherwise set default
-									l_mime_type := "application/octet-stream"
-									create l_mime_type_mapping.make_default
-									l_fn_extension := l_upload_filename.tail (l_upload_filename.count - l_upload_filename.last_index_of ('.', l_upload_filename.count))
-									if attached l_mime_type_mapping.mime_type (l_fn_extension) as mime then
-										l_mime_type := mime
-									end
-
-									l_form_string.append (l_boundary)
-									l_form_string.append (http_end_of_header_line)
-									l_form_string.append ("Content-Disposition: form-data; name=%"" + l_upload_filename.as_string_32 + "%"")
-								    l_form_string.append ("; filename=%"" + l_upload_filename + "%"")
-									l_form_string.append (http_end_of_header_line)
-									l_form_string.append ("Content-Type: ")
-									l_form_string.append (l_mime_type)
-									l_form_string.append (http_end_of_header_line)
-									l_form_string.append (http_end_of_header_line)
-
-									create l_upload_file.make_with_name (l_upload_filename)
-									if l_upload_file.exists and then l_upload_file.is_access_readable then
-										append_file_content_to (l_upload_file, l_upload_file.count, l_form_string)
-											-- Reset l_upload_file to Void, since the related content is already processed.
-										l_upload_file := Void
-									end
-									l_form_string.append (http_end_of_header_line)
-								end
-								l_form_string.append (l_boundary + "--") --| end
-
-								l_upload_data := l_form_string
-								headers.extend (l_upload_data.count.out, "Content-Length")
-							end
-						end
-					elseif
-						request_method.is_case_insensitive_equal ("POST")
-						or else request_method.is_case_insensitive_equal ("PUT")
-					then
-						if l_upload_data /= Void then
-							check ctx.has_upload_data end
-							headers.extend ("application/x-www-form-urlencoded", "Content-Type")
-							headers.extend (l_upload_data.count.out, "Content-Length")
-						elseif l_upload_filename /= Void then
-							check ctx.has_upload_filename end
-							create l_upload_file.make_with_name (l_upload_filename)
-							if l_upload_file.exists and then l_upload_file.readable then
-								headers.extend (l_upload_file.count.out, "Content-Length")
-							end
-							check l_upload_file /= Void end
-						end
-
-					end
-				end
-
 					-- Connect			
-				create socket.make_client_by_port (l_port, l_host)
-				socket.set_connect_timeout (connect_timeout)
-				socket.set_timeout (timeout)
-				socket.connect
-				if socket.is_connected then
+				l_socket := new_socket (l_host, l_port, l_is_https, ctx)
+				l_socket.set_connect_timeout (connect_timeout)
+				l_socket.set_timeout (timeout)
+				l_socket.connect
+				if l_socket.is_connected then
+
+					create l_form_string.make_empty
+
+						-- add headers for authorization
+					if not headers.has ("Authorization") then
+						if
+							attached username as u_name and
+							attached password as u_pass
+						then
+							create l_authorization.make_basic_auth (u_name, u_pass)
+							if attached l_authorization.http_authorization as auth then
+								headers.extend (auth, "Authorization")
+							end
+							check headers.has_key ("Authorization") end
+						end
+					end
+
+					create l_request_uri.make_from_string (l_uri.path)
+					if attached l_uri.query as l_query then
+						l_request_uri.append_character ('?')
+						l_request_uri.append (l_query)
+					end
+
+						-- add computed header User-Agent if not yet set.
+					if not headers.has ("User-Agent") then
+						if {PLATFORM}.is_unix then
+							l_platform := "Unix"
+						elseif {PLATFORM}.is_windows then
+							l_platform := "Windows"
+						elseif {PLATFORM}.is_mac then
+							l_platform := "Mac"
+						elseif {PLATFORM}.is_vms then
+							l_platform := "VMS"
+						elseif {PLATFORM}.is_vxworks then
+							l_platform := "VxWorks"
+						else
+							l_platform := "Unknown"
+						end
+						headers.extend ("eiffelhttpclient/" + net_http_client_version + " (" + l_platform + ")", "User-Agent")
+					end
+
+						-- handle sending data
+					if ctx /= Void then
+						if ctx.has_upload_filename then
+							l_upload_filename := ctx.upload_filename
+						end
+
+						if ctx.has_upload_data then
+							l_upload_data := ctx.upload_data
+						end
+
+						if ctx.has_form_data then
+							l_form_data := ctx.form_parameters
+							check non_empty_form_data: not l_form_data.is_empty end
+							if l_upload_data = Void and l_upload_filename = Void then
+									-- Send as form-urlencoded
+								headers.extend ("application/x-www-form-urlencoded", "Content-Type")
+								l_upload_data := ctx.form_parameters_to_url_encoded_string
+								headers.force (l_upload_data.count.out, "Content-Length")
+
+							else
+									-- create form
+								l_boundary := new_mime_boundary
+								headers.extend ("multipart/form-data; boundary=" + l_boundary, "Content-Type")
+								if l_form_data /= Void then
+									headers.extend ("*/*", "Accept")
+									from
+										l_form_data.start
+									until
+										l_form_data.after
+									loop
+										l_form_string.append (l_boundary)
+										l_form_string.append (http_end_of_header_line)
+										l_form_string.append ("Content-Disposition: form-data; name=")
+										l_form_string.append ("%"" + l_form_data.key_for_iteration + "%"")
+										l_form_string.append (http_end_of_header_line)
+										l_form_string.append (http_end_of_header_line)
+										l_form_string.append (l_form_data.item_for_iteration)
+										l_form_string.append (http_end_of_header_line)
+										l_form_data.forth
+									end
+
+									if l_upload_filename /= Void then
+											-- get file extension, otherwise set default
+										l_mime_type := "application/octet-stream"
+										create l_mime_type_mapping.make_default
+										l_fn_extension := l_upload_filename.tail (l_upload_filename.count - l_upload_filename.last_index_of ('.', l_upload_filename.count))
+										if attached l_mime_type_mapping.mime_type (l_fn_extension) as mime then
+											l_mime_type := mime
+										end
+
+										l_form_string.append (l_boundary)
+										l_form_string.append (http_end_of_header_line)
+										l_form_string.append ("Content-Disposition: form-data; name=%"" + l_upload_filename.as_string_32 + "%"")
+										l_form_string.append ("; filename=%"" + l_upload_filename + "%"")
+										l_form_string.append (http_end_of_header_line)
+										l_form_string.append ("Content-Type: ")
+										l_form_string.append (l_mime_type)
+										l_form_string.append (http_end_of_header_line)
+										l_form_string.append (http_end_of_header_line)
+
+										create l_upload_file.make_with_name (l_upload_filename)
+										if l_upload_file.exists and then l_upload_file.is_access_readable then
+											append_file_content_to (l_upload_file, l_upload_file.count, l_form_string)
+												-- Reset l_upload_file to Void, since the related content is already processed.
+											l_upload_file := Void
+										end
+										l_form_string.append (http_end_of_header_line)
+									end
+									l_form_string.append (l_boundary + "--") --| end
+
+									l_upload_data := l_form_string
+									headers.extend (l_upload_data.count.out, "Content-Length")
+								end
+							end
+						elseif
+							request_method.is_case_insensitive_equal ("POST")
+							or else request_method.is_case_insensitive_equal ("PUT")
+						then
+							if l_upload_data /= Void then
+								check ctx.has_upload_data end
+								headers.extend ("application/x-www-form-urlencoded", "Content-Type")
+								headers.extend (l_upload_data.count.out, "Content-Length")
+							elseif l_upload_filename /= Void then
+								check ctx.has_upload_filename end
+								create l_upload_file.make_with_name (l_upload_filename)
+								if l_upload_file.exists and then l_upload_file.readable then
+									headers.extend (l_upload_file.count.out, "Content-Length")
+								end
+								check l_upload_file /= Void end
+							end
+
+						end
+					end
+
 						-- FIXME: check usage of headers and specific header variable.
 						--| only one Cookie: is allowed, so merge multiple into one;
 						--| if Host is in header, use that one.
@@ -295,20 +309,32 @@ feature -- Access
 						--| Note that any remaining file to upload will be done directly via the socket
 						--| to optimize memory usage
 
-						--| Send request
-					if socket.ready_for_writing then
-						socket.put_string (s)
+
+						--|-----------------------------|--
+						--| Request preparation is done |--
+						--|-----------------------------|--
+
+					if l_socket.ready_for_writing then
+							--| Socket is ready for writing, so let's send the request.
+
+							--|-------------------------|--
+							--| Send request            |--
+							--|-------------------------|--
+
+						l_socket.put_string (s)
 							--| Send remaining payload data, if needed.
 						if l_upload_file /= Void then
 								-- i.e: not yet processed
-							append_file_content_to_socket (l_upload_file, l_upload_file.count, socket)
+							append_file_content_to_socket (l_upload_file, l_upload_file.count, l_socket)
 						end
 
-							--| Get response.
-							--| Get header message
-						if socket.ready_for_reading then
+							--|-------------------------|--
+							--| Get response.           |--
+							--| Get header message      |--
+							--|-------------------------|--
+						if l_socket.ready_for_reading then
 							create l_message.make_empty
-							append_socket_header_content_to (socket, l_message)
+							append_socket_header_content_to (l_socket, l_message)
 							l_prev_header := Result.raw_header
 							Result.set_raw_header (l_message.string)
 							l_content_length := -1
@@ -316,13 +342,13 @@ feature -- Access
 								l_content_length := s_len.to_integer
 							end
 							l_location := Result.header ("Location")
-							if attached Result.header ("Set-Cookies") as s_cookies then
+							if attached Result.header ("Set-Cookie") as s_cookies then
 								session.set_cookie (s_cookies)
 							end
 							l_message.append (http_end_of_header_line)
 
 								-- Get content if any.
-							append_socket_content_to (Result, socket, l_content_length, l_message)
+							append_socket_content_to (Result, l_socket, l_content_length, l_message)
 								-- Restore previous header
 							Result.set_raw_header (l_prev_header)
 								-- Set message
@@ -455,33 +481,47 @@ feature {NONE} -- Helpers
 			end
 		end
 
-	append_socket_content_to (a_response: HTTP_CLIENT_RESPONSE; a_socket: NETWORK_STREAM_SOCKET; a_len: INTEGER; a_buffer: STRING)
-			-- Get content from `a_socket' and append it to `a_buffer'.
+	append_socket_content_to (a_response: HTTP_CLIENT_RESPONSE; a_socket: NETWORK_STREAM_SOCKET; a_len: INTEGER; a_output: STRING)
+			-- Get content from `a_socket' and append it to `a_output'.
 			-- If `a_len' is negative, try to get as much as possible,
 			-- this is probably HTTP/1.0 without any Content-Length.
 		local
 			s: STRING_8
+			r: INTEGER -- remaining count
 			n,pos, l_chunk_size, l_count: INTEGER
 			hexa2int: HEXADECIMAL_STRING_TO_INTEGER_CONVERTER
 		do
 			if a_socket.readable then
 				if a_len >= 0 then
+					debug ("socket_content")
+						io.error.put_string ("Content-Length="+ a_len.out +"%N")
+					end
 					from
-						n := a_len
+						r := a_len
 					until
-						n = 0 or else not a_socket.readable or else a_response.error_occurred
+						r = 0 or else not a_socket.readable or else a_response.error_occurred
 					loop
 						if a_socket.ready_for_reading then
-							a_socket.read_stream_thread_aware (n)
+							a_socket.read_stream_thread_aware (r)
 							l_count := l_count + a_socket.bytes_read
-							n := n - a_socket.bytes_read
-							a_buffer.append (a_socket.last_string)
+							debug ("socket_content")
+								io.error.put_string ("  - byte read=" + a_socket.bytes_read.out + "%N")
+								io.error.put_string ("  - current count=" + l_count.out + "%N")
+							end
+							r := r - a_socket.bytes_read
+							a_output.append (a_socket.last_string)
 						else
+							debug ("socket_content")
+								io.error.put_string ("  -! TIMEOUT%N")
+							end
 							a_response.set_error_message ("Could not read chunked data, timeout")
 						end
 					end
-					check full_content_read: l_count = a_len end
+					check full_content_read: not a_response.error_occurred implies l_count = a_len end
 				elseif attached a_response.header ("Transfer-Encoding") as l_enc and then l_enc.is_case_insensitive_equal ("chunked") then
+					debug ("socket_content")
+						io.error.put_string ("Chunked encoding%N")
+					end
 					from
 						create hexa2int.make
 						n := 1
@@ -491,6 +531,9 @@ feature {NONE} -- Helpers
 						a_socket.read_line_thread_aware -- Read chunk info
 						s := a_socket.last_string
 						s.right_adjust
+						debug ("socket_content")
+							io.error.put_string ("  - chunk info='" + s + "'%N")
+						end
 						pos := s.index_of (';', 1)
 						if pos > 0 then
 							s.keep_head (pos - 1)
@@ -505,17 +548,28 @@ feature {NONE} -- Helpers
 								n := 0
 							end
 						end
+						debug ("socket_content")
+							io.error.put_string ("  - chunk size=" + n.out + "%N")
+						end
 						if n > 0 then
 							from
+								r := n
 							until
-								n = 0 or else not a_socket.readable or else a_response.error_occurred
+								r = 0 or else not a_socket.readable or else a_response.error_occurred
 							loop
 								if a_socket.ready_for_reading then
-									a_socket.read_stream_thread_aware (n)
+									a_socket.read_stream_thread_aware (r)
 									l_count := l_count + a_socket.bytes_read
-									n := n - a_socket.bytes_read
-									a_buffer.append (a_socket.last_string)
+									debug ("socket_content")
+										io.error.put_string ("  - byte read=" + a_socket.bytes_read.out + "%N")
+										io.error.put_string ("  - current count=" + l_count.out + "%N")
+									end
+									r := r - a_socket.bytes_read
+									a_output.append (a_socket.last_string)
 								else
+									debug ("socket_content")
+										io.error.put_string ("  -! TIMEOUT%N")
+									end
 									a_response.set_error_message ("Could not read chunked data, timeout")
 								end
 							end
@@ -525,7 +579,13 @@ feature {NONE} -- Helpers
 								check a_socket.last_character = '%R' end
 								a_socket.read_character
 								check a_socket.last_character = '%N' end
+								debug ("socket_content")
+									io.error.put_string ("  - Found CRNL %N")
+								end
 							else
+								debug ("socket_content")
+									io.error.put_string ("  -! TIMEOUT%N")
+								end
 								a_response.set_error_message ("Could not read chunked data, timeout")
 							end
 						end
@@ -546,7 +606,7 @@ feature {NONE} -- Helpers
 							s := a_socket.last_string
 							n := a_socket.bytes_read
 							l_count := l_count + n
-							a_buffer.append (s)
+							a_output.append (s)
 						else
 							a_response.set_error_message ("Could not read data, timeout")
 						end

@@ -95,6 +95,24 @@ feature -- Access
 			Result := s
 		end
 
+	multiple_header (a_name: READABLE_STRING_8): detachable LIST [READABLE_STRING_8]
+			-- Header multiple entries related to `a_name'
+		local
+			k: READABLE_STRING_8
+		do
+			across
+				headers as hds
+			loop
+				k := hds.item.name
+				if k.same_string (a_name) then
+					if Result = Void then
+						create {ARRAYED_LIST [READABLE_STRING_8]} Result.make (1)
+					end
+					Result.force (hds.item.value)
+				end
+			end
+		end
+
 	headers: LIST [TUPLE [name: READABLE_STRING_8; value: READABLE_STRING_8]]
 			-- Computed table of http headers of the response.
 			--| We use a LIST since one might have multiple message-header fields with the same field-name

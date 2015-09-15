@@ -11,6 +11,8 @@ class
 inherit
 	HTTP_CLIENT_SESSION
 
+	NET_HTTP_CLIENT_INFO
+
 create
 	make
 
@@ -22,8 +24,14 @@ feature {NONE} -- Initialization
 
 feature -- Status report
 
-	is_available: BOOLEAN = True
+	is_available: BOOLEAN
 			-- Is interface usable?
+		do
+			Result := True
+			if base_url.starts_with_general ("https://") then
+				Result := has_https_support
+			end
+		end
 
 feature -- Custom
 
