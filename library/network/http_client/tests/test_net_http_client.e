@@ -27,9 +27,9 @@ feature -- Tests
 			test_http_client
 		end
 
-	test_net_http_client_requestbin
+	test_net_http_client_ssl
 		do
-			test_http_client_requestbin
+			test_http_client_ssl
 		end
 
 	test_net_headers

@@ -1,19 +1,33 @@
 note
-	description : "[
-				Instantiate one of the descendant of HTTP_CLIENT
-				then use `new_session' to create a session of http requests
-			]"
-	date        : "$Date$"
-	revision    : "$Revision$"
+	description: "[
+			Default HTTP_CLIENT based on LIBCURL_HTTP_CLIENT.
+		]"
+	author: "$Author$"
+	date: "$Date$"
+	revision: "$Revision$"
 
-deferred class
+class
+	DEFAULT_HTTP_CLIENT
+
+inherit
 	HTTP_CLIENT
 
 feature -- Access
 
 	new_session (a_base_url: READABLE_STRING_8): HTTP_CLIENT_SESSION
 			-- Create a new session using `a_base_url'.
-		deferred
+		local
+			libcurl: LIBCURL_HTTP_CLIENT
+			net: NET_HTTP_CLIENT
+		do
+				--| For now, try libcurl first, and then net
+				--| the reason is the net implementation is still in progress.
+			create libcurl
+			Result := libcurl.new_session (a_base_url)
+			if not Result.is_available then
+				create net
+				Result := net.new_session (a_base_url)
+			end
 		end
 
 note

@@ -14,18 +14,6 @@ class
 inherit
 	HTTP_CLIENT
 
-create
-	default_create,
-	make
-
-feature {NONE} -- Initialization
-
-	make
-			-- Initialize `Current'.
-		do
-			default_create
-		end
-
 feature -- Status
 
 	new_session (a_base_url: READABLE_STRING_8): NET_HTTP_CLIENT_SESSION
