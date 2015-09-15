@@ -54,6 +54,7 @@ feature -- Test routines
 			h: STRING_8
 		do
 			sess := new_session ("https://www.eiffel.org")
+			sess.set_is_insecure (True)
 			if attached sess.get ("/welcome", Void) as res then
 				assert ("Get returned without error", not res.error_occurred)
 				create h.make_empty
