@@ -37,6 +37,7 @@ feature -- Status report
 feature -- Custom
 
 	custom (a_method: READABLE_STRING_8; a_path: READABLE_STRING_8; ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT): HTTP_CLIENT_RESPONSE
+			-- <Precursor>
 		local
 			req: HTTP_CLIENT_REQUEST
 		do
@@ -45,11 +46,13 @@ feature -- Custom
 		end
 
 	custom_with_upload_data (a_method: READABLE_STRING_8; a_path: READABLE_STRING_8; a_ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT; data: READABLE_STRING_8): HTTP_CLIENT_RESPONSE
+			-- Same as `custom' but including upload data `a_data'.
 		do
 			Result := impl_custom (a_method, a_path, a_ctx, data, Void)
 		end
 
 	custom_with_upload_file (a_method: READABLE_STRING_8; a_path: READABLE_STRING_8; a_ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT; fn: READABLE_STRING_8): HTTP_CLIENT_RESPONSE
+			-- Same as `custom' but including upload file `fn'.
 		do
 			Result := impl_custom (a_method, a_path, a_ctx, Void, fn)
 		end
@@ -57,46 +60,55 @@ feature -- Custom
 feature -- Helper
 
 	get (a_path: READABLE_STRING_8; ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT): HTTP_CLIENT_RESPONSE
+			-- <Precursor>
 		do
 			Result := custom ("GET", a_path, ctx)
 		end
 
 	head (a_path: READABLE_STRING_8; ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT): HTTP_CLIENT_RESPONSE
+			-- <Precursor>
 		do
 			Result := custom ("HEAD", a_path, ctx)
 		end
 
 	post (a_path: READABLE_STRING_8; a_ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT; data: detachable READABLE_STRING_8): HTTP_CLIENT_RESPONSE
+			-- <Precursor>
 		do
 			Result := impl_custom ("POST", a_path, a_ctx, data, Void)
 		end
 
 	post_file (a_path: READABLE_STRING_8; a_ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT; fn: detachable READABLE_STRING_8): HTTP_CLIENT_RESPONSE
+			-- <Precursor>
 		do
 			Result := impl_custom ("POST", a_path, a_ctx, Void, fn)
 		end
 
 	patch (a_path: READABLE_STRING_8; a_ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT; data: detachable READABLE_STRING_8): HTTP_CLIENT_RESPONSE
+			-- <Precursor>
 		do
 			Result := impl_custom ("PATCH", a_path, a_ctx, data, Void)
 		end
 
 	patch_file (a_path: READABLE_STRING_8; a_ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT; fn: detachable READABLE_STRING_8): HTTP_CLIENT_RESPONSE
+			-- <Precursor>
 		do
 			Result := impl_custom ("PATCH", a_path, a_ctx, Void, fn)
 		end
 
 	put (a_path: READABLE_STRING_8; a_ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT; data: detachable READABLE_STRING_8): HTTP_CLIENT_RESPONSE
+			-- <Precursor>
 		do
 			Result := impl_custom ("PUT", a_path, a_ctx, data, Void)
 		end
 
 	put_file (a_path: READABLE_STRING_8; a_ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT; fn: detachable READABLE_STRING_8): HTTP_CLIENT_RESPONSE
+			-- <Precursor>
 		do
 			Result := impl_custom ("PUT", a_path, a_ctx, Void, fn)
 		end
 
 	delete (a_path: READABLE_STRING_8; ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT): HTTP_CLIENT_RESPONSE
+			-- <Precursor>
 		do
 			Result := custom ("DELETE", a_path, ctx)
 		end

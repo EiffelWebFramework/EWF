@@ -1,6 +1,9 @@
 note
 	description: "[
-			Default HTTP_CLIENT based on LIBCURL_HTTP_CLIENT.
+			Default HTTP_CLIENT based on LIBCURL_HTTP_CLIENT or NET_HTTP_CLIENT.
+			
+			The preference goes to libcurl implementation for now,
+			since the net implementation has currently less functionalities.
 		]"
 	author: "$Author$"
 	date: "$Date$"

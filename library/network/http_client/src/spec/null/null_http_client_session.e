@@ -1,11 +1,7 @@
 note
 	description : "[
-				HTTP_CLIENT_SESSION represents a session
-				and is used to call get, post, .... request
-				with predefined settings such as 
-					base_url
-					specific common headers
-					timeout and so on ...
+				NULL version of HTTP_CLIENT_SESSION.
+				It is used if no implementation is available (libcurl or net)
 			]"
 	date: "$Date$"
 	revision: "$Revision$"

@@ -15,9 +15,9 @@ inherit
 feature {NONE} -- Initialization
 
 	make (a_url: READABLE_STRING_8; a_request_method: like request_method; a_session: like session; ctx: like context)
-			-- Initialize `Current'.
+			-- Initialize `Current' with request url `a_url', method `a_request_method' within the session `a_session'
+			-- and optional context `ctx' which can be used to pass additional parameters.
 		do
-			current_redirects := 0
 			request_method := a_request_method
 			session := a_session
 			initialize (a_url, ctx)
@@ -27,6 +27,9 @@ feature {NONE} -- Initialization
 		end
 
 	initialize (a_url: READABLE_STRING_8; ctx: like context)
+			-- Initialize Current with `a_url' and `ctx'.
+			-- This can be used to reset/reinitialize Current with new url
+			-- in the case of redirection.
 		do
 			url := a_url
 			headers := session.headers.twin
@@ -41,10 +44,11 @@ feature {NONE} -- Initialization
 feature {NONE} -- Internal		
 
 	session: HTTP_CLIENT_SESSION
+			-- Session related to Current request.
+			-- It provides a few parameters related to session.
 
 	context: detachable HTTP_CLIENT_REQUEST_CONTEXT
-
-	current_redirects: INTEGER_32
+			-- Potential additional parameters for this specific request.
 
 feature -- Status report
 
@@ -60,11 +64,14 @@ feature -- Access
 			-- Request method associated with Current request.
 
 	url: READABLE_STRING_8
+			-- URL associated with current request.
 
 	headers: HASH_TABLE [READABLE_STRING_8, READABLE_STRING_8]
+			-- Specific headers to be used for current request.
 
 	response: HTTP_CLIENT_RESPONSE
-			-- Execute the request and return the response.
+			-- Response received from request execution.
+			-- Check `error_occurred' for eventual error.
 			-- note: two consecutive calls will trigger two executions!
 		deferred
 		ensure
@@ -74,6 +81,7 @@ feature -- Access
 feature {HTTP_CLIENT_SESSION} -- Execution
 
 	import (ctx: HTTP_CLIENT_REQUEST_CONTEXT)
+			-- Import `ctx' parameters.
 		local
 			l_headers: like headers
 		do
@@ -104,21 +112,26 @@ feature -- Authentication
 		end
 
 	username: detachable READABLE_STRING_32
+			-- Username specified for the `session'.
 		do
 			Result := session.username
 		end
 
 	password: detachable READABLE_STRING_32
+			-- Password specified for the `session'.
 		do
 			Result := session.password
 		end
 
 	credentials: detachable READABLE_STRING_32
+			-- Credentials specified for the `session'.
+			--| Usually `username':`password'
 		do
 			Result := session.credentials
 		end
 
 	proxy: detachable TUPLE [host: READABLE_STRING_8; port: INTEGER]
+			-- Optional proxy settings.
 		do
 			Result := session.proxy
 		end

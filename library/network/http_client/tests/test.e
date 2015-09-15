@@ -7,12 +7,11 @@ feature -- Init
 
 	make
 		local
-			null: NULL_HTTP_CLIENT
+			null: NULL_HTTP_CLIENT_SESSION
 		do
-			create null
-			if attached null.new_session ("http://example.com/") as l_sess then
-				check not l_sess.is_available end
-			end
+			create null.make ("http://example.com/")
+			check not null.is_available end
+			
 			test_get_with_authentication
 			test_http_client
 		end
