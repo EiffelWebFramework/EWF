@@ -197,11 +197,15 @@ feature -- Authentication
 	auth_type_id: INTEGER
 			-- See {HTTP_CLIENT_CONSTANTS}.Auth_type_*
 
-	username,
+	username: detachable READABLE_STRING_32
+			-- Associated optional username value.
+
 	password: detachable READABLE_STRING_32
+			-- Associated optional password value.
 
 	credentials: detachable READABLE_STRING_32
-
+			-- Associated optional credentials value.
+			-- Computed as `username':`password'.
 
 feature -- Status setting
 

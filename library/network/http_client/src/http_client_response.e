@@ -63,6 +63,14 @@ feature -- Access
 	redirections: detachable ARRAYED_LIST [TUPLE [status_line: detachable READABLE_STRING_8; raw_header: READABLE_STRING_8; body: detachable READABLE_STRING_8]]
 			-- Header of previous redirection if any.
 
+	redirections_count: INTEGER
+			-- Number of redirections.
+		do
+			if attached redirections as lst then
+				Result := lst.count
+			end
+		end
+
 	header (a_name: READABLE_STRING_8): detachable READABLE_STRING_8
 			-- Header entry value related to `a_name'
 			-- if multiple entries, just concatenate them using comma character

@@ -40,11 +40,13 @@
 				</condition>
 				<cluster name="net_ssl_disabled" location="$|no_ssl">
 					<condition>
+						<custom name="net_http_client_disabled" excluded_value="true"/>
 						<custom name="netssl_http_client_enabled" excluded_value="true"/>
 					</condition>
 				</cluster>
 				<cluster name="net_ssl_enabled" location="$|ssl">
 					<condition>
+						<custom name="net_http_client_disabled" excluded_value="true"/>
 						<custom name="netssl_http_client_enabled" value="true"/>
 					</condition>
 				</cluster>
