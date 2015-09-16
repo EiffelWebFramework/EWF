@@ -10,6 +10,9 @@ class
 
 inherit
 	HTTP_CLIENT_SESSION
+		redefine
+			close
+		end
 
 	NET_HTTP_CLIENT_INFO
 
@@ -30,6 +33,30 @@ feature -- Status report
 			Result := True
 			if base_url.starts_with_general ("https://") then
 				Result := has_https_support
+			end
+		end
+
+feature -- Access
+
+	persistent_connection: detachable NET_HTTP_CLIENT_CONNECTION
+			-- Socket used for persistent connection purpose.
+
+feature -- Element change
+
+	set_persistent_connection (a_connection: like persistent_connection)
+			-- Set `persistent_connection' to `a_connection'.
+		do
+			persistent_connection := a_connection
+		end
+
+feature -- Basic operation
+
+	close
+			-- <Precursor>
+		do
+			if attached persistent_connection as l_connection then
+				persistent_connection := Void
+				l_connection.socket.cleanup
 			end
 		end
 

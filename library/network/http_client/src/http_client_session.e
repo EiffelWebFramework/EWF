@@ -50,6 +50,14 @@ feature {NONE} -- Initialization
 
 feature -- Basic operation
 
+	close
+			-- Close session.
+			--| useful to disconnect persistent connection.
+		do
+		end
+
+feature -- Access
+
 	url (a_path: READABLE_STRING_8; ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT): STRING_8
 			-- Url computed from Current and `ctx' data.
 		local
@@ -88,17 +96,23 @@ feature -- Helper
 
 	get (a_path: READABLE_STRING_8; ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT): HTTP_CLIENT_RESPONSE
 			-- Response for GET request based on Current, `a_path' and `ctx'.
+		require
+			is_available: is_available
 		deferred
 		end
 
 	head (a_path: READABLE_STRING_8; ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT): HTTP_CLIENT_RESPONSE
 			-- Response for HEAD request based on Current, `a_path' and `ctx'.
+		require
+			is_available: is_available
 		deferred
 		end
 
 	post (a_path: READABLE_STRING_8; ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT; data: detachable READABLE_STRING_8): HTTP_CLIENT_RESPONSE
 			-- Response for POST request based on Current, `a_path' and `ctx'
 			-- with input `data'	
+		require
+			is_available: is_available
 		deferred
 		end
 
@@ -111,29 +125,39 @@ feature -- Helper
 	patch (a_path: READABLE_STRING_8; ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT; data: detachable READABLE_STRING_8): HTTP_CLIENT_RESPONSE
 			-- Response for PATCH request based on Current, `a_path' and `ctx'
 			-- with input `data'	
+		require
+			is_available: is_available
 		deferred
 		end
 
 	patch_file (a_path: READABLE_STRING_8; ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT; fn: detachable READABLE_STRING_8): HTTP_CLIENT_RESPONSE
 			-- Response for PATCH request based on Current, `a_path' and `ctx'
 			-- with uploaded data file `fn'	
+		require
+			is_available: is_available
 		deferred
 		end
 
 	put (a_path: READABLE_STRING_8; ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT; data: detachable READABLE_STRING_8): HTTP_CLIENT_RESPONSE
 			-- Response for PUT request based on Current, `a_path' and `ctx'
 			-- with input `data'	
+		require
+			is_available: is_available
 		deferred
 		end
 
 	put_file (a_path: READABLE_STRING_8; ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT; fn: detachable READABLE_STRING_8): HTTP_CLIENT_RESPONSE
 			-- Response for PUT request based on Current, `a_path' and `ctx'
 			-- with uploaded file `fn'	
+		require
+			is_available: is_available
 		deferred
 		end
 
 	delete (a_path: READABLE_STRING_8; ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT): HTTP_CLIENT_RESPONSE
 			-- Response for DELETE request based on Current, `a_path' and `ctx'
+		require
+			is_available: is_available
 		deferred
 		end
 
