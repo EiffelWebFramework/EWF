@@ -28,13 +28,44 @@ feature {NONE} -- Internal
 	session: NET_HTTP_CLIENT_SESSION
 	net_http_client_version: STRING = "0.1"
 
-
-	new_socket (a_host: READABLE_STRING_8; a_port: INTEGER; a_is_https: BOOLEAN; ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT): NETWORK_STREAM_SOCKET
+	session_socket (a_host: READABLE_STRING_8; a_port: INTEGER; a_is_https: BOOLEAN; ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT): NETWORK_STREAM_SOCKET
+			-- Session socket to use for connection.
+			-- Eventually reuse the persistent connection if any.
+		local
+			l_socket: detachable NETWORK_STREAM_SOCKET
 		do
-			if a_is_https then
-				create {SSL_NETWORK_STREAM_SOCKET} Result.make_client_by_port (a_port, a_host)
+			if
+				attached session.persistent_connection as l_persistent_connection and then
+				l_persistent_connection.is_reusable (a_host, a_port)
+			then
+				l_socket := l_persistent_connection.socket
+				if a_is_https then
+					if attached {SSL_NETWORK_STREAM_SOCKET} l_socket as l_ssl_socket then
+						Result := l_ssl_socket
+					else
+						l_socket := Void
+					end
+				elseif attached {SSL_NETWORK_STREAM_SOCKET} l_socket as l_ssl_socket then
+					l_socket := Void
+				end
+				if l_socket /= Void and then not l_socket.is_connected then
+						-- Reset persistent connection
+					l_socket := Void
+				end
+			end
+			if l_socket /= Void then
+					-- Reuse persistent connection.
+				Result := l_socket
 			else
-				create Result.make_client_by_port (a_port, a_host)
+				session.set_persistent_connection (Void)
+				if a_is_https then
+					create {SSL_NETWORK_STREAM_SOCKET} Result.make_client_by_port (a_port, a_host)
+				else
+					create Result.make_client_by_port (a_port, a_host)
+				end
+				Result.set_connect_timeout (connect_timeout)
+				Result.set_timeout (timeout)
+				Result.connect
 			end
 		end
 
@@ -67,13 +98,14 @@ feature -- Access
 			l_form_string: STRING
 			l_prev_header: READABLE_STRING_8
 			l_boundary: READABLE_STRING_8
-			l_is_http_1_0: BOOLEAN
+			l_is_http_1_0_request: BOOLEAN
+			l_is_keep_alive: BOOLEAN
 			retried: BOOLEAN
 		do
 			if not retried then
 				ctx := context
 				if ctx /= Void then
-					l_is_http_1_0 := attached ctx.http_version as l_http_version and then l_http_version.same_string ("HTTP/1.0")
+					l_is_http_1_0_request := attached ctx.http_version as l_http_version and then l_http_version.same_string ("HTTP/1.0")
 				end
 				create Result.make (url)
 
@@ -96,10 +128,7 @@ feature -- Access
 				end
 
 					-- Connect			
-				l_socket := new_socket (l_host, l_port, l_is_https, ctx)
-				l_socket.set_connect_timeout (connect_timeout)
-				l_socket.set_timeout (timeout)
-				l_socket.connect
+				l_socket := session_socket (l_host, l_port, l_is_https, ctx)
 				if l_socket.is_connected then
 
 					create l_form_string.make_empty
@@ -197,7 +226,7 @@ feature -- Access
 					s.append_character (' ')
 					s.append (l_request_uri)
 					s.append_character (' ')
-					if l_is_http_1_0 then
+					if l_is_http_1_0_request then
 						s.append ("HTTP/1.0")
 					else
 						s.append ("HTTP/1.1")
@@ -213,12 +242,12 @@ feature -- Access
 						s.append (l_host)
 					end
 					s.append (http_end_of_header_line)
+--					s.append ("Connection: close")
+--					s.append (http_end_of_header_line)
 
 						-- Append the given request headers
 					l_cookie := Void
-					if headers.is_empty then
-						s.append (Http_end_of_command)
-					else
+					if not headers.is_empty then
 						across
 							headers as ic
 						loop
@@ -235,11 +264,10 @@ feature -- Access
 								s.append (Http_end_of_header_line)
 							end
 						end
-						s.append (Http_end_of_header_line)
 					end
 
 						-- Compute Header Cookie:  if needed
-						-- Get session cookie
+						-- Use session cookie
 					if l_cookie = Void then
 						l_cookie := session.cookie
 					else
@@ -255,6 +283,10 @@ feature -- Access
 						s.append (l_upload_data)
 						s.append (http_end_of_header_line)
 					end
+
+						--| End of client header.
+					s.append (Http_end_of_header_line)
+
 						--| Note that any remaining file to upload will be done directly via the socket
 						--| to optimize memory usage
 
@@ -270,6 +302,9 @@ feature -- Access
 							--| Send request            |--
 							--|-------------------------|--
 
+						debug ("socket_header")
+							io.error.put_string (s)
+						end
 						l_socket.put_string (s)
 							--| Send remaining payload data, if needed.
 						if l_upload_file /= Void then
@@ -283,35 +318,57 @@ feature -- Access
 							--|-------------------------|--
 						if l_socket.ready_for_reading then
 							create l_message.make_empty
-							append_socket_header_content_to (l_socket, l_message)
+							append_socket_header_content_to (Result, l_socket, l_message)
 							l_prev_header := Result.raw_header
 							Result.set_raw_header (l_message.string)
-							l_content_length := -1
-							if attached Result.header ("Content-Length") as s_len and then s_len.is_integer then
-								l_content_length := s_len.to_integer
-							end
-							l_location := Result.header ("Location")
-							if attached Result.header ("Set-Cookie") as s_cookies then
-								session.set_cookie (s_cookies)
-							end
 							l_message.append (http_end_of_header_line)
 
-								-- Get content if any.
-							append_socket_content_to (Result, l_socket, l_content_length, l_message)
-								-- Restore previous header
-							Result.set_raw_header (l_prev_header)
-								-- Set message
-							Result.set_response_message (l_message, ctx)
-								-- Check status code.
-							check status_coherent: attached Result.status_line as l_status_line implies l_status_line.has_substring (Result.status.out) end
+							if not Result.error_occurred then
+									-- Get information from header
+								l_content_length := -1
+								if attached Result.header ("Content-Length") as s_len and then s_len.is_integer then
+									l_content_length := s_len.to_integer
+								end
+								l_location := Result.header ("Location")
+								if attached Result.header ("Set-Cookie") as s_cookies then
+									session.set_cookie (s_cookies)
+								end
 
-								-- follow redirect
-							if l_location /= Void then
-								if Result.redirections_count < max_redirects then
-									initialize (l_location, ctx)
-									redirection_response := response
-									redirection_response.add_redirection (Result.status_line, Result.raw_header, Result.body)
-									Result := redirection_response
+									-- Keep-alive connection?
+									-- with HTTP/1.1, this is the default, and could be changed by Connection: close
+									-- with HTTP/1.0, it requires "Connection: keep-alive" header line.
+								if attached Result.header ("Connection") as s_connection then
+									l_is_keep_alive := s_connection.same_string ("keep-alive")
+								else
+									l_is_keep_alive := not Result.is_http_1_0
+								end
+
+									-- Get content if any.
+								append_socket_content_to (Result, l_socket, l_content_length, l_message)
+									-- Restore previous header
+								Result.set_raw_header (l_prev_header)
+									-- Set message
+								Result.set_response_message (l_message, ctx)
+									-- Check status code.
+								check status_coherent: attached Result.status_line as l_status_line implies l_status_line.has_substring (Result.status.out) end
+
+								if l_is_keep_alive then
+									session.set_persistent_connection (create {NET_HTTP_CLIENT_CONNECTION}.make (l_socket, l_host, l_port))
+								else
+									session.set_persistent_connection (Void)
+								end
+
+									-- follow redirect
+								if l_location /= Void then
+									if Result.redirections_count < max_redirects then
+										initialize (l_location, ctx)
+										redirection_response := response
+										redirection_response.add_redirection (Result.status_line, Result.raw_header, Result.body)
+										Result := redirection_response
+									end
+								end
+								if not l_is_keep_alive then
+									l_socket.cleanup
 								end
 							end
 						else
@@ -477,7 +534,7 @@ feature {NONE} -- Helpers
 			end
 		end
 
-	append_socket_header_content_to (a_socket: NETWORK_STREAM_SOCKET; a_output: STRING)
+	append_socket_header_content_to (a_response: HTTP_CLIENT_RESPONSE; a_socket: NETWORK_STREAM_SOCKET; a_output: STRING)
 			-- Get header from `a_socket' into `a_output'.
 		local
 			s: READABLE_STRING_8
@@ -485,16 +542,30 @@ feature {NONE} -- Helpers
 			from
 				s := ""
 			until
-				s.same_string ("%R") or not a_socket.readable
+				s.same_string ("%R") or not a_socket.readable or a_response.error_occurred
 			loop
-				a_socket.read_line_thread_aware
-				s := a_socket.last_string
-				if s.same_string ("%R") then
-						-- Reach end of header
---					a_output.append (http_end_of_header_line)
+				if a_socket.ready_for_reading then
+					a_socket.read_line_thread_aware
+					s := a_socket.last_string
+					debug ("socket_header")
+						io.error.put_string ("header-line: " + s + "%N")
+					end
+					if s.is_empty then
+						debug ("socket_header")
+							io.error.put_string ("ERROR: zero byte read when receiving header.%N")
+						end
+						a_response.set_error_message ("Read zero byte, expecting header line")
+					elseif s.same_string ("%R") then
+							-- Reach end of header
+					else
+						a_output.append (s)
+						a_output.append_character ('%N')
+					end
 				else
-					a_output.append (s)
-					a_output.append_character ('%N')
+					debug ("socket_header")
+						io.error.put_string ("ERROR: timeout when receiving header.%N")
+					end
+					a_response.set_error_message ("Could not read header data, timeout")
 				end
 			end
 		end

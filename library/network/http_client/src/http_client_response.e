@@ -217,6 +217,22 @@ feature -- Access
 			end
 		end
 
+feature -- Status report
+
+	is_http_1_0: BOOLEAN
+			-- Is response using HTTP/1.0 protocole?
+			--| Note: it is relevant once the raw header are set.		
+		do
+			Result := attached http_version as v and then v.same_string ("1.0")
+		end
+
+	is_http_1_1: BOOLEAN
+			-- Is response using HTTP/1.1 protocole?
+			--| Note: it is relevant once the raw header are set.		
+		do
+			Result := attached http_version as v and then v.same_string ("1.1")
+		end
+
 feature -- Change
 
 	set_http_version (v: like http_version)
@@ -345,10 +361,23 @@ feature -- Change
 
 	set_raw_header (h: READABLE_STRING_8)
 			-- Set http header `raw_header' to `h'
+		local
+			i: INTEGER
+			s: STRING_8
 		do
 			raw_header := h
 				--| Reset internal headers
 			internal_headers := Void
+
+				--| Set status line, right away.
+			i := h.index_of ('%N', 1)
+			if i > 0 then
+				s := h.substring (1, i - 1)
+				if s.starts_with ("HTTP/") then
+					s.right_adjust
+					set_status_line (s)
+				end
+			end
 		end
 
 	add_redirection (s: detachable READABLE_STRING_8; h: READABLE_STRING_8; a_body: detachable READABLE_STRING_8)
