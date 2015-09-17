@@ -36,12 +36,12 @@ feature -- Status report
 			end
 		end
 
-feature -- Access
+feature -- Access: persistent connection
 
 	persistent_connection: detachable NET_HTTP_CLIENT_CONNECTION
 			-- Socket used for persistent connection purpose.
 
-feature -- Element change
+feature -- Element change: persistent connection		
 
 	set_persistent_connection (a_connection: like persistent_connection)
 			-- Set `persistent_connection' to `a_connection'.

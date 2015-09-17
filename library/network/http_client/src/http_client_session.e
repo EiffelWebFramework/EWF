@@ -85,6 +85,61 @@ feature -- Access
 			end
 		end
 
+feature {NONE} -- Access: verbose
+
+	verbose_mode: INTEGER
+			-- Internal verbose mode.	
+
+	verbose_header_sent_mode: INTEGER = 1 		--| 0001
+	verbose_header_received_mode: INTEGER = 2 	--| 0010
+	verbose_debug_mode: INTEGER = 4 			--| 0100
+
+feature -- Access: verbose
+
+	is_header_sent_verbose: BOOLEAN
+		do
+			Result := verbose_mode & verbose_header_sent_mode = verbose_header_sent_mode
+		end
+
+	is_header_received_verbose: BOOLEAN
+		do
+			Result := verbose_mode & verbose_header_received_mode = verbose_header_received_mode
+		end
+
+	is_debug_verbose: BOOLEAN
+		do
+			Result := verbose_mode & verbose_debug_mode = verbose_debug_mode
+		end
+
+feature -- Element change: verbose
+
+	set_header_sent_verbose (b: BOOLEAN)
+		do
+			if b then
+				verbose_mode := verbose_mode | verbose_header_sent_mode
+			else
+				verbose_mode := verbose_mode & verbose_header_sent_mode.bit_not
+			end
+		end
+
+	set_header_received_verbose (b: BOOLEAN)
+		do
+			if b then
+				verbose_mode := verbose_mode | verbose_header_received_mode
+			else
+				verbose_mode := verbose_mode & verbose_header_received_mode.bit_not
+			end
+		end
+
+	set_debug_verbose (b: BOOLEAN)
+		do
+			if b then
+				verbose_mode := verbose_mode | verbose_debug_mode
+			else
+				verbose_mode := verbose_mode & verbose_debug_mode.bit_not
+			end
+		end
+
 feature -- Custom		
 
 	custom (a_method: READABLE_STRING_8; a_path: READABLE_STRING_8; ctx: detachable HTTP_CLIENT_REQUEST_CONTEXT): HTTP_CLIENT_RESPONSE
