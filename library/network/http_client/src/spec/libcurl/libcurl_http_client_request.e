@@ -62,6 +62,7 @@ feature -- Execution
 			l_upload_filename: detachable READABLE_STRING_GENERAL
 			l_headers: like headers
 			l_is_http_1_0: BOOLEAN
+			l_uri: URI
 		do
 			if not retried then
 				curl := session.curl
@@ -82,6 +83,38 @@ feature -- Execution
 				l_url := url
 				if ctx /= Void then
 					append_parameters_to_url (ctx.query_parameters, l_url)
+				end
+
+				if session.is_header_sent_verbose then
+					io.error.put_string ("> Sending:%N")
+					create l_uri.make_from_string (l_url)
+					io.error.put_string ("> ")
+					io.error.put_string (request_method + " " + l_uri.path)
+					if attached l_uri.query as q then
+						io.error.put_string (q)
+					end
+					if l_is_http_1_0 then
+						io.error.put_string (" HTTP/1.0")
+					else
+						io.error.put_string (" HTTP/1.1")
+					end
+					io.error.put_new_line
+					if attached l_uri.host as l_host then
+						io.error.put_string ("> ")
+						io.error.put_string ("Host: " + l_host)
+						io.error.put_new_line
+					end
+					across
+						headers as ic
+					loop
+						io.error.put_string ("> ")
+						io.error.put_string (ic.key)
+						io.error.put_string (": ")
+						io.error.put_string (ic.item)
+						io.error.put_new_line
+					end
+					io.error.put_string ("> ... ")
+					io.error.put_new_line
 				end
 
 				debug ("service")
@@ -248,6 +281,10 @@ feature -- Execution
 					Result.status := response_status_code (curl_easy, curl_handle)
 					if l_curl_string /= Void then
 						Result.set_response_message (l_curl_string.string, ctx)
+						if session.is_header_received_verbose then
+							io.error.put_string ("< Receiving:%N")
+							io.error.put_string (Result.raw_header)
+						end
 					end
 				else
 					Result.set_error_message ("Error: cURL Error[" + l_result.out + "]")

@@ -127,7 +127,14 @@ feature -- Access
 					l_host := l_url.host
 				end
 
-					-- Connect			
+				if attached session.proxy as l_proxy_settings then
+					-- For now, so proxy support.
+					check
+						not_supported: False
+					end
+				end
+
+					-- Connect
 				l_socket := session_socket (l_host, l_port, l_is_https, ctx)
 				if l_socket.is_connected then
 
@@ -194,27 +201,23 @@ feature -- Access
 								l_boundary := new_mime_boundary
 								headers.extend ("multipart/form-data; boundary=" + l_boundary, "Content-Type")
 								if l_form_data /= Void then
-									headers.extend ("*/*", "Accept")
 									l_upload_data := form_date_and_uploaded_files_to_mime_string (l_form_data, l_upload_filename, l_boundary)
 									headers.extend (l_upload_data.count.out, "Content-Length")
 								end
 							end
-						elseif
-							request_method.is_case_insensitive_equal ("POST")
-							or else request_method.is_case_insensitive_equal ("PUT")
-						then
-							if l_upload_data /= Void then
-								check ctx.has_upload_data end
+						elseif l_upload_data /= Void then
+							check ctx.has_upload_data end
+							if not headers.has ("Content-Type") then
 								headers.extend ("application/x-www-form-urlencoded", "Content-Type")
-								headers.extend (l_upload_data.count.out, "Content-Length")
-							elseif l_upload_filename /= Void then
-								check ctx.has_upload_filename end
-								create l_upload_file.make_with_name (l_upload_filename)
-								if l_upload_file.exists and then l_upload_file.readable then
-									headers.extend (l_upload_file.count.out, "Content-Length")
-								end
-								check l_upload_file /= Void end
 							end
+							headers.extend (l_upload_data.count.out, "Content-Length")
+						elseif l_upload_filename /= Void then
+							check ctx.has_upload_filename end
+							create l_upload_file.make_with_name (l_upload_filename)
+							if l_upload_file.exists and then l_upload_file.readable then
+								headers.extend (l_upload_file.count.out, "Content-Length")
+							end
+							check l_upload_file /= Void end
 						end
 					end
 
@@ -242,8 +245,12 @@ feature -- Access
 						s.append (l_host)
 					end
 					s.append (http_end_of_header_line)
---					s.append ("Connection: close")
---					s.append (http_end_of_header_line)
+					if not headers.has ("Connection") then
+						if l_is_http_1_0_request then
+							s.append ("Connection: keep-alive")
+							s.append (http_end_of_header_line)
+						end
+					end
 
 						-- Append the given request headers
 					l_cookie := Void
@@ -279,13 +286,13 @@ feature -- Access
 						s.append (http_end_of_header_line)
 					end
 
+						--| End of client header.
+					s.append (Http_end_of_header_line)
+
 					if l_upload_data /= Void then
 						s.append (l_upload_data)
 						s.append (http_end_of_header_line)
 					end
-
-						--| End of client header.
-					s.append (Http_end_of_header_line)
 
 						--| Note that any remaining file to upload will be done directly via the socket
 						--| to optimize memory usage
@@ -302,8 +309,9 @@ feature -- Access
 							--| Send request            |--
 							--|-------------------------|--
 
-						debug ("socket_header")
-							io.error.put_string (s)
+						if session.is_header_sent_verbose then
+							log ("> Sending:%N")
+							log (s)
 						end
 						l_socket.put_string (s)
 							--| Send remaining payload data, if needed.
@@ -316,9 +324,13 @@ feature -- Access
 							--| Get response.           |--
 							--| Get header message      |--
 							--|-------------------------|--
-						if l_socket.ready_for_reading then
+						if is_ready_for_reading (l_socket) then
 							create l_message.make_empty
 							append_socket_header_content_to (Result, l_socket, l_message)
+							if session.is_header_received_verbose then
+								log ("< Receiving:%N")
+								log (l_message)
+							end
 							l_prev_header := Result.raw_header
 							Result.set_raw_header (l_message.string)
 							l_message.append (http_end_of_header_line)
@@ -372,12 +384,21 @@ feature -- Access
 								end
 							end
 						else
+							if session.is_debug_verbose then
+								log ("Debug: Read Timeout!%N")
+							end
 							Result.set_error_message ("Read Timeout")
 						end
 					else
+						if session.is_debug_verbose then
+							log ("Debug: Write Timeout!%N")
+						end
 						Result.set_error_message ("Write Timeout")
 					end
 				else
+					if session.is_debug_verbose then
+						log ("Debug: Could not connect!%N")
+					end
 					Result.set_error_message ("Could not connect")
 				end
 			else
@@ -391,7 +412,21 @@ feature -- Access
 
 feature {NONE} -- Helpers
 
+	log (m: READABLE_STRING_8)
+			-- Output log messages.
+		do
+			io.error.put_string (m)
+		end
+
+	is_ready_for_reading (a_socket: NETWORK_STREAM_SOCKET): BOOLEAN
+			-- Is `a_socket' ready for reading?
+		do
+			Result := a_socket.ready_for_reading
+		end
+
 	form_date_and_uploaded_files_to_mime_string (a_form_parameters: HASH_TABLE [READABLE_STRING_32, READABLE_STRING_32]; a_upload_filename: detachable READABLE_STRING_GENERAL; a_mime_boundary: READABLE_STRING_8): STRING
+			-- Form data and uploaded files converted to mime string.
+			-- TODO: design a proper MIME... component.
 		local
 			l_path: PATH
 			l_mime_type: READABLE_STRING_8
@@ -544,28 +579,18 @@ feature {NONE} -- Helpers
 			until
 				s.same_string ("%R") or not a_socket.readable or a_response.error_occurred
 			loop
-				if a_socket.ready_for_reading then
-					a_socket.read_line_thread_aware
-					s := a_socket.last_string
-					debug ("socket_header")
-						io.error.put_string ("header-line: " + s + "%N")
+				a_socket.read_line_thread_aware
+				s := a_socket.last_string
+				if s.is_empty then
+					if session.is_debug_verbose then
+						log ("Debug: ERROR: zero byte read when receiving header.%N")
 					end
-					if s.is_empty then
-						debug ("socket_header")
-							io.error.put_string ("ERROR: zero byte read when receiving header.%N")
-						end
-						a_response.set_error_message ("Read zero byte, expecting header line")
-					elseif s.same_string ("%R") then
-							-- Reach end of header
-					else
-						a_output.append (s)
-						a_output.append_character ('%N')
-					end
+					a_response.set_error_message ("Read zero byte, expecting header line")
+				elseif s.same_string ("%R") then
+						-- Reach end of header
 				else
-					debug ("socket_header")
-						io.error.put_string ("ERROR: timeout when receiving header.%N")
-					end
-					a_response.set_error_message ("Could not read header data, timeout")
+					a_output.append (s)
+					a_output.append_character ('%N')
 				end
 			end
 		end
@@ -581,29 +606,22 @@ feature {NONE} -- Helpers
 		do
 			if a_socket.readable then
 				if a_len >= 0 then
-					debug ("socket_content")
-						io.error.put_string ("Content-Length="+ a_len.out +"%N")
+					if session.is_debug_verbose then
+						log ("Debug: Content-Length="+ a_len.out +"%N")
 					end
 					from
 						r := a_len
 					until
 						r = 0 or else not a_socket.readable or else a_response.error_occurred
 					loop
-						if a_socket.ready_for_reading then
-							a_socket.read_stream_thread_aware (r)
-							l_count := l_count + a_socket.bytes_read
-							debug ("socket_content")
-								io.error.put_string ("  - byte read=" + a_socket.bytes_read.out + "%N")
-								io.error.put_string ("  - current count=" + l_count.out + "%N")
-							end
-							r := r - a_socket.bytes_read
-							a_output.append (a_socket.last_string)
-						else
-							debug ("socket_content")
-								io.error.put_string ("  -! TIMEOUT%N")
-							end
-							a_response.set_error_message ("Could not read chunked data, timeout")
+						a_socket.read_stream_thread_aware (r)
+						l_count := l_count + a_socket.bytes_read
+						if session.is_debug_verbose then
+							log ("Debug:   - byte read=" + a_socket.bytes_read.out + "%N")
+							log ("Debug:   - current count=" + l_count.out + "%N")
 						end
+						r := r - a_socket.bytes_read
+						a_output.append (a_socket.last_string)
 					end
 					check full_content_read: not a_response.error_occurred implies l_count = a_len end
 				elseif attached a_response.header ("Transfer-Encoding") as l_enc and then l_enc.is_case_insensitive_equal ("chunked") then
@@ -619,15 +637,11 @@ feature {NONE} -- Helpers
 					until
 						n < l_chunk_size or not a_socket.readable
 					loop
-						if a_socket.ready_for_reading then
-							a_socket.read_stream_thread_aware (l_chunk_size)
-							s := a_socket.last_string
-							n := a_socket.bytes_read
-							l_count := l_count + n
-							a_output.append (s)
-						else
-							a_response.set_error_message ("Could not read data, timeout")
-						end
+						a_socket.read_stream_thread_aware (l_chunk_size)
+						s := a_socket.last_string
+						n := a_socket.bytes_read
+						l_count := l_count + n
+						a_output.append (s)
 					end
 				end
 			end
@@ -645,8 +659,8 @@ feature {NONE} -- Helpers
 			n,pos, l_count: INTEGER
 			hexa2int: HEXADECIMAL_STRING_TO_INTEGER_CONVERTER
 		do
-			debug ("socket_content")
-				io.error.put_string ("Chunked encoding%N")
+			if session.is_debug_verbose then
+				log ("Debug: Chunked encoding%N")
 			end
 			from
 				create hexa2int.make
@@ -657,8 +671,8 @@ feature {NONE} -- Helpers
 				a_socket.read_line_thread_aware -- Read chunk info
 				s := a_socket.last_string
 				s.right_adjust
-				debug ("socket_content")
-					io.error.put_string ("  - chunk info='" + s + "'%N")
+				if session.is_debug_verbose then
+					log ("Debug:   - chunk info='" + s + "'%N")
 				end
 				pos := s.index_of (';', 1)
 				if pos > 0 then
@@ -674,8 +688,8 @@ feature {NONE} -- Helpers
 						n := 0
 					end
 				end
-				debug ("socket_content")
-					io.error.put_string ("  - chunk size=" + n.out + "%N")
+				if session.is_debug_verbose then
+					log ("Debug:   - chunk size=" + n.out + "%N")
 				end
 				if n > 0 then
 					from
@@ -683,36 +697,22 @@ feature {NONE} -- Helpers
 					until
 						r = 0 or else not a_socket.readable or else a_response.error_occurred
 					loop
-						if a_socket.ready_for_reading then
-							a_socket.read_stream_thread_aware (r)
-							l_count := l_count + a_socket.bytes_read
-							debug ("socket_content")
-								io.error.put_string ("  - byte read=" + a_socket.bytes_read.out + "%N")
-								io.error.put_string ("  - current count=" + l_count.out + "%N")
-							end
-							r := r - a_socket.bytes_read
-							a_output.append (a_socket.last_string)
-						else
-							debug ("socket_content")
-								io.error.put_string ("  -! TIMEOUT%N")
-							end
-							a_response.set_error_message ("Could not read chunked data, timeout")
+						a_socket.read_stream_thread_aware (r)
+						l_count := l_count + a_socket.bytes_read
+						if session.is_debug_verbose then
+							log ("Debug:   - byte read=" + a_socket.bytes_read.out + "%N")
+							log ("Debug:   - current count=" + l_count.out + "%N")
 						end
+						r := r - a_socket.bytes_read
+						a_output.append (a_socket.last_string)
 					end
 
-					if a_socket.ready_for_reading then
-						a_socket.read_character
-						check a_socket.last_character = '%R' end
-						a_socket.read_character
-						check a_socket.last_character = '%N' end
-						debug ("socket_content")
-							io.error.put_string ("  - Found CRNL %N")
-						end
-					else
-						debug ("socket_content")
-							io.error.put_string ("  -! TIMEOUT%N")
-						end
-						a_response.set_error_message ("Could not read chunked data, timeout")
+					a_socket.read_character
+					check a_socket.last_character = '%R' end
+					a_socket.read_character
+					check a_socket.last_character = '%N' end
+					if session.is_debug_verbose then
+						log ("Debug:   - Found CRNL %N")
 					end
 				end
 			end
