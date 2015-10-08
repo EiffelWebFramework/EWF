@@ -88,10 +88,45 @@ feature -- Element change
 			end
 		end
 
-	add_item (a_item: FEED_ITEM)
+	extend (a_item: FEED_ITEM)
 			-- Add item `a_item' to feed `items'.
 		do
 			items.force (a_item)
+		end
+
+	extended alias "+" (a_feed: FEED): FEED
+			-- New feed object made from Current merged with a_feed.
+		local
+			l_title: STRING_32
+		do
+			create l_title.make (title.count + a_feed.title.count)
+			l_title.append_character ('(')
+			l_title.append (title)
+			l_title.append_character (')')
+			l_title.append_character ('+')
+			l_title.append_character ('(')
+			l_title.append (a_feed.title)
+			l_title.append_character (')')
+			create Result.make (l_title)
+			Result.items.append (items)
+			across
+				a_feed.items as ic
+			loop
+					-- FIXME jfiat [2015/10/07] : check there is no duplication! (same id, or link, ...)
+				Result.extend (ic.item)
+			end
+			Result.sort
+		end
+
+	sort
+			-- Sort `items', (recent first).
+		local
+			s: QUICK_SORTER [FEED_ITEM]
+			comp: COMPARABLE_COMPARATOR [FEED_ITEM]
+		do
+			create comp
+			create s.make (comp)
+			s.reverse_sort (items)
 		end
 
 feature -- Visitor

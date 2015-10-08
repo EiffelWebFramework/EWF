@@ -61,6 +61,21 @@ feature -- Access
 	date: detachable DATE_TIME
 			-- Publishing date.
 
+	link: detachable FEED_LINK
+			-- Main link for the entry, if any.
+		do
+			if attached links as l_links then
+				Result := l_links.item ("")
+				across
+					l_links as ic
+				until
+					Result /= Void
+				loop
+					Result := ic.item
+				end
+			end
+		end
+
 	links: STRING_TABLE [FEED_LINK]
 			-- Url indexed by relation
 

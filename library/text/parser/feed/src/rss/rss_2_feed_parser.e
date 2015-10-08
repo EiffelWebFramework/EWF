@@ -112,7 +112,7 @@ feature -- Access
 										else
 											e.set_content (xml_element_code (x_content), Void)
 										end
-										Result.add_item (e)
+										Result.extend (e)
 									end
 								end
 							end

@@ -92,7 +92,7 @@ feature -- Access
 									e.set_author (l_author)
 								end
 							end
-							Result.add_item (e)
+							Result.extend (e)
 						end
 					end
 				end
