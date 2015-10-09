@@ -2,8 +2,8 @@ note
 	description : "Objects that handle error..."
 	legal: "See notice at end of class."
 	status: "See notice at end of class."
-	date: "$Date$"
-	revision: "$Revision$"
+	date: "$Date: 2015-10-10 00:55:41 +0200 (sam., 10 oct. 2015) $"
+	revision: "$Revision: 97980 $"
 
 class
 	ERROR_HANDLER
@@ -216,7 +216,7 @@ feature -- Basic operation
 			on_error_added (a_error)
 		end
 
-	add_error_details, add_custom_error (a_code: INTEGER; a_name: STRING; a_message: detachable STRING_32)
+	add_error_details, add_custom_error (a_code: INTEGER; a_name: STRING; a_message: detachable READABLE_STRING_32)
 			-- Add custom error to the stack of error
 		local
 			e: ERROR_CUSTOM

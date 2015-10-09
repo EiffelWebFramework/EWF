@@ -2,8 +2,8 @@ note
 	description : "Objects that represent a custom error"
 	legal: "See notice at end of class."
 	status: "See notice at end of class."
-	date: "$Date$"
-	revision: "$Revision$"
+	date: "$Date: 2015-10-10 00:55:41 +0200 (sam., 10 oct. 2015) $"
+	revision: "$Revision: 97980 $"
 
 class
 	ERROR_CUSTOM
@@ -24,7 +24,7 @@ feature {NONE} -- Initialization
 			if a_message /= Void then
 				message := a_message
 			else
-				message := "Error: " + a_name + " (code=" + a_code.out + ")"
+				message := {STRING_32} "Error: " + a_name + " (code=" + a_code.out + ")"
 			end
 		end
 
