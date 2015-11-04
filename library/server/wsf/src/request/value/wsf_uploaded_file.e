@@ -65,11 +65,10 @@ feature -- Status report
 feature -- Element change
 
 	change_name (a_name: like name)
+			-- <Precursor>
 		do
-			name := url_decoded_string (a_name)
-			url_encoded_name := a_name
-		ensure then
-			a_name.same_string (url_encoded_name)
+			name := a_name
+			url_encoded_name := url_encoded_string (a_name)
 		end
 
 feature -- Status report
@@ -182,7 +181,7 @@ feature -- Basic operation
 				if f.exists then
 					f.rename_file (a_destination)
 					Result := True
-				end				
+				end
 			end
 		ensure
 			removed: not exists
@@ -241,7 +240,7 @@ feature -- Element change
 		end
 
 note
-	copyright: "2011-2014, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Colin Adams, Eiffel Software and others"
+	copyright: "2011-2015, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Colin Adams, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software
