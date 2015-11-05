@@ -410,11 +410,7 @@ feature {NONE} -- Implementation
 		local
 			utf: UTF_CONVERTER
 		do
-			--if s.is_valid_as_string_8 then
-				--a_output.append (s.as_string_8)
-			--else
-				a_output.append (utf.utf_32_string_to_utf_8_string_8 (s))
-			--end
+			a_output.append (utf.utf_32_string_to_utf_8_string_8 (s))
 		end
 
 feature -- Constants

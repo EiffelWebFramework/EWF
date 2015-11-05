@@ -21,6 +21,7 @@ inherit
 feature -- Smart parameter identification
 
 	add_utf_8_string_value_to_table (a_utf_8_name: READABLE_STRING_8; a_utf_8_value: READABLE_STRING_8; a_table: HASH_TABLE [WSF_VALUE, READABLE_STRING_GENERAL])
+			-- Add a utf-8 string value `a_utf_8_value' associated with name `a_utf_8_name' to `a_table'.
 		local
 			utf: UTF_CONVERTER
 			n,v: READABLE_STRING_32
@@ -31,6 +32,7 @@ feature -- Smart parameter identification
 		end
 
 	add_percent_encoded_string_value_to_table (a_encoded_name: READABLE_STRING_8; a_encoded_value: READABLE_STRING_8; a_table: HASH_TABLE [WSF_VALUE, READABLE_STRING_GENERAL])
+			-- Add a percent-encoded string value `a_encoded_value' associated with name `a_encoded_name' to `a_table'.
 		local
 			v: WSF_STRING
 		do
@@ -39,6 +41,7 @@ feature -- Smart parameter identification
 		end
 
 	add_value_to_table (a_name: READABLE_STRING_GENERAL; a_value: WSF_VALUE; a_table: HASH_TABLE [WSF_VALUE, READABLE_STRING_GENERAL])
+			-- Add value `a_value' associated with unicode name `a_name' to `a_table'.
 		local
 			l_decoded_name: STRING_32
 			l_encoded_name: READABLE_STRING_8
