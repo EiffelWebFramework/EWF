@@ -15,17 +15,27 @@ inherit
 		end
 
 create
-	make
+	make,
+	make_with_percent_encoded_values
 
 feature {NONE} -- Initialization	
 
-	make (a_name: READABLE_STRING_8; n: like filename; t: like content_type; s: like size)
+	make (a_name: READABLE_STRING_GENERAL; a_filename: READABLE_STRING_GENERAL; a_content_type: like content_type; a_size: like size)
 		do
-			name := url_decoded_string (a_name)
-			url_encoded_name := a_name
-			filename := n
-			content_type := t
-			size := s
+			name := a_name.as_string_32
+			url_encoded_name := url_encoded_string (a_name)
+			filename := a_filename.as_string_32
+			content_type := a_content_type
+			size := a_size
+		end
+
+	make_with_percent_encoded_values (a_encoded_name: READABLE_STRING_8; a_filename: READABLE_STRING_GENERAL; a_content_type: like content_type; a_size: like size)
+		do
+			name := url_decoded_string (a_encoded_name)
+			url_encoded_name := a_encoded_name
+			filename := a_filename.as_string_32
+			content_type := a_content_type
+			size := a_size
 		end
 
 feature -- Access
@@ -98,7 +108,7 @@ feature -- Visitor
 
 feature -- Access: Uploaded File
 
-	filename: STRING
+	filename: STRING_32
 			-- original filename
 
 	safe_filename: STRING

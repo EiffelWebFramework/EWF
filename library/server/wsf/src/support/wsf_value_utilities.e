@@ -47,9 +47,9 @@ feature -- Smart parameter identification
 			p,q: INTEGER
 			tb,ptb: detachable WSF_TABLE
 		do
-			--| Check if this is a list format such as   choice[]  or choice[a] or even choice[a][] or choice[a][b][c]...
-			l_decoded_name := a_name.as_string_32 --url_encoder.decoded_string (a_name)
-			l_encoded_name := url_encoder.percent_encoded_string (l_decoded_name)
+				--| Check if this is a list format such as   choice[]  or choice[a] or even choice[a][] or choice[a][b][c]...
+			l_decoded_name := a_name.as_string_32
+			l_encoded_name := a_value.url_encoded_name
 			p := l_decoded_name.index_of ({CHARACTER_32}'[', 1)
 			n := l_decoded_name
 			if p > 0 then
@@ -136,11 +136,13 @@ feature -- Smart parameter identification
 feature -- Factory
 
 	new_string_value (a_name: READABLE_STRING_GENERAL; a_value: READABLE_STRING_GENERAL): WSF_STRING
+			-- New WSF_STRING value built from unicode `a_name' and `a_value'.
 		do
 			create Result.make (a_name, a_value)
 		end
 
 	new_string_value_with_percent_encoded_values (a_encoded_name: READABLE_STRING_8; a_encoded_value: READABLE_STRING_8): WSF_STRING
+			-- New WSF_STRING value built from utf8+percent encoded `a_encoded_name' and `a_encoded_value'.
 		do
 			create Result.make_with_percent_encoded_values (a_encoded_name, a_encoded_value)
 		end
