@@ -1,6 +1,5 @@
 note
 	description: "Summary description for {WSF_MULTIPART_FORM_DATA_HANDLER}."
-	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -240,7 +239,7 @@ feature {NONE} -- Implementation: Form analyzer
 						--| `l_up_file' might have a new name
 						req.save_uploaded_file (l_up_file, l_content)
 					else
-						add_string_value_to_table (l_name, l_content, vars)
+						add_utf_8_string_value_to_table (l_name, l_content, vars)
 					end
 				else
 					req.error_handler.add_custom_error (0, "unamed multipart entry", Void)
@@ -254,7 +253,7 @@ feature {NONE} -- Implementation: Form analyzer
 			-- Default content type		
 
 note
-	copyright: "2011-2013, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
+	copyright: "2011-2015, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Colin Adams, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software
