@@ -2,8 +2,8 @@ note
 	description: "[
 			Table which can contain value indexed by a key
 		]"
-	date: "$Date$"
-	revision: "$Revision$"
+	date: "$Date: 2015-11-05 21:52:56 +0100 (jeu., 05 nov. 2015) $"
+	revision: "$Revision: 98081 $"
 
 class
 	WSF_TABLE
@@ -14,7 +14,7 @@ inherit
 			as_string
 		end
 
-	ITERABLE [WSF_VALUE]
+	TABLE_ITERABLE [WSF_VALUE, READABLE_STRING_32]
 
 create
 	make,
@@ -193,7 +193,7 @@ feature -- Element change
 
 feature -- Traversing
 
-	new_cursor: ITERATION_CURSOR [WSF_VALUE]
+	new_cursor: TABLE_ITERATION_CURSOR [WSF_VALUE, READABLE_STRING_32]
 		do
 			Result := values.new_cursor
 		end
