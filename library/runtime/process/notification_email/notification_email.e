@@ -1,10 +1,9 @@
 note
 	description : "[
-			Component representing an email
+			Email message handled by notification mailer.
 			]"
-	author      : "$Author: jfiat $"
-	date        : "$Date: 2015-06-30 11:07:17 +0200 (mar., 30 juin 2015) $"
-	revision    : "$Revision: 97586 $"
+	date: "$Date$"
+	revision: "$Revision$"
 
 class
 	NOTIFICATION_EMAIL
@@ -193,12 +192,20 @@ feature -- Reset
 feature -- Conversion
 
 	message: STRING_8
+		local
+			l_content: like content
 		do
 			Result := header
 			Result.append_character ('%N')
-			Result.append (content)
-			Result.append_character ('%N')
-			Result.append_character ('%N')
+			l_content := content
+			if l_content.is_empty then
+				Result.append_character ('%N')
+			else
+				Result.append (l_content)
+				if l_content[l_content.count] /= '%N' then
+					Result.append_character ('%N')
+				end
+			end
 		end
 
 	header: STRING_8
