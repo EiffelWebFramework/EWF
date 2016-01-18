@@ -40,7 +40,7 @@ feature -- Implementation
 
 feature -- Properties
 
-	handler: FUNCTION [ANY, TUPLE [G], BOOLEAN]
+	handler: FUNCTION [G, BOOLEAN]
 			-- The function which is used to validate inputs
 
 end

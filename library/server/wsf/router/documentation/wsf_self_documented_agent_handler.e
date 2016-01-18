@@ -19,7 +19,7 @@ feature -- Access
 
 	descriptions: detachable ARRAYED_LIST [READABLE_STRING_GENERAL]
 
-	self_documentation_builder: detachable FUNCTION [ANY, TUPLE [WSF_ROUTER_MAPPING, detachable WSF_REQUEST_METHODS], WSF_ROUTER_MAPPING_DOCUMENTATION]
+	self_documentation_builder: detachable FUNCTION [WSF_ROUTER_MAPPING, detachable WSF_REQUEST_METHODS, WSF_ROUTER_MAPPING_DOCUMENTATION]
 			-- Function building the `mapping_documentation'.
 
 feature -- Change
@@ -65,7 +65,7 @@ feature -- Documentation
 		end
 
 note
-	copyright: "2011-2013, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Colin Adams, Eiffel Software and others"
+	copyright: "2011-2016, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Colin Adams, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

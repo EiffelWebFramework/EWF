@@ -224,13 +224,13 @@ feature -- Properties
 	file: detachable WSF_FILE_DEFINITION
 			-- Text to be displayed
 
-	change_event: detachable PROCEDURE [ANY, TUPLE]
+	change_event: detachable PROCEDURE
 			-- Procedure to be execued on change
 
-	upload_done_event: detachable PROCEDURE [ANY, TUPLE]
+	upload_done_event: detachable PROCEDURE
 			-- Procedure to be execued when upload was successful
 
-	upload_function: detachable FUNCTION [ANY, TUPLE [ITERABLE [WSF_UPLOADED_FILE]], detachable STRING_32]
+	upload_function: detachable FUNCTION [ITERABLE [WSF_UPLOADED_FILE], detachable STRING_32]
 			-- Store uploaded file and return server side file id
 
 ;note

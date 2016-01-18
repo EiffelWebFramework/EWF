@@ -29,7 +29,9 @@
 
 	<target name="_build_tpl_" >
 		<argument name="_target_name" />
-		<geant target="${_target_name}" dir="ise_library" file="build.eant" reuse_variables="true" />
+		<!--
+		<geant target="${_target_name}" dir="library" file="build.eant" reuse_variables="true" />
+		-->
 	</target>
 	
 </project>

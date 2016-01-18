@@ -16,7 +16,7 @@ inherit
 
 feature -- Event handling
 
-	set_on_update_page_agent (f: PROCEDURE [ANY, TUPLE])
+	set_on_update_page_agent (f: PROCEDURE)
 			-- Set paging update listener
 		do
 			on_update_page_agent := f
@@ -77,7 +77,7 @@ feature -- Properties
 			Result := (row_count / page_size).ceiling
 		end
 
-	on_update_page_agent: detachable PROCEDURE [ANY, TUPLE]
+	on_update_page_agent: detachable PROCEDURE
 
 ;note
 	copyright: "2011-2014, Yassin Hassan, Severin Munger, Jocelyn Fiat, Eiffel Software and others"

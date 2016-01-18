@@ -125,7 +125,7 @@ feature -- Properties
 	text: STRING_32
 			-- The text currently displayed on this button
 
-	click_event: detachable PROCEDURE [ANY, TUPLE]
+	click_event: detachable PROCEDURE
 			-- Event that is executed when button is clicked
 
 ;note

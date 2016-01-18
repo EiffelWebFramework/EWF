@@ -35,7 +35,7 @@ feature {NONE} -- Initialization
 			end
 		end
 
-	make_with_agent (c: FUNCTION [ANY, TUPLE [READABLE_STRING_GENERAL], JSON_ARRAY])
+	make_with_agent (c: FUNCTION [READABLE_STRING_GENERAL, JSON_ARRAY])
 			-- Initialize with autocompletion function
 		do
 			make_input ("")
@@ -67,7 +67,7 @@ feature -- Callback
 
 feature -- Properties
 
-	create_json_list: FUNCTION [ANY, TUPLE [READABLE_STRING_GENERAL], JSON_ARRAY]
+	create_json_list: FUNCTION [READABLE_STRING_GENERAL, JSON_ARRAY]
 			-- The function which is called to give a list of suggestions to a given user input
 
 	template: READABLE_STRING_32

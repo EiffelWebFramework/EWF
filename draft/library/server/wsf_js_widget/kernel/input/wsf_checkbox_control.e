@@ -100,7 +100,7 @@ feature -- Properties
 	checked_value: STRING_32
 			-- The value of this checkbox
 
-	change_event: detachable PROCEDURE [ANY, TUPLE]
+	change_event: detachable PROCEDURE
 			-- Function to be executed on change
 
 ;note

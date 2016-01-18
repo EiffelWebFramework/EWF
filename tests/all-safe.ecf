@@ -32,7 +32,6 @@
 		<library name="http" location="..\library\network\protocol\http\http-safe.ecf" readonly="false"/>
 		<library name="http_authorization" location="..\library\server\authentication\http_authorization\http_authorization-safe.ecf" readonly="false"/>
 		<library name="http_client" location="..\library\network\http_client\http_client-safe.ecf" readonly="false"/>
-		<library name="json" location="..\contrib\library\text\parser\json\library\json-safe.ecf" readonly="false"/>
 		<library name="libfcgi" location="..\library\server\libfcgi\libfcgi-safe.ecf" readonly="false"/>
 		<library name="nino" location="..\contrib\library\network\server\nino\nino-safe.ecf" readonly="false"/>
 		<library name="notification_email" location="..\library\runtime\process\notification_email\notification_email-safe.ecf" readonly="false"/>

@@ -9,7 +9,7 @@ deferred class
 
 feature --Event handling
 
-	set_on_update_agent (f: PROCEDURE [ANY, TUPLE])
+	set_on_update_agent (f: PROCEDURE)
 			-- Set update listener
 		do
 			on_update_agent := f
@@ -74,7 +74,7 @@ feature -- Properties
 		deferred
 		end
 
-	on_update_agent: detachable PROCEDURE [ANY, TUPLE]
+	on_update_agent: detachable PROCEDURE
 
 ;note
 	copyright: "2011-2014, Yassin Hassan, Severin Munger, Jocelyn Fiat, Eiffel Software and others"

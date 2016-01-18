@@ -156,7 +156,7 @@ feature -- Properties
 	type: READABLE_STRING_32
 			-- Type of this input control
 
-	change_event: detachable PROCEDURE [ANY, TUPLE]
+	change_event: detachable PROCEDURE
 			-- Procedure to be execued on change
 
 ;note

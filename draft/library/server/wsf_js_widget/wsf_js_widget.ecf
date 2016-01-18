@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<system xmlns="http://www.eiffel.com/developers/xml/configuration-1-8-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eiffel.com/developers/xml/configuration-1-8-0 http://www.eiffel.com/developers/xml/configuration-1-8-0.xsd" name="wsf_js_widget" uuid="660D6D82-2218-11E3-86B1-F23C91AEC05E" library_target="wsf_js_widget">
+<system xmlns="http://www.eiffel.com/developers/xml/configuration-1-15-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eiffel.com/developers/xml/configuration-1-15-0 http://www.eiffel.com/developers/xml/configuration-1-15-0.xsd" name="wsf_js_widget" uuid="660D6D82-2218-11E3-86B1-F23C91AEC05E" library_target="wsf_js_widget">
 	<target name="wsf_js_widget">
 		<root all_classes="true"/>
 		<file_rule>
 			<exclude>/.git$</exclude>
-			<exclude>/EIFGENs$</exclude>
 			<exclude>/.svn$</exclude>
+			<exclude>/EIFGENs$</exclude>
 		</file_rule>
-		<option warning="true" full_class_checking="true" void_safety="none" syntax="standard">
+		<option warning="true" full_class_checking="true" is_attached_by_default="false" void_safety="none" syntax="standard">
 		</option>
 		<library name="base" location="$ISE_LIBRARY\library\base\base.ecf"/>
 		<library name="http" location="..\..\..\..\library\network\protocol\http\http.ecf"/>
-		<library name="json" location="..\..\..\..\contrib\library\text\parser\json\library\json.ecf"/>
+		<library name="json" location="$ISE_LIBRARY\contrib\library\text\parser\json\library\json.ecf"/>
 		<library name="pcre" location="$ISE_LIBRARY\unstable\library\text\regexp\pcre\pcre.ecf"/>
 		<library name="time" location="$ISE_LIBRARY\library\time\time-safe.ecf"/>
 		<library name="wsf" location="..\..\..\..\library\server\wsf\wsf.ecf"/>
