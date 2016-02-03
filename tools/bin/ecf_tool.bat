@@ -11,9 +11,9 @@ if "%ECF_TOOL_PATH%" == "" goto SEARCH_ECF_TOOL
 goto START
 
 :SEARCH_ECF_TOOL
-for %%f in (ecf_tool.exe) do (
-    if exist "%%~dp$PATH:f" set ECF_TOOL_PATH="%%~dp$PATH:f"
- )
+:: for %%f in (ecf_tool.exe) do (
+::		if exist "%%~dp$PATH:f" set ECF_TOOL_PATH="%%~dp$PATH:f"
+:: )
 if "%ECF_TOOL_PATH%" == "" goto BUILD_ECF_TOOL
 echo Using ecf_tool.exe from %ECF_TOOL_PATH%
 goto START

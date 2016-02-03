@@ -147,7 +147,7 @@ set TMP_ECF_TOOL_CMD=%~dp0\bin\ecf_tool.bat
 goto call_ecf_update
 
 :call_ecf_update
-call %TMP_ECF_TOOL_CMD% updater --root %TMP_TARGET_DIR% --force %2 %3 %4 %5 %6 %7 %8 %9 %TMP_TARGET_DIR%\contrib
+call %TMP_ECF_TOOL_CMD% updater --root %TMP_TARGET_DIR% --include %TMP_TARGET_DIR%\library --include %TMP_TARGET_DIR%\contrib\library --force %TMP_TARGET_DIR%\contrib
 
 :end
 del %TMP_EXCLUDE%
