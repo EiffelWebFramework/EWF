@@ -7,7 +7,6 @@
 		</option>
 		<setting name="concurrency" value="thread"/>
 		<library name="base" location="$ISE_LIBRARY\library\base\base-safe.ecf"/>
-		<library name="connector_standalone" location="..\..\library\server\ewsgi\connectors\standalone\standalone-safe.ecf"/>
 		<library name="default_standalone" location="..\..\library\server\wsf\default\standalone-safe.ecf"/>
 		<library name="http" location="..\..\library\network\protocol\http\http-safe.ecf"/>
 		<library name="wsf" location="..\..\library\server\wsf\wsf-safe.ecf"/>
