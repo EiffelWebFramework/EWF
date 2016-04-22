@@ -229,10 +229,23 @@ feature -- Change Element
 			max_age_false: not include_max_age
 		end
 
+	mark_expires_and_max_age
+			-- Set `include_expires' to True.
+			-- Set `include_max_age' to True
+	 		-- Set-Cookie will include both Max-Age, Expires attributes.
+		do
+			include_expires := True
+			include_max_age := True
+		ensure
+			expires_false: include_expires
+			max_age_false: include_max_age
+		end
+
 	set_default_expires_max_age
 			-- Set `include_expires' to False.
 			-- Set `include_max_age' to False
-	 		-- Set-Cookie will include both Max-Age, Expires attributes.
+	 		-- Set-Cookie will not include Max-Age, Expires attributes.
+	 		-- The user agent will retain the cookie until "the current session is over".
 		do
 			include_expires := False
 			include_max_age := False
@@ -270,8 +283,19 @@ feature -- Output
 				s.append ("; Path=")
 				s.append (l_path)
 			end
-				-- Expire
-			if include_expires then
+
+				-- Expires and Max Age	
+			if include_expires and then include_max_age then
+					-- Expire
+				if attached expiration as l_expires then
+					s.append ("; Expires=")
+					s.append (l_expires)
+				end
+					-- Max age
+				s.append ("; Max-Age=")
+				s.append_integer (max_age)
+				--	Expires
+			elseif include_expires then
 				if attached expiration as l_expires then
 					s.append ("; Expires=")
 					s.append (l_expires)
@@ -284,16 +308,10 @@ feature -- Output
 				-- Default
 				check
 						-- By default the attributes include_expires and include_max_age are False.
-						-- Meaning that Expires and Max-Age headers are included in the response.
+						-- Meaning that Expires and Max-Age headers are not included in the response.
+						-- Set the cookie as a Session Cookie.
 					default: (not include_expires) and (not include_max_age)
 				end
-				if attached expiration as l_expires then
-					s.append ("; Expires=")
-					s.append (l_expires)
-				end
-
-				s.append ("; Max-Age=")
-				s.append_integer (max_age)
 			end
 
 			if secure then
@@ -339,7 +357,7 @@ feature {NONE} -- Constants
 		end
 
 note
-	copyright: "2011-2015, Jocelyn Fiat, Eiffel Software and others"
+	copyright: "2011-2016, Jocelyn Fiat, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software
