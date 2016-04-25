@@ -38,7 +38,7 @@ feature {NONE} -- Initialization
 		do
 			set_name (a_name)
 			set_value(a_value)
-			set_max_age (-1)
+			unset_max_age
 		ensure
 			name_set: name = a_name
 			value_set: value = a_value
@@ -100,15 +100,6 @@ feature -- Access
 				end
 			end
 		end
-
-	include_max_age: BOOLEAN
-			-- Does the Set-Cookie header include Max-Age attribute?
-			--|By default will include both.
-
-	include_expires: BOOLEAN
-			-- Does the Set-Cookie header include Expires attribute?
-			--|By default will include both.	
-
 
 	is_valid_rfc1123_date (a_string: READABLE_STRING_8): BOOLEAN
 			-- Is the date represented by `a_string' a valid rfc1123 date?
@@ -198,61 +189,30 @@ feature -- Change Element
 
 	set_max_age (a_max_age: INTEGER)
 			-- Set `max_age' with `a_max_age'
+		require
+			valid_max_age: a_max_age >= 0
 		do
 			max_age := a_max_age
 		ensure
 			max_age_set: max_age = a_max_age
 		end
 
-
-	mark_max_age
-			-- Set `include_max_age' to True.
-			-- Set `include_expires' to False.
-			-- Set-Cookie will include only Max-Age attribute and not Expires.
+	unset_max_age
+			-- Set max_age to -1.
 		do
-			include_max_age := True
-			include_expires := False
+			max_age := -1
 		ensure
-			max_age_true: include_max_age
-			expire_false: not include_expires
+			max_age_unset: max_age = -1
 		end
 
-	mark_expires
-			-- Set `include_expires' to True.
-			-- Set `include_max_age' to False
- 			-- Set-Cookie will include only Expires attribute and not Max_Age.
+	unset_expiration
+			-- Set expiration to Void
 		do
-			include_expires := True
-			include_max_age := False
+			expiration := Void
 		ensure
-			expires_true: include_expires
-			max_age_false: not include_max_age
+			expiration_void: expiration = Void
 		end
 
-	mark_expires_and_max_age
-			-- Set `include_expires' to True.
-			-- Set `include_max_age' to True
-	 		-- Set-Cookie will include both Max-Age, Expires attributes.
-		do
-			include_expires := True
-			include_max_age := True
-		ensure
-			expires_false: include_expires
-			max_age_false: include_max_age
-		end
-
-	set_default_expires_max_age
-			-- Set `include_expires' to False.
-			-- Set `include_max_age' to False
-	 		-- Set-Cookie will not include Max-Age, Expires attributes.
-	 		-- The user agent will retain the cookie until "the current session is over".
-		do
-			include_expires := False
-			include_max_age := False
-		ensure
-			expires_false: not include_expires
-			max_age_false: not include_max_age
-		end
 
 feature {NONE} -- Date Utils
 
@@ -284,34 +244,15 @@ feature -- Output
 				s.append (l_path)
 			end
 
-				-- Expires and Max Age	
-			if include_expires and then include_max_age then
-					-- Expire
-				if attached expiration as l_expires then
-					s.append ("; Expires=")
-					s.append (l_expires)
-				end
-					-- Max age
+				-- Expires
+			if attached expiration as l_expires then
+				s.append ("; Expires=")
+				s.append (l_expires)
+			end
+				--	Max-age
+			if max_age >= 0 then
 				s.append ("; Max-Age=")
 				s.append_integer (max_age)
-				--	Expires
-			elseif include_expires then
-				if attached expiration as l_expires then
-					s.append ("; Expires=")
-					s.append (l_expires)
-				end
-				-- Max-Age
-			elseif include_max_age then
-				s.append ("; Max-Age=")
-				s.append_integer (max_age)
-			else
-				-- Default
-				check
-						-- By default the attributes include_expires and include_max_age are False.
-						-- Meaning that Expires and Max-Age headers are not included in the response.
-						-- Set the cookie as a Session Cookie.
-					default: (not include_expires) and (not include_max_age)
-				end
 			end
 
 			if secure then
