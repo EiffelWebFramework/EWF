@@ -110,6 +110,50 @@ feature -- Access
 			Result := not d.has_error and then d.rfc1123_string.same_string (a_string)
 		end
 
+
+	include_max_age: BOOLEAN
+		obsolete
+			"Use max_age directly, included if its > 0 "
+		do
+			Result := max_age > 0
+		end
+
+	include_expires: BOOLEAN
+		obsolete
+			"Use expires directy, included if it's /= Void"
+		do
+			Result := expiration /= Void
+		end
+
+	mark_max_age
+ 			-- Set `max_age > 0'
+ 			-- Set `expires to void'
+ 			-- Set-Cookie will include only Max-Age attribute and not Expires.
+  		obsolete
+  			"Uset set_max_age and unset_ features to add or remove the attributes in the response header"
+  		do
+ 			max_age := 1
+ 			expiration := Void
+  		ensure
+ 			max_age_true: include_max_age
+ 			expire_false: not include_expires
+  		end
+
+
+  		mark_expires
+ 			-- Set `mark_age' to -1.
+ 			-- Set `expiration to a default date'
+  			-- Set-Cookie will include only Expires attribute and not Max_Age.
+  		obsolete
+  			"Use set_expiration and unset_ features to add or remove the attribute in the response header"
+  		do
+ 			max_age := -1
+ 			set_expiration_date (create {DATE_TIME}.make_now_utc)
+  		ensure
+ 			expires_true: include_expires
+ 			max_age_false: not include_max_age
+  		end
+
 feature -- Change Element
 
 	set_name (a_name: READABLE_STRING_8)
