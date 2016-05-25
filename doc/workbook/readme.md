@@ -1,13 +1,4 @@
-Introduction
-	
-	Basic Concepts
-		Generating Plain Text
-		Generation HTML
+The [Workbook](/doc/workbook.md) lets you discover the EiffelWeb framework.
 
-	Handling Client Request:
-		Form Data
-		Request Heders
-		Query Parameters.
-
-
+[Enter the documentation](/doc/workbook.md)
 		
