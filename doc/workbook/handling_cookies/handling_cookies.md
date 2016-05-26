@@ -1,4 +1,4 @@
-Nav: [Workbook](../workbook.md) | [Generating Responses](/doc/workbook/generating_response/generating_response.md)
+Nav: [Workbook](../workbook.md) | [Generating Responses](../generating_response/generating_response.md)
 
 # Handling Cookies
 
@@ -9,9 +9,9 @@ Nav: [Workbook](../workbook.md) | [Generating Responses](/doc/workbook/generatin
 	- [How to read a cookie](#read_cookie)
 - [Examples](#examples)		
 
-<a name="cookie"/>
-## [Cookie](http://httpwg.github.io/specs/rfc6265.html)
-A cookie is a piece of data that can be stored in a browser's cache. If you visit a web site and then revisit it, the cookie data can be used to identify you as a return visitor. Cookies enable state information, such as an online shopping cart, to be remembered. A cookie can be short term, holding data for a single web session, that is, until you close the browser, or a cookie can be longer term, holding data for a week or a year.
+<a name="cookie"></a>
+## Cookie
+A [cookie](http://httpwg.github.io/specs/rfc6265.html) is a piece of data that can be stored in a browser's cache. If you visit a web site and then revisit it, the cookie data can be used to identify you as a return visitor. Cookies enable state information, such as an online shopping cart, to be remembered. A cookie can be short term, holding data for a single web session, that is, until you close the browser, or a cookie can be longer term, holding data for a week or a year.
 
 Cookies are used a lot in web client-server communication.
 
@@ -30,7 +30,7 @@ Client send cookies to server
 
 
 
-<a name="properties"/>
+<a name="properties"></a>
 ### Cookie properties
 
  - Comment: describe the purpose of the cookie. Note that server doesn’t receive this information when client sends cookie in request header. 
@@ -43,7 +43,7 @@ Client send cookies to server
  - HttpOnly: Checks whether this Cookie has been marked as HttpOnly. 
  - Version:
 
-<a name="set_get"/>
+<a name="set_get"></a>
 ## Write and Read Cookies.
 
 To send a cookie to the client we should use the [HTTP_HEADER] class, and call ```h.put_cookie``` feature or 
@@ -67,7 +67,7 @@ WSF_REQUEST.cookie (a_name: READABLE_STRING_GENERAL): detachable WSF_VALUE
 feature.
 
 
-<a name="set_cookie"/>
+<a name="set_cookie"></a>
 ### How to set Cookies
 Here we have the feature definitions to set cookies
 
@@ -111,7 +111,7 @@ Example of use:
 				res.put_string (web_page)
 		end		
 ```
-<a name="read_cookie"/>
+<a name="read_cookie"></a>
 ### How to read Cookies
 
 Reading a particular cookie
@@ -130,7 +130,7 @@ Reading all the cookies
 ```
 
 
-<a name="examples"/>
+<a name="examples"></a>
 ### Example
 The following EWF service shows a basic use of cookies. 
 	1. It display a message to first-time visitors.
@@ -285,4 +285,4 @@ end
 ```
 
 
-Nav: [Workbook](../workbook.md) | [Generating Responses](/doc/workbook/generating_response/generating_response.md)
+Nav: [Workbook](../workbook.md) | [Generating Responses](../generating_response/generating_response.md)

@@ -1,5 +1,5 @@
 
-Nav: [Workbook](../workbook.md) | [Handling Requests: Header Fields](/doc/workbook/handling_request/headers.md) | [Handling Cookies](/doc/workbook/handling_cookies/handling_cookies.md) 
+Nav: [Workbook](../workbook.md) | [Handling Requests: Header Fields](../handling_request/headers.md) | [Handling Cookies](../handling_cookies/handling_cookies.md) 
 
 
 ## EWF Generating Response
@@ -14,7 +14,7 @@ Nav: [Workbook](../workbook.md) | [Handling Requests: Header Fields](/doc/workbo
 - [Response Header Fields](#header_fields)
 
 
-<a name="format"/>
+<a name="format"></a>
 ## Format of the HTTP response
 
 As we saw in the previous documents, a request from a user-agent (browser or other client) consists of an HTTP command (usually GET or POST), zero or more request headers (one or more in HTTP 1.1, since Host is required), a blank line, and only in the case of POST/PUT requests, payload data. A typical request looks like the following.
@@ -49,7 +49,7 @@ looks like this:
 
 The status line consists of the HTTP version (HTTP/1.1 in the preceding example), a status code (an integer 200 in the example), and a very short message corresponding to the status code (OK in the example). In most cases, the headers are optional except for Content-Type, which specifies the MIME type of the document that follows. Although most responses contain a document, some don’t. For example, responses to HEAD requests should never include a document, and various status codes essentially indicate failure or redirection (and thus either don’t include a document or include only a short error-message document).
 
-<a name="status_set"/>
+<a name="status_set"></a>
 ## How to set the status code
 
 If you need to set an arbitrary status code, you can use the ```WSF_RESPONSE.put_header``` feature  or the ```WSF_RESPONSE.set_status_code``` feature. An status code of 200 is a default value.  See below examples using the mentioned features.
@@ -94,7 +94,7 @@ Example
 ```
 Both features takes an INTEGER (the status code) as an formal argument, you can use 200, 300, 500 etc directly, but instead of using explicit numbers, it's recommended to use the constants defined in the class [HTTP_STATUS_CODE](). The name of each constant is based from the standard [HTTP 1.1](https://httpwg.github.io/).
 
-<a name="redirect"/>
+<a name="redirect"></a>
 ## How to redirect to a particular location.
 To redirect the response to a new location, we need to send a 302 status code, to do that we use ```{HTTP_STATUS_CODE}.found```
 
@@ -145,7 +145,7 @@ The ```WSF_RESPONSE.redirect_now``` feature use the status code ```{HTTP_STATUS_
 
 Using a similar approach we can build features to answer a bad request (400), internal server error (500), etc. We will build a simple example showing the most common HTTP status codes.
 
-<a name="status"/>
+<a name="status"></a>
 ## [HTTP 1.1 Status Codes](https://httpwg.github.io/specs/rfc7231.html#status.codes)
 The status-code element is a three-digit integer code giving the result of the attempt to understand and satisfy the request. The first digit of the status-code defines the class of response. 
 
@@ -159,7 +159,7 @@ General categories:
 Note: use ```res.set_status_code({HTTP_STATUS_CODE}.bad_request)``` rather than ```res.set_status_code(400)```.
 
 
-<a name="example_1"/>
+<a name="example_1"></a>
 ### Example Staus Codes
 Basic Service that builds a simple web page to show the most common status codes
 ```eiffel
@@ -298,7 +298,7 @@ end
 
 
 
-<a name="example_2"/>
+<a name="example_2"></a>
 ### Example Generic Search Engine
 The following example shows a basic EWF service that builds a generic front end for the most used search engines. This example shows how
 redirection works, and we will use a tools to play with the API to show differents responses.
@@ -585,7 +585,7 @@ Connection: close
 </html>
 ```
 
-<a name="header_fields"/>
+<a name="header_fields"></a>
 ## [Response Header Fields](https://httpwg.github.io/specs/rfc7231.html#response.header.fields)
 
 The response header fields allow the server to pass additional information about the response beyond what is placed in the status-line. These header fields give information about the server, about further access to the target resource, or about related resources. We can specify cookies, page modification date (for caching), reload a page after a designated period of time, size of the document.
@@ -996,4 +996,4 @@ There are four categories for response header fields:
 
 
 
-Nav: [Workbook](../workbook.md) | [Handling Requests: Header Fields](/doc/workbook/handling_request/headers.md) | [Handling Cookies](/doc/workbook/handling_cookies/handling_cookies.md)
+Nav: [Workbook](../workbook.md) | [Handling Requests: Header Fields](../handling_request/headers.md) | [Handling Cookies](../handling_cookies/handling_cookies.md) 

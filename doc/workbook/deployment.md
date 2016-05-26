@@ -1,3 +1,5 @@
+Nav: [Workbook](./workbook.md)
+
 EWF Deployment 
 ==============
 
@@ -158,6 +160,4 @@ Copy the app.exe and the folder "www"  into a folder served by apache2, for exam
 Replace $service with the name of your executable $service, for example app_service.exe
 You will need to create an service.ews file, this file will be located at the same place where you copy your app service executable.
 
-
-
-
+Nav: [Workbook](./workbook.md)
