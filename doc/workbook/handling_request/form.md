@@ -1,8 +1,6 @@
-Nav: [Workbook](../workbook.md) | [Basic Concepts](../basics/basics.md) | [Handling Requests: Header Fields](./headers.md) 
+Nav: [Workbook](../workbook.md) :: [Basic Concepts](../basics/basics.md) :: [Handling Requests: Header Fields](./headers.md) 
 
-
-#Handling Requests: Form/Query Data
-
+# Handling Requests: Form/Query Data
 
 ##### Table of Contents  
 - [Reading Form Data](#read)
@@ -35,10 +33,12 @@ Here we will show you how to read input submitted by a user using a Form (GET an
  * How to populate Eiffel objects from the request data.          
 
 <a name="read"></a>
+
 ## Reading Form Data
 EWF [WSF_REQUEST]() class, provides features to handling this form parsing automatically.
 
 <a name="query"></a>
+
 ### Query Parameters
 
 	WSF_REQUEST.query_parameters: ITERABLE [WSF_VALUE]
@@ -47,6 +47,7 @@ EWF [WSF_REQUEST]() class, provides features to handling this form parsing autom
 	WSF_REQUEST.query_parameter (a_name: READABLE_STRING_GENERAL): detachable WSF_VALUE
 			-- Query parameter for name `a_name'.
 <a name="form_parameters"></a>
+
 ### Form Parameters
 
 	WSF_REQUEST.form_parameters: ITERABLE [WSF_VALUE]
@@ -58,6 +59,7 @@ EWF [WSF_REQUEST]() class, provides features to handling this form parsing autom
 The values supplied to form_parameter and query_parameter are case sensitive.
 
 <a name="uniform"></a>
+
 ### Read Data
 The previous features, let you read the data one way for GET request and a different way for POST request. WSF_REQUEST provide a feature to read all the data in a uniform way.
 
@@ -71,6 +73,7 @@ So, you use **WSF_REQUEST.item** feature exactly the same way for GET and POST r
 
 
 <a name="reading_pv"></a>
+
 ## Reading Parameters and Values
 
 Suppose we have the following HTML5 form using Method POST. This HTML5 form has client side form validation using the new HTML5 attribute, you can do the same using Javascript. So in this case if the user does not fill the fields as expected the form will not be submitted to the server.
@@ -112,6 +115,7 @@ Suppose we have the following HTML5 form using Method POST. This HTML5 form has 
 </form>
 ```
 <a name="all_names"></a>
+
 ### How to read all parameter names
 To read all the parameters names we simple call WSF_REQUEST.form_parameters. 
 
@@ -120,6 +124,7 @@ To read all the parameters names we simple call WSF_REQUEST.form_parameters.
  across req.form_parameters as ic loop show_parameter_name (ic.item.key) end
 ```
 <a name="single_values"></a>
+
 ### How to read single values
 To read a particular parameter, a single value, for example `given-name', we simple call WSF_REQUEST.form_parameter (a_name) and we check if it's attached to WSF_STRING (represents a String parameter)
 ```
@@ -132,6 +137,7 @@ To read a particular parameter, a single value, for example `given-name', we sim
   end
 ```
 <a name="multiple_values"></a>
+
 ### How to read multiple values
 
 To read multiple values, for example in the case of `languages', we simple call WSF_REQUEST.form_parameter (a_name) and we check if it's attached to WSF_MULTIPLE_STRING (represents a String parameter)
@@ -156,6 +162,7 @@ To read multiple values, for example in the case of `languages', we simple call 
 In this case we are handling strings values, but in some cases you will need to do a conversion, betweend the strings that came from the request to map them to your domain model. 
 
 <a name="table_values"></a>
+
 ### How to read table values
 This is particularly useful when you have a request with the following format
 
@@ -184,6 +191,7 @@ end
 ```
 
 <a name="raw_data"></a>
+
 ## Reading Raw Data
 You can also access the data in raw format, it means you will need to parse and url-decode it, and also you will not be able to use the previous features, by default, to enable that you need to call `req.set_raw_input_data_recorded (True)'. This feature (reading raw data) is useful if you are reading POST data with JSON or XML formats, but it's not convinient for HTML forms.
 
@@ -200,6 +208,7 @@ To read raw data you need to do this
 > given-name=testr&family-name=test&dob=1976-08-26&email=test%40gmail.com&url=http%3A%2F%2Fwww.eiffelroom.com&phone=455555555555&languages=Spanish&languages=English			
 
 <a name="upload"></a>
+
 ## Upload Files
 How can we read data when the date come from an uploaded file/s?. 
 HTML supports a form element ```<input type="File" ... > ``` to upload a single file and ```<input type="File" ... multiplr> ``` to upload multiple files.
@@ -291,6 +300,7 @@ The example is located in the directory $PATH/ewf/doc/workbook/upload_file where
 
 
 <a name="examples"></a>
+
 ## Examples
 The source code is available on Github. You can get it by running the command:
 
@@ -303,4 +313,4 @@ The GET example is located in the directory $PATH/ewf/doc/workbook/form/get, and
 >Note: replace <ecf_name> and<target_name> with the corresponding values.
 
 
-Nav: [Workbook](../workbook.md) | [Basic Concepts](../basics/basics.md) | [Handling Requests: Header Fields](./headers.md) 
+Nav: [Workbook](../workbook.md) :: [Basic Concepts](../basics/basics.md) :: [Handling Requests: Header Fields](./headers.md) 

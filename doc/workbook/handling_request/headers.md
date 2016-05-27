@@ -1,7 +1,7 @@
-Nav: [Workbook](../workbook.md) | [Handling Requests: Form/Query parameters](./form.md) | [Generating Responses](../generating_response/generating_response.md)
+Nav: [Workbook](../workbook.md) :: [Handling Requests: Form/Query parameters](./form.md) :: [Generating Responses](../generating_response/generating_response.md)
 
 
-#Handling Requests: Headers
+# Handling Requests: Headers
 
 ##### Introduction
 - The [HTTP request header fields (also known as "headers")](https://httpwg.github.io/specs/rfc7231.html#request.header.fields) are set by the client (usually web browser) and sent in the header of the http request text (see http protocol), as opposed to form or query parameters [Form Data]().
@@ -43,6 +43,7 @@ Among other, this means the header fields are exposed with associated CGI field 
 - For instance `X-Server` will be known as `HTTP_X_SERVER`.
 
 <a name="read_header"></a>
+
 ## Reading HTTP Header fields
 EWF [WSF_REQUEST]() class provides features to access HTTP headers.
 
@@ -72,7 +73,8 @@ Due to CGI compliance, the original header names are not available, however the 
 Note: CGI variables are information about the current request (and also about the server). Some are based on the HTTP request line and headers (e.g., form parameters, query parameters), others are derived from the socket itself (e.g., the name and IP address of the requesting host), and still others are taken from server installation parameters (e.g., the mapping of URLs to actual paths). 
 
 <a name="read_line"></a>
-####Retrieve information from the Request Line
+
+#### Retrieve information from the Request Line
 
 For convenience, the following sections refer to a request starting with line:
 ```
@@ -102,59 +104,72 @@ Overview of the features
 
 
 <a name="understand"></a>
+
 #### Understanding HTTP 1.1 Request Headers
 Access to the request headers permits the web server applications or APIs to perform optimizations and provide behavior that would not be possible without them for instance such as adapting the response according to the browser preferences.
 This section summarizes the headers most often used; for more information, see the [HTTP 1.1 specification](https://httpwg.github.io/specs/), note that [RFC 2616 is dead](https://www.mnot.net/blog/2014/06/07/rfc2616_is_dead).
 
 <a name="accept"></a>
+
  * [Accept](https://httpwg.github.io/specs/rfc7231.html#header.accept)
  	- The "Accept" header field can be used by user agents (browser or other clients) to define response media types that are acceptable. Accept header fields can be used to indicate that the request is limited to a small set of desired types, as in the case of a request for an inline image.
  	For example, assume an APIs Learn4Kids can respond with XML or JSON data (JSON format have some advantages over XML, readability, parsing etc...), a client can define its preference using "Accept: application/json" to request data in JSON format, or "Accept: application/xml" to get XML format. In other case the server sends a not acceptable response. Note that the client can define an ordered list of accepted content types, including "*", the client will get the response and know the content type via the response header field "Content-Type". Related [Content-Negotiation]()
 
 <a name="accept_charset"></a>
+
  * [Accept-Charset](https://httpwg.github.io/specs/rfc7231.html#header.accept-charset)
 	- The "Accept-Charset" header field can be sent by a user agent (browser or other clients) to indicate which charsets are acceptable in textual response content (e.g., ISO-8859-1).
 
 <a name="accept_encoding"></a>
+
  * [Accept-Encoding](https://httpwg.github.io/specs/rfc7231.html#header.accept-encoding)
 	- The "Accept-Encoding" header field can be used by user agents (browser or other clients) to indicate which response content-codings (`gzip`, `compress`) are acceptable in the response. An "identity" token is used as a synonym for "no encoding" in order to communicate when no encoding is preferred. If the server receives this header, it is free to encode the page by using one of the content-encodings specified (usually to reduce transmission time), sending the `Content-Encoding` response header to indicate that it has done so.
 
 <a name="accept_language"></a>
+
  * [Accept-Language](https://httpwg.github.io/specs/rfc7231.html#header.accept-language)
  	- The "Accept-Language" header field can be used by user agents (browser or other client) to indicate the set of natural languages that are preferred in the response in case the server can produce representation in more than one language. The value of the header should be one of the standard language codes such as en, en-us, da, etc. See RFC 1766 for details (start at http://www.rfc-editor.org/ to get a current list of the RFC archive sites).
 
 <a name="connection"></a>
+
  * [Connection](https://httpwg.github.io/specs/rfc7230.html#header.connection)
  	- The "Connection" header field allows the sender to indicate desired control options for the current connection, for example if it can hanlde persistent HTTP connections.
  	By default HTTP/1.1 uses "persistent connections", allowing multiple requests and responses to be carried over a single connection. The "close" connection option is used to signal that a connection will not persist after the current request/response.
 
 <a name="authorization"></a>
+
  * [Authorization](https://httpwg.github.io/specs/rfc7235.html#header.authorization)
  	- The header is used by user agents to authenticate themselves when accessing password protected resources.
 
 <a name="content-length"></a>
+
  * [Content-Length](https://httpwg.github.io/specs/rfc7230.html#header.content-length)
 	- For messages that includes a payload body, the Content-Length field-value provides the framing information necessary to determine where the body (and message) ends.
 
 <a name="cookie"></a>
+
  * [Cookie](https://httpwg.github.io/specs/rfc6265.html)
 	-  The Cookie header contains cookies received by the user agent in previous Set-Cookie headers. The origin server is free to ignore the Cookie header or use its contents for an application-specific purpose. (Related State Management).
 
 <a name="host"></a>
+
  * [Host](https://httpwg.github.io/specs/rfc7230.html#header.host)
  	- The "Host" header field provides the host and port information from the target URI, enabling the origin server to distinguish among resources while serving requests for multiple host names on a single IP address. In HTTP 1.1, browsers and other clients are required to specify this header, which indicates the host and port as given in the original URL. 
 
 <a name="if-modified-since"></a>
+
  * [If-Modified-Since](https://httpwg.github.io/specs/rfc7232.html#header.if-modified-since)
 	- The "If-Modified-Since" header field makes a GET or HEAD request method conditional on the selected representation's modification date being more recent than the date provided in the field-value. Transfering of the selected representation's data is avoided if that data has not changed. So, indicates that the user agents wants the page only if it has been changes after the specified date. The server sends a 304 resource not modified if not has a newer result representation available.
 
 <a name="if-unmodified-since"></a>
+
  * [If-Unmodified-Since](https://httpwg.github.io/specs/rfc7232.html#header.if-unmodified-since)
 	- The "If-Unmodified-Since" header field makes the request method conditional on the selected representation's last modification date being earlier than or equal to the date provided in the field-value. The operation should succeed only if the document is older than the specified date.
 
 Generally, If-Modified-Since is used for GET requests (“give me the document only if it is newer than my cached version”), whereas If-Unmodified-Since is used for PUT requests (“update this document only if nobody else has changed it since I generated it”). 
 
 <a name="referer"></a>
+
  * [Referer](https://httpwg.github.io/specs/rfc7231.html#header.referer)
 	- The "Referer" header field allows the user agent to specify a URI reference for the resource from which the target URI was obtained (i.e., the "referrer", though the field name is misspelled). A user agent MUST NOT include the fragment and userinfo components of the URI reference [RFC3986], if any, when generating the Referer field value. This header indicates the URL of the referring Web page. 
 
@@ -162,12 +177,14 @@ For example, if you are at Web page A and click on a link to Web page B, the URL
 included in the Referer header when the browser requests Web page B. 
 
 <a name="user-agent"></a>
+
  * [User-Agent](https://httpwg.github.io/specs/rfc7231.html#header.user-agent)
  	- The "User-Agent" header field contains information about the user agent of the request, which is often used by servers to help identify the scope of reported interoperability problems, to work around or tailor responses to avoid particular user agent limitations, and for analytics regarding browser or operating system use or device.
 
 **Note**: the example shows the **WSF_EXECUTION** implementation, that will be used by the service launcher.
 
 <a name="example"></a>
+
 #### Building a Table of All Request Headers
 
 The following [EWF service](./headers/header_fields/application.e) code simply uses an ```html_template``` to fill a table (names and values) with all the headers fields it receives.
@@ -276,6 +293,7 @@ end
 ```
 
 <a name="compress"></a>
+
 #### How to compress pages
 To be completed.
 
@@ -432,5 +450,5 @@ As an exercise, try to write a similar service to retrieve the OS family using t
 An [EWF service](./cgi_variables/application.e) that shows the CGI variables, creates a table showing the values of all the CGI variables.
 
 
-Nav: [Workbook](../workbook.md) | [Handling Requests: Form/Query parameters](./form.md) | [Generating Responses](../generating_response/generating_response.md)
+Nav: [Workbook](../workbook.md) :: [Handling Requests: Form/Query parameters](./form.md) :: [Generating Responses](../generating_response/generating_response.md)
 

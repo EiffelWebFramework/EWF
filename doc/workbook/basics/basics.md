@@ -1,4 +1,4 @@
-Nav: [Workbook](../workbook.md) | [Handling Requests: Form/Query Parameter](../handling_request/form.md)
+Nav: [Workbook](../workbook.md) :: [Handling Requests: Form/Query Parameter](../handling_request/form.md)
 
 
 ## EWF basic service
@@ -12,6 +12,7 @@ Nav: [Workbook](../workbook.md) | [Handling Requests: Form/Query Parameter](../h
 
 
 <a name="structure"></a>
+
 ## EWF service structure
 
 The following code describes the basic structure of an EWF basic service that handles HTTP requests. We will need to define a Service Launcher and a Request Execution implementation. 
@@ -114,6 +115,7 @@ In the **APPLICATION_EXECUTION** class class you will need to implement implemen
 The WSF_EXECUTION instance, in this case ```APPLICATION_EXECUTION``` is created per request, with two main attributes request: ```WSF_REQUEST``` and response: ```WSF_RESPONSE```.
 
 <a name="text"></a>
+
 ## A simple Service to Generate Plain Text.
 
 Before to continue, it is recommended to review the getting started guided. In the example we will only shows the implementation of the WSF_EXECUTION interface. 
@@ -142,7 +144,8 @@ end
 
 ```
 <a name="source_1"></a>
-##### Source code
+
+### Source code
 The source code is available on Github. You can get it by running the command:
 
 ```git clone https://github.com/EiffelWebFramework/ewf.git```
@@ -152,6 +155,7 @@ The example of simple service that generate plain text response is located in th
 ```estudio -config simple.ecf -target simple_nino```
 
 <a name="html"></a>
+
 ## A Service to Generate HTML.
 To generate HTML, it's needed
 
@@ -193,7 +197,10 @@ feature -- Basic operations
 
 end
 ```
-##### Source code
+
+<a name="source_2"></a>
+
+### Source code
 The source code is available on Github. You can get it by running the command:
 
 ```git clone https://github.com/EiffelWebFramework/ewf.git```
@@ -202,5 +209,5 @@ The example of the service that generates HTML is located in the directory $PATH
 
 ```estudio -config simple_html.ecf -target simple_html_nino```
 
-Nav: [Workbook](../workbook.md) |  [Handling Requests: Form/Query Parameter](../handling_request/form.md)
+Nav: [Workbook](../workbook.md) :: [Handling Requests: Form/Query Parameter](../handling_request/form.md)
 

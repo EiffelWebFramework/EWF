@@ -1,9 +1,9 @@
-Nav: [Workbook](./workbook.md)
+Nav: [Workbook](../workbook.md)
 
 EWF Deployment 
 ==============
 
-#Apache on Windows#
+# Apache on Windows#
 
 1. Apache Install
 2. Deploying EWF CGI
@@ -17,17 +17,17 @@ EWF Deployment
 
 
 
-##Apache on Windows
+## Apache on Windows
 
-###Apache Install
+### Apache Install
 
 >Check the correct version (Win 32 or Win64)
 >Apache Version:  Apache 2.4.4 
 >Windows: http://www.apachelounge.com/download/
 
-####Deploying EWF CGI
+#### Deploying EWF CGI
 
-####CGI overview
+#### CGI overview
 >A new process is started for each HTTP request. So if there are N requests to the same >CGI program, the code of the CGI program is loaded into memory N times.
 >When a CGI program finishes handling a request,  the program terminates.
 
@@ -61,7 +61,7 @@ Check that you have the following modules enabled
     LoadModule cgi_module modules/mod_cgi.so
     LoadModule rewrite_module modules/mod_rewrite.so
 
-####Tip:
+#### Tip:
 >To check the syntax of your httpd.conf file. From command line run the following 
 
     $>httpd - t
@@ -70,7 +70,7 @@ Check that you have the following modules enabled
 >.htaccess CGI
     http://perishablepress.com/stupid-htaccess-tricks/
 
-####.htaccess
+#### .htaccess
 
     Options +ExecCGI +Includes +FollowSymLinks -Indexes
     AddHandler cgi-script exe
@@ -91,11 +91,11 @@ Check that you have the following modules enabled
 >Replace $service with the name of your executable service, for example app_service.exe
 
 
-####Deploying EWF FCGI
+#### Deploying EWF FCGI
 >To deploy FCGI you will need to download the mod_fcgi module. 
 >You can get it from here http://www.apachelounge.com/download/
 
-####FCGI overview
+#### FCGI overview
 >FastCGI allows a single, long-running process to handle more than one user request while keeping close to the CGI programming model, retaining the simplicity while eliminating the overhead of creating a new process for each request. Unlike converting an application to a web server plug-in, FastCGI applications remain independent of the web server.
 
 * Build EWF application
@@ -160,4 +160,4 @@ Copy the app.exe and the folder "www"  into a folder served by apache2, for exam
 Replace $service with the name of your executable $service, for example app_service.exe
 You will need to create an service.ews file, this file will be located at the same place where you copy your app service executable.
 
-Nav: [Workbook](./workbook.md)
+Nav: [Workbook](../workbook.md)
