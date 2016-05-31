@@ -3,10 +3,10 @@
   <head>
     <meta charset="utf-8">
     <title>
-      {% if page.title == "Eiffel Web Framework" %}
+      {% if page.title == "EiffelWeb" %}
       {{ page.title }}
       {% else if %}
-      {{ page.title }} &middot; Eiffel Web Framework
+      {{ page.title }} &middot; EiffelWeb
       {% endif %}
     </title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,7 +18,7 @@
     <div class="container-narrow">
       <div class="masthead">
         <ul class="nav nav-pills pull-right">
-          <li{% if page.title == "Eiffel Web Framework" %} class="active"{% endif %}>
+          <li{% if page.title == "EiffelWeb" %} class="active"{% endif %}>
             <a href="{{ page.base_url }}index.html">Home</a>
           </li>
           <li{% if page.title == "Getting Started" %} class="active"{% endif %}>
@@ -34,13 +34,13 @@
             <a href="{{ page.base_url }}wiki">(Old-Wiki)</a>
           </li>
         </ul>
-        <h3 class="muted">Eiffel Web Framework</h3>
+        <h3 class="muted">EiffelWeb</h3>
       </div>
       <hr>
     {{ content }}
       <hr>
       <div class="footer">
-        <p>&copy; EiffelWebFramework 2012-2016</p>
+        <p>&copy; EiffelWeb framework 2012-2016</p>
       </div>
     </div> <!-- /container -->
     <script src="{{ page.base_url }}js/vendor/jquery.min.js"></script>

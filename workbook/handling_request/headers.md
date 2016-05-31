@@ -452,7 +452,7 @@ As an exercise, try to write a similar service to retrieve the OS family using t
 	* [SERVER_SOFTWARE](https://tools.ietf.org/html/rfc3875#section-4.1.16)
 
 **Example**
-An [EWF service](../cgi_variables/application.e) that shows the CGI variables, creates a table showing the values of all the CGI variables.
+An [EWF service](../headers/cgi_variables/application.e) that shows the CGI variables, creates a table showing the values of all the CGI variables.
 
 
 Nav: [Workbook](../../workbook) :: [Handling Requests: Form/Query parameters](../form) :: [Generating Responses](../../generating_response/generating_response)
