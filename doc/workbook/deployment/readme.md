@@ -128,10 +128,13 @@ Copy the app.exe and the folder "www"  into a folder served by apache2, for exam
 
 >NOTE: By default Apache does not come with fcgid module, so you will need to download it, and put the module under Apache2/modules
 
-#.htaccess FCGI
->http://perishablepress.com/stupid-htaccess-tricks/
+# .htaccess FCGI
 
-####.htaccess
+```
+http://perishablepress.com/stupid-htaccess-tricks/
+```
+
+#### .htaccess
 
     Options +ExecCGI +Includes +FollowSymLinks -Indexes
     
