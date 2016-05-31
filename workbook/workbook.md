@@ -20,7 +20,7 @@ base_url: ../../
 Before reading (or walking throught) the workbook, to get a quick overview of EWF, it is recommended to read the following articles:
 
 * [Getting Started with EWF](http://eiffelwebframework.github.io/EWF/getting-started/)
-* [EWF Documentation](http://eiffelwebframework.github.io/EWF/wiki/Documentation/)
+* [EWF Documentation](http://eiffelwebframework.github.io/EWF/workbook/workbook)
 * [EWF Application Lifecyle](https://github.com/EiffelWebFramework/ewf_examples/wiki/Application-Lifecycle)
 
 
