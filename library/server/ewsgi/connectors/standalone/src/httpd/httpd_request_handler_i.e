@@ -14,6 +14,7 @@ feature {NONE} -- Initialization
 	make
 		do
 			reset
+			persistent_connection_timeout := 5 -- seconds
 		end
 
 	reset
@@ -114,7 +115,7 @@ feature -- Settings
 			Result := {HTTPD_SERVER}.is_persistent_connection_supported
 		end	
 
-	persistent_connection_timeout: INTEGER = 5 -- seconds
+	persistent_connection_timeout: INTEGER -- seconds
 			-- Number of seconds for persistent connection timeout.
 			-- Default: 5 sec.
 
@@ -210,17 +211,8 @@ feature -- Execution
 
 					--| TODO: add configuration options for socket timeout.
 					--| set by default 5 seconds.
---				l_socket.set_timeout (persistent_connection_timeout) -- 5 seconds!
-				l_socket.set_timeout (1) -- 1 second!
-				from
-					i := persistent_connection_timeout -- * 1 sec
-				until
-					l_is_ready or i <= 0 or has_error
-				loop
-					l_is_ready := l_socket.ready_for_reading
-					check not l_socket.is_closed end
-					i := i - 1
-				end
+				l_socket.set_timeout (persistent_connection_timeout) -- 5 seconds!
+				l_is_ready := l_socket.ready_for_reading
 
 				if l_is_ready then
 					create l_remote_info

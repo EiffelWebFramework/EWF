@@ -23,8 +23,8 @@ feature {NONE} -- Initialization
 		local
 			n: INTEGER
 			p: like pool
-		do
-			n := max_concurrent_connections (server)
+	 	do
+			n := max_concurrent_connections (server).max (1) -- At least one processor!
 			create p.make (n)
 			initialize_pool (p, n)
 			pool := p

@@ -20,7 +20,12 @@ feature {NONE} -- Initialization
 	initialize
 			-- Initialize current service.
 		do
-			set_service_option ("port", 9090)
+				-- Specific to `standalone' connector (the EiffelWeb server).
+				-- See `{WSF_STANDALONE_SERVICE_LAUNCHER}.initialize'
+ 			set_service_option ("port", 9090)
+			set_service_option ("max_concurrent_connections", 10)
+			set_service_option ("keep_alive_timeout", 1)
+			set_service_option ("verbose", True)
 		end
 
 

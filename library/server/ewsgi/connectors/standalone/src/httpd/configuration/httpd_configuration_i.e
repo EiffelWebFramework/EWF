@@ -34,9 +34,10 @@ feature -- Access
 	max_concurrent_connections: INTEGER assign set_max_concurrent_connections
 	socket_accept_timeout: INTEGER assign set_socket_accept_timeout
 	socket_connect_timeout: INTEGER assign set_socket_connect_timeout
+
 	force_single_threaded: BOOLEAN assign set_force_single_threaded
 		do
-			Result := (max_concurrent_connections = 0)
+			Result := max_concurrent_connections = 0
 		end
 
 	is_verbose: BOOLEAN assign set_is_verbose
@@ -126,6 +127,10 @@ feature -- Element change
 		end
 
 	set_force_single_threaded (v: like force_single_threaded)
+			-- Force server to handle incoming request in a single thread.
+			-- i.e set max_concurrent_connections to 0!
+		obsolete
+			"Use set_max_concurrent_connections (0) [June/2016]"	
 		do
 			if v then
 				set_max_concurrent_connections (0)

@@ -26,9 +26,9 @@ feature {NONE} -- Initialization
 			create on_launched_actions
 
 				-- Server
-			create fac
+			create <NONE> fac
 			create server.make (fac)
-			create observer
+			create <NONE> observer
 			configuration := server_configuration (server)
 			controller := server_controller (server)
 			set_factory_connector (Current, fac)
@@ -53,7 +53,7 @@ feature {NONE} -- Separate helper
 
 	set_factory_connector (conn: detachable separate WGI_STANDALONE_CONNECTOR [G]; fac: separate WGI_HTTPD_REQUEST_HANDLER_FACTORY [G])
 		do
-			fac.set_connector (conn)
+			fac.update_with (conn)
 		end
 
 	server_configuration (a_server: like server): like configuration

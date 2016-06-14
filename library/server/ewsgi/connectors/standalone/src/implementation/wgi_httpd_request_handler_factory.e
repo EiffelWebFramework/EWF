@@ -1,5 +1,5 @@
 note
-	description: "Implementation of WGI request handler factory for WGI_STANDALOE_CONNECTOR."
+	description: "Implementation of WGI request handler factory for WGI_STANDALONE_CONNECTOR."
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -16,7 +16,7 @@ feature -- Access
 
 feature -- Element change
 
-	set_connector (conn: like connector)
+	update_with (conn: like connector)
 			-- Set `connector' with `conn'.
 		do
 			connector := conn

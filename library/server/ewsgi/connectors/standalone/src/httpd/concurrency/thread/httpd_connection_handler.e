@@ -23,7 +23,7 @@ feature {NONE} -- Initialization
 		local
 			n: INTEGER
 		do
-			n := max_concurrent_connections (server)
+			n := max_concurrent_connections (server).max (1) -- At least one thread!
 			create pool.make (n.to_natural_32)
 		end
 

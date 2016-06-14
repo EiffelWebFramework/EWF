@@ -39,33 +39,24 @@ feature {NONE} -- Initialization
 			create on_stopped_actions
 
 			port_number := 80 --| Default, but quite often, this port is already used ...
+			keep_alive_timeout := 5_000 -- 5 seconds.
 			base_url := ""
 
 			if attached options as opts then
 				if attached {READABLE_STRING_GENERAL} opts.option ("server_name") as l_server_name then
 					server_name := l_server_name.to_string_8
 				end
-				if attached {INTEGER} opts.option ("port") as l_port then
-					port_number := l_port
-				elseif
-					attached {READABLE_STRING_GENERAL} opts.option ("port") as l_port_str and then
-					l_port_str.is_integer
-				then
-					port_number := l_port_str.as_string_8.to_integer
-				end
 				if attached {READABLE_STRING_GENERAL} opts.option ("base") as l_base_str then
 					base_url := l_base_str.as_string_8
 				end
-				if attached {BOOLEAN} opts.option ("force_single_threaded") as l_single_threaded then
-					single_threaded := l_single_threaded
-				elseif attached {READABLE_STRING_GENERAL} opts.option ("force_single_threaded") as l_single_threaded_str then
-					single_threaded := l_single_threaded_str.as_lower.same_string ("true")
+				verbose := opts.option_boolean_value ("verbose", verbose)
+				port_number := opts.option_integer_value ("port", port_number)
+
+				if opts.option_boolean_value ("force_single_threaded", single_threaded) then
+					force_single_threaded
 				end
-				if attached {BOOLEAN} opts.option ("verbose") as l_verbose then
-					verbose := l_verbose
-				elseif attached {READABLE_STRING_GENERAL} opts.option ("verbose") as l_verbose_str then
-					verbose := l_verbose_str.as_lower.same_string ("true")
-				end
+				max_concurrent_connections := opts.option_integer_value ("max_concurrent_connections", max_concurrent_connections)
+				keep_alive_timeout := opts.option_integer_value ("keep_alive_timeout", keep_alive_timeout)
 			end
 
 			create conn.make
@@ -76,18 +67,24 @@ feature {NONE} -- Initialization
 			update_configuration (conn.configuration)
 		end
 
+	force_single_threaded
+			-- Set `single_threaded' to True.
+		do
+			max_concurrent_connections := 1
+ 		end		
+
 feature -- Execution
 
 	update_configuration (cfg: like connector.configuration)
 		do
-			if single_threaded then
-				cfg.set_force_single_threaded (True)
-			end
 			cfg.set_is_verbose (verbose)
 			if attached server_name as l_server_name then
 				cfg.set_http_server_name (l_server_name)
 			end
 			cfg.http_server_port := port_number
+			cfg.set_max_concurrent_connections (max_concurrent_connections)
+			cfg.set_keep_alive_timeout (keep_alive_timeout)
+--			conn.update_configuration (cfg)
 		end
 
 	launch
@@ -98,7 +95,7 @@ feature -- Execution
 		do
 			conn := connector
 			conn.set_base (base_url)
-			debug ("nino")
+			debug ("ew_standalone")
 				if verbose then
 					io.error.put_string ("Launching standalone web server on port " + port_number.out)
 					if attached server_name as l_name then
@@ -136,6 +133,13 @@ feature {NONE} -- Implementation
 	verbose: BOOLEAN
 
 	single_threaded: BOOLEAN
+		do
+			Result := max_concurrent_connections = 0
+		end
+
+	max_concurrent_connections: INTEGER
+
+	keep_alive_timeout: INTEGER	
 
 feature -- Status report
 

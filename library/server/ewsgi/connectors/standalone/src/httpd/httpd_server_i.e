@@ -37,7 +37,7 @@ feature {NONE} -- Initialization
 	build_controller
 			-- Build `controller'.
 		do
-			create controller
+			create <NONE> controller
 		end
 
 	initialize

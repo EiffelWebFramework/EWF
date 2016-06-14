@@ -83,6 +83,42 @@ feature -- Access
 			Result := options.item (a_name)
 		end
 
+feature -- Helpers
+
+	option_integer_value (a_opt_name: READABLE_STRING_GENERAL; a_default: INTEGER): INTEGER
+			-- INTEGER value associated to option name `a_opt_name', other return `a_default'.
+		local
+			s: READABLE_STRING_GENERAL
+		do
+			Result := a_default
+			if attached option (a_opt_name) as opt then
+				if attached {INTEGER} opt as i then
+					Result := i
+				else
+					s := opt.out
+					if s.is_integer then
+						Result := s.to_integer
+					end
+				end
+			end			
+		end
+
+	option_boolean_value (a_opt_name: READABLE_STRING_GENERAL; a_default: BOOLEAN): BOOLEAN
+			-- BOOLEAN value associated to option name `a_opt_name', other return `a_default'.
+		local
+			s: READABLE_STRING_GENERAL
+		do
+			Result := a_default
+			if attached option (a_opt_name) as opt then
+				if attached {BOOLEAN} opt as b then
+					Result := b
+				else
+					s := opt.out
+					Result := s.is_case_insensitive_equal ("true")
+				end
+			end			
+		end
+
 feature -- Access
 
 	new_cursor: TABLE_ITERATION_CURSOR [detachable ANY, READABLE_STRING_GENERAL]
