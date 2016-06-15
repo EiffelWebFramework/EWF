@@ -23,11 +23,7 @@ feature {NONE} -- Initialization
 				-- Specific to `standalone' connector (the EiffelWeb server).
 				-- See `{WSF_STANDALONE_SERVICE_LAUNCHER}.initialize'
  			set_service_option ("port", 9090)
-			set_service_option ("max_concurrent_connections", 10)
-			set_service_option ("keep_alive_timeout", 1)
-			set_service_option ("verbose", True)
+			import_service_options (create {WSF_SERVICE_LAUNCHER_OPTIONS_FROM_INI}.make_from_file ("simple.ini"))
 		end
-
-
 
 end

@@ -85,6 +85,21 @@ feature -- Access
 
 feature -- Helpers
 
+	has_integer_option (a_opt_name: READABLE_STRING_GENERAL): BOOLEAN
+			-- Is there any INTEGER value associated to option name `a_opt_name'?
+		local
+			s: READABLE_STRING_GENERAL
+		do
+			if attached option (a_opt_name) as opt then
+				if attached {INTEGER} opt as i then
+					Result := True
+				else
+					s := opt.out
+					Result := s.is_integer
+				end
+			end			
+		end
+
 	option_integer_value (a_opt_name: READABLE_STRING_GENERAL; a_default: INTEGER): INTEGER
 			-- INTEGER value associated to option name `a_opt_name', other return `a_default'.
 		local

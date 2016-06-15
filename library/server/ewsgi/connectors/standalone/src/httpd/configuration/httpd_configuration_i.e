@@ -10,16 +10,25 @@ feature {NONE} -- Initialization
 
 	make
 		do
-			http_server_port := 80
-			max_concurrent_connections := 100
-			max_tcp_clients := 100
-			socket_accept_timeout := 1_000
-			socket_connect_timeout := 5_000
-			keep_alive_timeout := 5
+			http_server_port := default_http_server_port
+			max_concurrent_connections := default_max_concurrent_connections
+			max_tcp_clients := default_max_tcp_clients
+			socket_timeout := default_socket_timeout
+			keep_alive_timeout := default_keep_alive_timeout
+			max_keep_alive_requests := default_max_keep_alive_requests
 			is_secure := False
 			create ca_crt.make_empty
 			create ca_key.make_empty
 		end
+
+feature -- Defaults
+
+	default_http_server_port: INTEGER = 80
+	default_max_concurrent_connections: INTEGER = 100
+	default_max_tcp_clients: INTEGER = 100
+	default_socket_timeout: INTEGER = 300 -- seconds
+	default_keep_alive_timeout: INTEGER = 15 -- seconds
+	default_max_keep_alive_requests: INTEGER = 100
 
 feature -- Access
 
@@ -31,9 +40,15 @@ feature -- Access
 	http_server_name: detachable READABLE_STRING_8 assign set_http_server_name
 	http_server_port: INTEGER assign set_http_server_port
 	max_tcp_clients: INTEGER assign set_max_tcp_clients
+			-- Listen on socket for at most `queue' connections.
+
+	socket_timeout: INTEGER assign set_socket_timeout
+			-- Amount of seconds that the server waits for receipts and transmissions during communications.
+			-- note: with timeout of 0, socket can wait for ever.
+			-- By default: 300 seconds, which is appropriate for most situations.
+
 	max_concurrent_connections: INTEGER assign set_max_concurrent_connections
-	socket_accept_timeout: INTEGER assign set_socket_accept_timeout
-	socket_connect_timeout: INTEGER assign set_socket_connect_timeout
+			-- Max number of concurrent connections.
 
 	force_single_threaded: BOOLEAN assign set_force_single_threaded
 		do
@@ -43,13 +58,33 @@ feature -- Access
 	is_verbose: BOOLEAN assign set_is_verbose
 			-- Display verbose message to the output?
 
+	verbose_level: INTEGER assign set_verbose_level
+			-- Verbosity of output.
+
 	keep_alive_timeout: INTEGER assign set_keep_alive_timeout
-			-- Persistent connection timeout
+			-- Persistent connection timeout.
+			-- Number of seconds the server waits after a request has been served before it closes the connection.
 			-- Timeout unit in Seconds.
+			-- By default: 5 seconds.
+
+	max_keep_alive_requests: INTEGER assign set_max_keep_alive_requests
+			-- Maximum number of requests allowed per persistent connection.
+			-- Recommended a high setting.
+			-- To disable KeepAlive, set `max_keep_alive_requests' to 0.
+			-- By default: 100 .
 
 	has_ssl_support: BOOLEAN
 			-- Has SSL support?
 		deferred
+		end
+
+	request_settings: HTTPD_REQUEST_SETTINGS
+		do
+			Result.is_verbose := is_verbose
+			Result.verbose_level := verbose_level
+			Result.timeout := socket_timeout
+			Result.keep_alive_timeout := keep_alive_timeout
+			Result.max_keep_alive_requests := max_keep_alive_requests
 		end
 
 feature -- Access: SSL
@@ -75,7 +110,6 @@ feature -- Element change
 			else
 				create {IMMUTABLE_STRING_8} http_server_name.make_from_separate (v)
 			end
-			--| Missing postcondition.	
 		end
 
 	unset_http_server_name
@@ -110,27 +144,35 @@ feature -- Element change
 			max_concurrent_connections_set : max_concurrent_connections = v
 		end
 
-	set_socket_accept_timeout (v: like socket_accept_timeout)
-			-- Set `socket_accept_timeout' with `v'
+	set_socket_timeout (a_nb_seconds: like socket_timeout)
+			-- Set `socket_timeout' with `a_nb_seconds'
 		do
-			socket_accept_timeout := v
+			socket_timeout := a_nb_seconds
 		ensure
-			socket_accept_timeout_set: socket_accept_timeout = v
+			socket_timeout_set: socket_timeout = a_nb_seconds
 		end
 
-	set_socket_connect_timeout (v: like socket_connect_timeout)
-			-- Set `socket_connect_timeout' with `v'
+	set_keep_alive_timeout (a_seconds: like keep_alive_timeout)
+			-- Set `keep_alive_timeout' with `a_seconds'
 		do
-			socket_connect_timeout := v
+			keep_alive_timeout := a_seconds
 		ensure
-			socket_connect_timeout_set:  socket_connect_timeout = v
+			keep_alive_timeout_set: keep_alive_timeout = a_seconds
+		end
+
+	set_max_keep_alive_requests (nb: like max_keep_alive_requests)
+			-- Set `max_keep_alive_requests' with `nb'
+		do
+			max_keep_alive_requests := nb
+		ensure
+			max_keep_alive_requests_set:  max_keep_alive_requests = nb
 		end
 
 	set_force_single_threaded (v: like force_single_threaded)
 			-- Force server to handle incoming request in a single thread.
 			-- i.e set max_concurrent_connections to 0!
 		obsolete
-			"Use set_max_concurrent_connections (0) [June/2016]"	
+			"Use set_max_concurrent_connections (0) [June/2016]"
 		do
 			if v then
 				set_max_concurrent_connections (0)
@@ -148,12 +190,12 @@ feature -- Element change
 			is_verbose_set:  is_verbose = b
 		end
 
-	set_keep_alive_timeout (a_seconds: like keep_alive_timeout)
-			-- Set `keep_alive_timeout' with `a_seconds'
+	set_verbose_level (lev: INTEGER)
+			-- Set `verbose_level' to `lev'.
 		do
-			keep_alive_timeout := a_seconds
+			verbose_level := lev
 		ensure
-			keep_alive_timeout_set: keep_alive_timeout = a_seconds
+			verbose_level_set: verbose_level = lev
 		end
 
 	mark_secure

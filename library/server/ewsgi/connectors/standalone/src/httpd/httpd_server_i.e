@@ -51,6 +51,9 @@ feature	-- Access
 	is_verbose: BOOLEAN
 			-- Is verbose for output messages.
 
+	verbose_level: INTEGER
+			-- Verbosity of output.
+
 	configuration: HTTPD_CONFIGURATION
 			-- Associated server configuration.
 
@@ -100,7 +103,16 @@ feature -- Execution
 			apply_configuration
 			is_terminated := False
 			if is_verbose then
-				log ("%N%NStarting Web Application Server (port=" + configuration.http_server_port.out + "):%N")
+				log ("%N%NStarting Web Application Server ...")
+				log ("  - port = " + configuration.http_server_port.out)
+				log ("  - max_tcp_clients = " + configuration.max_tcp_clients.out)
+				log ("  - max_concurrent_connections = " + configuration.max_concurrent_connections.out)
+				log ("  - socket_timeout = " + configuration.socket_timeout.out + " seconds")
+				log ("  - keep_alive_timeout = " + configuration.keep_alive_timeout.out + " seconds")
+				log ("  - max_keep_alive_requests = " + configuration.max_keep_alive_requests.out)
+				if configuration.verbose_level > 0 then
+					log ("  - verbose_level = " + configuration.verbose_level.out)
+				end
 			end
 			is_shutdown_requested := False
 			listen
@@ -150,7 +162,7 @@ feature -- Listening
 
 			if not l_listening_socket.is_bound then
 				if is_verbose then
-					log ("Socket could not be bound on port " + l_http_port.out)
+					log ("Socket could not be bound on port " + l_http_port.out + " !")
 				end
 			else
 				l_http_port := l_listening_socket.port
@@ -159,9 +171,9 @@ feature -- Listening
 					l_listening_socket.listen (configuration.max_tcp_clients)
 					if is_verbose then
 						if configuration.is_secure then
-							log ("%NHTTP Connection Server ready on port " + l_http_port.out +" : https://localhost:" + l_http_port.out + "/")
+							log ("%NListening on port " + l_http_port.out +" : https://localhost:" + l_http_port.out + "/")
 						else
-							log ("%NHTTP Connection Server ready on port " + l_http_port.out +" : http://localhost:" + l_http_port.out + "/")
+							log ("%NListening on port " + l_http_port.out +" : http://localhost:" + l_http_port.out + "/")
 						end
 					end
 					on_launched (l_http_port)
@@ -312,6 +324,7 @@ feature -- Configuration change
 			is_not_launched: not is_launched
 		do
 			is_verbose := configuration.is_verbose
+			verbose_level := configuration.verbose_level
 		end
 
 feature -- Output

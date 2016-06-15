@@ -9,12 +9,20 @@ deferred class
 inherit
 	HTTPD_DEBUG_FACILITIES
 
+	HTTPD_LOGGER_CONSTANTS
+
 feature {NONE} -- Initialization
 
-	make
+	make (a_request_settings: HTTPD_REQUEST_SETTINGS)
 		do
 			reset
-			persistent_connection_timeout := 5 -- seconds
+				-- Import global request settings.
+			timeout := a_request_settings.timeout -- seconds
+			keep_alive_timeout := a_request_settings.keep_alive_timeout -- seconds
+			max_keep_alive_requests := a_request_settings.max_keep_alive_requests
+
+			is_verbose := a_request_settings.is_verbose
+			verbose_level := a_request_settings.verbose_level
 		end
 
 	reset
@@ -108,16 +116,29 @@ feature -- Access
 feature -- Settings	
 
 	is_verbose: BOOLEAN
+			-- Output messages?
+
+	verbose_level: INTEGER
+			-- Output verbosity.
 
 	is_persistent_connection_supported: BOOLEAN
 			-- Is persistent connection supported?
 		do
-			Result := {HTTPD_SERVER}.is_persistent_connection_supported
-		end	
+			Result := {HTTPD_SERVER}.is_persistent_connection_supported and then max_keep_alive_requests > 0
+		end
 
-	persistent_connection_timeout: INTEGER -- seconds
+	is_next_persistent_connection_supported: BOOLEAN
+			-- Is next persistent connection supported?
+			-- note: it is relevant only if `is_persistent_connection_supported' is True.
+
+	timeout: INTEGER -- seconds
+			-- Amount of seconds that the server waits for receipts and transmissions during communications.
+
+	max_keep_alive_requests: INTEGER
+			-- Maximum number of requests allowed per persistent connection.
+
+	keep_alive_timeout: INTEGER -- seconds
 			-- Number of seconds for persistent connection timeout.
-			-- Default: 5 sec.
 
 feature -- Status report
 
@@ -163,7 +184,7 @@ feature -- Execution
 		local
 			l_socket: like client_socket
 			l_exit: BOOLEAN
-			n: INTEGER
+			n,m: INTEGER
 		do
 			l_socket := client_socket
 			check
@@ -173,15 +194,21 @@ feature -- Execution
 			from
 					-- Process persistent connection as long the socket is not closed.
 				n := 0
+				m := max_keep_alive_requests
+				is_next_persistent_connection_supported := True
 			until
 				l_exit
 			loop
 				n := n + 1
+				if n >= m then
+					is_next_persistent_connection_supported := False
+				end
 					-- FIXME: it seems to be called one more time, mostly to see this is done.
 				execute_request
 				l_exit := not is_persistent_connection_supported
-						or has_error or l_socket.is_closed or not l_socket.is_open_read
+						or not is_next_persistent_connection_supported -- related to `max_keep_alive_requests'
 						or not is_persistent_connection_requested
+						or has_error or l_socket.is_closed or not l_socket.is_open_read
 				reset_request
 			end
 		end
@@ -193,7 +220,6 @@ feature -- Execution
 			l_remote_info: detachable like remote_info
 			l_socket: like client_socket
 			l_is_ready: BOOLEAN
-			i: INTEGER
 		do
 			l_socket := client_socket
 			check
@@ -211,10 +237,11 @@ feature -- Execution
 
 					--| TODO: add configuration options for socket timeout.
 					--| set by default 5 seconds.
-				l_socket.set_timeout (persistent_connection_timeout) -- 5 seconds!
+				l_socket.set_timeout (keep_alive_timeout) -- 5 seconds!
 				l_is_ready := l_socket.ready_for_reading
 
 				if l_is_ready then
+					l_socket.set_timeout (timeout) -- FIXME: return a 408 Request Timeout response ..
 					create l_remote_info
 					if attached l_socket.peer_address as l_addr then
 						l_remote_info.addr := l_addr.host_address.host_address
@@ -234,10 +261,13 @@ feature -- Execution
 					if l_is_ready then
 	--					check catch_bad_incoming_connection: False end
 						if is_verbose then
-							log ("ERROR: invalid HTTP incoming request")
+							log (request_header + "%NWARNING: invalid HTTP incoming request", warning_level)
 						end
 					end
 				else
+					if is_verbose then
+						log (request_header, information_level)
+					end
 					process_request (l_socket)
 	            end
 	            debug ("dbglog")
@@ -281,11 +311,11 @@ feature -- Parsing
 		do
 			create txt.make (64)
 			request_header := txt
-			if 	
+			if
 				not has_error and then
 				a_socket.is_readable and then
 				attached next_line (a_socket) as l_request_line and then
-				not l_request_line.is_empty 
+				not l_request_line.is_empty
 			then
 				txt.append (l_request_line)
 				txt.append_character ('%N')
@@ -302,8 +332,10 @@ feature -- Parsing
 					line = Void or end_of_stream or has_error
 				loop
 					n := line.count
-					if l_is_verbose then
-						log (line)
+					debug ("ew_standalone")
+						if l_is_verbose then
+							log (line, debug_level)
+						end
 					end
 					pos := line.index_of (':', 1)
 					if pos > 0 then
@@ -350,9 +382,11 @@ feature -- Parsing
 		local
 			n, pos, next_pos: INTEGER
 		do
-			if is_verbose then
-				log ("%N## Parse HTTP request line ##")
-				log (line)
+			debug ("ew_standalone")
+				if is_verbose then
+					log ("%N## Parse HTTP request line ##", debug_level)
+					log (line, debug_level)
+				end
 			end
 			pos := line.index_of (' ', 1)
 			method := line.substring (1, pos - 1)
@@ -369,7 +403,7 @@ feature -- Parsing
 	next_line (a_socket: HTTPD_STREAM_SOCKET): detachable STRING
 			-- Next line fetched from `a_socket' is available.
 		require
-			not_has_error: not has_error
+			not_has_error: not has_error or is_verbose
 			is_readable: a_socket.is_open_read
 		local
 			retried: BOOLEAN
@@ -380,19 +414,19 @@ feature -- Parsing
 			elseif a_socket.readable then
 				a_socket.read_line_thread_aware
 				Result := a_socket.last_string
-					-- Do no check `socket_ok' before socket operation, 
+					-- Do no check `socket_ok' before socket operation,
 					-- otherwise it may be False, due to error during other socket operation in same thread.
 				if not a_socket.socket_ok then
 					has_error := True
 					if is_verbose then
-						log ("%N## Socket is not ok! ##")
+						log (request_header +"%N" + Result + "%N## socket_ok=False! ##", debug_level)
 					end
 				end
 			else
 					-- Error with socket...
 				has_error := True
 				if is_verbose then
-					log ("%N## Socket is not readable! ##")
+					log (request_header + "%N## Socket is not readable! ##", debug_level)
 				end
 			end
 		rescue
@@ -412,13 +446,17 @@ feature -- Output
 			logger_set: logger = a_logger
 		end
 
-	log (m: STRING)
+	log (m: STRING; a_level: INTEGER)
 			-- Log message `m'.
+		require
+			is_verbose: is_verbose
 		do
-			if attached logger as l_logger then
-				l_logger.log (m)
-			else
-				io.put_string (m + "%N")
+			if is_verbose and (verbose_level & a_level) = a_level then
+				if attached logger as l_logger then
+					l_logger.log (m)
+				else
+					io.put_string (m + "%N")
+				end
 			end
 		end
 
