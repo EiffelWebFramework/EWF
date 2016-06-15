@@ -17,6 +17,7 @@
 		<library name="connector_libfcgi" location="..\library\server\ewsgi\connectors\libfcgi\libfcgi-safe.ecf" readonly="false"/>
 		<library name="connector_nino" location="..\library\server\ewsgi\connectors\nino\nino-safe.ecf" readonly="false"/>
 		<library name="connector_null" location="..\library\server\ewsgi\connectors\null\null-safe.ecf" readonly="false"/>
+		<library name="connector_standalone" location="..\library\server\ewsgi\connectors\standalone\standalone-safe.ecf" readonly="false"/>
 		<library name="conneg" location="..\library\network\protocol\content_negotiation\conneg-safe.ecf" readonly="false"/>
 		<library name="default_cgi" location="..\library\server\wsf\default\cgi-safe.ecf" readonly="false"/>
 		<library name="default_libfcgi" location="..\library\server\wsf\default\libfcgi-safe.ecf" readonly="false"/>
@@ -30,6 +31,7 @@
 		<library name="filter" location="..\examples\filter\filter-safe.ecf" readonly="false"/>
 		<library name="hello_world" location="..\library\server\ewsgi\examples\hello_world\hello-safe.ecf" readonly="false"/>
 		<library name="http" location="..\library\network\protocol\http\http-safe.ecf" readonly="false"/>
+		<library name="httpd" location="..\library\server\httpd\httpd-safe.ecf" readonly="false"/>
 		<library name="http_authorization" location="..\library\server\authentication\http_authorization\http_authorization-safe.ecf" readonly="false"/>
 		<library name="http_client" location="..\library\network\http_client\http_client-safe.ecf" readonly="false"/>
 		<library name="libfcgi" location="..\library\server\libfcgi\libfcgi-safe.ecf" readonly="false"/>

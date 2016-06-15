@@ -22,7 +22,9 @@ inherit
 
 create
 	make_ssl_server_by_address_and_port, make_ssl_server_by_port,
-	make_server_by_address_and_port, make_server_by_port
+	make_server_by_address_and_port, make_server_by_port,
+	make_ssl_client_by_address_and_port, make_ssl_client_by_port,
+	make_client_by_address_and_port, make_client_by_port
 
 create {HTTPD_STREAM_SOCKET}
 	make
@@ -44,6 +46,26 @@ feature {NONE} -- Initialization
 			l_socket: SSL_TCP_STREAM_SOCKET
 		do
 			create  l_socket.make_server_by_port (a_port)
+			l_socket.set_tls_protocol (a_ssl_protocol)
+			socket := l_socket
+			set_certificates (a_crt, a_key)
+		end
+
+	make_ssl_client_by_address_and_port (an_address: INET_ADDRESS; a_port: INTEGER; a_ssl_protocol: NATURAL; a_crt: STRING; a_key: STRING)
+		local
+			l_socket: SSL_TCP_STREAM_SOCKET
+		do
+			create l_socket.make_client_by_address_and_port (an_address, a_port)
+			l_socket.set_tls_protocol (a_ssl_protocol)
+			socket := l_socket
+			set_certificates (a_crt, a_key)
+		end
+
+	make_ssl_client_by_port (a_peer_port: INTEGER; a_peer_host: STRING; a_ssl_protocol: NATURAL; a_crt: STRING; a_key: STRING)
+		local
+			l_socket: SSL_TCP_STREAM_SOCKET
+		do
+			create  l_socket.make_client_by_port (a_peer_port, a_peer_host)
 			l_socket.set_tls_protocol (a_ssl_protocol)
 			socket := l_socket
 			set_certificates (a_crt, a_key)

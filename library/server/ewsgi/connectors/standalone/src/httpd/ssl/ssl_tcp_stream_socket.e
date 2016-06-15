@@ -12,6 +12,7 @@ inherit
 
 create
 	make_server_by_address_and_port, make_server_by_port,
+	make_client_by_address_and_port, make_client_by_port, 
 	make_empty
 
 create {SSL_NETWORK_STREAM_SOCKET}

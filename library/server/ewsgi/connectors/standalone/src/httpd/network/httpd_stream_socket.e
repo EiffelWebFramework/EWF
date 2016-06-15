@@ -12,6 +12,8 @@ class
 create
 	make_server_by_address_and_port,
 	make_server_by_port,
+	make_client_by_address_and_port,
+	make_client_by_port,
 	make_from_separate,
 	make_empty
 
@@ -28,6 +30,16 @@ feature {NONE} -- Initialization
 	make_server_by_port (a_port: INTEGER)
 		do
 			create {TCP_STREAM_SOCKET} socket.make_server_by_port (a_port)
+		end
+
+	make_client_by_address_and_port (an_address: INET_ADDRESS; a_port: INTEGER)
+		do
+			create {TCP_STREAM_SOCKET} socket.make_client_by_address_and_port (an_address, a_port)
+		end
+
+	make_client_by_port (a_peer_port: INTEGER; a_peer_host: STRING)
+		do
+			create {TCP_STREAM_SOCKET} socket.make_client_by_port (a_peer_port, a_peer_host)
 		end
 
 	make_from_separate (s: separate HTTPD_STREAM_SOCKET)
@@ -164,6 +176,11 @@ feature -- Status Report
 			end
 		end
 
+	exists: BOOLEAN
+		do
+			Result := socket.exists
+		end
+
 	is_blocking: BOOLEAN
 		do
 			Result := socket.is_blocking
@@ -173,6 +190,13 @@ feature -- Status Report
 		do
 			if attached {TCP_STREAM_SOCKET} socket as l_socket then
 				Result := l_socket.is_bound
+			end
+		end
+
+	is_connected: BOOLEAN
+		do
+			if attached {TCP_STREAM_SOCKET} socket as l_socket then
+				Result := l_socket.is_connected
 			end
 		end
 
@@ -218,6 +242,16 @@ feature -- Status Report
 			if attached {TCP_STREAM_SOCKET} socket as l_socket then
 				Result := l_socket.ready_for_writing
 			end
+		end
+
+	connect
+		do
+			socket.connect
+		end
+
+	close
+		do
+			socket.close
 		end
 
 	listen (a_queue: INTEGER)

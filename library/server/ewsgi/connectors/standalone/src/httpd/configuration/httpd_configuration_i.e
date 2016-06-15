@@ -92,10 +92,10 @@ feature -- Access: SSL
 	is_secure: BOOLEAN
 			 -- Is SSL/TLS session?.
 
-	ca_crt: STRING
+	ca_crt: IMMUTABLE_STRING_8
 			-- the signed certificate.
 
-	ca_key: STRING
+	ca_key: IMMUTABLE_STRING_8
 			-- private key to the certificate.
 
 	ssl_protocol: NATURAL
@@ -218,20 +218,16 @@ feature -- Element change
 
 feature -- Element change
 
-	set_ca_crt (a_value: STRING)
-			-- Set `ca_crt' with `a_value'
+	set_ca_crt (a_value: separate READABLE_STRING_8)
+			-- Set `ca_crt' from `a_value'.
 		do
-			ca_crt := a_value
-		ensure
-			ca_crt_set: ca_crt = a_value
+			create ca_crt.make_from_separate (a_value)
 		end
 
 	set_ca_key (a_value: STRING)
-			-- Set `ca_key' with `a_value'
+			-- Set `ca_key' with `a_value'.
 		do
-			ca_key := a_value
-		ensure
-			ca_key_set: ca_key = a_value
+			create ca_key.make_from_separate (a_value)
 		end
 
 	set_ssl_protocol  (a_version: NATURAL)
