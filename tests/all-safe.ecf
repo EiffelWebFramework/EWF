@@ -31,7 +31,7 @@
 		<library name="filter" location="..\examples\filter\filter-safe.ecf" readonly="false"/>
 		<library name="hello_world" location="..\library\server\ewsgi\examples\hello_world\hello-safe.ecf" readonly="false"/>
 		<library name="http" location="..\library\network\protocol\http\http-safe.ecf" readonly="false"/>
-		<library name="httpd" location="..\library\server\httpd\httpd-safe.ecf" readonly="false"/>
+		<library name="httpd" location="..\library\server\ewsgi\connectors\standalone\lib\httpd\httpd-safe.ecf" readonly="false"/>
 		<library name="http_authorization" location="..\library\server\authentication\http_authorization\http_authorization-safe.ecf" readonly="false"/>
 		<library name="http_client" location="..\library\network\http_client\http_client-safe.ecf" readonly="false"/>
 		<library name="libfcgi" location="..\library\server\libfcgi\libfcgi-safe.ecf" readonly="false"/>
