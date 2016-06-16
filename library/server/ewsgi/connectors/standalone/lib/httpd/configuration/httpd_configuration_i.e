@@ -224,7 +224,7 @@ feature -- Element change
 			create ca_crt.make_from_separate (a_value)
 		end
 
-	set_ca_key (a_value: STRING)
+	set_ca_key (a_value: separate READABLE_STRING_8)
 			-- Set `ca_key' with `a_value'.
 		do
 			create ca_key.make_from_separate (a_value)
