@@ -24,12 +24,19 @@
 			</condition>
 		</library>
 		<library name="time" location="$ISE_LIBRARY\library\time\time.ecf"/>
+		<cluster name="network" location=".\network" recursive="false">
+			<cluster name="ssl_network" location="$|ssl" recursive="true">
+				<condition>
+					<custom name="httpd_ssl_enabled" value="true"/>
+				</condition>
+			</cluster>
+		</cluster>
 		<cluster name="httpd_server" location=".\" recursive="true">
 			<file_rule>
-				<exclude>/EIFGENs$</exclude>
 				<exclude>/concurrency$</exclude>
 				<exclude>/no_ssl$</exclude>
 				<exclude>/ssl$</exclude>
+				<exclude>/network$</exclude>
 			</file_rule>
 			<cluster name="no_ssl" location="$|no_ssl\" recursive="true">
 				<condition>
