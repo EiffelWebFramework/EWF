@@ -153,15 +153,15 @@ feature -- Execution
 
 feature -- Callback
 
-	on_launched_actions: ACTION_SEQUENCE [TUPLE [WGI_STANDALONE_CONNECTOR [G]]]
+	on_launched_actions: ACTION_SEQUENCE [TUPLE [like connector]]
 			-- Actions triggered when launched
 
-	on_stopped_actions: ACTION_SEQUENCE [TUPLE [WGI_STANDALONE_CONNECTOR [G]]]
+	on_stopped_actions: ACTION_SEQUENCE [TUPLE [like connector]]
 			-- Actions triggered when stopped
 
 feature {NONE} -- Implementation
 
-	on_launched (conn: WGI_STANDALONE_CONNECTOR [G])
+	on_launched (conn: like connector)
 		do
 			on_launched_actions.call ([conn])
 		end
