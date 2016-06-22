@@ -1,6 +1,8 @@
 note
-	description: "Summary description for {WEB_SOCKET}."
-	author: ""
+	description: "[
+			Object representing the websocket connection.
+			It contains the `request` and `response`, and more important the `socket` itself.
+		]"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -8,7 +10,11 @@ class
 	WEB_SOCKET
 
 inherit
-	WGI_STANDALONE_CONNECTOR_ACCESS
+	WGI_STANDALONE_CONNECTOR_EXPORTER
+
+	WSF_RESPONSE_EXPORTER
+
+	WGI_EXPORTER
 
 	HTTPD_LOGGER_CONSTANTS
 
@@ -25,7 +31,8 @@ feature {NONE} -- Initialization
 		do
 			request := req
 			response := res
-			is_verbose := True
+			is_verbose := False
+			verbose_level := notice_level
 
 			if
 				attached {WGI_STANDALONE_INPUT_STREAM} req.input as r_input
@@ -40,30 +47,85 @@ feature {NONE} -- Initialization
 feature -- Access		
 
 	socket: HTTPD_STREAM_SOCKET
+			-- Underlying connected socket.
+
+feature {NONE} -- Access		
 
 	request: WSF_REQUEST
+			-- Associated request.
 
 	response: WSF_RESPONSE
+			-- Associated response stream.
 
 feature -- Access
 
 	is_websocket: BOOLEAN
+			-- Does `open_ws_handshake' detect valid websocket upgrade handshake?
 
-	has_error: BOOLEAN
+feature -- Settings
 
 	is_verbose: BOOLEAN
+			-- Output verbose log messages?
 
-	socket_is_ready_for_reading: BOOLEAN
+	verbose_level: INTEGER
+			-- Level of verbosity.
+
+feature -- Status
+
+	has_error: BOOLEAN
+			-- Error occured during processing?
+
+feature -- Socket status
+
+	is_ready_for_reading: BOOLEAN
+			-- Is `socket' ready for reading?
+			--| at this point, socket should be set to blocking.
 		do
 			Result := socket.ready_for_reading
 		end
 
+	is_open_read: BOOLEAN
+			-- Is `socket' open for reading?
+		do
+			Result := socket.is_open_read
+		end
+
+	is_open_write: BOOLEAN
+			-- Is `socket' open for writing?
+		do
+			Result := socket.is_open_write
+		end
+
+	socket_descriptor: INTEGER
+			-- Descriptor for current `socket'.
+		do
+			Result := socket.descriptor
+		end
+
 feature -- Element change
 
+	set_is_verbose (b: BOOLEAN)
+		do
+			is_verbose := b
+		end
+
+	set_verbose_level (lev: INTEGER)
+		do
+			verbose_level := lev
+		end
+
+feature -- Basic operation
+
+	put_error (a_message: READABLE_STRING_8)
+		do
+			response.put_error (a_message)
+		end
+
 	log (m: READABLE_STRING_8; lev: INTEGER)
+			-- Log `m' in the error channel, i.e stderr for standalone.
 		do
 			if is_verbose then
-				response.put_error (m)
+				put_error (m)
 			end
 		end
 
@@ -87,14 +149,16 @@ feature -- Basic Operation
 		local
 			l_sha1: SHA1
 			l_key : STRING
-			l_handshake: STRING
 			req: like request
 			res: like response
 		do
-			req := request
-			res := response
+				-- Reset values.
 			is_websocket := False
 			has_error := False
+
+				-- Local cache.
+			req := request
+			res := response
 
 				-- Reading client's opening GT
 
@@ -111,12 +175,6 @@ feature -- Basic Operation
 				l_upgrade_key.is_case_insensitive_equal_general ("websocket") -- Upgrade header must be present with value websocket
 			then
 				is_websocket := True
---				if
---					attached {WGI_STANDALONE_INPUT_STREAM} req.input as r_input and then
---					attached r_input.source as l_socket
---				then
---					l_socket.set_blocking
---				end
 				socket.set_blocking
 				if
 					attached req.meta_string_variable ("HTTP_SEC_WEBSOCKET_KEY") as l_ws_key and then -- Sec-websocket-key must be present
@@ -133,23 +191,18 @@ feature -- Basic Operation
 					create l_sha1.make
 					l_sha1.update_from_string (l_ws_key + magic_guid)
 					l_key := Base64_encoder.encoded_string (digest (l_sha1))
---					create l_handshake.make_from_string ("") --HTTP/1.1 101 Switching Protocols%R%N")
-					create l_handshake.make_from_string ("HTTP/1.1 101 Switching Protocols%R%N")
-					l_handshake.append_string ("Upgrade: websocket%R%N")
-					l_handshake.append_string ("Connection: Upgrade%R%N")
-					l_handshake.append_string ("Sec-WebSocket-Accept: ")
-					l_handshake.append_string (l_key)
-					l_handshake.append_string ("%R%N")
-						-- end of header empty line
---not with WSF_RESPONSE					l_handshake.append_string ("%R%N")
-					l_handshake.append_string ("%R%N")
+					res.header.add_header_key_value ("Upgrade", "websocket")
+					res.header.add_header_key_value ("Connection", "Upgrade")
+					res.header.add_header_key_value ("Sec-WebSocket-Accept", l_key)
+
 					if is_verbose then
-						log ("%N================> Send", debug_level)
-						log (l_handshake, debug_level)
+						log ("%N================> Send Handshake", debug_level)
+						if attached {HTTP_HEADER} res.header as h then
+							log (h.string, debug_level)
+						end
 					end
-					socket.put_string (l_handshake)
---					res.set_status_code_with_reason_phrase (101, "Switching Protocols")
---					res.put_header_text (l_handshake)
+					res.set_status_code_with_reason_phrase (101, "Switching Protocols")
+					res.wgi_response.push
 				else
 					has_error := True
 					if is_verbose then
@@ -158,7 +211,6 @@ feature -- Basic Operation
 						-- If we cannot complete the handshake, then the server MUST stop processing the client's handshake and return an HTTP response with an
 						-- appropriate error code (such as 400 Bad Request).
 					res.set_status_code_with_reason_phrase (400, "Bad Request")
---					a_socket.put_string ("HTTP/1.1 400 Bad Request%N")
 				end
 			else
 				is_websocket := False
@@ -177,7 +229,9 @@ feature -- Response!
 			n: NATURAL_64
 			retried: BOOLEAN
 		do
-			print (">>do_send (..., "+ opcode_name (a_opcode) +", ..)%N")
+			debug ("ws")
+				print (">>do_send (..., "+ opcode_name (a_opcode) +", ..)%N")
+			end
 			if not retried then
 				create l_header_message.make_empty
 				l_header_message.append_code ((0x80 | a_opcode).to_natural_32)
@@ -203,7 +257,7 @@ feature -- Response!
 				end
 				socket.put_string (l_header_message)
 
-				l_chunk_size := 16_384 -- 16K
+				l_chunk_size := 16_384 -- 16K TODO: see if we should make it customizable.
 				if l_message_count < l_chunk_size then
 					socket.put_string (a_message)
 				else
@@ -289,7 +343,6 @@ feature -- Response!
 			retried: BOOLEAN
 		do
 			if not retried then
---				l_input := request.input
 				l_socket := socket
 				debug ("ws")
 					print ("next_frame:%N")
@@ -467,9 +520,7 @@ feature -- Response!
 												if l_remaining_len < l_chunk_size then
 													l_chunk_size := l_remaining_len
 												end
---												l_input.read_string (l_chunk_size)
 												l_socket.read_stream (l_chunk_size)
---												l_bytes_read := l_input.last_string.count
 												l_bytes_read := l_socket.bytes_read
 												debug ("ws")
 													print ("read chunk size=" + l_chunk_size.out + " fetch_count=" + l_fetch_count.out + " l_len=" + l_len.out + " -> " + l_bytes_read.out + "bytes%N")

@@ -6,6 +6,6 @@ note
 	revision: "$Revision$"
 
 deferred class
-	WGI_STANDALONE_CONNECTOR_ACCESS
+	WGI_STANDALONE_CONNECTOR_EXPORTER
 
 end
