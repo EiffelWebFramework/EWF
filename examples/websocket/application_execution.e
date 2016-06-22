@@ -53,6 +53,7 @@ feature -- Websocket execution
 	on_open (ws: WEB_SOCKET)
 		do
 			ws.put_error ("Connecting")
+			ws.send (Text_frame, "Hello, this is a simple demo with Websocket using Eiffel. (/help for more information).%N")
 		end
 
 	on_binary (ws: WEB_SOCKET; a_message: READABLE_STRING_8)
@@ -62,8 +63,15 @@ feature -- Websocket execution
 
 	on_text (ws: WEB_SOCKET; a_message: READABLE_STRING_8)
 		do
-				-- Echo the message for testing.
-			ws.send (Text_frame, a_message)
+			if a_message.same_string_general ("/help") then
+					-- Echo the message for testing.
+				ws.send (Text_frame, "Help: available commands%N  - /time : return the server UTC time.%N")
+			elseif a_message.starts_with_general ("/time") then
+				ws.send (Text_frame, "Server time is " + (create {HTTP_DATE}.make_now_utc).string)
+			else
+					-- Echo the message for testing.
+				ws.send (Text_frame, a_message)
+			end
 		end
 
 	on_close (ws: WEB_SOCKET)
