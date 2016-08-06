@@ -84,7 +84,6 @@ feature -- Execution
 	execute (request: WSF_REQUEST; response: WSF_RESPONSE)
 			-- Execute reverse proxy request.
 		local
-			l_socket: NETWORK_STREAM_SOCKET
 			h: HTTP_HEADER
 			l_http_query: STRING
 			l_status_line: STRING
@@ -94,8 +93,7 @@ feature -- Execution
 			i: INTEGER
 			l_completed: BOOLEAN
 		do
-			if attached (create {INET_ADDRESS_FACTORY}).create_from_name (host) as l_peer_address then
-				create l_socket.make_client_by_address_and_port (l_peer_address, port)
+			if attached (create {WSF_PROXY_SOCKET_FACTORY}).socket (host, port) as l_socket then
 				l_socket.set_connect_timeout (connect_timeout) -- milliseconds
 				l_socket.set_timeout (timeout) -- seconds
 
