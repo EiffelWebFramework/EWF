@@ -11,10 +11,9 @@ create
 
 feature {NONE} -- Initialization
 
-	make (a_host: READABLE_STRING_8; a_port: INTEGER_32)
+	make (a_remote_uri: READABLE_STRING_8)
 		do
-			create host.make_from_string (a_host)
-			port := a_port
+			create remote_uri.make_from_string (a_remote_uri)
 			timeout := 30 -- seconds. See {NETWORK_SOCKET}.default_timeout
 			connect_timeout := 5_000 -- 5 seconds.
 			is_via_header_supported := True
@@ -22,11 +21,8 @@ feature {NONE} -- Initialization
 
 feature -- Access
 
-	host: IMMUTABLE_STRING_8
-			-- Hostname of the targetted service.
-
-	port: INTEGER
-			-- Port number of the targetted service.
+	remote_uri: URI
+			-- Url for the targetted service.
 
 	uri_rewriter: detachable WSF_URI_REWRITER assign set_uri_rewriter
 			-- URI rewriter component, to compute the URI on targetted service
@@ -92,8 +88,14 @@ feature -- Execution
 			l_protocol: STRING
 			i: INTEGER
 			l_completed: BOOLEAN
+			l_remote_uri: like remote_uri
+			l_socket_factory: WSF_PROXY_SOCKET_FACTORY
 		do
-			if attached (create {WSF_PROXY_SOCKET_FACTORY}).socket (host, port) as l_socket then
+			l_remote_uri := remote_uri
+			create l_socket_factory
+			if not l_socket_factory.is_uri_supported (l_remote_uri) then
+				send_error (request, response, {HTTP_STATUS_CODE}.bad_gateway, l_remote_uri.scheme + " is not supported! [for remote " + l_remote_uri.string + "]")
+			elseif attached l_socket_factory.socket_from_uri (l_remote_uri) as l_socket then
 				l_socket.set_connect_timeout (connect_timeout) -- milliseconds
 				l_socket.set_timeout (timeout) -- seconds
 
@@ -101,6 +103,7 @@ feature -- Execution
 				if l_socket.is_connected then
 					create l_http_query.make_from_string (request.request_method)
 					l_http_query.append_character (' ')
+					l_http_query.append (l_remote_uri.path)
 					l_http_query.append (proxy_uri (request))
 					l_http_query.append_character (' ')
 					l_http_query.append (request.server_protocol)
@@ -111,6 +114,13 @@ feature -- Execution
 							create h.make_from_raw_header_data (l_raw_header.substring (i + 2, l_raw_header.count))
 						else
 							create h.make_from_raw_header_data (l_raw_header)
+						end
+						if attached l_remote_uri.host as l_remote_host then
+							if l_remote_uri.port > 0 then
+								h.put_header_key_value ("Host", l_remote_host + ":" + l_remote_uri.port.out)
+							else
+								h.put_header_key_value ("Host", l_remote_host)
+							end
 						end
 
 							-- Via header
@@ -138,7 +148,7 @@ feature -- Execution
 						end
 						if l_max_forward < 0 then
 								-- i.e previous Max-Forwards was '0'
-							send_error (request, response, {HTTP_STATUS_CODE}.bad_gateway, "Reached maximum number of Forwards, not forwarded to " + host + ":" + port.out)
+							send_error (request, response, {HTTP_STATUS_CODE}.bad_gateway, "Reached maximum number of Forwards, not forwarded to " + l_remote_uri.string)
 						else
 							l_socket.put_string (l_http_query)
 							l_socket.put_string ("%R%N")
@@ -202,10 +212,10 @@ feature -- Execution
 						send_error (request, response, {HTTP_STATUS_CODE}.internal_server_error, "Can not access request header!")
 					end
 				else
-					send_error (request, response, {HTTP_STATUS_CODE}.gateway_timeout, "Can not connect " + host + ":" + port.out)
+					send_error (request, response, {HTTP_STATUS_CODE}.gateway_timeout, "Unable to connect " + l_remote_uri.string)
 				end
 			else
-				send_error (request, response, {HTTP_STATUS_CODE}.bad_gateway, "Host not found!")
+				send_error (request, response, {HTTP_STATUS_CODE}.bad_gateway, "Unable to connect " + l_remote_uri.string)
 			end
 		end
 

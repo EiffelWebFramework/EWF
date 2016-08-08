@@ -5,23 +5,24 @@
 		<library name="base" location="$ISE_LIBRARY\library\base\base-safe.ecf"/>
 		<library name="http" location="..\..\..\library\network\protocol\http\http-safe.ecf"/>
 		<library name="net" location="$ISE_LIBRARY\library\net\net-safe.ecf"/>
-		<library name="net_ssl" location="$ISE_LIBRARY/unstable/library/network/socket/netssl/net_ssl-safe.ecf">
+		<library name="net_ssl" location="$ISE_LIBRARY\unstable\library\network\socket\netssl\net_ssl-safe.ecf">
 			<condition>
 				<custom name="ssl_supported" value="true"/>
 			</condition>
 		</library>
+		<library name="uri" location="$ISE_LIBRARY\library\text\uri\uri-safe.ecf"/>
 		<library name="wsf" location="..\wsf\wsf-safe.ecf"/>
 		<cluster name="network" location=".\network\" recursive="true">
 			<file_rule>
-				<exclude>ssl</exclude>
 				<exclude>no_ssl</exclude>
+				<exclude>ssl</exclude>
 			</file_rule>
-			<cluster name="network_ssl" location="$\ssl">
+			<cluster name="network_ssl" location="$|ssl\">
 				<condition>
 					<custom name="ssl_supported" value="true"/>
 				</condition>
 			</cluster>
-			<cluster name="network_no_ssl" location="$\no_ssl">
+			<cluster name="network_no_ssl" location="$|no_ssl\">
 				<condition>
 					<custom name="ssl_supported" excluded_value="true"/>
 				</condition>

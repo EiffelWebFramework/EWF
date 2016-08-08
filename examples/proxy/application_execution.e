@@ -21,16 +21,16 @@ feature -- Basic operations
 
 	execute
  		do
- 				-- NOTE: please enter the target reverse proxy machine + port number here
- 				-- replace "localhost" and 8080
-			send_proxy_response ("localhost", 8080, Current)
+ 				-- NOTE: please enter the target server uri here
+ 				-- replace "http://localhost:8080/foobar"
+			send_proxy_response ("http://localhost:8080/foobar", Current)
 		end
 
-	send_proxy_response (a_hostname: READABLE_STRING_8; a_port: INTEGER; a_rewriter: detachable WSF_URI_REWRITER)
+	send_proxy_response (a_remote: READABLE_STRING_8; a_rewriter: detachable WSF_URI_REWRITER)
 		local
 			h: WSF_SIMPLE_REVERSE_PROXY_HANDLER
 		do
-			create h.make (a_hostname, a_port)
+			create h.make (a_remote)
 			h.set_uri_rewriter (a_rewriter)
 			h.set_uri_rewriter (create {WSF_AGENT_URI_REWRITER}.make (agent proxy_uri))
 			h.set_timeout (30) -- 30 seconds
