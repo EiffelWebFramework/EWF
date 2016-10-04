@@ -101,7 +101,6 @@ Other connectors:
 
 **WSF_STANDALONE_SERVICE_LAUNCHER**
 **WSF_CGI_SERVICE_LAUNCHER**  
-**WSF_NINO_SERVICE_LAUNCHER**  
 **WSF_LIBFCGI_SERVICE_LAUNCHER** 
 
 A basic EWF service inherits from **WSF_DEFAULT_SERVICE**, which has  a formal generic that should conform to **WSF_EXECUTION** class with a `make' creation procedure, in our case the class **APPLICATION_EXECUTION**.

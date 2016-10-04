@@ -13,7 +13,7 @@ EWF Deployment
 4. Deploying EWF FCGI
 5. FCGI overview
   1. Build EWF application
-  2. Copy the generated exe file and the www content.htaccess CGI
+  2. Copy the generated exe file and the www content.htaccess CGI
 
 
 
@@ -25,10 +25,14 @@ EWF Deployment
 >Apache Version:  Apache 2.4.4 
 >Windows: http://www.apachelounge.com/download/
 
+note: on linux (debian), use 
+> sudo apt-get install apache2
+
 #### Deploying EWF CGI
 
 #### CGI overview
->A new process is started for each HTTP request. So if there are N requests to the same >CGI program, the code of the CGI program is loaded into memory N times.
+>A new process is started for each HTTP request. So if there are N requests to the same 
+>CGI program, the code of the CGI program is loaded into memory N times.
 >When a CGI program finishes handling a request,  the program terminates.
 
 * Build EWF application
@@ -95,6 +99,9 @@ Check that you have the following modules enabled
 >To deploy FCGI you will need to download the mod_fcgi module. 
 >You can get it from here http://www.apachelounge.com/download/
 
+note: on linux (debian), use 
+> sudo apt-get install libapache2-mod-fastcgi
+
 #### FCGI overview
 >FastCGI allows a single, long-running process to handle more than one user request while keeping close to the CGI programming model, retaining the simplicity while eliminating the overhead of creating a new process for each request. Unlike converting an application to a web server plug-in, FastCGI applications remain independent of the web server.
 
@@ -127,6 +134,22 @@ Copy the app.exe and the folder "www"  into a folder served by apache2, for exam
     LoadModule fcgid_module modules/mod_fcgid.so
 
 >NOTE: By default Apache does not come with fcgid module, so you will need to download it, and put the module under Apache2/modules
+
+It is also possible to set various parameters in the apache site configuration file such as:
+```
+	<IfModule mod_fcgid.c>
+		# FcgidIdleTimeout 600
+		# FcgidBusyScanInterval 120
+		# FcgidProcessLifeTime 3600
+		# FcgidMaxProcesses 5
+		# FcgidMaxProcessesPerClass 100
+		# FcgidMinProcessesPerClass 100
+		# FcgidConnectTimeout 8
+		# FcgidIOTimeout 60
+		# FcgidBusyTimeout 1200
+	</IfModule>
+```		
+See https://httpd.apache.org/mod_fcgid/mod/mod_fcgid.html for more information.
 
 # .htaccess FCGI
 
