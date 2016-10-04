@@ -349,30 +349,31 @@ feature -- Request processing
 			has_error: has_error
 			a_socket_attached: a_socket /= Void
 		local
-			h: STRING
-			s: STRING
+--			h: STRING
+--			s: STRING
 		do
 				-- NOTE: this is experiment code, and not ready yet.
-			if a_socket.is_connected and then a_socket.ready_for_writing then
-				s := "{
-<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
-<html><head>
-<title>400 Bad Request</title>
-</head><body>
-<h1>Bad Request</h1>
-</body></html>
-				}"
-				create h.make (1_024)
-				h.append ("HTTP/1.1 400 Bad Request%R%N")
-				h.append ("Content-Length: " + s.count.out + "%R%N")
-				h.append ("Connection: close%R%N")
-				h.append ("Content-Type: text/html; charset=iso-8859-1%R%N")
-				h.append ("%R%N")
-				a_socket.put_string (h)
-				if a_socket.is_connected and then a_socket.ready_for_writing then
-					a_socket.put_string (s)
-				end
-			end
+
+--			if a_socket.ready_for_writing then
+--				s := "{
+--<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+--<html><head>
+--<title>400 Bad Request</title>
+--</head><body>
+--<h1>Bad Request</h1>
+--</body></html>
+--				}"
+--				create h.make (1_024)
+--				h.append ("HTTP/1.1 400 Bad Request%R%N")
+--				h.append ("Content-Length: " + s.count.out + "%R%N")
+--				h.append ("Connection: close%R%N")
+--				h.append ("Content-Type: text/html; charset=iso-8859-1%R%N")
+--				h.append ("%R%N")
+--				a_socket.put_string (h)
+--				if a_socket.ready_for_writing then
+--					a_socket.put_string (s)
+--				end
+--			end
 		end
 
 feature -- Parsing
