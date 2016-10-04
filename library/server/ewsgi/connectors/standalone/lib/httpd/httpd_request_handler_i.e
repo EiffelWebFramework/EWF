@@ -287,6 +287,8 @@ feature -- Execution
 							log (request_header + "%NWARNING: invalid HTTP incoming request", warning_level)
 						end
 					end
+					process_bad_request (l_socket)
+					is_persistent_connection_requested := False
 				else
 					if is_verbose then
 						log (request_header, information_level)
@@ -307,7 +309,7 @@ feature -- Execution
 feature -- Request processing
 
 	process_request (a_socket: HTTPD_STREAM_SOCKET)
-			-- Process request ...
+			-- Process request on socket `a_socket'.
 		require
 			no_error: not has_error
 			a_uri_attached: uri /= Void
@@ -316,6 +318,33 @@ feature -- Request processing
 			a_header_text_attached: request_header /= Void
 			a_socket_attached: a_socket /= Void
 		deferred
+		end
+
+	process_bad_request (a_socket: HTTPD_STREAM_SOCKET)
+			-- Process bad request catched on `a_socket'.
+		require
+			has_error: has_error
+			a_socket_attached: a_socket /= Void
+		local
+			h: STRING
+			s: STRING
+		do
+			s := "{
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+<html><head>
+<title>400 Bad Request</title>
+</head><body>
+<h1>Bad Request</h1>
+</body></html>			
+			}"
+			create h.make (1_024)
+			h.append ("HTTP/1.1 400 Bad Request%R%N")
+			h.append ("Content-Length: " + s.count.out + "%R%N")
+			h.append ("Connection: close%R%N")
+			h.append ("Content-Type: text/html; charset=iso-8859-1%R%N")
+			h.append ("%R%N")
+			a_socket.put_string (h)
+			a_socket.put_string (s)
 		end
 
 feature -- Parsing
