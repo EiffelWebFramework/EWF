@@ -279,8 +279,7 @@ feature -- Execution
 				if a_is_reusing_connection then
 						--| set by default 5 seconds.
 					l_socket.set_recv_timeout (keep_alive_timeout) -- in seconds!
-						-- FIXME: check if both are really needed.
-					l_is_ready := l_socket.ready_for_reading and then l_socket.has_incoming_data
+					l_is_ready := socket_has_incoming_data (l_socket)
 				else
 					l_is_ready := True
 				end
@@ -396,9 +395,6 @@ feature -- Parsing
 				not has_error and then
 				a_socket.readable
 			then
-				if not a_socket.has_incoming_data then
-					dbglog ("analyze_request_message: NO INCOMING DATA !!!")
-				end
 				if
 					attached next_line (a_socket) as l_request_line and then
 					not l_request_line.is_empty
@@ -501,7 +497,11 @@ feature -- Parsing
 			if retried then
 				report_error ("Rescue in next_line")
 				Result := Void
-			elseif a_socket.readable then
+			elseif
+				a_socket.readable and then
+				socket_has_incoming_data (a_socket)
+			then
+
 				a_socket.read_line_thread_aware
 				Result := a_socket.last_string
 					-- Do no check `socket_ok' before socket operation,
@@ -548,6 +548,17 @@ feature -- Output
 					io.put_string (m + "%N")
 				end
 			end
+		end
+
+feature {NONE} -- Helpers
+
+	socket_has_incoming_data (a_socket: HTTPD_STREAM_SOCKET): BOOLEAN
+			-- Is there any data to read on `a_socket' ?
+		require
+			a_socket.readable
+		do
+				-- FIXME: check if both are really needed.			
+			Result := a_socket.ready_for_reading and then a_socket.has_incoming_data
 		end
 
 invariant

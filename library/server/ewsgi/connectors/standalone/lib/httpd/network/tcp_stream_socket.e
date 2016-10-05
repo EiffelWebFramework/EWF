@@ -67,7 +67,7 @@ feature -- Basic operation
 			l: like last_string
 		do
 			create ext.make_empty (nb_char + 1)
-			retval := c_receive (descriptor, ext.item, nb_char, c_peekmsg)
+			retval := clib_recv (descriptor, ext.item, nb_char, c_peekmsg)
 			if retval = 0 then
 				last_string.wipe_out
 				socket_error := Void
@@ -122,6 +122,19 @@ feature -- Status report
 		do
 			retval := c_select_poll_with_timeout (descriptor, True, 0)
 			Result := (retval > 0)
+		end
+
+feature {NONE} -- C implementation
+
+	clib_recv (a_fd: INTEGER; buf: POINTER; len: INTEGER; flags: INTEGER): INTEGER
+			-- External routine to receive at most `len' number of
+			-- bytes into buffer `buf' from socket `fd' with `flags' options.
+		external
+			"C inline"
+		alias
+			"[
+			return (EIF_INTEGER) recv ((int) $a_fd, (char *) $buf, (int) $len, (int) $flags);
+			]"
 		end
 
 note
