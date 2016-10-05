@@ -106,6 +106,8 @@ feature -- Output
 feature -- Status report
 
 	has_incoming_data: BOOLEAN
+			-- Check if Current has available data to be read.
+			-- note: no data will not be removed from the queue.
 		require
 			socket_exists: exists
 		do

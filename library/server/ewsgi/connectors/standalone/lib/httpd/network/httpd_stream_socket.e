@@ -318,6 +318,8 @@ feature -- Status Report
 		end
 
 	has_incoming_data: BOOLEAN
+			-- Check if Current has available data to be read.
+			-- note: no data will not be removed from the queue.
 		do
 			if attached {TCP_STREAM_SOCKET} socket as l_socket then
 				Result := l_socket.has_incoming_data
