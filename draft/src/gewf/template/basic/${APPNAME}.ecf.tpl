@@ -17,13 +17,13 @@
 		<root class="${APP_ROOT}" feature="make_and_launch"/>
 		<library name="cgi" location="$ISE_LIBRARY\contrib\library\web\framework\ewf\wsf\connector\cgi-safe.ecf"/>
 		<library name="libfcgi" location="$ISE_LIBRARY\contrib\library\web\framework\ewf\wsf\connector\libfcgi-safe.ecf"/>
-		<library name="nino" location="$ISE_LIBRARY\contrib\library\web\framework\ewf\wsf\connector\nino-safe.ecf"/>
+		<library name="standalone" location="$ISE_LIBRARY\contrib\library\web\framework\ewf\wsf\connector\standalone-safe.ecf"/>
 		<cluster name="launcher" location=".\launcher\any\" recursive="true"/>
 		<cluster name="src" location=".\src\" recursive="true"/>
 	</target>
-	<target name="${APPNAME}_nino" extends="common">
+	<target name="${APPNAME}_standalone" extends="common">
 		<root class="${APP_ROOT}" feature="make_and_launch"/>
-		<library name="default_nino" location="$ISE_LIBRARY\contrib\library\web\framework\ewf\wsf\default\nino-safe.ecf"/>
+		<library name="default_standalone" location="$ISE_LIBRARY\contrib\library\web\framework\ewf\wsf\default\standalone-safe.ecf"/>
 		<cluster name="launcher" location=".\launcher\default\" recursive="true"/>
 		<cluster name="src" location=".\src\" recursive="true"/>
 	</target>
@@ -40,6 +40,6 @@
 		<cluster name="src" location=".\src\" recursive="true"/>
 	</target>
 
-	<target name="${APPNAME}" extends="${APPNAME}_nino"/>
+	<target name="${APPNAME}" extends="${APPNAME}_standalone"/>
 </system>
 

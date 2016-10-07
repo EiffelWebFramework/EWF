@@ -1,22 +1,29 @@
 The main goal of the connectors is to let you choose a target at compile time.
 This allows you to concentrate on your business during development time and then decide which target you choose at deployment time.
 The current connectors are:
-* Nino
+* Standalone
 * FastCGI
 * CGI
 * OpenShift
+* Nino (obsolete, replaced by Standalone)
 
-The most widely used workflow is to use Nino on your development machine and FastCGI on your production server.
-Nino being a web server written entirely in Eiffel, you can inspect your HTTP requests and respones in EiffelStudio which is great during development.
+The most widely used workflow is to use Standalone on your development machine and FastCGI on your production server.
+Standalone being a web server written entirely in Eiffel, you can inspect your HTTP requests and respones in EiffelStudio which is great during development.
 On the other hand, FastCGI is great at handling concurrent requests and coupled with Apache (or another web production server), you don't even need to worry about the lifecyle of your application (creation and destruction) as Apache will do it for you!
 
 Let's now dig into each of the connecters.
 
-# Nino
+# Standalone
+
+EiffelWeb standalone is connector based on the EiffelWeb httpd server entirely written in Eiffel 
+(note: httpd is under standalone connector, so you can consider Standalone as the EiffelWeb standalone web server).
+The goal of Standalone is to provide a simple web server for development (like Java, Python and Ruby provide).
+
+# Nino (obsolete and replaced by Standalone)
 
 Nino is a web server entirely written in Eiffel.
 The goal of Nino is to provide a simple web server for development (like Java, Python and Ruby provide).
-Nino is currently maintained by Javier Velilla and the repository can be found here: https://github.com/jvelilla/EiffelWebNino
+Nino is currently maintained by Jocelyn Fiat and Javier Velilla and the repository can be found here: https://github.com/jvelilla/EiffelWebNino
 
 # FastCGI
 

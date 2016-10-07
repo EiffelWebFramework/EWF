@@ -31,7 +31,7 @@ feature -- Execution
 					-- Choose a default -> standalone
 				create {WSF_STANDALONE_SERVICE_LAUNCHER} launcher.make_and_launch (opts){/literal}{/if}
 {if condition="$WIZ.connectors.use_standalone ~ $WIZ_YES"}{literal}
-			elseif is_nino_launcher_id (l_id) then
+			elseif is_standalone_launcher_id (l_id) then
 				create {WSF_STANDALONE_SERVICE_LAUNCHER} launcher.make_and_launch (opts){/literal}{/if}
 {if condition="$WIZ.connectors.use_libfcgi ~ $WIZ_YES"}{literal}
 			elseif is_libfcgi_launcher_id (l_id) then
@@ -39,9 +39,9 @@ feature -- Execution
 {if condition="$WIZ.connectors.use_cgi ~ $WIZ_YES"}{literal}
 			elseif is_cgi_launcher_id (l_id) then
 				create {WSF_CGI_SERVICE_LAUNCHER} launcher.make_and_launch (opts){/literal}{/if}
-{if condition="$WIZ.connectors.use_nino ~ $WIZ_YES"}{literal}
-			elseif is_nino_launcher_id (l_id) then
-				create {WSF_NINO_SERVICE_LAUNCHER} launcher.make_and_launch (opts){/literal}{/if}
+{if condition="$WIZ.connectors.use_standalone ~ $WIZ_YES"}{literal}
+			elseif is_standalone_launcher_id (l_id) then
+				create {WSF_STANDALONE_SERVICE_LAUNCHER} launcher.make_and_launch (opts){/literal}{/if}
 {literal}
 			else
 				io.error.put_string ("Application launcher not found!%N")
@@ -52,7 +52,7 @@ feature -- Execution
 	launcher_id: detachable READABLE_STRING_GENERAL
 			-- Launcher id based on the executable extension name if any.
 			-- This can be redefine to customize for your application.
-			--| ex: nino, cgi, libfcgi or Void.
+			--| ex: standalone, cgi, libfcgi or Void.
 		do
 			if attached (create {PATH}.make_from_string (execution_environment.arguments.command_name)).extension as ext then
 				Result := ext
@@ -62,15 +62,9 @@ feature -- Execution
 feature -- Status report		
 {/literal}
 {if condition="$WIZ.connectors.use_standalone ~ $WIZ_YES"}
-	is_nino_launcher_id (a_id: READABLE_STRING_GENERAL): BOOLEAN
+	is_standalone_launcher_id (a_id: READABLE_STRING_GENERAL): BOOLEAN
 		do
 			Result := a_id.is_case_insensitive ("standalone")
-		end{/if}
-
-{if condition="$WIZ.connectors.use_nino ~ $WIZ_YES"}
-	is_nino_launcher_id (a_id: READABLE_STRING_GENERAL): BOOLEAN
-		do
-			Result := a_id.is_case_insensitive ("nino")
 		end{/if}
 
 {if condition="$WIZ.connectors.use_cgi ~ $WIZ_YES"}

@@ -15,7 +15,7 @@
 		<library name="http_auth" location="..\http_authorization-safe.ecf"/>
 		<library name="encoders" location="..\..\..\..\text\encoder\encoder-safe.ecf"/>
 		<library name="wsf" location="..\..\..\wsf\wsf-safe.ecf"/>
-		<library name="default_nino" location="..\..\..\wsf\default\nino-safe.ecf"/>
+		<library name="default_standalone" location="..\..\..\wsf\default\standalone-safe.ecf"/>
 		<cluster name="src" location=".\" recursive="true"/>
 	</target>
 </system>

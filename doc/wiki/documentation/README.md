@@ -61,7 +61,7 @@ Using EWF, your service is built on top of underlying httpd solution/connectors.
 Currently 3 main connectors are available:
 * __CGI__: following the CGI interface, this is an easy solution to run the service on any platform.
 * __libFCGI__: based on the libfcgi solution, this can be used with Apache, IIS, nginx, ... 
-* __nino__: a standalone server: Eiffel Web Nino allow you to embed a web server anywhere, on any platform without any dependencies on other httpd server.
+* __standalone__: a standalone server: EiffelWeb Standalone web server allows you to embed a web server anywhere, on any platform without any dependencies on other httpd server.
 
 At compilation time, you can use a default connector (by using the associated default lib), but you can also use a mixed of them and choose which one to execute at runtime.
 It is fairly easy to add new connector, it just has to follow the EWSGI interface

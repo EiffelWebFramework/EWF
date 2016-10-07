@@ -4,7 +4,7 @@ Now you have to implement each handler. You need to inherit from WSF_SKELETON_HA
 
 ## Communicating between routines
 
-Depending upon the connector (Nino, CGI, FastCGI etc.) that you are using, your handler may be invoked concurrently for multiple requests. Therefore it is unsafe to save state in normal attributes. WSF_REQUEST has a pair of getter/setter routines, execution_variable/set_execution_variable, which you can use for this purpose.
+Depending upon the connector (Standalone, CGI, FastCGI etc.) that you are using, your handler may be invoked concurrently for multiple requests. Therefore it is unsafe to save state in normal attributes. WSF_REQUEST has a pair of getter/setter routines, execution_variable/set_execution_variable, which you can use for this purpose.
 Internally, the framework uses the following execution variable names, so you must avoid them:
 
 1. REQUEST_ENTITY

@@ -59,7 +59,7 @@ feature -- Basic operations
 end
 ```
 
-When using the "nino" connector or the new "standalone" connector, by default the service listens on port 80, but often this port is already used by other applications, so it is recommended to use another port.
+When using the "standalone" connector (or the deprecated "nino" connector), by default the service listens on port 80, but often this port is already used by other applications, so it is recommended to use another port.
 To define another port, redefine the feature `initialize' and set up a new port number using the service options (see below).
 
 
@@ -90,7 +90,7 @@ The **WSF_REQUEST** gives access to the incoming data; the class provides featur
 
 The **WSF_RESPONSE** provides features to define the response with information such as HTTP status codes (10x,20x, 30x, 40x, and 50x), response headers (Content-Type, Content-Length, etc.) and obviously the body of the message itself.
 
-**APPLICATION** is the root class of our example, it launches the application, using the corresponding connector, Which connector? this depends how you want to run it cgi, fcgi,nino or standalone. For development is recommended to use a standalone web server written in Eiffel, and run the execution within the EiffelStudio debugger. For production fcgi (or cgi) using Apache or another popular web server.
+**APPLICATION** is the root class of our example, it launches the application, using the corresponding connector, Which connector? this depends how you want to run it cgi, fcgi,standalone. For development is recommended to use a standalone web server written in Eiffel, and run the execution within the EiffelStudio debugger. For production fcgi (or cgi) using Apache or another popular web server.
 
 ![Launcher Hierarchy](./Launcher Hierarchy.png "Launcher Hierarchy")
 
@@ -149,9 +149,10 @@ The source code is available on Github. You can get it by running the command:
 
 ```git clone https://github.com/EiffelWebFramework/ewf.git```
 
-The example of simple service that generate plain text response is located in the directory $PATH/ewf/doc/workbook/basics/simple, where $PATH is where you run ```git clone``` . Just double click on the simple.ecf file and select the simple_nino target or if you prefer the command line, run the command:
+The example of simple service that generate plain text response is located in the directory $PATH/ewf/doc/workbook/basics/simple, where $PATH is where you run ```git clone``` . 
+Just double click on the simple.ecf file and select the simple_standalone target or if you prefer the command line, run the command:
 
-```estudio -config simple.ecf -target simple_nino```
+```estudio -config simple.ecf -target simple_standalone```
 
 <a name="html"></a>
 
@@ -204,9 +205,10 @@ The source code is available on Github. You can get it by running the command:
 
 ```git clone https://github.com/EiffelWebFramework/ewf.git```
 
-The example of the service that generates HTML is located in the directory $PATH/ewf/doc/workbook/basics/simple_html, where $PATH is where you run ```git clone``` . Just double click on the simple_html.ecf file and select the simple_html_nino target or if you prefer the command line, run the command:
+The example of the service that generates HTML is located in the directory $PATH/ewf/doc/workbook/basics/simple_html, where $PATH is where you run ```git clone``` . 
+Just double click on the simple_html.ecf file and select the simple_html_standalone target or if you prefer the command line, run the command:
 
-```estudio -config simple_html.ecf -target simple_html_nino```
+```estudio -config simple_html.ecf -target simple_html_standalone```
 
 Nav: [Workbook](../workbook.md) :: [Handling Requests: Form/Query Parameter](../handling_request/form.md)
 

@@ -14,8 +14,8 @@ feature {NONE} -- Initialization
 
 	make
 		do
-			print ("Example: start a Nino web server on port " + port_number.out + ", %Nand reply Hello World for any request such as http://localhost:8123/%N")
-			(create {NINO_SERVICE [HELLO_WORLD_EXECUTION]}.make_custom ("")).listen (port_number)
+			print ("Example: start a Standalone web server on port " + port_number.out + ", %Nand reply Hello World for any request such as http://localhost:8123/%N")
+			(create {STANDALONE_SERVICE [HELLO_WORLD_EXECUTION]}.make_custom ("")).listen (port_number)
 		end
 
 	port_number: INTEGER = 8123
