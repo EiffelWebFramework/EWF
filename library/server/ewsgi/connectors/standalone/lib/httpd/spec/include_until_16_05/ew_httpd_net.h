@@ -40,9 +40,9 @@ extern int setsockopt(int, int, int, char*, int);
 extern int recv(int, char *, int, int);
 extern int send(int, char *, int, int);
 #else
-extern int setsockopt(int, int, int, (struct timeval*), int);
-extern int recv(int, char *, int, int);
-extern int send(int, char *, int, int);
+extern int setsockopt(int, int, int, const void*, socklen_t);
+extern ssize_t recv(int, void *, size_t, int);
+extern ssize_t send(int, const void *, size_t, int);
 #endif
 
 #ifdef __cplusplus
