@@ -511,12 +511,12 @@ feature -- Parsing
 			elseif a_socket.readable then
 				a_socket.read_line_noexception
 				Result := a_socket.last_string
-					-- Do no check `socket_ok' before socket operation,
+					-- Do no check `was_error' before socket operation,
 					-- otherwise it may be False, due to error during other socket operation in same thread.
-				if not a_socket.socket_ok then
+				if a_socket.was_error then
 					report_error ("Socket error")
 					if is_verbose then
-						log (request_header +"%N" + Result + "%N## socket_ok=False! ##", debug_level)
+						log (request_header +"%N" + Result + "%N## was_error=False! ##", debug_level)
 					end
 				end
 			else
