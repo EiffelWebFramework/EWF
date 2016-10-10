@@ -17,25 +17,26 @@ create
 	make_server_by_port
 
 create {NETWORK_STREAM_SOCKET}
-	make_from_descriptor_and_address
+	make_from_descriptor_and_address,
+	make_empty
 
 feature {NONE} -- Initialization
+
+	make_server_by_address_and_port (a_address: INET_ADDRESS; a_port: INTEGER)
+			-- Create server socket on `a_address' and `a_port'.
+		require
+			valid_port: a_port >= 0
+		do
+			make
+			create address.make_from_address_and_port (a_address, a_port)
+			bind
+		end	
 
 	make
 			-- Create a network stream socket.
 		do
 			Precursor
 			set_reuse_address
-		end
-
-	make_server_by_address_and_port (an_address: INET_ADDRESS; a_port: INTEGER)
-			-- Create server socket on `an_address' and `a_port'.
-		require
-			valid_port: a_port >= 0
-		do
-			make
-			create address.make_from_address_and_port (an_address, a_port)
-			bind
 		end
 
 feature -- Basic operation

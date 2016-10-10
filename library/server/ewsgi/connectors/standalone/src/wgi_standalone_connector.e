@@ -38,7 +38,7 @@ feature {NONE} -- Initialization
 	make_with_base (a_base: detachable separate READABLE_STRING_8)
 			-- Create current standalone connector with base url `a_base'
 		require
-			a_base_starts_with_slash: a_base /= Void implies is_valid_base (a_base)
+			a_base_starts_with_slash: (a_base /= Void and then not a_base.is_empty) implies is_valid_base (a_base)
 		do
 			make
 			set_base (a_base)
@@ -180,6 +180,13 @@ feature -- Element change
 		end
 
 feature -- Server
+
+	launch_on_port (a_port_number: INTEGER)
+			-- Launch server listening on port `a_port_number'.
+		do
+			set_port_number (a_port_number)
+			launch
+		end
 
 	launch
 			-- Launch web server listening.
