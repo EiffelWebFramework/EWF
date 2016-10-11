@@ -26,7 +26,6 @@ feature -- Execution
 			opts: WSF_SERVICE_LAUNCHER_OPTIONS
 		do
 			create opts.default_create
-			opts.set_verbose (True)
 			opts.set_option ("port", port_number)
 			create launcher.make (opts)
 			observer := launcher.connector.observer

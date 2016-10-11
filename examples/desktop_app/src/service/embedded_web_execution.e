@@ -28,7 +28,10 @@ feature {NONE} -- Execution
 			if local_connection_restriction_enabled then
 				if
 					attached request.remote_addr as l_remote_addr and then
-					l_remote_addr.is_case_insensitive_equal_general ("127.0.0.1")
+					(
+						l_remote_addr.is_case_insensitive_equal_general ("127.0.0.1")
+						or else l_remote_addr.is_case_insensitive_equal_general ("localhost")
+					)
 				then
 					execute
 				else
