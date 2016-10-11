@@ -43,7 +43,7 @@ feature -- Input
 		do
 			src := source
 			if src.readable and not src.was_error then
-				src.read_character
+				src.read_character_noexception
 				last_character := src.last_character
 			else
 				last_character := '%U'
@@ -57,7 +57,7 @@ feature -- Input
 			src := source
 			last_string.wipe_out
 			if src.readable and not src.was_error then
-				src.read_stream_thread_aware (nb)
+				src.read_stream_noexception (nb)
 				last_string.append_string (src.last_string)
 			end
 		end

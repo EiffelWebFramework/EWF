@@ -90,7 +90,7 @@ feature -- Output
 	put_character (c: CHARACTER_8)
 		do
 			last_target_call_succeed := False
-			target.put_character (c)
+			target.put_character_noexception (c)
 			last_target_call_succeed := not target.was_error
 		end
 
