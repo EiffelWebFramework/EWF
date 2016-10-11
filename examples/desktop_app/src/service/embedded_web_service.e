@@ -16,7 +16,6 @@ feature -- Initialization
 
 	make
 		do
-			create on_launched_actions
 		end
 
 feature -- Execution
@@ -40,11 +39,23 @@ feature -- Execution
 	on_launched (conn: WGI_STANDALONE_CONNECTOR [G])
 		do
 			set_port_number (conn.port)
-			on_launched_actions.call (Void)
+			if attached on_launched_action as act then
+				call_action (act)
+			end
+		end
+
+	call_action (act: attached like on_launched_action)
+		do
+			act.call (Void)
 		end
 
 feature -- Access
 
-	on_launched_actions: ACTION_SEQUENCE [TUPLE]
+	on_launched_action: detachable separate PROCEDURE [ANY, TUPLE]
+
+	set_on_launched_action (act: like on_launched_action)
+		do
+			on_launched_action := act
+		end
 
 end

@@ -17,13 +17,12 @@ inherit
 
 feature {NONE} -- Execution
 
-	execute_embedded 
+	execute_embedded
 			-- Execute the request
 			-- See `request.input' for input stream
     		--     `request.meta_variables' for the CGI meta variable
 			-- and `response' for output buffer
 		local
-			filter: WSF_AGENT_FILTER
 			m: WSF_PAGE_RESPONSE
 		do
 			if local_connection_restriction_enabled then
@@ -41,7 +40,7 @@ feature {NONE} -- Execution
 				execute
 			end
 		end
-	
+
 	execute
 		deferred
 		end
