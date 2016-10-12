@@ -85,7 +85,7 @@ def runTestForProject(where):
 
 	# compile the restbucks
 	print "# Compiling restbucks example"
-	cmd = "ecb -config %s -target restbucks -batch -c_compile -project_path . " % (os.path.join ("examples", "restbucks", "restbucks-safe.ecf"))
+	cmd = "ecb -config %s -target restbucks -batch -c_compile -project_path . " % (os.path.join ("examples", "restbucksCRUD", "restbucks-safe.ecf"))
 	res = eval_cmd(cmd)
 
 	sleep(1)
