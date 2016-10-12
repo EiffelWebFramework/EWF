@@ -39,7 +39,7 @@ feature {NONE} -- Access
 
 feature {HTTPD_SERVER_I} -- Execution
 
-	accept_incoming_connection (a_listening_socket: HTTPD_STREAM_SOCKET)
+	accept_incoming_connection (a_listening_socket: HTTP_STREAM_SOCKET)
 			-- Accept incoming connection from `a_listening_socket'.
 		deferred
 		end

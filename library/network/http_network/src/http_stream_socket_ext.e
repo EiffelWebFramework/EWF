@@ -6,7 +6,7 @@ note
 		]"
 
 deferred class
-	HTTPD_STREAM_SOCKET_EXT
+	HTTP_STREAM_SOCKET_EXT
 
 feature {NONE} -- No-Exception network operation
 

@@ -1,15 +1,15 @@
 note
-	description: "Summary description for {HTTPD_STREAM_SOCKET}."
+	description: "Summary description for {HTTP_STREAM_SOCKET}."
 	date: "$Date$"
 	revision: "$Revision$"
 
 class
-	HTTPD_STREAM_SOCKET
+	HTTP_STREAM_SOCKET
 
 inherit
 	NETWORK_STREAM_SOCKET
 
-	HTTPD_STREAM_SOCKET_EXT
+	HTTP_STREAM_SOCKET_EXT
 
 create
 	make, make_empty,
@@ -230,7 +230,7 @@ feature -- Status report
 		end
 
 note
-	copyright: "2011-2015, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
+	copyright: "2011-2016, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Colin Adams, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

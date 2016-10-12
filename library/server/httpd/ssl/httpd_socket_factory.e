@@ -8,7 +8,7 @@ deferred class
 
 feature -- Access
 
-	new_client_socket (a_is_secure: BOOLEAN): HTTPD_STREAM_SOCKET
+	new_client_socket (a_is_secure: BOOLEAN): HTTP_STREAM_SOCKET
 		do
 			if a_is_secure then
 				create {HTTPD_STREAM_SSL_SOCKET} Result.make_empty

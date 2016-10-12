@@ -19,7 +19,7 @@ create
 
 feature {NONE} -- Factory
 
-	new_listening_socket (a_addr: detachable INET_ADDRESS; a_http_port: INTEGER): HTTPD_STREAM_SOCKET
+	new_listening_socket (a_addr: detachable INET_ADDRESS; a_http_port: INTEGER): HTTP_STREAM_SOCKET
 		local
 			s_ssl: HTTPD_STREAM_SSL_SOCKET
 		do

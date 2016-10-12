@@ -33,9 +33,9 @@ feature -- Access
 
 feature {HTTPD_SERVER_I} -- Execution
 
-	accept_incoming_connection (a_listening_socket: HTTPD_STREAM_SOCKET)
+	accept_incoming_connection (a_listening_socket: HTTP_STREAM_SOCKET)
 		local
-			cl: HTTPD_STREAM_SOCKET
+			cl: HTTP_STREAM_SOCKET
 		do
 			is_shutdown_requested := is_shutdown_requested or shutdown_requested (server)
 			if is_shutdown_requested then

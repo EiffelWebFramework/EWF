@@ -4,10 +4,10 @@ note
 	revision: "$Revision$"
 
 class
-	HTTPD_STREAM_SSL_SOCKET
+	HTTP_STREAM_SSL_SOCKET
 
 inherit
-	HTTPD_STREAM_SOCKET
+	HTTP_STREAM_SOCKET
 		undefine
 			make_empty, make_from_descriptor_and_address,
 			error_number,
@@ -31,7 +31,7 @@ inherit
 			put_managed_pointer -- Redefine to allow support of compiler before 16.11.
 		end
 
-	HTTPD_STREAM_SSL_SOCKET_EXT
+	HTTP_STREAM_SSL_SOCKET_EXT
 
 create
 	make, make_empty,
@@ -105,7 +105,7 @@ feature -- Output
 			-- Put data of length `nb_bytes' pointed by `start_pos' index in `p' at
 			-- current position.
 		do
-			Precursor {HTTPD_STREAM_SOCKET} (p, start_pos, nb_bytes)
+			Precursor {HTTP_STREAM_SOCKET} (p, start_pos, nb_bytes)
 		end
 
 	put_pointer_content_noexception (a_pointer: POINTER; a_offset, a_byte_count: INTEGER)
