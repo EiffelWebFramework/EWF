@@ -27,13 +27,13 @@
 			</file_rule>
 			<cluster name="ssl_network" location="$|ssl\" recursive="true">
 				<condition>
-					<custom name="httpd_ssl_enabled" value="true"/>
+					<custom name="net_ssl_enabled" value="true"/>
 				</condition>
 				<file_rule>
 					<exclude>/httpd_stream_ssl_socket_ext.e$</exclude>
 					<condition>
 						<version type="compiler" max="16.11.0.0"/>
-						<custom name="httpd_ssl_enabled" value="true"/>
+						<custom name="net_ssl_enabled" value="true"/>
 					</condition>
 				</file_rule>
 			</cluster>
@@ -44,7 +44,7 @@
 			</condition>
 			<cluster name="ssl_network_until_16_05" location="$|ssl\" recursive="true">
 				<condition>
-					<custom name="httpd_ssl_enabled" value="true"/>
+					<custom name="net_ssl_enabled" value="true"/>
 					<version type="compiler" max="16.11.0.0"/>
 				</condition>
 			</cluster>
