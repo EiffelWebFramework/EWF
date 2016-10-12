@@ -15,7 +15,13 @@
 		<library name="net" location="$ISE_LIBRARY\library\net\net.ecf"/>
 		<library name="net_ssl" location="$ISE_LIBRARY\unstable\library\network\socket\netssl\net_ssl.ecf">
 			<condition>
+				<custom name="ssl_enabled" value="true"/>
+			</condition>
+			<condition>
 				<custom name="net_ssl_enabled" value="true"/>
+			</condition>
+			<condition>
+				<custom name="httpd_ssl_enabled" value="true"/>
 			</condition>
 		</library>
 		<cluster name="network" location=".\network\">
@@ -27,10 +33,24 @@
 			</file_rule>
 			<cluster name="ssl_network" location="$|ssl\" recursive="true">
 				<condition>
+					<custom name="ssl_enabled" value="true"/>
+				</condition>
+				<condition>
+					<custom name="net_ssl_enabled" value="true"/>
+				</condition>
+				<condition>
 					<custom name="httpd_ssl_enabled" value="true"/>
 				</condition>
 				<file_rule>
 					<exclude>/httpd_stream_ssl_socket_ext.e$</exclude>
+					<condition>
+						<version type="compiler" max="16.11.0.0"/>
+						<custom name="ssl_enabled" value="true"/>
+					</condition>
+					<condition>
+						<version type="compiler" max="16.11.0.0"/>
+						<custom name="net_ssl_enabled" value="true"/>
+					</condition>
 					<condition>
 						<version type="compiler" max="16.11.0.0"/>
 						<custom name="httpd_ssl_enabled" value="true"/>
@@ -43,6 +63,14 @@
 				<version type="compiler" max="16.11.0.0"/>
 			</condition>
 			<cluster name="ssl_network_until_16_05" location="$|ssl\" recursive="true">
+				<condition>
+					<custom name="ssl_enabled" value="true"/>
+					<version type="compiler" max="16.11.0.0"/>
+				</condition>
+				<condition>
+					<custom name="net_ssl_enabled" value="true"/>
+					<version type="compiler" max="16.11.0.0"/>
+				</condition>
 				<condition>
 					<custom name="httpd_ssl_enabled" value="true"/>
 					<version type="compiler" max="16.11.0.0"/>
