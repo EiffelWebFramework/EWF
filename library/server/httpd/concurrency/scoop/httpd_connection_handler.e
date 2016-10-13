@@ -64,19 +64,19 @@ feature {HTTPD_SERVER_I} -- Execution
 			p.gracefull_stop
 		end
 
-	accept_incoming_connection (a_listening_socket: HTTP_STREAM_SOCKET)
+	accept_incoming_connection (a_listening_socket: HTTPD_STREAM_SOCKET)
 			-- <Precursor>
 		do
 			accept_connection_on_pool (pool, a_listening_socket) -- Wait on not pool.is_full or is_stop_requested
 		end
 
-	accept_connection_on_pool (a_pool: like pool; a_listening_socket: HTTP_STREAM_SOCKET)
+	accept_connection_on_pool (a_pool: like pool; a_listening_socket: HTTPD_STREAM_SOCKET)
 			-- Process accept connection
 			-- note that the precondition matters for scoop synchronization.
 		require
 			concurrency: not a_pool.is_full or is_shutdown_requested or a_pool.stop_requested
 		local
-			cl: separate HTTP_STREAM_SOCKET
+			cl: separate HTTPD_STREAM_SOCKET
 		do
 			debug ("dbglog")
 				dbglog (generator + ".ENTER accept_connection_on_pool")
@@ -121,7 +121,7 @@ feature {HTTPD_SERVER_I} -- Status report
 
 feature {NONE} -- Implementation
 
-	separate_client_socket (hdl: separate HTTPD_REQUEST_HANDLER): separate HTTP_STREAM_SOCKET
+	separate_client_socket (hdl: separate HTTPD_REQUEST_HANDLER): separate HTTPD_STREAM_SOCKET
 			-- Client socket for request handler `hdl'.
 		do
 			Result := hdl.client_socket
@@ -134,7 +134,7 @@ invariant
 	pool_attached: pool /= Void
 
 note
-	copyright: "2011-2015, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
+	copyright: "2011-2016, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

@@ -19,6 +19,14 @@ create
 create {NETWORK_STREAM_SOCKET}
 	make_from_descriptor_and_address
 
+feature -- Status report
+
+	is_ssl_supported: BOOLEAN
+			-- SSL supported?
+		once
+			Result := False
+		end
+
 feature -- Input	
 
 	read_character_noexception

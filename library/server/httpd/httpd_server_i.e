@@ -151,7 +151,7 @@ feature -- Listening
 			-- Creates a socket and connects to the http server.
 			-- `a_server': The main server object
 		local
-			l_listening_socket: detachable HTTP_STREAM_SOCKET
+			l_listening_socket: detachable HTTPD_STREAM_SOCKET
 			l_http_port: INTEGER
 			l_connection_handler: HTTPD_CONNECTION_HANDLER
 		do
@@ -234,7 +234,7 @@ feature -- Listening
 
 feature {NONE} -- Factory
 
-	new_listening_socket (a_addr: detachable INET_ADDRESS; a_http_port: INTEGER): HTTP_STREAM_SOCKET
+	new_listening_socket (a_addr: detachable INET_ADDRESS; a_http_port: INTEGER): HTTPD_STREAM_SOCKET
 		do
 			if a_addr /= Void then
 				create Result.make_server_by_address_and_port (a_addr, a_http_port)
@@ -365,7 +365,7 @@ feature -- Output
 		end
 
 note
-	copyright: "2011-2015, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
+	copyright: "2011-2016, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

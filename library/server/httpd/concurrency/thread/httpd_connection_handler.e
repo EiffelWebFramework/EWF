@@ -51,9 +51,9 @@ feature {HTTPD_SERVER_I} -- Execution
 			p.terminate
 		end
 
-	accept_incoming_connection (a_listening_socket: HTTP_STREAM_SOCKET)
+	accept_incoming_connection (a_listening_socket: HTTPD_STREAM_SOCKET)
 		local
-			cl: separate HTTP_STREAM_SOCKET
+			cl: separate HTTPD_STREAM_SOCKET
 		do
 			debug ("dbglog")
 				dbglog (generator + ".ENTER accept_connection {"+ a_listening_socket.descriptor.out +"}")

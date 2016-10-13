@@ -28,7 +28,7 @@ feature {CONCURRENT_POOL, HTTPD_CONNECTION_HANDLER_I} -- Basic operation
 			d: detachable STRING
 		do
 			debug ("dbglog")
-				if 
+				if
 					attached internal_client_socket as l_socket and then
 					l_socket.descriptor_available
 				then
@@ -50,7 +50,7 @@ feature {CONCURRENT_POOL, HTTPD_CONNECTION_HANDLER_I} -- Basic operation
 		end
 
 note
-	copyright: "2011-2015, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
+	copyright: "2011-2016, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

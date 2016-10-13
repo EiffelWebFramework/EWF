@@ -1,27 +1,20 @@
 note
-	description: "Summary description for {HTTPD_SERVER_OBSERVER}."
+	description: "Summary description for {HTTPD_SOCKET_FACTORY}."
 	date: "$Date$"
 	revision: "$Revision$"
 
 deferred class
-	HTTPD_SERVER_OBSERVER
+	HTTPD_SOCKET_FACTORY
 
-feature -- Event
+feature -- Access
 
-	on_launched (a_port: INTEGER)
-			-- Associated server launched listening on port `a_port'.
-		deferred
-		end
-
-	on_stopped
-			-- Associated server stopped.
-			--| the server may restart itself after being rescued.
-		deferred
-		end
-
-	on_terminated
-			-- Associated server terminated.
-		deferred
+	new_client_socket (a_is_secure: BOOLEAN): HTTPD_STREAM_SOCKET
+		do
+			if a_is_secure then
+				create {HTTPD_STREAM_SSL_SOCKET} Result.make_empty
+			else
+				create Result.make_empty
+			end
 		end
 
 note

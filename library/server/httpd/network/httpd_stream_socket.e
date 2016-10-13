@@ -1,28 +1,23 @@
 note
-	description: "Summary description for {HTTPD_SERVER_OBSERVER}."
+	description: "[
+			Socket for HTTPD networking.
+		]"
 	date: "$Date$"
 	revision: "$Revision$"
 
-deferred class
-	HTTPD_SERVER_OBSERVER
+class
+	HTTPD_STREAM_SOCKET
 
-feature -- Event
+inherit
+	HTTP_STREAM_SOCKET
 
-	on_launched (a_port: INTEGER)
-			-- Associated server launched listening on port `a_port'.
-		deferred
-		end
+create
+	make, make_empty,
+	make_client_by_port, make_client_by_address_and_port,
+	make_server_by_port, make_server_by_address_and_port, make_loopback_server_by_port
 
-	on_stopped
-			-- Associated server stopped.
-			--| the server may restart itself after being rescued.
-		deferred
-		end
-
-	on_terminated
-			-- Associated server terminated.
-		deferred
-		end
+create {NETWORK_STREAM_SOCKET}
+	make_from_descriptor_and_address
 
 note
 	copyright: "2011-2016, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"

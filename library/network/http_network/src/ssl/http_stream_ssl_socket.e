@@ -20,6 +20,7 @@ inherit
 			connect, shutdown,
 			do_accept
 		redefine
+			is_ssl_supported,
 			put_managed_pointer,
 			read_stream_noexception,
 			read_into_pointer_noexception,
@@ -40,6 +41,46 @@ create
 
 create {SSL_NETWORK_STREAM_SOCKET}
 	make_from_descriptor_and_address
+
+feature -- Status report
+
+	is_ssl_supported: BOOLEAN
+			-- SSL supported?
+		once
+			Result := True
+		end
+
+feature -- SSL Helpers
+
+	set_ssl_protocol_to_ssl_2_or_3
+			-- Set `ssl_protocol' with `Ssl_23'.
+		do
+			set_tls_protocol ({SSL_PROTOCOL}.Ssl_23)
+		end
+
+	set_ssl_protocol_to_tls_1_0
+			-- Set `ssl_protocol' with `Tls_1_0'.
+		do
+			set_tls_protocol ({SSL_PROTOCOL}.Tls_1_0)
+		end
+
+	set_ssl_protocol_to_tls_1_1
+			-- Set `ssl_protocol' with `Tls_1_1'.
+		do
+			set_tls_protocol ({SSL_PROTOCOL}.Tls_1_1)
+		end
+
+	set_ssl_protocol_to_tls_1_2
+			-- Set `ssl_protocol' with `Tls_1_2'.
+		do
+			set_tls_protocol ({SSL_PROTOCOL}.Tls_1_2)
+		end
+
+	set_ssl_protocol_to_dtls_1_0
+			-- Set `ssl_protocol' with `Dtls_1_0'.
+		do
+			set_tls_protocol ({SSL_PROTOCOL}.Dtls_1_0)
+		end
 
 feature -- Input
 
@@ -127,18 +168,6 @@ feature -- Output
 				bytes_sent := l_bytes_sent
 			else
 				check has_last_ssl: False end
-			end
-		end
-
-feature -- Element change	
-
-	set_certificate_filenames (a_crt_filename, a_key_filename: detachable READABLE_STRING_GENERAL)
-		do
-			if a_crt_filename /= Void then
-				set_certificate_file_name (a_crt_filename)
-			end
-			if a_key_filename /= Void then
-				set_key_file_name (a_key_filename)
 			end
 		end
 

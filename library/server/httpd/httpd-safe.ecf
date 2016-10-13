@@ -31,7 +31,6 @@
 		<cluster name="httpd_server" location=".\" recursive="true">
 			<file_rule>
 				<exclude>/concurrency$</exclude>
-				<exclude>/network$</exclude>
 				<exclude>/no_ssl$</exclude>
 				<exclude>/ssl$</exclude>
 			</file_rule>

@@ -20,6 +20,18 @@ create
 create {HTTP_STREAM_SSL_SOCKET}
 	make_from_descriptor_and_address
 
+feature -- Element change	
+
+	set_certificate_file_path (a_crt_filename: PATH)
+		do
+		end
+
+	set_key_file_path (a_key_filename: PATH)
+		do
+		end
+
+invariant
+	ssl_not_supported: not is_ssl_supported -- Current is a Fake SSL interface!
 note
 	copyright: "2011-2013, Javier Velilla, Jocelyn Fiat and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"

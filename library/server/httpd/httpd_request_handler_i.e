@@ -45,7 +45,7 @@ feature {NONE} -- Initialization
 			-- still alive.
 		do
 			if a_is_reusing_connection then
-					-- Keep `remote_info' as it stays the same for the successive 
+					-- Keep `remote_info' as it stays the same for the successive
 					-- persistent connections.
 			else
 				remote_info := Void
@@ -72,9 +72,9 @@ feature -- Status report
 
 feature -- Access
 
-	internal_client_socket: detachable HTTP_STREAM_SOCKET
+	internal_client_socket: detachable HTTPD_STREAM_SOCKET
 
-	client_socket: HTTP_STREAM_SOCKET
+	client_socket: HTTPD_STREAM_SOCKET
 		local
 			s: like internal_client_socket
 		do
@@ -331,7 +331,7 @@ feature -- Execution
 
 feature -- Request processing
 
-	process_request (a_socket: HTTP_STREAM_SOCKET)
+	process_request (a_socket: HTTPD_STREAM_SOCKET)
 			-- Process request on socket `a_socket'.
 		require
 			no_error: not has_error
@@ -343,7 +343,7 @@ feature -- Request processing
 		deferred
 		end
 
-	process_bad_request (a_socket: HTTP_STREAM_SOCKET)
+	process_bad_request (a_socket: HTTPD_STREAM_SOCKET)
 			-- Process bad request catched on `a_socket'.
 		require
 			has_error: has_error
@@ -378,7 +378,7 @@ feature -- Request processing
 
 feature -- Parsing
 
-	get_request_header (a_socket: HTTP_STREAM_SOCKET; a_is_reusing_connection: BOOLEAN)
+	get_request_header (a_socket: HTTPD_STREAM_SOCKET; a_is_reusing_connection: BOOLEAN)
 			-- Analyze message extracted from `a_socket' as HTTP request.
 			-- If `a_is_reusing_connection' is True, then first use
 			-- Note: it reads from socket.
@@ -504,7 +504,7 @@ feature -- Parsing
 			end
 		end
 
-	next_line (a_socket: HTTP_STREAM_SOCKET): detachable STRING
+	next_line (a_socket: HTTPD_STREAM_SOCKET): detachable STRING
 			-- Next line fetched from `a_socket' is available.
 			-- note: may update `has_error'.
 		require
@@ -569,7 +569,7 @@ feature -- Output
 
 feature {NONE} -- Helpers
 
-	socket_has_incoming_data (a_socket: HTTP_STREAM_SOCKET): BOOLEAN
+	socket_has_incoming_data (a_socket: HTTPD_STREAM_SOCKET): BOOLEAN
 			-- Is there any data to read on `a_socket' ?
 		require
 			a_socket.readable
@@ -584,7 +584,7 @@ invariant
 	request_header_attached: request_header /= Void
 
 note
-	copyright: "2011-2015, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
+	copyright: "2011-2016, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software
