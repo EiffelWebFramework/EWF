@@ -206,7 +206,7 @@ feature -- Output
 			put_managed_pointer_noexception (socket_buffer, 0, character_8_bytes)
 		end
 
-	put_readable_string_8_noexception (s: READABLE_STRING_8)
+	put_string_8_noexception (s: READABLE_STRING_8)
 			-- Write readable string `s' to socket.
 			-- No exception raised!			
 		local
