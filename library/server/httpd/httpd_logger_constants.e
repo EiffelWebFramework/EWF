@@ -17,7 +17,25 @@ feature -- Access
 
 	notice_level: INTEGER 		= 16	-- 0001 0000
 	information_level: INTEGER 	= 32	-- 0010 0000
-	debug_level: INTEGER 		= 64	-- 0100 0000	
+	debug_level: INTEGER 		= 64	-- 0100 0000
+
+feature -- Conversion	
+
+	logger_level_representation (a_level: INTEGER): STRING
+			-- String representation of `a_level'.
+		do
+			inspect a_level
+			when alert_level 		then Result := "alert"
+			when critical_level 	then Result := "critical"
+			when error_level 		then Result := "error"
+			when warning_level 		then Result := "warning"
+			when notice_level 		then Result := "notice"
+			when information_level 	then Result := "information"
+			when debug_level 		then Result := "debug"
+			else
+				Result := "level #" + a_level.out
+			end
+		end
 
 note
 	copyright: "2011-2016, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"

@@ -11,6 +11,8 @@ inherit
 
 	HTTPD_LOGGER
 
+	HTTPD_LOGGER_CONSTANTS
+
 feature {NONE} -- Initialization
 
 	make (a_factory: like factory)
@@ -121,7 +123,7 @@ feature -- Execution
 					log ("  - SSL = not supported")
 				end
 				if configuration.verbose_level > 0 then
-					log ("  - verbose_level = " + configuration.verbose_level.out)
+					log ("  - verbose_level = " + logger_level_representation (configuration.verbose_level))
 				end
 			end
 			is_shutdown_requested := False

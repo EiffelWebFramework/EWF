@@ -177,6 +177,34 @@ feature -- Element change
 			options.force (a_value, a_name)
 		end
 
+	unset_option (a_name: READABLE_STRING_GENERAL)
+		do
+			options.remove (a_name)
+		end
+
+	set_string_option (a_name: READABLE_STRING_GENERAL; a_value: detachable READABLE_STRING_GENERAL)
+		do
+			if a_value = Void then
+				unset_option (a_name)
+			else
+				set_option (a_name, a_value)
+			end
+		end
+
+	set_numeric_option (a_name: READABLE_STRING_GENERAL; a_value: NUMERIC)
+		do
+			set_option (a_name, a_value)
+		end
+
+	set_boolean_option (a_name: READABLE_STRING_GENERAL; a_value: BOOLEAN)
+		do
+			if a_value then
+				set_option (a_name, "true")
+			else
+				set_option (a_name, "false")
+			end
+		end
+
 	set_verbose (b: BOOLEAN)
 			-- Set option "verbose" to `b'
 		do
