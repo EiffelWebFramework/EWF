@@ -95,4 +95,7 @@
 			</cluster>
 		</cluster>
 	</target>
+	<target name="http_network_ssl" extends="http_network">
+		<variable name="ssl_enabled" value="true" />
+	</target>
 </system>
