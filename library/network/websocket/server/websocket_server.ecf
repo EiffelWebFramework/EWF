@@ -15,8 +15,8 @@
 		<library name="base" location="$ISE_LIBRARY\library\base\base.ecf"/>
 		<library name="crypto" location="$ISE_LIBRARY\unstable\library\text\encryption\crypto\crypto.ecf"/>
 		<library name="encoder" location="$ISE_LIBRARY\contrib\library\web\framework\ewf\text\encoder\encoder.ecf"/>
-		<library name="http_network" location="..\..\http_network\http_network.ecf" readonly="false"/>
-		<library name="httpd" location="lib\httpd\httpd.ecf"/>
+		<library name="standalone_websocket_connector" location="..\..\..\server\wsf\connector\standalone_websocket.ecf"/>
+		<library name="wsf" location="..\..\..\server\wsf\wsf.ecf"/>
 		<library name="net" location="$ISE_LIBRARY\library\net\net.ecf"/>
 		<library name="thread" location="$ISE_LIBRARY\library\thread\thread.ecf">
 			<condition>
@@ -24,7 +24,6 @@
 			</condition>
 		</library>
 		<library name="time" location="$ISE_LIBRARY\library\time\time.ecf"/>
-		<cluster name="protocol" location="..\protocol\" recursive="true"/>
 		<cluster name="websocket_server" location=".\src\" recursive="true"/>
 	</target>
 </system>
