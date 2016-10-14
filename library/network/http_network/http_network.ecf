@@ -34,6 +34,28 @@
 				<custom name="httpd_ssl_enabled" value="true"/>
 			</condition>
 		</library>
+
+		<external_include location="$(ISE_LIBRARY)/unstable/library/network/socket/netssl/spec/include">
+			<condition>
+				<platform excluded_value="windows"/>
+				<custom name="ssl_enabled" value="true"/>
+				<version type="compiler" max="16.11.0.0"/>
+			</condition>
+		</external_include>
+		<external_include location="$(ISE_LIBRARY)\unstable\library\network\socket\netssl\spec\include">
+			<condition>
+				<platform value="windows"/>
+				<custom name="ssl_enabled" value="true"/>
+				<version type="compiler" max="16.11.0.0"/>
+			</condition>
+		</external_include>
+		<external_cflag value="-D_WINSOCKAPI_">
+			<condition>
+				<platform value="windows"/>
+				<custom name="ssl_enabled" value="true"/>
+				<version type="compiler" max="16.11.0.0"/>
+			</condition>
+		</external_cflag>
 		<cluster name="network" location=".\src\">
 			<file_rule>
 				<exclude>/http_stream_socket_ext.e$</exclude>
@@ -94,5 +116,8 @@
 				</condition>
 			</cluster>
 		</cluster>
+	</target>
+	<target name="http_network_ssl" extends="http_network">
+		<variable name="ssl_enabled" value="true" />
 	</target>
 </system>
