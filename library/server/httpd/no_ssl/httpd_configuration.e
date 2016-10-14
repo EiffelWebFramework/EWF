@@ -16,38 +16,38 @@ feature -- Status
 
 	Server_details: STRING_8 = "Server: Standalone Eiffel Server"
 
-	has_ssl_support: BOOLEAN = False
+	has_secure_support: BOOLEAN = False
 			-- Precursor
 
 feature -- SSL Helpers
 
-	set_ssl_protocol_to_ssl_2_or_3
-			-- Set `ssl_protocol' with `Ssl_23'.
+	set_secure_protocol_to_ssl_2_or_3
+			-- Set `secure_protocol' with `Ssl_23'.
 		do
 				-- Ignored
 		end
 
 
-	set_ssl_protocol_to_tls_1_0
-			-- Set `ssl_protocol' with `Tls_1_0'.
+	set_secure_protocol_to_tls_1_0
+			-- Set `secure_protocol' with `Tls_1_0'.
 		do
 				-- Ignored
 		end
 
-	set_ssl_protocol_to_tls_1_1
-			-- Set `ssl_protocol' with `Tls_1_1'.
+	set_secure_protocol_to_tls_1_1
+			-- Set `secure_protocol' with `Tls_1_1'.
 		do
 				-- Ignored
 		end
 
-	set_ssl_protocol_to_tls_1_2
-			-- Set `ssl_protocol' with `Tls_1_2'.
+	set_secure_protocol_to_tls_1_2
+			-- Set `secure_protocol' with `Tls_1_2'.
 		do
 				-- Ignored
 		end
 
-	set_ssl_protocol_to_dtls_1_0
-			-- Set `ssl_protocol' with `Dtls_1_0'.
+	set_secure_protocol_to_dtls_1_0
+			-- Set `secure_protocol' with `Dtls_1_0'.
 		do
 				-- Ignored
 		end

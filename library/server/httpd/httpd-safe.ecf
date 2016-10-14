@@ -65,4 +65,7 @@
 			</cluster>
 		</cluster>
 	</target>
+	<target name="httpd_ssl" extends="httpd">
+		<variable name="ssl_enabled" value="true" />
+	</target>
 </system>

@@ -41,6 +41,13 @@
 					<version type="compiler" max="16.11.0.0"/>
 				</condition>
 			</file_rule>
+			<cluster name="disabled_ssl_network" location="$|no_ssl\" recursive="true">
+				<condition>
+					<custom name="ssl_enabled" excluded_value="true"/>
+					<custom name="net_ssl_enabled" excluded_value="true"/>
+					<custom name="httpd_ssl_enabled" excluded_value="true"/>
+				</condition>
+			</cluster>
 			<cluster name="ssl_network" location="$|ssl\" recursive="true">
 				<condition>
 					<custom name="ssl_enabled" value="true"/>

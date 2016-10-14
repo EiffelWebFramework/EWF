@@ -40,12 +40,12 @@ feature {NONE} -- Internal
 			then
 				l_socket := l_persistent_connection.socket
 				if a_is_https then
-					if attached {HTTP_STREAM_SSL_SOCKET} l_socket as l_ssl_socket then
+					if attached {HTTP_STREAM_SECURE_SOCKET} l_socket as l_ssl_socket then
 						Result := l_ssl_socket
 					else
 						l_socket := Void
 					end
-				elseif attached {HTTP_STREAM_SSL_SOCKET} l_socket as l_ssl_socket then
+				elseif attached {HTTP_STREAM_SECURE_SOCKET} l_socket as l_ssl_socket then
 					l_socket := Void
 				end
 				if l_socket /= Void and then not l_socket.is_connected then
@@ -59,7 +59,7 @@ feature {NONE} -- Internal
 			else
 				session.set_persistent_connection (Void)
 				if a_is_https then
-					create {HTTP_STREAM_SSL_SOCKET} Result.make_client_by_port (a_port, a_host)
+					create {HTTP_STREAM_SECURE_SOCKET} Result.make_client_by_port (a_port, a_host)
 				else
 					create Result.make_client_by_port (a_port, a_host)
 				end

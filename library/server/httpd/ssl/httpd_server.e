@@ -1,6 +1,6 @@
 note
 	description: "[
-			SSL enabled server
+			SECURE enabled server
 		]"
 	date: "$Date$"
 	revision: "$Revision$"
@@ -21,24 +21,24 @@ feature {NONE} -- Factory
 
 	new_listening_socket (a_addr: detachable INET_ADDRESS; a_http_port: INTEGER): HTTPD_STREAM_SOCKET
 		local
-			s_ssl: HTTPD_STREAM_SSL_SOCKET
+			s_secure: HTTPD_STREAM_SECURE_SOCKET
 		do
 			if configuration.is_secure then
 				if a_addr /= Void then
-					create s_ssl.make_server_by_address_and_port (a_addr, a_http_port)
-					Result := s_ssl
+					create s_secure.make_server_by_address_and_port (a_addr, a_http_port)
+					Result := s_secure
 				else
-					create s_ssl.make_server_by_port (a_http_port)
+					create s_secure.make_server_by_port (a_http_port)
 				end
-				s_ssl.set_tls_protocol (configuration.ssl_protocol)
-				if attached configuration.ca_crt as l_crt then
-					s_ssl.set_certificate_file_name (l_crt)
+				s_secure.set_tls_protocol (configuration.secure_protocol)
+				if attached configuration.secure_certificate as l_crt then
+					s_secure.set_certificate_file_name (l_crt)
 				end
-				if attached configuration.ca_key as l_key then
-					s_ssl.set_key_file_name (l_key)
+				if attached configuration.secure_certificate_key as l_key then
+					s_secure.set_key_file_name (l_key)
 				end
 
-				Result := s_ssl
+				Result := s_secure
 			else
 				Result := Precursor (a_addr, a_http_port)
 			end

@@ -525,7 +525,7 @@ feature -- Parsing
 				if a_socket.was_error then
 					report_error ("Socket error")
 					if is_verbose then
-						log (request_header +"%N" + Result + "%N## was_error=False! ##", debug_level)
+						log (request_header +"%N" + Result + "%N## Network error: " + a_socket.error + " ##", debug_level)
 					end
 				end
 			else

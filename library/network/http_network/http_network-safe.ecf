@@ -22,7 +22,7 @@
 			</condition>
 		</external_include>
 		<library name="base" location="$ISE_LIBRARY\library\base\base-safe.ecf"/>
-		<library name="net" location="$ISE_LIBRARY\library\net\net-safe.ecf" readonly="false"/>
+		<library name="net" location="$ISE_LIBRARY\library\net\net-safe.ecf"/>
 		<library name="net_ssl" location="$ISE_LIBRARY\unstable\library\network\socket\netssl\net_ssl-safe.ecf">
 			<condition>
 				<custom name="ssl_enabled" value="true"/>
@@ -94,6 +94,5 @@
 				</condition>
 			</cluster>
 		</cluster>
-		
 	</target>
 </system>

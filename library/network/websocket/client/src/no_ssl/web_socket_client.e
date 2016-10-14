@@ -14,14 +14,14 @@ inherit
 
 feature -- Status report
 
-	is_ssl_supported: BOOLEAN = False
+	is_secure_connection_supported: BOOLEAN = False
 
 feature -- Factory
 
 	new_socket (a_port: INTEGER; a_host: STRING): HTTP_STREAM_SOCKET
 		do
-			if is_tunneled then
-				check ssl_supported: False end
+			if is_secure then
+				check is_secure_connection_supported: False end
 			end
 			create {HTTP_STREAM_SOCKET} Result.make_client_by_port (a_port, a_host)
 		end

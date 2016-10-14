@@ -20,6 +20,6 @@
 		<setting name="concurrency" value="thread"/>
 	</target>
 	<target name="ws_client_ssl" extends="ws_client">
-		<variable name="net_ssl_enabled" value="true"/>
+		<variable name="ssl_enabled" value="true"/>
 	</target>
 </system>

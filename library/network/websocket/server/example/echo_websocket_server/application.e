@@ -23,8 +23,8 @@ feature {NONE} -- Initialization
 			opts.set_verbose_level ("debug")
 
 			opts.set_ssl_enabled (True) -- If SSL is supported
-			opts.set_ssl_ca_crt ("C:\OpenSSL-Win64\bin\ca.crt") -- Change to use your own crt file.
-			opts.set_ssl_ca_key ("C:\OpenSSL-Win64\bin\ca.key") -- Change to use your own key file.
+			opts.set_ssl_ca_crt ("ca.crt") -- Change to use your own crt file.
+			opts.set_ssl_ca_key ("ca.key") -- Change to use your own key file.
 
 			opts.set_port (default_port_number)
 		end

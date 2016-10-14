@@ -27,8 +27,8 @@ feature {NONE} -- Initialization
 			create ready_state.make
 		ensure
 			uri_set: a_uri = uri
-			port_wss: is_tunneled implies port = wss_port_default
-			port_ws: not is_tunneled implies port = ws_port_default
+			port_wss: is_secure implies port = wss_port_default
+			port_ws: not is_secure implies port = ws_port_default
 			ready_state_set: ready_state.state = {WEB_SOCKET_READY_STATE}.connecting
 			subscriber_set: subscriber = a_subscriber
 			protocol_set: protocol.is_empty
@@ -58,8 +58,8 @@ feature {NONE} -- Initialization
 			create ready_state.make
 		ensure
 			uri_set: a_uri = uri
-			port_wss: is_tunneled implies port = wss_port_default
-			port_ws: not is_tunneled implies port = ws_port_default
+			port_wss: is_secure implies port = wss_port_default
+			port_ws: not is_secure implies port = ws_port_default
 			protocols_set: protocols = a_protocols
 			ready_state_set: ready_state.state = {WEB_SOCKET_READY_STATE}.connecting
 			subscriber_set: subscriber = a_subscriber
@@ -214,7 +214,7 @@ feature {NONE} -- Implementation
 
 	set_default_port
 		do
-			if is_tunneled then
+			if is_secure then
 				port := wss_port_default
 			else
 				port := ws_port_default

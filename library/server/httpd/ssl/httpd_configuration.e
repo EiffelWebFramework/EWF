@@ -21,48 +21,48 @@ feature {NONE} -- Initialization
 			-- Create a new instance and set ssl protocol to tls_1_2.
 		do
 			Precursor
-			set_ssl_protocol_to_tls_1_2
+			set_secure_protocol_to_tls_1_2
 		ensure then
-			ssl_protocol_set: ssl_protocol = {SSL_PROTOCOL}.tls_1_2
+			secure_protocol_set: secure_protocol = {SSL_PROTOCOL}.tls_1_2
 		end
 
 feature -- Access
 
-	Server_details: STRING_8 = "Server: Standalone Eiffel Server (https)"
+	Server_details: STRING_8 = "Server: Standalone Eiffel Server (secure)"
 
-	has_ssl_support: BOOLEAN = True
+	has_secure_support: BOOLEAN = True
 			-- Precursor		
 
 feature -- SSL Helpers
 
-	set_ssl_protocol_to_ssl_2_or_3
-			-- Set `ssl_protocol' with `Ssl_23'.
+	set_secure_protocol_to_ssl_2_or_3
+			-- Set `secure_protocol' with `Ssl_23'.
 		do
-			set_ssl_protocol ({SSL_PROTOCOL}.Ssl_23)
+			set_secure_protocol ({SSL_PROTOCOL}.Ssl_23)
 		end
 
-	set_ssl_protocol_to_tls_1_0
-			-- Set `ssl_protocol' with `Tls_1_0'.
+	set_secure_protocol_to_tls_1_0
+			-- Set `secure_protocol' with `Tls_1_0'.
 		do
-			set_ssl_protocol ({SSL_PROTOCOL}.Tls_1_0)
+			set_secure_protocol ({SSL_PROTOCOL}.Tls_1_0)
 		end
 
-	set_ssl_protocol_to_tls_1_1
-			-- Set `ssl_protocol' with `Tls_1_1'.
+	set_secure_protocol_to_tls_1_1
+			-- Set `secure_protocol' with `Tls_1_1'.
 		do
-			set_ssl_protocol ({SSL_PROTOCOL}.Tls_1_1)
+			set_secure_protocol ({SSL_PROTOCOL}.Tls_1_1)
 		end
 
-	set_ssl_protocol_to_tls_1_2
-			-- Set `ssl_protocol' with `Tls_1_2'.
+	set_secure_protocol_to_tls_1_2
+			-- Set `secure_protocol' with `Tls_1_2'.
 		do
-			set_ssl_protocol ({SSL_PROTOCOL}.Tls_1_2)
+			set_secure_protocol ({SSL_PROTOCOL}.Tls_1_2)
 		end
 
-	set_ssl_protocol_to_dtls_1_0
-			-- Set `ssl_protocol' with `Dtls_1_0'.
+	set_secure_protocol_to_dtls_1_0
+			-- Set `secure_protocol' with `Dtls_1_0'.
 		do
-			set_ssl_protocol ({SSL_PROTOCOL}.Dtls_1_0)
+			set_secure_protocol ({SSL_PROTOCOL}.Dtls_1_0)
 		end
 
 

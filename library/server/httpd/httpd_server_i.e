@@ -113,7 +113,7 @@ feature -- Execution
 				log ("  - socket_recv_timeout = " + configuration.socket_recv_timeout.out + " seconds")
 				log ("  - keep_alive_timeout = " + configuration.keep_alive_timeout.out + " seconds")
 				log ("  - max_keep_alive_requests = " + configuration.max_keep_alive_requests.out)
-				if configuration.has_ssl_support then
+				if configuration.has_secure_support then
 					if configuration.is_secure then
 						log ("  - SSL = enabled")
 					else

@@ -23,8 +23,8 @@ feature {NONE} -- Initialization
 			keep_alive_timeout := default_keep_alive_timeout
 			max_keep_alive_requests := default_max_keep_alive_requests
 			is_secure := False
-			create ca_crt.make_empty
-			create ca_key.make_empty
+			create secure_certificate.make_empty
+			create secure_certificate_key.make_empty
 		end
 
 feature -- Access
@@ -75,8 +75,8 @@ feature -- Access
 			-- To disable KeepAlive, set `max_keep_alive_requests' to 0.
 			-- By default: 100 .
 
-	has_ssl_support: BOOLEAN
-			-- Has SSL support?
+	has_secure_support: BOOLEAN
+			-- Has SSL/TLS secure support?
 		deferred
 		end
 
@@ -96,30 +96,30 @@ feature -- Access: SSL
 	is_secure: BOOLEAN
 			 -- Is SSL/TLS session?.
 
-	ca_crt: detachable IMMUTABLE_STRING_32
+	secure_certificate: detachable IMMUTABLE_STRING_32
 			-- the signed certificate.
 
-	ca_key: detachable IMMUTABLE_STRING_32
-			-- private key to the certificate.
+	secure_certificate_key: detachable IMMUTABLE_STRING_32
+			-- private key to the certificate authority.
 
-	ssl_protocol: NATURAL
+	secure_protocol: NATURAL
 			-- By default protocol is tls 1.2.
 
 feature -- Element change
 
-	set_ssl_settings (v: detachable separate TUPLE [protocol: separate READABLE_STRING_GENERAL; ca_crt, ca_key: detachable separate READABLE_STRING_GENERAL])
+	set_secure_settings (v: detachable separate TUPLE [protocol: separate READABLE_STRING_GENERAL; ca_crt, ca_key: detachable separate READABLE_STRING_GENERAL])
 		local
 			prot: STRING_32
 		do
 			is_secure := False
-			ca_crt := Void
-			ca_key := Void
+			secure_certificate := Void
+			secure_certificate_key := Void
 			if v /= Void then
 				is_secure := True
 				create prot.make_from_separate (v.protocol)
-				set_ssl_protocol_from_string (prot)
-				set_ca_crt (v.ca_crt)
-				set_ca_key (v.ca_key)
+				set_secure_protocol_from_string (prot)
+				set_secure_certificate (v.ca_crt)
+				set_secure_certificate_key (v.ca_key)
 			end
 		end
 
@@ -229,7 +229,7 @@ feature -- Element change
 	set_is_secure (b: BOOLEAN)
 			-- Set `is_secure' to `b'.
 		do
-			if b and has_ssl_support then
+			if b and has_secure_support then
 				is_secure := True
 				if
 					http_server_port = 80
@@ -245,8 +245,8 @@ feature -- Element change
 				end
 			end
 		ensure
-			is_secure_set: has_ssl_support implies is_secure
-			is_not_secure: not has_ssl_support implies not is_secure
+			is_secure_set: has_secure_support implies is_secure
+			is_not_secure: not has_secure_support implies not is_secure
 		end
 
 	mark_secure
@@ -254,84 +254,84 @@ feature -- Element change
 		do
 			set_is_secure (True)
 		ensure
-			is_secure_set: has_ssl_support implies is_secure
-			-- http_server_port_set: has_ssl_support implies http_server_port = 443
-			is_not_secure: not has_ssl_support implies not is_secure
-			-- default_port: not has_ssl_support implies http_server_port = 80
+			is_secure_set: has_secure_support implies is_secure
+			-- http_server_port_set: has_secure_support implies http_server_port = 443
+			is_not_secure: not has_secure_support implies not is_secure
+			-- default_port: not has_secure_support implies http_server_port = 80
 		end
 
 feature -- Element change
 
-	set_ca_crt (a_value: detachable separate READABLE_STRING_GENERAL)
-			-- Set `ca_crt' from `a_value'.
+	set_secure_certificate (a_value: detachable separate READABLE_STRING_GENERAL)
+			-- Set `secure_certificate' from `a_value'.
 		do
 			if a_value /= Void then
-				create ca_crt.make_from_separate (a_value)
+				create secure_certificate.make_from_separate (a_value)
 			else
-				ca_crt := Void
+				secure_certificate := Void
 			end
 		end
 
-	set_ca_key (a_value: detachable separate READABLE_STRING_GENERAL)
-			-- Set `ca_key' with `a_value'.
+	set_secure_certificate_key (a_value: detachable separate READABLE_STRING_GENERAL)
+			-- Set `secure_certificate_key' with `a_value'.
 		do
 			if a_value /= Void then
-				create ca_key.make_from_separate (a_value)
+				create secure_certificate_key.make_from_separate (a_value)
 			else
-				ca_key := Void
+				secure_certificate_key := Void
 			end
 		end
 
-	set_ssl_protocol  (a_version: NATURAL)
-			-- Set `ssl_protocol' with `a_version'
+	set_secure_protocol (a_version: NATURAL)
+			-- Set `secure_protocol' with `a_version'
 		do
-			ssl_protocol := a_version
+			secure_protocol := a_version
 		ensure
-			ssl_protocol_set: ssl_protocol = a_version
+			secure_protocol_set: secure_protocol = a_version
 		end
 
-	set_ssl_protocol_from_string (a_ssl_version: READABLE_STRING_GENERAL)
-			-- Set `ssl_protocol' with `a_ssl_version'
+	set_secure_protocol_from_string (a_ssl_version: READABLE_STRING_GENERAL)
+			-- Set `secure_protocol' with `a_ssl_version'
 		do
 			if a_ssl_version.is_case_insensitive_equal ("ssl_2_3") then
-				set_ssl_protocol_to_ssl_2_or_3
+				set_secure_protocol_to_ssl_2_or_3
 			elseif a_ssl_version.is_case_insensitive_equal ("tls_1_0") then
-				set_ssl_protocol_to_tls_1_0
+				set_secure_protocol_to_tls_1_0
 			elseif a_ssl_version.is_case_insensitive_equal ("tls_1_1") then
-				set_ssl_protocol_to_tls_1_1
+				set_secure_protocol_to_tls_1_1
 			elseif a_ssl_version.is_case_insensitive_equal ("tls_1_2") then
-				set_ssl_protocol_to_tls_1_2
+				set_secure_protocol_to_tls_1_2
 			elseif a_ssl_version.is_case_insensitive_equal ("dtls_1_0") then
-				set_ssl_protocol_to_dtls_1_0
+				set_secure_protocol_to_dtls_1_0
 			else -- Default
-				set_ssl_protocol_to_tls_1_2
+				set_secure_protocol_to_tls_1_2
 			end
 		end
 
 feature -- SSL Helpers
 
-	set_ssl_protocol_to_ssl_2_or_3
-			-- Set `ssl_protocol' with `Ssl_23'.
+	set_secure_protocol_to_ssl_2_or_3
+			-- Set `secure_protocol' with `Ssl_23'.
 		deferred
 		end
 
-	set_ssl_protocol_to_tls_1_0
-			-- Set `ssl_protocol' with `Tls_1_0'.
+	set_secure_protocol_to_tls_1_0
+			-- Set `secure_protocol' with `Tls_1_0'.
 		deferred
 		end
 
-	set_ssl_protocol_to_tls_1_1
-			-- Set `ssl_protocol' with `Tls_1_1'.
+	set_secure_protocol_to_tls_1_1
+			-- Set `secure_protocol' with `Tls_1_1'.
 		deferred
 		end
 
-	set_ssl_protocol_to_tls_1_2
-			-- Set `ssl_protocol' with `Tls_1_2'.
+	set_secure_protocol_to_tls_1_2
+			-- Set `secure_protocol' with `Tls_1_2'.
 		deferred
 		end
 
-	set_ssl_protocol_to_dtls_1_0
-			-- Set `ssl_protocol' with `Dtls_1_0'.
+	set_secure_protocol_to_dtls_1_0
+			-- Set `secure_protocol' with `Dtls_1_0'.
 		deferred
 		end
 

@@ -6,7 +6,7 @@ note
 		]"
 
 deferred class
-	HTTP_STREAM_SSL_SOCKET_EXT
+	HTTP_STREAM_SECURE_SOCKET_EXT
 
 feature {NONE} -- SSL bridge
 

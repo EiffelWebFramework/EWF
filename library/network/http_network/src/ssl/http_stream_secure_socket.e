@@ -4,7 +4,7 @@ note
 	revision: "$Revision$"
 
 class
-	HTTP_STREAM_SSL_SOCKET
+	HTTP_STREAM_SECURE_SOCKET
 
 inherit
 	HTTP_STREAM_SOCKET
@@ -20,7 +20,7 @@ inherit
 			connect, shutdown,
 			do_accept
 		redefine
-			is_ssl_supported,
+			is_secure_connection_supported,
 			put_managed_pointer,
 			read_stream_noexception,
 			read_into_pointer_noexception,
@@ -32,7 +32,7 @@ inherit
 			put_managed_pointer -- Redefine to allow support of compiler before 16.11.
 		end
 
-	HTTP_STREAM_SSL_SOCKET_EXT
+	HTTP_STREAM_SECURE_SOCKET_EXT
 
 create
 	make, make_empty,
@@ -44,42 +44,44 @@ create {SSL_NETWORK_STREAM_SOCKET}
 
 feature -- Status report
 
-	is_ssl_supported: BOOLEAN
+	is_secure_connection_supported: BOOLEAN = True
 			-- SSL supported?
-		once
-			Result := True
+
+feature -- Secure connection Helpers
+
+	set_secure_protocol (v: NATURAL)
+		do
+			set_tls_protocol (v)
 		end
 
-feature -- SSL Helpers
-
-	set_ssl_protocol_to_ssl_2_or_3
+	set_secure_protocol_to_ssl_2_or_3
 			-- Set `ssl_protocol' with `Ssl_23'.
 		do
-			set_tls_protocol ({SSL_PROTOCOL}.Ssl_23)
+			set_secure_protocol ({SSL_PROTOCOL}.Ssl_23)
 		end
 
-	set_ssl_protocol_to_tls_1_0
+	set_secure_protocol_to_tls_1_0
 			-- Set `ssl_protocol' with `Tls_1_0'.
 		do
-			set_tls_protocol ({SSL_PROTOCOL}.Tls_1_0)
+			set_secure_protocol ({SSL_PROTOCOL}.Tls_1_0)
 		end
 
-	set_ssl_protocol_to_tls_1_1
+	set_secure_protocol_to_tls_1_1
 			-- Set `ssl_protocol' with `Tls_1_1'.
 		do
-			set_tls_protocol ({SSL_PROTOCOL}.Tls_1_1)
+			set_secure_protocol ({SSL_PROTOCOL}.Tls_1_1)
 		end
 
-	set_ssl_protocol_to_tls_1_2
+	set_secure_protocol_to_tls_1_2
 			-- Set `ssl_protocol' with `Tls_1_2'.
 		do
-			set_tls_protocol ({SSL_PROTOCOL}.Tls_1_2)
+			set_secure_protocol ({SSL_PROTOCOL}.Tls_1_2)
 		end
 
-	set_ssl_protocol_to_dtls_1_0
+	set_secure_protocol_to_dtls_1_0
 			-- Set `ssl_protocol' with `Dtls_1_0'.
 		do
-			set_tls_protocol ({SSL_PROTOCOL}.Dtls_1_0)
+			set_secure_protocol ({SSL_PROTOCOL}.Dtls_1_0)
 		end
 
 feature -- Input

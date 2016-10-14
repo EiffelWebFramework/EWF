@@ -21,10 +21,12 @@ create {NETWORK_STREAM_SOCKET}
 
 feature -- Status report
 
-	is_ssl_supported: BOOLEAN
-			-- SSL supported?
+	is_secure_connection_supported: BOOLEAN
+			-- SSL/TLS supported?
 		once
 			Result := False
+		ensure
+			Result = {HTTP_SECURE_HELPER}.is_secure_connection_supported
 		end
 
 feature -- Input	

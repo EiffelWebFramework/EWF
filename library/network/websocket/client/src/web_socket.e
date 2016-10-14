@@ -11,7 +11,6 @@ deferred class
 	WEB_SOCKET
 
 inherit
-
 	WEB_SOCKET_CONSTANTS
 
 feature -- Access
@@ -37,7 +36,7 @@ feature -- Access
 			-- Has the result fo protocol negotiation between client and the server
 			-- By default it's an empty string.
 
-	is_tunneled: BOOLEAN
+	is_secure: BOOLEAN
 			-- Is the current connection tunneled over TLS/SSL?
 		local
 			l_uri: STRING

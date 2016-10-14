@@ -9,6 +9,9 @@ note
 deferred class
 	HTTPD_CONSTANTS
 
+inherit
+	HTTP_SECURE_HELPER
+
 feature -- Default connection settings
 
 	default_http_server_port: INTEGER = 80

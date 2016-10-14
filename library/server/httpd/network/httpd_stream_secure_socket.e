@@ -6,10 +6,10 @@ note
 	revision: "$Revision$"
 
 class
-	HTTPD_STREAM_SSL_SOCKET
+	HTTPD_STREAM_SECURE_SOCKET
 
 inherit
-	HTTP_STREAM_SSL_SOCKET
+	HTTP_STREAM_SECURE_SOCKET
 
 	HTTPD_STREAM_SOCKET
 		undefine
@@ -27,7 +27,7 @@ inherit
 			read_stream_noexception,
 			read_into_pointer_noexception,
 			put_pointer_content_noexception,
-			is_ssl_supported
+			is_secure_connection_supported
 		end
 
 create

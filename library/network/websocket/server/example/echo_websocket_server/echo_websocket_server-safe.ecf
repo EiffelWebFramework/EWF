@@ -32,18 +32,16 @@
 		<root class="APPLICATION" feature="make_and_launch"/>
 		<option concurrency="thread" root_concurrency="thread">
 		</option>
-		<variable name="httpd_ssl_enabled" value="true"/>
 	</target>
-	<target name="echo_websocket_server_mt_no_ssl" extends="echo_websocket_server_mt">
-		<variable name="httpd_ssl_enabled" value="false"/>
+	<target name="echo_websocket_server_mt_ssl" extends="echo_websocket_server_mt">
+		<variable name="ssl_enabled" value="true"/>
 	</target>
 	<target name="echo_websocket_server_scoop" extends="common">
 		<root class="APPLICATION" feature="make_and_launch"/>
 		<option concurrency="scoop" root_concurrency="scoop">
 		</option>
-		<variable name="httpd_ssl_enabled" value="true"/>
 	</target>
-	<target name="echo_websocket_server_scoop_no_ssl" extends="echo_websocket_server_scoop">
-		<variable name="httpd_ssl_enabled" value="false"/>
+	<target name="echo_websocket_server_scoop_ssl" extends="echo_websocket_server_scoop">
+		<variable name="httpd_ssl_enabled" value="true"/>
 	</target>
 </system>

@@ -88,7 +88,7 @@ feature -- HTML Resource
 <!DOCTYPE html>
 <html>
 <head>
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+<script src="##HTTPSCHEME##://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
 <script type="text/javascript">
 $(document).ready(function() {
 
@@ -96,7 +96,7 @@ $(document).ready(function() {
 
 	function connect(){
 
-			var host = "ws://127.0.0.1:##PORTNUMBER##";
+			var host = "##WSSCHEME##://127.0.0.1:##PORTNUMBER##";
 
 			try{
 				socket = new WebSocket(host);
@@ -178,6 +178,13 @@ body {font-family:Arial, Helvetica, sans-serif;}
 </html>
 			]"
 			Result.replace_substring_all ("##PORTNUMBER##", a_port.out)
+			if request.is_https then
+				Result.replace_substring_all ("##HTTPSCHEME##", "https")
+				Result.replace_substring_all ("##WSSCHEME##", "wss")
+			else
+				Result.replace_substring_all ("##HTTPSCHEME##", "http")
+				Result.replace_substring_all ("##WSSCHEME##", "ws")
+			end
 		end
 
 

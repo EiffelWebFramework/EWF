@@ -10,7 +10,6 @@ deferred class
 	WEB_SOCKET_CLIENT_I
 
 inherit
-
 	WEB_SOCKET_SUBSCRIBER
 		redefine
 			on_websocket_error,
@@ -106,39 +105,39 @@ feature -- Access
 	server_handshake: WEB_SOCKET_HANDSHAKE_DATA
 			-- Handshake data received from the server
 
-feature -- Access: ssl
+feature -- Access: secure
 
-	is_ssl_supported: BOOLEAN
+	is_secure_connection_supported: BOOLEAN
 			-- Is SSL supported?
 		deferred
 		end
 
-	ssl_protocol: detachable READABLE_STRING_GENERAL
-			-- SSL protocol , if `is_ssl_supported'.
+	secure_protocol: detachable READABLE_STRING_GENERAL
+			-- SSL protocol , if `is_secure_connection_supported'.
 
-	ssl_certificate_file: detachable PATH
-			-- SSL certificate file , if `is_ssl_supported'.
+	secure_certificate_file: detachable PATH
+			-- SSL certificate file , if `is_secure_connection_supported'.
 
-	ssl_key_file: detachable PATH
-			-- SSL key file , if `is_ssl_supported'.
+	secure_certificate_key_file: detachable PATH
+			-- SSL key file , if `is_secure_connection_supported'.
 
 feature -- Element change
 
-	set_ssl_protocol (a_prot: like ssl_protocol)
+	set_secure_protocol (a_prot: like secure_protocol)
 		do
-			ssl_protocol := a_prot
+			secure_protocol := a_prot
 		end
 
-	set_ssl_certificate_file (p: detachable PATH)
+	set_secure_certificate_file (p: detachable PATH)
 			-- Set SSL certificate from file at `p'.
 		do
-			ssl_certificate_file := p
+			secure_certificate_file := p
 		end
 
-	set_ssl_key_file (p: detachable PATH)
+	set_secure_certificate_key_file (p: detachable PATH)
 			-- Set SSL key from file at `p'.
 		do
-			ssl_key_file := p
+			secure_certificate_key_file := p
 		end
 
 feature -- Events API
@@ -346,7 +345,7 @@ feature {NONE} -- Implementation
 
 	set_default_port
 		do
-			if is_tunneled then
+			if is_secure then
 				port := wss_port_default
 			else
 				port := ws_port_default
