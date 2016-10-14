@@ -37,7 +37,9 @@ feature -- Input
 			-- No exception raised!
 		do
 			read_to_managed_pointer_noexception (socket_buffer, 0, character_8_bytes)
-			if bytes_read /= character_8_bytes then
+			if was_error then
+					-- Socket error already set.
+			elseif bytes_read /= character_8_bytes then
 				socket_error := "Peer closed connection"
 			else
 				last_character := socket_buffer.read_character (0)
@@ -145,6 +147,8 @@ feature {NONE} -- Input
 				l_last_read := c_read_stream_noexception (descriptor, nb_bytes - l_read, p + start_pos + l_read)
 				if l_last_read >= 0 then
 					l_read := l_read + l_last_read
+				else
+					socket_error := "Network error!"
 				end
 			end
 			bytes_read := l_read

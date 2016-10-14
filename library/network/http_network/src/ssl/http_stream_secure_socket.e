@@ -134,6 +134,8 @@ feature {NONE} -- Input
 					l_last_read := l_ssl.read (p + start_pos + l_read, nb_bytes - l_read)
 					if l_last_read >= 0 then
 						l_read := l_read + l_last_read
+					else
+						socket_error := "Secure network error!"
 					end
 				end
 				bytes_read := l_read

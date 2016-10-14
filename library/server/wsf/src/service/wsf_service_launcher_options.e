@@ -163,7 +163,7 @@ feature -- Helpers
 					Result := b
 				else
 					s := opt.out
-					Result := s.is_case_insensitive_equal ("true")
+					Result := s.is_case_insensitive_equal ("true") or s.is_case_insensitive_equal ("yes")
 				end
 			end			
 		end
