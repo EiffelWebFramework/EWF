@@ -1,6 +1,6 @@
 /*
 indexing
-	description: "Functions used by the EiffelWeb httpd networking classes. "
+	description: "Functions used by the EiffelWeb http networking classes. "
 	copyright:	"Copyright (c) 2011-2016, Jocelyn Fiat, Eiffel Software and others"
 	license:	"Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
@@ -12,8 +12,8 @@ indexing
 		]"
 */
 
-#ifndef _ew_httpd_net_h_
-#define _ew_httpd_net_h_
+#ifndef _ew_network_h_
+#define _ew_network_h_
 
 #include "eif_config.h"
 

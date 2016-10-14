@@ -81,7 +81,7 @@ feature {NONE} -- Externals
 	c_set_sock_recv_timeout (a_fd, a_level: INTEGER; a_timeout_seconds: INTEGER)
 			-- C routine to set socket option `SO_RCVTIMEO' with `a_timeout_seconds' seconds.
 		external
-			"C inline use %"ew_httpd_net.h%""
+			"C inline use %"ew_network.h%""
 		alias
 			"[
 #ifdef SO_RCVTIMEO 
@@ -105,7 +105,7 @@ feature {NONE} -- Externals
 	c_set_sock_send_timeout (a_fd, a_level: INTEGER; a_timeout_seconds: INTEGER)
 			-- C routine to set socket option `SO_SNDTIMEO' with `a_timeout_seconds' seconds.
 		external
-			"C inline use %"ew_httpd_net.h%""
+			"C inline use %"ew_network.h%""
 		alias
 			"[
 #ifdef SO_RCVTIMEO 
@@ -131,7 +131,7 @@ feature {NONE} -- No-Exception network operation
 			-- External routine to read a `len' number of characters
 			-- into buffer `buf' from socket `a_fd' with options `flags'.
 		external
-			"C inline use %"ew_httpd_net.h%""
+			"C inline use %"ew_network.h%""
 		alias
 			"[
 				recv((int) $a_fd, (char *) $buf, (int) $len, (int) $flags)
@@ -150,7 +150,7 @@ feature {NONE} -- No-Exception network operation
 			-- length `length' to socket `fd'.
 			-- Note: does not raise exception on error, but return error value as Result.
 		external
-			"C inline use %"ew_httpd_net.h%""
+			"C inline use %"ew_network.h%""
 		alias
 			"[
 				send((int) $a_fd, (char *) $buf, (int) $len, (int) 0)
