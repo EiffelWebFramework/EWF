@@ -15,7 +15,7 @@
 		<setting name="concurrency" value="scoop"/>
 		<variable name="ssl_enabled" value="true"/>
 		<library name="base" location="$ISE_LIBRARY\library\base\base-safe.ecf"/>
-		<library name="default_standalone" location="..\..\library\server\wsf\default\standalone-safe.ecf"/>
+		<library name="wsf_standalone" location="..\..\library\server\wsf\connector\standalone-safe.ecf"/>
 		<library name="http" location="..\..\library\network\protocol\http\http-safe.ecf"/>
 		<library name="wsf" location="..\..\library\server\wsf\wsf-safe.ecf"/>
 		<cluster name="simple" location=".\" recursive="true"/>
