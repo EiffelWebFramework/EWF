@@ -36,7 +36,7 @@
 		</library>
 		<cluster name="network" location=".\src\">
 			<file_rule>
-				<exclude>/httpd_stream_socket_ext.e$</exclude>
+				<exclude>/http_stream_socket_ext.e$</exclude>
 				<condition>
 					<version type="compiler" max="16.11.0.0"/>
 				</condition>
@@ -59,7 +59,7 @@
 					<custom name="httpd_ssl_enabled" value="true"/>
 				</condition>
 				<file_rule>
-					<exclude>/httpd_stream_ssl_socket_ext.e$</exclude>
+					<exclude>/http_stream_secure_socket_ext.e$</exclude>
 					<condition>
 						<version type="compiler" max="16.11.0.0"/>
 						<custom name="ssl_enabled" value="true"/>
