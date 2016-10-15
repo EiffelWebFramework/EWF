@@ -22,9 +22,9 @@ feature {NONE} -- Initialization
 			opts.set_is_verbose (True) -- For debug purpose
 			opts.set_verbose_level ("debug")
 
-			opts.set_ssl_enabled (True) -- If SSL is supported
-			opts.set_ssl_ca_crt ("ca.crt") -- Change to use your own crt file.
-			opts.set_ssl_ca_key ("ca.key") -- Change to use your own key file.
+			opts.set_is_secure (True) -- If SSL is supported
+			opts.set_secure_certificate ("ca.crt") -- Change to use your own crt file.
+			opts.set_secure_certificate_key ("ca.key") -- Change to use your own key file.
 
 			opts.set_port (default_port_number)
 		end
