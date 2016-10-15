@@ -27,20 +27,6 @@
 		<cluster name="src" location=".\src\">
 			<cluster name="spec_net" location="$|spec\net\">
 				<cluster name="net_implementation" location="$|implementation\" hidden="true"/>
-				<cluster name="net_ssl_disabled" location="$|no_ssl\">
-					<condition>
-						<custom name="ssl_enabled" excluded_value="true"/>
-						<custom name="netssl_http_client_enabled" excluded_value="true"/>
-					</condition>
-				</cluster>
-				<cluster name="net_ssl_enabled" location="$|ssl\">
-					<condition>
-						<custom name="ssl_enabled" value="true"/>
-					</condition>
-					<condition>
-						<custom name="netssl_http_client_enabled" value="true"/>
-					</condition>
-				</cluster>
 			</cluster>
 			<cluster name="default_net" location="$|default\net\"/>
 		</cluster>
