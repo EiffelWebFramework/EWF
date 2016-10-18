@@ -455,14 +455,11 @@ feature -- Parsing
 							-- Except for HTTP/1.0, persistent connection is the default.
 						is_persistent_connection_requested := True
 						if is_http_version_1_0 then
-							is_persistent_connection_requested := attached request_header_map.item ("Connection") as l_connection and then
-										l_connection.is_case_insensitive_equal_general ("keep-alive")
+							is_persistent_connection_requested := has_keep_alive_http_connection_header (request_header_map)
 						else
 								-- By default HTTP:1/1 support persistent connection.
-							if attached request_header_map.item ("Connection") as l_connection then
-								if l_connection.is_case_insensitive_equal_general ("close") then
-									is_persistent_connection_requested := False
-								end
+							if has_close_http_connection_header (request_header_map) then
+								is_persistent_connection_requested := False
 							else
 								is_persistent_connection_requested := True
 							end
@@ -473,6 +470,46 @@ feature -- Parsing
 				end
 			else
 				report_error ("Socket is not readable")
+			end
+		end
+
+	has_keep_alive_http_connection_header (h_map: like request_header_map): BOOLEAN
+			-- Does Current request header map `h_map' have "keep-alive" connection header?
+		local
+			i: INTEGER
+		do
+			if attached h_map.item ("Connection") as l_connection then
+					-- Could be for instance "keep-alive, Upgrade"
+				i := l_connection.substring_index ("keep-alive", 1)
+				if i > 0 then
+					i := i + 9 -- "keep-alive" has 10 characters
+					check i <= l_connection.count end
+					if i = l_connection.count then
+						Result := True
+					else
+						Result := l_connection [i + 1] = ',' or l_connection [i + 1].is_space
+					end
+				end
+			end
+		end
+
+	has_close_http_connection_header (h_map: like request_header_map): BOOLEAN
+			-- Does Current request header map `h_map' have "close" connection header?
+		local
+			i: INTEGER
+		do
+			if attached h_map.item ("Connection") as l_connection then
+					-- Could be for instance "close, ..."
+				i := l_connection.substring_index ("close", 1)
+				if i > 0 then
+					i := i + 4 -- "close" has 5 characters
+					check i <= l_connection.count end
+					if i = l_connection.count then
+						Result := True
+					else
+						Result := l_connection [i + 1] = ',' or l_connection [i + 1].is_space
+					end
+				end
 			end
 		end
 
