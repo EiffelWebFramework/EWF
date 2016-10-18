@@ -53,6 +53,8 @@ echo Install framework ewf
 %SAFE_MD% %TMP_CONTRIB_DIR%\library\web\framework\ewf
 echo Install library: ewf/ewsgi
 %COPYCMD% %TMP_DIR%\library\server\ewsgi	%TMP_CONTRIB_DIR%\library\web\framework\ewf\ewsgi
+echo Install library: ewf/httpd
+%COPYCMD% %TMP_DIR%\library\server\httpd	%TMP_CONTRIB_DIR%\library\web\framework\ewf\httpd
 echo Install library: ewf/libfcgi
 %COPYCMD% %TMP_DIR%\library\server\libfcgi	%TMP_CONTRIB_DIR%\library\web\framework\ewf\libfcgi
 echo Install library: ewf/wsf
@@ -86,6 +88,10 @@ echo Install library: error
 %COPYCMD% %TMP_DIR%\library\utility\general\error	%TMP_CONTRIB_DIR%\library\utility\general\error
 echo Install library: http_client
 %COPYCMD% %TMP_DIR%\library\network\http_client	%TMP_CONTRIB_DIR%\library\network\http_client
+echo Install library: http_network
+%COPYCMD% %TMP_DIR%\library\network\http_network	%TMP_CONTRIB_DIR%\library\network\http_network
+echo Install library: websocket
+%COPYCMD% %TMP_DIR%\library\network\websocket	%TMP_CONTRIB_DIR%\library\network\websocket
 echo Install library: http
 %COPYCMD% %TMP_DIR%\library\network\protocol\http	%TMP_CONTRIB_DIR%\library\network\protocol\http
 echo Install library: content_negotiation

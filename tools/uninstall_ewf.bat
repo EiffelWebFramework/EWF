@@ -55,6 +55,10 @@ echo Uninstall library: error
 %RDCMD% %TMP_CONTRIB_DIR%\library\utility\general\error
 echo Uninstall library: http_client
 %RDCMD% %TMP_CONTRIB_DIR%\library\network\http_client
+echo Uninstall library: http_network
+%RDCMD% %TMP_CONTRIB_DIR%\library\network\http_network
+echo Uninstall library: websocket
+%RDCMD% %TMP_CONTRIB_DIR%\library\network\websocket
 echo Uninstall library: http
 %RDCMD% %TMP_CONTRIB_DIR%\library\network\protocol\http
 echo Uninstall library: content_negotiation
