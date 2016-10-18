@@ -10,6 +10,16 @@
 		<option warning="true" full_class_checking="true" void_safety="none" syntax="standard">
 		</option>
 		<setting name="concurrency" value="thread"/>
+		<external_include location="$ECF_CONFIG_PATH/spec/include">
+			<condition>
+				<version type="compiler" min="16.11.0.0"/>
+			</condition>
+		</external_include>
+		<external_include location="$ECF_CONFIG_PATH/spec/include_until_16_05">
+			<condition>
+				<version type="compiler" max="16.11.0.0"/>
+			</condition>
+		</external_include>
 		<library name="base" location="$ISE_LIBRARY\library\base\base.ecf"/>
 		<library name="net" location="$ISE_LIBRARY\library\net\net.ecf"/>
 		<library name="net_ssl" location="$ISE_LIBRARY\unstable\library\network\socket\netssl\net_ssl.ecf">
@@ -23,6 +33,39 @@
 			</condition>
 		</library>
 		<library name="time" location="$ISE_LIBRARY\library\time\time.ecf"/>
+		<cluster name="httpd_server" location=".\" recursive="true">
+			<file_rule>
+				<exclude>/concurrency$</exclude>
+				<exclude>/network$</exclude>
+				<exclude>/no_ssl$</exclude>
+				<exclude>/ssl$</exclude>
+			</file_rule>
+			<cluster name="no_ssl" location="$|no_ssl\" recursive="true">
+				<condition>
+					<custom name="httpd_ssl_enabled" excluded_value="true"/>
+				</condition>
+			</cluster>
+			<cluster name="ssl" location="$|ssl\" recursive="true">
+				<condition>
+					<custom name="httpd_ssl_enabled" value="true"/>
+				</condition>
+			</cluster>
+			<cluster name="concurrency_none" location="$|concurrency\none\" recursive="true">
+				<condition>
+					<concurrency value="none"/>
+				</condition>
+			</cluster>
+			<cluster name="concurrency_scoop" location="$|concurrency\scoop\" recursive="true">
+				<condition>
+					<concurrency value="scoop"/>
+				</condition>
+			</cluster>
+			<cluster name="concurrency_thread" location="$|concurrency\thread\" recursive="true">
+				<condition>
+					<concurrency value="thread"/>
+				</condition>
+			</cluster>
+		</cluster>
 		<cluster name="network" location=".\network\">
 			<file_rule>
 				<exclude>/httpd_stream_socket_ext.e$</exclude>
@@ -51,39 +94,6 @@
 				<condition>
 					<custom name="httpd_ssl_enabled" value="true"/>
 					<version type="compiler" max="16.11.0.0"/>
-				</condition>
-			</cluster>
-		</cluster>
-		<cluster name="httpd_server" location=".\" recursive="true">
-			<file_rule>
-				<exclude>/concurrency$</exclude>
-				<exclude>/no_ssl$</exclude>
-				<exclude>/ssl$</exclude>
-				<exclude>/network$</exclude>
-			</file_rule>
-			<cluster name="no_ssl" location="$|no_ssl\" recursive="true">
-				<condition>
-					<custom name="httpd_ssl_enabled" excluded_value="true"/>
-				</condition>
-			</cluster>
-			<cluster name="ssl" location="$|ssl\" recursive="true">
-				<condition>
-					<custom name="httpd_ssl_enabled" value="true"/>
-				</condition>
-			</cluster>
-			<cluster name="concurrency_none" location="$|concurrency\none\" recursive="true">
-				<condition>
-					<concurrency value="none"/>
-				</condition>
-			</cluster>
-			<cluster name="concurrency_scoop" location="$|concurrency\scoop\" recursive="true">
-				<condition>
-					<concurrency value="scoop"/>
-				</condition>
-			</cluster>
-			<cluster name="concurrency_thread" location="$|concurrency\thread\" recursive="true">
-				<condition>
-					<concurrency value="thread"/>
 				</condition>
 			</cluster>
 		</cluster>
