@@ -11,15 +11,15 @@ class
 
 inherit
 {unless condition="$WIZ.routers.use_router ~ $WIZ_YES"}
-  {unless condition="$WIZ.routers.use_filter ~ $WIZ_YES"}
+  {unless condition="$WIZ.filters.use_filter ~ $WIZ_YES"}
 	WSF_EXECUTION{/unless}
-  {if condition="$WIZ.routers.use_filter ~ $WIZ_YES"}
+  {if condition="$WIZ.filters.use_filter ~ $WIZ_YES"}
 	WSF_FILTERED_EXECUTION{/if}
 {/unless}
 {if condition="$WIZ.routers.use_router ~ $WIZ_YES"}
-  {unless condition="$WIZ.routers.use_filter ~ $WIZ_YES"}
+  {unless condition="$WIZ.filters.use_filter ~ $WIZ_YES"}
 	WSF_ROUTED_EXECUTION{/unless}
-  {if condition="$WIZ.routers.use_filter ~ $WIZ_YES"}
+  {if condition="$WIZ.filters.use_filter ~ $WIZ_YES"}
 	WSF_FILTERED_ROUTED_EXECUTION{/if}
 {/if}
 
@@ -28,7 +28,6 @@ inherit
 
 feature {NONE} -- Initialization
 {/literal}
-
 {unless condition="$WIZ.routers.use_router ~ $WIZ_YES"}{literal}
 feature -- Execution
 
@@ -42,9 +41,9 @@ feature -- Execution
 				--| To send back easily a simple plaintext message.
 			create mesg.make_with_body ("Hello Eiffel Web")
 			response.send (mesg)
-		end{/unless}
-
-{if condition="$WIZ.routers.use_filter ~ $WIZ_YES"}{literal}
+		end
+{/literal}{/unless}
+{if condition="$WIZ.filters.use_filter ~ $WIZ_YES"}{literal}
 feature -- Filter
 
 	create_filter
@@ -56,15 +55,18 @@ feature -- Filter
 
 	setup_filter
 			-- Setup `filter'
+		local
+			f: like filter
 		do
-			append_filters (<<
-							create {WSF_CORS_FILTER},
-							create {WSF_LOGGING_FILTER}
-							>>)
+			create {WSF_CORS_FILTER} f
+			f.set_next (create {WSF_LOGGING_FILTER})
+
 				--| Chain more filters like {WSF_CUSTOM_HEADER_FILTER}, ...
 				--| and your owns filters.
-		end{/if}
 
+			filter.append (f)
+		end
+{/literal}{/if}
 {if condition="$WIZ.routers.use_router ~ $WIZ_YES"}{literal}
 feature -- Router
 
@@ -78,12 +80,12 @@ feature -- Router
 				--|   /* are dispatched to serve files/directories contained in "www" directory
 
 				--| Self documentation
-			router.handle_with_request_methods ("/doc", create {WSF_ROUTER_SELF_DOCUMENTATION_HANDLER}.make (router), router.methods_GET)
+			router.handle ("/doc", create {WSF_ROUTER_SELF_DOCUMENTATION_HANDLER}.make (router), router.methods_GET)
 
 				--| Files publisher
 			create fhdl.make_hidden ("www")
 			fhdl.set_directory_index (<<"index.html">>)
-			router.handle_with_request_methods ("", fhdl, router.methods_GET)
+			router.handle ("", fhdl, router.methods_GET)
 		end{/literal}{/if}
 
 end
