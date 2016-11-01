@@ -23,8 +23,8 @@ feature {NONE} -- Initialization
 
 	make (a_columns: ITERABLE [WSF_GRID_COLUMN]; a_datasource: WSF_DATASOURCE [G])
 		do
-			make_repeater (a_datasource)
 			columns := a_columns
+			make_repeater (a_datasource)
 		end
 
 feature -- Render
@@ -72,4 +72,14 @@ feature -- Properties
 
 	columns: ITERABLE [WSF_GRID_COLUMN]
 
+;note
+	copyright: "2011-2016, Yassin Hassan, Severin Munger, Jocelyn Fiat, Eiffel Software and others"
+	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
+	source: "[
+			Eiffel Software
+			5949 Hollister Ave., Goleta, CA 93117 USA
+			Telephone 805-685-1006, Fax 805-685-6869
+			Website http://www.eiffel.com
+			Customer support http://support.eiffel.com
+		]"
 end
