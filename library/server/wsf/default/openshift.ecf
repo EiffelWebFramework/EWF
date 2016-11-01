@@ -7,12 +7,12 @@
 			<exclude>/\.git$</exclude>
 			<exclude>/\.svn$</exclude>
 		</file_rule>
-		<option warning="true" full_class_checking="true" is_attached_by_default="true" void_safety="all" syntax="provisional">
+		<option warning="true" full_class_checking="true" is_attached_by_default="true" void_safety="none" syntax="provisional">
 		</option>
 		<setting name="concurrency" value="scoop"/>
-		<library name="base" location="$ISE_LIBRARY\library\base\base-safe.ecf"/>
-		<library name="wsf" location="..\wsf-safe.ecf"/>
-		<library name="wsf_openshift" location="..\connector\openshift-safe.ecf"/>
+		<library name="base" location="$ISE_LIBRARY\library\base\base.ecf"/>
+		<library name="wsf" location="..\wsf.ecf"/>
+		<library name="wsf_openshift" location="..\connector\openshift.ecf"/>
 		<cluster name="default_openshift" location=".\openshift\" recursive="true"/>
 	</target>
 </system>
