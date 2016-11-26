@@ -1,5 +1,7 @@
 # Eiffel Web Framework
 
+[![Join the chat at https://gitter.im/EiffelWebFramework/EWF](https://badges.gitter.im/EiffelWebFramework/EWF.svg)](https://gitter.im/EiffelWebFramework/EWF?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 
 ## Overview
 
