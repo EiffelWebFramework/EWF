@@ -10,7 +10,6 @@
 		<setting name="concurrency" value="scoop"/>
 		<library name="base" location="$ISE_LIBRARY\library\base\base-safe.ecf"/>
 		<library name="ewsgi" location="..\..\library\server\ewsgi\ewsgi-safe.ecf"/>
-		<library name="thread" location="$ISE_LIBRARY\library\thread\thread-safe.ecf"/>
 		<library name="vision2" location="$ISE_LIBRARY\library\vision2\vision2-safe.ecf"/>
 		<library name="web_browser" location="$ISE_LIBRARY\library\web_browser\web_browser-safe.ecf" readonly="false"/>
 		<library name="wsf" location="..\..\library\server\wsf\wsf-safe.ecf"/>
