@@ -11,10 +11,6 @@
 		</option>
 		<setting name="console_application" value="true"/>
 		<setting name="concurrency" value="scoop"/>
-		<capability>
-			<concurrency support="scoop" use="scoop"/>
-			<void_safety support="all"/>
-		</capability>
 		<library name="base" location="$ISE_LIBRARY\library\base\base-safe.ecf"/>
 		<library name="encoder" location="..\..\library\text\encoder\encoder-safe.ecf" readonly="false"/>
 		<library name="http" location="..\..\library\network\protocol\http\http-safe.ecf"/>
@@ -24,9 +20,6 @@
 	<target name="debug_any" extends="common">
 		<root class="EWF_DEBUG_SERVER" feature="make_and_launch"/>
 		<setting name="concurrency" value="scoop"/>
-		<capability>
-			<concurrency support="scoop" use="scoop"/>
-		</capability>
 		<library name="cgi" location="..\..\library\server\wsf\connector\cgi-safe.ecf" readonly="false"/>
 		<library name="libfcgi" location="..\..\library\server\wsf\connector\libfcgi-safe.ecf" readonly="false"/>
 		<library name="standalone" location="..\..\library\server\wsf\connector\standalone-safe.ecf" readonly="false"/>
@@ -36,9 +29,6 @@
 	<target name="debug_standalone" extends="common">
 		<root class="EWF_DEBUG_SERVER" feature="make_and_launch"/>
 		<setting name="concurrency" value="scoop"/>
-		<capability>
-			<concurrency support="scoop" use="scoop"/>
-		</capability>
 		<library name="default_standalone" location="..\..\library\server\wsf\default\standalone-safe.ecf" readonly="false"/>
 		<cluster name="launcher" location=".\launcher\default\" recursive="true"/>
 		<cluster name="src" location=".\src\" recursive="true"/>
