@@ -7,8 +7,9 @@
 			<exclude>/\.git$</exclude>
 			<exclude>/\.svn$</exclude>
 		</file_rule>
-		<option warning="true" full_class_checking="true" is_attached_by_default="true" void_safety="all" syntax="transitional">
+		<option warning="true" void_safety="all">
 		</option>
+		<setting name="concurrency" value="none"/>
 		<library name="base" location="$ISE_LIBRARY\library\base\base-safe.ecf"/>
 		<library name="encoder" location="..\..\..\..\..\..\text\encoder\encoder-safe.ecf"/>
 		<library name="ewsgi" location="..\..\ewsgi-safe.ecf" readonly="false"/>

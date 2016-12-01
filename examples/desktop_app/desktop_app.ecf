@@ -4,7 +4,7 @@
 	<target name="desktop_app">
 		<description>This example demonstrates how to build a vision2 desktop application that embed a web browser accessing the service of an embedded web service.</description>
 		<root class="DESKTOP_APP" feature="make_and_launch"/>
-		<option warning="true" full_class_checking="true" is_attached_by_default="true" is_obsolete_routine_type="true" void_safety="all" syntax="transitional">
+		<option warning="true"  void_safety="all">
 			<assertions precondition="true" postcondition="true" check="true"/>
 		</option>
 		<setting name="concurrency" value="scoop"/>

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<system xmlns="http://www.eiffel.com/developers/xml/configuration-1-10-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eiffel.com/developers/xml/configuration-1-10-0 http://www.eiffel.com/developers/xml/configuration-1-10-0.xsd" name="header_fields"  library_target="header_fields">
+<system xmlns="http://www.eiffel.com/developers/xml/configuration-1-15-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eiffel.com/developers/xml/configuration-1-15-0 http://www.eiffel.com/developers/xml/configuration-1-15-0.xsd" name="header_fields" uuid="F4644919-0908-470F-A0C1-66C2E08C2D90">
 	<target name="common" abstract="true">
 		<file_rule>
-			<exclude>/EIFGENs$</exclude>
-			<exclude>/CVS$</exclude>
 			<exclude>/.svn$</exclude>
+			<exclude>/CVS$</exclude>
+			<exclude>/EIFGENs$</exclude>
 		</file_rule>
-		<option warning="true" is_attached_by_default="true" void_safety="all" syntax="transitional">
+		<option warning="true"  void_safety="all">
 			<assertions precondition="true" postcondition="true" check="true" invariant="true" loop="true" supplier_precondition="true"/>
 		</option>
 		<library name="base" location="$ISE_LIBRARY\library\base\base-safe.ecf"/>
@@ -15,7 +15,7 @@
 	</target>
 	<target name="header_fields_standalone" extends="common">
 		<root class="APPLICATION" feature="make_and_launch"/>
-		<option warning="true" is_attached_by_default="true" void_safety="all" syntax="transitional">
+		<option warning="true" void_safety="all">
 			<assertions precondition="true" postcondition="true" check="true" invariant="true" loop="true" supplier_precondition="true"/>
 		</option>
 		<library name="default_standalone" location="$ISE_LIBRARY\contrib\library\web\framework\ewf\wsf\default\standalone-safe.ecf"/>
@@ -23,7 +23,7 @@
 	</target>
 	<target name="header_fields_cgi" extends="common">
 		<root class="APPLICATION" feature="make_and_launch"/>
-		<option warning="true" is_attached_by_default="true" void_safety="all" syntax="transitional">
+		<option warning="true" void_safety="all">
 			<assertions precondition="true" postcondition="true" check="true" invariant="true" loop="true" supplier_precondition="true"/>
 		</option>
 		<library name="default_cgi" location="$ISE_LIBRARY\contrib\library\web\framework\ewf\wsf\default\cgi-safe.ecf"/>
@@ -31,7 +31,7 @@
 	</target>
 	<target name="header_fields_libfcgi" extends="common">
 		<root class="APPLICATION" feature="make_and_launch"/>
-		<option warning="true" is_attached_by_default="true" void_safety="all" syntax="transitional">
+		<option warning="true" void_safety="all">
 			<assertions precondition="true" postcondition="true" check="true" invariant="true" loop="true" supplier_precondition="true"/>
 		</option>
 		<library name="default_libfcgi" location="$ISE_LIBRARY\contrib\library\web\framework\ewf\wsf\default\libfcgi-safe.ecf"/>

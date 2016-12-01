@@ -7,8 +7,7 @@
 			<exclude>/.svn$</exclude>
 			<exclude>/EIFGENs$</exclude>
 		</file_rule>
-		<option warning="true" full_class_checking="false" is_attached_by_default="true" void_safety="all" syntax="standard">
-			<assertions precondition="true" postcondition="true" check="true" invariant="true" loop="true" supplier_precondition="true"/>
+		<option warning="true" void_safety="all">
 		</option>
 		<setting name="concurrency" value="scoop"/>
 		<library name="base" location="$ISE_LIBRARY\library\base\base-safe.ecf"/>
@@ -66,6 +65,6 @@
 		</cluster>
 	</target>
 	<target name="httpd_ssl" extends="httpd">
-		<variable name="ssl_enabled" value="true" />
+		<variable name="ssl_enabled" value="true"/>
 	</target>
 </system>

@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<system xmlns="http://www.eiffel.com/developers/xml/configuration-1-13-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eiffel.com/developers/xml/configuration-1-13-0 http://www.eiffel.com/developers/xml/configuration-1-13-0.xsd" name="all" uuid="0562209B-4C68-4E77-8B57-13CBF53D05BD" library_target="all">
+<system xmlns="http://www.eiffel.com/developers/xml/configuration-1-15-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eiffel.com/developers/xml/configuration-1-15-0 http://www.eiffel.com/developers/xml/configuration-1-15-0.xsd" name="all" uuid="0562209B-4C68-4E77-8B57-13CBF53D05BD" library_target="all">
 	<description>Integration project including many lib</description>
 	<target name="all">
 		<root all_classes="true"/>
 		<file_rule>
 			<exclude>/.git$</exclude>
-			<exclude>/EIFGENs$</exclude>
 			<exclude>/.svn$</exclude>
+			<exclude>/EIFGENs$</exclude>
 		</file_rule>
-		<option warning="true" full_class_checking="true" void_safety="none" syntax="standard">
+		<option warning="true"  void_safety="none">
 		</option>
 		<setting name="concurrency" value="scoop"/>
 		<library name="all-stable" location="all-stable.ecf" readonly="false"/>
@@ -26,9 +26,9 @@
 		<library name="ewsgi" location="..\library\server\ewsgi\ewsgi.ecf" readonly="false"/>
 		<library name="ewsgi_spec" location="..\library\server\ewsgi\ewsgi_spec.ecf" readonly="false"/>
 		<library name="http" location="..\library\network\protocol\http\http.ecf" readonly="false"/>
-		<library name="httpd" location="..\library\server\httpd\httpd.ecf" readonly="false"/>
 		<library name="http_authorization" location="..\library\server\authentication\http_authorization\http_authorization.ecf" readonly="false"/>
 		<library name="http_client" location="..\library\network\http_client\http_client.ecf" readonly="false"/>
+		<library name="httpd" location="..\library\server\httpd\httpd.ecf" readonly="false"/>
 		<library name="libfcgi" location="..\library\server\libfcgi\libfcgi.ecf" readonly="false"/>
 		<library name="notification_email" location="..\library\runtime\process\notification_email\notification_email.ecf" readonly="false"/>
 		<library name="oauth" location="..\draft\library\security\oauth\oauth.ecf" readonly="false"/>

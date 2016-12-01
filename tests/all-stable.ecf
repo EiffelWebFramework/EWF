@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<system xmlns="http://www.eiffel.com/developers/xml/configuration-1-12-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eiffel.com/developers/xml/configuration-1-12-0 http://www.eiffel.com/developers/xml/configuration-1-12-0.xsd" name="all" uuid="1172C52C-6979-4293-8F01-80FADA5A2B69" library_target="all_stable">
+<system xmlns="http://www.eiffel.com/developers/xml/configuration-1-15-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eiffel.com/developers/xml/configuration-1-15-0 http://www.eiffel.com/developers/xml/configuration-1-15-0.xsd" name="all" uuid="1172C52C-6979-4293-8F01-80FADA5A2B69" library_target="all_stable">
 	<description>Integration project including many lib</description>
 	<target name="all_stable">
 		<root all_classes="true"/>
 		<file_rule>
 			<exclude>/.git$</exclude>
-			<exclude>/EIFGENs$</exclude>
 			<exclude>/.svn$</exclude>
+			<exclude>/EIFGENs$</exclude>
 		</file_rule>
-		<option warning="true" full_class_checking="true" is_attached_by_default="true" void_safety="none" syntax="standard">
+		<option warning="true"  void_safety="none">
 		</option>
 		<setting name="concurrency" value="scoop"/>
 		<library name="connector_cgi" location="..\library\server\ewsgi\connectors\cgi\cgi.ecf" readonly="false"/>
 		<library name="connector_libfcgi" location="..\library\server\ewsgi\connectors\libfcgi\libfcgi.ecf" readonly="false"/>
-		<library name="connector_standalone" location="..\library\server\ewsgi\connectors\standalone\standalone.ecf" readonly="false"/>
 		<library name="connector_null" location="..\library\server\ewsgi\connectors\null\null.ecf" readonly="false"/>
+		<library name="connector_standalone" location="..\library\server\ewsgi\connectors\standalone\standalone.ecf" readonly="false"/>
 		<library name="conneg" location="..\library\network\protocol\content_negotiation\conneg.ecf" readonly="false"/>
 		<library name="default_cgi" location="..\library\server\wsf\default\cgi.ecf" readonly="false"/>
 		<library name="default_libfcgi" location="..\library\server\wsf\default\libfcgi.ecf" readonly="false"/>
-		<library name="default_standalone" location="..\library\server\wsf\default\standalone.ecf" readonly="false"/>
 		<library name="default_openshift" location="..\library\server\wsf\default\openshift.ecf" readonly="false"/>
+		<library name="default_standalone" location="..\library\server\wsf\default\standalone.ecf" readonly="false"/>
 		<library name="encoder" location="..\library\text\encoder\encoder.ecf" readonly="false"/>
 		<library name="error" location="..\library\utility\general\error\error.ecf" readonly="false"/>
 		<library name="ewsgi" location="..\library\server\ewsgi\ewsgi.ecf" readonly="false"/>
@@ -37,10 +37,10 @@
 		<library name="wsf_extension" location="..\library\server\wsf\wsf_extension.ecf" readonly="false"/>
 		<library name="wsf_html" location="..\library\server\wsf_html\wsf_html.ecf" readonly="false"/>
 		<library name="wsf_libfcgi" location="..\library\server\wsf\connector\libfcgi.ecf" readonly="false"/>
-		<library name="wsf_standalone" location="..\library\server\wsf\connector\standalone.ecf" readonly="false"/>
 		<library name="wsf_openshift" location="..\library\server\wsf\connector\openshift.ecf" readonly="false"/>
 		<library name="wsf_router_context" location="..\library\server\wsf\wsf_router_context.ecf" readonly="false"/>
 		<library name="wsf_session" location="..\library\server\wsf\wsf_session.ecf" readonly="false"/>
+		<library name="wsf_standalone" location="..\library\server\wsf\connector\standalone.ecf" readonly="false"/>
 	</target>
 	<target name="all_stable_windows" extends="all_stable">
 		<description>Compiling as Windows , on other platforms than Windows</description>

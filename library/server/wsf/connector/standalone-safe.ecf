@@ -7,9 +7,9 @@
 			<exclude>/\.git$</exclude>
 			<exclude>/\.svn$</exclude>
 		</file_rule>
-		<option warning="true" full_class_checking="true" is_attached_by_default="true" is_obsolete_routine_type="true" void_safety="all" syntax="provisional">
+		<option warning="true"  void_safety="all">
 		</option>
-		<setting name="concurrency" value="scoop" />
+		<setting name="concurrency" value="scoop"/>
 		<library name="base" location="$ISE_LIBRARY\library\base\base-safe.ecf"/>
 		<library name="connector_standalone" location="..\..\ewsgi\connectors\standalone\standalone-safe.ecf" use_application_options="true"/>
 		<library name="encoder" location="..\..\..\text\encoder\encoder-safe.ecf" readonly="false"/>

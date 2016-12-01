@@ -7,9 +7,8 @@
 			<exclude>/\.git$</exclude>
 			<exclude>/\.svn$</exclude>
 		</file_rule>
-		<option debug="true" warning="true" full_class_checking="true" is_attached_by_default="true" void_safety="all" syntax="transitional">
+		<option debug="false" warning="true" void_safety="all">
 			<debug name="dbglog" enabled="true"/>
-			<assertions precondition="true"/>
 		</option>
 		<setting name="concurrency" value="scoop"/>
 		<library name="base" location="$ISE_LIBRARY\library\base\base-safe.ecf"/>

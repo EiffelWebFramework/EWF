@@ -1,19 +1,18 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<system xmlns="http://www.eiffel.com/developers/xml/configuration-1-13-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eiffel.com/developers/xml/configuration-1-13-0 http://www.eiffel.com/developers/xml/configuration-1-13-0.xsd" name="all" uuid="0562209B-4C68-4E77-8B57-13CBF53D05BD" library_target="all">
+<system xmlns="http://www.eiffel.com/developers/xml/configuration-1-15-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eiffel.com/developers/xml/configuration-1-15-0 http://www.eiffel.com/developers/xml/configuration-1-15-0.xsd" name="all" uuid="0562209B-4C68-4E77-8B57-13CBF53D05BD" library_target="all">
 	<description>Integration project including many lib</description>
 	<target name="all">
 		<root all_classes="true"/>
 		<file_rule>
 			<exclude>/.git$</exclude>
-			<exclude>/EIFGENs$</exclude>
 			<exclude>/.svn$</exclude>
+			<exclude>/EIFGENs$</exclude>
 		</file_rule>
-		<option warning="true" full_class_checking="true" is_attached_by_default="true" void_safety="all" syntax="standard">
+		<option warning="true"  void_safety="all">
 		</option>
 		<setting name="concurrency" value="scoop"/>
 		<library name="all-stable" location="all-stable-safe.ecf" readonly="false"/>
 		<library name="atom" location="..\draft\library\protocol\syndication\atom\atom-safe.ecf" readonly="false"/>
-		<library name="client" location="..\examples\restbucksCRUD\client\client-safe.ecf" readonly="false"/>
 		<library name="connector_cgi" location="..\library\server\ewsgi\connectors\cgi\cgi-safe.ecf" readonly="false"/>
 		<library name="connector_libfcgi" location="..\library\server\ewsgi\connectors\libfcgi\libfcgi-safe.ecf" readonly="false"/>
 		<library name="connector_null" location="..\library\server\ewsgi\connectors\null\null-safe.ecf" readonly="false"/>
@@ -27,19 +26,15 @@
 		<library name="error" location="..\library\utility\general\error\error-safe.ecf" readonly="false"/>
 		<library name="ewsgi" location="..\library\server\ewsgi\ewsgi-safe.ecf" readonly="false"/>
 		<library name="ewsgi_spec" location="..\library\server\ewsgi\ewsgi_spec-safe.ecf" readonly="false"/>
-		<library name="filter" location="..\examples\filter\filter-safe.ecf" readonly="false"/>
-		<library name="hello_world" location="..\library\server\ewsgi\examples\hello_world\hello-safe.ecf" readonly="false"/>
 		<library name="http" location="..\library\network\protocol\http\http-safe.ecf" readonly="false"/>
-		<library name="httpd" location="..\library\server\httpd\httpd-safe.ecf" readonly="false"/>
 		<library name="http_authorization" location="..\library\server\authentication\http_authorization\http_authorization-safe.ecf" readonly="false"/>
 		<library name="http_client" location="..\library\network\http_client\http_client-safe.ecf" readonly="false"/>
+		<library name="httpd" location="..\library\server\httpd\httpd-safe.ecf" readonly="false"/>
 		<library name="libfcgi" location="..\library\server\libfcgi\libfcgi-safe.ecf" readonly="false"/>
 		<library name="notification_email" location="..\library\runtime\process\notification_email\notification_email-safe.ecf" readonly="false"/>
 		<library name="oauth" location="..\draft\library\security\oauth\oauth-safe.ecf" readonly="false"/>
 		<library name="openid" location="..\library\security\openid\consumer\openid-safe.ecf" readonly="false"/>
-		<library name="restbucks" location="..\examples\restbucksCRUD\restbucks-safe.ecf" readonly="false"/>
 		<library name="rss" location="..\draft\library\protocol\syndication\rss\rss-safe.ecf" readonly="false"/>
-		<library name="upload_image" location="..\examples\upload_image\upload_image-safe.ecf" readonly="false"/>
 		<library name="uri_template" location="..\library\text\parser\uri_template\uri_template-safe.ecf" readonly="false"/>
 		<library name="wsf" location="..\library\server\wsf\wsf-safe.ecf" readonly="false"/>
 		<library name="wsf_all" location="..\library\server\wsf\connector\all-safe.ecf" readonly="false"/>

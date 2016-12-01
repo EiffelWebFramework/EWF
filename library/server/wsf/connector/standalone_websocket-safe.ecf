@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<system xmlns="http://www.eiffel.com/developers/xml/configuration-1-12-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eiffel.com/developers/xml/configuration-1-12-0 http://www.eiffel.com/developers/xml/configuration-1-12-0.xsd" name="wsf_standalone_websocket" uuid="7C83D4B4-39C9-4D27-941B-0F0AAD45122E" library_target="wsf_standalone_websocket">
+<system xmlns="http://www.eiffel.com/developers/xml/configuration-1-15-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eiffel.com/developers/xml/configuration-1-15-0 http://www.eiffel.com/developers/xml/configuration-1-15-0.xsd" name="wsf_standalone_websocket" uuid="7C83D4B4-39C9-4D27-941B-0F0AAD45122E" library_target="wsf_standalone_websocket">
 	<target name="wsf_standalone_websocket">
 		<root all_classes="true"/>
 		<file_rule>
@@ -7,7 +7,7 @@
 			<exclude>/\.git$</exclude>
 			<exclude>/\.svn$</exclude>
 		</file_rule>
-		<option warning="true" full_class_checking="true" is_attached_by_default="true" void_safety="all" syntax="provisional">
+		<option warning="true"  void_safety="all">
 		</option>
 		<setting name="concurrency" value="scoop"/>
 		<library name="base" location="$ISE_LIBRARY\library\base\base-safe.ecf"/>
@@ -19,9 +19,9 @@
 		<library name="http" location="..\..\..\network\protocol\http\http-safe.ecf"/>
 		<library name="httpd" location="..\..\httpd\httpd-safe.ecf"/>
 		<library name="time" location="$ISE_LIBRARY\library\time\time-safe.ecf"/>
+		<library name="web_socket_protocol" location="..\..\..\network\websocket\protocol\web_socket_protocol-safe.ecf"/>
 		<library name="wsf" location="..\wsf-safe.ecf"/>
 		<library name="wsf_standalone" location="standalone-safe.ecf"/>
-		<library name="web_socket_protocol" location="..\..\..\network\websocket\protocol\web_socket_protocol-safe.ecf"/>
 		<cluster name="wsf_standalone_websocket" location=".\standalone_websocket\" recursive="true"/>
 	</target>
 </system>

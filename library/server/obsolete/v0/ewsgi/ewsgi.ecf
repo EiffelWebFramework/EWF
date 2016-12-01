@@ -7,8 +7,9 @@
 			<exclude>/\.git$</exclude>
 			<exclude>/\.svn$</exclude>
 		</file_rule>
-		<option warning="true" full_class_checking="true" void_safety="none" syntax="provisional">
+		<option warning="true" void_safety="none">
 		</option>
+		<setting name="concurrency" value="scoop"/>
 		<library name="base" location="$ISE_LIBRARY\library\base\base.ecf"/>
 		<library name="encoder" location="..\..\..\..\text\encoder\encoder.ecf" readonly="false"/>
 		<library name="error" location="..\..\..\..\utility\general\error\error.ecf"/>
