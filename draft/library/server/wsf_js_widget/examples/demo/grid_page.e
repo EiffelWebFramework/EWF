@@ -20,15 +20,16 @@ feature
 
 	initialize_controls
 		do
-			Precursor
-			control.add_control (create {WSF_BASIC_CONTROL}.make_with_body ("h1", "", "Grid Demo"))
 			create datasource.make_news
 			create search_query.make (create {GOOGLE_AUTOCOMPLETION}.make)
 			search_query.add_class ("form-control")
+			create grid.make (<<create {WSF_GRID_COLUMN}.make ("Title", "title"), create {WSF_GRID_COLUMN}.make ("Content", "content")>>, datasource)
+
+			Precursor
+			control.add_control (create {WSF_BASIC_CONTROL}.make_with_body ("h1", "", "Grid Demo"))
 			search_query.set_change_event (agent change_query)
 			control.add_control (search_query)
 			control.add_control (create {WSF_BASIC_CONTROL}.make_with_body ("h2", "", "Results"))
-			create grid.make (<<create {WSF_GRID_COLUMN}.make ("Title", "title"), create {WSF_GRID_COLUMN}.make ("Content", "content")>>, datasource)
 			control.add_control (grid)
 			navbar.set_active (2)
 		end

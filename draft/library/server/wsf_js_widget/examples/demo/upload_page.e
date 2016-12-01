@@ -21,20 +21,25 @@ feature -- Implementation
 	initialize_controls
 		local
 		do
+			create form.make
+			create filebox.make
+			create n1_container.make ("File Upload", filebox)
+			create filebox2.make
+			create n2_container.make ("Auto start Upload", filebox2)
+			create filebox3.make_with_image_preview
+			create n3_container.make ("Image Upload", filebox3)
+			create button1.make ("Update")
+			
 			Precursor
 			control.add_control (create {WSF_BASIC_CONTROL}.make_with_body ("h1", "", "File Upload Demo"))
-			create form.make
+
 				--File
-			create filebox.make
 			filebox.set_upload_function (agent upload_file)
 			filebox.set_upload_done_event (agent submit_form)
-			create n1_container.make ("File Upload", filebox)
 			n1_container.add_validator (create {WSF_FILESIZE_VALIDATOR}.make (10000000, "File must be smaller than 10MB"))
 			form.add_control (n1_container)
 				--File
-			create filebox2.make
 			filebox2.set_upload_function (agent upload_file)
-			create n2_container.make ("Auto start Upload", filebox2)
 			filebox2.set_change_event (agent
 				do
 					n1_container.validate
@@ -45,15 +50,13 @@ feature -- Implementation
 			n2_container.add_validator (create {WSF_FILESIZE_VALIDATOR}.make (10000000, "File must be smaller than 10MB"))
 			form.add_control (n2_container)
 				--Image
-			create filebox3.make_with_image_preview
+
 			filebox3.set_upload_function (agent upload_file)
 			filebox3.set_upload_done_event (agent submit_form)
-			create n3_container.make ("Image Upload", filebox3)
 			n3_container.add_validator (create {WSF_FILESIZE_VALIDATOR}.make (10000000, "File must be smaller than 10MB"))
 			form.add_control (n3_container)
 
 				--Button 1
-			create button1.make ("Update")
 			button1.set_click_event (agent submit_form)
 			button1.add_class ("col-lg-offset-2")
 			form.add_control (button1)

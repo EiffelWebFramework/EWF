@@ -28,7 +28,6 @@ feature
 			cats_container: WSF_FORM_ELEMENT_CONTROL [LIST [STRING_32]]
 			source: INCREASING_PROGRESSSOURCE
 		do
-			Precursor
 			create form.make
 				--Number 1
 			create textbox1.make ({STRING_32} "1")
@@ -64,24 +63,33 @@ feature
 			form.add_control (cats_container)
 				--Button 1
 			create button1.make ("Update")
-			button1.set_click_event (agent handle_click)
 			button1.add_class ("col-lg-offset-2")
 			form.add_control (button1)
 				--Button 2
 			create button2.make ("Start Modal Grid")
-			button2.set_click_event (agent run_modal)
 			form.add_control (button2)
 				--Result
 			create result_html.make ("p", "")
 			form.add_control (create {WSF_FORM_ELEMENT_CONTROL [STRING_32]}.make ("Result", result_html))
-			control.add_control (form)
 
 				--Progress bar
-			control.add_control (create {WSF_BASIC_CONTROL}.make_with_body ("h4", "", "Autoincrementing progressbar"))
 			create source.make
 			create progress.make_with_source (source)
 			source.set_control (progress)
 			progress.set_isolation (true)
+
+
+			Precursor
+
+			control.add_control (form)
+
+				-- Actions
+			button1.set_click_event (agent handle_click)
+			button2.set_click_event (agent run_modal)
+
+
+				--Progress bar
+			control.add_control (create {WSF_BASIC_CONTROL}.make_with_body ("h4", "", "Autoincrementing progressbar"))
 			control.add_control (progress)
 			navbar.set_active (1)
 		end
