@@ -21,7 +21,6 @@
 		<library name="default_cgi" location="..\library\server\wsf\default\cgi-safe.ecf" readonly="false"/>
 		<library name="default_libfcgi" location="..\library\server\wsf\default\libfcgi-safe.ecf" readonly="false"/>
 		<library name="default_openshift" location="..\library\server\wsf\default\openshift-safe.ecf" readonly="false"/>
-		<library name="demo-1" location="..\library\security\openid\consumer\demo\demo-safe.ecf" readonly="false"/>
 		<library name="encoder" location="..\library\text\encoder\encoder-safe.ecf" readonly="false"/>
 		<library name="error" location="..\library\utility\general\error\error-safe.ecf" readonly="false"/>
 		<library name="ewsgi" location="..\library\server\ewsgi\ewsgi-safe.ecf" readonly="false"/>
