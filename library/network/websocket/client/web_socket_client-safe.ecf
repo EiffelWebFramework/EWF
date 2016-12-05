@@ -17,7 +17,6 @@
 		<library name="lib_http_network" location="..\..\http_network\http_network-safe.ecf"/>
 		<library name="lib_web_socket_protocol" location="..\protocol\web_socket_protocol-safe.ecf"/>
 		<library name="net" location="$ISE_LIBRARY\library\net\net-safe.ecf"/>
-		<library name="thread" location="$ISE_LIBRARY\library\thread\thread-safe.ecf"/>
 		<library name="uri" location="$ISE_LIBRARY\library\text\uri\uri-safe.ecf"/>
 		<cluster name="web_socket_client" location=".\src\" recursive="true">
 			<file_rule>

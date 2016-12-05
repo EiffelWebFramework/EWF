@@ -8,7 +8,7 @@
 			<exclude>/CVS$</exclude>
 			<exclude>/EIFGENs$</exclude>
 		</file_rule>
-		<option warning="true"  void_safety="none">
+		<option warning="true" void_safety="none">
 		</option>
 		<setting name="concurrency" value="scoop"/>
 		<library name="base" location="$ISE_LIBRARY\library\base\base.ecf"/>
@@ -17,7 +17,6 @@
 		<library name="lib_http_network" location="..\..\http_network\http_network.ecf"/>
 		<library name="lib_web_socket_protocol" location="..\protocol\web_socket_protocol.ecf"/>
 		<library name="net" location="$ISE_LIBRARY\library\net\net.ecf"/>
-		<library name="thread" location="$ISE_LIBRARY\library\thread\thread.ecf"/>
 		<library name="uri" location="$ISE_LIBRARY\library\text\uri\uri.ecf"/>
 		<cluster name="web_socket_client" location=".\src\" recursive="true">
 			<file_rule>
