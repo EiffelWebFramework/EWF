@@ -7,7 +7,7 @@
 			<exclude>/.svn$</exclude>
 			<exclude>/EIFGENs$</exclude>
 		</file_rule>
-		<option debug="true" warning="true"  void_safety="all">
+		<option debug="false" warning="true" void_safety="all">
 			<assertions precondition="true" postcondition="true" check="true" loop="true" supplier_precondition="true"/>
 		</option>
 		<setting name="concurrency" value="scoop"/>
@@ -22,7 +22,6 @@
 		</library>
 		<library name="http" location="..\..\..\network\protocol\http\http-safe.ecf" readonly="false"/>
 		<library name="http_client" location="..\..\..\network\http_client\net_http_client-safe.ecf" readonly="false"/>
-		<library name="thread" location="$ISE_LIBRARY\library\thread\thread-safe.ecf"/>
 		<library name="time" location="$ISE_LIBRARY\library\time\time-safe.ecf"/>
 		<library name="wsf" location="..\wsf-safe.ecf" readonly="false">
 			<option>
@@ -35,5 +34,6 @@
 	<target name="wsf_tests" extends="server">
 		<library name="testing" location="$ISE_LIBRARY\library\testing\testing-safe.ecf"/>
 		<tests name="src" location=".\src\" recursive="true"/>
+		<setting name="concurrency" value="scoop"/>
 	</target>
 </system>
