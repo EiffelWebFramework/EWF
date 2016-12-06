@@ -7,7 +7,6 @@ class
 	SERVICE_COMPRESSION_EXECUTION
 
 inherit
-
 	WSF_ROUTED_EXECUTION
 		redefine
 			initialize,
@@ -29,12 +28,12 @@ feature {NONE} -- Initialization
 
 	setup_router
 		local
-			fhdl: WSF_FILE_SYSTEM_HANDLER
+			fhdl: WSF_FILE_SYSTEM_HANDLER_WITH_COMPRESSION
  		do
  			create fhdl.make_hidden ("www")
  			fhdl.set_directory_index (<<"index.html">>)
- 			fhdl.set_default_compression
- 			fhdl.set_custom_media_type ({HTTP_MIME_TYPES}.image_jpg)
+ 			fhdl.set_default_compression_format
+ 			fhdl.enable_compression_for_media_type ({HTTP_MIME_TYPES}.image_jpg)
  			fhdl.set_not_found_handler (agent  (ia_uri: READABLE_STRING_8; ia_req: WSF_REQUEST; ia_res: WSF_RESPONSE)
 				do
 					execute_default (ia_req, ia_res)
