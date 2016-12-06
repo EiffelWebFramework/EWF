@@ -9,7 +9,7 @@
 		</file_rule>
 		<option warning="true"  void_safety="all">
 		</option>
-		<setting name="concurrency" value="none"/>
+		<setting name="concurrency" value="thread"/>
 		<library name="base" location="$ISE_LIBRARY\library\base\base-safe.ecf"/>
 		<library name="wsf" location="..\wsf-safe.ecf"/>
 		<library name="wsf_nino" location="..\connector\nino-safe.ecf"/>

@@ -9,7 +9,7 @@
 		</file_rule>
 		<option warning="true"  void_safety="all">
 		</option>
-		<setting name="concurrency" value="none"/>
+		<setting name="concurrency" value="thread"/>
 		<library name="base" location="$ISE_LIBRARY\library\base\base-safe.ecf"/>
 		<library name="connector_nino" location="..\..\..\..\obsolete\v0\ewsgi\connectors\nino\nino-safe.ecf"/>
 		<library name="encoder" location="..\..\..\..\..\text\encoder\encoder-safe.ecf" readonly="false"/>

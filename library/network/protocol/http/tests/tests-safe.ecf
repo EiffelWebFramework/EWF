@@ -7,9 +7,9 @@
 			<exclude>/.svn$</exclude>
 			<exclude>/EIFGENs$</exclude>
 		</file_rule>
-		<option warning="true"  void_safety="all">
+		<option warning="true" void_safety="all">
 		</option>
-		<setting name="concurrency" value="none"/>
+		<setting name="concurrency" value="scoop"/>
 		<library name="base" location="$ISE_LIBRARY\library\base\base-safe.ecf"/>
 		<library name="http" location="..\http-safe.ecf" readonly="false">
 			<option>
