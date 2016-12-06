@@ -4,10 +4,7 @@
 		<file_rule>
 			<exclude>/.svn$</exclude>
 			<exclude>/CVS$</exclude>
-			<exclude>l
-	
-		
-			/EIFGENs$</exclude>
+			<exclude>/EIFGENs$</exclude>
 		</file_rule>
 		<option warning="true"  void_safety="all">
 			<assertions precondition="true" postcondition="true" check="true" invariant="true" loop="true" supplier_precondition="true"/>
