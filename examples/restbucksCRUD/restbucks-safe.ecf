@@ -8,7 +8,8 @@
 		</file_rule>
 		<option void_safety="all">
 		</option>
-		<setting name="concurrency" value="scoop"/>
+		<setting name="console_application" value="true"/>
+		<setting name="concurrency" value="none"/>
 		<library name="base" location="$ISE_LIBRARY\library\base\base-safe.ecf"/>
 		<library name="conneg" location="..\..\library\network\protocol\content_negotiation\conneg-safe.ecf"/>
 		<library name="crypto" location="$ISE_LIBRARY\unstable\library\text\encryption\crypto\crypto-safe.ecf" readonly="false"/>

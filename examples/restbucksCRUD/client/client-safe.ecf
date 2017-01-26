@@ -9,6 +9,7 @@
 		</file_rule>
 		<option warning="true"  void_safety="all">
 		</option>
+		<setting name="console_application" value="true"/>
 		<setting name="concurrency" value="scoop"/>
 		<library name="base" location="$ISE_LIBRARY\library\base\base-safe.ecf"/>
 		<library name="http_client" location="..\..\..\library\network\http_client\http_client-safe.ecf" readonly="false"/>
