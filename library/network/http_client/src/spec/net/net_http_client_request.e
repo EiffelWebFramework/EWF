@@ -266,7 +266,7 @@ feature -- Access
 							s.append_character (':')
 							s.append_integer (l_port)
 						end
-					end						
+					end
 					s.append (http_end_of_header_line)
 					if not headers.has ("Connection") then
 						if l_is_http_1_0_request then
@@ -400,7 +400,10 @@ feature -- Access
 								end
 
 									-- follow redirect
-								if l_location /= Void then
+								if 
+									is_redirection_http_status (Result.status) and
+									l_location /= Void 
+								then
 									if Result.redirections_count < max_redirects then
 										initialize (l_location, ctx)
 										redirection_response := response
@@ -451,6 +454,12 @@ feature {NONE} -- Helpers
 			-- Is `a_socket' ready for reading?
 		do
 			Result := a_socket.ready_for_reading
+		end
+
+	is_redirection_http_status (a_status: INTEGER): BOOLEAN
+			-- Is http status `a_status` a redirection response?
+		do
+			Result := a_status >= 300 and a_status < 400
 		end
 
 	form_date_and_uploaded_files_to_mime_string (a_form_parameters: HASH_TABLE [READABLE_STRING_32, READABLE_STRING_32]; a_upload_filename: detachable READABLE_STRING_GENERAL; a_mime_boundary: READABLE_STRING_8): STRING
