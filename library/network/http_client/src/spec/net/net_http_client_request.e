@@ -257,7 +257,16 @@ feature -- Access
 						s.append (h_host)
 					else
 						s.append (l_host)
-					end
+						if l_is_https then
+							if l_port /= 443 then
+								s.append_character (':')
+								s.append_integer (l_port)
+							end
+						elseif l_port /= 80 then
+							s.append_character (':')
+							s.append_integer (l_port)
+						end
+					end						
 					s.append (http_end_of_header_line)
 					if not headers.has ("Connection") then
 						if l_is_http_1_0_request then
