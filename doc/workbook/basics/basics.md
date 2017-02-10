@@ -60,7 +60,7 @@ end
 ```
 
 When using the "standalone" connector (or the deprecated "nino" connector), by default the service listens on port 80, but often this port is already used by other applications, so it is recommended to use another port.
-To define another port, redefine the feature `initialize' and set up a new port number using the service options (see below).
+To define another port, redefine the feature `initialize` and set up a new port number using the service options (see below).
 
 
 ```eiffel
@@ -103,7 +103,7 @@ Other connectors:
 **WSF_CGI_SERVICE_LAUNCHER**  
 **WSF_LIBFCGI_SERVICE_LAUNCHER** 
 
-A basic EWF service inherits from **WSF_DEFAULT_SERVICE**, which has  a formal generic that should conform to **WSF_EXECUTION** class with a `make' creation procedure, in our case the class **APPLICATION_EXECUTION**.
+A basic EWF service inherits from **WSF_DEFAULT_SERVICE**, which has  a formal generic that should conform to **WSF_EXECUTION** class with a `make` creation procedure, in our case the class **APPLICATION_EXECUTION**.
 
 The **APPLICATION_EXECUTION** class inherits from **WSF_EXECUTION** interface,  which is instantiated for each incoming request. **WSF_EXECUTION** inherit from **WGI_EXECUTION** which is the low level entry point in EWF, handling each incoming request with a single procedure ```execute (req: WSF_REQUEST; res: WSF_RESPONSE) ...```.
 
