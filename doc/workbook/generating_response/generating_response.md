@@ -698,7 +698,7 @@ take a look at constants classes such as [HTTP_MIME_TYPES](),[HTTP_HEADER_NAMES]
 			res.put_string (l_msg)
 		end
 ```
-The class [HTTP_HEADER]() also supplies a number of convenience routines for specifying common headers, in fact the features are inherited from the class [HTTP_HEADER_MODIFIER].
+The class [HTTP_HEADER]() also supplies a number of convenience routines for specifying common headers, in fact the features are inherited from the class [HTTP_HEADER_MODIFIER]().
 
 
 ```eiffel
