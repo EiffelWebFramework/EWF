@@ -482,6 +482,7 @@ end
 ```
 
 Using cURL to test the application
+---
 
 In the first call we use the ```res.redirect_now (l_engine_url)``` feature
 ```
