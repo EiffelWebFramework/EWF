@@ -259,9 +259,9 @@ WSF_REQUEST.uploaded_files: ITERABLE [WSF_UPLOADED_FILE]
       --| error: if /= 0 , there was an error : TODO ...
       --| size: size of the file given by the http request
 ```
-to iterate over the uploaded files if any, and the details in the class [WSF_UPLOADED_FILE].
+to iterate over the uploaded files if any, and the details in the class **WSF_UPLOADED_FILE**.
 
-The following snipet code show how to work with Uploaded files using EWF [WSF_REQUEST] class, in the example
+The following snipet code show how to work with Uploaded files using EWF **WSF_REQUEST** class, in the example
 we build a simple html answer with basic information, if there is not uploaded files, we send a 400 status code
 and a simple message.
 
