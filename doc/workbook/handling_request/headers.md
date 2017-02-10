@@ -84,7 +84,7 @@ GET http://eiffel.org/search?q=EiffelBase  HTTP/1.1
 Overview of the features
 
 * HTTP method 
-	- The function `request_method: READABLE_STRING_8` gives access to the HTTP request method, (usually GET or POST in conventional Web Applications), but with the raise of REST APIs other methods are also frequently used such as HEAD, PUT, DELETE, OPTIONS, or TRACE. 
+	- The function `request_method: READABLE_STRING_8` gives access to the HTTP request method, (usually `GET` or `POST` in conventional Web Applications), but with the raise of REST APIs other methods are also frequently used such as `HEAD`, `PUT`, `DELETE`, `OPTIONS`, or `TRACE`. 
 	A few functions helps determining quickly the nature of the request method:
 	- `is_get_request_method: BOOLEAN -- Is Current a GET request method?`
 	- `is_put_request_method: BOOLEAN -- Is Current a PUT request method?`
@@ -302,11 +302,10 @@ To be completed.
 
 #### Detecting Browser Types
 
-The User-Agent header identifies the specific browser/client that is sending the request. The following code shows a [EWF service](./headers/browser_name/application.e) that sends browser-specific responses.
+The User-Agent header identifies the specific browser/client that is sending the request. The following code shows an [EWF service](./headers/browser_name/application.e) that sends browser-specific responses.
 
 The examples uses the ideas based on the [Browser detection using the user agent](https://developer.mozilla.org/en-US/docs/Browser_detection_using_the_user_agent) article.
-Basically the code check if the header user_agent exist and then call the ```browser_name (a_user_agent: READABLE_STRING_8): READABLE_STRING_32```
-feature to retrieve the current browser name or Unknown in other case. 
+Basically the code check if the header `user_agent` exist and then call the ```browser_name (a_user_agent: READABLE_STRING_8): READABLE_STRING_32``` feature to retrieve the current browser name or Unknown in other case. 
 
 ```eiffel
 class
