@@ -17,17 +17,17 @@ Nav: [Workbook](../workbook.md) :: [Basic Concepts](../basics/basics.md) :: [Han
 - [Examples](#examples)
  
 
-An HTML Form can handle GET and POST requests.
-When we use a form with method GET, the data is attached at the end of the url for example:
+An HTML Form can handle `GET` and `POST` requests.
+When we use a form with method `GET`, the data is attached at the end of the url for example:
 
 >http://wwww.example.com?key1=value1&...keyn=valuen
 
-If we use the method POST, the data is sent to the server in a different line.
+If we use the method `POST`, the data is sent to the server in a different line.
 
 Extracting form data from the server side is one of the most tedious parts. If you do it by hand, you will need 
 to parse the input, you'll have to URL-decode the value.
 
-Here we will show you how to read input submitted by a user using a Form (GET and POST).
+Here we will show you how to read input submitted by a user using a Form (`GET` and `POST`).
  * How to handle missing values:
    * client side validattion, server side validations, set default if it's a valid option.
  * How to populate Eiffel objects from the request data.          
@@ -56,29 +56,29 @@ EWF [WSF_REQUEST]() class, provides features to handling this form parsing autom
 	WSF_REQUEST.form_parameter (a_name: READABLE_STRING_GENERAL): detachable WSF_VALUE
 			-- Field for name `a_name'.
 
-The values supplied to form_parameter and query_parameter are case sensitive.
+The values supplied to `form_parameter` and `query_parameter` are _case_ _sensitive_.
 
 <a name="uniform"></a>
 
 ### Read Data
-The previous features, let you read the data one way for GET request and a different way for POST request. WSF_REQUEST provide a feature to read all the data in a uniform way.
+The previous features, let you read the data one way for `GET` request and a different way for `POST` request. **WSF_REQUEST** provide a feature to read all the data in a uniform way.
 
 	WSF_REQUEST.item (a_name: READABLE_STRING_GENERAL): detachable WSF_VALUE
 			-- Variable named `a_name' from any of the variables container
 			-- and following a specific order: form_, query_ and path_ parameters
 
-So, you use **WSF_REQUEST.item** feature exactly the same way for GET and POST request.
+So, you can use **WSF_REQUEST.item** feature exactly the same way for `GET` and `POST` request.
 
->Note: if a query parameter has the same name as a form paramenter req.item will retrieve the form paramenter. Remember the precedence: form > query > path 
+>Note: if a query parameter has the same name as a form paramenter req.item will retrieve the form paramenter. Remember the precedence: `form` > `query` > `path` 
 
 
 <a name="reading_pv"></a>
 
 ## Reading Parameters and Values
 
-Suppose we have the following HTML5 form using Method POST. This HTML5 form has client side form validation using the new HTML5 attribute, you can do the same using Javascript. So in this case if the user does not fill the fields as expected the form will not be submitted to the server.
+Suppose we have the following HTML5 form using method `POST`. This HTML5 form has client side form validation using the new HTML5 `attribute`, you can do the same using Javascript. So in this case if the user does not fill the fields as expected the form will not be submitted to the server.
 
->Note: You want to validate on the server side because you can protect against the malicious user, who can easily bypass your JavaScript and submit dangerous input to the server.
+>Note: it is recommended to validate client side input on the server side (as a double check) because you can protect against the malicious user, who can easily bypass your JavaScript and submit dangerous input to the server.
 
 ```
 <h1> EWF Handling Client Request: Form example </h1>  
@@ -117,7 +117,7 @@ Suppose we have the following HTML5 form using Method POST. This HTML5 form has 
 <a name="all_names"></a>
 
 ### How to read all parameter names
-To read all the parameters names we simple call WSF_REQUEST.form_parameters. 
+To read all the parameters names we simple call **WSF_REQUEST.form_parameters**. 
 
 ```
  req: WSF_REQUEST
@@ -126,7 +126,7 @@ To read all the parameters names we simple call WSF_REQUEST.form_parameters.
 <a name="single_values"></a>
 
 ### How to read single values
-To read a particular parameter, a single value, for example `given-name', we simple call WSF_REQUEST.form_parameter (a_name) and we check if it's attached to WSF_STRING (represents a String parameter)
+To read a particular parameter, a single value, for example `given-name`, we simple call **WSF_REQUEST.form_parameter (a_name)** and we check if it's attached to **WSF_STRING** (represents a String parameter)
 ```
   req: WSF_REQUEST 
   if attached {WSF_STRING} req.form_paramenter ('given-name') as l_given_name then
@@ -140,7 +140,7 @@ To read a particular parameter, a single value, for example `given-name', we sim
 
 ### How to read multiple values
 
-To read multiple values, for example in the case of `languages', we simple call WSF_REQUEST.form_parameter (a_name) and we check if it's attached to WSF_MULTIPLE_STRING (represents a String parameter)
+To read multiple values, for example in the case of `languages`, we simple call **WSF_REQUEST.form_parameter (a_name)** and we check if it's attached to **WSF_MULTIPLE_STRING** (represents a String parameter)
 
 ```
   req: WSF_REQUEST 
@@ -159,16 +159,16 @@ To read multiple values, for example in the case of `languages', we simple call 
   	-- Value missing 
   end
 ```
-In this case we are handling strings values, but in some cases you will need to do a conversion, betweend the strings that came from the request to map them to your domain model. 
+In this case we are handling strings values, but in some cases you will need to do a conversion, between the strings that came from the request to map them to your domain model. 
 
 <a name="table_values"></a>
 
 ### How to read table values
 This is particularly useful when you have a request with the following format
 
-``` <a href="/link?tab[a]=1&tab[b]=2&tab[c]=foo"> ```
+```<a href="/link?tab[a]=1&tab[b]=2&tab[c]=foo">```
 
-To read table values, for example in the case of `tab', we simple call WSF_REQUEST.form_parameter (a_name) and we check if it's attached to WSF_TABLE.
+To read table values, for example in the case of `tab`, we simple call **WSF_REQUEST.form_parameter (a_name)** and we check if it's attached to **WSF_TABLE**.
 
 ```
 if attached {WSF_TABLE} req.query_parameter ("tab") as l_tab then
@@ -193,14 +193,14 @@ end
 <a name="raw_data"></a>
 
 ## Reading Raw Data
-You can also access the data in raw format, it means you will need to parse and url-decode it, and also you will not be able to use the previous features, by default, to enable that you need to call `req.set_raw_input_data_recorded (True)'. This feature (reading raw data) is useful if you are reading POST data with JSON or XML formats, but it's not convinient for HTML forms.
+You can also access the data in raw format, it means you will need to parse and url-decode it, and also you will not be able to use the previous features, by default, to enable that, you will need to call `req.set_raw_input_data_recorded (True)`. This feature (reading raw data) is useful if you are reading `POST` data with JSON or XML formats, but it's not convinient for HTML forms.
 
 To read raw data you need to do this
 
 ```
    l_raw_data:STRING
    
-   req.set_raw_input_data_recorded (True) --
+   req.set_raw_input_data_recorded (True)
    create l_raw_data.make_empty
    req.read_input_data_into (l_raw_data)
 ```
@@ -211,7 +211,7 @@ To read raw data you need to do this
 
 ## Upload Files
 How can we read data when the date come from an uploaded file/s?. 
-HTML supports a form element ```<input type="File" ... > ``` to upload a single file and ```<input type="File" ... multiplr> ``` to upload multiple files.
+HTML supports a form element ```<input type="File" ... >``` to upload a single file and ```<input type="File" ... multiplr> ``` to upload multiple files.
 
 So supose we have the following form
 
@@ -240,14 +240,14 @@ So supose we have the following form
 </html>
 ```
 
-The class WSF_REQUEST has defines mechanism to work with uploaded files. We can call the query
+The class **WSF_REQUEST** has a mechanism to work with uploaded files. We can call the query
 
 ```
 WSF_REQUEST.has_uploaded_file: BOOLEAN
       -- Has any uploaded file?
 ```
 
-to check if the request form parameters has any uploaded file, and we can call the feature
+to check if the request form parameters has any uploaded file, we can call the feature
 
 ```
 WSF_REQUEST.uploaded_files: ITERABLE [WSF_UPLOADED_FILE]
@@ -259,9 +259,9 @@ WSF_REQUEST.uploaded_files: ITERABLE [WSF_UPLOADED_FILE]
       --| error: if /= 0 , there was an error : TODO ...
       --| size: size of the file given by the http request
 ```
-to iterate over the uploaded files if any, and the details in the class [WSF_UPLOADED_FILE].
+to iterate over the uploaded files if any, and the details in the class **WSF_UPLOADED_FILE**.
 
-The following snipet code show how to work with Uploaded files using EWF [WSF_REQUEST] class, in the example
+The following snipet code show how to work with Uploaded files using EWF **WSF_REQUEST** class, in the example
 we build a simple html answer with basic information, if there is not uploaded files, we send a 400 status code
 and a simple message.
 

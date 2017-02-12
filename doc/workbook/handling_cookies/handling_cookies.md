@@ -49,8 +49,8 @@ Client send cookies to server
 
 ## Write and Read Cookies.
 
-To send a cookie to the client we should use the [HTTP_HEADER] class, and call ```h.put_cookie``` feature or 
-```h.put_cookie_with_expiration_date``` feature, see [How to set Cookies]() to learn the details, and the set it to response object [WSF_RESPONSE] as we saw previously. 
+To send a cookie to the client we should use the **HTTP_HEADER** class, and call ```h.put_cookie``` feature or 
+```h.put_cookie_with_expiration_date``` feature, see [How to set Cookies]() to learn the details, and the set it to response object **WSF_RESPONSE** as we saw previously. 
 
 We will show an example.
 
