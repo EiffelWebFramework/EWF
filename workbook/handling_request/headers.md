@@ -9,7 +9,7 @@ Nav: [Workbook](../../workbook) :: [Handling Requests: Form/Query parameters](..
 # Handling Requests: Headers
 
 ##### Introduction
-- The [HTTP request header fields (also known as "headers")](https://httpwg.github.io/specs/rfc7231.html#request.header.fields) are set by the client (usually web browser) and sent in the header of the http request text (see http protocol), as opposed to form or query parameters [Form Data]().
+- The [HTTP request header fields (also known as "headers")](https://httpwg.github.io/specs/rfc7231.html#request.header.fields) are set by the client (usually web browser) and sent in the header of the http request text (see http protocol), as opposed to form or query parameters `Form Data`.
 - Query parameters are encoded in the URL [GET requests](https://httpwg.github.io/specs/rfc7230.html#http.message).
 - Form parameters are encoded in the request message for [POST/PUT requests.](https://httpwg.github.io/specs/rfc7230.html#http.message).
 
@@ -44,13 +44,13 @@ That section explains how to read HTTP information sent by the browser via the r
 The Eiffel Web Framework is using the traditional Common Gateway Interface (CGI) programming interface to access the header fields, query and form parameters.
 Among other, this means the header fields are exposed with associated CGI field names:
 - the header field name are uppercased, and any dash "-" replaced by underscore "_".
-- and also prefixed by "HTTP_" except for CONTENT_TYPE and CONTENT_LENGTH. 
+- and also prefixed by "HTTP_" except for `CONTENT_TYPE` and `CONTENT_LENGTH`. 
 - For instance `X-Server` will be known as `HTTP_X_SERVER`.
 
 <a name="read_header"></a>
 
 ## Reading HTTP Header fields
-EWF [WSF_REQUEST]() class provides features to access HTTP headers.
+EWF `WSF_REQUEST` class provides features to access HTTP headers.
 
 Reading most headers is straightforward by calling:
 - the corresponding `http_*` functions such as `http_accept` for header "Accept".
@@ -89,7 +89,7 @@ GET http://eiffel.org/search?q=EiffelBase  HTTP/1.1
 Overview of the features
 
 * HTTP method 
-	- The function `request_method: READABLE_STRING_8` gives access to the HTTP request method, (usually GET or POST in conventional Web Applications), but with the raise of REST APIs other methods are also frequently used such as HEAD, PUT, DELETE, OPTIONS, or TRACE. 
+	- The function `request_method: READABLE_STRING_8` gives access to the HTTP request method, (usually `GET` or `POST` in conventional Web Applications), but with the raise of REST APIs other methods are also frequently used such as `HEAD`, `PUT`, `DELETE`, `OPTIONS`, or `TRACE`. 
 	A few functions helps determining quickly the nature of the request method:
 	- `is_get_request_method: BOOLEAN -- Is Current a GET request method?`
 	- `is_put_request_method: BOOLEAN -- Is Current a PUT request method?`
@@ -118,7 +118,7 @@ This section summarizes the headers most often used; for more information, see t
 
  * [Accept](https://httpwg.github.io/specs/rfc7231.html#header.accept)
  	- The "Accept" header field can be used by user agents (browser or other clients) to define response media types that are acceptable. Accept header fields can be used to indicate that the request is limited to a small set of desired types, as in the case of a request for an inline image.
- 	For example, assume an APIs Learn4Kids can respond with XML or JSON data (JSON format have some advantages over XML, readability, parsing etc...), a client can define its preference using "Accept: application/json" to request data in JSON format, or "Accept: application/xml" to get XML format. In other case the server sends a not acceptable response. Note that the client can define an ordered list of accepted content types, including "*", the client will get the response and know the content type via the response header field "Content-Type". Related [Content-Negotiation]()
+ 	For example, assume an APIs Learn4Kids can respond with XML or JSON data (JSON format have some advantages over XML, readability, parsing etc...), a client can define its preference using "Accept: application/json" to request data in JSON format, or "Accept: application/xml" to get XML format. In other case the server sends a not acceptable response. Note that the client can define an ordered list of accepted content types, including "*", the client will get the response and know the content type via the response header field "Content-Type". Related `Content-Negotiation`
 
 <a name="accept_charset"></a>
 
@@ -307,11 +307,10 @@ To be completed.
 
 #### Detecting Browser Types
 
-The User-Agent header identifies the specific browser/client that is sending the request. The following code shows a [EWF service](../headers/browser_name/application.e) that sends browser-specific responses.
+The User-Agent header identifies the specific browser/client that is sending the request. The following code shows an [EWF service](../headers/browser_name/application.e) that sends browser-specific responses.
 
 The examples uses the ideas based on the [Browser detection using the user agent](https://developer.mozilla.org/en-US/docs/Browser_detection_using_the_user_agent) article.
-Basically the code check if the header user_agent exist and then call the ```browser_name (a_user_agent: READABLE_STRING_8): READABLE_STRING_32```
-feature to retrieve the current browser name or Unknown in other case. 
+Basically the code check if the header `user_agent` exist and then call the ```browser_name (a_user_agent: READABLE_STRING_8): READABLE_STRING_32``` feature to retrieve the current browser name or Unknown in other case. 
 
 ```eiffel
 class
