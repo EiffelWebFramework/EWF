@@ -35,7 +35,7 @@ Here we will show you how to read input submitted by a user using a Form (`GET` 
 <a name="read"></a>
 
 ## Reading Form Data
-EWF [WSF_REQUEST]() class, provides features to handling this form parsing automatically.
+EWF `WSF_REQUEST` class, provides features to handling this form parsing automatically.
 
 <a name="query"></a>
 

@@ -4,7 +4,7 @@ Nav: [Workbook](../workbook.md) :: [Handling Requests: Form/Query parameters](./
 # Handling Requests: Headers
 
 ##### Introduction
-- The [HTTP request header fields (also known as "headers")](https://httpwg.github.io/specs/rfc7231.html#request.header.fields) are set by the client (usually web browser) and sent in the header of the http request text (see http protocol), as opposed to form or query parameters [Form Data]().
+- The [HTTP request header fields (also known as "headers")](https://httpwg.github.io/specs/rfc7231.html#request.header.fields) are set by the client (usually web browser) and sent in the header of the http request text (see http protocol), as opposed to form or query parameters `Form Data`.
 - Query parameters are encoded in the URL [GET requests](https://httpwg.github.io/specs/rfc7230.html#http.message).
 - Form parameters are encoded in the request message for [POST/PUT requests.](https://httpwg.github.io/specs/rfc7230.html#http.message).
 
@@ -45,7 +45,7 @@ Among other, this means the header fields are exposed with associated CGI field 
 <a name="read_header"></a>
 
 ## Reading HTTP Header fields
-EWF [WSF_REQUEST]() class provides features to access HTTP headers.
+EWF `WSF_REQUEST` class provides features to access HTTP headers.
 
 Reading most headers is straightforward by calling:
 - the corresponding `http_*` functions such as `http_accept` for header "Accept".
@@ -113,7 +113,7 @@ This section summarizes the headers most often used; for more information, see t
 
  * [Accept](https://httpwg.github.io/specs/rfc7231.html#header.accept)
  	- The "Accept" header field can be used by user agents (browser or other clients) to define response media types that are acceptable. Accept header fields can be used to indicate that the request is limited to a small set of desired types, as in the case of a request for an inline image.
- 	For example, assume an APIs Learn4Kids can respond with XML or JSON data (JSON format have some advantages over XML, readability, parsing etc...), a client can define its preference using "Accept: application/json" to request data in JSON format, or "Accept: application/xml" to get XML format. In other case the server sends a not acceptable response. Note that the client can define an ordered list of accepted content types, including "*", the client will get the response and know the content type via the response header field "Content-Type". Related [Content-Negotiation]()
+ 	For example, assume an APIs Learn4Kids can respond with XML or JSON data (JSON format have some advantages over XML, readability, parsing etc...), a client can define its preference using "Accept: application/json" to request data in JSON format, or "Accept: application/xml" to get XML format. In other case the server sends a not acceptable response. Note that the client can define an ordered list of accepted content types, including "*", the client will get the response and know the content type via the response header field "Content-Type". Related `Content-Negotiation`
 
 <a name="accept_charset"></a>
 

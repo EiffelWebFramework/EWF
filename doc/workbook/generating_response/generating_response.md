@@ -94,7 +94,7 @@ Example
 			res.put_string (l_msg)
 		end
 ```
-Both features takes an INTEGER (the status code) as an formal argument, you can use 200, 300, 500 etc directly, but instead of using explicit numbers, it's recommended to use the constants defined in the class [HTTP_STATUS_CODE](). The name of each constant is based from the standard [HTTP 1.1](https://httpwg.github.io/).
+Both features takes an INTEGER (the status code) as an formal argument, you can use 200, 300, 500 etc directly, but instead of using explicit numbers, it's recommended to use the constants defined in the class `HTTP_STATUS_CODE`. The name of each constant is based from the standard [HTTP 1.1](https://httpwg.github.io/).
 
 <a name="redirect"></a>
 
@@ -124,7 +124,7 @@ The next code show a custom feature to write a redirection, you can use found or
 		end
 ```
 
-The class [WSF_RESPONSE]() provide features to work with redirection 
+The class `WSF_RESPONSE` provide features to work with redirection 
 
 ```eiffel
 	redirect_now (a_url: READABLE_STRING_8)
@@ -677,9 +677,9 @@ helpers
 
 ```
 
-The other way to build headers is using the class [HTTP_HEADER](), that provide routines to build a header. It's recomended to 
-take a look at constants classes such as [HTTP_MIME_TYPES](),[HTTP_HEADER_NAMES](),[HTTP_STATUS_CODE](),[HTTP_REQUEST_METHODS](), or 
-[HTTP_CONSTANTS]() which groups them for convenience.
+The other way to build headers is using the class `HTTP_HEADER`, that provide routines to build a header. It's recomended to 
+take a look at constants classes such as `HTTP_MIME_TYPES`,`HTTP_HEADER_NAMES`,`HTTP_STATUS_CODE`,`HTTP_REQUEST_METHODS`, or 
+`HTTP_CONSTANTS` which groups them for convenience.
 
 
 ```eiffel
@@ -698,7 +698,7 @@ take a look at constants classes such as [HTTP_MIME_TYPES](),[HTTP_HEADER_NAMES]
 			res.put_string (l_msg)
 		end
 ```
-The class [HTTP_HEADER]() also supplies a number of convenience routines for specifying common headers, in fact the features are inherited from the class [HTTP_HEADER_MODIFIER]().
+The class `HTTP_HEADER` also supplies a number of convenience routines for specifying common headers, in fact the features are inherited from the class `HTTP_HEADER_MODIFIER`.
 
 
 ```eiffel
