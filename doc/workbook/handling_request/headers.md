@@ -39,7 +39,7 @@ That section explains how to read HTTP information sent by the browser via the r
 The Eiffel Web Framework is using the traditional Common Gateway Interface (CGI) programming interface to access the header fields, query and form parameters.
 Among other, this means the header fields are exposed with associated CGI field names:
 - the header field name are uppercased, and any dash "-" replaced by underscore "_".
-- and also prefixed by "HTTP_" except for CONTENT_TYPE and CONTENT_LENGTH. 
+- and also prefixed by "HTTP_" except for `CONTENT_TYPE` and `CONTENT_LENGTH`. 
 - For instance `X-Server` will be known as `HTTP_X_SERVER`.
 
 <a name="read_header"></a>

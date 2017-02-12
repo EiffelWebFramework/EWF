@@ -37,7 +37,7 @@ note: on linux (debian), use
 
 * Build EWF application
 
-    ec -config [app.ecf] -target [app_cgi] -finalize -c_compile -project_path
+```ec -config [app.ecf] -target [app_cgi] -finalize -c_compile -project_path```
 
 
 >Note: change app.ecf and target app_cgi  based on your own configuration.
@@ -47,6 +47,7 @@ note: on linux (debian), use
 Copy the app.exe and the folder _www_  into a folder served by apache2, for example under.
 
 
+```
         <APACHE_PATH>/htdocs. 
         
          <APACHE_PATH> = path to your apache installation
@@ -59,11 +60,14 @@ Copy the app.exe and the folder _www_  into a folder served by apache2, for exam
             AllowOverride All   --
             Require all granted -- this is required in Apache 2.4.4
          </Directory>
+```
 
 Check that you have the following modules enabled
 
+```
     LoadModule cgi_module modules/mod_cgi.so
     LoadModule rewrite_module modules/mod_rewrite.so
+```
 
 #### Tip:
 >To check the syntax of your httpd.conf file. From command line run the following 
@@ -76,6 +80,7 @@ Check that you have the following modules enabled
 
 #### .htaccess
 
+```
     Options +ExecCGI +Includes +FollowSymLinks -Indexes
     AddHandler cgi-script exe
     
@@ -90,7 +95,8 @@ Check that you have the following modules enabled
       RewriteRule ^(.*)$ $service/$1 
       
       RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization},L]
-    </IfModule
+    </IfModule>
+```
 
 >Replace $service with the name of your executable service, for example app_service.exe
 
@@ -107,7 +113,7 @@ note: on linux (debian), use
 
 * Build EWF application
 
-    ec -config [app.ecf] -target [app_fcgi] -finalize -c_compile -project_path .
+```    ec -config [app.ecf] -target [app_fcgi] -finalize -c_compile -project_path .```
 
 >Note: change app.ecf and target app_fcgi  based on your own configuration.
 
@@ -115,6 +121,7 @@ note: on linux (debian), use
 
 Copy the app.exe and the folder "www"  into a folder served by apache2, for example under
 
+```
     <APACHE_PATH>/htdocs. 
     
     <APACHE_PATH> = path to your apache installation
@@ -127,6 +134,7 @@ Copy the app.exe and the folder "www"  into a folder served by apache2, for exam
       AllowOverride All   --
       Require all granted -- this is required in Apache 2.4.4
     </Directory>
+```
 
 >Check that you have the following modules enabled
 
@@ -158,7 +166,7 @@ http://perishablepress.com/stupid-htaccess-tricks/
 ```
 
 #### .htaccess
-
+```
     Options +ExecCGI +Includes +FollowSymLinks -Indexes
     
     <IfModule mod_fcgid.c>
@@ -182,6 +190,7 @@ http://perishablepress.com/stupid-htaccess-tricks/
       
       RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization},L]
     </IfModule>
+```
 
 Replace $service with the name of your executable $service, for example app_service.exe
 You will need to create an service.ews file, this file will be located at the same place where you copy your app service executable.

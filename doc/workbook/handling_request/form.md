@@ -41,20 +41,25 @@ EWF `WSF_REQUEST` class, provides features to handling this form parsing automat
 
 ### Query Parameters
 
+```eiffel
 	WSF_REQUEST.query_parameters: ITERABLE [WSF_VALUE]
 			-- All query parameters
 	
 	WSF_REQUEST.query_parameter (a_name: READABLE_STRING_GENERAL): detachable WSF_VALUE
 			-- Query parameter for name `a_name'.
+```
+
 <a name="form_parameters"></a>
 
 ### Form Parameters
 
+```eiffel
 	WSF_REQUEST.form_parameters: ITERABLE [WSF_VALUE]
       			-- All form parameters sent by a POST
       
 	WSF_REQUEST.form_parameter (a_name: READABLE_STRING_GENERAL): detachable WSF_VALUE
 			-- Field for name `a_name'.
+```			
 
 The values supplied to `form_parameter` and `query_parameter` are _case_ _sensitive_.
 
@@ -63,9 +68,11 @@ The values supplied to `form_parameter` and `query_parameter` are _case_ _sensit
 ### Read Data
 The previous features, let you read the data one way for `GET` request and a different way for `POST` request. **WSF_REQUEST** provide a feature to read all the data in a uniform way.
 
+```eiffel
 	WSF_REQUEST.item (a_name: READABLE_STRING_GENERAL): detachable WSF_VALUE
 			-- Variable named `a_name' from any of the variables container
 			-- and following a specific order: form_, query_ and path_ parameters
+```			
 
 So, you can use **WSF_REQUEST.item** feature exactly the same way for `GET` and `POST` request.
 
@@ -119,7 +126,7 @@ Suppose we have the following HTML5 form using method `POST`. This HTML5 form ha
 ### How to read all parameter names
 To read all the parameters names we simple call **WSF_REQUEST.form_parameters**. 
 
-```
+```eiffel
  req: WSF_REQUEST
  across req.form_parameters as ic loop show_parameter_name (ic.item.key) end
 ```
@@ -127,7 +134,7 @@ To read all the parameters names we simple call **WSF_REQUEST.form_parameters**.
 
 ### How to read single values
 To read a particular parameter, a single value, for example `given-name`, we simple call **WSF_REQUEST.form_parameter (a_name)** and we check if it's attached to **WSF_STRING** (represents a String parameter)
-```
+```eiffel
   req: WSF_REQUEST 
   if attached {WSF_STRING} req.form_paramenter ('given-name') as l_given_name then
   	-- Work with the given parameter, for example populate an USER object
@@ -142,7 +149,7 @@ To read a particular parameter, a single value, for example `given-name`, we sim
 
 To read multiple values, for example in the case of `languages`, we simple call **WSF_REQUEST.form_parameter (a_name)** and we check if it's attached to **WSF_MULTIPLE_STRING** (represents a String parameter)
 
-```
+```eiffel
   req: WSF_REQUEST 
   idioms: LIST[STRING]
   	-- the argument is case sensitive
@@ -170,7 +177,7 @@ This is particularly useful when you have a request with the following format
 
 To read table values, for example in the case of `tab`, we simple call **WSF_REQUEST.form_parameter (a_name)** and we check if it's attached to **WSF_TABLE**.
 
-```
+```eiffel
 if attached {WSF_TABLE} req.query_parameter ("tab") as l_tab then
 	l_parameter_names.append ("<br>")
 	l_parameter_names.append (l_tab.name)
@@ -197,7 +204,7 @@ You can also access the data in raw format, it means you will need to parse and 
 
 To read raw data you need to do this
 
-```
+```eiffel
    l_raw_data:STRING
    
    req.set_raw_input_data_recorded (True)
@@ -242,14 +249,14 @@ So supose we have the following form
 
 The class **WSF_REQUEST** has a mechanism to work with uploaded files. We can call the query
 
-```
+```eiffel
 WSF_REQUEST.has_uploaded_file: BOOLEAN
       -- Has any uploaded file?
 ```
 
 to check if the request form parameters has any uploaded file, we can call the feature
 
-```
+```eiffel
 WSF_REQUEST.uploaded_files: ITERABLE [WSF_UPLOADED_FILE]
       -- uploaded files values
       --| filename: original path from the user
