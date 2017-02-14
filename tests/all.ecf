@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<system xmlns="http://www.eiffel.com/developers/xml/configuration-1-15-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eiffel.com/developers/xml/configuration-1-15-0 http://www.eiffel.com/developers/xml/configuration-1-15-0.xsd" name="all" uuid="0562209B-4C68-4E77-8B57-13CBF53D05BD" library_target="all">
+<system xmlns="http://www.eiffel.com/developers/xml/configuration-1-16-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation=" http://www.eiffel.com/developers/xml/configuration-1-16-0.xsd" name="all" uuid="0562209B-4C68-4E77-8B57-13CBF53D05BD" library_target="all">
 	<description>Integration project including many lib</description>
 	<target name="all">
 		<root all_classes="true"/>
@@ -8,9 +8,8 @@
 			<exclude>/.svn$</exclude>
 			<exclude>/EIFGENs$</exclude>
 		</file_rule>
-		<option warning="true"  void_safety="none">
+		<option warning="true">
 		</option>
-		<setting name="concurrency" value="scoop"/>
 		<library name="all-stable" location="all-stable.ecf" readonly="false"/>
 		<library name="atom" location="..\draft\library\protocol\syndication\atom\atom.ecf" readonly="false"/>
 		<library name="connector_cgi" location="..\library\server\ewsgi\connectors\cgi\cgi.ecf" readonly="false"/>
@@ -50,17 +49,23 @@
 	<target name="all_none" extends="all">
 		<description>Compiling with None concurrency</description>
 		<root all_classes="true"/>
-		<setting name="concurrency" value="none"/>
+		<capability>
+			<concurrency use="none"/>
+		</capability>
 	</target>
 	<target name="all_scoop" extends="all">
 		<description>Compiling with SCOOP concurrency</description>
 		<root all_classes="true"/>
-		<setting name="concurrency" value="scoop"/>
+		<capability>
+			<concurrency use="scoop"/>
+		</capability>
 	</target>
 	<target name="all_mt" extends="all">
 		<description>Compiling with Eiffel Thread concurrency</description>
 		<root all_classes="true"/>
-		<setting name="concurrency" value="thread"/>
+		<capability>
+			<concurrency use="thread"/>
+		</capability>
 	</target>
 	<target name="all_windows" extends="all">
 		<description>Compiling as Windows , on other platforms than Windows</description>

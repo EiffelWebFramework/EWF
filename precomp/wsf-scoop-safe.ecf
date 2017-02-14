@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<system xmlns="http://www.eiffel.com/developers/xml/configuration-1-15-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eiffel.com/developers/xml/configuration-1-15-0 http://www.eiffel.com/developers/xml/configuration-1-15-0.xsd" name="precomp_wsf-scoop-safe" uuid="344344D6-5CA1-43B4-8D4B-CD1763883BE2" library_target="precomp-wsf-scoop-safe">
+<system xmlns="http://www.eiffel.com/developers/xml/configuration-1-16-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eiffel.com/developers/xml/configuration-1-16-0 http://www.eiffel.com/developers/xml/configuration-1-16-0.xsd" name="precomp_wsf-scoop-safe" uuid="344344D6-5CA1-43B4-8D4B-CD1763883BE2" library_target="precomp-wsf-scoop-safe">
 	<target name="precomp-wsf-scoop-safe">
 		<root all_classes="true"/>
-		<option void_safety="all">
-		</option>
-		<setting name="concurrency" value="scoop"/>
+		<capability>
+			<concurrency support="scoop"/>
+			<void_safety support="all"/>
+		</capability>
 		<library name="base" location="$ISE_LIBRARY\library\base\base-safe.ecf"/>
 		<library name="wsf" location="..\library\server\wsf\wsf-safe.ecf"/>
 	</target>

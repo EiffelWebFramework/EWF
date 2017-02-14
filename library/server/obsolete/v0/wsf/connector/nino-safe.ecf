@@ -1,26 +1,3 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<system xmlns="http://www.eiffel.com/developers/xml/configuration-1-15-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eiffel.com/developers/xml/configuration-1-15-0 http://www.eiffel.com/developers/xml/configuration-1-15-0.xsd" name="wsf_nino_v0" uuid="81525F4F-7BCA-471B-B1E3-2601EFD242E0" library_target="wsf_nino_v0">
-	<target name="wsf_nino_v0">
-		<root all_classes="true"/>
-		<file_rule>
-			<exclude>/EIFGENs$</exclude>
-			<exclude>/\.git$</exclude>
-			<exclude>/\.svn$</exclude>
-		</file_rule>
-		<option warning="true"  void_safety="all">
-		</option>
-		<setting name="concurrency" value="thread"/>
-		<library name="base" location="$ISE_LIBRARY\library\base\base-safe.ecf"/>
-		<library name="connector_nino" location="..\..\..\..\obsolete\v0\ewsgi\connectors\nino\nino-safe.ecf"/>
-		<library name="encoder" location="..\..\..\..\..\text\encoder\encoder-safe.ecf" readonly="false"/>
-		<library name="error" location="..\..\..\..\..\utility\general\error\error-safe.ecf"/>
-		<library name="ewsgi" location="..\..\..\..\obsolete\v0\ewsgi\ewsgi-safe.ecf"/>
-		<library name="http" location="..\..\..\..\..\network\protocol\http\http-safe.ecf"/>
-		<library name="nino" location="..\..\..\..\..\..\contrib\library\network\server\nino\nino-safe.ecf" readonly="false">
-			<renaming old_name="HTTP_CONSTANTS" new_name="NINO_HTTP_CONSTANTS"/>
-		</library>
-		<library name="time" location="$ISE_LIBRARY\library\time\time-safe.ecf"/>
-		<library name="wsf" location="..\wsf-safe.ecf"/>
-		<cluster name="wsf_nino" location=".\nino\" recursive="true"/>
-	</target>
-</system>
+<redirection xmlns="http://www.eiffel.com/developers/xml/configuration-1-16-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation=" http://www.eiffel.com/developers/xml/configuration-1-16-0.xsd" uuid="81525F4F-7BCA-471B-B1E3-2601EFD242E0" message="Obsolete: use nino.ecf !" location="nino.ecf">
+</redirection>

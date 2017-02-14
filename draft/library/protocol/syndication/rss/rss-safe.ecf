@@ -1,16 +1,3 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<system xmlns="http://www.eiffel.com/developers/xml/configuration-1-15-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eiffel.com/developers/xml/configuration-1-15-0 http://www.eiffel.com/developers/xml/configuration-1-15-0.xsd" name="rss" uuid="8D8E3E5A-2685-40AF-9EF9-E3113B3C62AA" library_target="rss">
-	<target name="rss">
-		<root all_classes="true"/>
-		<file_rule>
-			<exclude>/.git$</exclude>
-			<exclude>/.svn$</exclude>
-			<exclude>/EIFGENs$</exclude>
-		</file_rule>
-		<option warning="true" void_safety="all">
-		</option>
-		<setting name="concurrency" value="scoop"/>
-		<library name="base" location="$ISE_LIBRARY\library\base\base-safe.ecf"/>
-		<cluster name="src" location=".\src\" recursive="true"/>
-	</target>
-</system>
+<redirection xmlns="http://www.eiffel.com/developers/xml/configuration-1-16-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation=" http://www.eiffel.com/developers/xml/configuration-1-16-0.xsd" uuid="8D8E3E5A-2685-40AF-9EF9-E3113B3C62AA" message="Obsolete: use rss.ecf !" location="rss.ecf">
+</redirection>

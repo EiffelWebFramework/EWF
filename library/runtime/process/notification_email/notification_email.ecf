@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<system xmlns="http://www.eiffel.com/developers/xml/configuration-1-15-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eiffel.com/developers/xml/configuration-1-15-0 http://www.eiffel.com/developers/xml/configuration-1-15-0.xsd" name="notification_email" uuid="99D9A065-CD45-4E20-9C86-579C8AD42E5E" library_target="notification_email">
+<system xmlns="http://www.eiffel.com/developers/xml/configuration-1-16-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation=" http://www.eiffel.com/developers/xml/configuration-1-16-0.xsd" name="notification_email" uuid="99D9A065-CD45-4E20-9C86-579C8AD42E5E" library_target="notification_email">
 	<target name="notification_email">
 		<root all_classes="true"/>
 		<file_rule>
@@ -7,9 +7,9 @@
 			<exclude>/.svn$</exclude>
 			<exclude>/EIFGENs$</exclude>
 		</file_rule>
-		<option warning="true" void_safety="none">
+		<option warning="true">
 		</option>
-		<setting name="concurrency" value="scoop"/>
+		<variable name="ssl_enabled" value="true"/>
 		<library name="base" location="$ISE_LIBRARY\library\base\base.ecf"/>
 		<library name="base_process" location="$ISE_LIBRARY\library\process\base\base_process.ecf">
 			<condition>
@@ -24,6 +24,12 @@
 				<custom name="smtp_notification_email_disabled" excluded_value="true"/>
 			</condition>
 		</library>
+		<library name="net-ssl" location="$ISE_LIBRARY\unstable\library\network\socket\netssl\net_ssl.ecf">
+			<condition>
+				<custom name="smtp_notification_email_disabled" excluded_value="true"/>
+				<custom name="ssl_enabled" value="true"/>
+			</condition>
+		</library>
 		<library name="process" location="$ISE_LIBRARY\library\process\process.ecf">
 			<condition>
 				<version type="compiler" max="16.10.9.9999"/>
@@ -36,6 +42,11 @@
 				<condition>
 					<custom name="smtp_notification_email_disabled" excluded_value="true"/>
 				</condition>
+				<cluster name="smtp-ssl" location="$|ssl\">
+					<condition>
+						<custom name="ssl_enabled" value="true"/>
+					</condition>
+				</cluster>
 			</cluster>
 		</cluster>
 	</target>
