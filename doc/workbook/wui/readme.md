@@ -23,7 +23,7 @@ In addition, the `WSF_FORM_..` is capable to analyze parameters from request `WS
 A simple solution to return html content is to use the `WSF_HTML_PAGE_RESPONSE` for now.
 In a `WSF_EXECUTION` descendant, see how to implement the `execute` procedure.
 
-```eiffel
+```
 	execute
 		local
 			mesg: WSF_HTML_PAGE_RESPONSE
@@ -38,7 +38,7 @@ In a `WSF_EXECUTION` descendant, see how to implement the `execute` procedure.
 In this case, the html is hardcoded, and written manually.
 Now let's see how to use the WSF widgets on a more advanced usecase, a simple sign-in web form with 2 input fields `username`, `password` and `submit` button.
 
-```eiffel
+```
 
 	execute
 		do
@@ -116,8 +116,10 @@ See [Handling requests section](../handling_request/form.md)
 
 The `wsf_html` library, thanks to the `WSF_FORM`, provides a more powerful solution.
 Indeed `WSF_HTML.process (request, .., ..)` analyze the request, fill the form fields, and process various validations, and submissions automatically.
-see
-```eiffel
+
+See
+
+```
 	process (req: WSF_REQUEST; a_before_callback, a_after_callback: detachable PROCEDURE [WSF_FORM_DATA])
 			-- Process Current form with request `req`,
 			-- and build `last_data: WSF_FORM_DATA` object containing the field values.
@@ -126,7 +128,8 @@ see
 ```
 
 In our previous sample code, `execute_web_form_submission` could be:
-```eiffel
+
+```
 	execute_web_form_submission
 		local
 			mesg: WSF_HTML_PAGE_RESPONSE
@@ -181,7 +184,8 @@ If those validations reports error, then the `form_data.has_error` will be True.
 
 To set validation, 
 For instance, in previous sample, accepts only alpha-numeric characters:
-```eiffel
+
+```
 			f_username.set_description ("Only alpha-numeric character are accepted.")
 			f_username.set_validation_action (agent (fd: WSF_FORM_DATA)
 				do
@@ -196,6 +200,7 @@ For instance, in previous sample, accepts only alpha-numeric characters:
 					end
 				end)
 ```
+
 Notes:
 * If the validation is not satisfied, the form data will report `has_error` as True, and the associated form will be updated with submitted values, and with `class="error"` set to the related html code.
 The errors are also available via the `form_data.errors` feature.
