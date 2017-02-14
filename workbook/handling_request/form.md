@@ -25,7 +25,7 @@ Nav: [Workbook](../../workbook) :: [Basic Concepts](../../basics/basics) :: [Han
 An HTML Form can handle `GET` and `POST` requests.
 When we use a form with method `GET`, the data is attached at the end of the url for example:
 
->http://wwww.example.com?key1=value1&...keyn=valuen
+>http://wwww.example.com/?key1=value1&...keyn=valuen
 
 If we use the method `POST`, the data is sent to the server in a different line.
 

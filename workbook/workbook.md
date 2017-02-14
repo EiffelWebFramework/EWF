@@ -12,6 +12,7 @@ base_url: ../../
 * [Handling Requests: Header Fields](#header_fields)
 * [Generating Responses](#generating_responses)
 * [Handling Cookies](#handling_cookies) 
+* [Web User Interface](#wui) 
 * [EWF Deployment](#deployment)
 
 <a name="core"></a>
@@ -43,6 +44,11 @@ Before reading (or walking throught) the workbook, to get a quick overview of EW
 
 ## Generating Response
 [Generating Responses](../generating_response/generating_response)
+
+<a name="wui"></a>
+
+## Web User Interface
+[Web User Interface](../wui/readme) 
 
 <a name="handling_cookies"></a>
 
