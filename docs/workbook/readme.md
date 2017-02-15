@@ -1,4 +1,4 @@
-The [Workbook](workbook) lets you discover the EiffelWeb framework.
+The [Workbook](./workbook.md) lets you discover the EiffelWeb framework.
 
-[Enter the documentation](workbook)
+[Enter the documentation](./workbook.md)
 		

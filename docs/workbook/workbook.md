@@ -43,7 +43,7 @@ Before reading (or walking throught) the workbook, to get a quick overview of EW
 <a name="wui"></a>
 
 ## Web User Interface
-[Web User Interface](./wui/readme.md) 
+[Web User Interface](./wui/wui.md) 
 
 <a name="handling_cookies"></a>
 
@@ -53,4 +53,4 @@ Before reading (or walking throught) the workbook, to get a quick overview of EW
 <a name="deployment"></a>
 
 ## EWF Deployment
-[EWF Deployment](./deployment/readme.md) 
+[EWF Deployment](./deployment/deployment.md) 
