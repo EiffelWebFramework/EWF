@@ -9,7 +9,7 @@ Nav: [Workbook](../workbook.md) :: [Handling Requests: Header Fields](../handlin
 - [How to set status code](#status_set)  
 - [How to redirect to a particular location.](#redirect)  
 - [HTTP Status codes](#status)
-- [Example Staus Codes](#example_1)
+- [Example Status Codes](#example_1)
 - [Generic Search Engine](#example_2)
 - [Response Header Fields](#header_fields)
 
@@ -21,31 +21,31 @@ Nav: [Workbook](../workbook.md) :: [Handling Requests: Header Fields](../handlin
 As we saw in the previous documents, a request from a user-agent (browser or other client) consists of an HTTP command (usually GET or POST), zero or more request headers (one or more in HTTP 1.1, since Host is required), a blank line, and only in the case of POST/PUT requests, payload data. A typical request looks like the following.
 
 ```
-    GET /url[query_string] HTTP/1.1
-    Host: ...
-    Header2: ...
-    ...
-    HeaderN:
-    (Blank Line)
+GET /url[query_string] HTTP/1.1
+Host: ...
+Header2: ...
+...
+HeaderN:
+(Blank Line)
 ```
 
 When a Web server responds to a request, the response typically consists of a status line, some response headers, a blank line, and the document. A typical response
 looks like this:
 
 ```
-    HTTP/1.1 200 OK
-    Content-Type: text/html
-    Header2: ...
+HTTP/1.1 200 OK
+Content-Type: text/html
+Header2: ...
+...
+HeaderN: ...
+(Blank Line)
+<!DOCTYPE ...>
+<HTML>
+    <HEAD>...</HEAD>
+    <BODY>
     ...
-    HeaderN: ...
-    (Blank Line)
-    <!DOCTYPE ...>
-    <HTML>
-        <HEAD>...</HEAD>
-        <BODY>
-        ...
-        </BODY>
-    </HTML>
+    </BODY>
+</HTML>
 ```
 
 The status line consists of the HTTP version (HTTP/1.1 in the preceding example), a status code (an integer 200 in the example), and a very short message corresponding to the status code (OK in the example). In most cases, the headers are optional except for Content-Type, which specifies the MIME type of the document that follows. Although most responses contain a document, some don’t. For example, responses to HEAD requests should never include a document, and various status codes essentially indicate failure or redirection (and thus either don’t include a document or include only a short error-message document).
@@ -60,16 +60,16 @@ If you need to set an arbitrary status code, you can use the `WSF_RESPONSE.put_h
 In this case you provide the status code with a collection of headers. 
 
 ```eiffel
-    put_header (a_status_code: INTEGER_32; a_headers: detachable ARRAY [TUPLE [name: READABLE_STRING_8; value: READABLE_STRING_8]])
-            -- Put headers with status `a_status', and headers from `a_headers'
-        require
-            a_status_code_valid: a_status_code > 0
-            status_not_committed: not status_committed
-            header_not_committed: not header_committed
-        ensure
-            status_code_set: status_code = a_status_code
-            status_set: status_is_set
-            message_writable: message_writable
+put_header (a_status_code: INTEGER_32; a_headers: detachable ARRAY [TUPLE [name: READABLE_STRING_8; value: READABLE_STRING_8]])
+        -- Put headers with status `a_status', and headers from `a_headers'
+    require
+        a_status_code_valid: a_status_code > 0
+        status_not_committed: not status_committed
+        header_not_committed: not header_committed
+    ensure
+        status_code_set: status_code = a_status_code
+        status_set: status_is_set
+        message_writable: message_writable
 
 Example            
     res.put_header ({HTTP_STATUS_CODE}.ok, <<["Content-Type", "text/html"], ["Content-Length", output_size]>>) 
@@ -167,7 +167,7 @@ Note: use `res.set_status_code({HTTP_STATUS_CODE}.bad_request)` rather than `res
 
 <a name="example_1"></a>
 
-### Example Staus Codes
+### Example Status Codes
 
 Basic Service that builds a simple web page to show the most common status codes
 
@@ -567,7 +567,7 @@ Connection: close
 </html>
 ```
 
-#### Resource searchs not found
+#### Resource search not found
 
 ```
 #>curl -i -H -v -X POST -d "query=Eiffel&engine=Google" http://localhost:9090/searchs
@@ -611,73 +611,75 @@ features `add_XYZ` add headers that can lead to duplicated entries.
 
 
 ```eiffel
-    add_header_line (h: READABLE_STRING_8)
-            -- Add header `h'
-            -- This can lead to duplicated header entries
-        require
-            header_not_committed: not header_committed
+add_header_line (h: READABLE_STRING_8)
+        -- Add header `h'
+        -- This can lead to duplicated header entries
+    require
+        header_not_committed: not header_committed
 
-    add_header_text (a_text: READABLE_STRING_8)
-            -- Add the multiline header `a_text'
-            -- Does not replace existing header with same name
-            -- This could leads to multiple header with the same name
-        require
-            header_not_committed: not header_committed
-            a_text_ends_with_single_crlf: a_text.count > 2 implies not a_text.substring (a_text.count - 2, a_text.count).same_string ("%R%N")
-            a_text_does_not_end_with_double_crlf: a_text.count > 4 implies not a_text.substring (a_text.count - 4, a_text.count).same_string ("%R%N%R%N")
-        ensure
-            status_set: status_is_set
-            message_writable: message_writable
+add_header_text (a_text: READABLE_STRING_8)
+        -- Add the multiline header `a_text'
+        -- Does not replace existing header with same name
+        -- This could leads to multiple header with the same name
+    require
+        header_not_committed: not header_committed
+        a_text_ends_with_single_crlf: a_text.count > 2 implies not a_text.substring (a_text.count - 2, a_text.count).same_string ("%R%N")
+        a_text_does_not_end_with_double_crlf: a_text.count > 4 implies not a_text.substring (a_text.count - 4, a_text.count).same_string ("%R%N%R%N")
+    ensure
+        status_set: status_is_set
+        message_writable: message_writable
 
-    put_header_line (h: READABLE_STRING_8)
-            -- Put header `h'
-            -- Replace any existing value
-        require
-            header_not_committed: not header_committed
+put_header_line (h: READABLE_STRING_8)
+        -- Put header `h'
+        -- Replace any existing value
+    require
+        header_not_committed: not header_committed
 
-    put_header_text (a_text: READABLE_STRING_8)
-            -- Put the multiline header `a_text'
-            -- Overwite potential existing header
-        require
-            header_not_committed: not header_committed
-            a_text_ends_with_single_crlf: a_text.count > 2 implies not a_text.substring (a_text.count - 2, a_text.count).same_string ("%R%N")
-            a_text_does_not_end_with_double_crlf: a_text.count > 4 implies not a_text.substring (a_text.count - 4, a_text.count).same_string ("%R%N%R%N")
-        ensure
-            message_writable: message_writable
+put_header_text (a_text: READABLE_STRING_8)
+        -- Put the multiline header `a_text'
+        -- Overwite potential existing header
+    require
+        header_not_committed: not header_committed
+        a_text_ends_with_single_crlf: a_text.count > 2 implies not a_text.substring (a_text.count - 2, a_text.count).same_string ("%R%N")
+        a_text_does_not_end_with_double_crlf: a_text.count > 4 implies not a_text.substring (a_text.count - 4, a_text.count).same_string ("%R%N%R%N")
+    ensure
+        message_writable: message_writable
+```
 
 helpers
 
-    add_header (a_status_code: INTEGER_32; a_headers: detachable ARRAY [TUPLE [name: READABLE_STRING_8; value: READABLE_STRING_8]])
-            -- Put headers with status `a_status', and headers from `a_headers'
-        require
-            a_status_code_valid: a_status_code > 0
-            status_not_committed: not status_committed
-            header_not_committed: not header_committed
-        ensure
-            status_code_set: status_code = a_status_code
-            status_set: status_is_set
-            message_writable: message_writable
+```eiffel
+add_header (a_status_code: INTEGER_32; a_headers: detachable ARRAY [TUPLE [name: READABLE_STRING_8; value: READABLE_STRING_8]])
+        -- Put headers with status `a_status', and headers from `a_headers'
+    require
+        a_status_code_valid: a_status_code > 0
+        status_not_committed: not status_committed
+        header_not_committed: not header_committed
+    ensure
+        status_code_set: status_code = a_status_code
+        status_set: status_is_set
+        message_writable: message_writable
 
-    add_header_lines (a_lines: ITERABLE [READABLE_STRING_8])
-            -- Add headers from `a_lines'
-        require
-            header_not_committed: not header_committed
+add_header_lines (a_lines: ITERABLE [READABLE_STRING_8])
+        -- Add headers from `a_lines'
+    require
+        header_not_committed: not header_committed
 
-    put_header (a_status_code: INTEGER_32; a_headers: detachable ARRAY [TUPLE [name: READABLE_STRING_8; value: READABLE_STRING_8]])
-            -- Put headers with status `a_status', and headers from `a_headers'
-        require
-            a_status_code_valid: a_status_code > 0
-            status_not_committed: not status_committed
-            header_not_committed: not header_committed
-        ensure
-            status_code_set: status_code = a_status_code
-            status_set: status_is_set
-            message_writable: message_writable
+put_header (a_status_code: INTEGER_32; a_headers: detachable ARRAY [TUPLE [name: READABLE_STRING_8; value: READABLE_STRING_8]])
+        -- Put headers with status `a_status', and headers from `a_headers'
+    require
+        a_status_code_valid: a_status_code > 0
+        status_not_committed: not status_committed
+        header_not_committed: not header_committed
+    ensure
+        status_code_set: status_code = a_status_code
+        status_set: status_is_set
+        message_writable: message_writable
 
-    put_header_lines (a_lines: ITERABLE [READABLE_STRING_8])
-            -- Put headers from `a_lines'
-        require
-            header_not_committed: not header_committed
+put_header_lines (a_lines: ITERABLE [READABLE_STRING_8])
+        -- Put headers from `a_lines'
+    require
+        header_not_committed: not header_committed
 
 ```
 
@@ -687,20 +689,20 @@ take a look at constants classes such as `HTTP_MIME_TYPES`,`HTTP_HEADER_NAMES`,`
 
 
 ```eiffel
-    custom_answer (req: WSF_REQUEST; res: WSF_RESPONSE; output: STRING)
-        local
-            h: HTTP_HEADER
-            l_msg: STRING
-        do
-            create h.make
-            create l_msg.make_from_string (output)
-            h.put_content_type_text_html
-            h.put_content_length (l_msg.count)
-            h.put_current_date
-            res.set_status_code ({HTTP_STATUS_CODE}.bad_gateway)
-            res.put_header_text (h.string)
-            res.put_string (l_msg)
-        end
+custom_answer (req: WSF_REQUEST; res: WSF_RESPONSE; output: STRING)
+    local
+        h: HTTP_HEADER
+        l_msg: STRING
+    do
+        create h.make
+        create l_msg.make_from_string (output)
+        h.put_content_type_text_html
+        h.put_content_length (l_msg.count)
+        h.put_current_date
+        res.set_status_code ({HTTP_STATUS_CODE}.bad_gateway)
+        res.put_header_text (h.string)
+        res.put_string (l_msg)
+    end
 ```
 The class `HTTP_HEADER` also supplies a number of convenience routines for specifying common headers, in fact the features are inherited from the class `HTTP_HEADER_MODIFIER`.
 
