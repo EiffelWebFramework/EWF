@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>EWF Handling Client Request: Search Form example </title>
+	</head>
+	<body>
+		<h1> EWF Handling Search Request: Form example </h1>  
+		<form action="/search" method="GET">
+			 <fieldset> 
+			    <legend>Search by</legend> 
+			    <div> 
+			        <label>First Name
+			        <input id="given-name" name="given-name" type="text" placeholder="First name only" autofocus> 
+					</label>
+			    </div>
+			    <div> 
+			        <label>Last Name
+			        <input id="family-name" name="family-name" type="text" placeholder="Last name only" autofocus> 
+					</label>
+			    </div>
+			    <div> 
+			    	<label>Date of Birth
+			        <input id="dob" name="dob" type="date">
+					</label>
+			    </div> 
+			    <div> 
+			        <label>Email 
+			        <input id="email" name="email" type="email" placeholder="example@domain.com">
+					</label> 
+			    </div> 
+				<div> 
+			        <label>Languages 
+				        <input type="checkbox" name="languages" value="Spanish"> Spanish
+				        <input type="checkbox" name="languages" value="English"> English 
+					</label> 
+			    </div> 
+			  </fieldset>
+			  <fieldset> 
+				  	<div> 
+					    <button type=submit>Submit Form</button> 
+				    </div> 
+  		 	</fieldset> 
+		</form>	
+		<h2> Example link </h2>
+		<div>
+			<a href="/link?tab[a]=1&tab[b]=2&tab[c]=foo">Link</a>
+		</div>	
+	</body>	
+</html>
