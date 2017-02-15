@@ -1,10 +1,5 @@
----
-layout: default
-title: generating response
-base_url: ../../../
----
 
-Nav: [Workbook](../../workbook) :: [Handling Requests: Header Fields](../../handling_request/headers) :: [Handling Cookies](../../handling_cookies/handling_cookies) 
+Nav: [Workbook](../workbook.md) :: [Handling Requests: Header Fields](../handling_request/headers.md) :: [Handling Cookies](../handling_cookies/handling_cookies.md) 
 
 
 ## EWF Generating Response
@@ -1009,4 +1004,4 @@ There are four categories for response header fields:
 
 
 
-Nav: [Workbook](../../workbook) :: [Handling Requests: Header Fields](../../handling_request/headers) :: [Handling Cookies](../../handling_cookies/handling_cookies) 
+Nav: [Workbook](../workbook.md) :: [Handling Requests: Header Fields](../handling_request/headers.md) :: [Handling Cookies](../handling_cookies/handling_cookies.md) 

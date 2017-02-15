@@ -1,9 +1,4 @@
----
-layout: default
-title: handling cookies
-base_url: ../../../
----
-Nav: [Workbook](../../workbook) :: [Generating Responses](../../generating_response/generating_response)
+Nav: [Workbook](../workbook.md) :: [Generating Responses](../generating_response/generating_response.md)
 
 # Handling Cookies
 
@@ -296,4 +291,4 @@ end
 ```
 
 
-Nav: [Workbook](../../workbook) :: [Generating Responses](../../generating_response/generating_response)
+Nav: [Workbook](../workbook.md) :: [Generating Responses](../generating_response/generating_response.md)

@@ -1,8 +1,3 @@
----
-layout: default
-title: readme
-base_url: ../../
----
 # EWF Workbook
 
 ##### Table of Contents  
@@ -28,34 +23,34 @@ Before reading (or walking throught) the workbook, to get a quick overview of EW
 <a name="introduction"></a>
 
 ## Introduction
-[Basic Concepts](../basics/basics).
+[Basic Concepts](./basics/basics.md).
 
 <a name="form_query_parameters"></a>
 
 ## Handling Requests: Form/Query Parameter
-[Handling Requests: Form/Query Parameter](../handling_request/form).
+[Handling Requests: Form/Query Parameter](./handling_request/form.md).
 
 <a name="header_fields"></a>
 
 ## Handling Requests: Header Fields
-[Handling Requests: Header Fields](../handling_request/headers).
+[Handling Requests: Header Fields](./handling_request/headers.md).
 
 <a name="generating_responses"></a>
 
 ## Generating Response
-[Generating Responses](../generating_response/generating_response)
+[Generating Responses](./generating_response/generating_response.md)
 
 <a name="wui"></a>
 
 ## Web User Interface
-[Web User Interface](../wui/readme) 
+[Web User Interface](./wui/readme.md) 
 
 <a name="handling_cookies"></a>
 
 ## Handling Cookies
-[Handling Cookies](../handling_cookies/handling_cookies) 
+[Handling Cookies](./handling_cookies/handling_cookies.md) 
 
 <a name="deployment"></a>
 
 ## EWF Deployment
-[EWF Deployment](../deployment/readme) 
+[EWF Deployment](./deployment/readme.md) 

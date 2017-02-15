@@ -1,7 +1,2 @@
----
-layout: default
-title: workbook
-base_url: ../../
----
-See [README](../readme)
+See [README](./readme.md)
 

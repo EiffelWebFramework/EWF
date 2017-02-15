@@ -1,9 +1,4 @@
----
-layout: default
-title: form
-base_url: ../../../
----
-Nav: [Workbook](../../workbook) :: [Basic Concepts](../../basics/basics) :: [Handling Requests: Header Fields](../headers) 
+Nav: [Workbook](../workbook.md) :: [Basic Concepts](../basics/basics.md) :: [Handling Requests: Header Fields](./headers.md) 
 
 # Handling Requests: Form/Query Data
 
@@ -325,4 +320,4 @@ The GET example is located in the directory $PATH/ewf/doc/workbook/form/get, and
 >Note: replace <ecf_name> and<target_name> with the corresponding values.
 
 
-Nav: [Workbook](../../workbook) :: [Basic Concepts](../../basics/basics) :: [Handling Requests: Header Fields](../headers) 
+Nav: [Workbook](../workbook.md) :: [Basic Concepts](../basics/basics.md) :: [Handling Requests: Header Fields](./headers.md) 

@@ -1,8 +1,3 @@
----
-layout: default
-title: readme
-base_url: ../../../
----
 # Web User Interface (WUI)
 
 When it comes to web user interface, HTML, CSS and Javascript are part of the solution.
@@ -116,7 +111,7 @@ new_login_form: WSF_FORM
 ## Handling web form data
 
 When a form is submitted, the code can access the request data thanks to the `request: WSF_REQUEST` attribute.
-See [Handling requests section](../../handling_request/form)
+See [Handling requests section](../handling_request/form.md)
 
 The `wsf_html` library, thanks to the `WSF_FORM`, provides a more powerful solution.
 Indeed `WSF_HTML.process (request, .., ..)` analyze the request, fill the form fields, and process various validations, and submissions automatically.

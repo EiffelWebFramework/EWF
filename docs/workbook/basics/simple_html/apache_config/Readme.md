@@ -1,9 +1,4 @@
----
-layout: default
-title: Readme
-base_url: ../../../../../
----
-Nav: [Workbook](../../../../workbook) :: [Basic concepts](../../../../basics/basics) 
+Nav: [Workbook](../../../workbook.md) :: [Basic concepts](../../../basics/basics.md) 
 
 ## Run simple_html example on Apache with FCGI on Windows.
 
@@ -63,4 +58,4 @@ Check the application
 > http://localhost:8888/simple
 ```
 
-Nav: [Workbook](../../../../workbook) :: [Basic concepts](../../../../basics/basics) 
+Nav: [Workbook](../../../workbook.md) :: [Basic concepts](../../../basics/basics.md) 

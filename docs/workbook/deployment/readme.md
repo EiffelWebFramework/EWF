@@ -1,9 +1,4 @@
----
-layout: default
-title: readme
-base_url: ../../../
----
-Nav: [Workbook](../../workbook)
+Nav: [Workbook](../workbook.md)
 
 EWF Deployment 
 ==============
@@ -200,4 +195,4 @@ http://perishablepress.com/stupid-htaccess-tricks/
 Replace $service with the name of your executable $service, for example app_service.exe
 You will need to create an service.ews file, this file will be located at the same place where you copy your app service executable.
 
-Nav: [Workbook](../../workbook)
+Nav: [Workbook](../workbook.md)
