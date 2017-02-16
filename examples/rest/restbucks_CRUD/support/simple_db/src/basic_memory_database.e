@@ -1,6 +1,8 @@
 note
 	description: "[
 			Basic database for simple example based on memory.
+
+			WARNING: for now, not concurrent compliant.
 		]"
 	date: "$Date$"
 	revision: "$Revision$"
