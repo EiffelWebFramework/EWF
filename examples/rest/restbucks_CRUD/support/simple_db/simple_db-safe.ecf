@@ -14,6 +14,12 @@
 					<version type="compiler" max="17.0.0.0"/>
 				</condition>
 			</file_rule>
+			<file_rule>
+				<exclude>/basic_memory_database\.e$</exclude>
+				<condition>
+					<concurrency value="scoop"/>
+				</condition>
+			</file_rule>
 		</cluster>
 	</target>
 </system>

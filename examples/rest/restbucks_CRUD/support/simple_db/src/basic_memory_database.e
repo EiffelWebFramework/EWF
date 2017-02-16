@@ -2,7 +2,7 @@ note
 	description: "[
 			Basic database for simple example based on memory.
 
-			WARNING: for now, not concurrent compliant.
+			WARNING: for now, this is a database per instance, this is not shared memory inside the same process.
 		]"
 	date: "$Date$"
 	revision: "$Revision$"
@@ -19,6 +19,8 @@ create
 feature {NONE} -- Initialization
 
 	make
+		local
+			b: SED_MEMORY_READER_WRITER
 		do
 			create collections.make (0)
 		end
@@ -74,6 +76,11 @@ feature -- Access
 			end
 		end
 
+	wipe_out
+		do
+			collections.wipe_out
+		end
+
 feature {NONE} -- Implementation
 
 	next_identifier (a_entry_type: TYPE [detachable ANY]): STRING_8
@@ -81,20 +88,22 @@ feature {NONE} -- Implementation
 			i: INTEGER
 			f: RAW_FILE
 			s: STRING
+			tb: detachable STRING_TABLE [detachable ANY]
 		do
-			if attached collections.item (a_entry_type) as tb then
+			tb := collections.item (a_entry_type)
+			if tb /= Void then
 				i := tb.count
+				from
+					i := i + 1
+					Result := i.out
+				until
+					not tb.has_key (Result)
+				loop
+					i := i + 1
+					Result := i.out
+				end
 			else
-				i := 0
-			end
-			from
-				i := i + 1
-				Result := i.out
-			until
-				not has (a_entry_type, Result)
-			loop
-				i := i + 1
-				Result := i.out
+				Result := "1"
 			end
 		end
 
