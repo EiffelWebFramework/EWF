@@ -1,0 +1,16 @@
+# Dependencies
+markdown:         kramdown
+highlighter:      rouge
+
+# Permalinks
+permalink:        pretty
+
+# Server
+destination:      ./_gh_pages
+exclude:          [".gitignore", "Gruntfile.js", "package.json", "node_modules", "/readme_github_page.md",  "*.py", ".scripts"]
+port:             9000
+
+# Custom vars
+repo:             https://github.com/EiffelWebFramework/EWF
+version:          v1
+download:         https://github.com/EiffelWebFramework/EWF/archive/v1.zip

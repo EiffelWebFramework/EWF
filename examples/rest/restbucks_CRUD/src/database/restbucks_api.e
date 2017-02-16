@@ -13,10 +13,9 @@ feature {NONE} -- Initialization
 
 	make
 		local
-			db: BASIC_JSON_FS_DATABASE
+			db: BASIC_SED_FS_DATABASE
 		do
 			create db.make (database_path)
-			db.serialization.register (create {ORDER_JSON_SERIALIZATION}, {ORDER})
 			database := db
 		end
 

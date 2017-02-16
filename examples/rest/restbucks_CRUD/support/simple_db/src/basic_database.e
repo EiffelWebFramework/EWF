@@ -38,6 +38,12 @@ feature -- Access
 		ensure
 			has_not_item: not has (a_entry_type, a_id)
 		end
+
+	wipe_out
+			-- Remove all items, and delete the database
+		deferred
+		end
+
 note
 	copyright: "2011-2017, Javier Velilla and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"

@@ -1,20 +1,13 @@
 note
-	description: "[
-			Basic database for simple example using JSON files.
-
-			(no concurrency access control, ...)
-		]"
+	description: "Summary description for {BASIC_FS_DATABASE}."
 	date: "$Date$"
 	revision: "$Revision$"
 
-class
-	BASIC_JSON_FS_DATABASE
+deferred class
+	BASIC_FS_DATABASE
 
 inherit
 	BASIC_DATABASE
-
-create
-	make
 
 feature {NONE} -- Initialization
 
@@ -23,30 +16,36 @@ feature {NONE} -- Initialization
 			d: DIRECTORY
 		do
 			location := a_location
-			create serialization
 			ensure_directory_exists (a_location)
 		end
-
-feature -- Access serialization
-
-	serialization: JSON_SERIALIZATION
 
 feature -- Access
 
 	location: PATH
+
+feature {NONE} -- Access	
+
+	default_extension: detachable STRING_32
+			-- Default file extension, if any.
+		deferred
+		end
 
 feature -- Access
 
 	count_of (a_entry_type: TYPE [detachable ANY]): INTEGER
 		local
 			d: DIRECTORY
+			ext: like default_extension
 		do
 			create d.make_with_path (location.extended (entry_type_name (a_entry_type)))
 			if d.exists then
+				ext := default_extension
 				across
 					d.entries as ic
 				loop
-					if attached ic.item.extension as e and then e.is_case_insensitive_equal ("json") then
+					if
+						ext = Void or else
+						attached ic.item.extension as e and then e.is_case_insensitive_equal (ext) then
 						Result := Result + 1
 					end
 				end
@@ -62,41 +61,24 @@ feature -- Access
 		end
 
 	item (a_entry_type: TYPE [detachable ANY]; a_id: READABLE_STRING_GENERAL): detachable ANY
-		local
-			f: RAW_FILE
-			s: STRING
 		do
-			create f.make_with_path (entry_path (a_entry_type, a_id))
-			if f.exists then
-				create s.make (f.count)
-				f.open_read
-				from
-				until
-					f.exhausted or f.end_of_file
-				loop
-					f.read_stream (1_024)
-					s.append (f.last_string)
-				end
-				f.close
-				Result := serialization.from_json_string (s, a_entry_type)
-			end
+			Result := item_from_location (a_entry_type, entry_path (a_entry_type, a_id))
 		end
 
 	save (a_entry_type: TYPE [detachable ANY]; a_entry: detachable ANY; cl_entry_id: CELL [detachable READABLE_STRING_GENERAL])
 		local
 			f: RAW_FILE
 			l_id: detachable READABLE_STRING_GENERAL
+			p: PATH
 		do
 			l_id := cl_entry_id.item
 			if l_id = Void then
 				l_id := next_identifier (a_entry_type)
 				cl_entry_id.replace (l_id)
 			end
-			create f.make_with_path (entry_path (a_entry_type, l_id))
-			ensure_directory_exists (f.path.parent)
-			f.open_write
-			f.put_string (serialization.to_json (a_entry).representation)
-			f.close
+			p := entry_path (a_entry_type, l_id)
+			ensure_directory_exists (p.parent)
+			save_item_to_location (a_entry, p)
 		end
 
 	delete (a_entry_type: TYPE [detachable ANY]; a_id: READABLE_STRING_GENERAL)
@@ -109,7 +91,25 @@ feature -- Access
 			end
 		end
 
+	wipe_out
+		local
+			d: DIRECTORY
+		do
+			create d.make_with_path (location)
+			if d.exists then
+				d.recursive_delete
+			end
+		end
+
 feature {NONE} -- Implementation
+
+	item_from_location (a_entry_type: TYPE [detachable ANY]; p: PATH): like item
+		deferred
+		end
+
+	save_item_to_location (a_entry: detachable ANY; p: PATH)
+		deferred
+		end
 
 	ensure_directory_exists (dn: PATH)
 		local
