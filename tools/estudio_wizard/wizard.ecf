@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<system xmlns="http://www.eiffel.com/developers/xml/configuration-1-16-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation=" http://www.eiffel.com/developers/xml/configuration-1-16-0.xsd" name="wizard" uuid="F881A707-745E-4C6D-90D1-F820EE3B1470">
+<system xmlns="http://www.eiffel.com/developers/xml/configuration-1-16-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eiffel.com/developers/xml/configuration-1-16-0 http://www.eiffel.com/developers/xml/configuration-1-16-0.xsd" name="wizard" uuid="F881A707-745E-4C6D-90D1-F820EE3B1470">
 	<target name="wizard">
 		<root class="EWF_GRAPHICAL_WIZARD" feature="make_and_launch"/>
 		<file_rule>

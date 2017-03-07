@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<system xmlns="http://www.eiffel.com/developers/xml/configuration-1-16-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation=" http://www.eiffel.com/developers/xml/configuration-1-16-0.xsd" name="header_fields" uuid="F4644919-0908-470F-A0C1-66C2E08C2D90">
+<system xmlns="http://www.eiffel.com/developers/xml/configuration-1-16-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eiffel.com/developers/xml/configuration-1-16-0 http://www.eiffel.com/developers/xml/configuration-1-16-0.xsd" name="header_fields" uuid="F4644919-0908-470F-A0C1-66C2E08C2D90">
 	<target name="common" abstract="true">
 		<file_rule>
 			<exclude>/.svn$</exclude>
