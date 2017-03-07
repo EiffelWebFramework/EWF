@@ -126,8 +126,6 @@ feature -- Optional
 feature -- Conversion
 
 	append_to_html (a_theme: WSF_THEME; a_html: STRING_8)
-		local
-			s: STRING_8
 		do
 			a_html.append ("<form action=%""+ action +"%"")
 			a_html.append (" method=%""+ method +"%"")
