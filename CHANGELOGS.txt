@@ -1,7 +1,0 @@
-History for Eiffel-Web-Framework
-[2015-06-10]
-	* Updated EWF design to better support concurrency, including SCOOP via
-	the new standalone connector.
-
-
-[Previous  ] Many significant changes in v0
