@@ -41,10 +41,10 @@ Tasks and issues are managed with github issue system
 * Forum/group post: https://groups.google.com/forum/#!forum/eiffel-web-framework
 
 ## Requirements
-* Compiling from EiffelStudio 13.11 to 15.05 and more recent version of the compiler.
-* Currently being developped using EiffelStudio 15.01 (on Windows, Linux)
-* Tested using EiffelStudio 15.01 with "jenkins" CI server (not anymore compatible with 6.8 due to use of `TABLE_ITERABLE`)
-* The code have to allow __void-safe__ compilation and non void-safe system (see [more about void-safety](http://docs.eiffel.com/book/method/void-safe-programming-eiffel) )
+* Compiling from EiffelStudio 16.05 to 17.05 and more recent version of the compiler.
+* Currently being developped using EiffelStudio 17.01 (on Windows, Linux)
+* Tested using EiffelStudio 17.01 with "jenkins" CI server.
+* The code have to allow __void-safe__ compilation and non void-safe system (see [more about void-safety](https://www.eiffel.org/doc/eiffel/Void-safe%20programming%20in%20Eiffel)
 
 ## How to get the source code?
 
