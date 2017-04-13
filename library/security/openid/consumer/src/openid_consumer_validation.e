@@ -92,7 +92,7 @@ feature -- Basic operation
 				if attached item_by_name ("openid.claimed_id", q_lst) as q_claimed_id then
 					l_claimed_id := q_claimed_id.as_string_8
 				elseif attached item_by_name ("openid.identity", q_lst) as l_id then
-					l_claimed_id := l_id
+					l_claimed_id := l_id.to_string_8
 				end
 				identity := l_claimed_id
 				tb.force (item_by_name ("openid.assoc_handle", q_lst), "openid.assoc_handle")
@@ -117,7 +117,7 @@ feature -- Basic operation
 
 				if
 					attached item_by_name ("openid.return_to", q_lst) as q_return_to and then
-					not return_url.same_string (q_return_to)
+					not return_url.same_string (q_return_to.to_string_8)
 				then
 					-- The return_to url must match the url of current request.
 					-- I'm assuing that noone will set the returnUrl to something that doesn't make sense.
@@ -235,8 +235,8 @@ feature -- Basic operation
 					loop
 						s := c.item
 						if
-							s.starts_with (k_value)
-							or s.starts_with (k_type)
+							s.starts_with (k_value.to_string_32)
+							or s.starts_with (k_type.to_string_32)
 						then
 							ax_keys.force ("openid." + s)
 						end
@@ -251,7 +251,7 @@ feature -- Basic operation
 					loop
 						s := c.item
 						if attached item_by_name (s, lst) as v then
-							if s.starts_with (k_value) then
+							if s.starts_with (k_value.to_string_32) then
 								k := s.substring (k_value.count + 1, s.count)
 								i := k.index_of ('.', 1)
 								if i > 1 then

@@ -42,7 +42,7 @@ feature -- Element change
 				across
 					options as o
 				loop
-					if o.item.is_same_value (v) then
+					if o.item.is_same_value (v.to_string_32) then
 						l_found := True
 						o.item.set_is_selected (True)
 					else
@@ -50,7 +50,7 @@ feature -- Element change
 					end
 				end
 				if not l_found then
-					create opt.make (v, Void)
+					create opt.make (v.to_string_32, Void)
 					opt.set_is_selected (True)
 					add_option (opt)
 				end

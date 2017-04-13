@@ -214,7 +214,7 @@ feature -- Execution
 				if f.is_readable then
 					if f.is_directory then
 						if index_disabled then
-							process_directory_index_disabled (uri, req, res)
+							process_directory_index_disabled (uri.to_string_8, req, res)
 						else
 							process_index (req.request_uri, fn, req, res)
 						end
@@ -222,10 +222,10 @@ feature -- Execution
 						process_file (f, req, res)
 					end
 				else
-					process_access_denied (uri, req, res)
+					process_access_denied (uri.to_string_8, req, res)
 				end
 			else
-				process_not_found (uri, req, res)
+				process_not_found (uri.to_string_8, req, res)
 			end
 		end
 
@@ -344,7 +344,7 @@ feature -- Execution
 		do
 			if
 				attached req.meta_string_variable ("HTTP_IF_MODIFIED_SINCE") as s_if_modified_since and then
-				attached http_date_format_to_date (s_if_modified_since) as l_if_modified_since_date and then
+				attached http_date_format_to_date (s_if_modified_since.to_string_8) as l_if_modified_since_date and then
 				attached file_date (f) as f_date and then
 				f_date <= l_if_modified_since_date
 			then

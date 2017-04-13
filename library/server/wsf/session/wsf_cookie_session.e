@@ -32,8 +32,8 @@ feature {NONE} -- Initialization
 			elseif attached {WSF_STRING} req.query_parameter (cookie_name) as q_uuid then
 				l_uuid := q_uuid.value
 			end
-			if l_uuid /= Void and then session_exists (l_uuid) then
-				uuid := l_uuid
+			if l_uuid /= Void and then session_exists (l_uuid.to_string_8) then
+				uuid := l_uuid.to_string_8
 				load
 			else
 				is_pending := True
@@ -183,7 +183,7 @@ feature {NONE} -- Implementation
 		end
 
 note
-	copyright: "2011-2014, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Colin Adams, Eiffel Software and others"
+	copyright: "2011-2017, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Colin Adams, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

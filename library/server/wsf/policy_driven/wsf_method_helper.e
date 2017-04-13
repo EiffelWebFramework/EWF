@@ -101,7 +101,7 @@ feature -- Basic operations
 				-- also if-range when we add support for range requests
 				if not l_if_match.same_string ("*") then
 					l_etags := l_if_match.split (',')
-					l_failed := not across l_etags as i_etags some a_handler.matching_etag (req, i_etags.item, True) end
+					l_failed := not across l_etags as i_etags some a_handler.matching_etag (req, i_etags.item.to_string_32, True) end
 				end
 			end
 			if l_failed then
@@ -122,7 +122,7 @@ feature -- Basic operations
 					if attached req.http_if_none_match as l_if_none_match then
 						l_etags := l_if_none_match.split (',')
 						l_failed := l_if_none_match.same_string ("*") or
-							across l_etags as i_etags some a_handler.matching_etag (req, i_etags.item, False) end
+							across l_etags as i_etags some a_handler.matching_etag (req, i_etags.item.to_string_32, False) end
 					end
 					if l_failed then
 						handle_if_none_match_failed (req, res, a_handler)
@@ -408,7 +408,7 @@ feature -- Error reporting
 				if req.is_content_type_accepted ({HTTP_MIME_TYPES}.text_html) then
 					s := "<html lang=%"en%"><head>"
 					s.append ("<title>")
-					s.append (html_encoder.encoded_string (req.request_uri))
+					s.append (html_encoder.encoded_string (req.request_uri.to_string_32))
 					s.append ("Error " + a_status_code.out + " (" + l_msg + ")")
 					s.append ("</title>%N")
 					s.append ("[
@@ -434,7 +434,7 @@ feature -- Error reporting
 					s.append ("</div>")
 					s.append ("The current location for this resource is <a href=%"" + a_locations.first.string + "%">here</a>")
 					s.append ("Error " + a_status_code.out + " (" + l_msg + ")</div>")
-					s.append ("<div id=%"message%">Error " + a_status_code.out + " (" + l_msg + "): <code>" + html_encoder.encoded_string (req.request_uri) + "</code></div>")
+					s.append ("<div id=%"message%">Error " + a_status_code.out + " (" + l_msg + "): <code>" + html_encoder.encoded_string (req.request_uri.to_string_32) + "</code></div>")
 					s.append ("<div id=%"footer%"></div>")
 					s.append ("</body>%N")
 					s.append ("</html>%N")
@@ -587,7 +587,7 @@ feature -- Error reporting
 		end
 
 note
-	copyright: "2011-2014, Colin Adams, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
+	copyright: "2011-2017, Colin Adams, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

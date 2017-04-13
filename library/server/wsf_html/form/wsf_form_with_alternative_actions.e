@@ -110,26 +110,26 @@ feature {NONE} -- Conversion
 				--formaction
 			if attached formaction as l_formaction then
 				a_target.append (" formaction=%"")
-				a_target.append (l_formaction)
+				a_target.append (l_formaction.to_string_8)
 				a_target.append_character ('%"')
 			end
 				--formenctype
 			if attached formenctype as l_enctype then
 				a_target.append (" formenctype=%"")
-				a_target.append (l_enctype)
+				a_target.append (l_enctype.to_string_8)
 				a_target.append_character ('%"')
 			end
 				-- formmethod
 			if attached formmethod as l_method then
 				a_target.append (" formmethod=%"")
-				a_target.append (l_method)
+				a_target.append (l_method.to_string_8)
 				a_target.append_character ('%"')
 			end
 
 				-- formmethod
 			if attached formtarget as l_target then
 				a_target.append (" formtarget=%"")
-				a_target.append (l_target)
+				a_target.append (l_target.to_string_8)
 				a_target.append_character ('%"')
 			end
 		end
