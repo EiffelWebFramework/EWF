@@ -57,7 +57,7 @@ feature -- Query
 			-- if possible
 		do
 			if attached value as v then
-				Result := v.generating_type
+				Result := v.generating_type.name_32
 			else
 				Result := "Void"
 			end
@@ -71,7 +71,7 @@ feature -- Visitor
 		end
 
 note
-	copyright: "2011-2015, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Colin Adams, Eiffel Software and others"
+	copyright: "2011-2017, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Colin Adams, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

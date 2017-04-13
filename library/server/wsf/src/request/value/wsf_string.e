@@ -132,10 +132,10 @@ feature -- Helper
 			v: like value
 		do
 			v := value
-			if v = a_other then
+			if v = a_other.to_string_32 then
 				Result := True
 			elseif v.is_valid_as_string_8 then
-				Result := v.is_case_insensitive_equal (a_other)
+				Result := v.is_case_insensitive_equal (a_other.to_string_32)
 			end
 		end
 
@@ -154,7 +154,7 @@ feature -- Visitor
 		end
 
 note
-	copyright: "2011-2015, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Colin Adams, Eiffel Software and others"
+	copyright: "2011-2017, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Colin Adams, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

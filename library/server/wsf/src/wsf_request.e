@@ -691,7 +691,7 @@ feature -- Access: CGI Meta variables
 		do
 			meta_variables_table.force (new_string_value (a_name, a_value), a_name)
 		ensure
-			param_set: attached {WSF_STRING} meta_variable (a_name) as val and then val.url_encoded_value.same_string (a_value)
+			param_set: attached {WSF_STRING} meta_variable (a_name) as val and then val.url_encoded_value.same_string (a_value.to_string_8)
 		end
 
 	unset_meta_variable (a_name: READABLE_STRING_GENERAL)
@@ -842,7 +842,7 @@ feature -- Access: CGI meta parameters - 1.1
 				if pi.is_empty then
 					l_result := ""
 				elseif pi.count = 1 and then pi[1] = '/' then
-					l_result := "/"					
+					l_result := "/"
 				else
 					r := request_uri
 					i := r.index_of ('?', 1)
@@ -2110,7 +2110,7 @@ invariant
 	wgi_request.content_type /= Void implies content_type /= Void
 
 note
-	copyright: "2011-2016, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Colin Adams, Eiffel Software and others"
+	copyright: "2011-2017, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Colin Adams, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

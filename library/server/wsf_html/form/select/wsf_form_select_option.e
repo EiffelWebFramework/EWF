@@ -20,7 +20,7 @@ feature {NONE} -- Initialization
 		do
 			value := a_value
 			if a_text = Void then
-				text := a_value
+				text := a_value.to_string_8
 			else
 				text := a_text
 			end

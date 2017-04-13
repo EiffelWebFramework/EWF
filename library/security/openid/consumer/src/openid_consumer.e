@@ -501,7 +501,7 @@ feature -- Helper
 				across
 					lst as c
 				loop
-					Result.append (c.item.content)
+					Result.append (c.item.content.to_string_8)
 				end
 			end
 		end
