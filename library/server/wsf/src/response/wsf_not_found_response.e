@@ -76,7 +76,7 @@ feature {WSF_RESPONSE} -- Output
 			if request.is_content_type_accepted ({HTTP_MIME_TYPES}.text_html) then
 				s := "<html lang=%"en%"><head>"
 				s.append ("<title>")
-				s.append (html_encoder.encoded_string (request.request_uri))
+				s.append (html_encoder.encoded_string (request.request_uri.to_string_32))
 				s.append ("Error 404 (Not Found)")
 				s.append ("</title>%N")
 				s.append ("[
@@ -101,7 +101,7 @@ feature {WSF_RESPONSE} -- Output
 				s.append ("<div class=%"inner2%"></div>")
 				s.append ("</div>")
 				s.append ("Error 404 (Not Found)</div>")
-				s.append ("<div id=%"message%">Error 404 (Not Found): <code>" + html_encoder.encoded_string (request.request_uri) + "</code></div>")
+				s.append ("<div id=%"message%">Error 404 (Not Found): <code>" + html_encoder.encoded_string (request.request_uri.to_string_32) + "</code></div>")
 				if attached suggested_items as lst and then not lst.is_empty then
 					s.append ("<div id=%"suggestions%"><strong>Perhaps you are looking for:</strong><ul>")
 					from
@@ -198,7 +198,7 @@ feature {WSF_RESPONSE} -- Output
 		end
 
 note
-	copyright: "2011-2013, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
+	copyright: "2011-2017, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Colin Adams, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

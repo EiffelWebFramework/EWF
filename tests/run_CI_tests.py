@@ -34,21 +34,21 @@ def set_last_run_CI_tests_failed(m):
 	f.close()
 
 def report_failure(msg, a_code=2):
-	print msg
+	print (msg)
 	set_last_run_CI_tests_failed(msg)
 	sys.exit(a_code)
 
 # Override system command.
 # run command. if not successful, complain and exit with error
 def eval_cmd(cmd):
-	#  print cmd
+	#  print (cmd)
 	res = subprocess.call (cmd, shell=True)
 	if res != 0:
 		report_failure ("Failed running: %s (returncode=%s)" % (cmd, res), 2)
 	return res
 
 def eval_cmd_output(cmd, ignore_error=False):
-	#  print cmd
+	#  print (cmd)
 	p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 	if p:
 		o = p.communicate()[0]
@@ -80,17 +80,17 @@ def runTestForProject(where):
 #	clobber = (len(sys.argv) >= 2 and sys.argv[1] == "-clobber") or (last_build_had_failure())
 	if clobber:
 		reset_last_run_CI_tests_failed()
-		print "## Cleaning previous tests"
+		print ("## Cleaning previous tests")
 		rm_dir("EIFGENs")
 
 	# compile the restbucks
-	print "# Compiling restbucks example"
-	cmd = "ecb -config %s -target restbucks -batch -c_compile -project_path . " % (os.path.join ("examples", "restbucksCRUD", "restbucks-safe.ecf"))
+	print ("# Compiling restbucks example")
+	cmd = "ecb -config %s -target restbucks -batch -c_compile -project_path . " % (os.path.join ("examples", "rest", "restbucks_CRUD", "restbucks.ecf"))
 	res = eval_cmd(cmd)
 
 	sleep(1)
 
-	print "# check compile_all tests"
+	print ("# check compile_all tests")
 	if not os.path.exists(os.path.join ("tests", "temp")):
 		os.makedirs (os.path.join ("tests", "temp"))
 
@@ -102,12 +102,12 @@ def runTestForProject(where):
 			cmd = "%s -keep passed" % (cmd) # forget about failed one .. we'll try again next time
 	if clobber:
 		cmd = "%s -clean" % (cmd)
-	print "command: %s" % (cmd)
+	print ("command: %s" % (cmd))
 	(res, res_output) = eval_cmd_output(cmd)
 	if res != 0:
 		report_failure("compile_all failed", 2)
 
-	print "# Analyze check_compilations results"
+	print ("# Analyze check_compilations results")
 	lines = re.split ("\n", res_output)
 	regexp = "^(\S+)\s+(\S+)\s+from\s+(\S+)\s+\(([^\)]+)\)\.\.\.(\S+)$"
 	p = re.compile (regexp);
@@ -122,14 +122,14 @@ def runTestForProject(where):
 			else:
 				non_failures.append ({"name": p_res.group(2), "target": p_res.group(3), "ecf": p_res.group(4), "result": p_res.group(5)})
 	for non_fails in non_failures:
-		print "[%s] %s : %s @ %s" % (non_fails["result"], non_fails["name"], non_fails["ecf"], non_fails["target"])
+		print ("[%s] %s : %s @ %s" % (non_fails["result"], non_fails["name"], non_fails["ecf"], non_fails["target"]))
 	for fails in failures:
-		print "[FAILURE] %s : %s @ %s" % (fails["name"], fails["ecf"], fails["target"])
+		print ("[FAILURE] %s : %s @ %s" % (fails["name"], fails["ecf"], fails["target"]))
 	sleep(1)
 	if len(failures) > 0:
 		report_failure ("Failure(s) occurred", 2)
 
-	print "# End..."
+	print ("# End...")
 
 if __name__ == '__main__':
 	runTestForProject(os.path.join (os.getcwd(), '..'))
