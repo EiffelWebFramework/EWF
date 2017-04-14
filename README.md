@@ -41,10 +41,10 @@ Tasks and issues are managed with github issue system
 * Forum/group post: https://groups.google.com/forum/#!forum/eiffel-web-framework
 
 ## Requirements
-* Compiling from EiffelStudio 13.11 to 15.05 and more recent version of the compiler.
-* Currently being developped using EiffelStudio 15.01 (on Windows, Linux)
-* Tested using EiffelStudio 15.01 with "jenkins" CI server (not anymore compatible with 6.8 due to use of `TABLE_ITERABLE')
-* The code have to allow __void-safe__ compilation and non void-safe system (see [more about void-safety](http://docs.eiffel.com/book/method/void-safe-programming-eiffel) )
+* Compiling from EiffelStudio 16.05 to 17.05 and more recent version of the compiler.
+* Currently being developped using EiffelStudio 17.01 (on Windows, Linux)
+* Tested using EiffelStudio 17.01 with "jenkins" CI server.
+* The code have to allow __void-safe__ compilation and non void-safe system (see [more about void-safety](https://www.eiffel.org/doc/eiffel/Void-safe%20programming%20in%20Eiffel)
 
 ## How to get the source code?
 
@@ -65,22 +65,18 @@ Using git
   *  __router__: URL dispatching/routing based on uri, uri_template, or custom [read more](library/server/wsf/router)
 
 ### protocol
-* __http__: HTTP related classes, constants for status code, content types, ... [read more](library/protocol/http)
-* __uri_template__: URI Template library (parsing and expander) [read more](library/protocol/uri_template)
-* __CONNEG__: Content negotiation library (Content-type Negociation) [read more](library/protocol/content_negotiation)
+* __http__: HTTP related classes, constants for status code, content types, ... [read more](library/network/protocol/http)
+* __uri_template__: URI Template library (parsing and expander) [read more](library/network/protocol/uri_template)
+* __CONNEG__: Content negotiation library (Content-type Negociation) [read more](library/network/protocol/content_negotiation)
 
 ### client
-* __http_client__: simple HTTP client based on cURL [read more](library/client/http_client)
+* __http_client__: simple HTTP client based on cURL [read more](library/network/http_client)
 
 ### text
 * __encoder__: Various simpler encoders: base64, url-encoder, xml entities, html entities [read more](library/text/encoder)
 
 ### Others
 * error: very simple/basic library to handle error
-
-## External libraries under 'contrib'
-* [Eiffel Web Nino](contrib/library/server/nino)
-* ..
 
 ## Draft folder = call for contribution ##
 
@@ -106,5 +102,4 @@ Keep track of development and community news.
 * Have a question that's not a feature request or bug report? [Ask on the mailing list](http://groups.google.com/group/eiffel-web-framework)
 
 
-For more information please have a look at the related wiki:
-* https://github.com/EiffelWebFramework/EWF/wiki
+For more information please have a look at the related [workbook documentation](docs/workbook)
