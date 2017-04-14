@@ -108,13 +108,11 @@ feature -- Basic operations
 				handle_precondition_failed (req, res)
 			else
 				if attached req.http_if_unmodified_since as l_if_unmodified_since then
-					if l_if_unmodified_since.is_valid_as_string_8 then
-						create l_date.make_from_string (l_if_unmodified_since.to_string_8)
-						if not l_date.has_error then
-							if a_handler.modified_since (req, l_date.date_time) then
-								handle_precondition_failed (req, res)
-								l_failed := True
-							end
+					create l_date.make_from_string (l_if_unmodified_since)
+					if not l_date.has_error then
+						if a_handler.modified_since (req, l_date.date_time) then
+							handle_precondition_failed (req, res)
+							l_failed := True
 						end
 					end
 				end
@@ -128,13 +126,11 @@ feature -- Basic operations
 						handle_if_none_match_failed (req, res, a_handler)
 					else
 						if attached req.http_if_modified_since as l_if_modified_since then
-							if l_if_modified_since.is_valid_as_string_8 then
-								create l_date.make_from_string (l_if_modified_since.to_string_8)
-								if not l_date.has_error then
-									if not a_handler.modified_since (req, l_date.date_time) then
-										handle_not_modified (req, res, a_handler)
-										l_failed := True
-									end
+							create l_date.make_from_string (l_if_modified_since)
+							if not l_date.has_error then
+								if not a_handler.modified_since (req, l_date.date_time) then
+									handle_not_modified (req, res, a_handler)
+									l_failed := True
 								end
 							end
 						end
