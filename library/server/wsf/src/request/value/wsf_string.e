@@ -126,17 +126,10 @@ feature -- Helper
 			Result := value.same_string_general (a_other)
 		end
 
-	is_case_insensitive_equal (a_other: READABLE_STRING_8): BOOLEAN
+	is_case_insensitive_equal (a_other: READABLE_STRING_GENERAL): BOOLEAN
 			-- Does `a_other' represent the same case insensitive string as `Current'?
-		local
-			v: like value
 		do
-			v := value
-			if v = a_other.to_string_32 then
-				Result := True
-			elseif v.is_valid_as_string_8 then
-				Result := v.is_case_insensitive_equal (a_other.to_string_32)
-			end
+			Result := value.is_case_insensitive_equal_general (a_other)
 		end
 
 feature -- Conversion

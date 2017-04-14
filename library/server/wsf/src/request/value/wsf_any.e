@@ -52,14 +52,14 @@ feature -- Status report
 
 feature -- Query
 
-	string_representation: STRING_32
+	string_representation: READABLE_STRING_32
 			-- String representation of Current
 			-- if possible
 		do
 			if attached value as v then
-				Result := v.generating_type.name_32
+				Result := generating_type.name_32
 			else
-				Result := "Void"
+				Result := {STRING_32} "Void"
 			end
 		end
 

@@ -32,7 +32,11 @@ feature {NONE} -- Initialization
 			elseif attached {WSF_STRING} req.query_parameter (cookie_name) as q_uuid then
 				l_uuid := q_uuid.value
 			end
-			if l_uuid /= Void and then session_exists (l_uuid.to_string_8) then
+			if
+				l_uuid /= Void and then
+				l_uuid.is_valid_as_string_8 and then
+				session_exists (l_uuid)
+			then
 				uuid := l_uuid.to_string_8
 				load
 			else
@@ -128,7 +132,7 @@ feature {NONE} -- Storage
 
 	manager: WSF_SESSION_MANAGER
 
-	session_exists (a_uuid: like uuid): BOOLEAN
+	session_exists (a_uuid: READABLE_STRING_GENERAL): BOOLEAN
 		do
 			Result := manager.session_exists (a_uuid)
 		end

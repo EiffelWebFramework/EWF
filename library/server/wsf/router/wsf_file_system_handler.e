@@ -187,9 +187,9 @@ feature -- Execution
 
 	execute (a_start_path: READABLE_STRING_8; req: WSF_REQUEST; res: WSF_RESPONSE)
 		local
-			p: STRING_32
+			p: STRING_8
 		do
-			create p.make_from_string (req.path_info)
+			create p.make_from_string (req.percent_encoded_path_info)
 			if p.starts_with_general (a_start_path) then
 				p.remove_head (a_start_path.count)
 			else
@@ -203,7 +203,7 @@ feature -- Execution
 			execute (a_start_path, req, res)
 		end
 
-	process_uri (uri: READABLE_STRING_32; req: WSF_REQUEST; res: WSF_RESPONSE)
+	process_uri (uri: READABLE_STRING_8; req: WSF_REQUEST; res: WSF_RESPONSE)
 		local
 			f: RAW_FILE
 			fn: like resource_filename
@@ -214,7 +214,7 @@ feature -- Execution
 				if f.is_readable then
 					if f.is_directory then
 						if index_disabled then
-							process_directory_index_disabled (uri.to_string_8, req, res)
+							process_directory_index_disabled (uri, req, res)
 						else
 							process_index (req.request_uri, fn, req, res)
 						end
@@ -222,10 +222,10 @@ feature -- Execution
 						process_file (f, req, res)
 					end
 				else
-					process_access_denied (uri.to_string_8, req, res)
+					process_access_denied (uri, req, res)
 				end
 			else
-				process_not_found (uri.to_string_8, req, res)
+				process_not_found (uri, req, res)
 			end
 		end
 
@@ -344,7 +344,7 @@ feature -- Execution
 		do
 			if
 				attached req.meta_string_variable ("HTTP_IF_MODIFIED_SINCE") as s_if_modified_since and then
-				attached http_date_format_to_date (s_if_modified_since.to_string_8) as l_if_modified_since_date and then
+				attached http_date_format_to_date (s_if_modified_since) as l_if_modified_since_date and then
 				attached file_date (f) as f_date and then
 				f_date <= l_if_modified_since_date
 			then
@@ -497,7 +497,7 @@ feature {NONE} -- Implementation
 			end
 		end
 
-	resource_filename (uri: READABLE_STRING_32): PATH
+	resource_filename (uri: READABLE_STRING_GENERAL): PATH
 		local
 			s: like uri_path_to_filename
 		do
@@ -544,7 +544,7 @@ feature {NONE} -- Implementation
 			end
 		end
 
-	uri_path_to_filename (fn: READABLE_STRING_32): STRING_32
+	uri_path_to_filename (fn: READABLE_STRING_GENERAL): STRING_32
 			-- Real filename from url-path `fn'
 			--| Find a better design for this piece of code
 			--| Eventually in a spec/$ISE_PLATFORM/ specific cluster
@@ -552,7 +552,7 @@ feature {NONE} -- Implementation
 			n: INTEGER
 		do
 			n := fn.count
-			create Result.make_from_string (fn)
+			create Result.make_from_string_general (fn)
 			if n > 0 and then Result.item (Result.count) = {CHARACTER_32} '/' then
 				Result.remove_tail (1)
 				n := n - 1
@@ -595,7 +595,7 @@ feature {NONE} -- implementation: date time
 			Result := timestamp_to_date (f.date)
 		end
 
-	http_date_format_to_date (s: READABLE_STRING_8): detachable DATE_TIME
+	http_date_format_to_date (s: READABLE_STRING_GENERAL): detachable DATE_TIME
 			-- String representation of `dt' using the RFC 1123
 			--       HTTP-date    = rfc1123-date | rfc850-date | asctime-date
 			--       rfc1123-date = wkday "," SP date1 SP time SP "GMT"

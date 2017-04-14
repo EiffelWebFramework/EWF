@@ -137,7 +137,7 @@ feature -- Status report
 			-- String that should be displayed in debugger to represent `Current'.
 		do
 			create Result.make_empty
-			Result.append (type.to_string_32)
+			Result.append_string_general (type)
 			Result.append (" ")
 			if attached login as l_login then
 				Result.append ("login=[")

@@ -45,7 +45,7 @@ feature -- Status report
 				across
 					mtds as c
 				loop
-					s.append_string (c.item.to_string_32)
+					s.append_string_general (c.item)
 					s.append_string (" ")
 				end
 				s.append_string ("]")

@@ -38,11 +38,11 @@ feature -- Element change
 			v: READABLE_STRING_8
 		do
 			if a_text /= Void then
-				v := html_encoded_string (a_text.to_string_32)
+				v := html_encoded_string (a_text)
 				across
 					options as o
 				loop
-					if o.item.is_same_value (v.to_string_32) then
+					if o.item.is_same_value (v) then
 						l_found := True
 						o.item.set_is_selected (True)
 					else
@@ -50,7 +50,7 @@ feature -- Element change
 					end
 				end
 				if not l_found then
-					create opt.make (v.to_string_32, Void)
+					create opt.make (v, Void)
 					opt.set_is_selected (True)
 					add_option (opt)
 				end
@@ -69,7 +69,7 @@ feature -- Element change
 			v: READABLE_STRING_8
 		do
 			if a_text /= Void then
-				v := html_encoded_string (a_text.to_string_32)
+				v := html_encoded_string (a_text)
 				across
 					options as o
 				loop

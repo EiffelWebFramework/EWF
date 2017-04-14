@@ -61,7 +61,7 @@ feature {WSF_RESPONSE} -- Output
 			if request.is_content_type_accepted ({HTTP_MIME_TYPES}.text_html) then
 				s := "<html lang=%"en%"><head>"
 				s.append ("<title>")
-				s.append (html_encoder.encoded_string (request.request_uri.to_string_32))
+				s.append (html_encoder.general_encoded_string (request.request_uri))
 				s.append ("Error 412 (Precondition Failed)")
 				s.append ("</title>%N")
 				s.append ("[
@@ -84,7 +84,7 @@ feature {WSF_RESPONSE} -- Output
 				s.append ("<div class=%"inner2%"></div>")
 				s.append ("</div>")
 				s.append ("Error 412 (Precondition Failed)</div>")
-				s.append ("<div id=%"message%">Error 412 (Precondition Failed): <code>" + html_encoder.encoded_string (request.request_uri.to_string_32) + "</code></div>")
+				s.append ("<div id=%"message%">Error 412 (Precondition Failed): <code>" + html_encoder.general_encoded_string (request.request_uri) + "</code></div>")
 				if attached body as b then
 					s.append ("<div>")
 					s.append (b)

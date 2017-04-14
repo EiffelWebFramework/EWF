@@ -125,13 +125,13 @@ feature {NONE} -- Implementation
 										l_is_hidden := l_doc_mapping.documentation (i.request_methods).is_hidden
 									end
 									if not l_is_hidden then
-										create s.make_from_string (i.mapping.associated_resource.to_string_32)
+										create s.make_from_string_general (i.mapping.associated_resource)
 										if attached i.request_methods as mtds then
 											s.append (" [ ")
 											across
 												mtds as mtds_c
 											loop
-												s.append (mtds_c.item.to_string_32)
+												s.append_string_general (mtds_c.item)
 												s.append_character (' ')
 											end
 											s.append ("]")
@@ -169,7 +169,7 @@ feature {NONE} -- Implementation
 							end
 							if not l_is_hidden then
 								ok := True
-								create s.make_from_string (i.mapping.associated_resource.to_string_32)
+								create s.make_from_string_general (i.mapping.associated_resource)
 								if attached i.request_methods as mtds then
 									ok := False
 									s.append (" [ ")
@@ -179,7 +179,7 @@ feature {NONE} -- Implementation
 										if m = Void or else m.is_case_insensitive_equal (c.item) then
 											ok := True
 										end
-										s.append (c.item.to_string_32)
+										s.append_string_general (c.item)
 										s.append_character (' ')
 									end
 									s.append ("]")

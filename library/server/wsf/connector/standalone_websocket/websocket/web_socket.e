@@ -166,6 +166,7 @@ feature -- Basic Operation
 			if is_verbose then
 				log ("%NReceive <====================", debug_level)
 				if attached req.raw_header_data as rhd then
+					check raw_header_is_valid_as_string_8: rhd.is_valid_as_string_8 end
 					log (rhd.to_string_8, debug_level)
 				end
 			end
@@ -189,6 +190,7 @@ feature -- Basic Operation
 					end
 						-- Sending the server's opening handshake
 					create l_sha1.make
+					check l_ws_key_is_valid_as_string_8: l_ws_key.is_valid_as_string_8 end
 					l_sha1.update_from_string (l_ws_key.to_string_8 + magic_guid)
 					l_key := Base64_encoder.encoded_string (digest (l_sha1))
 					res.header.add_header_key_value ("Upgrade", "websocket")

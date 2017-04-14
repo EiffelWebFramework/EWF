@@ -147,7 +147,10 @@ feature {WSF_RESPONSE} -- Output
 				l_description.append ("</ul>")
 			end
 
-			if doc_url_supported and then attached {WSF_STRING} request.query_parameter ("api") as l_api then
+			if
+				doc_url_supported and then attached {WSF_STRING} request.query_parameter ("api") as l_api and then
+				l_api.value.is_valid_as_string_8
+			then
 				l_api_resource := l_api.value.to_string_8
 				if l_api_resource.is_empty then
 					l_api_resource := Void

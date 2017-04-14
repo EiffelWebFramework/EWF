@@ -130,7 +130,7 @@ feature {WSF_RESPONSE} -- Output
 			if request.is_content_type_accepted ({HTTP_MIME_TYPES}.text_html) then
 				s := "<html lang=%"en%"><head>"
 				s.append ("<title>")
-				s.append (html_encoder.encoded_string (request.request_uri.to_string_32))
+				s.append (html_encoder.general_encoded_string (request.request_uri))
 				s.append (l_html_error_code_text + "!!")
 				s.append ("</title>%N")
 				s.append (
@@ -160,7 +160,7 @@ feature {WSF_RESPONSE} -- Output
 				s.append (l_html_error_code_text + "</div>")
 				s.append ("<div id=%"message%">" + l_html_error_code_text + ": the request method <code>")
 				s.append (request.request_method)
-				s.append ("</code> is inappropriate for the URL for <code>" + html_encoder.encoded_string (request.request_uri.to_string_32) + "</code>.</div>")
+				s.append ("</code> is inappropriate for the URL for <code>" + html_encoder.general_encoded_string (request.request_uri) + "</code>.</div>")
 				if attached suggested_methods as lst and then not lst.is_empty then
 					s.append ("<div id=%"suggestions%"><strong>Allowed methods:</strong>")
 					across
@@ -186,17 +186,17 @@ feature {WSF_RESPONSE} -- Output
 								l_text := l_loc
 							end
 							s.append ("<li>")
-							s.append ("<a href=%"" + l_loc + "%">" + html_encoder.encoded_string (l_text.to_string_32) + "</a>")
+							s.append ("<a href=%"" + l_loc + "%">" + html_encoder.general_encoded_string (l_text) + "</a>")
 						elseif l_text /= Void then
 
 							s.append ("<li>")
-							s.append (html_encoder.encoded_string (l_text.to_string_32))
+							s.append (html_encoder.general_encoded_string (l_text))
 							s.append ("</li>%N")
 						end
 						if (l_loc /= Void or l_text /= Void) then
 							if attached lst.item.description as l_desc then
 								s.append ("<br/> - ")
-								s.append (html_encoder.encoded_string (l_desc.to_string_32))
+								s.append (html_encoder.general_encoded_string (l_desc))
 								s.append ("%N")
 							end
 							s.append ("</li>%N")
@@ -221,7 +221,7 @@ feature {WSF_RESPONSE} -- Output
 			else
 				s := l_html_error_code_text + ": the request method "
 				s.append (request.request_method)
-				s.append (" is inappropriate for the URL for '" + html_encoder.encoded_string (request.request_uri.to_string_32) + "'.%N")
+				s.append (" is inappropriate for the URL for '" + html_encoder.general_encoded_string (request.request_uri) + "'.%N")
 				if attached suggested_methods as lst and then not lst.is_empty then
 					s.append ("Allowed methods:")
 					across
