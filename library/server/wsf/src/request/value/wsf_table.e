@@ -145,10 +145,10 @@ feature -- Conversion
 				if attached {WSF_STRING} value (i.out) as s then
 					Result.put (s.value, i)
 					nb := nb + 1
-				elseif attached {WSF_STRING} value (name + "[" + i.out + "]") as s then
-					-- FIXME !!
-					Result.put (s.value, i)
-					nb := nb + 1					
+--FIXME				elseif attached {WSF_STRING} value (name + "[" + i.out + "]") as s then
+--
+--					Result.put (s.value, i)
+--					nb := nb + 1					
 				else
 					Result := Void
 				end
@@ -236,7 +236,7 @@ feature -- Visitor
 		end
 
 note
-	copyright: "2011-2015, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Colin Adams, Eiffel Software and others"
+	copyright: "2011-2017, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Colin Adams, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software
