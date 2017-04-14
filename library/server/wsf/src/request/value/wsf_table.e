@@ -130,7 +130,7 @@ feature -- Conversion
 		end
 
 	as_array_of_string: detachable ARRAY [READABLE_STRING_32]
-			-- Return an array of STRING if possible., otherwise Void
+			-- Return an array of STRING if possible, otherwise Void.
 		local
 			i,n: INTEGER
 			nb: INTEGER
@@ -145,6 +145,10 @@ feature -- Conversion
 				if attached {WSF_STRING} value (i.out) as s then
 					Result.put (s.value, i)
 					nb := nb + 1
+				elseif attached {WSF_STRING} value (name + "[" + i.out + "]") as s then
+					-- FIXME !!
+					Result.put (s.value, i)
+					nb := nb + 1					
 				else
 					Result := Void
 				end
