@@ -9,7 +9,6 @@
 		</file_rule>
 		<option warning="true">
 		</option>
-		<variable name="ssl_enabled" value="true"/>
 		<library name="base" location="$ISE_LIBRARY\library\base\base.ecf"/>
 		<library name="base_process" location="$ISE_LIBRARY\library\process\base\base_process.ecf">
 			<condition>
@@ -24,12 +23,6 @@
 				<custom name="smtp_notification_email_disabled" excluded_value="true"/>
 			</condition>
 		</library>
-		<library name="net-ssl" location="$ISE_LIBRARY\unstable\library\network\socket\netssl\net_ssl.ecf">
-			<condition>
-				<custom name="smtp_notification_email_disabled" excluded_value="true"/>
-				<custom name="ssl_enabled" value="true"/>
-			</condition>
-		</library>
 		<library name="process" location="$ISE_LIBRARY\library\process\process.ecf">
 			<condition>
 				<version type="compiler" max="16.10.9.9999"/>
@@ -42,11 +35,6 @@
 				<condition>
 					<custom name="smtp_notification_email_disabled" excluded_value="true"/>
 				</condition>
-				<cluster name="smtp-ssl" location="$|ssl\">
-					<condition>
-						<custom name="ssl_enabled" value="true"/>
-					</condition>
-				</cluster>
 			</cluster>
 		</cluster>
 	</target>
