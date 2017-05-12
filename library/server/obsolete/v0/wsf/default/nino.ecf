@@ -10,7 +10,7 @@
 		<option warning="true">
 		</option>
 		<capability>
-			<concurrency support="thread" use="thread"/>
+			<concurrency support="none"/>
 		</capability>
 		<library name="base" location="$ISE_LIBRARY\library\base\base.ecf"/>
 		<library name="wsf" location="..\wsf.ecf"/>

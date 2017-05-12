@@ -10,7 +10,7 @@
 		<option warning="true">
 		</option>
 		<capability>
-			<concurrency support="thread" use="thread"/>
+			<concurrency support="none"/>
 		</capability>
 		<library name="base" location="$ISE_LIBRARY\library\base\base.ecf"/>
 		<library name="connector_nino" location="..\..\..\..\obsolete\v0\ewsgi\connectors\nino\nino.ecf"/>

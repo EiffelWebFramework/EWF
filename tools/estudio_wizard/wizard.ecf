@@ -3,8 +3,8 @@
 	<target name="wizard">
 		<root class="EWF_GRAPHICAL_WIZARD" feature="make_and_launch"/>
 		<file_rule>
-			<exclude>/.git$</exclude>
-			<exclude>/.svn$</exclude>
+			<exclude>/\.git$</exclude>
+			<exclude>/\.svn$</exclude>
 			<exclude>/EIFGENs$</exclude>
 		</file_rule>
 		<option warning="true">

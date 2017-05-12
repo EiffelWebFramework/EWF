@@ -3,15 +3,15 @@
 	<target name="test_http_client">
 		<root class="TEST" feature="make"/>
 		<file_rule>
-			<exclude>/.git$</exclude>
-			<exclude>/.svn$</exclude>
+			<exclude>/\.git$</exclude>
+			<exclude>/\.svn$</exclude>
 			<exclude>/EIFGENs$</exclude>
 		</file_rule>
 		<option warning="true">
 			<assertions precondition="true" postcondition="true" check="true" invariant="true" loop="true" supplier_precondition="true"/>
 		</option>
 		<capability>
-			<concurrency support="none"/>
+			<concurrency support="thread"/>
 		</capability>
 		<variable name="netssl_http_client_enabled" value="false"/>
 		<variable name="net_http_client_disabled" value="false"/>

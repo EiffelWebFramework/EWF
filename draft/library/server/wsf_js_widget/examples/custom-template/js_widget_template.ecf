@@ -2,7 +2,7 @@
 <system xmlns="http://www.eiffel.com/developers/xml/configuration-1-16-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eiffel.com/developers/xml/configuration-1-16-0 http://www.eiffel.com/developers/xml/configuration-1-16-0.xsd" name="js_widget_template" uuid="5C5C33AA-9DCF-42CF-A85A-A6E650E7234F">
 	<target name="common" abstract="true">
 		<file_rule>
-			<exclude>/.git$</exclude>
+			<exclude>/\.git$</exclude>
 			<exclude>/CVS$</exclude>
 			<exclude>/EIFGENs$</exclude>
 		</file_rule>

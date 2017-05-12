@@ -15,7 +15,7 @@
 		<library name="wsf_html" location="..\..\..\library\server\wsf_html\wsf_html.ecf" readonly="false"/>
 		<cluster name="test" location=".\" recursive="true">
 			<file_rule>
-				<exclude>/.svn$</exclude>
+				<exclude>/\.svn$</exclude>
 				<exclude>/CVS$</exclude>
 				<exclude>/EIFGENs$</exclude>
 			</file_rule>

@@ -122,7 +122,7 @@ feature {NONE} -- Initialization
 				then
 					secure_settings := [l_secure_prot, opts.option_string_32_value ("secure_certificate", Void), opts.option_string_32_value ("secure_certificate_key", Void)]
 				elseif
-						-- OBSOLETE: backward compatible with old settings name [oct/2016].
+						-- OBSOLETE: backward compatible with old settings name [2017-05-31].
 					opts.option_boolean_value ("ssl_enabled", is_secure) and then
 					attached opts.option_string_32_value ("ssl_protocol", "tls_1_2") as ssl_prot
 				then
@@ -141,7 +141,7 @@ feature {NONE} -- Initialization
 	force_single_threaded
 			-- Set `single_threaded' to True.
 		obsolete
-			"Use set_max_concurrent_connections (1) [Feb/2017]"
+			"Use set_max_concurrent_connections (1) [2017-05-31]"
 		do
 			set_max_concurrent_connections (1)
 		ensure
@@ -238,7 +238,7 @@ feature {NONE} -- Implementation
 
 	single_threaded: BOOLEAN
 		obsolete
-			"Use max_concurrent_connections <= 1 [Feb/2017]"
+			"Use max_concurrent_connections <= 1 [2017-05-31]"
 		do
 			Result := max_concurrent_connections <= 1
 		end
@@ -277,7 +277,7 @@ feature -- Status report
 		end
 
 ;note
-	copyright: "2011-2016, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
+	copyright: "2011-2017, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

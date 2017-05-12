@@ -3,8 +3,8 @@
 	<target name="server">
 		<root class="TEST" feature="make"/>
 		<file_rule>
-			<exclude>/.git$</exclude>
-			<exclude>/.svn$</exclude>
+			<exclude>/\.git$</exclude>
+			<exclude>/\.svn$</exclude>
 			<exclude>/EIFGENs$</exclude>
 		</file_rule>
 		<option debug="false" warning="true">
