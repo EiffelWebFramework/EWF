@@ -2,8 +2,8 @@ note
 	description: "[
 			Table which can contain value indexed by a key
 		]"
-	date: "$Date: 2015-11-05 21:52:56 +0100 (jeu., 05 nov. 2015) $"
-	revision: "$Revision: 98081 $"
+	date: "$Date$"
+	revision: "$Revision$"
 
 class
 	WSF_TABLE
@@ -86,7 +86,7 @@ feature -- Access
 
 	frozen first_key: like first_name
 		obsolete
-			"Use first_name [2012-May-31]"
+			"Use first_name [2017-05-31]"
 		do
 			Result := first_name
 		end
