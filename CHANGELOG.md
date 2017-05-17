@@ -8,11 +8,35 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 ## [Unreleased]
 ### Added
 ### Changed
+- http_network:
+	Integrated changes on SOCKET so that EiffelWeb can be compiled with 16.05 to 17.05 and after.
 ### Deprecated
 ### Removed
 ### Fixed
+- http_client:
+	Improved query and form data encoding (based on a very early version of the general URI percent-encoding rules).
+      - now correct encoding of space by '%20' in path segment, and '+' in query parameters.
+    Unify and fixed query parameters handling for libcurl and net implementation.
+    Fixed file uploading (various issue in libcurl, and net implementation).
+    Fixed form multipart encoding by using correctly the boundary.
+- Code cleaning:
+	Removed many obsolete calls, and added timestamp on EiffelWeb obsolete features to benefit from upcoming improvement on the EiffelStudio Inspector tool.
 ### Security
 
+
+## [v1.0.5] - 2017-05-17
+### Changed
+- http_network:
+	Integrated changes on SOCKET so that EiffelWeb can be compiled with 16.05 to 17.05 and after.
+### Fixed
+- http_client:
+	Improved query and form data encoding (based on a very early version of the general URI percent-encoding rules).
+      - now correct encoding of space by '%20' in path segment, and '+' in query parameters.
+    Unify and fixed query parameters handling for libcurl and net implementation.
+    Fixed file uploading (various issue in libcurl, and net implementation).
+    Fixed form multipart encoding by using correctly the boundary.
+- Code cleaning:
+	Removed many obsolete calls, and added timestamp on EiffelWeb obsolete features to benefit from upcoming improvement on the EiffelStudio Inspector tool.
 
 ## [v1.0.4] - 2017-03-15
 
