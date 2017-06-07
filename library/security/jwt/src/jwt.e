@@ -3,263 +3,141 @@ note
 	date: "$Date$"
 	revision: "$Revision$"
 
-class
+deferred class
 	JWT
 
-feature -- Initialization	
-
-	encoded_string (a_payload: READABLE_STRING_8; a_secret: READABLE_STRING_8; a_algo: READABLE_STRING_8): STRING
-		local
-			alg, sign: STRING_8
-			l_enc_payload, l_enc_header: READABLE_STRING_8
-		do
-			reset_error
-			if a_algo.is_case_insensitive_equal_general (alg_hs256) then
-				alg := alg_hs256
-			elseif a_algo.is_case_insensitive_equal_general (alg_none) then
-				alg := alg_none
-			else
-				report_unsupported_alg_error (a_algo)
-				alg := alg_hs256 -- Default ...
-			end
-			l_enc_header := base64url_encode (header ("JWT", alg))
-			l_enc_payload := base64url_encode (a_payload)
-			sign := signature (l_enc_header, l_enc_payload, a_secret, alg)
-			create Result.make (l_enc_header.count + 1 + l_enc_payload.count + 1 + sign.count)
-			Result.append (l_enc_header)
-			Result.append_character ('.')
-			Result.append (l_enc_payload)
-			Result.append_character ('.')
-			Result.append (sign)
+inherit
+	ANY
+		redefine
+			default_create
 		end
 
-	decoded_string (a_token: READABLE_STRING_8; a_secret: READABLE_STRING_8; a_algo: detachable READABLE_STRING_8): detachable STRING
-		local
-			i,j,n: INTEGER
-			alg, l_enc_payload, l_enc_header, l_signature: READABLE_STRING_8
-		do
-			reset_error
-			n := a_token.count
-			i := a_token.index_of ('.', 1)
-			if i > 0 then
-				j := a_token.index_of ('.', i + 1)
-				if j > 0 then
-					l_enc_header := a_token.substring (1, i - 1)
-					l_enc_payload := a_token.substring (i + 1, j - 1)
-					l_signature := a_token.substring (j + 1, n)
-					Result := base64url_decode (l_enc_payload)
-					alg := a_algo
-					if alg = Void then
-						alg := signature_algorithm_from_encoded_header (l_enc_header)
-						if alg = Void then
-								-- Use default
-							alg := alg_hs256
-						end
-					end
-					check alg_set: alg /= Void end
-					if alg.is_case_insensitive_equal (alg_hs256) then
-						alg := alg_hs256
-					elseif alg.is_case_insensitive_equal (alg_none) then
-						alg := alg_none
-					else
-						alg := alg_hs256
-						report_unsupported_alg_error (alg)
-					end
+feature {NONE} -- Initialization
 
-					if not l_signature.same_string (signature (l_enc_header, l_enc_payload, a_secret, alg)) then
-						report_unverified_token_error
-					end
-				else
-					report_invalid_token
-				end
-			else
-				report_invalid_token
-			end
+	default_create
+		do
+			create header
+			create claimset
 		end
+
+feature -- Access
+
+	header: JWT_HEADER
+
+	claimset: JWT_CLAIMSET
 
 feature -- Status report
 
-	supported_signature_algorithms: LIST [READABLE_STRING_8]
-			-- Supported signature algorithm `alg`?	
+	is_expired (dt: detachable DATE_TIME): BOOLEAN
+			-- Is Current token expired?
+			-- See "exp" claim.
 		do
-			create {ARRAYED_LIST [READABLE_STRING_8]} Result.make (2)
-			Result.extend (alg_hs256)
-			Result.extend (alg_none)
+			if attached claimset.expiration_time as l_exp_time then
+				if dt /= Void then
+					Result := dt > l_exp_time
+				else
+					Result := (create {DATE_TIME}.make_now_utc) > l_exp_time
+				end
+			end
 		end
 
-	is_supporting_signature_algorithm (alg: READABLE_STRING_8): BOOLEAN
-			-- Is supporting signature algorithm `alg`?	
+	is_nbf_validated (dt: detachable DATE_TIME): BOOLEAN
+			-- Does `dt` or now verify the "nbf" claim?
+			-- See "nbf" claim.
 		do
-			Result := alg.is_case_insensitive_equal (alg_hs256) or
-					alg.is_case_insensitive_equal (alg_none)
+			Result := True
+			if attached claimset.not_before_time as l_time then
+				if dt /= Void then
+					Result := dt >= l_time
+				else
+					Result := (create {DATE_TIME}.make_now_utc) >= l_time
+				end
+			end
 		end
 
-	error_code: INTEGER
-			-- Last error, if any.
+	is_iss_validated (a_issuer: detachable READABLE_STRING_8): BOOLEAN
+		do
+			if attached claimset.issuer as iss then
+				Result := a_issuer = Void or else a_issuer.same_string (iss)
+			end
+		end
+
+	is_aud_validated (a_audience: detachable READABLE_STRING_8): BOOLEAN
+		do
+			if attached claimset.audience as aud then
+				Result := a_audience = Void or else a_audience.same_string (aud)
+			end
+		end
+
+feature -- Conversion
+
+	encoded_string (a_secret: READABLE_STRING_8): STRING
+		deferred
+		end
+
+feature -- status report
 
 	has_error: BOOLEAN
-			-- Last `encoded_string` reported an error?	
 		do
-			Result := error_code /= 0
+			Result := attached errors as errs and then not errs.is_empty
 		end
 
 	has_unsupported_alg_error: BOOLEAN
 		do
-			Result := error_code = unsupported_alg_error
+			Result := attached errors as errs and then across errs as ic some attached {JWT_UNSUPPORTED_ALG_ERROR} ic.item end
 		end
 
 	has_unverified_token_error: BOOLEAN
 		do
-			Result := error_code = unverified_token_error
+			Result := attached errors as errs and then across errs as ic some attached {JWT_UNVERIFIED_TOKEN_ERROR} ic.item end
 		end
 
 	has_invalid_token_error: BOOLEAN
 		do
-			Result := error_code = invalid_token_error
+			Result := attached errors as errs and then across errs as ic some attached {JWT_INVALID_TOKEN_ERROR} ic.item end
 		end
 
-feature -- Error reporting
+	errors: detachable ARRAYED_LIST [JWT_ERROR]
+
+feature {JWT_UTILITIES} -- Error reporting
 
 	reset_error
 		do
-			error_code := 0
+			errors := Void
+		end
+
+	report_error (err: JWT_ERROR)
+		local
+			l_errors: like errors
+		do
+			l_errors := errors
+			if l_errors = Void then
+				create l_errors.make (1)
+				errors := l_errors
+			end
+			l_errors.extend (err)
 		end
 
 	report_unsupported_alg_error (alg: READABLE_STRING_8)
 		do
-			error_code := unsupported_alg_error
+			report_error (create {JWT_UNSUPPORTED_ALG_ERROR}.make (alg))
 		end
 
 	report_unverified_token_error
 		do
-			error_code := unverified_token_error
+			report_error (create {JWT_UNVERIFIED_TOKEN_ERROR})
 		end
 
 	report_invalid_token
 		do
-			error_code := invalid_token_error
+			report_error (create {JWT_INVALID_TOKEN_ERROR})
 		end
 
-feature {NONE} -- Constants
-
-	unsupported_alg_error: INTEGER = -2
-
-	unverified_token_error: INTEGER = -4
-
-	invalid_token_error: INTEGER = -8
-
-	alg_hs256: STRING = "HS256"
-			-- HMAC SHA256.
-
-	alg_none: STRING = "none"
-			-- for unsecured token.
-
-feature -- Conversion
-
-	header (a_type: detachable READABLE_STRING_8; alg: READABLE_STRING_8): STRING
+	report_claim_validation_error (a_claimname: READABLE_STRING_8)
 		do
-			create Result.make_empty
-			Result.append ("{%"typ%":%"")
-			if a_type /= Void then
-				Result.append (a_type)
-			else
-				Result.append ("JWT")
-			end
-			Result.append ("%",%"alg%":%"")
-			Result.append (alg)
-			Result.append ("%"}")
+			report_error (create {JWT_CLAIM_VALIDATION_ERROR}.make (a_claimname))
 		end
 
-	signature_algorithm_from_encoded_header (a_enc_header: READABLE_STRING_8): detachable STRING_8
-		local
-			jp: JSON_PARSER
-		do
-			create jp.make_with_string (base64url_decode (a_enc_header))
-			jp.parse_content
-			if
-				attached jp.parsed_json_object as jo and then
-				attached {JSON_STRING} jo.item ("alg") as j_alg
-			then
-				Result := j_alg.unescaped_string_8
-			end
-		end
-
-feature -- Implementation
-
-	base64url_encode (s: READABLE_STRING_8): STRING_8
-		local
-			urlencoder: URL_ENCODER
-			base64: BASE64
-		do
-			create urlencoder
-			create base64
-			Result := urlsafe_encode (base64.encoded_string (s))
-		end
-
-feature {NONE} -- Implementation
-
-	signature (a_enc_header, a_enc_payload: READABLE_STRING_8; a_secret: READABLE_STRING_8; alg: READABLE_STRING_8): STRING_8
-		local
-			s: STRING
-		do
-			if alg = alg_none then
-				create Result.make_empty
-			else
-				create s.make (a_enc_header.count + 1 + a_enc_payload.count)
-				s.append (a_enc_header)
-				s.append_character ('.')
-				s.append (a_enc_payload)
-				if alg = alg_hs256 then
-					Result := base64_hmacsha256 (s, a_secret)
-				else
-					Result := base64_hmacsha256 (s, a_secret)
-				end
-				Result := urlsafe_encode (Result)
-			end
-		end
-
-	base64url_decode (s: READABLE_STRING_8): STRING_8
-		local
-			urlencoder: URL_ENCODER
-			base64: BASE64
-		do
-			create urlencoder
-			create base64
-			Result := base64.decoded_string (urlsafe_decode (s))
-		end
-
-	urlsafe_encode (s: READABLE_STRING_8): STRING_8
-		do
-			create Result.make_from_string (s)
-			Result.replace_substring_all ("=", "")
-			Result.replace_substring_all ("+", "-")
-			Result.replace_substring_all ("/", "_")
-		end
-
-	urlsafe_decode (s: READABLE_STRING_8): STRING_8
-		local
-			i: INTEGER
-		do
-			create Result.make_from_string (s)
-			Result.replace_substring_all ("-", "+")
-			Result.replace_substring_all ("_", "/")
-			from
-				i := Result.count \\ 4
-			until
-				i = 0
-			loop
-				i := i - 1
-				Result.extend ('=')
-			end
-		end
-
-	base64_hmacsha256 (s: READABLE_STRING_8; a_secret: READABLE_STRING_8): STRING_8
-		local
-			hs256: HMAC_SHA256
-		do
-			create hs256.make_ascii_key (a_secret)
-			hs256.update_from_string (s)
-			Result := hs256.base64_digest --lowercase_hexadecimal_string_digest
-		end
+invariant
 
 end
