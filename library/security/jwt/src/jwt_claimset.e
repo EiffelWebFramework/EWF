@@ -259,6 +259,11 @@ feature -- Element change
 			end
 		end
 
+	set_issued_at_now_utc
+		do
+			set_issued_at (create {DATE_TIME}.make_now_utc)
+		end
+
 	set_jwt_id (jti: detachable READABLE_STRING_8)
 			--   The "jti" (JWT ID) claim provides a unique identifier for the JWT.
 			--   The identifier value MUST be assigned in a manner that ensures that
