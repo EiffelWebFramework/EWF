@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<system xmlns="http://www.eiffel.com/developers/xml/configuration-1-15-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eiffel.com/developers/xml/configuration-1-15-0 http://www.eiffel.com/developers/xml/configuration-1-15-0.xsd" name="test_http_client" uuid="920E5C50-41E1-4DAC-8D48-D9C860E49228">
-	<target name="test_http_client">
+<system xmlns="http://www.eiffel.com/developers/xml/configuration-1-15-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eiffel.com/developers/xml/configuration-1-15-0 http://www.eiffel.com/developers/xml/configuration-1-15-0.xsd" name="testing_http_client" uuid="920E5C50-41E1-4DAC-8D48-D9C860E49228">
+	<target name="testing_http_client">
 		<root class="TEST" feature="make"/>
 		<file_rule>
 			<exclude>/.git$</exclude>
@@ -10,7 +10,8 @@
 		<option warning="true"  void_safety="all">
 			<assertions precondition="true" postcondition="true" check="true" invariant="true" loop="true" supplier_precondition="true"/>
 		</option>
-		<variable name="netssl_http_client_enabled" value="false"/>
+		<variable name="ssl_enabled" value="true"/>
+		<variable name="netssl_http_client_enabled" value="true"/>
 		<variable name="net_http_client_disabled" value="false"/>
 		<variable name="libcurl_http_client_disabled" value="false"/>
 		<library name="base" location="$ISE_LIBRARY\library\base\base-safe.ecf"/>
