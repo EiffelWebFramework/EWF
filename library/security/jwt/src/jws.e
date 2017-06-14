@@ -1,6 +1,5 @@
 note
 	description: "Summary description for {JWS}."
-	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -9,18 +8,34 @@ class
 
 inherit
 	JWT
+		redefine
+			default_create
+		end
 
 	JWT_UTILITIES
-		undefine
+		redefine
 			default_create
 		end
 
 create
 	default_create,
+	make_with_algorithm,
 	make_with_claims,
 	make_with_json_payload
 
 feature {NONE} -- Initialization
+
+	default_create
+		do
+			Precursor {JWT}
+			set_algorithm_to_hs256
+		end
+
+	make_with_algorithm (alg: like algorithm)
+		do
+			default_create
+			set_algorithm (alg)
+		end
 
 	make_with_claims (tb: STRING_TABLE [READABLE_STRING_GENERAL])
 		do
@@ -75,6 +90,16 @@ feature -- Element change
 	set_algorithm (alg: detachable READABLE_STRING_8)
 		do
 			header.set_algorithm (alg)
+		end
+
+	set_algorithm_to_hs256
+		do
+			set_algorithm (alg_hs256)
+		end
+
+	set_algorithm_to_none
+		do
+			set_algorithm (alg_none)
 		end
 
 end
