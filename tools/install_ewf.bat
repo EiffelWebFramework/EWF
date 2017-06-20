@@ -100,6 +100,10 @@ echo Install library: http_authorization
 %SAFE_MD% %TMP_CONTRIB_DIR%\library\web\authentication
 %COPYCMD% %TMP_DIR%\library\server\authentication\http_authorization	%TMP_CONTRIB_DIR%\library\web\authentication\http_authorization
 
+echo Install library: jwt
+%SAFE_MD% %TMP_CONTRIB_DIR%\library\web\authentication
+%COPYCMD% %TMP_DIR%\library\security\jwt	%TMP_CONTRIB_DIR%\library\web\authentication\jwt
+
 echo Install library: openid
 %SAFE_MD% %TMP_CONTRIB_DIR%\library\web\authentication
 %COPYCMD% %TMP_DIR%\library\security\openid	%TMP_CONTRIB_DIR%\library\web\authentication\openid
