@@ -25,19 +25,16 @@ feature -- Access
 	process_group (g: ERROR_GROUP)
 		do
 			if attached g.sub_errors as err then
-				from
-					err.start
-				until
-					err.after
+				across
+					err as e
 				loop
-					process_error (err.item)
-					err.forth
+					process_error (e.item)
 				end
 			end
 		end
 
 note
-	copyright: "Copyright (c) 1984-2011, Eiffel Software and others"
+	copyright: "2011-2017, Jocelyn Fiat, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software
