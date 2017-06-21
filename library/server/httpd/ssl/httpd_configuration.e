@@ -35,12 +35,6 @@ feature -- Access
 
 feature -- SSL Helpers
 
-	set_secure_protocol_to_ssl_2_or_3
-			-- Set `secure_protocol' with `Ssl_23'.
-		do
-			set_secure_protocol ({SSL_PROTOCOL}.Ssl_23)
-		end
-
 	set_secure_protocol_to_tls_1_0
 			-- Set `secure_protocol' with `Tls_1_0'.
 		do
@@ -67,7 +61,7 @@ feature -- SSL Helpers
 
 
 note
-	copyright: "2011-2014, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
+	copyright: "2011-2017, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

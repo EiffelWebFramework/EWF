@@ -54,12 +54,6 @@ feature -- Secure connection Helpers
 			set_tls_protocol (v)
 		end
 
-	set_secure_protocol_to_ssl_2_or_3
-			-- Set `ssl_protocol' with `Ssl_23'.
-		do
-			set_secure_protocol ({SSL_PROTOCOL}.Ssl_23)
-		end
-
 	set_secure_protocol_to_tls_1_0
 			-- Set `ssl_protocol' with `Tls_1_0'.
 		do
@@ -176,7 +170,14 @@ feature -- Output
 		end
 
 note
-	copyright: "2011-2013, Javier Velilla, Jocelyn Fiat and others"
+	copyright: "2011-2017, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Colin Adams, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
+	source: "[
+			Eiffel Software
+			5949 Hollister Ave., Goleta, CA 93117 USA
+			Telephone 805-685-1006, Fax 805-685-6869
+			Website http://www.eiffel.com
+			Customer support http://support.eiffel.com
+		]"
 
 end
