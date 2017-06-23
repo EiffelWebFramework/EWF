@@ -298,8 +298,8 @@ feature -- Element change
 			-- Set `secure_protocol' with `a_ssl_version'.
 		do
 			if a_ssl_version.is_case_insensitive_equal ("ssl_2_3") then
- 				set_secure_protocol_to_ssl_2_or_3
- 			elseif a_ssl_version.is_case_insensitive_equal ("tls_1_0") then
+				set_secure_protocol_to_ssl_2_or_3
+			elseif a_ssl_version.is_case_insensitive_equal ("tls_1_0") then
 				set_secure_protocol_to_tls_1_0
 			elseif a_ssl_version.is_case_insensitive_equal ("tls_1_1") then
 				set_secure_protocol_to_tls_1_1
@@ -317,7 +317,7 @@ feature -- SSL Helpers
 	set_secure_protocol_to_ssl_2_or_3
 			-- Set `secure_protocol' with `Ssl_23'.
 		obsolete
-				"Use set_secure_protocol_to_tls_1_0 [2017-11-30]."
+			"Use set_secure_protocol_to_tls_1_2 [2017-06-23]."
 		deferred
 		end
 

@@ -27,8 +27,8 @@ feature -- Factory
 				Result := l_secure
 				if attached secure_protocol as l_prot then
 					if l_prot.is_case_insensitive_equal ("ssl_2_3") then
- 						l_secure.set_secure_protocol_to_ssl_2_or_3
- 					elseif l_prot.is_case_insensitive_equal ("tls_1_0") then
+						l_secure.set_secure_protocol_to_ssl_2_or_3
+					elseif l_prot.is_case_insensitive_equal ("tls_1_0") then
 						l_secure.set_secure_protocol_to_tls_1_0
 					elseif l_prot.is_case_insensitive_equal ("tls_1_1") then
 						l_secure.set_secure_protocol_to_tls_1_1

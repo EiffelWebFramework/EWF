@@ -57,14 +57,14 @@ feature -- Secure connection Helpers
 	set_secure_protocol_to_ssl_2_or_3
  			-- Set `ssl_protocol' with `Ssl_23'.
  			-- Protocol not supported anymore.
- 		obsolete
-			"Use set_secure_protocol_to_tls_1_2 [2017-11-30]."
+		obsolete
+			"Use set_secure_protocol_to_tls_1_2 [2017-06-23]."
  		local
  			err: DEVELOPER_EXCEPTION
  		do
  		    create err
- 			err.set_description ("SSL_2 or SSL_3 are not supported anymore, upgrate to TLS set_secure_protocol_to_tls_1_2")
- 			err.raise
+			err.set_description ("SSL_2 or SSL_3 are not supported anymore, upgrate to TLS set_secure_protocol_to_tls_1_2")
+			err.raise
  		end
 
  	set_secure_protocol_to_tls_1_0
