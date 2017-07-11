@@ -118,6 +118,11 @@ feature {JWT_UTILITIES} -- Error reporting
 			l_errors.extend (err)
 		end
 
+	report_mismatched_alg_error (alg, a_header_alg: READABLE_STRING_8)
+		do
+			report_error (create {JWT_MISMATCHED_ALG_ERROR}.make (alg, a_header_alg))
+		end
+
 	report_unsupported_alg_error (alg: READABLE_STRING_8)
 		do
 			report_error (create {JWT_UNSUPPORTED_ALG_ERROR}.make (alg))
