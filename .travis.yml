@@ -1,0 +1,18 @@
+language: eiffel
+before_script:
+    - export current_dir=$PWD ; echo current_dir=$current_dir ; cd ..
+    - export ISE_VERSION=17.05; export ISE_BUILD=100416
+    - curl -sSL http://downloads.sourceforge.net/eiffelstudio/Eiffel_${ISE_VERSION}_gpl_${ISE_BUILD}-linux-x86-64.tar.bz2 | tar -x --bzip2
+    - export ISE_EIFFEL=$PWD/Eiffel_${ISE_VERSION} ; export ISE_PLATFORM=linux-x86-64
+    - export PATH=$PATH:$ISE_EIFFEL/studio/spec/$ISE_PLATFORM/bin:$PATH:$ISE_EIFFEL/tools/spec/$ISE_PLATFORM/bin
+    - echo `ec -version`
+    - cd $current_dir
+    
+branches:
+  only:
+  - master
+  - v1
+  
+script: compile_all -ecb -melt -list_failures -log_verbose -clean -options dotnet=false
+group: stable
+os: linux
