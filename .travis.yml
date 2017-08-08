@@ -7,6 +7,7 @@ before_script:
     - export PATH=$PATH:$ISE_EIFFEL/studio/spec/$ISE_PLATFORM/bin:$PATH:$ISE_EIFFEL/tools/spec/$ISE_PLATFORM/bin
     - echo `ec -version`
     - cd $current_dir
+    - echo Check projects compilation status...
     
 branches:
   only:
