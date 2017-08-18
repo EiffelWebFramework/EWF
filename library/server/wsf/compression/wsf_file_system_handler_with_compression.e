@@ -51,6 +51,7 @@ feature {NONE} -- Initialization
 		end
 
 	conneg : SERVER_CONTENT_NEGOTIATION
+			-- content negotiation.
 
 feature -- Execution
 
@@ -116,13 +117,13 @@ feature -- Execution
 feature -- Compression: constants
 
 	gzip_compression_format: STRING = "gzip"
-			-- RFC 1952 (gzip compressed format)	
+			-- RFC 1952 (gzip compressed format).	
 
 	deflate_compression_format: STRING = "deflate"
-			-- RFC 1951 (deflate compressed format)
+			-- RFC 1951 (deflate compressed format).
 
 	compress_compression_format: STRING = "compress"
-			-- RFC 1950 (zlib compressed format)
+			-- RFC 1950 (zlib compressed format).
 
 feature -- Compression
 
@@ -135,7 +136,7 @@ feature -- Compression
 			-- List of media types supported by compression.
 
 	set_default_compression_format
-			-- gzip default format
+			-- gzip default format.
 		do
 			enable_gzip_compression
 		end
@@ -293,7 +294,7 @@ feature -- Compress Data
 		do
 			create Result.make_empty
 			create dc.string_stream_with_size (Result, 32_768) -- chunk size 32k
-			dc.put_string_with_options (a_string, {ZLIB_CONSTANTS}.Z_default_compression, zlb_strategy (a_encoding), 8, {ZLIB_CONSTANTS}.z_default_strategy.to_integer_32)
+			dc.put_string_with_options (a_string, {ZLIB_CONSTANTS}.Z_default_compression, zlb_strategy (a_encoding), {ZLIB_CONSTANTS}.Z_mem_level_9, {ZLIB_CONSTANTS}.z_default_strategy.to_integer_32)
 				-- We use the default compression level
 				-- We use the default value for windows bits, the range is 8..15. Higher values use more memory, but produce smaller output.
 				-- Memory: Higher values use more memory, but are faster and produce smaller output. The default is 8, we use 9.
@@ -313,7 +314,7 @@ feature -- Compress Data
 		end
 
 note
-	copyright: "2011-2016, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Colin Adams, Eiffel Software and others"
+	copyright: "2011-2017, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Colin Adams, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software
