@@ -12,7 +12,10 @@
 		<setting name="concurrency" value="scoop"/>
 		<library name="base" location="$ISE_LIBRARY\library\base\base.ecf"/>
 		<library name="conneg" location="..\..\network\protocol\content_negotiation\conneg.ecf"/>
+		<library name="http" location="..\..\network\protocol\http\http.ecf"/>
 		<library name="wsf" location="wsf.ecf"/>
+		<library name="time" location="$ISE_LIBRARY\library\time\time.ecf"/>
+		<library name="zlib" location="$ISE_LIBRARY\unstable\library\compression\zlib\zlib.ecf" readonly="false"/>
 		<cluster name="compression" location=".\compression\" recursive="true"/>
 	</target>
 </system>
