@@ -272,13 +272,13 @@ feature -- Authentication
 			-- Associated optional credentials value.
 			-- Computed as `username':`password'.
 
-	cipher_list: detachable READABLE_STRING_32
+	ciphers_settings: detachable READABLE_STRING_8
 			-- SSL cipher preference lists
 			-- examples: DEFAULT, ALL, TLSv1
 			-- check https://www.openssl.org/docs/man1.1.0/apps/ciphers.html
-			--! At the moment only used for LIB_CURL_HTTP_CLIENT
-			--! Net implementation set all the ciphers using the OpenSSL at
-			--! initialization time.
+			--Warning At the moment only used for LIB_CURL_HTTP_CLIENT
+			--Warning Net implementation set all the ciphers using the OpenSSL at
+			--Warning initialization time.
 
 
 feature -- Status setting
@@ -410,11 +410,11 @@ feature -- Element change
 			chunk_size := a_size
 		end
 
-	set_cipher_list (a_list: READABLE_STRING_GENERAL)
+	set_ciphers (a_list: READABLE_STRING_8)
 		do
-			create {STRING_32} cipher_list.make_from_string_general (a_list)
+			create {STRING_8} ciphers_settings.make_from_string (a_list)
 		ensure
-			cipher_list_set: attached cipher_list as c_list and then c_list.same_string_general (a_list)
+			cipher_settings_set: attached ciphers_settings as c_list and then c_list.same_string (a_list)
 		end
 
 note
