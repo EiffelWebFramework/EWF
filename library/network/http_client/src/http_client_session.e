@@ -410,11 +410,12 @@ feature -- Element change
 			chunk_size := a_size
 		end
 
-	set_ciphers (a_list: READABLE_STRING_8)
+	set_ciphers_settings (a_ciphers_settings: READABLE_STRING_8)
+			-- Set 'ciphers_settings' with 'a_ciphers_settings'.
 		do
-			create {STRING_8} ciphers_settings.make_from_string (a_list)
+			create {STRING_8} ciphers_settings.make_from_string (a_ciphers_settings)
 		ensure
-			cipher_settings_set: attached ciphers_settings as c_list and then c_list.same_string (a_list)
+			cipher_settings_set: attached ciphers_settings as c_settings and then c_settings.same_string (a_ciphers_settings)
 		end
 
 note
