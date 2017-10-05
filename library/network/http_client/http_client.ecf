@@ -1,15 +1,12 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<system xmlns="http://www.eiffel.com/developers/xml/configuration-1-15-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eiffel.com/developers/xml/configuration-1-15-0 http://www.eiffel.com/developers/xml/configuration-1-15-0.xsd" name="http_client" uuid="628F5A96-021B-4191-926B-B3BF49272866" library_target="http_client">
+<system xmlns="http://www.eiffel.com/developers/xml/configuration-1-16-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eiffel.com/developers/xml/configuration-1-16-0 http://www.eiffel.com/developers/xml/configuration-1-16-0.xsd" name="http_client" uuid="628F5A96-021B-4191-926B-B3BF49272866" library_target="http_client">
 	<target name="http_client">
 		<root all_classes="true"/>
 		<file_rule>
-			<exclude>/.git$</exclude>
-			<exclude>/.svn$</exclude>
+			<exclude>/\.git$</exclude>
+			<exclude>/\.svn$</exclude>
 			<exclude>/EIFGENs$</exclude>
 		</file_rule>
-		<option warning="true" void_safety="none">
-		</option>
-		<setting name="concurrency" value="scoop"/>
 		<library name="base" location="$ISE_LIBRARY\library\base\base.ecf"/>
 		<library name="curl" location="$ISE_LIBRARY\library\cURL\cURL.ecf">
 			<condition>
@@ -33,8 +30,8 @@
 		</library>
 		<library name="uri" location="$ISE_LIBRARY\library\text\uri\uri.ecf"/>
 		<cluster name="src" location=".\src\">
-			<cluster name="implementation" location="$|implementation" recursive="true" hidden="true"/>
-			<cluster name="parameters" location="$|parameters" recursive="true"/>
+			<cluster name="implementation" location="$|implementation\" recursive="true" hidden="true"/>
+			<cluster name="parameters" location="$|parameters\" recursive="true"/>
 			<cluster name="spec_null" location="$|spec\null\" recursive="true"/>
 			<cluster name="spec_net" location="$|spec\net\">
 				<condition>
