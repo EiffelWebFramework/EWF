@@ -1,5 +1,7 @@
 # Eiffel Web Framework
 
+[![Build Status](https://api.travis-ci.org/EiffelWebFramework/EWF.svg?branch=master)](https://travis-ci.org/EiffelWebFramework/EWF/)
+
 
 ## Overview
 
