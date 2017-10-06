@@ -1,33 +1,32 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<system xmlns="http://www.eiffel.com/developers/xml/configuration-1-15-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eiffel.com/developers/xml/configuration-1-15-0 http://www.eiffel.com/developers/xml/configuration-1-15-0.xsd" name="js_widget_template" uuid="5C5C33AA-9DCF-42CF-A85A-A6E650E7234F">
+<system xmlns="http://www.eiffel.com/developers/xml/configuration-1-16-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eiffel.com/developers/xml/configuration-1-16-0 http://www.eiffel.com/developers/xml/configuration-1-16-0.xsd" name="js_widget_template" uuid="5C5C33AA-9DCF-42CF-A85A-A6E650E7234F">
 	<target name="common" abstract="true">
 		<file_rule>
-			<exclude>/.git$</exclude>
+			<exclude>/\.git$</exclude>
 			<exclude>/CVS$</exclude>
 			<exclude>/EIFGENs$</exclude>
 		</file_rule>
-		<option warning="true"  void_safety="all">
+		<option warning="true">
 			<assertions precondition="true" postcondition="true" check="true" invariant="true" loop="true" supplier_precondition="true"/>
 		</option>
-		<setting name="concurrency" value="scoop"/>
-		<library name="base" location="$ISE_LIBRARY\library\base\base-safe.ecf"/>
-		<library name="json" location="$ISE_LIBRARY\contrib\library\text\parser\json\library\json-safe.ecf"/>
-		<library name="wsf" location="..\..\..\..\..\..\library\server\wsf\wsf-safe.ecf"/>
-		<library name="wsf_js_widget" location="..\..\wsf_js_widget-safe.ecf" readonly="false"/>
+		<library name="base" location="$ISE_LIBRARY\library\base\base.ecf"/>
+		<library name="json" location="$ISE_LIBRARY\contrib\library\text\parser\json\library\json.ecf"/>
+		<library name="wsf" location="..\..\..\..\..\..\library\server\wsf\wsf.ecf"/>
+		<library name="wsf_js_widget" location="..\..\wsf_js_widget.ecf" readonly="false"/>
 	</target>
 	<target name="js_widget_template_standalone" extends="common">
 		<root class="APPLICATION" feature="make_and_launch"/>
-		<library name="default_standalone" location="..\..\..\..\..\..\library\server\wsf\default\standalone-safe.ecf"/>
+		<library name="default_standalone" location="..\..\..\..\..\..\library\server\wsf\default\standalone.ecf"/>
 		<cluster name="js_widget_template" location=".\src\" recursive="true"/>
 	</target>
 	<target name="js_widget_template_cgi" extends="common">
 		<root class="APPLICATION" feature="make_and_launch"/>
-		<library name="default_cgi" location="..\..\..\..\..\..\library\server\wsf\default\cgi-safe.ecf"/>
+		<library name="default_cgi" location="..\..\..\..\..\..\library\server\wsf\default\cgi.ecf"/>
 		<cluster name="js_widget_template" location=".\src\" recursive="true"/>
 	</target>
 	<target name="js_widget_template_libfcgi" extends="common">
 		<root class="APPLICATION" feature="make_and_launch"/>
-		<library name="default_libfcgi" location="..\..\..\..\..\..\library\server\wsf\default\libfcgi-safe.ecf"/>
+		<library name="default_libfcgi" location="..\..\..\..\..\..\library\server\wsf\default\libfcgi.ecf"/>
 		<cluster name="js_widget_template" location=".\src\" recursive="true"/>
 	</target>
 	<target name="js_widget_template" extends="js_widget_template_standalone">

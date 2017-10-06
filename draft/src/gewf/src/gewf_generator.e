@@ -113,14 +113,13 @@ feature -- Implementation
 				across
 					l_values as c
 				loop
-					s.replace_substring_all ({STRING_32} "${" + c.key.as_string_32 + "}", c.item)
+					s.replace_substring_all ({STRING_32} "${" + c.key.to_string_32 + "}", c.item.to_string_32)
 				end
 			end
 		end
 
-
 note
-	copyright: "2011-2013, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
+	copyright: "2011-2017, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

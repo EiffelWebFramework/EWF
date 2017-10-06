@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<system xmlns="http://www.eiffel.com/developers/xml/configuration-1-16-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eiffel.com/developers/xml/configuration-1-16-0 http://www.eiffel.com/developers/xml/configuration-1-16-0.xsd" name="test_app" uuid="D5536EB3-A9C6-4147-956A-EABC2D9C3211">
+	<target name="test_app">
+		<root class="TEST_APP" feature="make"/>
+		<setting name="console_application" value="true"/>
+		<capability>
+			<catcall_detection use="none"/>
+		</capability>
+		<library name="base" location="$ISE_LIBRARY\library\base\base-safe.ecf"/>
+		<library name="net" location="$ISE_LIBRARY\library\net\net-safe.ecf"/>
+		<cluster name="src" location=".\" recursive="true"/>
+	</target>
+</system>
