@@ -26,7 +26,6 @@
 		</option>
 		<library name="default_standalone" location="..\..\library\server\wsf\default\standalone.ecf" readonly="false" use_application_options="true"/>
 		<cluster name="src" location="src\" recursive="true"/>
-		<override name="override" location="override\" recursive="true"/>
 	</target>
 	<target name="hello_cgi" extends="hello_dev">
 		<library name="default_cgi" location="..\..\library\server\wsf\default\cgi.ecf"/>

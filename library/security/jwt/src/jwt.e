@@ -59,6 +59,8 @@ feature -- Status report
 		do
 			if attached claimset.issuer as iss then
 				Result := a_issuer = Void or else a_issuer.same_string (iss)
+			else
+				Result := a_issuer = Void				
 			end
 		end
 
@@ -66,6 +68,8 @@ feature -- Status report
 		do
 			if attached claimset.audience as aud then
 				Result := a_audience = Void or else a_audience.same_string (aud)
+			else
+				Result := a_audience = Void				
 			end
 		end
 
@@ -116,6 +120,11 @@ feature {JWT_UTILITIES} -- Error reporting
 				errors := l_errors
 			end
 			l_errors.extend (err)
+		end
+
+	report_mismatched_alg_error (alg, a_header_alg: READABLE_STRING_8)
+		do
+			report_error (create {JWT_MISMATCHED_ALG_ERROR}.make (alg, a_header_alg))
 		end
 
 	report_unsupported_alg_error (alg: READABLE_STRING_8)
