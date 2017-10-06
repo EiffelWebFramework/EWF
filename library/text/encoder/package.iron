@@ -6,13 +6,14 @@ project
 note
 	title: Text encoders
 	description: "[
-			Text encoders used in web technologies:
-				- HTML encoder
-				- XML encoder
-				- JSON encoder
-				- UTF8
-				- BASE64
-		]"
+Text encoders used in web technologies:
+	- HTML encoder
+	- XML encoder
+	- JSON encoder
+	- UTF8
+	- BASE64
+				]"
+
 	collection: EWF
 	tags: html,xml,percent encoding,web,json,utf
 	copyright: 2011-2016, Jocelyn Fiat, Eiffel Software and others
@@ -22,4 +23,3 @@ note
 	link[doc]: "Documentation" https://github.com/EiffelWebFramework/EWF/blob/master/library/text/encoder/README.md
 
 end
-

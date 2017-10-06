@@ -1,4 +1,3 @@
-
 package wsf
 
 project
@@ -14,14 +13,20 @@ project
 	default_openshift = "default/openshift.ecf"
 	wsf_standalone = "connector/standalone.ecf"
 	default_standalone = "default/standalone.ecf"
+	wsf_all = "connector/all.ecf"
+	wsf_nino = "connector/nino.ecf"
+	wsf_openshift = "connector/openshift.ecf"
+	wsf_standalone_websocket = "connector/standalone_websocket.ecf"
+	default_nino = "default/nino.ecf"
 
 note
 	title: Web Server Foundation
 	description: "[
-			Core of the Eiffel Web Framework (EWF).
-			Provide the request, response, router, ... interfaces.
-			The foundation to build web server application.
-		]"
+Core of the Eiffel Web Framework (EWF).
+Provide the request, response, router, ... interfaces.
+The foundation to build web server application.
+				]"
+
 	tags: ewf,server,httpd,request,connector,web
 	collection: EWF
 	copyright: 2011-2016, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Colin Adams, Eiffel Software and others
@@ -31,4 +36,3 @@ note
 	link[doc]: "Documentation" http://eiffelwebframework.github.io/EWF/
 
 end
-

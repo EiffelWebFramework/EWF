@@ -9,10 +9,11 @@ project
 note
 	title: Eiffel libfcgi wrapper
 	description: "[
-			Wrapper on modified libfcgi.
-			(modification: added 64 bits support)
-			It brings implementation for FCGI protocol.
-		]"
+Wrapper on modified libfcgi.
+(modification: added 64 bits support)
+It brings implementation for FCGI protocol.
+				]"
+
 	collection: EWF
 	tags: fcgi,libfcgi,cgi,http,web,ewf
 	copyright: 2011-2016, Jocelyn Fiat, Javier Velilla, Eiffel Software and others
