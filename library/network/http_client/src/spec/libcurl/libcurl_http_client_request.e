@@ -373,7 +373,7 @@ feature -- Execution
 			end
 
 			--| Cipher List
-			if attached session.ciphers_settings as c_list then
+			if attached session.ciphers_setting as c_list then
 				curl_easy.setopt_string (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_ssl_cipher_list, c_list )
 			end
 
