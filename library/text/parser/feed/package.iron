@@ -1,7 +1,6 @@
 package feed
 
 project
-	feed = "feed-safe.ecf"
 	feed = "feed.ecf"
 
 note

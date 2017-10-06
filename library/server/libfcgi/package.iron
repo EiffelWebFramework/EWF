@@ -4,7 +4,6 @@ setup
 	compile_library = Clib
 
 project
-	libfcgi = "libfcgi-safe.ecf"
 	libfcgi = "libfcgi.ecf"
 
 note

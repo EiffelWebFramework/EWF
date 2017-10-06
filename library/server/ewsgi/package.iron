@@ -1,17 +1,11 @@
 package ewsgi
 
 project
-	ewsgi = "ewsgi-safe.ecf"
 	ewsgi = "ewsgi.ecf"
-	connector_cgi = "connectors/cgi/cgi-safe.ecf"
 	connector_cgi = "connectors/cgi/cgi.ecf"
-	connector_libfcgi = "connectors/libfcgi/libfcgi-safe.ecf"
 	connector_libfcgi = "connectors/libfcgi/libfcgi.ecf"
-	connector_null = "connectors/null/null-safe.ecf"
 	connector_null = "connectors/null/null.ecf"
-	connector_standalone = "connectors/standalone/standalone-safe.ecf"
 	connector_standalone = "connectors/standalone/standalone.ecf"
-	httpd = "connectors/standalone/src/httpd/httpd-safe.ecf"
 	httpd = "connectors/standalone/src/httpd/httpd.ecf"
 
 note

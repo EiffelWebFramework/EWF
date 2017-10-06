@@ -1,7 +1,6 @@
 package httpd
 
 project
-	httpd = "httpd-safe.ecf"
 	httpd = "httpd.ecf"
 
 note

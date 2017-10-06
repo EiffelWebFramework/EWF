@@ -1,7 +1,6 @@
 package encoder
 
 project
-	encoder = "encoder-safe.ecf"
 	encoder = "encoder.ecf"
 
 note

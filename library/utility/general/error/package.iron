@@ -1,7 +1,6 @@
 package error
 
 project
-	error = "error-safe.ecf"
 	error = "error.ecf"
 
 note

@@ -1,7 +1,6 @@
 package uri_template
 
 project
-	uri_template = "uri_template-safe.ecf"
 	uri_template = "uri_template.ecf"
 
 note

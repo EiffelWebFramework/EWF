@@ -1,7 +1,6 @@
 package http
 
 project
-	http = "http-safe.ecf"
 	http = "http.ecf"
 
 note

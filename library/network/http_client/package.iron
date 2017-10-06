@@ -1,11 +1,8 @@
 package http_client
 
 project
-	http_client = "http_client-safe.ecf"
 	http_client = "http_client.ecf"
-	libcurl_http_client = "libcurl_http_client-safe.ecf"
 	libcurl_http_client = "libcurl_http_client.ecf"
-	net_http_client = "net_http_client-safe.ecf"
 	net_http_client = "net_http_client.ecf"
 
 note

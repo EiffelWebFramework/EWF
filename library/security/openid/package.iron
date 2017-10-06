@@ -2,7 +2,6 @@ package openid
 
 project
 	openid = "consumer/openid.ecf"
-	openid = "consumer/openid-safe.ecf"
 
 note
 	title: Eiffel OpenID
