@@ -7,14 +7,21 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ## [Unreleased]
 ### Added
-- jwt: new JSON Web Token (JWT) library (supports for claim exp, iat, nbf, iss, aud).
+- `jwt`: new JSON Web Token (JWT) library (supports for claim exp, iat, nbf, iss, aud).
+- `http_client`: added support for ciphers setting in the libcurl implementation only.
+- `http_client`: added convenient `get`  and `custom` functions  on HTTP_CLIENT directly.
 
 ### Changed
+- adopted ecf version 1-16-0 and use a single .ecf file (the -safe.ecf are now redirection to normal .ecf)
 ### Deprecated
+- removed support for Eiffel version before 17.05 .
+- SSL 2 or 3 is obsolete and will raise an exception if used.
 ### Removed
 ### Fixed
 - Removed a few obsolete calls.
 - `http_client`: Added support for multiple file in form data. Made clear what is the meaning of `upload_filename`, `upload_data` and `form_data`.
+- `authentication`: HTTP_AUTHORIZATION acceps now READABLE_STRING_GENERAL for username and password argument.
+- `http_client`: fixed curl implementation by setting `Content-Type` to `x-www-form-urlencoded` (if not set) when POST send data as `x-www-form-urlencoded`.
 ### Security
 
 

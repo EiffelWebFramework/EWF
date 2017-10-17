@@ -206,7 +206,10 @@ feature -- Execution
 								l_use_curl_form := True
 							end
 						else
+							l_headers.force ("application/x-www-form-urlencoded", "Content-Type")
 							l_upload_data := ctx.form_parameters_to_x_www_form_url_encoded_string
+							curl_easy.setopt_string (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_postfields, l_upload_data)
+							curl_easy.setopt_integer (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_postfieldsize, l_upload_data.count)
 						end
 						if l_use_curl_form then
 							create l_form.make
@@ -370,6 +373,11 @@ feature -- Execution
 			if is_insecure then
 				curl_easy.setopt_integer (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_ssl_verifyhost, 0)
 				curl_easy.setopt_integer (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_ssl_verifypeer, 0)
+			end
+
+			--| Cipher List
+			if attached session.ciphers_setting as c_list then
+				curl_easy.setopt_string (curl_handle, {CURL_OPT_CONSTANTS}.curlopt_ssl_cipher_list, c_list )
 			end
 
 			--| Request method
