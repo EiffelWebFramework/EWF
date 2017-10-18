@@ -66,7 +66,7 @@ feature -- Access: connection
 		end
 
 	max_tcp_clients: INTEGER assign set_max_tcp_clients
-			-- Listen on socket for at most `queue' connections.	
+			-- Listen on socket for at most `max_tcp_clients' connections.	
 		do
 			Result := option_integer_value ("max_tcp_clients", 0)
 		end
