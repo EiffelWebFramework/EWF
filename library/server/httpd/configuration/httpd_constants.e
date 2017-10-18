@@ -25,7 +25,7 @@ feature -- Default timeout settings
 
 feature -- Default persistent connection settings
 
-	default_keep_alive_timeout: INTEGER = 15 -- seconds
+	default_keep_alive_timeout: INTEGER = 5 -- seconds
 	default_max_keep_alive_requests: INTEGER = 100
 
 note
