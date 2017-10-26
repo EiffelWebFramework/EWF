@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<system xmlns="http://www.eiffel.com/developers/xml/configuration-1-16-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eiffel.com/developers/xml/configuration-1-16-0 http://www.eiffel.com/developers/xml/configuration-1-16-0.xsd" name="hello_dev" uuid="7C9887BD-4AE4-47F2-A0AA-4BBB6736D433">
+	<target name="hello_dev" abstract="true">
+		<root class="HELLO_ROUTED_WORLD" feature="make_and_launch"/>
+		<file_rule>
+			<exclude>/EIFGENs$</exclude>
+			<exclude>/\.git$</exclude>
+			<exclude>/\.svn$</exclude>
+		</file_rule>
+		<option debug="true" warning="true">
+			<debug name="ew_standalone" enabled="true"/>
+			<debug name="standalone" enabled="true"/>
+			<assertions precondition="true" postcondition="true" check="true" invariant="true" supplier_precondition="true"/>
+		</option>
+		<capability>
+			<concurrency support="thread" use="thread"/>
+		</capability>
+		<library name="base" location="$ISE_LIBRARY\library\base\base.ecf"/>
+		<library name="http" location="..\..\library\network\protocol\http\http.ecf" readonly="false"/>
+		<library name="wsf" location="..\..\library\server\wsf\wsf.ecf" readonly="false"/>
+	</target>
+	<target name="hello_standalone" extends="hello_dev">
+		<option debug="true" warning="true">
+			<debug name="standalone" enabled="true"/>
+			<assertions precondition="true" postcondition="true" check="true" invariant="true" supplier_precondition="true"/>
+		</option>
+		<library name="default_standalone" location="..\..\library\server\wsf\default\standalone.ecf" readonly="false" use_application_options="true"/>
+		<cluster name="src" location="src\" recursive="true"/>
+	</target>
+	<target name="hello_cgi" extends="hello_dev">
+		<library name="default_cgi" location="..\..\library\server\wsf\default\cgi.ecf"/>
+		<cluster name="src" location="src\" recursive="true"/>
+	</target>
+	<target name="hello_libfcgi" extends="hello_dev">
+		<library name="default_libfcgi" location="..\..\library\server\wsf\default\libfcgi.ecf"/>
+		<cluster name="src" location="src\" recursive="true"/>
+	</target>
+</system>

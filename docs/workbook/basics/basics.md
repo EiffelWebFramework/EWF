@@ -59,7 +59,7 @@ feature -- Basic operations
 end
 ```
 
-When using the "standalone" connector (or the deprecated "nino" connector), by default the service listens on port 80, but often this port is already used by other applications, so it is recommended to use another port.
+When using the [standalone](../connectors/standalone.md) connector (or the deprecated "nino" connector), by default the service listens on port 80, but often this port is already used by other applications, so it is recommended to use another port.
 To define another port, redefine the feature `initialize` and set up a new port number using the service options (see below).
 
 
@@ -85,6 +85,8 @@ feature {NONE} -- Initialization
 		end
 end
 ```
+
+Learn more about the [Standalone](../connectors/standalone.md) connector.
 
 The **WSF_REQUEST** gives access to the incoming data; the class provides features to get information such as request method, form data, query parameters, uploaded files, HTTP request headers, and hostname of the client among others. 
 

@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<system xmlns="http://www.eiffel.com/developers/xml/configuration-1-15-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eiffel.com/developers/xml/configuration-1-15-0 http://www.eiffel.com/developers/xml/configuration-1-15-0.xsd" name="all" uuid="1172C52C-6979-4293-8F01-80FADA5A2B69" library_target="all_stable">
+<system xmlns="http://www.eiffel.com/developers/xml/configuration-1-16-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eiffel.com/developers/xml/configuration-1-16-0 http://www.eiffel.com/developers/xml/configuration-1-16-0.xsd" name="all" uuid="1172C52C-6979-4293-8F01-80FADA5A2B69" library_target="all_stable">
 	<description>Integration project including many lib</description>
 	<target name="all_stable">
 		<root all_classes="true"/>
 		<file_rule>
-			<exclude>/.git$</exclude>
-			<exclude>/.svn$</exclude>
+			<exclude>/\.git$</exclude>
+			<exclude>/\.svn$</exclude>
 			<exclude>/EIFGENs$</exclude>
 		</file_rule>
-		<option warning="true"  void_safety="none">
+		<option warning="true">
 		</option>
-		<setting name="concurrency" value="scoop"/>
 		<library name="connector_cgi" location="..\library\server\ewsgi\connectors\cgi\cgi.ecf" readonly="false"/>
 		<library name="connector_libfcgi" location="..\library\server\ewsgi\connectors\libfcgi\libfcgi.ecf" readonly="false"/>
 		<library name="connector_null" location="..\library\server\ewsgi\connectors\null\null.ecf" readonly="false"/>

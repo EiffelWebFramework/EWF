@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<system xmlns="http://www.eiffel.com/developers/xml/configuration-1-15-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eiffel.com/developers/xml/configuration-1-15-0 http://www.eiffel.com/developers/xml/configuration-1-15-0.xsd" name="notification_email" uuid="99D9A065-CD45-4E20-9C86-579C8AD42E5E" library_target="notification_email">
+<system xmlns="http://www.eiffel.com/developers/xml/configuration-1-16-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eiffel.com/developers/xml/configuration-1-16-0 http://www.eiffel.com/developers/xml/configuration-1-16-0.xsd" name="notification_email" uuid="99D9A065-CD45-4E20-9C86-579C8AD42E5E" library_target="notification_email">
 	<target name="notification_email">
 		<root all_classes="true"/>
 		<file_rule>
-			<exclude>/.git$</exclude>
-			<exclude>/.svn$</exclude>
+			<exclude>/\.git$</exclude>
+			<exclude>/\.svn$</exclude>
 			<exclude>/EIFGENs$</exclude>
 		</file_rule>
-		<option warning="true" void_safety="none">
+		<option warning="true">
 		</option>
-		<setting name="concurrency" value="scoop"/>
 		<library name="base" location="$ISE_LIBRARY\library\base\base.ecf"/>
 		<library name="base_process" location="$ISE_LIBRARY\library\process\base\base_process.ecf">
 			<condition>
