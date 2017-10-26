@@ -69,8 +69,6 @@ feature -- Process
 
 	process_group (g: ERROR_GROUP)
 			-- <Precursor>
-		local
-			l_errors: LIST [ERROR]
 		do
 			across
 				g.sub_errors as s

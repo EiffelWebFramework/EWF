@@ -10,6 +10,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - `jwt`: new JSON Web Token (JWT) library (supports for claim exp, iat, nbf, iss, aud).
 - `http_client`: added support for ciphers setting in the libcurl implementation only.
 - `http_client`: added convenient `get`  and `custom` functions  on HTTP_CLIENT directly.
+- `websocket`: added `on_timer` solution to allow the server to check for external events and send notification to websocket clients.
 
 ### Changed
 - adopted ecf version 1-16-0 and use a single .ecf file (the -safe.ecf are now redirection to normal .ecf)
