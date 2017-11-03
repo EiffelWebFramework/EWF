@@ -1,13 +1,13 @@
 note
-	description: "Summary description for {WSF_SELF_DOCUMENTED_URI_AGENT_HANDLER}."
+	description: "Summary description for {WSF_SELF_DOCUMENTED_EXECUTE_AGENT_HANDLER}."
 	date: "$Date$"
 	revision: "$Revision$"
 
 class
-	WSF_SELF_DOCUMENTED_URI_AGENT_HANDLER
+	WSF_SELF_DOCUMENTED_EXECUTE_AGENT_HANDLER
 
 inherit
-	WSF_URI_AGENT_HANDLER
+	WSF_EXECUTE_AGENT_HANDLER
 		rename
 			make as make_handler
 		end
@@ -30,7 +30,6 @@ feature {NONE} -- Initialization
 		end
 
 	make_with_descriptions (a_action: like action; a_descriptions: ITERABLE [READABLE_STRING_GENERAL])
-			-- Make Current with `a_action' and `a_descriptions'.
 		do
 			across
 				a_descriptions as c
@@ -41,7 +40,8 @@ feature {NONE} -- Initialization
 		end
 
 	make_hidden (a_action: like action)
-			-- Make Current with `a_action'
+			-- <Precursor>
+			-- and using `a_self_doc' function to build the `mapping_documentation'
 			-- mark it as `hidden'.
 		do
 			is_hidden := True
@@ -49,7 +49,7 @@ feature {NONE} -- Initialization
 		end
 
 note
-	copyright: "2011-2017, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Colin Adams, Eiffel Software and others"
+	copyright: "2011-2017, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

@@ -1,22 +1,29 @@
 note
-	description: "Summary description for {WSF_URI_HANDLER}."
+	description: "Summary description for {WSF_ROUTING_CONDITION}."
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
 deferred class
-	WSF_URI_HANDLER
+	WSF_ROUTING_CONDITION
 
-inherit
-	WSF_EXECUTE_HANDLER
+feature -- Status report
 
-	WSF_ROUTER_MAPPING_FACTORY
+	accepted (req: WSF_REQUEST): BOOLEAN
+			-- Does `req` satisfy Current condition?
+		deferred
+		end
 
-feature {WSF_ROUTER} -- Mapping
+feature -- Factory
 
-	new_mapping (a_uri: READABLE_STRING_8): WSF_ROUTER_MAPPING
+	conjuncted alias "and" (cond: WSF_ROUTING_CONDITION): WSF_ROUTING_AND_CONDITION
 		do
-			create {WSF_URI_MAPPING} Result.make (a_uri, Current)
+			create Result.make (Current, cond)
+		end
+
+	disjuncted alias "or" (cond: WSF_ROUTING_CONDITION): WSF_ROUTING_OR_CONDITION
+		do
+			create Result.make (Current, cond)
 		end
 
 note

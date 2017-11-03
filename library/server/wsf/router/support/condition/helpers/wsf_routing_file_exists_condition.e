@@ -1,16 +1,30 @@
 note
-	description: "Summary description for {WSF_URI_RESPONSE_HANDLER}."
-	author: ""
+	description: "[
+			Request path info is associated with existing file.
+		]"
 	date: "$Date$"
 	revision: "$Revision$"
 
-deferred class
-	WSF_URI_RESPONSE_HANDLER
+class
+	WSF_ROUTING_FILE_EXISTS_CONDITION
 
 inherit
-	WSF_EXECUTE_HANDLER
+	WSF_ROUTING_PATH_EXISTS_CONDITION
+		redefine
+			path_exists
+		end
 
-	WSF_URI_HANDLER
+create
+	make
+
+feature -- Status report
+
+	path_exists (p: PATH): BOOLEAN
+		local
+			fut: FILE_UTILITIES
+		do
+			Result := fut.file_path_exists (p)
+		end
 
 note
 	copyright: "2011-2017, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Colin Adams, Eiffel Software and others"

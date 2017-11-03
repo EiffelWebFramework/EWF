@@ -1,16 +1,34 @@
 note
-	description: "Summary description for {WSF_URI_RESPONSE_HANDLER}."
+	description: "Summary description for {WSF_ROUTING_AGENT_CONDITION}."
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
-deferred class
-	WSF_URI_RESPONSE_HANDLER
+class
+	WSF_ROUTING_AGENT_CONDITION
 
 inherit
-	WSF_EXECUTE_HANDLER
+	WSF_ROUTING_CONDITION
 
-	WSF_URI_HANDLER
+create
+	make
+
+feature {NONE} -- Initialization
+
+	make (act: like condition)
+		do
+			condition := act
+		end
+
+	condition: FUNCTION [TUPLE [request: WSF_REQUEST], BOOLEAN]
+
+feature -- Status report
+
+	accepted (req: WSF_REQUEST): BOOLEAN
+			-- Does `req` satisfy Current condition?
+		do
+			Result := condition (req)
+		end
 
 note
 	copyright: "2011-2017, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Colin Adams, Eiffel Software and others"

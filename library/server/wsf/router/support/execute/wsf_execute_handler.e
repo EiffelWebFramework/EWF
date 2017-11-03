@@ -1,16 +1,25 @@
 note
-	description: "Summary description for {WSF_URI_RESPONSE_HANDLER}."
-	author: ""
+	description: "[
+			Represents the ancestor of all the WSF_ROUTER handlers with `execute (WSF_REQUEST, WSF_RESPONSE)` routine.
+		]"
 	date: "$Date$"
 	revision: "$Revision$"
 
 deferred class
-	WSF_URI_RESPONSE_HANDLER
-
-inherit
 	WSF_EXECUTE_HANDLER
 
-	WSF_URI_HANDLER
+inherit
+	WSF_HANDLER
+
+feature -- Execution
+
+	execute (req: WSF_REQUEST; res: WSF_RESPONSE)
+			-- Execute `req' responding in `res'.
+		require
+			req_attached: req /= Void
+			res_attached: res /= Void
+		deferred
+		end
 
 note
 	copyright: "2011-2017, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Colin Adams, Eiffel Software and others"
