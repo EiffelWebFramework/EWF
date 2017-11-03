@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<system xmlns="http://www.eiffel.com/developers/xml/configuration-1-17-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eiffel.com/developers/xml/configuration-1-17-0 http://www.eiffel.com/developers/xml/configuration-1-17-0.xsd" name="httpd" uuid="60DBA808-B014-47BB-BDEF-11B87C1DC6DE">
+	<target name="common" abstract="true">
+		<file_rule>
+			<exclude>/CVS$</exclude>
+			<exclude>/EIFGENs$</exclude>
+			<exclude>/\.svn$</exclude>
+		</file_rule>
+		<option warning="true">
+			<assertions precondition="true" postcondition="true" check="true" invariant="true" loop="true" supplier_precondition="true"/>
+		</option>
+		<setting name="console_application" value="true"/>
+		<library name="base" location="$ISE_LIBRARY\library\base\base.ecf"/>
+		<library name="http" location="..\..\library\network\protocol\http\http.ecf"/>
+		<library name="process" location="$ISE_LIBRARY\library\process\base\base_process.ecf"/>
+		<library name="wsf" location="..\..\library\server\wsf\wsf.ecf" readonly="false"/>
+		<library name="wsf_extension" location="..\..\library\server\wsf\wsf_extension.ecf" readonly="false"/>
+	</target>
+	<target name="httpd_standalone" extends="common">
+		<root class="APPLICATION" feature="make_and_launch"/>
+		<option warning="true">
+			<assertions precondition="true" postcondition="true" check="true" invariant="true" loop="true" supplier_precondition="true"/>
+		</option>
+		<library name="default_standalone" location="..\..\library\server\wsf\default\standalone.ecf"/>
+		<cluster name="httpd" location=".\src" recursive="true"/>
+	</target>
+	<target name="httpd_standalone_mt" extends="httpd_standalone">
+		<capability>
+			<concurrency support="thread" use="thread"/>
+		</capability>
+	</target>
+	<target name="httpd_standalone_st" extends="httpd_standalone">
+		<capability>
+			<concurrency support="none" use="none"/>
+		</capability>
+	</target>
+	<target name="httpd_cgi" extends="common">
+		<root class="APPLICATION" feature="make_and_launch"/>
+		<option warning="true">
+			<assertions precondition="true" postcondition="true" check="true" invariant="true" loop="true" supplier_precondition="true"/>
+		</option>
+		<capability>
+			<concurrency use="scoop"/>
+		</capability>
+		<library name="default_cgi" location="..\..\library\server\wsf\default\cgi.ecf"/>
+		<cluster name="httpd" location=".\src" recursive="true"/>
+	</target>
+	<target name="httpd_libfcgi" extends="common">
+		<root class="APPLICATION" feature="make_and_launch"/>
+		<option warning="true">
+			<assertions precondition="true" postcondition="true" check="true" invariant="true" loop="true" supplier_precondition="true"/>
+		</option>
+		<library name="default_libfcgi" location="..\..\library\server\wsf\default\libfcgi.ecf"/>
+		<cluster name="httpd" location=".\src" recursive="true"/>
+	</target>
+</system>
