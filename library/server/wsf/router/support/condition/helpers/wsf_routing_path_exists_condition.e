@@ -39,7 +39,6 @@ feature -- Status report
 		local
 			l_path: READABLE_STRING_GENERAL
 			p: PATH
-			fut: FILE_UTILITIES
 		do
 			l_path := req.path_info
 			if not l_path.is_empty then
