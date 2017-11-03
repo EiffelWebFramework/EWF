@@ -13,6 +13,7 @@ branches:
   only:
   - master
   - v1
+  - develop
   
 script: compile_all -ecb -melt -list_failures -log_verbose -clean -options dotnet=false
 group: stable
