@@ -13,14 +13,14 @@ Currently EWF offers a collection of Eiffel libraries designed to be integrated 
 
 There is a growing ecosystem around EWF, that provides useful components:
 * OpenID and OAuth consumer library
-* Various hypermedia format such as HAL, Collection+json, …
+* Various hypermedia format such as HAL, Collection+json, ...
 * Websocket server and client
 * Template engine
 * API Auto-documentation with swagger
 * A simple experimental CMS.
 * ...
 
-So if you want to build a website, a web api, RESTful service, …or even if you want to consume other web api, EWF is a solution.
+So if you want to build a website, a web api, RESTful service, ... or even if you want to consume other web api, EWF is a solution.
 
 EWF brings with it all the advantages of the Eiffel technology and tools with its powerful features such as Design by Contract, debugging, testing tools which enable to build efficient systems expected to be repeatedly refined, extended, and improved in a predictable and controllable way so as to become with time bugfree systems. Enjoy the full power of debugging your web server application from the IDE.
 
@@ -51,11 +51,11 @@ Tasks and issues are managed with github issue system
 ## How to get the source code?
 
 Using git 
-* git clone https://github.com/EiffelWebFramework/EWF.git
+* `git clone https://github.com/EiffelWebFramework/EWF.git`
 
 * And to build the required and related Clibs
-  * cd contrib/ise_library/cURL
-  * geant compile
+  * `cd contrib/ise_library/cURL`
+  * `geant compile`
 
 ## Libraries under 'library'
 
@@ -64,7 +64,7 @@ Using git
   * connectors: various web server connectors for EWSGI
 * libfcgi: Wrapper for libfcgi SDK 
 * __wsf__: Web Server Framework [read more](library/server/wsf)
-  *  __router__: URL dispatching/routing based on uri, uri_template, or custom [read more](library/server/wsf/router)
+  *  __router__: URL dispatching/routing based on `uri`, `uri_template`, or custom [read more](library/server/wsf/router)
 
 ### protocol
 * __http__: HTTP related classes, constants for status code, content types, ... [read more](library/network/protocol/http)
