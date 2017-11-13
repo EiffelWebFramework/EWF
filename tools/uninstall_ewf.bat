@@ -46,7 +46,7 @@ echo Uninstall framework: ewf
 
 echo Uninstall ewf examples
 %RDCMD% %TMP_CONTRIB_DIR%\examples\web\ewf
-%RDCMD% %TMP_CONTRIB_DIR%\examples\ewb\ewf_precomp
+%RDCMD% %TMP_CONTRIB_DIR%\examples\web\ewf_precomp
 
 echo Uninstall ewf wizard
 %RDCMD% %TMP_TARGET_DIR%\help\wizards\ewf
