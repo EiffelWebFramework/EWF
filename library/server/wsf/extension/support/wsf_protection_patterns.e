@@ -1,6 +1,6 @@
 note
 	description: "[
-		{WSF_XSS_PROTECTION_PATTERNS}
+		{WSF_PROTECTION_PATTERNS}
 		Provide application security parterns to assist in Cross Site Scripting
 	]"
 	date: "$Date$"
@@ -9,7 +9,7 @@ note
 	EIS: "name=Regular expression protection", "src=https://docs.apigee.com/api-services/reference/regular-expression-protection", "protocol=uri"
 
 expanded class
-	WSF_XSS_PROTECTION_PATTERNS
+	WSF_PROTECTION_PATTERNS
 
 
 feature -- xss PATTERNS

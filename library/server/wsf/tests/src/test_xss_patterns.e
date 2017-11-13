@@ -97,8 +97,8 @@ alert(String.fromCharCode(88,83,83))//";alert(String.fromCharCode(88,83,83))//--
 			r.match (s)
 			assert ("No quotes and no semicolon", r.has_matched)
 		end
-		
-		
+
+
 	test_case_insensitive_xss_vector
 		local
 			r: REGULAR_EXPRESSION
@@ -168,7 +168,7 @@ alert(String.fromCharCode(88,83,83))//";alert(String.fromCharCode(88,83,83))//--
 			r.match (s)
 			assert ("Malformed A tags", r.has_matched)
 		end
-		
+
 
 	test_malformed_img
 		local
@@ -196,7 +196,7 @@ alert(String.fromCharCode(88,83,83))//";alert(String.fromCharCode(88,83,83))//--
 			r.match (s)
 			assert ("fromCharCode", r.has_matched)
 		end
-		
+
 
 	test_default_src_tag
 		local
@@ -246,6 +246,6 @@ alert(String.fromCharCode(88,83,83))//";alert(String.fromCharCode(88,83,83))//--
 
 feature {NONE} -- Implementation
 
-	xss_pattern: WSF_XSS_PROTECTION_PATTERNS
+	xss_pattern: WSF_PROTECTION_PATTERNS
 
 end

@@ -24,6 +24,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - `http_client`: Added support for multiple file in form data. Made clear what is the meaning of `upload_filename`, `upload_data` and `form_data`.
 - `authentication`: HTTP_AUTHORIZATION acceps now READABLE_STRING_GENERAL for username and password argument.
 - `http_client`: fixed curl implementation by setting `Content-Type` to `x-www-form-urlencoded` (if not set) when POST send data as `x-www-form-urlencoded`.
+- `notification_email`: fixed the SMTP support for multiple recipients address.
 ### Security
 
 
