@@ -14,6 +14,7 @@ feature -- Tests
 
 	test_xss_locator
 		local
+			xss: WSF_XSS_REQUEST
 			r: REGULAR_EXPRESSION
 			s: STRING
 		do
@@ -22,7 +23,7 @@ feature -- Tests
 alert(String.fromCharCode(88,83,83))//";alert(String.fromCharCode(88,83,83))//--
 ></SCRIPT>">'><SCRIPT>alert(String.fromCharCode(88,83,83))</SCRIPT>
 			]"
-			r:= xss_pattern.XSS_regular_expression
+			r:= xss_pattern.XSS.regexp
 			r.match (s)
 			assert ("XSS locator", r.has_matched)
 		end
@@ -35,7 +36,7 @@ alert(String.fromCharCode(88,83,83))//";alert(String.fromCharCode(88,83,83))//--
 			s:="[
 '';!--"<XSS>=&{()}
 			]"
-			r:= xss_pattern.XSS_regular_expression
+			r:= xss_pattern.XSS.regexp
 			r.match (s)
 			assert ("XSS locator short", r.has_matched)
 		end
@@ -48,7 +49,7 @@ alert(String.fromCharCode(88,83,83))//";alert(String.fromCharCode(88,83,83))//--
 			s:="[
 <SCRIPT SRC=http://xss.rocks/xss.js></SCRIPT>
 			]"
-			r:= xss_pattern.XSS_regular_expression
+			r:= xss_pattern.XSS.regexp
 			r.match (s)
 			assert ("No filter evasion", r.has_matched)
 		end
@@ -65,7 +66,7 @@ alert(String.fromCharCode(88,83,83))//";alert(String.fromCharCode(88,83,83))//--
 <img/id="confirm&lpar;1)"/alt="/"src="/"onerror=eval(id)>'">
 <img src="http://www.shellypalmer.com/wp-content/images/2015/07/hacked-compressor.jpg">
 ]"
-			r:= xss_pattern.XSS_regular_expression
+			r:= xss_pattern.XSS.regexp
 			r.match (s)
 			assert ("Filter bypass based polyglot", r.has_matched)
 		end
@@ -79,7 +80,7 @@ alert(String.fromCharCode(88,83,83))//";alert(String.fromCharCode(88,83,83))//--
 			s:="[
 <IMG SRC="javascript:alert('XSS');">
 ]"
-			r:= xss_pattern.XSS_regular_expression
+			r:= xss_pattern.XSS.regexp
 			r.match (s)
 			assert ("Image XSS using the JavaScript directive", r.has_matched)
 		end
@@ -93,7 +94,7 @@ alert(String.fromCharCode(88,83,83))//";alert(String.fromCharCode(88,83,83))//--
 			s:="[
 <IMG SRC=javascript:alert('XSS')>
 ]"
-			r:= xss_pattern.XSS_regular_expression
+			r:= xss_pattern.XSS.regexp
 			r.match (s)
 			assert ("No quotes and no semicolon", r.has_matched)
 		end
@@ -107,7 +108,7 @@ alert(String.fromCharCode(88,83,83))//";alert(String.fromCharCode(88,83,83))//--
 			s:="[
 <IMG SRC=JaVaScRiPt:alert('XSS')>
 ]"
-			r:= xss_pattern.XSS_regular_expression
+			r:= xss_pattern.XSS.regexp
 			r.match (s)
 			assert ("Case insensitive XSS attack vector", r.has_matched)
 		end
@@ -121,7 +122,7 @@ alert(String.fromCharCode(88,83,83))//";alert(String.fromCharCode(88,83,83))//--
 			s:="[
 <IMG SRC=javascript:alert(&quot;XSS&quot;)>
 ]"
-			r:= xss_pattern.XSS_regular_expression
+			r:= xss_pattern.XSS.regexp
 			r.match (s)
 			assert ("HTML entities", r.has_matched)
 		end
@@ -134,7 +135,7 @@ alert(String.fromCharCode(88,83,83))//";alert(String.fromCharCode(88,83,83))//--
 			s:="[
 <IMG SRC=`javascript:alert("RSnake says, 'XSS'")`>
 ]"
-			r:= xss_pattern.XSS_regular_expression
+			r:= xss_pattern.XSS.regexp
 			r.match (s)
 			assert ("Grave accent obfuscation", r.has_matched)
 		end
@@ -149,7 +150,7 @@ alert(String.fromCharCode(88,83,83))//";alert(String.fromCharCode(88,83,83))//--
 			s:="[
 <a onmouseover="alert(document.cookie)">xxs link</a>
 ]"
-			r:= xss_pattern.XSS_regular_expression
+			r:= xss_pattern.XSS.regexp
 			r.match (s)
 			assert ("Malformed A tags", r.has_matched)
 		end
@@ -164,7 +165,7 @@ alert(String.fromCharCode(88,83,83))//";alert(String.fromCharCode(88,83,83))//--
 			s:="[
 <a onmouseover=alert(document.cookie)>xxs link</a>
 ]"
-			r:= xss_pattern.XSS_regular_expression
+			r:= xss_pattern.XSS.regexp
 			r.match (s)
 			assert ("Malformed A tags", r.has_matched)
 		end
@@ -178,7 +179,7 @@ alert(String.fromCharCode(88,83,83))//";alert(String.fromCharCode(88,83,83))//--
 			s:="[
 <IMG """><SCRIPT>alert("XSS")</SCRIPT>">
 ]"
-			r:= xss_pattern.XSS_regular_expression
+			r:= xss_pattern.XSS.regexp
 			r.match (s)
 			assert ("Malformed IMG tags", r.has_matched)
 		end
@@ -192,7 +193,7 @@ alert(String.fromCharCode(88,83,83))//";alert(String.fromCharCode(88,83,83))//--
 			s:="[
 <IMG SRC=javascript:alert(String.fromCharCode(88,83,83))>
 ]"
-			r:= xss_pattern.XSS_regular_expression
+			r:= xss_pattern.XSS.regexp
 			r.match (s)
 			assert ("fromCharCode", r.has_matched)
 		end
@@ -206,7 +207,7 @@ alert(String.fromCharCode(88,83,83))//";alert(String.fromCharCode(88,83,83))//--
 			s:="[
 <IMG SRC=# onmouseover="alert('xxs')">
 ]"
-			r:= xss_pattern.XSS_regular_expression
+			r:= xss_pattern.XSS.regexp
 			r.match (s)
 			assert ("Default SRC tag to get past filters that check SRC domain", r.has_matched)
 		end
@@ -220,7 +221,7 @@ alert(String.fromCharCode(88,83,83))//";alert(String.fromCharCode(88,83,83))//--
 			s:="[
 <IMG SRC= onmouseover="alert('xxs')">
 ]"
-			r:= xss_pattern.XSS_regular_expression
+			r:= xss_pattern.XSS.regexp
 			r.match (s)
 			assert ("Default SRC tag by leaving it empty", r.has_matched)
 		end
@@ -233,7 +234,7 @@ alert(String.fromCharCode(88,83,83))//";alert(String.fromCharCode(88,83,83))//--
 			s:="[
 <IMG onmouseover="alert('xxs')">
 ]"
-			r:= xss_pattern.XSS_regular_expression
+			r:= xss_pattern.XSS.regexp
 			r.match (s)
 			assert ("Default SRC tag by leaving it out entirely", r.has_matched)
 		end
@@ -246,6 +247,6 @@ alert(String.fromCharCode(88,83,83))//";alert(String.fromCharCode(88,83,83))//--
 
 feature {NONE} -- Implementation
 
-	xss_pattern: WSF_PROTECTION_PATTERNS
+	xss_pattern: WSF_PROTECTIONS
 
 end

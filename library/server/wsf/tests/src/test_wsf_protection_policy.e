@@ -37,7 +37,7 @@ feature -- Test
 		local
 			req: WSF_REQUEST
 			sec: WSF_PROTECTION_POLICY
-			l_protection: WSF_PROTECTION_PATTERNS
+			l_protection: WSF_PROTECTIONS
 		do
 			create sec
 			--| Case HTTP header expect attack, filtered using {xss_regular_expression}
@@ -48,7 +48,7 @@ feature -- Test
 						["HTTP_EXPECT", "<script>alert(XSS attack)</script>"]
 					>>
 				)
-			assert ("HTTP_EXPECT <script>alert(XSS attack)</script>", attached {READABLE_STRING_8} sec.custom_http_expect (req, {ARRAY [REGULAR_EXPRESSION]}<<l_protection.xss_regular_expression>>) as v and then v.is_empty )
+			assert ("HTTP_EXPECT <script>alert(XSS attack)</script>", sec.custom_http_expect (req, <<l_protection.xss>>) = Void)
 		end
 
 
@@ -56,7 +56,7 @@ feature -- Test
 		local
 			req: WSF_REQUEST
 			sec: WSF_PROTECTION_POLICY
-			l_protection: WSF_PROTECTION_PATTERNS
+			l_protection: WSF_PROTECTIONS
 		do
 			create sec
 			--| Case HTTP header expect attack, filtered using {xss_javascript_expression}
@@ -67,14 +67,14 @@ feature -- Test
 						["HTTP_EXPECT", "<script>alert(XSS attack)</script>"]
 					>>
 				)
-			assert ("HTTP_EXPECT <script>alert(XSS attack)</script>", attached {READABLE_STRING_8} sec.custom_http_expect (req, {ARRAY [REGULAR_EXPRESSION]}<<l_protection.xss_javascript_expression>>) as v and then v.is_empty )
+			assert ("HTTP_EXPECT <script>alert(XSS attack)</script>", sec.custom_http_expect (req, <<l_protection.xss_javascript>>) = Void )
 		end
 
 	test_http_referer_attack_with_xss_js_protection_fails
 		local
 			req: WSF_REQUEST
 			sec: WSF_PROTECTION_POLICY
-			l_protection: WSF_PROTECTION_PATTERNS
+			l_protection: WSF_PROTECTIONS
 			l_str: STRING
 		do
 			l_str:= "[
@@ -89,7 +89,7 @@ feature -- Test
 						["HTTP_REFERER", l_str]
 					>>
 				)
-			assert ("HTTP_REFERER", attached {READABLE_STRING_8} sec.custom_http_referer (req, {ARRAY [REGULAR_EXPRESSION]}<<l_protection.xss_javascript_expression>>) as v and then not v.is_empty )
+			assert ("HTTP_REFERER", attached sec.custom_http_referer (req, <<l_protection.xss_javascript>>) as v and then not v.is_empty )
 		end
 
 
@@ -97,7 +97,7 @@ feature -- Test
 		local
 			req: WSF_REQUEST
 			sec: WSF_PROTECTION_POLICY
-			l_protection: WSF_PROTECTION_PATTERNS
+			l_protection: WSF_PROTECTIONS
 			l_str: STRING
 		do
 			l_str:= "[
@@ -112,7 +112,7 @@ feature -- Test
 						["HTTP_REFERER", l_str]
 					>>
 				)
-			assert ("HTTP_REFERER", attached {READABLE_STRING_8} sec.custom_http_referer (req, {ARRAY [REGULAR_EXPRESSION]}<<l_protection.xss_regular_expression>>) as v and then not v.is_empty )
+			assert ("HTTP_REFERER", attached {READABLE_STRING_8} sec.custom_http_referer (req, <<l_protection.xss>>) as v and then not v.is_empty )
 		end
 
 

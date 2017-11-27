@@ -2,7 +2,7 @@ note
 	description: "[
 		XSS request, redefine query_parameter and form_parameters filtering the data (using XSS protection)
 		before return the value.
-		The XSS protection pattern used is defined here :{WSF_PROTECTION_PATTERNS}.XSS_regular_expression: REGULAR_EXPRESSION
+		The XSS protection pattern used is defined here :{WSF_PROTECTIONS}.XSS: WSF_PROTECTION
 
 	]"
 	date: "$Date$"
@@ -83,169 +83,169 @@ feature -- HTTP_*
 	http_accept: detachable READABLE_STRING_8
 			-- <Precursor>
 		local
-			l_protection: WSF_PROTECTION_PATTERNS
+			l_protection: WSF_PROTECTIONS
 		do
-			Result := custom_http_accept (Current, {ARRAY [REGULAR_EXPRESSION]}<<l_protection.xss_regular_expression>>)
+			Result := custom_http_accept (Current, <<l_protection.xss>>)
 		end
 
 	http_accept_charset: detachable READABLE_STRING_8
 			-- <Precursor>
 		local
-			l_protection: WSF_PROTECTION_PATTERNS
+			l_protection: WSF_PROTECTIONS
 		do
-			Result := custom_http_accept_charset (Current, {ARRAY [REGULAR_EXPRESSION]}<<l_protection.xss_regular_expression>>)
+			Result := custom_http_accept_charset (Current, <<l_protection.xss>>)
 		end
 
 	http_accept_encoding: detachable READABLE_STRING_8
 			-- <Precursor>
 		local
-			l_protection: WSF_PROTECTION_PATTERNS
+			l_protection: WSF_PROTECTIONS
 		do
-			Result := custom_http_accept_encoding (Current, {ARRAY [REGULAR_EXPRESSION]}<<l_protection.xss_regular_expression>>)
+			Result := custom_http_accept_encoding (Current, <<l_protection.xss>>)
 		end
 
 	http_accept_language: detachable READABLE_STRING_8
 			-- <Precursor>
 		local
-			l_protection: WSF_PROTECTION_PATTERNS
+			l_protection: WSF_PROTECTIONS
 		do
-			Result := custom_http_accept_language (Current, {ARRAY [REGULAR_EXPRESSION]}<<l_protection.xss_regular_expression>>)
+			Result := custom_http_accept_language (Current, <<l_protection.xss>>)
 		end
 
 	http_connection: detachable READABLE_STRING_8
 			-- <Precursor>
 		local
-			l_protection: WSF_PROTECTION_PATTERNS
+			l_protection: WSF_PROTECTIONS
 		do
-			Result := custom_http_connection (Current, {ARRAY [REGULAR_EXPRESSION]}<<l_protection.xss_regular_expression>>)
+			Result := custom_http_connection (Current, <<l_protection.xss>>)
 		end
 
 	http_expect: detachable READABLE_STRING_8
 			-- <Precursor>
 		local
-			l_protection: WSF_PROTECTION_PATTERNS
+			l_protection: WSF_PROTECTIONS
 		do
-			Result := custom_http_expect (Current, {ARRAY [REGULAR_EXPRESSION]}<<l_protection.xss_regular_expression>>)
+			Result := custom_http_expect (Current, <<l_protection.xss>>)
 		end
 
 	http_host: detachable READABLE_STRING_8
 			-- <Precursor>
 		local
-			l_protection: WSF_PROTECTION_PATTERNS
+			l_protection: WSF_PROTECTIONS
 		do
-			Result := custom_http_host (Current, {ARRAY [REGULAR_EXPRESSION]}<<l_protection.xss_regular_expression>>)
+			Result := custom_http_host (Current, <<l_protection.xss>>)
 		end
 
 	http_referer: detachable READABLE_STRING_8
 			-- <Precursor>
 		local
-			l_protection: WSF_PROTECTION_PATTERNS
+			l_protection: WSF_PROTECTIONS
 		do
-			Result := custom_http_referer (Current, {ARRAY [REGULAR_EXPRESSION]}<<l_protection.xss_regular_expression>>)
+			Result := custom_http_referer (Current, <<l_protection.xss>>)
 		end
 
 	http_user_agent: detachable READABLE_STRING_8
 			-- <Precursor>
 		local
-			l_protection: WSF_PROTECTION_PATTERNS
+			l_protection: WSF_PROTECTIONS
 		do
-			Result := custom_http_user_agent (Current, {ARRAY [REGULAR_EXPRESSION]}<<l_protection.xss_regular_expression>>)
+			Result := custom_http_user_agent (Current, <<l_protection.xss>>)
 		end
 
 	http_authorization: detachable READABLE_STRING_8
 			-- <Precursor>
 		local
-			l_protection: WSF_PROTECTION_PATTERNS
+			l_protection: WSF_PROTECTIONS
 		do
-			Result := custom_http_authorization (Current, {ARRAY [REGULAR_EXPRESSION]}<<l_protection.xss_regular_expression>>)
+			Result := custom_http_authorization (Current, <<l_protection.xss>>)
 		end
 
 	http_transfer_encoding: detachable READABLE_STRING_8
 			-- <Precursor>
 		local
-			l_protection: WSF_PROTECTION_PATTERNS
+			l_protection: WSF_PROTECTIONS
 		do
-			Result := custom_http_transfer_encoding (Current, {ARRAY [REGULAR_EXPRESSION]}<<l_protection.xss_regular_expression>>)
+			Result := custom_http_transfer_encoding (Current, <<l_protection.xss>>)
 		end
 
 	http_access_control_request_headers: detachable READABLE_STRING_8
 			-- <Precursor>
 		local
-			l_protection: WSF_PROTECTION_PATTERNS
+			l_protection: WSF_PROTECTIONS
 		do
-			Result := custom_http_access_control_request_headers (Current, {ARRAY [REGULAR_EXPRESSION]}<<l_protection.xss_regular_expression>>)
+			Result := custom_http_access_control_request_headers (Current, <<l_protection.xss>>)
 		end
 
 	http_if_match: detachable READABLE_STRING_8
 			-- <Precursor>
 		local
-			l_protection: WSF_PROTECTION_PATTERNS
+			l_protection: WSF_PROTECTIONS
 		do
-			Result := custom_http_if_match (Current, {ARRAY [REGULAR_EXPRESSION]}<<l_protection.xss_regular_expression>>)
+			Result := custom_http_if_match (Current, <<l_protection.xss>>)
 		end
 
 	http_if_modified_since: detachable READABLE_STRING_8
 			-- <Precursor>
 		local
-			l_protection: WSF_PROTECTION_PATTERNS
+			l_protection: WSF_PROTECTIONS
 		do
-			Result := custom_http_if_modified_since (Current, {ARRAY [REGULAR_EXPRESSION]}<<l_protection.xss_regular_expression>>)
+			Result := custom_http_if_modified_since (Current, <<l_protection.xss>>)
 		end
 
 	http_if_none_match: detachable READABLE_STRING_8
 			-- <Precursor>
 		local
-			l_protection: WSF_PROTECTION_PATTERNS
+			l_protection: WSF_PROTECTIONS
 		do
-			Result := custom_http_if_none_match (Current, {ARRAY [REGULAR_EXPRESSION]}<<l_protection.xss_regular_expression>>)
+			Result := custom_http_if_none_match (Current, <<l_protection.xss>>)
 		end
 
 	http_if_range: detachable READABLE_STRING_8
 			-- <Precursor>
 		local
-			l_protection: WSF_PROTECTION_PATTERNS
+			l_protection: WSF_PROTECTIONS
 		do
-			Result := custom_http_if_range (Current, {ARRAY [REGULAR_EXPRESSION]}<<l_protection.xss_regular_expression>>)
+			Result := custom_http_if_range (Current, <<l_protection.xss>>)
 		end
 
 	http_if_unmodified_since: detachable READABLE_STRING_8
 			-- <Precursor>
 		local
-			l_protection: WSF_PROTECTION_PATTERNS
+			l_protection: WSF_PROTECTIONS
 		do
-			Result := custom_http_if_unmodified_since (Current, {ARRAY [REGULAR_EXPRESSION]}<<l_protection.xss_regular_expression>>)
+			Result := custom_http_if_unmodified_since (Current, <<l_protection.xss>>)
 		end
 
 	http_last_modified: detachable READABLE_STRING_8
 			-- <Precursor>
 		local
-			l_protection: WSF_PROTECTION_PATTERNS
+			l_protection: WSF_PROTECTIONS
 		do
-			Result := custom_http_last_modified (Current, {ARRAY [REGULAR_EXPRESSION]}<<l_protection.xss_regular_expression>>)
+			Result := custom_http_last_modified (Current, <<l_protection.xss>>)
 		end
 
 	http_range: detachable READABLE_STRING_8
 			-- <Precursor>
 		local
-			l_protection: WSF_PROTECTION_PATTERNS
+			l_protection: WSF_PROTECTIONS
 		do
-			Result := custom_http_range (Current, {ARRAY [REGULAR_EXPRESSION]}<<l_protection.xss_regular_expression>>)
+			Result := custom_http_range (Current, <<l_protection.xss>>)
 		end
 
 	http_content_range: detachable READABLE_STRING_8
 			-- <Precursor>
 		local
-			l_protection: WSF_PROTECTION_PATTERNS
+			l_protection: WSF_PROTECTIONS
 		do
-			Result := custom_http_content_range (Current, {ARRAY [REGULAR_EXPRESSION]}<<l_protection.xss_regular_expression>>)
+			Result := custom_http_content_range (Current, <<l_protection.xss>>)
 		end
 
 	http_content_encoding: detachable READABLE_STRING_8
 			-- <Precursor>
 		local
-			l_protection: WSF_PROTECTION_PATTERNS
+			l_protection: WSF_PROTECTIONS
 		do
-			Result := custom_http_content_encoding (Current, {ARRAY [REGULAR_EXPRESSION]}<<l_protection.xss_regular_expression>>)
+			Result := custom_http_content_encoding (Current, <<l_protection.xss>>)
 		end
 note
 	copyright: "2011-2017, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Colin Adams, Eiffel Software and others"

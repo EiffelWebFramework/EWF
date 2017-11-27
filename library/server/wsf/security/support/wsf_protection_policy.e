@@ -10,7 +10,7 @@ class
 
 feature -- Query parameters
 
-	custom_query_parameter (a_req: WSF_REQUEST; a_name: READABLE_STRING_GENERAL; a_protections: ARRAY [REGULAR_EXPRESSION]): detachable WSF_VALUE
+	custom_query_parameter (a_req: WSF_REQUEST; a_name: READABLE_STRING_GENERAL; a_protections: ITERABLE [WSF_PROTECTION]): detachable WSF_VALUE
 			-- Filtered Query parameter name `a_name' with custom protections.
 		do
 			Result := custom_wsf_value (a_req.query_parameter (a_name), a_protections)
@@ -18,7 +18,7 @@ feature -- Query parameters
 
 	predefined_query_parameter (a_req: WSF_REQUEST; a_name: READABLE_STRING_GENERAL): detachable WSF_VALUE
 			-- Filtered Query parameter name `a_name' with all predefined protections.
-			-- check {WSF_PROTECTION_PATTERNS} class.
+			-- check {WSF_PROTECTIONS} class.
 		do
 			Result := predefined_value (a_req.query_parameter (a_name))
 		end
@@ -61,7 +61,7 @@ feature -- Query parameters
 
 feature -- Form Parameters
 
-	custom_form_parameter (a_req: WSF_REQUEST; a_name: READABLE_STRING_GENERAL; a_protections: ARRAY [REGULAR_EXPRESSION]): detachable WSF_VALUE
+	custom_form_parameter (a_req: WSF_REQUEST; a_name: READABLE_STRING_GENERAL; a_protections: ITERABLE [WSF_PROTECTION]): detachable WSF_VALUE
 			-- Filtered Form parameter name `a_name' with custom protections.
 		do
 			Result := custom_wsf_value (a_req.form_parameter (a_name), a_protections)
@@ -69,7 +69,7 @@ feature -- Form Parameters
 
 	predefined_form_parameter (a_req: WSF_REQUEST; a_name: READABLE_STRING_GENERAL): detachable WSF_VALUE
 			-- Filtered Form parameter name `a_name' with all predefined protections.
-			-- check {WSF_PROTECTION_PATTERNS} class.
+			-- check {WSF_PROTECTIONS} class.
 		do
 			Result := predefined_value (a_req.form_parameter (a_name))
 		end
@@ -112,7 +112,7 @@ feature -- Form Parameters
 
 feature -- Meta Variables
 
-	custom_meta_variable (a_req: WSF_REQUEST; a_name: READABLE_STRING_GENERAL; a_protections: ARRAY [REGULAR_EXPRESSION]): detachable WSF_VALUE
+	custom_meta_variable (a_req: WSF_REQUEST; a_name: READABLE_STRING_GENERAL; a_protections: ITERABLE [WSF_PROTECTION]): detachable WSF_VALUE
 			-- Filtered CGI Meta variable name `a_name' with custom protections.
 		require
 			a_name_valid: a_name /= Void and then not a_name.is_empty
@@ -124,7 +124,7 @@ feature -- Meta Variables
 
 	predefined_meta_variable (a_req: WSF_REQUEST; a_name: READABLE_STRING_GENERAL): detachable WSF_VALUE
 			-- Filtered CGI Meta variable name `a_name' with predefined protections.
-			-- check {WSF_PROTECTION_PATTERNS} class.
+			-- check {WSF_PROTECTIONS} class.
 		require
 			a_name_valid: a_name /= Void and then not a_name.is_empty
 		do
@@ -194,7 +194,7 @@ feature -- Meta Variables
 		end
 feature -- HTTP_*
 
-	custom_http_accept (a_req: WSF_REQUEST; a_protections: ARRAY [REGULAR_EXPRESSION]): detachable READABLE_STRING_8
+	custom_http_accept (a_req: WSF_REQUEST; a_protections: ITERABLE [WSF_PROTECTION]): detachable READABLE_STRING_8
 			-- Filtered http_accept header with custom protections `a_protections`.
 			-- Contents of the Accept: header from the current wgi_request, if there is one.
 			-- Example: 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
@@ -202,7 +202,7 @@ feature -- HTTP_*
 			Result := custom_string_value (a_req.http_accept, a_protections)
 		end
 
-	custom_http_accept_charset (a_req: WSF_REQUEST; a_protections: ARRAY [REGULAR_EXPRESSION]): detachable READABLE_STRING_8
+	custom_http_accept_charset (a_req: WSF_REQUEST; a_protections: ITERABLE [WSF_PROTECTION]): detachable READABLE_STRING_8
 			-- Filtered http_accept_charset header with custom protections `a_protections`.
 			-- Contents of the Accept-Charset: header from the current wgi_request, if there is one.
 			-- Example: 'iso-8859-1,*,utf-8'.
@@ -211,7 +211,7 @@ feature -- HTTP_*
 			Result := custom_string_value (a_req.http_accept_charset, a_protections)
 		end
 
-	custom_http_accept_encoding (a_req: WSF_REQUEST; a_protections: ARRAY [REGULAR_EXPRESSION]): detachable READABLE_STRING_8
+	custom_http_accept_encoding (a_req: WSF_REQUEST; a_protections: ITERABLE [WSF_PROTECTION]): detachable READABLE_STRING_8
 			-- Filtered http_accept_encoding header with custom protections `a_protections`.
 			-- Contents of the Accept-Encoding: header from the current wgi_request, if there is one.
 			-- Example: 'gzip'.
@@ -219,7 +219,7 @@ feature -- HTTP_*
 			Result := custom_string_value (a_req.http_accept_encoding, a_protections)
 		end
 
-	custom_http_accept_language (a_req: WSF_REQUEST; a_protections: ARRAY [REGULAR_EXPRESSION]): detachable READABLE_STRING_8
+	custom_http_accept_language (a_req: WSF_REQUEST; a_protections: ITERABLE [WSF_PROTECTION]): detachable READABLE_STRING_8
 			-- Filtered http_accept_language header with custom protections `a_protections`.
 			-- Contents of the Accept-Language: header from the current wgi_request, if there is one.
 			-- Example: 'en'.
@@ -227,7 +227,7 @@ feature -- HTTP_*
 			Result := custom_string_value (a_req.http_accept_language, a_protections)
 		end
 
-	custom_http_connection (a_req: WSF_REQUEST; a_protections: ARRAY [REGULAR_EXPRESSION]): detachable READABLE_STRING_8
+	custom_http_connection (a_req: WSF_REQUEST; a_protections: ITERABLE [WSF_PROTECTION]): detachable READABLE_STRING_8
 			-- Filtered http_connection header with custom protections `a_protections`.
 			-- Contents of the Connection: header from the current wgi_request, if there is one.
 			-- Example: 'keep-alive'.
@@ -235,7 +235,7 @@ feature -- HTTP_*
 			Result := custom_string_value (a_req.http_connection, a_protections)
 		end
 
-	custom_http_expect (a_req: WSF_REQUEST; a_protections: ARRAY [REGULAR_EXPRESSION]): detachable READABLE_STRING_8
+	custom_http_expect (a_req: WSF_REQUEST; a_protections: ITERABLE [WSF_PROTECTION]): detachable READABLE_STRING_8
 			-- Filtered http_expect header with custom protections `a_protections`.
 			-- The Expect request-header field is used to indicate that particular server behaviors are required by the client.
 			-- Example: '100-continue'.
@@ -243,14 +243,14 @@ feature -- HTTP_*
 			Result := custom_string_value (a_req.http_expect, a_protections)
 		end
 
-	custom_http_host (a_req: WSF_REQUEST; a_protections: ARRAY [REGULAR_EXPRESSION]): detachable READABLE_STRING_8
+	custom_http_host (a_req: WSF_REQUEST; a_protections: ITERABLE [WSF_PROTECTION]): detachable READABLE_STRING_8
 			-- Filtered http_host header with custom protections `a_protections`.
 			-- Contents of the Host: header from the current wgi_request, if there is one.
 		do
 			Result := custom_string_value (a_req.http_host, a_protections)
 		end
 
-	custom_http_referer (a_req: WSF_REQUEST; a_protections: ARRAY [REGULAR_EXPRESSION]): detachable READABLE_STRING_8
+	custom_http_referer (a_req: WSF_REQUEST; a_protections: ITERABLE [WSF_PROTECTION]): detachable READABLE_STRING_8
 			-- Filtered http_referer header with custom protections `a_protections`.
 			-- The address of the page (if any) which referred the user agent to the current page.
 			-- This is set by the user agent.
@@ -260,7 +260,7 @@ feature -- HTTP_*
 			Result := custom_string_value (a_req.http_referer, a_protections)
 		end
 
-	custom_http_user_agent (a_req: WSF_REQUEST; a_protections: ARRAY [REGULAR_EXPRESSION]): detachable READABLE_STRING_8
+	custom_http_user_agent (a_req: WSF_REQUEST; a_protections: ITERABLE [WSF_PROTECTION]): detachable READABLE_STRING_8
 			-- Filtered http_user_agent header with custom protections `a_protections`.
 			-- Contents of the User-Agent: header from the current wgi_request, if there is one.
 			-- This is a string denoting the user agent being which is accessing the page.
@@ -271,14 +271,14 @@ feature -- HTTP_*
 			Result := custom_string_value (a_req.http_user_agent, a_protections)
 		end
 
-	custom_http_authorization (a_req: WSF_REQUEST; a_protections: ARRAY [REGULAR_EXPRESSION]): detachable READABLE_STRING_8
+	custom_http_authorization (a_req: WSF_REQUEST; a_protections: ITERABLE [WSF_PROTECTION]): detachable READABLE_STRING_8
 			-- Filtered http_authorization header with custom protections `a_protections`.
 			-- Contents of the Authorization: header from the current wgi_request, if there is one.
 		do
 			Result := custom_string_value (a_req.http_authorization, a_protections)
 		end
 
-	custom_http_transfer_encoding (a_req: WSF_REQUEST; a_protections: ARRAY [REGULAR_EXPRESSION]): detachable READABLE_STRING_8
+	custom_http_transfer_encoding (a_req: WSF_REQUEST; a_protections: ITERABLE [WSF_PROTECTION]): detachable READABLE_STRING_8
 			-- Filtered http_transfer_encoding header with custom protections `a_protections`.
 			-- Transfer-Encoding
 			-- for instance chunked.
@@ -286,7 +286,7 @@ feature -- HTTP_*
 			Result := custom_string_value (a_req.http_transfer_encoding, a_protections)
 		end
 
-	custom_http_access_control_request_headers (a_req: WSF_REQUEST; a_protections: ARRAY [REGULAR_EXPRESSION]): detachable READABLE_STRING_8
+	custom_http_access_control_request_headers (a_req: WSF_REQUEST; a_protections: ITERABLE [WSF_PROTECTION]): detachable READABLE_STRING_8
 			-- Filtered http_access_control_request_headers header with custom protections `a_protections`.
 			-- Indicates which headers will be used in the actual request
 			-- as part of the preflight request
@@ -294,63 +294,63 @@ feature -- HTTP_*
 			Result := custom_string_value (a_req.http_access_control_request_headers, a_protections)
 		end
 
-	custom_http_if_match (a_req: WSF_REQUEST; a_protections: ARRAY [REGULAR_EXPRESSION]): detachable READABLE_STRING_8
+	custom_http_if_match (a_req: WSF_REQUEST; a_protections: ITERABLE [WSF_PROTECTION]): detachable READABLE_STRING_8
 			-- Filtered http_if_match header with custom protections `a_protections`.
 			-- Existence check on resource.
 		do
 			Result := custom_string_value (a_req.http_if_match, a_protections)
 		end
 
-	custom_http_if_modified_since (a_req: WSF_REQUEST; a_protections: ARRAY [REGULAR_EXPRESSION]): detachable READABLE_STRING_8
+	custom_http_if_modified_since (a_req: WSF_REQUEST; a_protections: ITERABLE [WSF_PROTECTION]): detachable READABLE_STRING_8
 			-- Filtered http_if_modified_since header with custom protections `a_protections`.
 			-- Modification check on resource.
 		do
 			Result := custom_string_value (a_req.http_if_modified_since, a_protections)
 		end
 
-	custom_http_if_none_match (a_req: WSF_REQUEST; a_protections: ARRAY [REGULAR_EXPRESSION]): detachable READABLE_STRING_8
+	custom_http_if_none_match (a_req: WSF_REQUEST; a_protections: ITERABLE [WSF_PROTECTION]): detachable READABLE_STRING_8
 			-- Filtered http_if_none_match header with custom protections `a_protections`.
 			-- Existence check on resource.
 		do
 			Result := custom_string_value (a_req.http_if_none_match, a_protections)
 		end
 
-	custom_http_if_range (a_req: WSF_REQUEST; a_protections: ARRAY [REGULAR_EXPRESSION]): detachable READABLE_STRING_8
+	custom_http_if_range (a_req: WSF_REQUEST; a_protections: ITERABLE [WSF_PROTECTION]): detachable READABLE_STRING_8
 			-- Filtered http_if_range header with custom protections `a_protections`.
 			-- Existence check on resource.
 		do
 			Result := custom_string_value (a_req.http_if_range, a_protections)
 		end
 
-	custom_http_if_unmodified_since (a_req: WSF_REQUEST; a_protections: ARRAY [REGULAR_EXPRESSION]): detachable READABLE_STRING_8
+	custom_http_if_unmodified_since (a_req: WSF_REQUEST; a_protections: ITERABLE [WSF_PROTECTION]): detachable READABLE_STRING_8
 			-- Filtered http_if_unmodified_since header with custom protections `a_protections`.
 			-- Modification check on resource.
 		do
 			Result := custom_string_value (a_req.http_if_unmodified_since, a_protections)
 		end
 
-	custom_http_last_modified (a_req: WSF_REQUEST; a_protections: ARRAY [REGULAR_EXPRESSION]): detachable READABLE_STRING_8
+	custom_http_last_modified (a_req: WSF_REQUEST; a_protections: ITERABLE [WSF_PROTECTION]): detachable READABLE_STRING_8
 			-- Filtered http_last_modified header with custom protections `a_protections`.
 			-- Modification check on resource.
 		do
 			Result := custom_string_value (a_req.http_last_modified, a_protections)
 		end
 
-	custom_http_range (a_req: WSF_REQUEST; a_protections: ARRAY [REGULAR_EXPRESSION]): detachable READABLE_STRING_8
+	custom_http_range (a_req: WSF_REQUEST; a_protections: ITERABLE [WSF_PROTECTION]): detachable READABLE_STRING_8
 			-- Filtered http_range header with custom protections `a_protections`.
 			-- Requested byte-range of resource.
 		do
 			Result := custom_string_value (a_req.http_range, a_protections)
 		end
 
-	custom_http_content_range (a_req: WSF_REQUEST; a_protections: ARRAY [REGULAR_EXPRESSION]): detachable READABLE_STRING_8
+	custom_http_content_range (a_req: WSF_REQUEST; a_protections: ITERABLE [WSF_PROTECTION]): detachable READABLE_STRING_8
 			-- Filtered http_content_range header with custom protections `a_protections`.
 			-- Partial range of selected representation enclosed in message payload.
 		do
 			Result := custom_string_value (a_req.http_content_range, a_protections)
 		end
 
-	custom_http_content_encoding (a_req: WSF_REQUEST; a_protections: ARRAY [REGULAR_EXPRESSION]): detachable READABLE_STRING_8
+	custom_http_content_encoding (a_req: WSF_REQUEST; a_protections: ITERABLE [WSF_PROTECTION]): detachable READABLE_STRING_8
 			-- Filtered http_content_encoding header with custom protections `a_protections`.
 			-- Encoding (usually compression) of message payload.
 		do
@@ -359,18 +359,14 @@ feature -- HTTP_*
 
 feature {NONE} -- Implementation
 
-	custom_wsf_value (a_value: detachable WSF_VALUE; a_protections: ARRAY [REGULAR_EXPRESSION]): detachable WSF_VALUE
+	custom_wsf_value (a_value: detachable WSF_VALUE; a_protections: ITERABLE [WSF_PROTECTION]): detachable WSF_VALUE
 			-- Return value `a_value` filtered by all protections policy.
-		local
-			l_wsf_xss: WSF_PROTECTION_PATTERNS
 		do
 			Result := filter_wsf_value (a_value, a_protections )
 		end
 
-	custom_string_value (a_value: detachable READABLE_STRING_8; a_protections: ARRAY [REGULAR_EXPRESSION]): detachable READABLE_STRING_8
+	custom_string_value (a_value: detachable READABLE_STRING_8; a_protections: ITERABLE [WSF_PROTECTION]): detachable READABLE_STRING_8
 			-- Return value `a_value` filtered by all protections policy.
-		local
-			l_wsf_xss: WSF_PROTECTION_PATTERNS
 		do
 			Result := filter_string_value (a_value, a_protections )
 		end
@@ -378,132 +374,108 @@ feature {NONE} -- Implementation
 	predefined_value (a_value: detachable WSF_VALUE): detachable WSF_VALUE
 			-- Return value `a_value` filtered by all predefined protections policy.
 		local
-			l_wsf_xss: WSF_PROTECTION_PATTERNS
+			l_wsf_xss: WSF_PROTECTIONS
 		do
 			Result := filter_wsf_value (a_value,
-								{ARRAY [REGULAR_EXPRESSION]}<<
-									l_wsf_xss.XSS_regular_expression,
-									l_wsf_xss.server_side_expression,
-									l_wsf_xss.sql_injection_regular_expression,
-									l_wsf_xss.xpath_abbreviated_expression,
-									l_wsf_xss.xpath_expanded_expression>>)
+								<<
+									l_wsf_xss.XSS,
+									l_wsf_xss.server_side,
+									l_wsf_xss.sql_injection,
+									l_wsf_xss.xpath_abbreviated,
+									l_wsf_xss.xpath_expanded
+								>>)
 		end
 
 	xss_value (a_value: detachable WSF_VALUE): detachable WSF_VALUE
 			-- Return value `a_value` filtered by xss protection.
 		local
-			l_wsf_xss: WSF_PROTECTION_PATTERNS
+			l_wsf_xss: WSF_PROTECTIONS
 		do
-			Result := filter_wsf_value (a_value, {ARRAY [REGULAR_EXPRESSION]}<<l_wsf_xss.XSS_regular_expression>>)
+			Result := filter_wsf_value (a_value, <<l_wsf_xss.XSS>>)
 		end
 
 	xss_js_value (a_value: detachable WSF_VALUE): detachable WSF_VALUE
 			-- Return value `a_value` filtered by xss-javascript protection.
 		local
-			l_wsf_xss: WSF_PROTECTION_PATTERNS
+			l_wsf_xss: WSF_PROTECTIONS
 		do
-			Result := filter_wsf_value (a_value, {ARRAY [REGULAR_EXPRESSION]} <<l_wsf_xss.XSS_javascript_expression>>)
+			Result := filter_wsf_value (a_value, <<l_wsf_xss.XSS_javascript>>)
 		end
 
 	sql_value (a_value: detachable WSF_VALUE): detachable WSF_VALUE
 			-- Return value `a_value` filtered by sql injection protection.
 		local
-			l_wsf_xss: WSF_PROTECTION_PATTERNS
+			l_wsf_xss: WSF_PROTECTIONS
 		do
-			Result := filter_wsf_value (a_value, {ARRAY [REGULAR_EXPRESSION]} <<l_wsf_xss.SQL_injection_regular_expression>>)
+			Result := filter_wsf_value (a_value, <<l_wsf_xss.SQL_injection>>)
 		end
 
 	server_side_value (a_value: detachable WSF_VALUE): detachable WSF_VALUE
 			-- Return value `a_value` filtered by server side injection protection.
 		local
-			l_wsf_xss: WSF_PROTECTION_PATTERNS
+			l_wsf_xss: WSF_PROTECTIONS
 		do
-			Result := filter_wsf_value (a_value, {ARRAY [REGULAR_EXPRESSION]} <<l_wsf_xss.Server_side_expression>>)
+			Result := filter_wsf_value (a_value, <<l_wsf_xss.Server_side>>)
 		end
 
 	xpath_abbreviated_value (a_value: detachable WSF_VALUE): detachable WSF_VALUE
 			-- Return value `a_value` filtered by xpath_abbreviated injection protection.
 		local
-			l_wsf_xss: WSF_PROTECTION_PATTERNS
+			l_wsf_xss: WSF_PROTECTIONS
 		do
-			Result := filter_wsf_value (a_value, {ARRAY [REGULAR_EXPRESSION]} <<l_wsf_xss.Xpath_abbreviated_expression>>)
+			Result := filter_wsf_value (a_value, <<l_wsf_xss.Xpath_abbreviated>>)
 		end
 
 	xpath_expanded_value (a_value: detachable WSF_VALUE): detachable WSF_VALUE
 			-- Return value `a_value` filtered by Xpath expanded injection protection.
 		local
-			l_wsf_xss: WSF_PROTECTION_PATTERNS
+			l_wsf_xss: WSF_PROTECTIONS
 		do
-			Result := filter_wsf_value (a_value, {ARRAY [REGULAR_EXPRESSION]} <<l_wsf_xss.Xpath_expanded_expression>>)
+			Result := filter_wsf_value (a_value, <<l_wsf_xss.Xpath_expanded>>)
 		end
 
-	filter_wsf_value (a_value: detachable WSF_VALUE; a_regex: ARRAY [REGULAR_EXPRESSION] ): detachable WSF_VALUE
-			-- Filter value `a_value` with an array of protections policy `a_regex`.
+	filter_wsf_value (a_value: detachable WSF_VALUE; a_protections: ITERABLE [WSF_PROTECTION]): detachable WSF_VALUE
+			-- Filter value `a_value` with an array of protections policy `a_protections`.
+		require
+			a_protections_valid: across a_protections as ic all ic.item.is_valid end
 		local
-			not_first: BOOLEAN
+			prot: WSF_PROTECTION
 		do
-			Result := a_value
-			if Result /= Void then
-				if
-					attached {WSF_STRING} Result as str and then
-					a_regex.for_all (agent is_compiled)
-				then
-					a_regex.do_all (agent match (?, str.value))
-					if a_regex.there_exists (agent has_matched) then
-						create {WSF_STRING} Result.make (str.name, " ")
-					end
-				elseif
-					attached {WSF_MULTIPLE_STRING} Result as l_multi_str and then
-					a_regex.for_all (agent is_compiled)
-				then
-					across l_multi_str as ic  loop
-						a_regex.do_all (agent match (?, ic.item.value))
-						if a_regex.there_exists (agent has_matched ) then
-							if not_first and then attached  {WSF_MULTIPLE_STRING} Result as l_result then
-								 l_result.add_value ( (create {WSF_STRING}.make (ic.item.name, " ")))
-							else
-								create {WSF_MULTIPLE_STRING} Result.make_with_string (ic.item.name, " ")
-								not_first := True
-							end
-						end
-					end
+			if a_value /= Void then
+				Result := a_value
+				across
+					a_protections as ic
+				until
+					Result = Void
+				loop
+					prot := ic.item
+					check is_valid: prot.is_valid end
+					Result := prot.value (Result)
 				end
 			end
 		end
 
-	filter_string_value (a_value: detachable READABLE_STRING_8; a_regex: ARRAY [REGULAR_EXPRESSION] ): detachable READABLE_STRING_8
-			-- Filter value `a_value` with an array of protections policy `a_regex`.
+	filter_string_value (a_value: detachable READABLE_STRING_8; a_protections: ITERABLE [WSF_PROTECTION] ): detachable READABLE_STRING_8
+			-- Filter value `a_value` with an array of protections policy `a_protections`.
+		require
+			all_protections_valid: across a_protections as ic all ic.item.is_valid end
+		local
+			v: WSF_STRING
+			prot: WSF_PROTECTION
 		do
-			Result := a_value
-			if Result /= Void then
-				if
-					attached a_value as l_value and then
-					a_regex.for_all (agent is_compiled)
-				then
-					a_regex.do_all (agent match (?, l_value))
-					if a_regex.there_exists (agent has_matched) then
-						create {STRING_8} Result.make_empty
-					end
+			if a_value /= Void then
+				Result := a_value
+				across
+					a_protections as ic
+				until
+					Result = Void
+				loop
+					prot := ic.item
+					check is_valid: prot.is_valid end
+					Result := prot.string_8 (Result)
 				end
 			end
 		end
-
-	is_compiled (a_regex: REGULAR_EXPRESSION): BOOLEAN
-			-- Is the regular expression 'a_regex' compiled?
-		do
-			Result := a_regex.is_compiled
-		end
-
-	match (a_regex: REGULAR_EXPRESSION; a_value: READABLE_STRING_32)
-		do
-			a_regex.match (a_value)
-		end
-
-	has_matched (a_regex: REGULAR_EXPRESSION): BOOLEAN
-		do
-			Result := a_regex.has_matched
-		end
-
 
 note
 	copyright: "2011-2017, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Colin Adams, Eiffel Software and others"
