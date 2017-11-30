@@ -1,9 +1,9 @@
 note
-	description: "Summary description for {WSF_PROTECTION_REGEXP}."
-	author: ""
+	description: "Security protection based on Regular expression."
 	date: "$Date$"
 	revision: "$Revision$"
-
+	EIS: "name=Regular expression protection", "src=https://docs.apigee.com/api-services/reference/regular-expression-protection", "protocol=uri"
+	
 class
 	WSF_PROTECTION_REGEXP
 
@@ -77,6 +77,8 @@ feature -- String Protection
 feature -- Status report
 
 	is_valid: BOOLEAN
+			-- <Precursor>
+			-- i.e: if the association regular expression is successfully compiled.
 		do
 			Result := is_compiled
 		end

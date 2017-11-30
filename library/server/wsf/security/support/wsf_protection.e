@@ -1,8 +1,14 @@
 note
-	description: "Summary description for {WSF_PROTECTION}."
-	author: ""
+	description: "[
+			Security protection on values.
+			
+			It could be to protect against XSS, SQL ...  injections.
+		]"
 	date: "$Date$"
 	revision: "$Revision$"
+	EIS: "name=OWASP", "src=https://www.owasp.org/", "protocol=uri"
+	EIS: "name=OWASP XSS", "src=https://www.owasp.org/index.php/XSS_Filter_Evasion_Cheat_Sheet", "protocol=uri"
+	EIS: "name=Regular expression protection", "src=https://docs.apigee.com/api-services/reference/regular-expression-protection", "protocol=uri"
 
 deferred class
 	WSF_PROTECTION
@@ -10,12 +16,15 @@ deferred class
 feature -- Status report
 
 	is_valid: BOOLEAN
+			-- Is valid protection?
 		deferred
 		end
 
 feature -- String Protection
 
 	string_8 (s: READABLE_STRING_8): detachable READABLE_STRING_8
+			-- Safe string value from `s`.
+			-- If a thread is detected, either return Void, or filter out the threat.
 		require
 			is_valid: is_valid
 		deferred
@@ -23,7 +32,17 @@ feature -- String Protection
 
 feature -- Value Protection
 
+	string_value (v: WSF_STRING): detachable WSF_STRING
+			-- Safe string value from `v`.
+			-- If a thread is detected, either return Void, or filter out the threat.	
+		require
+			is_valid: is_valid
+		deferred
+		end
+
 	value (v: WSF_VALUE): detachable WSF_VALUE
+			-- Safe value from `v`.
+			-- If a thread is detected, either return Void, or filter out the threat.
 		require
 			is_valid: is_valid
 		do
@@ -37,18 +56,17 @@ feature -- Value Protection
 			end
 		end
 
-	string_value (v: WSF_STRING): detachable WSF_STRING
-		require
-			is_valid: is_valid
-		deferred
-		end
-
 	multiple_string_value (mv: WSF_MULTIPLE_STRING): detachable WSF_MULTIPLE_STRING
+			-- Safe multiple string value from `mv`.
+			-- If a thread is detected in any of the item, either return Void, or filter out the threat.
 		require
 			is_valid: is_valid
 		local
 			v: detachable WSF_STRING
 		do
+				-- TODO: check if the whole structure should be Void
+				-- when one item is filtered out, or if the structure could have
+				-- holes.
 			across
 				mv as ic
 			loop
