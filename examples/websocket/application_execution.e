@@ -26,22 +26,27 @@ feature -- Basic operations
  		do
  			-- To send a response we need to setup, the status code and
  			-- the response headers.
-			if request.path_info.same_string_general ("/app") then
-				s := websocket_app_html (request.server_name, request.server_port)
+			if request.path_info.same_string_general ("/favicon.ico") then
+				response.put_header ({HTTP_STATUS_CODE}.not_found, <<["Content-Length", "0"]>>)
 			else
-	 			s := "Hello World!"
-				create dt.make_now_utc
-				s.append (" (UTC time is " + dt.rfc850_string + ").")
-				s.append ("<p><a href=%"/app%">Websocket demo</a></p>")
+				if request.path_info.same_string_general ("/app") then
+					s := websocket_app_html (request.server_name, request.server_port)
+
+				else
+		 			s := "Hello World!"
+					create dt.make_now_utc
+					s.append (" (UTC time is " + dt.rfc850_string + ").")
+					s.append ("<p><a href=%"/app%">Websocket demo</a></p>")
+				end
+				response.put_header ({HTTP_STATUS_CODE}.ok, <<["Content-Type", "text/html"], ["Content-Length", s.count.out]>>)
+				response.set_status_code ({HTTP_STATUS_CODE}.ok)
+				response.header.put_content_type_text_html
+				response.header.put_content_length (s.count)
+				if request.is_keep_alive_http_connection then
+					response.header.put_connection_keep_alive
+				end
+				response.put_string (s)
 			end
-			response.put_header ({HTTP_STATUS_CODE}.ok, <<["Content-Type", "text/html"], ["Content-Length", s.count.out]>>)
-			response.set_status_code ({HTTP_STATUS_CODE}.ok)
-			response.header.put_content_type_text_html
-			response.header.put_content_length (s.count)
-			if request.is_keep_alive_http_connection then
-				response.header.put_connection_keep_alive
-			end
-			response.put_string (s)
 		end
 
 feature -- Websocket execution
