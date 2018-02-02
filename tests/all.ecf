@@ -39,12 +39,16 @@
 		<library name="wsf_cgi" location="..\library\server\wsf\connector\cgi.ecf" readonly="false"/>
 		<library name="wsf_extension" location="..\library\server\wsf\wsf_extension.ecf" readonly="false"/>
 		<library name="wsf_html" location="..\library\server\wsf_html\wsf_html.ecf" readonly="false"/>
+		<library name="wsf_proxy" location="..\library\server\wsf_proxy\wsf_proxy.ecf" readonly="false"/>
 		<library name="wsf_js_widget" location="..\draft\library\server\wsf_js_widget\wsf_js_widget.ecf" readonly="false"/>
+		<library name="wsf_standalone" location="..\library\server\wsf\connector\standalone.ecf" readonly="false"/>
+		<library name="wsf_standalone_websocket" location="..\library\server\wsf\connector\standalone_websocket.ecf" readonly="false"/>
 		<library name="wsf_libfcgi" location="..\library\server\wsf\connector\libfcgi.ecf" readonly="false"/>
 		<library name="wsf_openshift" location="..\library\server\wsf\connector\openshift.ecf" readonly="false"/>
 		<library name="wsf_policy_driven" location="..\library\server\wsf\wsf_policy_driven.ecf" readonly="false"/>
 		<library name="wsf_router_context" location="..\library\server\wsf\wsf_router_context.ecf" readonly="false"/>
 		<library name="wsf_session" location="..\library\server\wsf\wsf_session.ecf" readonly="false"/>
+		<library name="wsf_security" location="..\library\server\wsf\wsf_security.ecf" readonly="false"/>
 	</target>
 	<target name="all_none" extends="all">
 		<description>Compiling with None concurrency</description>
