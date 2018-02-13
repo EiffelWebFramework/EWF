@@ -13,6 +13,8 @@ inherit
 
 	HTTPD_SOCKET_FACTORY
 
+	SOCKET_TIMEOUT_UTILITIES
+
 feature {NONE} -- Initialization
 
 	make (a_request_settings: HTTPD_REQUEST_SETTINGS)
@@ -149,16 +151,16 @@ feature -- Settings
 			-- note: it is relevant only if `is_persistent_connection_supported' is True.
 
 	timeout_ns: NATURAL_64 -- nanoseconds
-			-- Amount of seconds that the server waits for receipts and transmissions during communications.
+			-- Amount of nanoseconds that the server waits for receipts and transmissions during communications.
 
 	socket_recv_timeout_ns: NATURAL_64 -- nanoseconds
-			-- Amount of seconds that the server waits for receiving data on socket during communications.
+			-- Amount of nanoseconds that the server waits for receiving data on socket during communications.
 
 	max_keep_alive_requests: INTEGER
 			-- Maximum number of requests allowed per persistent connection.
 
 	keep_alive_timeout_ns: NATURAL_64 -- nanoseconds
-			-- Number of seconds for persistent connection timeout.
+			-- Number of nanoseconds for persistent connection timeout.
 
 feature -- Status report
 
@@ -303,13 +305,13 @@ feature -- Execution
 				end
 
 					-- Try to get request header.
-					-- If the request is reusing persistent connection, use `keep_alive_timeout',
-					-- otherwise `socket_recv_timeout'.
+					-- If the request is reusing persistent connection, use `keep_alive_timeout_ns',
+					-- otherwise `socket_recv_timeout_ns'.
 				get_request_header (l_socket, a_is_reusing_connection)
 
 				if has_error then
 					if a_is_reusing_connection and then request_header.is_empty then
-							-- Close persistent connection, since no new connection occurred in the delay `keep_alive_timeout'.
+							-- Close persistent connection, since no new connection occurred in the delay `keep_alive_timeout_ns'.
 						debug ("dbglog")
 							dbglog ("execute_request socket=" + l_socket.descriptor.out + "} close persistent connection.")
 						end
