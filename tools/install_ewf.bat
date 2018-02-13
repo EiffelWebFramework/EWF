@@ -65,6 +65,8 @@ echo Install library: ewf/wsf_proxy
 %COPYCMD% %TMP_DIR%\library\server\wsf_proxy	%TMP_CONTRIB_DIR%\library\web\framework\ewf\wsf_proxy
 echo Install library: ewf/wsf_html
 %COPYCMD% %TMP_DIR%\library\server\wsf_html	%TMP_CONTRIB_DIR%\library\web\framework\ewf\wsf_html
+echo Install library: ewf/wsf_security
+%COPYCMD% %TMP_DIR%\library\server\wsf_security	%TMP_CONTRIB_DIR%\library\web\framework\ewf\wsf_security
 echo Install library: ewf/encoder
 %COPYCMD% %TMP_DIR%\library\text\encoder	%TMP_CONTRIB_DIR%\library\web\framework\ewf\text\encoder
 
