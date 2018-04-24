@@ -1,6 +1,6 @@
 FROM debian
 #ubuntu:xenial
-MAINTAINER Jocelyn Fiat
+MAINTAINER Jocelyn Fiat <jfiat@eiffel.com>
 LABEL description="EiffelWeb debug example hosted using apache2+libfcgi"
 
 RUN apt-get update \
@@ -12,7 +12,6 @@ RUN apt-get update \
 EXPOSE 80
 
 RUN a2enmod rewrite suexec include fcgid
-RUN service apache2 restart
 
 RUN export uid=1000 gid=1000 && \
     mkdir -p /home/eifweb && \
@@ -42,4 +41,8 @@ COPY ./files/html/index.html $WEBDIR/html/index.html
 RUN echo > $WEBDIR/html/service.ews
 RUN chown www-data:www-data -R $WEBDIR && chmod 400 $WEBDIR/html/*
 
-RUN service apache2 restart
+#Setup apache as foreground (for docker purpose)
+RUN mkdir /etc/service/apache
+ADD ./files/apache.sh /etc/service/apache/run
+RUN chmod +x /etc/service/apache/run
+ENTRYPOINT ["/etc/service/apache/run"]
