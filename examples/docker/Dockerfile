@@ -3,11 +3,13 @@ FROM debian
 MAINTAINER Jocelyn Fiat <jfiat@eiffel.com>
 LABEL description="EiffelWeb debug example hosted using apache2+libfcgi"
 
-RUN apt-get update \
-        && apt-get -y install curl bzip2 make gcc \
-        && apt-get -y install apache2 libapache2-mod-fcgid libfcgi-dev \
-        && apt-get -y install tmux git-all vim \
+RUN apt-get update 										\
+        && apt-get -y install --no-install-recommends 	\
+			curl bzip2 make gcc git-core 				\
+			apache2 libapache2-mod-fcgid libfcgi-dev 	\
         && rm -rf /var/lib/apt/lists/*
+
+#RUN apt-get update && apt-get -y install tmux git-all vim && rm -rf /var/lib/apt/lists/*
 
 EXPOSE 80
 
@@ -28,18 +30,18 @@ WORKDIR $HOME
 RUN mkdir $WEBDIR
 
 #Build the debug EiffelWeb example and copy the executable to $HOME/
-COPY files/build_debug_fcgi $HOME/build_debug_fcgi
+COPY files/build_service_fcgi $HOME/build_service_fcgi
 USER root
-RUN chown eifweb:eifweb $HOME/build_debug_fcgi && chmod 700 $HOME/build_debug_fcgi
+RUN chown eifweb:eifweb $HOME/build_service_fcgi && chmod 700 $HOME/build_service_fcgi
 USER eifweb
-RUN $HOME/build_debug_fcgi $HOME/www
+RUN $HOME/build_service_fcgi $HOME/www
 
 USER root
 COPY ./files/httpd.conf /etc/apache2/sites-enabled/000-default.conf
 COPY ./files/html/.htaccess $WEBDIR/html/.htaccess
 COPY ./files/html/index.html $WEBDIR/html/index.html
 RUN echo > $WEBDIR/html/service.ews
-RUN chown www-data:www-data -R $WEBDIR && chmod 400 $WEBDIR/html/*
+RUN chown www-data:www-data -R $WEBDIR 
 
 #Setup apache as foreground (for docker purpose)
 RUN mkdir /etc/service/apache

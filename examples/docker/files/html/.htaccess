@@ -1,6 +1,6 @@
 <IfModule mod_fcgid.c>
 AddHandler fcgid-script .ews
-FcgidWrapper /home/eifweb/www/bin/debug.fcgi .ews
+FcgidWrapper /home/eifweb/www/html/service.fcgi .ews
 </IfModule>
 
 Options +ExecCGI +Includes +FollowSymLinks

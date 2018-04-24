@@ -12,7 +12,7 @@ To build the docker image:
 
 To run the docker image in a self-destroyed container:
 ```
-	docker run --rm -it -p 8080:80 --name my-ewf-debug local/ewf-debug-httpd
+	docker run --rm -dit -p 8080:80 --name my-ewf-debug local/ewf-debug-httpd
 ```
 
 Notes:
