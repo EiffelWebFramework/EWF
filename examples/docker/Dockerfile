@@ -4,7 +4,7 @@ MAINTAINER Jocelyn Fiat <jfiat@eiffel.com>
 LABEL description="EiffelWeb debug example hosted using apache2+libfcgi"
 
 RUN apt-get update 										\
-        && apt-get -y install --no-install-recommends 	\
+        && apt-get -y install 							\
 			curl bzip2 make gcc git-core 				\
 			apache2 libapache2-mod-fcgid libfcgi-dev 	\
         && rm -rf /var/lib/apt/lists/*
@@ -44,7 +44,7 @@ RUN echo > $WEBDIR/html/service.ews
 RUN chown www-data:www-data -R $WEBDIR 
 
 #Setup apache as foreground (for docker purpose)
-RUN mkdir /etc/service/apache
+RUN mkdir -p /etc/service/apache
 ADD ./files/apache.sh /etc/service/apache/run
 RUN chmod +x /etc/service/apache/run
 ENTRYPOINT ["/etc/service/apache/run"]
