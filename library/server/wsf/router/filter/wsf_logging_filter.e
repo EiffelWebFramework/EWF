@@ -28,7 +28,7 @@ feature {NONE} -- Initialization
 	make_with_output (a_output: like output)
 			-- Create Current with `a_output' as `output'
 		require
-			a_output_opened: a_output.is_open_read
+			a_output_opened: a_output.is_open_write
 		do
 			default_create
 			output := a_output
