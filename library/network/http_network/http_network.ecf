@@ -40,6 +40,7 @@
 			</cluster>
 			<cluster name="ssl_network_until_18_05" location="$|ssl\until_18.05" recursive="true">
 				<condition>
+					<custom name="ssl_enabled" value="true"/>
 					<version type="compiler" max="18.05.0.0"/>
 				</condition>
 			</cluster>
