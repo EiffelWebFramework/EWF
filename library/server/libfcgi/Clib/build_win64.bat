@@ -13,7 +13,8 @@ CL.exe /c %CL_FLAGS%   /TC  libfcgi\libfcgi\fcgi_stdio.c libfcgi\libfcgi\fcgiapp
 CL.exe /c  %CL_FLAGS%  /TP  libfcgi\libfcgi\fcgio.cpp
 link.exe %LINK_FLAGS%  /DLL %E_libFCGI_OUTDIR%\fcgi_stdio.obj %E_libFCGI_OUTDIR%\fcgiapp.obj %E_libFCGI_OUTDIR%\os_win32.obj %E_libFCGI_OUTDIR%\fcgio.obj 
 
-copy %E_libFCGI_OUTDIR%\libfcgi.* %~dp0..\spec\lib\win64\msc
+mkdir /S %~dp0..\spec\lib\win64\%ISE_C_COMPILER%
+copy %E_libFCGI_OUTDIR%\libfcgi.* %~dp0..\spec\lib\win64\%ISE_C_COMPILER%
 
 endlocal
-exit 0
+rem exit 0
