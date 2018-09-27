@@ -101,6 +101,7 @@ The **WSF_RESPONSE** provides features to define the response with information s
 
 ![Standalone Launcher](WSF_SERVICE_LAUNCHER_STANDALONE.png "Standalone Hierarchy")
 ![Standalone Launcher](../WSF_SERVICE_LAUNCHER_STANDALONE.png "Standalone Hierarchy")
+
 Other connectors:
 
 **WSF_STANDALONE_SERVICE_LAUNCHER**
