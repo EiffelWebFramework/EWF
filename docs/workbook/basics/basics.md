@@ -111,7 +111,7 @@ The **APPLICATION_EXECUTION** class inherits from **WSF_EXECUTION** interface,  
 
 In the **APPLICATION_EXECUTION** class class you will need to implement the **execute** feature, get data from the request *req* and write the response in *res*.
 
-![Execution Hierarchy](./APPLICATION_EXECUTION.png "Application Execution ")
+![Execution Hierarchy](/docs/workbook/basics/APPLICATION_EXECUTION.png "Application Execution ")
 
 The WSF_EXECUTION instance, in this case ```APPLICATION_EXECUTION``` is created per request, with two main attributes request: ```WSF_REQUEST``` and response: ```WSF_RESPONSE```.
 
