@@ -94,7 +94,7 @@ The **WSF_RESPONSE** provides features to define the response with information s
 
 **APPLICATION** is the root class of our example, it launches the application, using the corresponding connector, Which connector? this depends how do you want to run it `cgi`, `fcgi`, `standalone`. For development is recommended to use a standalone web server written in Eiffel, and run the execution within the EiffelStudio debugger. For production fcgi (or cgi) using Apache or another popular web server.
 
-![Launcher Hierarchy](images/Launcher Hierarchy.png "Launcher Hierarchy")
+![Launcher Hierarchy](images/Launcher_Hierarchy.png "Launcher Hierarchy")
 
 **WS_LAUNCHABLE_SERVICE** inherit from **WS_SERVICE** class, which is a marker interface in EWF. And also provides a way to launch our application using different kind of connectors.  The class **WSF_DEFAULT_SERVICE_I**, inherit from **WS_LAUNCHABLE_SERVICE**  and has a formal generic that should conform to **WSF_SERVICE_LAUNCHER [WSF_EXECUTION]**. Below a [BON diagram](http://www.bon-method.com/index_normal.htm) showing one of the possible options.
 
