@@ -14,3 +14,9 @@ port:             9000
 repo:             https://github.com/EiffelWebFramework/EWF
 version:          v1
 download:         https://github.com/EiffelWebFramework/EWF/archive/v1.zip
+
+plugins:
+  - jekyll-relative-links
+relative_links:
+  enabled: true
+
