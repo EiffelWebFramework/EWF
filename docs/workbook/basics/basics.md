@@ -94,13 +94,13 @@ The **WSF_RESPONSE** provides features to define the response with information s
 
 **APPLICATION** is the root class of our example, it launches the application, using the corresponding connector, Which connector? this depends how do you want to run it `cgi`, `fcgi`, `standalone`. For development is recommended to use a standalone web server written in Eiffel, and run the execution within the EiffelStudio debugger. For production fcgi (or cgi) using Apache or another popular web server.
 
+![Launcher Hierarchy](../Launcher Hierarchy.png "Launcher Hierarchy")<br/>
 ![Launcher Hierarchy](Launcher Hierarchy.png "Launcher Hierarchy")
-![Launcher Hierarchy](../Launcher Hierarchy.png "Launcher Hierarchy")
 
 **WS_LAUNCHABLE_SERVICE** inherit from **WS_SERVICE** class, which is a marker interface in EWF. And also provides a way to launch our application using different kind of connectors.  The class **WSF_DEFAULT_SERVICE_I**, inherit from **WS_LAUNCHABLE_SERVICE**  and has a formal generic that should conform to **WSF_SERVICE_LAUNCHER [WSF_EXECUTION]**. Below a [BON diagram](http://www.bon-method.com/index_normal.htm) showing one of the possible options.
 
+![Standalone Launcher](../WSF_SERVICE_LAUNCHER_STANDALONE.png "Standalone Hierarchy")<br/>
 ![Standalone Launcher](WSF_SERVICE_LAUNCHER_STANDALONE.png "Standalone Hierarchy")
-![Standalone Launcher](../WSF_SERVICE_LAUNCHER_STANDALONE.png "Standalone Hierarchy")
 
 Other connectors:
 
@@ -114,8 +114,8 @@ The **APPLICATION_EXECUTION** class inherits from **WSF_EXECUTION** interface,  
 
 In the **APPLICATION_EXECUTION** class class you will need to implement the **execute** feature, get data from the request *req* and write the response in *res*.
 
+![Execution Hierarchy](../APPLICATION_EXECUTION.png "Application Execution ")<br/>
 ![Execution Hierarchy](APPLICATION_EXECUTION.png "Application Execution ")
-![Execution Hierarchy](../APPLICATION_EXECUTION.png "Application Execution ")
 
 The WSF_EXECUTION instance, in this case ```APPLICATION_EXECUTION``` is created per request, with two main attributes request: ```WSF_REQUEST``` and response: ```WSF_RESPONSE```.
 
