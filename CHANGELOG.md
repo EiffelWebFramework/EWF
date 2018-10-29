@@ -7,9 +7,17 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ## [Unreleased]
 ### Added
-- `examples`: Added an example to run the debug app with apache2+libfcgi inside a docker container.
-- `wsf`: Updated the default rescue response (i.e when exception or bad internal error occurs). Factorized the implementation in WGI_RESCUE_EXECUTION, and now by redefining the `WGI_EXECUTION.execute_rescue (...)` procedure, it is possible to have a custom response on such rescued execution.
+### Changed
+### Deprecated
+### Removed
+### Fixed
+### Security
 
+## [v1.1.0] - 2018-10-29
+### Added
+- `examples`: Added an example to run the debug app with apache2+libfcgi inside a docker container.
+- `wsf`: Updated the default rescue response (i.e when exception or bad internal error occurs). Factorized the implementation in `WGI_RESCUE_EXECUTION`, and now by redefining the `WGI_EXECUTION.execute_rescue (...)` procedure, it is possible to have a custom response on such rescued execution.
+- `http`: Added `HTTP_COOKIE.set_expiration_from_max_age`, to add the "Expiration:" based on the max-age value.
 
 ### Changed
 - `wsf`: Adopted the nanoseconds timeout precision. And in config file added support for ns, us, ms, s timeout precision (without indication, it uses `seconds` precision).
@@ -20,22 +28,23 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - `websocket`: Allow (websocket) upgrade even without persistent connection for normal http request.
     (note: this allows to use websocket in single-threaded mode, and avoid the keep-alive-timeout delay before websocket begins its execution)
 
-- `http`: Fixed HTTP_HEADER.put_raw_header (..) by ignoring any empty line of the argument value. (note: "%R" is considered as empty line here.)
+- `http`: Fixed `HTTP_HEADER.put_raw_header (..)` by ignoring any empty line of the argument value. (note: "%R" is considered as empty line here.)
 - `jwt`: updated to make JWT algorithm support more flexible, and simple to extend with specific algorithm.
-- `httpd`, `websocket`: Fixed setting of socket.timeout in httpd (was not currently set before).
+- `httpd`, `websocket`: Fixed setting of socket.timeout in httpd (it was not correctly set).
+
 ### Security
 
-## [v1.0.6] - 2018-05-17
+## [v1.0.6] - 2018-02-05
 ### Added
 - `jwt`: new JSON Web Token (JWT) library (supports for claim exp, iat, nbf, iss, aud).
 - `http_client`: added support for ciphers setting in the libcurl implementation only.
-- `http_client`: added convenient `get`  and `custom` functions  on HTTP_CLIENT directly.
+- `http_client`: added convenient `get`  and `custom` functions  on `HTTP_CLIENT` directly.
 - `wsf`: added `WSF_EXECUTE_HANDLER`, and `WSF_CGI_HANDLER`. Demonstration of `WSF_CGI_HANDLER` in the new `tools/httpd` project.
 - `wsf_security`: new security library, providing support for XSS injection protection and similar.
 - `wsf`: Support persistent connection, even in single thread mode (i.e concurrency=none).
 		Warning: as there is no concurrent request handling in single threaded mode, it is recommended to either set the keep_alive_timeout to a small value, or disable persistent connection by setting max_keep_alive_requests to 0.
 		Accept -1 as value of max_keep_alive_requests to have unlimited number of request in the same persistent connection.
-- `wsf_compression`: Introduced WSF_COMPRESSION and applied to WSF_*_WITH_COMPRESSION classes. Added `simple_compression` example.
+- `wsf_compression`: Introduced `WSF_COMPRESSION` and applied to `WSF_*_WITH_COMPRESSION` classes. Added `simple_compression` example.
 - `websocket`: added `on_timer` solution to allow the server to check for external events and send notification to websocket clients.
 - `wsf`: Added routing condition mapping.
 - `wsf_extension`: added handler to add support for CGI scripts.
@@ -44,7 +53,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ### Changed
 - adopted ecf version 1-16-0 and use a single .ecf file (the -safe.ecf are now redirection to normal .ecf)
-- `wsf_html`: Made interface of wsf forms and widgets a bit more flexible by accepting READABLE_STRING_GENERAL.
+- `wsf_html`: Made interface of wsf forms and widgets a bit more flexible by accepting `READABLE_STRING_GENERAL`.
 
 ### Deprecated
 - removed support for Eiffel version before 17.05 .
@@ -53,11 +62,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 ### Fixed
 - Removed a few obsolete calls.
 - `http_client`: Added support for multiple file in form data. Made clear what is the meaning of `upload_filename`, `upload_data` and `form_data`.
-- `authentication`: HTTP_AUTHORIZATION acceps now READABLE_STRING_GENERAL for username and password argument.
+- `authentication`: `HTTP_AUTHORIZATION` acceps now `READABLE_STRING_GENERAL` for username and password argument.
 - `http_client`: fixed curl implementation by setting `Content-Type` to `x-www-form-urlencoded` (if not set) when POST send data as `x-www-form-urlencoded`.
 - `notification_email`: fixed the SMTP support for multiple recipients address.
 - `http_network`: use proper ciphers settings for libcurl implementation.
-- `http_client`: Improved support of absolute/relative https:// and http:// in http_client.
+- `http_client`: Improved support of absolute/relative https:// and http:// in `http_client`.
 - `json_encoder.e`: Properly JSON encode null character as \u0000 .
 ### Security
 
