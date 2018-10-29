@@ -213,6 +213,7 @@ feature -- Content related header
 			--| note: see `put_content_type_with_charset' for examples.
 		local
 			s: STRING_8
+			v: READABLE_STRING_8
 		do
 			if a_params /= Void and then not a_params.is_empty then
 				create s.make_from_string (a_content_type)
@@ -224,16 +225,21 @@ feature -- Content related header
 						s.append_character (' ')
 						s.append (nv.name)
 						s.append_character ('=')
-						s.append_character ('%"')
-						s.append (nv.value)
-						s.append_character ('%"')
+						v := nv.value
+						if v.has(' ') or v.has ('%T') or v.has ('=') then
+							s.append_character ('%"')
+							s.append (v)
+							s.append_character ('%"')
+						else
+							s.append (v)
+						end
 					end
 				end
 				put_header_key_value ({HTTP_HEADER_NAMES}.header_content_type, s)
 			else
 				put_content_type (a_content_type)
 			end
-		end
+		end		
 
 	add_content_type_with_parameters (a_content_type: READABLE_STRING_8; a_params: detachable ARRAY [TUPLE [name: READABLE_STRING_8; value: READABLE_STRING_8]])
 			-- Add header line "Content-Type:" + type `a_content_type' and extra paramaters `a_params'.
