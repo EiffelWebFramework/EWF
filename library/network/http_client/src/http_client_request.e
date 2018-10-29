@@ -151,14 +151,14 @@ feature -- Settings
 
 	timeout: INTEGER
 			-- HTTP transaction timeout in seconds.
-			--| 0 means it nevers timeout
+			--| 0 means it never timeouts
 		do
 			Result := session.timeout
 		end
 
 	connect_timeout: INTEGER
 			-- HTTP connection timeout in milliseconds.
-			--| 0 means it nevers timeout			
+			--| 0 means it never timeouts
 		do
 			Result := session.connect_timeout
 		end
