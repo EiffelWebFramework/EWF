@@ -13,8 +13,6 @@ inherit
 
 	HTTPD_SOCKET_FACTORY
 
-	SOCKET_TIMEOUT_UTILITIES
-
 feature {NONE} -- Initialization
 
 	make (a_request_settings: HTTPD_REQUEST_SETTINGS)
