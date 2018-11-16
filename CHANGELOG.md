@@ -10,8 +10,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 ### Changed
 ### Deprecated
 ### Removed
+- Removed obsolete v0 code.
 ### Fixed
+- `error`: Fixed custom error creation, do not create default message, otherwise the info will be duplicated in error output.
+- `jwt`: updated indexing notes, and readme.
 ### Security
+
 
 ## [v1.1.0] - 2018-10-29
 ### Added
