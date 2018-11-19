@@ -10,17 +10,14 @@
 		<option warning="true">
 		</option>
 		<setting name="console_application" value="false"/>
+		<setting name="executable_name" value="wizard"/>
 		<capability>
 			<concurrency support="none" use="none"/>
 		</capability>
 		<library name="base" location="$ISE_LIBRARY\library\base\base.ecf"/>
 		<library name="gui_wizard" location="lib\wizard\estudio_gui_wizard.ecf" readonly="false"/>
 		<library name="template_smarty" location="$ISE_LIBRARY\contrib\library\text\template\smarty\smarty.ecf" readonly="false"/>
-		<library name="vision2" location="$ISE_LIBRARY\library\vision2\vision2.ecf">
-			<option>
-				<assertions precondition="true"/>
-			</option>
-		</library>
+		<library name="vision2" location="$ISE_LIBRARY\library\vision2\vision2.ecf"/>
 		<cluster name="graphical" location=".\src\gui\" recursive="true"/>
 		<cluster name="src" location=".\src\" recursive="true">
 			<file_rule>

@@ -1,6 +1,5 @@
 note
 	description: "Summary description for {WIZARD_GENERATOR}."
-	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -31,7 +30,7 @@ feature -- Access
 
 feature -- Access
 
-	variables: STRING_TABLE [READABLE_STRING_8]
+	variables: STRING_TABLE [READABLE_STRING_32]
 			-- Variables used for template and file name resolved string.
 			--| i.e to expand ${varname} in file name or file content.
 			--| could be used for other purpose.

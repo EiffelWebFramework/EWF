@@ -1,8 +1,7 @@
 note
-	description : "Objects that ..."
-	author      : "$Author$"
-	date        : "$Date$"
-	revision    : "$Revision$"
+	description: "Abstract wizard application."
+	date: "$Date$"
+	revision: "$Revision$"
 
 deferred class
 	WIZARD_APPLICATION
