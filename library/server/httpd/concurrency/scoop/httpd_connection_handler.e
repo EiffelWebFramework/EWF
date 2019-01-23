@@ -10,9 +10,6 @@ class
 
 inherit
 	HTTPD_CONNECTION_HANDLER_I
-		redefine
-			initialize
-		end
 
 create
 	make
