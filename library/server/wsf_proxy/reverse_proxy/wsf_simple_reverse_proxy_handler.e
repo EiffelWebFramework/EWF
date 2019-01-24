@@ -143,17 +143,23 @@ feature -- Header Change
 			is_using_proxy_host := b
 		end
 
-feature -- Execution
+feature -- Access / information
 
-	proxy_uri (request: WSF_REQUEST): STRING
-			-- URI to query on proxyfied host.
+	proxy_url (req: WSF_REQUEST): STRING
+			-- Proxy forward to `Result` URL.
+		local
+			l_remote_uri: like remote_uri
 		do
+			l_remote_uri := remote_uri
+			create Result.make_from_string (l_remote_uri.string)
 			if attached uri_rewriter as r then
-				Result := r.uri (request)
+				Result.append (r.uri (req))
 			else
-				Result := request.request_uri
+				Result.append (req.request_uri)
 			end
 		end
+
+feature -- Execution
 
 	execute (request: WSF_REQUEST; response: WSF_RESPONSE)
 			-- Execute reverse proxy request.
@@ -186,16 +192,7 @@ feature -- Execution
 					l_socket.is_connected and then
 					attached l_socket.peer_address as l_socket_peer_address
 				then
-					create l_http_query.make_from_string (request.request_method)
-					l_http_query.append_character (' ')
-					l_http_query.append (l_remote_uri.path)
-					if attached l_remote_uri.query as q then
-						l_http_query.append_character ('?')
-						l_http_query.append (q)
-					end
-					l_http_query.append (proxy_uri (request))
-					l_http_query.append_character (' ')
-					l_http_query.append (request.server_protocol)
+					l_http_query := forward_http_query (request)
 					if attached request.raw_header_data as l_raw_header then
 						i := l_raw_header.substring_index ("%R%N", 1)
 						if i > 0 then
@@ -357,7 +354,29 @@ feature -- Execution
 			end
 		end
 
-feature {NONE} -- Implementation		
+feature {NONE} -- Implementation
+
+	forward_http_query (req: WSF_REQUEST): STRING
+		local
+			l_remote_uri: like remote_uri
+		do
+			l_remote_uri := remote_uri
+
+			create Result.make_from_string (req.request_method)
+			Result.append_character (' ')
+			Result.append (l_remote_uri.path)
+			if attached l_remote_uri.query as q then
+				Result.append_character ('?')
+				Result.append (q)
+			end
+			if attached uri_rewriter as r then
+				Result.append (r.uri (req))
+			else
+				Result.append (req.request_uri)
+			end
+			Result.append_character (' ')
+			Result.append (req.server_protocol)
+		end
 
 	status_line_info (a_line: READABLE_STRING_8): detachable TUPLE [protocol: READABLE_STRING_8; status_code: INTEGER; reason_phrase: detachable READABLE_STRING_8]
 			-- Info from status line

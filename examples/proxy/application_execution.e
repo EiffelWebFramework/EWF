@@ -18,56 +18,21 @@ feature -- Basic operations
 		local
 			l_forwarded: BOOLEAN
  		do
- 				-- NOTE: please edit the proxy.conf file
- 			across
- 				proxy_map as ic
- 			until
- 				l_forwarded
- 			loop
- 				if request.path_info.starts_with_general (ic.key) then
- 					l_forwarded := True
- 					send_proxy_response (ic.key, ic.item, agent proxy_uri (ic.key, ?))
- 				end
- 			end
- 			if not l_forwarded then
+ 				-- Hardocoded for the example
+ 			if request.server_name.same_string ("foo") then
+ 				send_proxy_response ("http://localhost:8080/foo", Void)
+ 				l_forwarded := True
+ 			elseif request.server_name.same_string ("bar") then
+				send_proxy_response ("http://localhost:8080/bar", Void)
+				l_forwarded := True
+			elseif request.path_info.starts_with_general ("/search/") then
+				 send_proxy_response ("http://www.google.com/search?q=", agent uri_for_location_based_proxy ("/search/", ?))
+			else
 				response.send (create {WSF_PAGE_RESPONSE}.make_with_body ("EiffelWeb proxy: not forwarded!"))
 			end
 		end
 
-	proxy_map: HASH_TABLE [STRING, STRING]
-			-- location => target
-		local
-			f: PLAIN_TEXT_FILE
-			l_line: STRING
-			p: INTEGER
-		once ("thread")
-			create Result.make (1)
- 				-- Load proxy.conf
- 			create f.make_with_name ("proxy.conf")
- 			if f.exists and then f.is_access_readable then
- 				f.open_read
- 				from
- 				until
-					f.end_of_file or f.exhausted
- 				loop
-					f.read_line
-					l_line := f.last_string
-					if l_line.starts_with ("#") then
-							-- ignore
-					else
-							-- Format:
-							-- path%Tserver
-						p := l_line.index_of ('%T', 1)
-						if p > 0 then
-							Result.force (l_line.substring (p + 1, l_line.count), l_line.head (p - 1))
-						end
-					end
- 				end
- 				f.close
- 			end
-		end
-
-	send_proxy_response (a_location, a_remote: READABLE_STRING_8; a_rewriter: detachable FUNCTION [WSF_REQUEST, STRING])
+	send_proxy_response (a_remote: READABLE_STRING_8; a_rewriter: detachable FUNCTION [WSF_REQUEST, STRING])
 		local
 			h: WSF_SIMPLE_REVERSE_PROXY_HANDLER
 		do
@@ -85,13 +50,16 @@ feature -- Basic operations
 			-- Uncomment following line to keep the original Host value.
 --			h.keep_proxy_host (True)
 
+				-- For debug information, uncomment next line
+--			response.put_error ("Forwarding to " + h.proxy_url (request))
+
 			h.execute (request, response)
 		end
 
 feature -- Helpers
 
-	proxy_uri (a_location: READABLE_STRING_8; a_request: WSF_REQUEST): STRING
-			-- Request uri rewriten as url.
+	uri_for_location_based_proxy (a_location: READABLE_STRING_8; a_request: WSF_REQUEST): STRING
+			-- Request uri rewritten as url.
 		do
 			Result := a_request.request_uri
 				-- If related proxy setting is
