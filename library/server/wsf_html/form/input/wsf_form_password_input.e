@@ -9,9 +9,6 @@ class
 
 inherit
 	WSF_FORM_INPUT
-		redefine
-			input_type
-		end
 
 create
 	make,
