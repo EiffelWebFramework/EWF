@@ -11,8 +11,7 @@ inherit
 
 	WSF_PAGE_CONTROL
 		redefine
-			control,
-			initialize_controls
+			control
 		end
 
 feature
