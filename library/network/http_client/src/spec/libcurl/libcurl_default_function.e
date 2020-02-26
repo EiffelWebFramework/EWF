@@ -5,8 +5,8 @@ note
 		]"
 	status: "See notice at end of class."
 	legal: "See notice at end of class."
-	date: "$Date: 2009-04-09 20:51:20 +0200 (Thu, 09 Apr 2009) $"
-	revision: "$Revision: 78146 $"
+	date: "$Date$"
+	revision: "$Revision$"
 
 class
 	LIBCURL_DEFAULT_FUNCTION
