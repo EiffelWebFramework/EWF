@@ -97,7 +97,7 @@ feature -- Request processing
 				(create {WGI_RESCUE_EXECUTION}).execute (req, res, (create {EXCEPTION_MANAGER}).last_exception)
 			else
 					-- Bad error.
-			end				
+			end
 		rescue
 			if l_output = Void or else not l_output.is_available then
 				report_error ("Missing WGI output")
@@ -175,7 +175,11 @@ feature -- Request processing
 					l_server_port := l_host.substring (p+1, l_host.count)
 				else
 					l_server_name := l_host
-					l_server_port := "80" -- Default
+					if is_secure then
+						l_server_port := "443" -- Default for https://
+					else
+						l_server_port := "80" -- Default for http://
+					end
 				end
 			else
 				check host_available: False end
