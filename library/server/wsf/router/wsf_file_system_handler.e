@@ -221,8 +221,10 @@ feature -- Execution
 					if f.is_directory then
 						if index_disabled then
 							process_directory_index_disabled (uri, req, res)
+						elseif uri.ends_with ("/") then
+							process_index (uri, fn, req, res)
 						else
-							process_index (req.request_uri, fn, req, res)
+							res.redirect_now (uri + "/")
 						end
 					else
 						process_file (f, req, res)
@@ -652,7 +654,7 @@ feature {NONE} -- implementation: date time
 		end
 
 note
-	copyright: "2011-2017, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Colin Adams, Eiffel Software and others"
+	copyright: "2011-2019, Jocelyn Fiat, Javier Velilla, Olivier Ligot, Colin Adams, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software
