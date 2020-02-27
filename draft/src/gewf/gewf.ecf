@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<system xmlns="http://www.eiffel.com/developers/xml/configuration-1-16-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eiffel.com/developers/xml/configuration-1-16-0 http://www.eiffel.com/developers/xml/configuration-1-16-0.xsd" name="gewf" uuid="2D4957D5-77D3-4EC7-BF80-E4E6AC7A3EF3">
+<system xmlns="http://www.eiffel.com/developers/xml/configuration-1-20-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eiffel.com/developers/xml/configuration-1-20-0 http://www.eiffel.com/developers/xml/configuration-1-20-0.xsd" name="gewf" uuid="2D4957D5-77D3-4EC7-BF80-E4E6AC7A3EF3">
 	<target name="gewf">
 		<description>Generator for EWF project</description>
 		<root class="GEWF" feature="make"/>
 		<file_rule>
+			<exclude>/EIFGENs$</exclude>
 			<exclude>/\.git$</exclude>
 			<exclude>/\.svn$</exclude>
-			<exclude>/EIFGENs$</exclude>
 		</file_rule>
-		<option warning="true">
-		</option>
 		<setting name="console_application" value="true"/>
 		<setting name="executable_name" value="gewf"/>
 		<library name="base" location="$ISE_LIBRARY\library\base\base.ecf"/>

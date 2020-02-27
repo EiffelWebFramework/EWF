@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<system xmlns="http://www.eiffel.com/developers/xml/configuration-1-16-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eiffel.com/developers/xml/configuration-1-16-0 http://www.eiffel.com/developers/xml/configuration-1-16-0.xsd" name="http_network" uuid="7C7AD84D-B7BD-4709-B4B2-9365B86582AE" library_target="http_network">
+<system xmlns="http://www.eiffel.com/developers/xml/configuration-1-20-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eiffel.com/developers/xml/configuration-1-20-0 http://www.eiffel.com/developers/xml/configuration-1-20-0.xsd" name="http_network" uuid="7C7AD84D-B7BD-4709-B4B2-9365B86582AE" library_target="http_network">
 	<target name="http_network">
 		<root all_classes="true"/>
 		<file_rule>
+			<exclude>/EIFGENs$</exclude>
 			<exclude>/\.git$</exclude>
 			<exclude>/\.svn$</exclude>
-			<exclude>/EIFGENs$</exclude>
 		</file_rule>
 		<external_include location="$ECF_CONFIG_PATH/spec/include"/>
 		<library name="base" location="$ISE_LIBRARY\library\base\base.ecf"/>
@@ -27,21 +27,21 @@
 					<custom name="ssl_enabled" excluded_value="true"/>
 				</condition>
 			</cluster>
-			<cluster name="ssl_network" location="$|ssl\" recursive="false">
+			<cluster name="ssl_network" location="$|ssl\">
 				<condition>
 					<custom name="ssl_enabled" value="true"/>
 				</condition>
 				<file_rule>
 					<exclude>/http_stream_secure_socket_ext\.e$</exclude>
 					<condition>
-						<version type="compiler" max="18.05.0.0"/>
+						<version type="compiler" max="18.5.0.0"/>
 					</condition>
 				</file_rule>
 			</cluster>
-			<cluster name="ssl_network_until_18_05" location="$|ssl\until_18.05" recursive="true">
+			<cluster name="ssl_network_until_18_05" location="$|ssl\until_18.05\" recursive="true">
 				<condition>
+					<version type="compiler" max="18.5.0.0"/>
 					<custom name="ssl_enabled" value="true"/>
-					<version type="compiler" max="18.05.0.0"/>
 				</condition>
 			</cluster>
 		</cluster>

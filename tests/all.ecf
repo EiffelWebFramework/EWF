@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<system xmlns="http://www.eiffel.com/developers/xml/configuration-1-16-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eiffel.com/developers/xml/configuration-1-16-0 http://www.eiffel.com/developers/xml/configuration-1-16-0.xsd" name="all" uuid="0562209B-4C68-4E77-8B57-13CBF53D05BD" library_target="all">
+<system xmlns="http://www.eiffel.com/developers/xml/configuration-1-20-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eiffel.com/developers/xml/configuration-1-20-0 http://www.eiffel.com/developers/xml/configuration-1-20-0.xsd" name="all" uuid="0562209B-4C68-4E77-8B57-13CBF53D05BD" library_target="all">
 	<description>Integration project including many lib</description>
 	<target name="all">
 		<root all_classes="true"/>
 		<file_rule>
+			<exclude>/EIFGENs$</exclude>
 			<exclude>/\.git$</exclude>
 			<exclude>/\.svn$</exclude>
-			<exclude>/EIFGENs$</exclude>
 		</file_rule>
-		<option warning="true">
-		</option>
 		<library name="all-stable" location="all-stable.ecf" readonly="false"/>
 		<library name="atom" location="..\draft\library\protocol\syndication\atom\atom.ecf" readonly="false"/>
 		<library name="connector_cgi" location="..\library\server\ewsgi\connectors\cgi\cgi.ecf" readonly="false"/>
@@ -39,16 +37,16 @@
 		<library name="wsf_cgi" location="..\library\server\wsf\connector\cgi.ecf" readonly="false"/>
 		<library name="wsf_extension" location="..\library\server\wsf\wsf_extension.ecf" readonly="false"/>
 		<library name="wsf_html" location="..\library\server\wsf_html\wsf_html.ecf" readonly="false"/>
-		<library name="wsf_proxy" location="..\library\server\wsf_proxy\wsf_proxy.ecf" readonly="false"/>
 		<library name="wsf_js_widget" location="..\draft\library\server\wsf_js_widget\wsf_js_widget.ecf" readonly="false"/>
-		<library name="wsf_standalone" location="..\library\server\wsf\connector\standalone.ecf" readonly="false"/>
-		<library name="wsf_standalone_websocket" location="..\library\server\wsf\connector\standalone_websocket.ecf" readonly="false"/>
 		<library name="wsf_libfcgi" location="..\library\server\wsf\connector\libfcgi.ecf" readonly="false"/>
 		<library name="wsf_openshift" location="..\library\server\wsf\connector\openshift.ecf" readonly="false"/>
 		<library name="wsf_policy_driven" location="..\library\server\wsf\wsf_policy_driven.ecf" readonly="false"/>
+		<library name="wsf_proxy" location="..\library\server\wsf_proxy\wsf_proxy.ecf" readonly="false"/>
 		<library name="wsf_router_context" location="..\library\server\wsf\wsf_router_context.ecf" readonly="false"/>
-		<library name="wsf_session" location="..\library\server\wsf\wsf_session.ecf" readonly="false"/>
 		<library name="wsf_security" location="..\library\server\wsf\wsf_security.ecf" readonly="false"/>
+		<library name="wsf_session" location="..\library\server\wsf\wsf_session.ecf" readonly="false"/>
+		<library name="wsf_standalone" location="..\library\server\wsf\connector\standalone.ecf" readonly="false"/>
+		<library name="wsf_standalone_websocket" location="..\library\server\wsf\connector\standalone_websocket.ecf" readonly="false"/>
 	</target>
 	<target name="all_none" extends="all">
 		<description>Compiling with None concurrency</description>
