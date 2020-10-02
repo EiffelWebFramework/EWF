@@ -1,5 +1,5 @@
 note
-	description: "Graphical wizard for EiffelWeb projects."
+	author: "$Author$"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -26,7 +26,7 @@ feature {NONE} -- Initialization
 		do
 			default_create
 
-				-- Initialize ISE_PROJECTS variable with expected EiffelStudio value.
+				-- Initialize wizard.
 			if execution_environment.arguments.index_of_word_option ("-console") > 0 then
 				create cons.make
 			else

@@ -4,8 +4,8 @@ note
 	generator: "EiffelBuild"
 	legal: "See notice at end of class."
 	status: "See notice at end of class."
-	date: "$Date: 2010-08-17 10:49:12 +0200 (mar., 17 août 2010) $"
-	revision: "$Revision: 84189 $"
+	date: "$Date$"
+	revision: "$Revision$"
 
 class
 	MAIN_WINDOW

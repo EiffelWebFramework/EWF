@@ -1,6 +1,4 @@
 note
-	description: "Summary description for {WSF_FORM_INPUT}."
-	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 

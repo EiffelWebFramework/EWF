@@ -1,7 +1,7 @@
 note
 	description: "Summary description for {TCP_STREAM_SOCKET}."
-	date: "$Date: 2015-02-16 19:53:13 +0100 (lun., 16 févr. 2015) $"
-	revision: "$Revision: 96642 $"
+	date: "$Date$"
+	revision: "$Revision$"
 
 class
 	TCP_STREAM_SOCKET

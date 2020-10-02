@@ -6,8 +6,8 @@ note
 
 			you can customize APPLICATION_LAUNCHER
 		]"
-	date: "$Date: 2013-06-12 13:55:42 +0200 (mer., 12 juin 2013) $"
-	revision: "$Revision: 36 $"
+	date: "$Date$"
+	revision: "$Revision$"
 
 deferred class
 	APPLICATION_LAUNCHER_I

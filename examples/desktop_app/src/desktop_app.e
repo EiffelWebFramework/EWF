@@ -4,8 +4,8 @@ note
 	generator: "EiffelBuild"
 	legal: "See notice at end of class."
 	status: "See notice at end of class."
-	date: "$Date: 2012-09-29 01:29:13 +0200 (sam., 29 sept. 2012) $"
-	revision: "$Revision: 89488 $"
+	date: "$Date$"
+	revision: "$Revision$"
 
 
 class
