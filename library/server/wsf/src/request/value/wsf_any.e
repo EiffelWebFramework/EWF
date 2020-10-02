@@ -57,8 +57,7 @@ feature -- Query
 			-- if possible
 		do
 			if attached value as v then
-					-- FIXME: in the future, use the new `{TYPE}.name_32`
-				Result := generating_type.name.to_string_32
+				Result := generating_type.name_32
 			else
 				Result := {STRING_32} "Void"
 			end

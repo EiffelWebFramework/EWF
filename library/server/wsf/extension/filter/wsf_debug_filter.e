@@ -1,7 +1,7 @@
 note
 	description: "Filter implementing debug output in error stream, or `output' file."
-	date: "$Date: 2013-05-23 21:54:29 +0200 (jeu., 23 mai 2013) $"
-	revision: "$Revision: 92585 $"
+	date: "$Date$"
+	revision: "$Revision$"
 
 class
 	WSF_DEBUG_FILTER
@@ -72,7 +72,7 @@ feature -- Basic operations
 						s.append (c.item.generating_type.name)
 						s.append_character ('}')
 						s.append_character ('=')
-						s.append (c.item.debug_output.as_string_8)
+						s.append ({UTF_CONVERTER}.utf_32_string_to_utf_8_string_8 (c.item.debug_output))						
 						s.append_character ('%N')
 					end
 				end

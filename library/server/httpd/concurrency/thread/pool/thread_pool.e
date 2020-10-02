@@ -5,8 +5,8 @@ note
 		]"
 	legal: "See notice at end of class."
 	status: "Community Preview 1.0"
-	date: "$Date: 2009-09-01 19:15:37 -0300 (mar 01 de sep de 2009) $"
-	revision: "$Revision: 80577 $"
+	date: "$Date$"
+	revision: "$Revision$"
 
 class
 	THREAD_POOL [G]

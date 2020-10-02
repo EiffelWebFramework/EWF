@@ -2,8 +2,8 @@ note
 	description: "[
 				Component to handle percent encoding
 			]"
-	date: "$Date: 2014-04-09 16:37:28 +0200 (mer., 09 avr. 2014) $"
-	revision: "$Revision: 94801 $"
+	date: "$Date$"
+	revision: "$Revision$"
 	EIS: "name=Percent-encoding", "protocol=URI", "src=http://en.wikipedia.org/wiki/Percent-encoding"
 
 class

@@ -125,7 +125,7 @@ feature -- Access
 				if attached l_uri.host as h then
 					l_host := h
 				else
-					create l_url.make (url)
+					create l_url.make (url.to_string_8)
 					l_host := l_url.host
 				end
 
@@ -887,7 +887,7 @@ feature {NONE} -- Helpers
 
 invariant
 note
-	copyright: "2011-2018, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
+	copyright: "2011-2020, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software

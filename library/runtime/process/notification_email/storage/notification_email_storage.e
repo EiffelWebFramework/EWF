@@ -1,7 +1,7 @@
 note
 	description: "Abtract interface of email storage."
-	date: "$Date: 2015-06-30 15:49:56 +0200 (mar., 30 juin 2015) $"
-	revision: "$Revision: 97588 $"
+	date: "$Date$"
+	revision: "$Revision$"
 
 deferred class
 	NOTIFICATION_EMAIL_STORAGE

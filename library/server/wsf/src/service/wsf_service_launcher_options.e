@@ -7,8 +7,8 @@ note
 					base: base_url (very specific to standalone server)
 					verbose: to display verbose output, useful for Standalone
 		]"
-	date: "$Date: 2016-08-06 13:34:52 +0200 (sam., 06 août 2016) $"
-	revision: "$Revision: 99106 $"
+	date: "$Date$"
+	revision: "$Revision$"
 
 class
 	WSF_SERVICE_LAUNCHER_OPTIONS

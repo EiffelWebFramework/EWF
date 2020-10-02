@@ -2,8 +2,8 @@ note
 	description : "Objects that represent a custom error"
 	legal: "See notice at end of class."
 	status: "See notice at end of class."
-	date: "$Date: 2015-10-10 00:55:41 +0200 (sam., 10 oct. 2015) $"
-	revision: "$Revision: 97980 $"
+	date: "$Date$"
+	revision: "$Revision$"
 
 class
 	ERROR_CUSTOM

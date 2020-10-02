@@ -1,8 +1,8 @@
 note
 	description: "Handler returning debug information."
 
-	date: "$Date: 2013-06-28 16:14:02 +0200 (ven., 28 juin 2013) $"
-	revision: "$Revision: 92754 $"
+	date: "$Date$"
+	revision: "$Revision$"
 
 class
 	WSF_DEBUG_HANDLER

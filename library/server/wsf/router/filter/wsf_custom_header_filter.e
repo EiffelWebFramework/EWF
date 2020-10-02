@@ -1,7 +1,7 @@
 note
 	description: "Summary description for {WSF_CUSTOM_HEADER_FILTER}."
-	date: "$Date: 2013-05-23 21:54:29 +0200 (jeu., 23 mai 2013) $"
-	revision: "$Revision: 92585 $"
+	date: "$Date$"
+	revision: "$Revision$"
 
 class
 	WSF_CUSTOM_HEADER_FILTER

@@ -72,8 +72,11 @@ feature {NONE} -- Initialization
 				if attached {READABLE_STRING_GENERAL} opts.option ("server_name") as l_server_name then
 					server_name := l_server_name.to_string_8
 				end
-				if attached {READABLE_STRING_GENERAL} opts.option ("base") as l_base_str then
-					base_url := l_base_str.as_string_8
+				if 
+					attached {READABLE_STRING_GENERAL} opts.option ("base") as l_base_str and then
+					l_base_str.is_valid_as_string_8
+				then
+					base_url := l_base_str.to_string_8
 				end
 
 				verbose := opts.option_boolean_value ("verbose", verbose)
@@ -129,6 +132,11 @@ feature {NONE} -- Initialization
 					attached opts.option_string_32_value ("ssl_protocol", "tls_1_2") as ssl_prot
 				then
 					secure_settings := [ssl_prot, opts.option_string_32_value ("ssl_ca_crt", Void), opts.option_string_32_value ("ssl_ca_key", Void)]
+				end
+				if is_secure then
+					if opts.has_integer_option ("secure_port") then
+						port_number := opts.option_integer_value ("secure_port", port_number)
+					end
 				end
 			end
 

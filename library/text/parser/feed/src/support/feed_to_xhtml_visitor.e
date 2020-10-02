@@ -2,8 +2,8 @@ note
 	description: "[
 			Convert a FEED to XHTML representation.
 		]"
-	date: "$Date: 2015-10-08 10:45:13 +0200 (jeu., 08 oct. 2015) $"
-	revision: "$Revision: 97964 $"
+	date: "$Date$"
+	revision: "$Revision$"
 
 class
 	FEED_TO_XHTML_VISITOR

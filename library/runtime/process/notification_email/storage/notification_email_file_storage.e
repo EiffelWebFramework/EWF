@@ -1,7 +1,7 @@
 note
 	description: "Store email in specific file (could also be stderr, ...)."
-	date: "$Date: 2017-03-08 10:34:57 +0100 (mer., 08 mars 2017) $"
-	revision: "$Revision: 99935 $"
+	date: "$Date$"
+	revision: "$Revision$"
 
 class
 	NOTIFICATION_EMAIL_FILE_STORAGE

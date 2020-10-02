@@ -1,6 +1,6 @@
 note
 	description : "Objects that ..."
-	author      : "$Author: jfiat $"
+	author      : "$Author$"
 	date        : "$Date$"
 	revision    : "$Revision$"
 

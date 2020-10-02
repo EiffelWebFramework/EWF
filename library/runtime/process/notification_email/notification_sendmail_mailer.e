@@ -2,9 +2,9 @@ note
 	description : "[
 			NOTIFICATION_MAILER using sendmail as mailtool
 			]"
-	author: "$Author: jfiat $"
-	date: "$Date: 2015-06-30 15:49:56 +0200 (mar., 30 juin 2015) $"
-	revision: "$Revision: 97588 $"
+	author: "$Author$"
+	date: "$Date$"
+	revision: "$Revision$"
 
 class
 	NOTIFICATION_SENDMAIL_MAILER

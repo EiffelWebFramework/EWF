@@ -2,9 +2,9 @@ note
 	description: "[
 			Component responsible to send email
 			]"
-	author: "$Author: jfiat $"
-	date: "$Date: 2015-06-30 11:07:17 +0200 (mar., 30 juin 2015) $"
-	revision: "$Revision: 97586 $"
+	author: "$Author$"
+	date: "$Date$"
+	revision: "$Revision$"
 
 deferred class
 	NOTIFICATION_MAILER
