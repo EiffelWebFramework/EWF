@@ -7,7 +7,10 @@
 			<exclude>/\.git$</exclude>
 			<exclude>/\.svn$</exclude>
 		</file_rule>
+		<option warning="true">
+		</option>
 		<setting name="console_application" value="true"/>
+		<setting name="dead_code_removal" value="all"/>
 		<capability>
 			<concurrency support="none" use="none"/>
 		</capability>

@@ -33,6 +33,7 @@ feature {NONE} -- Initialization
 					if s.same_string_general ("-callback") or s.same_string_general ("--callback") then
 						i := i + 1
 						if i <= n then
+							s := args.argument (i)
 							create callback_file_name.make_from_string (s)
 						end
 					elseif wizard_directory_name = Void then
@@ -114,13 +115,14 @@ feature -- Helpers
 				Result := a_folder.extended (a_name)
 				ok := not ut.directory_path_exists (Result)
 				p := Result
-				if not ok then
-					if attached p.extension as ext then
-						l_ext := ext
-						l_name := p.name
-						l_name.remove_head (ext.count + 1)
-						create p.make_from_string (l_name)
-					end
+				if
+					not ok and then
+					attached p.extension as ext
+				then
+					l_ext := ext
+					l_name := p.name
+					l_name.remove_head (ext.count + 1)
+					create p.make_from_string (l_name)
 				end
 			until
 				ok

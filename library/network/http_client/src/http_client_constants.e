@@ -30,6 +30,7 @@ feature -- Auth type
 
 note
 	copyright: "2011-2020, Jocelyn Fiat, Javier Velilla, Eiffel Software and others"
+	revised_by: "Alexander Kogtenkov"
 	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source: "[
 			Eiffel Software
